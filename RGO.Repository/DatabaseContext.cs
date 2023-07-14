@@ -13,6 +13,11 @@ namespace RGO.Repository
         }
 
         public DbSet<UserGroup> usergroups {  get; set; }
+        public DbSet<input> input { get; set; }
+        public DbSet<events> events { get; set; }
+        public DbSet<stacks> stacks { get; set; }
+        public DbSet<userStacks> userStacks { get; set; }
+        public DbSet<Workshop> workshop { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
