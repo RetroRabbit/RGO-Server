@@ -1,3 +1,10 @@
+using RGO.Domain.Interfaces.Repository;
+using RGO.Repository.Interfaces;
+using RGO.Domain.Interfaces.Services;
+using RGO.Domain.Services;
+using RGO.Repository;
+using RGO.Repository.Repositories;
+
 namespace ROG.App
 {
     public class Program
@@ -12,6 +19,12 @@ namespace ROG.App
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<ITestService, TestService>();
+            builder.Services.AddScoped<ITestRepository, TestRepository>();
+            builder.Services.AddScoped<IUserGroupsRepository, UserGroupsRepository>();
+            builder.Services.AddDbContext<DatabaseContext>();
+
 
             var app = builder.Build();
 
