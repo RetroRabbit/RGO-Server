@@ -1,13 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿namespace RGO.Repository.Entities;
 
-namespace RGO.Repository.Entities;
-
-public class input
-{
-    public int id { get; set; }
-    public users userId { get; set; } = null!;
-    public formSubmits formSubmitId { get; set; } = null!;
-    public fields fieldId { get; set; } = null!;
-    public string value { get; set; } = null!;
-    public DateTime createDate { get; set; }
-}
+public record Input(
+    int id,
+    users userId,
+    formSubmits formSubmitId,
+    fields fieldId,
+    string value,
+    DateTime createDate);
