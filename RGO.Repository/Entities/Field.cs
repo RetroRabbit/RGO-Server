@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RGO.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,29 @@ namespace RGO.Repository.Entities
         public string description { get; set; }
         public string errormessage { get; set;}
 
+        public Field(int id,FieldDto fieldDto) 
+        {
+            this.id = id;
+            formid = fieldDto.formid;
+            type = fieldDto.type;
+            required = fieldDto.required;
+            label = fieldDto.label;
+            description = fieldDto.description;
+            errormessage = fieldDto.errormessage;
+        }
+
+
+        public FieldDto ToDto()
+        {
+            return new FieldDto
+            (
+                formid,
+                type,
+                required,
+                label,
+                description,
+                errormessage
+            );
+        }
     }
 }
