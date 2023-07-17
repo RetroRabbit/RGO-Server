@@ -1,9 +1,4 @@
 ﻿using RGO.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Repository.Entities
 {
@@ -17,6 +12,7 @@ namespace RGO.Repository.Entities
         public string description { get; set; }
         public string errormessage { get; set;}
 
+        public Field() { }
         public Field(int id,FieldDto fieldDto) 
         {
             this.id = id;

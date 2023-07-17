@@ -21,7 +21,9 @@ namespace ROG.App
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<ITestService, TestService>();
+            builder.Services.AddScoped<IAuthService,AuthService>();
             builder.Services.AddScoped<ITestRepository, TestRepository>();
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IUserGroupsRepository, UserGroupsRepository>();
             builder.Services.AddDbContext<DatabaseContext>();
 
