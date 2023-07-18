@@ -8,9 +8,9 @@ namespace RGO.Repository.Entities
         public int formid { get; set; }
         public int type { get; set; }
         public bool required { get; set; }
-        public string label { get; set; }
-        public string description { get; set; }
-        public string errormessage { get; set;}
+        public string label { get; set; } = null!;
+        public string description { get; set; } = null!;
+        public string errormessage { get; set; } = null!;
 
         public Field() { }
         public Field(int id,FieldDto fieldDto) 

@@ -1,25 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RGO.Domain.Interfaces.Repository;
+﻿using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Domain.Services
 {
     public class AuthService : IAuthService
     {
-        public IAuthRepository _authRepository;
+        private readonly IAuthRepository _authRepository;
         public AuthService(IAuthRepository authRepo)
         {
             _authRepository = authRepo;
         }
-        public bool CheckUserExist(UserDto user)
+        public async Task<bool> CheckUserExist(string email)
         {
-            return _authRepository.FindUserByEmail(user.email);
+            return await _authRepository.FindUserByEmail(email);
         }
 
         public string GenerateToken()
