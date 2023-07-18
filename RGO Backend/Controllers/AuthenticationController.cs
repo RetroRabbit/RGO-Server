@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
+using RGO.Domain.Models;
 
 namespace RGO_Backend.Controllers
 {
@@ -16,9 +17,9 @@ namespace RGO_Backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginUser(string email)
+        public async Task<IActionResult> LoginUser([FromBody] UserDto user)
         {
-            bool userExists = await _authService.CheckUserExist(email);
+            bool userExists = await _authService.CheckUserExist(user.email);
 
             if (!userExists)
             {
