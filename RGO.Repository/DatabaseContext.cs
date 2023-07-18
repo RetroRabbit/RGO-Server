@@ -16,5 +16,15 @@ namespace RGO.Repository
         public DbSet<FormSubmit> formsubmits { get; set; }
         public DbSet<Form> forms { get; set; }
         public DbSet<Field> fields { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserGroup>().HasKey(userGroup => userGroup.id);
+            modelBuilder.Entity<User>().HasKey(user => user.id);
+            modelBuilder.Entity<Option>().HasKey(option => option.id);
+            modelBuilder.Entity<FormSubmit>().HasKey(formSubmit => formSubmit.id);
+            modelBuilder.Entity<Form>().HasKey(form => form.id);
+            modelBuilder.Entity<Field>().HasKey(field => field.id);
+        }
     }
 }
