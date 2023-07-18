@@ -13,15 +13,9 @@ namespace RGO.Repository.Repositories
             _databaseContext = databaseContext;
         }
 
-        public bool FindUserByEmail(string email)
+        public async Task<bool> FindUserByEmail(string email)
         {
-            User user = _databaseContext.users.Where(u => u.email == email).FirstOrDefault();
-            if (user == null)
-            {
-                return false;
-            }
-
-            return true;
+            return await _databaseContext.users.AnyAsync(u => u.email == email);
         }
     }
 }

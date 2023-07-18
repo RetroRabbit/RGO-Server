@@ -5,14 +5,14 @@ namespace RGO.Domain.Services
 {
     public class AuthService : IAuthService
     {
-        public IAuthRepository _authRepository;
+        private readonly IAuthRepository _authRepository;
         public AuthService(IAuthRepository authRepo)
         {
             _authRepository = authRepo;
         }
-        public bool CheckUserExist(UserDto user)
+        public async Task<bool> CheckUserExist(string email)
         {
-            return _authRepository.FindUserByEmail(user.email);
+            return await _authRepository.FindUserByEmail(email);
         }
 
         public string GenerateToken()
