@@ -2,8 +2,8 @@
 
 public record Input(
     int id,
-    users userId,
-    formSubmits formSubmitId,
-    fields fieldId,
+    int userId,
+    int formSubmitId,
+    int fieldId,
     string value,
     DateTime createDate);

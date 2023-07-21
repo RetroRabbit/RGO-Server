@@ -16,10 +16,10 @@ namespace RGO.Repository
         public DbSet<FormSubmit> formsubmits { get; set; }
         public DbSet<Form> forms { get; set; }
         public DbSet<Field> fields { get; set; }
-        public DbSet<input> input { get; set; }
-        public DbSet<events> events { get; set; }
-        public DbSet<stacks> stacks { get; set; }
-        public DbSet<userStacks> userStacks { get; set; }
+        public DbSet<Input> input { get; set; }
+        public DbSet<Events> events { get; set; }
+        public DbSet<Stacks> stacks { get; set; }
+        public DbSet<UserStacks> userStacks { get; set; }
         public DbSet<Workshop> workshop { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
