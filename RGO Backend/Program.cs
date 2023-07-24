@@ -1,9 +1,10 @@
 using RGO.Domain.Interfaces.Repository;
-using RGO.Repository.Interfaces;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Services;
 using RGO.Repository;
 using RGO.Repository.Repositories;
+using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ROG.App
 {
@@ -19,7 +20,10 @@ namespace ROG.App
 
             builder.Services.AddScoped<IAuthService,AuthService>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+            builder.Services.AddScoped<IEventsService, EventsService>();
+            builder.Services.AddScoped<IEventsRepository, EventsRepository>();
             builder.Services.AddScoped<IUserGroupsRepository, UserGroupsRepository>();
+            
             builder.Services.AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
@@ -36,6 +40,29 @@ namespace ROG.App
             .AllowAnyHeader());
 
             app.UseHttpsRedirection();
+
+            app.Use( async (context, next) =>
+            {
+                if (!context.Request.Path.ToString().Contains("Authentication"))
+                {
+                    if (context.Request.Headers.TryGetValue("Authorization", out var authorization))
+                    {
+                        var handler = new JwtSecurityTokenHandler();
+                        var token = handler.ReadJwtToken(authorization.ToString().Replace("Bearer ",""));
+
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 401;
+                        await context.Response.WriteAsync("Token is missing.");
+                        return;
+                    }
+                }
+               
+
+                // Call the next delegate/middleware in the pipeline.
+                await next(context);
+            });
 
             app.UseAuthorization();
 
