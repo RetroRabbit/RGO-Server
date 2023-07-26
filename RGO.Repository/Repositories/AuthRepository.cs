@@ -1,21 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Domain.Interfaces.Repository;
-using RGO.Repository.Entities;
+using RGO.Domain.Models;
 
 namespace RGO.Repository.Repositories
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IUserRepository _userRepository;
 
-        public AuthRepository(DatabaseContext databaseContext)
+        public AuthRepository(IUserRepository userRepository)
         {
-            _databaseContext = databaseContext;
+            _userRepository = userRepository;
         }
 
         public async Task<bool> FindUserByEmail(string email)
         {
-            return await _databaseContext.users.AnyAsync(u => u.email == email);
+            return await _userRepository.UserExists(email);
+        }
+
+        public async Task<UserDto> GetUserByEmail(string email)
+        {
+            UserDto user = await _userRepository.GetUserByEmail(email);
+
+            return user;
         }
     }
 }

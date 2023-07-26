@@ -23,6 +23,7 @@ namespace ROG.App
             builder.Services.AddScoped<IEventsService, EventsService>();
             builder.Services.AddScoped<IEventsRepository, EventsRepository>();
             builder.Services.AddScoped<IUserGroupsRepository, UserGroupsRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             
             builder.Services.AddDbContext<DatabaseContext>();
 

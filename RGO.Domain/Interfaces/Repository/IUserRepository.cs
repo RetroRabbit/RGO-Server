@@ -2,9 +2,9 @@
 
 namespace RGO.Domain.Interfaces.Repository
 {
-    public interface IAuthRepository
+    public interface IUserRepository
     {
-        Task<bool> FindUserByEmail(string email);
+        Task<bool> UserExists(string email);
         Task<UserDto> GetUserByEmail(string email);
     }
 }
