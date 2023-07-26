@@ -1,13 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RGO.Repository.Entities;
+using System.IO;
 
 namespace RGO.Repository
 {
     public class DatabaseContext: DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        public DatabaseContext() { }
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            options.UseNpgsql("Host=localhost;Database=RGO;Username=postgres;Password=postgrespw", b => b.MigrationsAssembly("RGO.App"));
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString("Default"));
         }
 
         public DbSet<UserGroup> usergroups {  get; set; }
