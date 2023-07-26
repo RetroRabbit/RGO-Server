@@ -17,17 +17,22 @@ namespace RGO_Backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginUser([FromBody] UserDto user)
+        public async Task<IActionResult> LoginUser([FromBody] Dictionary<string, string> email)
         {
-            bool userExists = await _authService.CheckUserExist(user.email);
-
-            if (!userExists)
+            try
             {
-                return NotFound("Failed to Login");
+                bool userExists = await _authService.CheckUserExist(email["email"]);
+
+                if (!userExists) throw new Exception("User not found");
+
+                UserDto foundUser = await _authService.GetUserByEmail(email["email"]);
+
+                return Ok(foundUser.type);
             }
-
-            return Ok("Successfully Logged in");
-
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
