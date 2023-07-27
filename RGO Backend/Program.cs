@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Npgsql.Internal.TypeHandlers.DateTimeHandlers;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Services;
@@ -12,6 +15,20 @@ namespace ROG.App
     {
         public static void Main(params string[] args)
         {
+
+            var host = Host.CreateDefaultBuilder(args)
+                .ConfigureServices((context, services) =>
+                {
+                    IConfiguration configuration = new ConfigurationBuilder()
+                        .AddJsonFile("appsettings.json", true, true)
+                        .AddEnvironmentVariables()
+                        .AddCommandLine(args)
+                        .Build();
+
+                    services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration.GetConnectionString("Default")));
+                })
+                .Build();
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
