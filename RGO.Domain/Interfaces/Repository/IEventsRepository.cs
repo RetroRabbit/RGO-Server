@@ -1,4 +1,5 @@
-﻿using RGO.Domain.Models;
+﻿using Microsoft.Extensions.Logging;
+using RGO.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace RGO.Domain.Interfaces.Repository
 {
     public interface IEventsRepository
     {
-        Task<EventsDto[]> GetAllEvents();
+        Task<EventsDto[]> GetAllEventDtos();
     }
 }

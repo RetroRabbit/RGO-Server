@@ -19,7 +19,8 @@ namespace RGO.Domain.Services
         }
         public Task<EventsDto[]> GetEvents()
         {
-            return _eventsrepository.GetAllEvents();
+            return _eventsrepository.GetAllEventDtos();
         }
+
     }
 }
