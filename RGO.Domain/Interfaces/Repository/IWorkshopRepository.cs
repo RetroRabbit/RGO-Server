@@ -9,6 +9,6 @@ namespace RGO.Domain.Interfaces.Repository
 {
      public interface IWorkshopRepository
     {
-        Task<WorkshopDto[]> GetAllWorkShops(EventsDto events, string presenter);
+        Task<WorkshopDto[]> GetAllWorkShops();
     }
 }

@@ -1,10 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
-using RGO.Domain.Models;
+﻿using RGO.Domain.Models;
 using System.Text.RegularExpressions;
 
 namespace RGO.Repository.Entities;
 
-public record Workshop(
-    int id,
-    int eventId,
-    string presenter);
+public class Workshop {
+    public int id { get; set; }
+    public int eventId { get; set; }
+    public string presenter { get; set; }
+
+    public WorkshopDto ToDto(EventsDto workshopEvent)
+    {
+        return new WorkshopDto
+        (
+            workshopEvent,
+            presenter
+        );
+    }
+}
