@@ -39,6 +39,11 @@ namespace RGO.Repository
             modelBuilder.Entity<FormSubmit>().HasKey(formSubmit => formSubmit.id);
             modelBuilder.Entity<Form>().HasKey(form => form.id);
             modelBuilder.Entity<Field>().HasKey(field => field.id);
+            modelBuilder.Entity<Input>().HasKey(input => input.id);
+            modelBuilder.Entity<Events>().HasKey(events => events.id);
+            modelBuilder.Entity<Stacks>().HasKey(stacks => stacks.id);
+            modelBuilder.Entity<UserStacks>().HasKey(userStacks => userStacks.id);
+            modelBuilder.Entity<Workshop>().HasKey(workshop => workshop.id);
         }
     }
 }

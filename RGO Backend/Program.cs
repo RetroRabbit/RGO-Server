@@ -41,7 +41,8 @@ namespace ROG.App
             builder.Services.AddScoped<IEventsRepository, EventsRepository>();
             builder.Services.AddScoped<IUserGroupsRepository, UserGroupsRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            
+            builder.Services.AddScoped<IWorkshopRepository, WorkshopRepository>();
+
             builder.Services.AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
