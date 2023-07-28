@@ -17,11 +17,6 @@ namespace RGO_Backend.Controllers
         [HttpGet("events")]
         public async Task<IActionResult> GetEvents()
         {  
-            /*if (Authorization == "")
-            {
-                return Unauthorized("User not authorized");
-            }*/
-
             var events = await _eventsService.GetEvents();
 
             return Ok(events);
