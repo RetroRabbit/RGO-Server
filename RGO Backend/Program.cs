@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.OpenApi.Models;
 using Npgsql.Internal.TypeHandlers.DateTimeHandlers;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
@@ -33,7 +34,30 @@ namespace ROG.App
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(opt =>
+            {
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Grad Onboarding Platform API", Version = "v1" });
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Provide Auth0 Token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference{Type = ReferenceType.SecurityScheme, Id = "Bearer"}
+                        },
+                        new string[]{}
+                    }
+                });
+            });
 
             builder.Services.AddScoped<IAuthService,AuthService>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
