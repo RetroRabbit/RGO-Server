@@ -19,7 +19,6 @@ namespace RGO.Repository.Repositories
 
         public async Task<WorkshopDto[]> GetAllWorkShops()
         {
-
             EventsDto[] events = await _eventsRepository.GetAllEventDtos();
             Workshop[] workshops = await _databaseContext.workshop.ToArrayAsync();
             WorkshopDto[] workShopDto = new WorkshopDto[workshops.Length];
@@ -29,10 +28,9 @@ namespace RGO.Repository.Repositories
                 var workshopEvent = events.First(e => e.id == item.eventId);
                 if (workshopEvent == null)
                 {
-                    /*throw new Exception("Workshop event not found");*/
                     continue;
                 }
-                workShopDto[counter++] = item.ToDto();
+                workShopDto[counter++] = item.ToDto(workshopEvent);
             }
             return workShopDto;
         }

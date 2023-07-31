@@ -15,16 +15,16 @@ public class Workshop
     public Workshop(WorkshopDto workshopDto)
     {
         id = workshopDto.id;
-        eventId = workshopDto.eventId;
+        eventId = workshopDto.eventId.id;
         presenter = workshopDto.presenter;
     }
 
-    public WorkshopDto ToDto()
+    public WorkshopDto ToDto(EventsDto eventsDto)
     {
         return new WorkshopDto
         (
             id,
-            eventId,
+            eventsDto,
             presenter
         );
     }
