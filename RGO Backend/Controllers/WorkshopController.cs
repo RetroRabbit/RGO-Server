@@ -13,6 +13,7 @@ namespace RGO_Backend.Controllers
         {
             _workshopService = workshopService;
         }
+
         [HttpGet("workshops")]
         public async Task<IActionResult> GetWorkShops()
         {
