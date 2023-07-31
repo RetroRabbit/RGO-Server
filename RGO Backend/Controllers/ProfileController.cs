@@ -16,20 +16,13 @@ namespace RGO_Backend.Controllers
             this.profileService = profileService;
         }
 
-        // GET: api/<ProfileController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // GET api/<ProfileController>/5
         [HttpGet("getuser")]
         public async Task<IActionResult> GetUser([FromQuery]string email)
         {
             try
             {
-            var user = profileService.GetUserByEmail(email);
+            var user = await profileService.GetUserByEmail(email);
                 System.Diagnostics.Debug.WriteLine("user " + user);
                 return Ok(user);
 
@@ -40,24 +33,6 @@ namespace RGO_Backend.Controllers
                 await Console.Out.WriteLineAsync(e.Message);
                 return BadRequest(e.Message);
             }
-        }
-
-        // POST api/<ProfileController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<ProfileController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ProfileController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
