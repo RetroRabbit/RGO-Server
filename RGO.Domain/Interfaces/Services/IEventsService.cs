@@ -10,6 +10,5 @@ namespace RGO.Domain.Interfaces.Services
     public interface IEventsService
     {
         Task<EventsDto[]> GetEvents();
-        Task<EventsDto> GetEvent(int id);
     }
 }
