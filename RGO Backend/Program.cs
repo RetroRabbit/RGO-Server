@@ -92,7 +92,6 @@ namespace ROG.App
                     {
                         var handler = new JwtSecurityTokenHandler();
                         var token = handler.ReadJwtToken(authorization.ToString().Replace("Bearer ",""));
-
                     }
                     else
                     {
@@ -101,9 +100,6 @@ namespace ROG.App
                         return;
                     }
                 }
-               
-
-                // Call the next delegate/middleware in the pipeline.
                 await next(context);
             });
 
