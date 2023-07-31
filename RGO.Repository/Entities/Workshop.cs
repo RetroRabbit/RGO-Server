@@ -1,18 +1,30 @@
 ﻿using RGO.Domain.Models;
-using System.Text.RegularExpressions;
 
 namespace RGO.Repository.Entities;
 
-public class Workshop {
+public class Workshop
+{
     public int id { get; set; }
-    public int eventId { get; set; }
-    public string presenter { get; set; }
+    public Events eventId { get; set; } = null!;
+    public string presenter { get; set; } = null!;
 
-    public WorkshopDto ToDto(EventsDto workshopEvent)
+    public Workshop()
+    {
+    }
+
+    public Workshop(WorkshopDto workshopDto)
+    {
+        id = workshopDto.id;
+        eventId = new Events(workshopDto.eventId);
+        presenter = workshopDto.presenter;
+    }
+
+    public WorkshopDto ToDto()
     {
         return new WorkshopDto
         (
-            workshopEvent,
+            id,
+            eventId.ToDto(),
             presenter
         );
     }

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace RGO.Domain.Models
 {
-    public record EventsDto(int groupid, string title, string description, int userType, DateTime startDate, DateTime endDate, int eventType);
+    public record EventsDto(int id, int groupid, string title, string description, int userType, DateTime startDate, DateTime endDate, int eventType);
 }
