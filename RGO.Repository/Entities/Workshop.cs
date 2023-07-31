@@ -5,7 +5,7 @@ namespace RGO.Repository.Entities;
 public class Workshop
 {
     public int id { get; set; }
-    public Events eventId { get; set; } = null!;
+    public int eventId { get; set; } = 0;
     public string presenter { get; set; } = null!;
 
     public Workshop()
@@ -15,16 +15,16 @@ public class Workshop
     public Workshop(WorkshopDto workshopDto)
     {
         id = workshopDto.id;
-        eventId = new Events(workshopDto.eventId);
+        eventId = workshopDto.eventId.id;
         presenter = workshopDto.presenter;
     }
 
-    public WorkshopDto ToDto()
+    public WorkshopDto ToDto(EventsDto eventsDto)
     {
         return new WorkshopDto
         (
             id,
-            eventId.ToDto(),
+            eventsDto,
             presenter
         );
     }

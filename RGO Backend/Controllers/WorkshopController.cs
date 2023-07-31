@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using RGO.Domain.Interfaces.Services;
 ﻿using Microsoft.AspNetCore.Mvc;
+using RGO.Domain.Interfaces.Services;
 
 namespace RGO_Backend.Controllers
 {
