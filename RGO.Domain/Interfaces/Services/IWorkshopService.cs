@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace RGO.Domain.Interfaces.Services
 {
-    public interface IEventsService
+    public interface IWorkshopService
     {
-        Task<EventsDto[]> GetEvents();
+        Task<WorkshopDto[]> GetWorkshops();
     }
 }

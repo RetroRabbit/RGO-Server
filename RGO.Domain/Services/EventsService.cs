@@ -1,11 +1,6 @@
 ﻿using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Domain.Services
 {
@@ -19,7 +14,8 @@ namespace RGO.Domain.Services
         }
         public Task<EventsDto[]> GetEvents()
         {
-            return _eventsrepository.GetAllEvents();
+            return _eventsrepository.GetAllEventDtos();
         }
+
     }
 }

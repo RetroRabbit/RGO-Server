@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RGO.Domain.Interfaces.Services
+namespace RGO.Domain.Interfaces.Repository
 {
-    public interface IEventsService
+     public interface IWorkshopRepository
     {
-        Task<EventsDto[]> GetEvents();
+        Task<WorkshopDto[]> GetAllWorkShops();
     }
 }

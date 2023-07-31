@@ -43,6 +43,8 @@ namespace ROG.App
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IProfileService, ProfileService>();
             
+            builder.Services.AddScoped<IWorkshopRepository, WorkshopRepository>();
+
             builder.Services.AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
