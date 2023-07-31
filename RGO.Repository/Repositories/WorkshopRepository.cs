@@ -26,7 +26,7 @@ namespace RGO.Repository.Repositories
             int counter = 0;
             foreach (var item in workshops)
             {
-                var workshopEvent = events.First(e => e.id == item.eventId.id);
+                var workshopEvent = events.First(e => e.id == item.eventId);
                 if (workshopEvent == null)
                 {
                     /*throw new Exception("Workshop event not found");*/

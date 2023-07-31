@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RGO.Domain.Interfaces.Services;
 
 namespace RGO_Backend.Controllers
 {
@@ -6,10 +7,17 @@ namespace RGO_Backend.Controllers
     [ApiController]
     public class WorkshopController : ControllerBase
     {
+        private readonly IWorkshopService _workshopService;
+
+        public WorkshopController(IWorkshopService workshopService)
+        {
+            _workshopService = workshopService;
+        }
+
         [HttpGet("workshops")]
         public async Task<IActionResult> GetWorkShops()
         {
-            var workshops = new List<string>() { "Workshop 1", "Workshop 2", "Workshop 3" };
+            var workshops = await _workshopService.GetWorkshops();
             return Ok(workshops);
         }
     }
