@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RGO.Repository.Entities;
-using System.IO;
 
 namespace RGO.Repository
 {
