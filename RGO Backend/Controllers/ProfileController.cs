@@ -23,7 +23,6 @@ namespace RGO_Backend.Controllers
             try
             {
             var user = await profileService.GetUserByEmail(email);
-                System.Diagnostics.Debug.WriteLine("user " + user);
                 return Ok(user);
 
             }

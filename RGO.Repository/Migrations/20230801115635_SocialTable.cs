@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RGO.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class updatetables : Migration
+    public partial class SocialTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -191,11 +191,119 @@ namespace RGO.Repository.Migrations
                 {
                     table.PrimaryKey("PK_workshop", x => x.id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "certifications",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    title = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    Userid = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_certifications", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_certifications_users_Userid",
+                        column: x => x.Userid,
+                        principalTable: "users",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "projects",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    role = table.Column<string>(type: "text", nullable: false),
+                    Userid = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_projects", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_projects_users_Userid",
+                        column: x => x.Userid,
+                        principalTable: "users",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "skill",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userid = table.Column<int>(type: "integer", nullable: false),
+                    title = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_skill", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_skill_users_userid",
+                        column: x => x.userid,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "social",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    useridid = table.Column<int>(type: "integer", nullable: false),
+                    discord = table.Column<string>(type: "text", nullable: false),
+                    codewars = table.Column<string>(type: "text", nullable: false),
+                    github = table.Column<string>(type: "text", nullable: false),
+                    linkedin = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_social", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_social_users_useridid",
+                        column: x => x.useridid,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_certifications_Userid",
+                table: "certifications",
+                column: "Userid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_projects_Userid",
+                table: "projects",
+                column: "Userid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_skill_userid",
+                table: "skill",
+                column: "userid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_social_useridid",
+                table: "social",
+                column: "useridid");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "certifications");
+
             migrationBuilder.DropTable(
                 name: "events");
 
@@ -215,19 +323,28 @@ namespace RGO.Repository.Migrations
                 name: "options");
 
             migrationBuilder.DropTable(
+                name: "projects");
+
+            migrationBuilder.DropTable(
+                name: "skill");
+
+            migrationBuilder.DropTable(
+                name: "social");
+
+            migrationBuilder.DropTable(
                 name: "stacks");
 
             migrationBuilder.DropTable(
                 name: "usergroups");
 
             migrationBuilder.DropTable(
-                name: "users");
-
-            migrationBuilder.DropTable(
                 name: "userStacks");
 
             migrationBuilder.DropTable(
                 name: "workshop");
+
+            migrationBuilder.DropTable(
+                name: "users");
         }
     }
 }

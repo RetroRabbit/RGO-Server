@@ -1,4 +1,5 @@
 ﻿using RGO.Domain.Models;
+using System.Linq;
 
 namespace RGO.Repository.Entities
 {
@@ -13,7 +14,9 @@ namespace RGO.Repository.Entities
         public int type { get; set; }
         public DateTime joindate { get; set; }
         public int status { get; set; }
-
+        public List<Skill> skills { get; set; } = new();
+        public List<Certifications> certifications { get; set; } = new();
+        public List<Projects> projects { get; set; } = new();
         public User()
         {
         }
@@ -28,6 +31,9 @@ namespace RGO.Repository.Entities
             type = user.type;
             joindate = user.joindate;
             status = user.status;
+            skills= user.skill.Select(x => new Skill(x)).ToList();
+            certifications = user.certifications.Select(x => new Certifications(x)).ToList();
+            projects =user.projects.Select(x => new Projects(x)).ToList();
         }
 
         public UserDto ToDTO()
@@ -40,7 +46,12 @@ namespace RGO.Repository.Entities
                 email,
                 type,
                 joindate,
-                status);
+                status,
+                skills.Select(x => x.ToDTO()).ToList(),
+                certifications.Select(x => x.ToDTO()).ToList(),
+                projects.Select(x => x.ToDTO()).ToList()
+                
+                );
         }
     }
 }

@@ -20,7 +20,7 @@ namespace RGO.Repository.Repositories
 
             if (!userExists) throw new Exception("User not found");
 
-            User user = await _databaseContext.users.FirstAsync(u => u.email == email);
+            User user = await _databaseContext.users.Include(user => user.skills).Include(user => user.projects).Include(user => user.certifications).FirstAsync(u => u.email == email);
 
             return user.ToDTO();
         }

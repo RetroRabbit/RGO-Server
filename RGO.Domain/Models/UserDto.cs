@@ -8,5 +8,10 @@
         string email,
         int type,
         DateTime joindate,
-        int status);
+        int status,
+        List<SkillDto> skill,
+        List<CertificationsDto> certifications,
+        List<ProjectsDto> projects
+        );
+
 }

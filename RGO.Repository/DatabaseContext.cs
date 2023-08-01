@@ -29,11 +29,17 @@ namespace RGO.Repository
         public DbSet<Stacks> stacks { get; set; }
         public DbSet<UserStacks> userStacks { get; set; }
         public DbSet<Workshop> workshop { get; set; }
+        public DbSet<Social> social { get; set; }
+        public DbSet<Skill> skill { get; set; }
+        public DbSet<Certifications> certifications { get; set; }
+        public DbSet<Projects> projects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserGroup>().HasKey(userGroup => userGroup.id);
             modelBuilder.Entity<User>().HasKey(user => user.id);
+            modelBuilder.Entity<User>().HasMany(user => user.skills).WithOne(skill => skill.user).HasForeignKey(skill=> skill.userid).HasPrincipalKey(user => user.id);
+
             modelBuilder.Entity<Option>().HasKey(option => option.id);
             modelBuilder.Entity<FormSubmit>().HasKey(formSubmit => formSubmit.id);
             modelBuilder.Entity<Form>().HasKey(form => form.id);
@@ -43,6 +49,10 @@ namespace RGO.Repository
             modelBuilder.Entity<Stacks>().HasKey(stacks => stacks.id);
             modelBuilder.Entity<UserStacks>().HasKey(userStacks => userStacks.id);
             modelBuilder.Entity<Workshop>().HasKey(workshop => workshop.id);
+            modelBuilder.Entity<Social>().HasKey(social => social.id);
+            modelBuilder.Entity<Skill>().HasKey(skill => skill.id);
+            modelBuilder.Entity<Certifications>().HasKey(cert => cert.id);
+            modelBuilder.Entity<Projects>().HasKey(projects => projects.id);
         }
     }
 }
