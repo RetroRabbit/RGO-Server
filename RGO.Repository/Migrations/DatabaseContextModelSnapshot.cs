@@ -22,6 +22,32 @@ namespace RGO.Repository.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("RGO.Repository.Entities.Certifications", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int?>("Userid")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Userid");
+
+                    b.ToTable("certifications");
+                });
+
             modelBuilder.Entity("RGO.Repository.Entities.Events", b =>
                 {
                     b.Property<int>("id")
@@ -196,6 +222,91 @@ namespace RGO.Repository.Migrations
                     b.ToTable("options");
                 });
 
+            modelBuilder.Entity("RGO.Repository.Entities.Projects", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int?>("Userid")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Userid");
+
+                    b.ToTable("projects");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("userid")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("userid");
+
+                    b.ToTable("skill");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("codewars")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("discord")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("github")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("linkedin")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("social");
+                });
+
             modelBuilder.Entity("RGO.Repository.Entities.Stacks", b =>
                 {
                     b.Property<int>("id")
@@ -250,6 +361,9 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("socialid")
+                        .HasColumnType("integer");
+
                     b.Property<int>("status")
                         .HasColumnType("integer");
 
@@ -257,6 +371,8 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("id");
+
+                    b.HasIndex("socialid");
 
                     b.ToTable("users");
                 });
@@ -324,6 +440,51 @@ namespace RGO.Repository.Migrations
                     b.HasKey("id");
 
                     b.ToTable("workshop");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Certifications", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.User", null)
+                        .WithMany("certifications")
+                        .HasForeignKey("Userid");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Projects", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.User", null)
+                        .WithMany("projects")
+                        .HasForeignKey("Userid");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.User", "user")
+                        .WithMany("skills")
+                        .HasForeignKey("userid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.User", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.Social", "social")
+                        .WithMany()
+                        .HasForeignKey("socialid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("social");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.User", b =>
+                {
+                    b.Navigation("certifications");
+
+                    b.Navigation("projects");
+
+                    b.Navigation("skills");
                 });
 #pragma warning restore 612, 618
         }
