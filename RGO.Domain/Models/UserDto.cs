@@ -11,7 +11,8 @@
         int status,
         List<SkillDto> skill,
         List<CertificationsDto> certifications,
-        List<ProjectsDto> projects
+        List<ProjectsDto> projects,
+        SocialDto social
         );
 
 }

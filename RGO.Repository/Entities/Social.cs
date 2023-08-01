@@ -6,7 +6,6 @@ namespace RGO.Repository.Entities
     public class Social
     {
         public int id { get; set; }
-        public User userid { get; set; }
         public string discord { get; set; } = null!;
         public string codewars{ get; set; } = null!;
         public string github { get; set; } = null!;
@@ -20,7 +19,6 @@ namespace RGO.Repository.Entities
         public Social(SocialDto social)
         {
             id = social.id;
-            userid = new User ( social.userid); 
             discord = social.discord;
             codewars = social.codewars;
             github  = social.github;
@@ -31,7 +29,6 @@ namespace RGO.Repository.Entities
         {
             return new SocialDto(
                 id,
-                userid.ToDTO(),
                 discord,
                 codewars,
                 github,

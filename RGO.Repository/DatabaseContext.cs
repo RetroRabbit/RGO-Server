@@ -38,7 +38,7 @@ namespace RGO.Repository
         {
             modelBuilder.Entity<UserGroup>().HasKey(userGroup => userGroup.id);
             modelBuilder.Entity<User>().HasKey(user => user.id);
-            modelBuilder.Entity<User>().HasMany(user => user.skills).WithOne(skill => skill.user).HasForeignKey(skill=> skill.userid).HasPrincipalKey(user => user.id);
+           // modelBuilder.Entity<User>().HasMany(user => user.skills).WithOne(skill => skill.user).HasForeignKey(skill=> skill.userid).HasPrincipalKey(user => user.id);
 
             modelBuilder.Entity<Option>().HasKey(option => option.id);
             modelBuilder.Entity<FormSubmit>().HasKey(formSubmit => formSubmit.id);

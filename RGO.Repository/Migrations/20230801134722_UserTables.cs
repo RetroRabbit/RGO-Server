@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RGO.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class SocialTable : Migration
+    public partial class UserTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -114,6 +114,22 @@ namespace RGO.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "social",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    discord = table.Column<string>(type: "text", nullable: false),
+                    codewars = table.Column<string>(type: "text", nullable: false),
+                    github = table.Column<string>(type: "text", nullable: false),
+                    linkedin = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_social", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "stacks",
                 columns: table => new
                 {
@@ -140,25 +156,6 @@ namespace RGO.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_usergroups", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "users",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    groupid = table.Column<int>(type: "integer", nullable: false),
-                    firstname = table.Column<string>(type: "text", nullable: false),
-                    lastname = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    type = table.Column<int>(type: "integer", nullable: false),
-                    joindate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    status = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_users", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,6 +187,32 @@ namespace RGO.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_workshop", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "users",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    groupid = table.Column<int>(type: "integer", nullable: false),
+                    firstname = table.Column<string>(type: "text", nullable: false),
+                    lastname = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    type = table.Column<int>(type: "integer", nullable: false),
+                    joindate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
+                    socialid = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_users", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_users_social_socialid",
+                        column: x => x.socialid,
+                        principalTable: "social",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -254,29 +277,6 @@ namespace RGO.Repository.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "social",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    useridid = table.Column<int>(type: "integer", nullable: false),
-                    discord = table.Column<string>(type: "text", nullable: false),
-                    codewars = table.Column<string>(type: "text", nullable: false),
-                    github = table.Column<string>(type: "text", nullable: false),
-                    linkedin = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_social", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_social_users_useridid",
-                        column: x => x.useridid,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_certifications_Userid",
                 table: "certifications",
@@ -293,9 +293,9 @@ namespace RGO.Repository.Migrations
                 column: "userid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_social_useridid",
-                table: "social",
-                column: "useridid");
+                name: "IX_users_socialid",
+                table: "users",
+                column: "socialid");
         }
 
         /// <inheritdoc />
@@ -329,9 +329,6 @@ namespace RGO.Repository.Migrations
                 name: "skill");
 
             migrationBuilder.DropTable(
-                name: "social");
-
-            migrationBuilder.DropTable(
                 name: "stacks");
 
             migrationBuilder.DropTable(
@@ -345,6 +342,9 @@ namespace RGO.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "social");
         }
     }
 }

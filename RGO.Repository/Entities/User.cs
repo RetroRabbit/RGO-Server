@@ -17,6 +17,8 @@ namespace RGO.Repository.Entities
         public List<Skill> skills { get; set; } = new();
         public List<Certifications> certifications { get; set; } = new();
         public List<Projects> projects { get; set; } = new();
+        public Social social { get; set; } = new();
+
         public User()
         {
         }
@@ -34,6 +36,8 @@ namespace RGO.Repository.Entities
             skills= user.skill.Select(x => new Skill(x)).ToList();
             certifications = user.certifications.Select(x => new Certifications(x)).ToList();
             projects =user.projects.Select(x => new Projects(x)).ToList();
+            social = new(user.social);
+
         }
 
         public UserDto ToDTO()
@@ -49,8 +53,9 @@ namespace RGO.Repository.Entities
                 status,
                 skills.Select(x => x.ToDTO()).ToList(),
                 certifications.Select(x => x.ToDTO()).ToList(),
-                projects.Select(x => x.ToDTO()).ToList()
-                
+                projects.Select(x => x.ToDTO()).ToList(),
+                social.ToDTO()
+
                 );
         }
     }

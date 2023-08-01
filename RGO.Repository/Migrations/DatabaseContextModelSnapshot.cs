@@ -302,12 +302,7 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("useridid")
-                        .HasColumnType("integer");
-
                     b.HasKey("id");
-
-                    b.HasIndex("useridid");
 
                     b.ToTable("social");
                 });
@@ -366,6 +361,9 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("socialid")
+                        .HasColumnType("integer");
+
                     b.Property<int>("status")
                         .HasColumnType("integer");
 
@@ -373,6 +371,8 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("id");
+
+                    b.HasIndex("socialid");
 
                     b.ToTable("users");
                 });
@@ -467,15 +467,15 @@ namespace RGO.Repository.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
+            modelBuilder.Entity("RGO.Repository.Entities.User", b =>
                 {
-                    b.HasOne("RGO.Repository.Entities.User", "userid")
+                    b.HasOne("RGO.Repository.Entities.Social", "social")
                         .WithMany()
-                        .HasForeignKey("useridid")
+                        .HasForeignKey("socialid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("userid");
+                    b.Navigation("social");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.User", b =>

@@ -8,7 +8,6 @@ namespace RGO.Domain.Models
 {
     public record SocialDto(
     int id,
-    UserDto userid,
     string discord,
     string codewars,
     string github,
