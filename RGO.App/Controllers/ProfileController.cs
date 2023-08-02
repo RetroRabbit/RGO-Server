@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 
-namespace RGO_Backend.Controllers
-
 namespace RGO.App.Controllers
 {
     [Route("[controller]")]
