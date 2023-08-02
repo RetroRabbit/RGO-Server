@@ -5,23 +5,23 @@ namespace RGO.Repository.Entities
     public class Field
     {
         public int id { get; set; }
-        public int formid { get; set; }
+        public int formId { get; set; }
         public int type { get; set; }
         public bool required { get; set; }
         public string label { get; set; } = null!;
         public string description { get; set; } = null!;
-        public string errormessage { get; set; } = null!;
+        public string errorMessage { get; set; } = null!;
 
         public Field() { }
         public Field(int id,FieldDto fieldDto) 
         {
             this.id = id;
-            formid = fieldDto.formid;
+            formId = fieldDto.formId;
             type = fieldDto.type;
             required = fieldDto.required;
             label = fieldDto.label;
             description = fieldDto.description;
-            errormessage = fieldDto.errormessage;
+            errorMessage = fieldDto.errorMessage;
         }
 
 
@@ -29,12 +29,12 @@ namespace RGO.Repository.Entities
         {
             return new FieldDto
             (
-                formid,
+                formId,
                 type,
                 required,
                 label,
                 description,
-                errormessage
+                errorMessage
             );
         }
     }

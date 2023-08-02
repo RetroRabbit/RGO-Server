@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RGO.Domain.Models
+﻿namespace RGO.Domain.Models
 {
     public record CertificationsDto
     (
@@ -12,6 +6,4 @@ namespace RGO.Domain.Models
         string title,
         string description
     );
-        
-    
 }

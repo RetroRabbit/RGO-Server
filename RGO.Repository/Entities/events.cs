@@ -4,25 +4,25 @@ namespace RGO.Repository.Entities;
 
 public class Events {
     public int id { get; set; }
-    public int groupid { get; set; }
+    public int groupId { get; set; }
     public string title { get; set; } = null!;
     public string description { get; set; } = null!;
-    public int usertype { get; set; }
-    public DateTime startdate { get; set; }
-    public DateTime enddate { get; set; }
-    public int eventtype { get; set; }
+    public int userType { get; set; }
+    public DateTime startDate { get; set; }
+    public DateTime endDate { get; set; }
+    public int eventType { get; set; }
 
     public Events() { }
     public Events(EventsDto eventsDto)
     {
         id = eventsDto.id;
-        groupid = eventsDto.groupid;
+        groupId = eventsDto.groupId;
         title = eventsDto.title;
         description = eventsDto.description;
-        usertype = eventsDto.userType;
-        startdate = eventsDto.startDate;
-        enddate = eventsDto.endDate;
-        eventtype = eventsDto.eventType;
+        userType = eventsDto.userType;
+        startDate = eventsDto.startDate;
+        endDate = eventsDto.endDate;
+        eventType = eventsDto.eventType;
     }
 
     public EventsDto ToDto()
@@ -30,13 +30,13 @@ public class Events {
         return new EventsDto
         (
             id,
-            groupid,
+            groupId,
             title,
             description,
-            usertype,
-            startdate,
-            enddate,
-            eventtype
+            userType,
+            startDate,
+            endDate,
+            eventType
 
         );
     }

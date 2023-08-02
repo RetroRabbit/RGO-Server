@@ -5,4 +5,5 @@ public record Stacks(
     string title,
     string description,
     string url,
-    int stackType);
+    int stackType
+    );

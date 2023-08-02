@@ -60,23 +60,23 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("enddate")
+                    b.Property<DateTime>("endDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("eventtype")
+                    b.Property<int>("eventType")
                         .HasColumnType("integer");
 
-                    b.Property<int>("groupid")
+                    b.Property<int>("groupId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("startdate")
+                    b.Property<DateTime>("startDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("title")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("usertype")
+                    b.Property<int>("userType")
                         .HasColumnType("integer");
 
                     b.HasKey("id");
@@ -96,11 +96,11 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("errormessage")
+                    b.Property<string>("errorMessage")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("formid")
+                    b.Property<int>("formId")
                         .HasColumnType("integer");
 
                     b.Property<string>("label")
@@ -129,7 +129,7 @@ namespace RGO.Repository.Migrations
                     b.Property<DateTime>("endDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("groupid")
+                    b.Property<int>("groupId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("startDate")
@@ -158,14 +158,14 @@ namespace RGO.Repository.Migrations
                     b.Property<int>("formid")
                         .HasColumnType("integer");
 
-                    b.Property<string>("rejectionreason")
+                    b.Property<string>("rejectionReason")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("status")
                         .HasColumnType("integer");
 
-                    b.Property<int>("userid")
+                    b.Property<int>("userId")
                         .HasColumnType("integer");
 
                     b.HasKey("id");
@@ -210,7 +210,7 @@ namespace RGO.Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("fieldid")
+                    b.Property<int>("fieldId")
                         .HasColumnType("integer");
 
                     b.Property<string>("value")
@@ -268,12 +268,12 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("userid")
+                    b.Property<int>("userId")
                         .HasColumnType("integer");
 
                     b.HasKey("id");
 
-                    b.HasIndex("userid");
+                    b.HasIndex("userId");
 
                     b.ToTable("skill");
                 });
@@ -286,7 +286,7 @@ namespace RGO.Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<string>("codewars")
+                    b.Property<string>("codeWars")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -294,11 +294,11 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("github")
+                    b.Property<string>("gitHub")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("linkedin")
+                    b.Property<string>("linkedIn")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -347,17 +347,17 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("firstname")
+                    b.Property<string>("firstName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("groupid")
+                    b.Property<int>("groupId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("joindate")
+                    b.Property<DateTime>("joinDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("lastname")
+                    b.Property<string>("lastName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -460,7 +460,7 @@ namespace RGO.Repository.Migrations
                 {
                     b.HasOne("RGO.Repository.Entities.User", "user")
                         .WithMany("skills")
-                        .HasForeignKey("userid")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

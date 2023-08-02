@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace RGO_Backend.Controllers
+namespace RGO.App.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private readonly IProfileService profileService;
+        private readonly IProfileService _profileService;
 
         public ProfileController(IProfileService profileService)
         {
-            this.profileService = profileService;
+            _profileService = profileService;
         }
 
         [HttpGet("getuser")]
@@ -21,13 +19,12 @@ namespace RGO_Backend.Controllers
         {
             try
             {
-            var user = await profileService.GetUserByEmail(email);
+            var user = await _profileService.GetUserByEmail(email);
                 return Ok(user);
 
             }
             catch (Exception e)
             {
-
                 await Console.Out.WriteLineAsync(e.Message);
                 return BadRequest(e.Message);
             }

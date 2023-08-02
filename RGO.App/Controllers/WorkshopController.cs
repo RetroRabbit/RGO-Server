@@ -2,7 +2,7 @@
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Services;
 
-namespace RGO_Backend.Controllers
+namespace RGO.App.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
