@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGO.App", "RGO.App\RGO.App.csproj", "{7CDFFC18-02BB-4C04-A0AD-52AA9FCBD987}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGO.Domain", "RGO.Domain\RGO.Domain.csproj", "{38914077-0763-44BC-8983-7C2C87DC989D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGO.Repository", "RGO.Repository\RGO.Repository.csproj", "{7B169F13-39D4-4742-92AF-006101D37D7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7CDFFC18-02BB-4C04-A0AD-52AA9FCBD987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CDFFC18-02BB-4C04-A0AD-52AA9FCBD987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CDFFC18-02BB-4C04-A0AD-52AA9FCBD987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CDFFC18-02BB-4C04-A0AD-52AA9FCBD987}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38914077-0763-44BC-8983-7C2C87DC989D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38914077-0763-44BC-8983-7C2C87DC989D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38914077-0763-44BC-8983-7C2C87DC989D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38914077-0763-44BC-8983-7C2C87DC989D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B169F13-39D4-4742-92AF-006101D37D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B169F13-39D4-4742-92AF-006101D37D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B169F13-39D4-4742-92AF-006101D37D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B169F13-39D4-4742-92AF-006101D37D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
