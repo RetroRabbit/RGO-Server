@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
+using RGO.Domain.Models;
+using RGO.Domain.Services;
 
 namespace RGO.App.Controllers
 {
@@ -16,9 +18,19 @@ namespace RGO.App.Controllers
         [HttpGet("events")]
         public async Task<IActionResult> GetEvents()
         {  
-            var events = await _eventsService.GetEvents();
+            
+            try
+            {
+                var events = await _eventsService.GetEvents();
+                return Ok(events);
 
-            return Ok(events);
+            }
+            catch (Exception e)
+            {
+
+                await Console.Out.WriteLineAsync(e.Message);
+                return BadRequest(e.Message);
+            }
 
         }
     }

@@ -6,6 +6,5 @@ namespace RGO.Domain.Interfaces.Services
     {
         Task<bool> CheckUserExist(string email);
         Task<UserDto> GetUserByEmail(string email);
-        string GenerateToken();
     }
 }
