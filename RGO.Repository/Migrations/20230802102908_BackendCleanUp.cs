@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RGO.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class UserTables : Migration
+    public partial class BackendCleanUp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,13 +18,13 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    groupid = table.Column<int>(type: "integer", nullable: false),
+                    groupId = table.Column<int>(type: "integer", nullable: false),
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
-                    usertype = table.Column<int>(type: "integer", nullable: false),
-                    startdate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    enddate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    eventtype = table.Column<int>(type: "integer", nullable: false)
+                    userType = table.Column<int>(type: "integer", nullable: false),
+                    startDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    endDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    eventType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,12 +37,12 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    formid = table.Column<int>(type: "integer", nullable: false),
+                    formId = table.Column<int>(type: "integer", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
                     required = table.Column<bool>(type: "boolean", nullable: false),
                     label = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
-                    errormessage = table.Column<string>(type: "text", nullable: false)
+                    errorMessage = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,7 +55,7 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    groupid = table.Column<int>(type: "integer", nullable: false),
+                    groupId = table.Column<int>(type: "integer", nullable: false),
                     title = table.Column<string>(type: "text", nullable: false),
                     startDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     endDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -71,11 +71,11 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    userid = table.Column<int>(type: "integer", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false),
                     formid = table.Column<int>(type: "integer", nullable: false),
                     createDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     status = table.Column<int>(type: "integer", nullable: false),
-                    rejectionreason = table.Column<string>(type: "text", nullable: false)
+                    rejectionReason = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,7 +105,7 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    fieldid = table.Column<int>(type: "integer", nullable: false),
+                    fieldId = table.Column<int>(type: "integer", nullable: false),
                     value = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -120,9 +120,9 @@ namespace RGO.Repository.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     discord = table.Column<string>(type: "text", nullable: false),
-                    codewars = table.Column<string>(type: "text", nullable: false),
-                    github = table.Column<string>(type: "text", nullable: false),
-                    linkedin = table.Column<string>(type: "text", nullable: false)
+                    codeWars = table.Column<string>(type: "text", nullable: false),
+                    gitHub = table.Column<string>(type: "text", nullable: false),
+                    linkedIn = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,12 +195,12 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    groupid = table.Column<int>(type: "integer", nullable: false),
-                    firstname = table.Column<string>(type: "text", nullable: false),
-                    lastname = table.Column<string>(type: "text", nullable: false),
+                    groupId = table.Column<int>(type: "integer", nullable: false),
+                    firstName = table.Column<string>(type: "text", nullable: false),
+                    lastName = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
-                    joindate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    joinDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     status = table.Column<int>(type: "integer", nullable: false),
                     socialid = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -262,7 +262,7 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    userid = table.Column<int>(type: "integer", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false),
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false)
                 },
@@ -270,8 +270,8 @@ namespace RGO.Repository.Migrations
                 {
                     table.PrimaryKey("PK_skill", x => x.id);
                     table.ForeignKey(
-                        name: "FK_skill_users_userid",
-                        column: x => x.userid,
+                        name: "FK_skill_users_userId",
+                        column: x => x.userId,
                         principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -288,9 +288,9 @@ namespace RGO.Repository.Migrations
                 column: "Userid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_skill_userid",
+                name: "IX_skill_userId",
                 table: "skill",
-                column: "userid");
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_users_socialid",

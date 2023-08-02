@@ -28,7 +28,8 @@ namespace RGO.Repository.Entities
                 id,
                 name,
                 description,
-                role);
+                role
+                );
         }
     }
 }

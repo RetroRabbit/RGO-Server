@@ -1,10 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RGO.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RGO.Domain.Models;
+
 
 namespace RGO.Repository.Entities
 {
@@ -12,7 +7,7 @@ namespace RGO.Repository.Entities
     {
         public int id { get; set; }
         public User user { get; set; }
-        public int userid { get; set; }
+        public int userId { get; set; }
         public string title { get; set; }
         public string description { get; set; }
 
@@ -24,7 +19,7 @@ namespace RGO.Repository.Entities
         public Skill(SkillDto skill)
         {
             id = skill.id;
-            userid = skill.userid;
+            userId = skill.userId;
             title = skill.title;
             description = skill.description;
         }
@@ -34,7 +29,7 @@ namespace RGO.Repository.Entities
             return new SkillDto 
             (
                 id,
-                userid,
+                userId,
                 title,
                 description
             );

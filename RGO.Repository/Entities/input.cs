@@ -6,4 +6,5 @@ public record Input(
     int formSubmitId,
     int fieldId,
     string value,
-    DateTime createDate);
+    DateTime createDate
+    );

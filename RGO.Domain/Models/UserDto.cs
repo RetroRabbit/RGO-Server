@@ -2,12 +2,12 @@
 {
     public record UserDto(
         int id,
-        int groupid,
-        string firstname,
-        string lastname,
+        int groupId,
+        string firstName,
+        string lastName,
         string email,
         int type,
-        DateTime joindate,
+        DateTime joinDate,
         int status,
         List<SkillDto> skill,
         List<CertificationsDto> certifications,

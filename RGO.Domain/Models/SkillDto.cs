@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RGO.Domain.Models
+﻿namespace RGO.Domain.Models
 {
     public record SkillDto
     (
         int id,
-        int userid,
+        int userId,
         string title,
         string description
     );
