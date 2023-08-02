@@ -18,7 +18,7 @@ namespace RGO.Repository.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async Task<EventsDto[]> GetAllEvent()
+        public async Task<EventsDto[]> GetAllEvents()
         {
             Events[] events = await _databaseContext.events.ToArrayAsync();
             EventsDto[] eventsDtos = new EventsDto[events.Length];

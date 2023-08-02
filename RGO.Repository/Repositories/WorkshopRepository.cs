@@ -19,7 +19,7 @@ namespace RGO.Repository.Repositories
 
         public async Task<WorkshopDto[]> GetAllWorkShops()
         {
-            EventsDto[] events = await _eventsRepository.GetAllEvent();
+            EventsDto[] events = await _eventsRepository.GetAllEvents();
             Workshop[] workshops = await _databaseContext.workshop.ToArrayAsync();
             WorkshopDto[] workShopDto = new WorkshopDto[workshops.Length];
             int counter = 0;
