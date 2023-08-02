@@ -1,12 +1,34 @@
-﻿namespace RGO.Repository.Entities
-{
-    public class Form
-    {
-        public int id {  get; set; }
-        public int groupId { get; set; }
-        public string title { get; set; } = null!;
-        public DateTime startDate { get; set; }
-        public DateTime endDate { get; set; }
-    }
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace RGO.Repository.Entities;
+
+[Table("Form")]
+public class Form
+{
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+
+    [Column("groupId")]
+    public int GroupId { get; set; }
+
+    [Column("title")]
+    public string Title { get; set; } = null!;
+
+    [Column("startDate")]
+    public DateTime StartDate { get; set; }
+
+    [Column("endDate")]
+    public DateTime EndDate { get; set; }
+
+
+    [ForeignKey("groupId")]
+    public virtual UserGroup UserGroupForm { get; set; }
+
+
+/*    
+    public List<Field> fields { get; set; } = new();
+    public List<FormSubmit> formSubmits { get; set; } = new();
+*/
 }

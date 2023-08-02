@@ -1,10 +1,9 @@
 ﻿using RGO.Domain.Models;
 
-namespace RGO.Domain.Interfaces.Repository
+namespace RGO.Domain.Interfaces.Repository;
+
+public interface IAuthRepository
 {
-    public interface IAuthRepository
-    {
-        Task<bool> FindUserByEmail(string email);
-        Task<UserDto> GetUserByEmail(string email);
-    }
+    Task<bool> FindUserByEmail(string email);
+    Task<UserDto> GetUserByEmail(string email);
 }

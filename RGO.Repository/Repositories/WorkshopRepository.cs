@@ -25,7 +25,7 @@ namespace RGO.Repository.Repositories
             int counter = 0;
             foreach (var item in workshops)
             {
-                var workshopEvent = events.First(e => e.id == item.eventId);
+                var workshopEvent = events.First(e => e.Id == item.EventId);
                 if (workshopEvent == null)
                 {
                     continue;

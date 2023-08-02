@@ -1,10 +1,9 @@
-﻿namespace RGO.Domain.Models
-{
-    public record ProjectsDto
-    (
-      int id,
-      string name,
-      string description,
-      string role
-    );
-}
+﻿namespace RGO.Domain.Models;
+
+public record ProjectsDto
+(
+  int Id,
+  string Name,
+  string Description,
+  string Role
+);

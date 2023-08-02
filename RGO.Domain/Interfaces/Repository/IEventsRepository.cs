@@ -1,9 +1,9 @@
 ﻿using RGO.Domain.Models;
 
-namespace RGO.Domain.Interfaces.Repository
+namespace RGO.Domain.Interfaces.Repository;
+
+public interface IEventsRepository
 {
-    public interface IEventsRepository
-    {
-        Task<EventsDto[]> GetAllEventDtos();
-    }
+    Task<EventsDto[]> GetAllEventDtos();
 }
+

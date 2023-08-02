@@ -1,43 +1,65 @@
 ﻿using RGO.Domain.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
 
+[Table("Events")]
 public class Events {
-    public int id { get; set; }
-    public int groupId { get; set; }
-    public string title { get; set; } = null!;
-    public string description { get; set; } = null!;
-    public int userType { get; set; }
-    public DateTime startDate { get; set; }
-    public DateTime endDate { get; set; }
-    public int eventType { get; set; }
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+
+    [Column("groupId")]
+    public int GroupId { get; set; }
+
+    [Column("title")]
+    public string Title { get; set; } = null!;
+
+    [Column("description")]
+    public string Description { get; set; } = null!;
+  
+    [Column("userType")]
+    public int UserType { get; set; }
+    
+    [Column("startDate")]
+    public DateTime StartDate { get; set; }
+    
+    [Column("endDate")]
+    public DateTime EndDate { get; set; }
+   
+    [Column("eventType")]
+    public int EventType { get; set; }
+
+    [ForeignKey("groupId")]
+    public virtual UserGroup GroupEvents { get; set; }
+
 
     public Events() { }
     public Events(EventsDto eventsDto)
     {
-        id = eventsDto.id;
-        groupId = eventsDto.groupId;
-        title = eventsDto.title;
-        description = eventsDto.description;
-        userType = eventsDto.userType;
-        startDate = eventsDto.startDate;
-        endDate = eventsDto.endDate;
-        eventType = eventsDto.eventType;
+        Id = eventsDto.Id;
+        GroupId = eventsDto.GroupId;
+        Title = eventsDto.Title;
+        Description = eventsDto.Description;
+        UserType = eventsDto.UserType;
+        StartDate = eventsDto.StartDate;
+        EndDate = eventsDto.EndDate;
+        EventType = eventsDto.EventType;
     }
 
     public EventsDto ToDto()
     {
         return new EventsDto
         (
-            id,
-            groupId,
-            title,
-            description,
-            userType,
-            startDate,
-            endDate,
-            eventType
-
+            Id,
+            GroupId,
+            Title,
+            Description,
+            UserType,
+            StartDate,
+            EndDate,
+            EventType
         );
     }
 }

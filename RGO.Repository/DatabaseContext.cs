@@ -36,21 +36,21 @@ namespace RGO.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserGroup>().HasKey(userGroup => userGroup.id);
-            modelBuilder.Entity<User>().HasKey(user => user.id);
-            modelBuilder.Entity<Option>().HasKey(option => option.id);
-            modelBuilder.Entity<FormSubmit>().HasKey(formSubmit => formSubmit.id);
-            modelBuilder.Entity<Form>().HasKey(form => form.id);
-            modelBuilder.Entity<Field>().HasKey(field => field.id);
-            modelBuilder.Entity<Input>().HasKey(input => input.id);
-            modelBuilder.Entity<Events>().HasKey(events => events.id);
-            modelBuilder.Entity<Stacks>().HasKey(stacks => stacks.id);
-            modelBuilder.Entity<UserStacks>().HasKey(userStacks => userStacks.id);
-            modelBuilder.Entity<Workshop>().HasKey(workshop => workshop.id);
-            modelBuilder.Entity<Social>().HasKey(social => social.id);
-            modelBuilder.Entity<Skill>().HasKey(skill => skill.id);
-            modelBuilder.Entity<Certifications>().HasKey(cert => cert.id);
-            modelBuilder.Entity<Projects>().HasKey(projects => projects.id);
+            modelBuilder.Entity<UserGroup>().HasKey(userGroup => userGroup.Id);
+            modelBuilder.Entity<User>().HasKey(user => user.Id);
+            modelBuilder.Entity<Option>().HasKey(option => option.Id);
+            modelBuilder.Entity<FormSubmit>().HasKey(formSubmit => formSubmit.Id);
+            modelBuilder.Entity<Form>().HasKey(form => form.Id);
+            modelBuilder.Entity<Field>().HasKey(field => field.Id);
+            modelBuilder.Entity<Input>().HasKey(input => input.Id);
+            modelBuilder.Entity<Events>().HasKey(events => events.Id);
+            modelBuilder.Entity<Stacks>().HasKey(stacks => stacks.Id);
+            modelBuilder.Entity<UserStacks>().HasKey(userStacks => userStacks.Id);
+            modelBuilder.Entity<Workshop>().HasKey(workshop => workshop.Id);
+            modelBuilder.Entity<Social>().HasKey(social => social.Id);
+            modelBuilder.Entity<Skill>().HasKey(skill => skill.Id);
+            modelBuilder.Entity<Certifications>().HasKey(cert => cert.Id);
+            modelBuilder.Entity<Projects>().HasKey(projects => projects.Id);
         }
     }
 }

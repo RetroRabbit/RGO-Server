@@ -1,35 +1,50 @@
 ﻿using RGO.Domain.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RGO.Repository.Entities
+namespace RGO.Repository.Entities;
+
+public class Projects
 {
-    public class Projects
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+
+    [Column("name")]
+    public string Name { get; set; }
+
+    [Column("description")]
+    public string Description { get; set; }
+
+    [Column("role")]
+    public string Role { get; set; }
+
+    [Column("userId")]
+    public int UserId { get; set; }
+
+    [ForeignKey("userId")]
+    public virtual List<User> UserProjects { get; set; }
+
+    public Projects()
     {
-        public int id { get; set; }
-        public string name { get; set; } = null!;
-        public string description { get; set; } = null!;
-        public string role { get; set; } = null!;
 
-        public Projects()
-        {
+    }
 
-        }
+    public Projects(ProjectsDto projects)
+    {
+        Id = projects.Id;
+        Name = projects.Name;
+        Description = projects.Description;
+        Role = projects.Role;
+    }
 
-        public Projects(ProjectsDto projects)
-        {
-            id = projects.id;
-            name = projects.name;
-            description = projects.description;
-            role = projects.role;
-        }
-
-        public ProjectsDto ToDTO()
-        {
-            return new ProjectsDto(
-                id,
-                name,
-                description,
-                role
-                );
-        }
+    public ProjectsDto ToDTO()
+    {
+        return new ProjectsDto(
+            Id,
+            Name,
+            Description,
+            Role
+            );
     }
 }

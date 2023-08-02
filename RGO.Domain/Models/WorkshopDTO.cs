@@ -1,9 +1,7 @@
-﻿namespace RGO.Domain.Models
-{
-    public record WorkshopDto
-        (
-            int id, 
-            EventsDto eventId, 
-            string presenter
-        );
-}
+﻿namespace RGO.Domain.Models;
+
+public record WorkshopDto(
+    int Id, 
+    EventsDto EventId, 
+    string Presenter
+    );

@@ -1,16 +1,33 @@
 using RGO.Domain.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RGO.Repository.Entities
+namespace RGO.Repository.Entities;
+
+[Table("UserGroup")]
+public class UserGroup
 {
-    public class UserGroup
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+
+    [Column("title")]
+    public string Title { get; set; } = null!;
+
+    public UserGroup()
     {
-        public int id { get; set; }
-        public string title { get; set; } = null!;
-
-        public UserGroupDTO ToDTO()
-        {
-            return new UserGroupDTO(title);
-        }
-
+        
     }
+
+    public UserGroup(UserGroupDTO userGroup)
+    {
+        Title = userGroup.Title;  
+    }
+    public UserGroupDTO ToDTO()
+    {
+        return new UserGroupDTO(
+            Title
+            );
+    }
+
 }

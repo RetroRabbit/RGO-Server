@@ -20,14 +20,14 @@ namespace RGO.Repository.Repositories
 
             if (!userExists) throw new Exception("User not found");
 
-            User user = await _databaseContext.users.Include(user => user.skills).Include(user => user.projects).Include(user => user.certifications).Include(user => user.social).FirstAsync(u => u.email == email);
+            User user = await _databaseContext.users.FirstAsync(u => u.Email == email);
 
             return user.ToDTO();
         }
 
         public async Task<bool> UserExists(string email)
         {
-            bool userExists = await _databaseContext.users.AnyAsync(u => u.email == email);
+            bool userExists = await _databaseContext.users.AnyAsync(u => u.Email == email);
 
             return userExists;
         }

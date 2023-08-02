@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RGO.Repository;
@@ -11,9 +12,11 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230802154725_Test")]
+    partial class Test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,9 +362,18 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("userId");
 
+                    b.Property<int?>("userId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("projects");
+                    b.HasIndex("userId");
+
+                    b.ToTable("projects", t =>
+                        {
+                            t.Property("userId")
+                                .HasColumnName("userId1");
+                        });
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
@@ -387,9 +399,18 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("userId");
 
+                    b.Property<int?>("userId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("skill");
+                    b.HasIndex("userId");
+
+                    b.ToTable("skill", t =>
+                        {
+                            t.Property("userId")
+                                .HasColumnName("userId1");
+                        });
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
@@ -733,9 +754,23 @@ namespace RGO.Repository.Migrations
                     b.Navigation("FieldOptions");
                 });
 
+            modelBuilder.Entity("RGO.Repository.Entities.Projects", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.Projects", null)
+                        .WithMany("UserProjects")
+                        .HasForeignKey("userId");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.Skill", null)
+                        .WithMany("Skills")
+                        .HasForeignKey("userId");
+                });
+
             modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
                 {
-                    b.HasOne("RGO.Repository.Entities.User", "UserSocial")
+                    b.HasOne("RGO.Repository.Entities.Social", "UserSocial")
                         .WithMany()
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -754,14 +789,6 @@ namespace RGO.Repository.Migrations
 
                     b.HasOne("RGO.Repository.Entities.Certifications", null)
                         .WithMany("UserCertifications")
-                        .HasForeignKey("userId");
-
-                    b.HasOne("RGO.Repository.Entities.Projects", null)
-                        .WithMany("UserProjects")
-                        .HasForeignKey("userId");
-
-                    b.HasOne("RGO.Repository.Entities.Skill", null)
-                        .WithMany("Skills")
                         .HasForeignKey("userId");
 
                     b.Navigation("UserGroup");
