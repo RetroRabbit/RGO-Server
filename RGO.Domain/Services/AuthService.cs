@@ -16,11 +16,6 @@ namespace RGO.Domain.Services
             return await _userRepository.UserExists(email);
         }
 
-        public string GenerateToken()
-        {
-            return "token";
-        }
-
         public async Task<UserDto> GetUserByEmail(string email)
         {
             UserDto user = await _userRepository.GetUserByEmail(email);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
+using RGO.Domain.Services;
 
 namespace RGO_Backend.Controllers
 {
@@ -17,8 +18,19 @@ namespace RGO_Backend.Controllers
         [HttpGet("workshops")]
         public async Task<IActionResult> GetWorkShops()
         {
-            var workshops = await _workshopService.GetWorkshops();
-            return Ok(workshops);
+            
+            try
+            {
+                var workshops = await _workshopService.GetWorkshops();
+                return Ok(workshops);
+
+            }
+            catch (Exception e)
+            {
+
+                await Console.Out.WriteLineAsync(e.Message);
+                return BadRequest(e.Message);
+            }
         }
     }
 }

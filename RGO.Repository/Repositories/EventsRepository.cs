@@ -18,7 +18,7 @@ namespace RGO.Repository.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async Task<EventsDto[]> GetAllEventDtos()
+        public async Task<EventsDto[]> GetAllEvent()
         {
             Events[] events = await _databaseContext.events.ToArrayAsync();
             EventsDto[] eventsDtos = new EventsDto[events.Length];
@@ -28,11 +28,6 @@ namespace RGO.Repository.Repositories
                 eventsDtos[counter++] = item.ToDto();   
             }
             return eventsDtos;
-        }
-
-        public async Task<Events[]> GetAllEvents()
-        {
-            return await _databaseContext.events.ToArrayAsync();
         }
     }
 }

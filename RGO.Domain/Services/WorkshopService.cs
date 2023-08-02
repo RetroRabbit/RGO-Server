@@ -12,7 +12,7 @@ namespace RGO.Domain.Services
     public class WorkshopService : IWorkshopService
     {
         IWorkshopRepository _workshopRepository;
-        public WorkshopService(IWorkshopRepository repository) // add as a parameter
+        public WorkshopService(IWorkshopRepository repository)
         {
            _workshopRepository = repository;
         }

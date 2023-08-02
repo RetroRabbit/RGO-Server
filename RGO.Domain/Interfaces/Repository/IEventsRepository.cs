@@ -10,6 +10,6 @@ namespace RGO.Domain.Interfaces.Repository
 {
     public interface IEventsRepository
     {
-        Task<EventsDto[]> GetAllEventDtos();
+        Task<EventsDto[]> GetAllEvent();
     }
 }

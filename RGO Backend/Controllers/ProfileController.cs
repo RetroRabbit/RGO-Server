@@ -16,7 +16,6 @@ namespace RGO_Backend.Controllers
             this.profileService = profileService;
         }
 
-        // GET api/<ProfileController>/5
         [HttpGet("getuser")]
         public async Task<IActionResult> GetUser([FromQuery]string email)
         {
