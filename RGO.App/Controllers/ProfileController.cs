@@ -3,7 +3,7 @@ using RGO.Domain.Interfaces.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace RGO_Backend.Controllers
+namespace RGO.App.Controllers
 {
     [Route("[controller]")]
     [ApiController]
