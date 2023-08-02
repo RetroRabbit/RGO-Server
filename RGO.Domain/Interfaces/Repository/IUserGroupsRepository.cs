@@ -4,5 +4,5 @@ namespace RGO.Domain.Interfaces.Repository;
 
 public interface IUserGroupsRepository
 {
-    Task<UserGroupDTO[]> getUserGroups();
+    Task<UserGroupDTO[]> GetUserGroups();
 }

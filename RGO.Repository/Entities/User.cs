@@ -1,5 +1,4 @@
 ﻿using RGO.Domain.Models;
-using System.Linq;
 
 namespace RGO.Repository.Entities
 {
@@ -7,12 +6,12 @@ namespace RGO.Repository.Entities
     {
 
         public int id { get; set; }
-        public int groupid { get; set; }
-        public string firstname { get; set; } = null!;
-        public string lastname { get; set; } = null!;
+        public int groupId { get; set; }
+        public string firstName { get; set; } = null!;
+        public string lastName { get; set; } = null!;
         public string email { get; set; } = null!;
         public int type { get; set; }
-        public DateTime joindate { get; set; }
+        public DateTime joinDate { get; set; }
         public int status { get; set; }
         public List<Skill> skills { get; set; } = new();
         public List<Certifications> certifications { get; set; } = new();
@@ -26,12 +25,12 @@ namespace RGO.Repository.Entities
         public User(UserDto user)
         {
             id = user.id;
-            groupid = user.groupid;
-            firstname = user.firstname;
-            lastname = user.lastname;
+            groupId = user.groupId;
+            firstName = user.firstName;
+            lastName = user.lastName;
             email = user.email;
             type = user.type;
-            joindate = user.joindate;
+            joinDate = user.joinDate;
             status = user.status;
             skills= user.skill.Select(x => new Skill(x)).ToList();
             certifications = user.certifications.Select(x => new Certifications(x)).ToList();
@@ -44,12 +43,12 @@ namespace RGO.Repository.Entities
         {
             return new UserDto(
                 id,
-                groupid,
-                firstname,
-                lastname,
+                groupId,
+                firstName,
+                lastName,
                 email,
                 type,
-                joindate,
+                joinDate,
                 status,
                 skills.Select(x => x.ToDTO()).ToList(),
                 certifications.Select(x => x.ToDTO()).ToList(),

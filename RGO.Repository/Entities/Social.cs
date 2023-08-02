@@ -1,5 +1,4 @@
 ﻿using RGO.Domain.Models;
-using System.Text.RegularExpressions;
 
 namespace RGO.Repository.Entities
 {
@@ -7,9 +6,9 @@ namespace RGO.Repository.Entities
     {
         public int id { get; set; }
         public string discord { get; set; } = null!;
-        public string codewars{ get; set; } = null!;
-        public string github { get; set; } = null!;
-        public string linkedin { get; set; } = null!;
+        public string codeWars{ get; set; } = null!;
+        public string gitHub { get; set; } = null!;
+        public string linkedIn { get; set; } = null!;
 
         public Social()
         {
@@ -20,9 +19,9 @@ namespace RGO.Repository.Entities
         {
             id = social.id;
             discord = social.discord;
-            codewars = social.codewars;
-            github  = social.github;
-            linkedin = social.linkedin;
+            codeWars = social.codeWars;
+            gitHub  = social.gitHub;
+            linkedIn = social.linkedIn;
         }
 
         public SocialDto ToDTO()
@@ -30,9 +29,10 @@ namespace RGO.Repository.Entities
             return new SocialDto(
                 id,
                 discord,
-                codewars,
-                github,
-                linkedin);
+                codeWars,
+                gitHub,
+                linkedIn
+                );
         }
     }
 }
