@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
 
-namespace RGO_Backend.Controllers
+namespace RGO.App.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
