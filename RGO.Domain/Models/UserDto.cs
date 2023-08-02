@@ -2,7 +2,7 @@
 {
     public record UserDto(
         int id,
-        int groupid,
+        int groupId,
         string firstName,
         string lastName,
         string email,
