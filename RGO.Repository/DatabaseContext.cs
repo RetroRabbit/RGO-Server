@@ -34,7 +34,7 @@ namespace RGO.Repository
         public DbSet<Certifications> certifications { get; set; }
         public DbSet<Projects> projects { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserGroup>().HasKey(userGroup => userGroup.Id);
             modelBuilder.Entity<User>().HasKey(user => user.Id);
@@ -51,6 +51,6 @@ namespace RGO.Repository
             modelBuilder.Entity<Skill>().HasKey(skill => skill.Id);
             modelBuilder.Entity<Certifications>().HasKey(cert => cert.Id);
             modelBuilder.Entity<Projects>().HasKey(projects => projects.Id);
-        }
+        }*/
     }
 }

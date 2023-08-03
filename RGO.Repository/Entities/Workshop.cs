@@ -9,13 +9,12 @@ public class Workshop
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }/*
-
-    [Column("eventId")]
-    public int EventId { get; set; }*/
+    public int Id { get; set; }
 
     [Column("presenter")]
-    public string Presenter { get; set; } = null!;
+    public string Presenter { get; set; }
+    [Column("viewable")]
+    public bool Viewable { get; set; }
 
     [ForeignKey("eventId")]
     public virtual Events WorshopEvents { get; set; }
@@ -26,8 +25,7 @@ public class Workshop
 
     public Workshop(WorkshopDto workshopDto)
     {
-        Id = workshopDto.Id;/*
-        EventId = workshopDto.EventId.Id;*/
+        Id = workshopDto.Id;
         Presenter = workshopDto.Presenter;
     }
 

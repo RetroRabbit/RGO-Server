@@ -12,8 +12,8 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230803072655_ChangingFormSubmit")]
-    partial class ChangingFormSubmit
+    [Migration("20230803085707_NewSetupv1.3")]
+    partial class NewSetupv13
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -531,6 +531,10 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("presenter");
+
+                    b.Property<bool>("Viewable")
+                        .HasColumnType("boolean")
+                        .HasColumnName("viewable");
 
                     b.Property<int>("eventId")
                         .HasColumnType("integer");

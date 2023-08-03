@@ -529,6 +529,10 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("presenter");
 
+                    b.Property<bool>("Viewable")
+                        .HasColumnType("boolean")
+                        .HasColumnName("viewable");
+
                     b.Property<int>("eventId")
                         .HasColumnType("integer");
 

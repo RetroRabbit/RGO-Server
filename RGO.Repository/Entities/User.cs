@@ -10,17 +10,14 @@ public class User
     [Column("id")]
     public int Id { get; set; }
 
-    /*[Column("gradGroupId")]
-    public int? GradGroupId { get; set; }*/
-
     [Column("firstName")]
-    public string FirstName { get; set; } = null!;
+    public string FirstName { get; set; }
 
     [Column("lastName")]
-    public string LastName { get; set; } = null!;
+    public string LastName { get; set; }
 
     [Column("email")]
-    public string Email { get; set; } = null!;
+    public string Email { get; set; }
 
     [Column("type")]
     public int Type { get; set; }
@@ -59,7 +56,7 @@ public class User
     {
         return new UserDto(
             Id,
-            UserGroup.Id,
+            UserGroup?.Id,
             FirstName,
             LastName,
             Email,
