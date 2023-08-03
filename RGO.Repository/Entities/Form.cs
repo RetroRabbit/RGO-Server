@@ -14,7 +14,7 @@ public class Form
     public int GroupId { get; set; }*/
 
     [Column("title")]
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
 
     [Column("startDate")]
     public DateTime StartDate { get; set; }

@@ -35,4 +35,8 @@ public class UserStacks
 
     [ForeignKey("databaseId")]
     public virtual Stacks DatabaseUserStack { get; set; }
+
+    public UserStacks()
+    {
+    }
 }

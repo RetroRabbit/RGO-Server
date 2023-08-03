@@ -21,11 +21,13 @@ public class UserGroup
 
     public UserGroup(UserGroupDTO userGroup)
     {
+        this.Id = userGroup.Id;
         Title = userGroup.Title;  
     }
     public UserGroupDTO ToDTO()
     {
         return new UserGroupDTO(
+            Id,
             Title
             );
     }

@@ -50,6 +50,7 @@ public class Field
     {
         return new FieldDto
         (
+            Id,
             FormFields.Id,
             Type,
             Required,
