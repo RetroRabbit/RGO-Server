@@ -1,5 +1,5 @@
-﻿namespace RGO.Domain.Models;
-
+﻿namespace RGO.Domain.Models
+{
 public record WorkshopDto(
     int Id, 
     EventsDto EventId, 
