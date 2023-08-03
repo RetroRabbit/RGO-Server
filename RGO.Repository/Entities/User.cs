@@ -10,8 +10,8 @@ public class User
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("gradGroupId")]
-    public int? GradGroupId { get; set; }
+    /*[Column("gradGroupId")]
+    public int? GradGroupId { get; set; }*/
 
     [Column("firstName")]
     public string FirstName { get; set; } = null!;
@@ -32,16 +32,21 @@ public class User
     public int Status { get; set; }
 
     [ForeignKey("gradGroupId")]
-    public virtual UserGroup UserGroup { get; set; }
-
+    public virtual UserGroup? UserGroup { get; set; }
+    [ForeignKey("userId")]
+    public virtual List<Certifications> UserCertifications { get; set; }
+    [ForeignKey("userId")]
+    public virtual List<Skill> Skills { get; set; }
+    [ForeignKey("userId")]
+    public virtual List<Projects> UserProjects { get; set; }
     public User()
     {
     }
 
     public User(UserDto user)
     {
-        Id = user.Id;
-        GradGroupId = user.GradGroupId;
+        Id = user.Id;/*
+        GradGroupId = user.GradGroupId;*/
         FirstName = user.FirstName;
         LastName = user.LastName;
         Email = user.Email;
@@ -54,7 +59,7 @@ public class User
     {
         return new UserDto(
             Id,
-            GradGroupId,
+            UserGroup.Id,
             FirstName,
             LastName,
             Email,

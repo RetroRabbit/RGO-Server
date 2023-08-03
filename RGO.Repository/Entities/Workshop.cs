@@ -9,10 +9,10 @@ public class Workshop
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; }/*
 
     [Column("eventId")]
-    public int EventId { get; set; }
+    public int EventId { get; set; }*/
 
     [Column("presenter")]
     public string Presenter { get; set; } = null!;
@@ -26,8 +26,8 @@ public class Workshop
 
     public Workshop(WorkshopDto workshopDto)
     {
-        Id = workshopDto.Id;
-        EventId = workshopDto.EventId.Id;
+        Id = workshopDto.Id;/*
+        EventId = workshopDto.EventId.Id;*/
         Presenter = workshopDto.Presenter;
     }
 

@@ -19,10 +19,10 @@ public class Social
     public string GitHub { get; set; } = null!;
 
     [Column("linkedIn")]
-    public string LinkedIn { get; set; } = null!;
+    public string LinkedIn { get; set; } = null!;/*
 
     [Column("userId")]
-    public int UserId { get; set; }
+    public int UserId { get; set; }*/
 
     [ForeignKey("userId")]
     public virtual User UserSocial{ get; set; }

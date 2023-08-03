@@ -8,10 +8,10 @@ namespace RGO.Repository.Entities;
 public class Events {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; }/*
 
     [Column("groupId")]
-    public int GroupId { get; set; }
+    public int GroupId { get; set; }*/
 
     [Column("title")]
     public string Title { get; set; } = null!;
@@ -38,8 +38,8 @@ public class Events {
     public Events() { }
     public Events(EventsDto eventsDto)
     {
-        Id = eventsDto.Id;
-        GroupId = eventsDto.GroupId;
+        Id = eventsDto.Id;/*
+        GroupId = eventsDto.GroupId;*/
         Title = eventsDto.Title;
         Description = eventsDto.Description;
         UserType = eventsDto.UserType;
@@ -53,7 +53,7 @@ public class Events {
         return new EventsDto
         (
             Id,
-            GroupId,
+            GroupEvents.Id,
             Title,
             Description,
             UserType,

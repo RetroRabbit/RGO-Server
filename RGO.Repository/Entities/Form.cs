@@ -8,10 +8,10 @@ public class Form
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; }/*
 
     [Column("groupId")]
-    public int GroupId { get; set; }
+    public int GroupId { get; set; }*/
 
     [Column("title")]
     public string Title { get; set; } = null!;

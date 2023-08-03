@@ -8,13 +8,13 @@ public class FormSubmit
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; }/*
 
     [Column("userId")]
     public int UserId { get; set; }
 
     [Column("formid")]
-    public int Formid { get; set; }
+    public int Formid { get; set; }*/
 
     [Column("createDate")]
     public DateTime CreateDate { get; set; }
@@ -30,4 +30,6 @@ public class FormSubmit
 
     [ForeignKey("formId")]
     public virtual Form Form { get; set; }
+    [ForeignKey("formSubmitId")]
+    public virtual List<FormSubmit> InputSubmit { get; set; }
 }

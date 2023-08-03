@@ -10,10 +10,10 @@ public class Field
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; }/*
 
     [Column("formId")]
-    public int FormId { get; set; }
+    public int FormId { get; set; }*/
 
     [Column("type")]
     public int Type { get; set; }
@@ -36,8 +36,8 @@ public class Field
     public Field() { }
     public Field(int id,FieldDto fieldDto) 
     {
-        this.Id = id;
-        FormId = fieldDto.FormId;
+        this.Id = id;/*
+        FormId = fieldDto.FormId;*/
         Type = fieldDto.Type;
         Required = fieldDto.Required;
         Label = fieldDto.Label;
@@ -50,7 +50,7 @@ public class Field
     {
         return new FieldDto
         (
-            FormId,
+            FormFields.Id,
             Type,
             Required,
             Label,

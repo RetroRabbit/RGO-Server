@@ -7,7 +7,7 @@ public class UserStacks
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; }/*
 
     [Column("userId")]
     public int UserId { get; set; }
@@ -19,7 +19,7 @@ public class UserStacks
     public int FrontendId { get; set; }
 
     [Column("databaseId")]
-    public int DatabaseId { get; set; }
+    public int DatabaseId { get; set; }*/
 
     [Column("createDate")]
     public DateTime CreateDate { get; set; }

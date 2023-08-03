@@ -15,13 +15,13 @@ public class Certifications
     public string Title { get; set; }
 
     [Column("description")]
-    public string Description { get; set; }
+    public string Description { get; set; }/*
 
     [Column("userId")]
-    public int UserId { get; set; }
+    public int UserId { get; set; }*/
 
-    [ForeignKey("userId")]
-    public virtual List<User> UserCertifications { get; set; }
+    /*[ForeignKey("userId")]
+    public virtual List<User> UserCertifications { get; set; }*/
 
     public Certifications()
     {

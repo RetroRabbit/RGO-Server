@@ -7,10 +7,10 @@ public class Option
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; }/*
 
     [Column("fieldId")]
-    public int FieldId { get; set; }
+    public int FieldId { get; set; }*/
 
     [Column("value")]
     public string Value { get; set; } = null!;

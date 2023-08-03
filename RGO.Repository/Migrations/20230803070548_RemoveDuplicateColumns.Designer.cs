@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RGO.Repository;
@@ -11,9 +12,11 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230803070548_RemoveDuplicateColumns")]
+    partial class RemoveDuplicateColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,12 +44,7 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.Property<int?>("userId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("userId");
 
                     b.ToTable("Certifications");
                 });
@@ -293,12 +291,7 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("role");
 
-                    b.Property<int?>("userId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("userId");
 
                     b.ToTable("projects");
                 });
@@ -326,18 +319,9 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("userId");
 
-                    b.Property<int?>("userId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("userId");
-
-                    b.ToTable("skill", t =>
-                        {
-                            t.Property("userId")
-                                .HasColumnName("userId1");
-                        });
+                    b.ToTable("skill");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
@@ -448,12 +432,17 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("type");
 
-                    b.Property<int?>("gradGroupId")
+                    b.Property<int>("gradGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("userId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("gradGroupId");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("users");
                 });
@@ -539,13 +528,6 @@ namespace RGO.Repository.Migrations
                     b.ToTable("Workshop");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.Certifications", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.User", null)
-                        .WithMany("UserCertifications")
-                        .HasForeignKey("userId");
-                });
-
             modelBuilder.Entity("RGO.Repository.Entities.Events", b =>
                 {
                     b.HasOne("RGO.Repository.Entities.UserGroup", "GroupEvents")
@@ -587,7 +569,7 @@ namespace RGO.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RGO.Repository.Entities.FormSubmit", null)
+                    b.HasOne("RGO.Repository.Entities.Input", null)
                         .WithMany("InputSubmit")
                         .HasForeignKey("formSubmitId");
 
@@ -632,20 +614,6 @@ namespace RGO.Repository.Migrations
                     b.Navigation("FieldOptions");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.Projects", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.User", null)
-                        .WithMany("UserProjects")
-                        .HasForeignKey("userId");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.User", null)
-                        .WithMany("Skills")
-                        .HasForeignKey("userId");
-                });
-
             modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
                 {
                     b.HasOne("RGO.Repository.Entities.User", "UserSocial")
@@ -661,7 +629,21 @@ namespace RGO.Repository.Migrations
                 {
                     b.HasOne("RGO.Repository.Entities.UserGroup", "UserGroup")
                         .WithMany()
-                        .HasForeignKey("gradGroupId");
+                        .HasForeignKey("gradGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RGO.Repository.Entities.Certifications", null)
+                        .WithMany("UserCertifications")
+                        .HasForeignKey("userId");
+
+                    b.HasOne("RGO.Repository.Entities.Projects", null)
+                        .WithMany("UserProjects")
+                        .HasForeignKey("userId");
+
+                    b.HasOne("RGO.Repository.Entities.Skill", null)
+                        .WithMany("Skills")
+                        .HasForeignKey("userId");
 
                     b.Navigation("UserGroup");
                 });
@@ -712,18 +694,24 @@ namespace RGO.Repository.Migrations
                     b.Navigation("WorshopEvents");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.FormSubmit", b =>
+            modelBuilder.Entity("RGO.Repository.Entities.Certifications", b =>
+                {
+                    b.Navigation("UserCertifications");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Input", b =>
                 {
                     b.Navigation("InputSubmit");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.User", b =>
+            modelBuilder.Entity("RGO.Repository.Entities.Projects", b =>
+                {
+                    b.Navigation("UserProjects");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
                 {
                     b.Navigation("Skills");
-
-                    b.Navigation("UserCertifications");
-
-                    b.Navigation("UserProjects");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,13 +17,13 @@ public class Projects
     public string Description { get; set; }
 
     [Column("role")]
-    public string Role { get; set; }
+    public string Role { get; set; }/*
 
     [Column("userId")]
-    public int UserId { get; set; }
+    public int UserId { get; set; }*/
 
-    [ForeignKey("userId")]
-    public virtual List<User> UserProjects { get; set; }
+    /*[ForeignKey("userId")]
+    public virtual List<User> UserProjects { get; set; }*/
 
     public Projects()
     {
