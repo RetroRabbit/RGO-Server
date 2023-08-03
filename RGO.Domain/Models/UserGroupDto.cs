@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 
 namespace RGO.Domain.Models;
-public record UserGroupDTO(
+public record UserGroupDto(
     int Id,
     string Title
     );

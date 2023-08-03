@@ -13,14 +13,14 @@ public class UserGroup
     [Column("title")]
     public string Title { get; set; }
     public UserGroup() { }
-    public UserGroup(UserGroupDTO userGroup)
+    public UserGroup(UserGroupDto userGroup)
     {
         Id = userGroup.Id;
         Title = userGroup.Title;  
     }
-    public UserGroupDTO ToDTO()
+    public UserGroupDto ToDTO()
     {
-        return new UserGroupDTO(
+        return new UserGroupDto(
             Id,
             Title);
     }
