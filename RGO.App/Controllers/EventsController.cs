@@ -10,40 +10,27 @@ namespace RGO.App.Controllers;
 public class EventsController : ControllerBase
 {
     private readonly IEventsService _eventsService;
-    public EventsController(IEventsService eventsService) 
+    public EventsController(IEventsService eventsService)
     {
-        private readonly IEventsService _eventsService;
-        public EventsController(IEventsService eventsService) 
-        {
-            _eventsService = eventsService;
-        }
-
-        [HttpGet("events")]
-        public async Task<IActionResult> GetEvents()
-        {  
-            
-            try
-            {
-                var events = await _eventsService.GetEvents();
-                return Ok(events);
-
-            }
-            catch (Exception e)
-            {
-
-                await Console.Out.WriteLineAsync(e.Message);
-                return BadRequest(e.Message);
-            }
-
-        }
+        _eventsService = eventsService;
     }
 
     [HttpGet("events")]
     public async Task<IActionResult> GetEvents()
-    {  
-        var events = await _eventsService.GetEvents();
+    {
 
-        return Ok(events);
+        try
+        {
+            var events = await _eventsService.GetEvents();
+            return Ok(events);
+
+        }
+        catch (Exception e)
+        {
+
+            await Console.Out.WriteLineAsync(e.Message);
+            return BadRequest(e.Message);
+        }
 
     }
 }

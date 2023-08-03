@@ -16,7 +16,7 @@ namespace RGO.Repository.Repositories
 
         public async Task<bool> UserExists(string email)
         {
-            bool userExists = await _databaseContext.users.AnyAsync(u => u.email == email);
+            bool userExists = await _databaseContext.users.AnyAsync(u => u.Email == email);
 
             return userExists;
         }

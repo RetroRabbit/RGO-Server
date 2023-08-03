@@ -6,3 +6,4 @@ public record WorkshopDto(
     string Presenter,
     bool Viewable
     );
+}

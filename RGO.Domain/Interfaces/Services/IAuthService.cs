@@ -4,9 +4,6 @@ namespace RGO.Domain.Interfaces.Services;
 
 public interface IAuthService
 {
-    public interface IAuthService
-    {
-        Task<bool> CheckUserExist(string email);
-        Task<UserDto> GetUserByEmail(string email);
-    }
+    Task<bool> CheckUserExist(string email);
+    Task<UserDto> GetUserByEmail(string email);
 }

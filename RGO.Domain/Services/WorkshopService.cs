@@ -7,17 +7,12 @@ namespace RGO.Domain.Services;
 public class WorkshopService : IWorkshopService
 {
     IWorkshopRepository _workshopRepository;
-    public WorkshopService(IWorkshopRepository repository) // add as a parameter
+    public WorkshopService(IWorkshopRepository repository)
     {
-        IWorkshopRepository _workshopRepository;
-        public WorkshopService(IWorkshopRepository repository)
-        {
-           _workshopRepository = repository;
-        }
-
+        _workshopRepository = repository;
+    }
     public Task<WorkshopDto[]> GetWorkshops()
     {
-        return _workshopRepository.GetAllWorkShops();
-        
+        return _workshopRepository.GetAllWorkShops();    
     }
 }
