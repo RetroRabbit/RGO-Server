@@ -30,18 +30,12 @@ public class User
 
     [Column("status")]
     public int Status { get; set; }
-
     public virtual UserGroup? UserGroup { get; set; }
-    
     public virtual List<Certifications> UserCertifications { get; set; }
-    
     public virtual List<Skill> Skills { get; set; }
-    
     public virtual List<Projects> UserProjects { get; set; }
-    public User()
-    {
-    }
-
+    public virtual List<Social> Socials { get; set; }
+    public User() { }
     public User(UserDto user)
     {
         Id = user.Id;
@@ -53,7 +47,6 @@ public class User
         JoinDate = user.JoinDate;
         Status = user.Status;
     }
-
     public UserDto ToDTO()
     {
         return new UserDto(
@@ -64,7 +57,6 @@ public class User
             Email,
             Type,
             JoinDate,
-            Status
-            );
+            Status);
     }
 }

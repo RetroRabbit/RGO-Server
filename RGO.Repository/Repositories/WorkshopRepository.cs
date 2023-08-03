@@ -25,12 +25,12 @@ namespace RGO.Repository.Repositories
             int counter = 0;
             foreach (var item in workshops)
             {
-                var workshopEvent = events.First(e => e.Id == item.WorshopEvents.Id);
+                var workshopEvent = events.FirstOrDefault(e => e.Id == item.EventId);
                 if (workshopEvent == null)
                 {
                     continue;
                 }
-                workShopDto[counter++] = item.ToDto(workshopEvent);
+                workShopDto[counter++] = item.ToDto();
             }
             return workShopDto;
         }

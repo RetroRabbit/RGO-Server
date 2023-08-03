@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RGO.Domain.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
@@ -7,36 +8,43 @@ public class UserStacks
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }/*
-
+    public int Id { get; set; }
     [Column("userId")]
+    [ForeignKey("User")]
     public int UserId { get; set; }
-
     [Column("backendId")]
+    [ForeignKey("BackendUserStack")]
     public int BackendId { get; set; }
-
     [Column("frontendId")]
+    [ForeignKey("FrontendUserStack")]
     public int FrontendId { get; set; }
-
     [Column("databaseId")]
-    public int DatabaseId { get; set; }*/
-
+    [ForeignKey("DatabaseUserStack")]
+    public int DatabaseId { get; set; }
     [Column("createDate")]
     public DateTime CreateDate { get; set; }
-
-    [ForeignKey("userId")]
     public virtual User User { get; set; }
-
-    [ForeignKey("backendId")]
     public virtual Stacks BackendUserStack { get; set; }
-
-    [ForeignKey("frontendId")]
     public virtual Stacks FrontendUserStack { get; set; }
-
-    [ForeignKey("databaseId")]
     public virtual Stacks DatabaseUserStack { get; set; }
-
-    public UserStacks()
+    public UserStacks() { }
+    public UserStacks(UserStackDto userStackDto)
     {
+        Id = userStackDto.Id;
+        UserId = userStackDto.UserId;
+        BackendId = userStackDto.BackendId;
+        FrontendId = userStackDto.FrontendId;
+        DatabaseId = userStackDto.DatabaseId;
+        CreateDate = userStackDto.CreateDate;
+    }
+    public UserStackDto ToDTO()
+    {
+        return new UserStackDto(
+            Id,
+            UserId,
+            BackendId,
+            FrontendId,
+            DatabaseId,
+            CreateDate);
     }
 }

@@ -8,38 +8,28 @@ namespace RGO.Repository.Entities;
 public class Events {
     [Key]
     [Column("id")]
-    public int Id { get; set; }/*
-
+    public int Id { get; set; }
     [Column("groupId")]
-    public int GroupId { get; set; }*/
-
+    [ForeignKey("UserGroup")]
+    public int? GroupId { get; set; }
     [Column("title")]
-    public string Title { get; set; } = null!;
-
+    public string Title { get; set; }
     [Column("description")]
-    public string Description { get; set; } = null!;
-  
+    public string Description { get; set; }
     [Column("userType")]
     public int UserType { get; set; }
-    
     [Column("startDate")]
     public DateTime StartDate { get; set; }
-    
     [Column("endDate")]
     public DateTime EndDate { get; set; }
-   
     [Column("eventType")]
     public int EventType { get; set; }
-
-    [ForeignKey("groupId")]
-    public virtual UserGroup? GroupEvents { get; set; }
-
-
+    public virtual UserGroup? UserGroup { get; set; }
     public Events() { }
     public Events(EventsDto eventsDto)
     {
-        Id = eventsDto.Id;/*
-        GroupId = eventsDto.GroupId;*/
+        Id = eventsDto.Id;
+        GroupId = eventsDto.GroupId;
         Title = eventsDto.Title;
         Description = eventsDto.Description;
         UserType = eventsDto.UserType;
@@ -47,20 +37,17 @@ public class Events {
         EndDate = eventsDto.EndDate;
         EventType = eventsDto.EventType;
     }
-
     public EventsDto ToDto()
     {
-        return new EventsDto
-        (
+        return new EventsDto(
             Id,
-            GroupEvents?.Id,
+            GroupId,
             Title,
             Description,
             UserType,
             StartDate,
             EndDate,
-            EventType
-        );
+            EventType);
     }
 }
     

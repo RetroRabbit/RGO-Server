@@ -10,26 +10,19 @@ public class UserGroup
     [Key]
     [Column("id")]
     public int Id { get; set; }
-
     [Column("title")]
-    public string Title { get; set; } = null!;
-
-    public UserGroup()
-    {
-        
-    }
-
+    public string Title { get; set; }
+    public UserGroup() { }
     public UserGroup(UserGroupDTO userGroup)
     {
-        this.Id = userGroup.Id;
+        Id = userGroup.Id;
         Title = userGroup.Title;  
     }
     public UserGroupDTO ToDTO()
     {
         return new UserGroupDTO(
             Id,
-            Title
-            );
+            Title);
     }
 
 }

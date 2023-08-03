@@ -10,32 +10,30 @@ public class Workshop
     [Key]
     [Column("id")]
     public int Id { get; set; }
-
+    [Column("eventId")]
+    [ForeignKey("Events")]
+    public int EventId { get; set; }
     [Column("presenter")]
     public string Presenter { get; set; }
     [Column("viewable")]
     public bool Viewable { get; set; }
-
-    [ForeignKey("eventId")]
-    public virtual Events WorshopEvents { get; set; }
-    
-    public Workshop()
-    {
-    }
-
+    public virtual Events Events { get; set; }
+    public Workshop() { }
     public Workshop(WorkshopDto workshopDto)
     {
         Id = workshopDto.Id;
+        EventId = workshopDto.EventId.Id;
         Presenter = workshopDto.Presenter;
+        Viewable = workshopDto.Viewable;
     }
-
-    public WorkshopDto ToDto(EventsDto EventsDto)
+    public WorkshopDto ToDto()
     {
         return new WorkshopDto
         (
             Id,
-            EventsDto,
-            Presenter
+            Events.ToDto(),
+            Presenter,
+            Viewable
         );
     }
 }
