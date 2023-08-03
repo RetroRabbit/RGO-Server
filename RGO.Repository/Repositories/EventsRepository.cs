@@ -20,7 +20,7 @@ namespace RGO.Repository.Repositories
 
         public async Task<EventsDto[]> GetAllEventDtos()
         {
-            Events[] events = await _databaseContext.events.ToArrayAsync();
+            _events[] events = await _databaseContext.events.ToArrayAsync();
             EventsDto[] eventsDtos = new EventsDto[events.Length];
             int counter = 0;
             foreach (var item  in events)
@@ -30,7 +30,7 @@ namespace RGO.Repository.Repositories
             return eventsDtos;
         }
 
-        public async Task<Events[]> GetAllEvents()
+        public async Task<_events[]> GetAllEvents()
         {
             return await _databaseContext.events.ToArrayAsync();
         }
