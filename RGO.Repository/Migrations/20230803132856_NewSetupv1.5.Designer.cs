@@ -12,8 +12,8 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230803113346_NewSetupv1.3")]
-    partial class NewSetupv13
+    [Migration("20230803132856_NewSetupv1.5")]
+    partial class NewSetupv15
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,12 +44,12 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.Property<int?>("userId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Certifications");
                 });
@@ -99,179 +99,6 @@ namespace RGO.Repository.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.Field", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("ErrorMessage")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("errorMessage");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("label");
-
-                    b.Property<bool>("Required")
-                        .HasColumnType("boolean")
-                        .HasColumnName("required");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("type");
-
-                    b.Property<int>("formId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("formId");
-
-                    b.ToTable("Field");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.Form", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("endDate");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("startDate");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
-
-                    b.Property<int>("groupId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("groupId");
-
-                    b.ToTable("Form");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.FormSubmit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("createDate");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
-
-                    b.Property<int>("formId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("formSubmitId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("rejectionReason")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("rejectionReason");
-
-                    b.Property<int>("userId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("formId");
-
-                    b.HasIndex("formSubmitId");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("FormSubmit");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.Input", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CreateDate")
-                        .HasColumnType("integer")
-                        .HasColumnName("createDate");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("value");
-
-                    b.Property<int>("fieldId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("userId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("fieldId");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("input");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.Option", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("value");
-
-                    b.Property<int>("fieldId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("fieldId");
-
-                    b.ToTable("options");
-                });
-
             modelBuilder.Entity("RGO.Repository.Entities.Projects", b =>
                 {
                     b.Property<int>("Id")
@@ -296,12 +123,12 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("role");
 
-                    b.Property<int?>("userId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("projects");
                 });
@@ -329,18 +156,11 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("userId");
 
-                    b.Property<int?>("userId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("skill", t =>
-                        {
-                            t.Property("userId")
-                                .HasColumnName("userId1");
-                        });
+                    b.ToTable("skill");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
@@ -434,6 +254,10 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("firstName");
 
+                    b.Property<int?>("GradGroupId")
+                        .HasColumnType("integer")
+                        .HasColumnName("gradGroupId");
+
                     b.Property<DateTime>("JoinDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("joinDate");
@@ -451,12 +275,9 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("type");
 
-                    b.Property<int?>("gradGroupId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("gradGroupId");
+                    b.HasIndex("GradGroupId");
 
                     b.ToTable("users");
                 });
@@ -550,7 +371,7 @@ namespace RGO.Repository.Migrations
                 {
                     b.HasOne("RGO.Repository.Entities.User", null)
                         .WithMany("UserCertifications")
-                        .HasForeignKey("userId");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Events", b =>
@@ -562,93 +383,20 @@ namespace RGO.Repository.Migrations
                     b.Navigation("GroupEvents");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.Field", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.Form", "FormFields")
-                        .WithMany()
-                        .HasForeignKey("formId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FormFields");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.Form", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.UserGroup", "UserGroupForm")
-                        .WithMany()
-                        .HasForeignKey("groupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserGroupForm");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.FormSubmit", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.Form", "Form")
-                        .WithMany()
-                        .HasForeignKey("formId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RGO.Repository.Entities.FormSubmit", null)
-                        .WithMany("InputSubmit")
-                        .HasForeignKey("formSubmitId");
-
-                    b.HasOne("RGO.Repository.Entities.User", "UserSubmit")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Form");
-
-                    b.Navigation("UserSubmit");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.Input", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.Field", "InputFieldId")
-                        .WithMany()
-                        .HasForeignKey("fieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RGO.Repository.Entities.User", "InputUserId")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InputFieldId");
-
-                    b.Navigation("InputUserId");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.Option", b =>
-                {
-                    b.HasOne("RGO.Repository.Entities.Field", "FieldOptions")
-                        .WithMany()
-                        .HasForeignKey("fieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FieldOptions");
-                });
-
             modelBuilder.Entity("RGO.Repository.Entities.Projects", b =>
                 {
                     b.HasOne("RGO.Repository.Entities.User", null)
                         .WithMany("UserProjects")
-                        .HasForeignKey("userId");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
                 {
                     b.HasOne("RGO.Repository.Entities.User", null)
                         .WithMany("Skills")
-                        .HasForeignKey("userId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
@@ -666,7 +414,7 @@ namespace RGO.Repository.Migrations
                 {
                     b.HasOne("RGO.Repository.Entities.UserGroup", "UserGroup")
                         .WithMany()
-                        .HasForeignKey("gradGroupId");
+                        .HasForeignKey("GradGroupId");
 
                     b.Navigation("UserGroup");
                 });
@@ -715,11 +463,6 @@ namespace RGO.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("WorshopEvents");
-                });
-
-            modelBuilder.Entity("RGO.Repository.Entities.FormSubmit", b =>
-                {
-                    b.Navigation("InputSubmit");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.User", b =>

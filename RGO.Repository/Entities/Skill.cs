@@ -11,6 +11,7 @@ public class Skill
     public int Id { get; set; }
 
     [Column("userId")]
+    [ForeignKey("User")]
     public int UserId { get; set; }
 
     [Column("title")]
@@ -19,8 +20,7 @@ public class Skill
     [Column("description")]
     public string Description { get; set; }
 
-    /*[ForeignKey("userId")]
-    public virtual List<User> Skills { get; set; }*/
+    public virtual User User { get; set; }
 
     public Skill()
     {
