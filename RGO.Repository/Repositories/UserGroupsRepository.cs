@@ -14,10 +14,10 @@ public class UserGroupsRepository : IUserGroupsRepository
     }
 
 
-    public async Task<_UserGroupDTO[]> GetUserGroups()
+    public async Task<UserGroupDto[]> GetUserGroups()
     {
         return await _databaseContext.usergroups
-            .Select(group => new _UserGroupDTO(group.Id, group.Title))
+            .Select(group => new UserGroupDto(group.Id, group.Title))
             .ToArrayAsync();
     }
 

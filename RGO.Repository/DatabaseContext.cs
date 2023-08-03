@@ -21,9 +21,9 @@ namespace RGO.Repository
         public DbSet<User> users { get; set; }
         // public DbSet<Option> options { get; set; }
         public DbSet<UserGroup> usergroups {  get; set; }
-        public DbSet<_events> events { get; set; }
-        public DbSet<_stacks> stacks { get; set; }
-        public DbSet<_userStacks> userStacks { get; set; }
+        public DbSet<Events> events { get; set; }
+        public DbSet<Stacks> stacks { get; set; }
+        public DbSet<UserStacks> userStacks { get; set; }
         public DbSet<Workshop> workshop { get; set; }
         // public DbSet<Form> forms { get; set; }
         // public DbSet<Field> fields { get; set; } // TODO: Rename to formFields
