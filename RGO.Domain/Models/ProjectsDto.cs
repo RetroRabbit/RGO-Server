@@ -2,9 +2,10 @@
 {
     public record ProjectsDto
     (
-      int id,
-      string name,
-      string description,
-      string role
+      int Id,
+      int UserId,
+      string Name,
+      string Description,
+      string Role
     );
 }

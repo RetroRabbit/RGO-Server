@@ -1,9 +1,11 @@
 ﻿namespace RGO.Domain.Models
 {
     public record SocialDto(
-    int id,
-    string discord,
-    string codeWars,
-    string gitHub,
-    string linkedIn);
+    int Id,
+    int UserId,
+    string Discord,
+    string CodeWars,
+    string GitHub,
+    string LinkedIn
+    );
 }

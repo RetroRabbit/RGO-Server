@@ -1,10 +1,9 @@
 ﻿using RGO.Domain.Models;
 
-namespace RGO.Domain.Interfaces.Repository
+namespace RGO.Domain.Interfaces.Repository;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        Task<bool> UserExists(string email);
-        Task<UserDto> GetUserByEmail(string email);
-    }
+    Task<bool> UserExists(string email);
+    Task<UserDto> GetUserByEmail(string email);
 }

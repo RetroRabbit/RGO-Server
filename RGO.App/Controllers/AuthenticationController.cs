@@ -2,37 +2,36 @@
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
 
-namespace RGO.App.Controllers
-{
-    [Route("/[controller]")]
-    [ApiController]
-    public class AuthenticationController : ControllerBase
-    {   
+namespace RGO.App.Controllers;
 
-        private readonly IAuthService _authService;
+[Route("/[controller]")]
+[ApiController]
+public class AuthenticationController : ControllerBase
+{   
 
-        public AuthenticationController(IAuthService authService) 
+    private readonly IAuthService _authService;
+
+    public AuthenticationController(IAuthService authService) 
+    {
+        _authService = authService;
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginUser([FromBody] Dictionary<string, string> email)
+    {
+        try
         {
-            _authService = authService;
+            bool userExists = await _authService.CheckUserExist(email["email"]);
+
+            if (!userExists) throw new Exception("User not found");
+
+            UserDto foundUser = await _authService.GetUserByEmail(email["email"]);
+
+            return Ok(foundUser.Type);
         }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginUser([FromBody] Dictionary<string, string> email)
+        catch (Exception ex)
         {
-            try
-            {
-                bool userExists = await _authService.CheckUserExist(email["email"]);
-
-                if (!userExists) throw new Exception("User not found");
-
-                UserDto foundUser = await _authService.GetUserByEmail(email["email"]);
-
-                return Ok(foundUser.type);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            return NotFound(ex.Message);
         }
     }
 }

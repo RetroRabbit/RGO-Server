@@ -2,8 +2,9 @@
 {
     public record CertificationsDto
     (
-        int id,
-        string title,
-        string description
+        int Id,
+        int UserId,
+        string Title,
+        string Description
     );
 }
