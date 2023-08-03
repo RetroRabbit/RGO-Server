@@ -53,7 +53,7 @@ namespace RGO.Repository.Migrations
                     startDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     endDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     eventType = table.Column<int>(type: "integer", nullable: false),
-                    groupId = table.Column<int>(type: "integer", nullable: false)
+                    groupId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -62,8 +62,7 @@ namespace RGO.Repository.Migrations
                         name: "FK_Events_UserGroup_groupId",
                         column: x => x.groupId,
                         principalTable: "UserGroup",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(

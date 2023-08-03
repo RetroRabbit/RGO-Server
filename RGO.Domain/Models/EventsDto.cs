@@ -2,7 +2,7 @@
 
 public record EventsDto(
     int Id, 
-    int GroupId, 
+    int? GroupId, 
     string Title, 
     string Description, 
     int UserType, 

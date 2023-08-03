@@ -32,7 +32,7 @@ public class Events {
     public int EventType { get; set; }
 
     [ForeignKey("groupId")]
-    public virtual UserGroup GroupEvents { get; set; }
+    public virtual UserGroup? GroupEvents { get; set; }
 
 
     public Events() { }
@@ -53,7 +53,7 @@ public class Events {
         return new EventsDto
         (
             Id,
-            GroupEvents.Id,
+            GroupEvents?.Id,
             Title,
             Description,
             UserType,

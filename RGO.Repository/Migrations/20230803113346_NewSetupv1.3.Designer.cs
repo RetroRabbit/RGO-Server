@@ -12,7 +12,7 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230803085707_NewSetupv1.3")]
+    [Migration("20230803113346_NewSetupv1.3")]
     partial class NewSetupv13
     {
         /// <inheritdoc />
@@ -89,7 +89,7 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("userType");
 
-                    b.Property<int>("groupId")
+                    b.Property<int?>("groupId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -557,9 +557,7 @@ namespace RGO.Repository.Migrations
                 {
                     b.HasOne("RGO.Repository.Entities.UserGroup", "GroupEvents")
                         .WithMany()
-                        .HasForeignKey("groupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("groupId");
 
                     b.Navigation("GroupEvents");
                 });

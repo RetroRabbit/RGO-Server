@@ -17,7 +17,14 @@ public class WorkshopController : ControllerBase
     [HttpGet("workshops")]
     public async Task<IActionResult> GetWorkShops()
     {
-        var workshops = await _workshopService.GetWorkshops();
-        return Ok(workshops);
+        try
+        {
+            var workshops = await _workshopService.GetWorkshops();
+            return Ok(workshops);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }
