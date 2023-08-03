@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
+using RGO.Domain.Services;
 
 namespace RGO.App.Controllers;
 
@@ -19,8 +20,19 @@ public class WorkshopController : ControllerBase
     {
         try
         {
-            var workshops = await _workshopService.GetWorkshops();
-            return Ok(workshops);
+            
+            try
+            {
+                var workshops = await _workshopService.GetWorkshops();
+                return Ok(workshops);
+
+            }
+            catch (Exception e)
+            {
+
+                await Console.Out.WriteLineAsync(e.Message);
+                return BadRequest(e.Message);
+            }
         }
         catch (Exception ex)
         {

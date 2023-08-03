@@ -10,7 +10,17 @@ public class EventsService : IEventsService
 
     public EventsService(IEventsRepository eventsRepository) 
     {
-        _eventsrepository = eventsRepository;
+        private IEventsRepository _eventsrepository;
+
+        public EventsService(IEventsRepository eventsRepository) 
+        {
+            _eventsrepository = eventsRepository;
+        }
+        public Task<EventsDto[]> GetEvents()
+        {
+            return _eventsrepository.GetAllEvents();
+        }
+
     }
     public Task<EventsDto[]> GetEvents()
     {

@@ -14,6 +14,13 @@ namespace RGO.Repository.Repositories
             _databaseContext = databaseContext;
         }
 
+        public async Task<bool> UserExists(string email)
+        {
+            bool userExists = await _databaseContext.users.AnyAsync(u => u.email == email);
+
+            return userExists;
+        }
+
         public async Task<UserDto> GetUserByEmail(string email)
         {
             bool userExists = await UserExists(email);
@@ -25,11 +32,6 @@ namespace RGO.Repository.Repositories
             return user.ToDTO();
         }
 
-        public async Task<bool> UserExists(string email)
-        {
-            bool userExists = await _databaseContext.users.AnyAsync(u => u.Email == email);
-
-            return userExists;
-        }
+       
     }
 }

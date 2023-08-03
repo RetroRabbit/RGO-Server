@@ -9,8 +9,11 @@ public class WorkshopService : IWorkshopService
     IWorkshopRepository _workshopRepository;
     public WorkshopService(IWorkshopRepository repository) // add as a parameter
     {
-       _workshopRepository = repository;
-    }
+        IWorkshopRepository _workshopRepository;
+        public WorkshopService(IWorkshopRepository repository)
+        {
+           _workshopRepository = repository;
+        }
 
     public Task<WorkshopDto[]> GetWorkshops()
     {
