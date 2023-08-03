@@ -19,6 +19,7 @@ docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
 Pull up the nuget package manager console:
 **_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
 Make sure the **Default project** is **_RGO.Repository_**.
+___
 ![Image of Package Manager Console](./Screenshot%202023-08-02%20173156.png)
 
 ```powershell
@@ -26,8 +27,11 @@ Update-Database
 ```
 ### Adding user to the DB you made
 Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
+___
 ![Register service](./Screenshot%202023-08-02%20173735.png)
+___
 ![Register service - connection](./Screenshot%202023-08-02%20173613.png)
+___
 ![PgAdmin query tool](./Screenshot%202023-08-02%20173343.png)
 ```sql
 insert into social(discord, codewars, github, linkedin)
