@@ -21,6 +21,10 @@ public class UserStacks
     [Column("databaseId")]
     [ForeignKey("DatabaseUserStack")]
     public int DatabaseId { get; set; }
+    [Column("description")]
+    public string Description { get; set; } = string.Empty;
+    [Column("status")]
+    public int Status { get; set; }
     [Column("createDate")]
     public DateTime CreateDate { get; set; }
     public virtual User User { get; set; }
@@ -35,6 +39,8 @@ public class UserStacks
         BackendId = userStackDto.BackendId;
         FrontendId = userStackDto.FrontendId;
         DatabaseId = userStackDto.DatabaseId;
+        Description = userStackDto.Description;
+        Status = userStackDto.Status;
         CreateDate = userStackDto.CreateDate;
     }
     public UserStackDto ToDTO()
@@ -45,6 +51,8 @@ public class UserStacks
             BackendId,
             FrontendId,
             DatabaseId,
+            Description,
+            Status,
             CreateDate);
     }
 }
