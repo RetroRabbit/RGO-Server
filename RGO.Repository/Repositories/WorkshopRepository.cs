@@ -19,8 +19,10 @@ namespace RGO.Repository.Repositories
 
         public async Task<List<WorkshopDto>> GetAllWorkShops()
         {
-            var tomorrow = DateTime.UtcNow.Date;
-            var query = from ev in _databaseContext.events where ev.StartDate <= tomorrow select ev;
+            var now = DateTime.UtcNow;
+            var today = now.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
+
+            var query = from ev in _databaseContext.events where ev.StartDate <= today select ev;
 
             var events = await query.ToListAsync();
             var workshops = await _databaseContext.workshop.ToListAsync();
