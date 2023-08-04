@@ -4,5 +4,5 @@ namespace RGO.Domain.Interfaces.Repository;
 
 public interface IWorkshopRepository
 {
-    Task<WorkshopDto[]> GetAllWorkShops();
+    Task<List<WorkshopDto>> GetAllWorkShops();
 }
