@@ -36,7 +36,7 @@ namespace RGO.Repository.Repositories
 
         public async Task<UserDto> AddUser(UserDto userDto)
         {
-            bool userExists = await UserExists(userDto.email);
+            bool userExists = await UserExists(userDto.Email);
 
             if (userExists) throw new Exception("Email already exists");
             User user = new User(userDto);
