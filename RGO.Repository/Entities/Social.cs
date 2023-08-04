@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
+
+[Table("Social")]
 public class Social
 {
     [Key]

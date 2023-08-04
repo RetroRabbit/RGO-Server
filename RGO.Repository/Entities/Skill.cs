@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
 
+[Table("Skill")]
 public class Skill
 {
     [Key]
