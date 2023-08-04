@@ -6,5 +6,7 @@ namespace RGO.Domain.Interfaces.Repository
     {
         Task<bool> UserExists(string email);
         Task<UserDto> GetUserByEmail(string email);
+
+        Task<UserDto> AddUser(UserDto user);
     }
 }
