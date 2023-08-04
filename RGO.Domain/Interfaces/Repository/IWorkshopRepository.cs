@@ -1,9 +1,8 @@
 ﻿using RGO.Domain.Models;
 
-namespace RGO.Domain.Interfaces.Repository
+namespace RGO.Domain.Interfaces.Repository;
+
+public interface IWorkshopRepository
 {
-     public interface IWorkshopRepository
-    {
-        Task<WorkshopDto[]> GetAllWorkShops();
-    }
+    Task<WorkshopDto[]> GetAllWorkShops();
 }

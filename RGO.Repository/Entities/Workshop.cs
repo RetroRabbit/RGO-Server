@@ -1,31 +1,39 @@
 ﻿using RGO.Domain.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
 
+[Table("Workshop")]
 public class Workshop
 {
-    public int id { get; set; }
-    public int eventId { get; set; }
-    public string presenter { get; set; } = null!;
-
-    public Workshop()
-    {
-    }
-
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+    [Column("eventId")]
+    [ForeignKey("Events")]
+    public int EventId { get; set; }
+    [Column("presenter")]
+    public string Presenter { get; set; }
+    [Column("viewable")]
+    public bool Viewable { get; set; }
+    public virtual Events Events { get; set; }
+    public Workshop() { }
     public Workshop(WorkshopDto workshopDto)
     {
-        id = workshopDto.id;
-        eventId = workshopDto.eventId.id;
-        presenter = workshopDto.presenter;
+        Id = workshopDto.Id;
+        EventId = workshopDto.EventId.Id;
+        Presenter = workshopDto.Presenter;
+        Viewable = workshopDto.Viewable;
     }
-
-    public WorkshopDto ToDto(EventsDto eventsDto)
+    public WorkshopDto ToDto()
     {
         return new WorkshopDto
         (
-            id,
-            eventsDto,
-            presenter
+            Id,
+            Events.ToDto(),
+            Presenter,
+            Viewable
         );
     }
 }

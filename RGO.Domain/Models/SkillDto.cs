@@ -2,9 +2,9 @@
 {
     public record SkillDto
     (
-        int id,
-        int userId,
-        string title,
-        string description
+        int Id,
+        int UserId,
+        string Title,
+        string Description
     );
 }

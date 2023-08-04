@@ -1,38 +1,45 @@
 ﻿using RGO.Domain.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RGO.Repository.Entities
+namespace RGO.Repository.Entities;
+
+[Table("Social")]
+public class Social
 {
-    public class Social
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+    [Column("userId")]
+    [ForeignKey("User")]
+    public int UserId { get; set; }
+    [Column("discord")]
+    public string Discord { get; set; }
+    [Column("codeWars")]
+    public string CodeWars { get; set; }
+    [Column("gitHub")]
+    public string GitHub { get; set; }
+    [Column("linkedIn")]
+    public string LinkedIn { get; set; }
+    public virtual User User { get; set; }
+    public Social() { }
+    public Social(SocialDto social)
     {
-        public int id { get; set; }
-        public string discord { get; set; } = null!;
-        public string codeWars{ get; set; } = null!;
-        public string gitHub { get; set; } = null!;
-        public string linkedIn { get; set; } = null!;
-
-        public Social()
-        {
-
-        }
-
-        public Social(SocialDto social)
-        {
-            id = social.id;
-            discord = social.discord;
-            codeWars = social.codeWars;
-            gitHub  = social.gitHub;
-            linkedIn = social.linkedIn;
-        }
-
-        public SocialDto ToDTO()
-        {
-            return new SocialDto(
-                id,
-                discord,
-                codeWars,
-                gitHub,
-                linkedIn
-                );
-        }
+        Id = social.Id;
+        UserId = social.UserId;
+        Discord = social.Discord;
+        CodeWars = social.CodeWars;
+        GitHub = social.GitHub;
+        LinkedIn = social.LinkedIn;
+    }
+    public SocialDto ToDTO()
+    {
+        return new SocialDto(
+            Id,
+            UserId,
+            Discord,
+            CodeWars,
+            GitHub,
+            LinkedIn);
     }
 }

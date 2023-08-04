@@ -2,20 +2,19 @@
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
 
-namespace RGO.Domain.Services
+namespace RGO.Domain.Services;
+
+public class EventsService : IEventsService
 {
-    public class EventsService : IEventsService
+    private readonly IEventsRepository _eventsrepository;
+
+    public EventsService(IEventsRepository eventsRepository)
     {
-        private IEventsRepository _eventsrepository;
+        _eventsrepository = eventsRepository;
+    }
 
-        public EventsService(IEventsRepository eventsRepository) 
-        {
-            _eventsrepository = eventsRepository;
-        }
-        public Task<EventsDto[]> GetEvents()
-        {
-            return _eventsrepository.GetAllEvents();
-        }
-
+    public async Task<EventsDto[]> GetEvents()
+    {
+        return await _eventsrepository.GetAllEvents();
     }
 }

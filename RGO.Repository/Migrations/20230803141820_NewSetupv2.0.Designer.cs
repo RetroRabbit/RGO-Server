@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RGO.Repository;
@@ -11,9 +12,11 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230803141820_NewSetupv2.0")]
+    partial class NewSetupv20
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,7 +133,7 @@ namespace RGO.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("projects");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
@@ -160,7 +163,7 @@ namespace RGO.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Skill");
+                    b.ToTable("skill");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Social", b =>
@@ -200,7 +203,7 @@ namespace RGO.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Social");
+                    b.ToTable("social");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Stacks", b =>
@@ -233,7 +236,7 @@ namespace RGO.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stacks");
+                    b.ToTable("stacks");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.User", b =>
@@ -280,7 +283,7 @@ namespace RGO.Repository.Migrations
 
                     b.HasIndex("GradGroupId");
 
-                    b.ToTable("User");
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.UserGroup", b =>
