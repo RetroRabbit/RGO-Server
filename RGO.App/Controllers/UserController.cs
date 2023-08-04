@@ -31,7 +31,6 @@ namespace RGO_Backend.Controllers
             }
             catch (Exception e)
             {
-                await Console.Out.WriteLineAsync(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -48,7 +47,6 @@ namespace RGO_Backend.Controllers
             }
             catch (Exception e)
               {
-                await Console.Out.WriteLineAsync(e.Message);
                 return BadRequest(e.Message);
              }
          }
