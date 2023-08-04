@@ -16,7 +16,7 @@ namespace RGO.Repository.Repositories
             _stackRepository = stackRepository;
         }
 
-        public async Task<UserStackDto> CreateUserStack(int userId)
+        public async Task<UserStackDto> AddUserStack(int userId)
         {
             Random random = new Random();
 
@@ -40,25 +40,15 @@ namespace RGO.Repository.Repositories
 
             try
             {
-                await _databaseContext.userStacks.AddAsync(new UserStacks(newUserStack));
+                var stack = await _databaseContext.userStacks.AddAsync(new UserStacks(newUserStack));
                 await _databaseContext.SaveChangesAsync();
+
+                return stack.Entity.ToDTO();
             }
             catch (Exception ex)
             {
                 throw new Exception($"Failed to create Tech Stack for User {userId}.(Error: {ex.Message})");
             }
-
-            UserStacks? stack = await _databaseContext.userStacks
-                .Include(x => x.User)
-                .Include(x => x.BackendUserStack)
-                .Include(x => x.FrontendUserStack)
-                .Include(x => x.DatabaseUserStack)
-                .FirstOrDefaultAsync(x => x.UserId == userId);
-
-            if (stack == null)
-                throw new Exception("An error occured making a Tech Stack");
-
-            return stack.ToDTO();
         }
 
         public async Task<UserStackDto> GetUserStack(int userId)
@@ -94,10 +84,10 @@ namespace RGO.Repository.Repositories
             if (userStack == null)
                 throw new Exception("User stack not found");
 
-            _databaseContext.userStacks.Remove(userStack);
+            var oldUserStack = _databaseContext.userStacks.Remove(userStack);
             await _databaseContext.SaveChangesAsync();
 
-            return userStack.ToDTO();
+            return oldUserStack.Entity.ToDTO();
         }
 
         public async Task<UserStackDto> UpdateUserStack(int userId, string description)
@@ -114,10 +104,10 @@ namespace RGO.Repository.Repositories
 
             userStack.Description = description;
 
-            _databaseContext.userStacks.Update(userStack);
+            var currentUserstack = _databaseContext.userStacks.Update(userStack);
             await _databaseContext.SaveChangesAsync();
 
-            return userStack.ToDTO();
+            return currentUserstack.Entity.ToDTO();
         }
     }
 }

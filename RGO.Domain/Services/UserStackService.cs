@@ -18,9 +18,9 @@ namespace RGO.Domain.Services
             _userStackRepository = userStackRepository;
         }
 
-        public Task<UserStackDto> CreateUserStack(int userId)
+        public Task<UserStackDto> AddUserStack(int userId)
         {
-            return _userStackRepository.CreateUserStack(userId);
+            return _userStackRepository.AddUserStack(userId);
         }
 
         public Task<UserStackDto> GetUserStack(int userId)

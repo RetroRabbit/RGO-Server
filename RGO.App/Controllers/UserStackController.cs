@@ -14,7 +14,7 @@ namespace RGO.App.Controllers
             _userStackService = userStackService;
         }
 
-        [HttpGet("GetUserStack")]
+        [HttpGet("get")]
         public async Task<IActionResult> GetUserStack([FromQuery] int userId)
         {
             try
@@ -28,12 +28,12 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPost("CreateUserStack")]
+        [HttpPost("add")]
         public async Task<IActionResult> CreateUserStack([FromQuery] int userId)
         {
             try
             {
-                var userStack = await _userStackService.CreateUserStack(userId);
+                var userStack = await _userStackService.AddUserStack(userId);
                 return Ok(userStack);
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpDelete("RemoveUserStack")]
+        [HttpDelete("remove")]
         public async Task<IActionResult> RemoveUserStack([FromQuery] int userId)
         {
             try
@@ -56,7 +56,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPut("UpdateUserStack")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateUserStack([FromQuery] int userId, [FromBody] string description)
         {
             try
