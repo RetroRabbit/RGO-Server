@@ -3,7 +3,6 @@ using RGO.Domain.Models;
 using RGO.Repository.Entities;
 using RGO.Domain.Interfaces.Repository;
 
-
 namespace RGO.Repository.Repositories
 {
     public class WorkshopRepository:IWorkshopRepository
@@ -11,18 +10,21 @@ namespace RGO.Repository.Repositories
         private readonly DatabaseContext _databaseContext;
         private readonly IEventsRepository _eventsRepository;
 
+
         public WorkshopRepository(DatabaseContext databaseContext, IEventsRepository eventsRepository)
         {
             _databaseContext = databaseContext;
             _eventsRepository = eventsRepository;
         }
 
-        public async Task<WorkshopDto[]> GetAllWorkShops()
+        public async Task<List<WorkshopDto>> GetAllWorkShops()
         {
-            EventsDto[] events = await _eventsRepository.GetAllEvents();
-            Workshop[] workshops = await _databaseContext.workshop.ToArrayAsync();
-            WorkshopDto[] workShopDto = new WorkshopDto[workshops.Length];
-            int counter = 0;
+            var tomorrow = DateTime.UtcNow.Date;
+            var query = from ev in _databaseContext.events where ev.StartDate <= tomorrow select ev;
+
+            var events = await query.ToListAsync();
+            var workshops = await _databaseContext.workshop.ToListAsync();
+            var workShopDto = new List<WorkshopDto>();
             foreach (var item in workshops)
             {
                 var workshopEvent = events.FirstOrDefault(e => e.Id == item.EventId);
@@ -30,7 +32,7 @@ namespace RGO.Repository.Repositories
                 {
                     continue;
                 }
-                workShopDto[counter++] = item.ToDto();
+                workShopDto.Add(item.ToDto());
             }
             return workShopDto;
         }

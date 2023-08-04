@@ -4,5 +4,5 @@ namespace RGO.Domain.Interfaces.Services;
 
 public interface IWorkshopService
 {
-    Task<WorkshopDto[]> GetWorkshops();
+    Task<List<WorkshopDto>> GetWorkshops();
 }

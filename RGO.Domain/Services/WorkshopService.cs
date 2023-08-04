@@ -11,7 +11,7 @@ public class WorkshopService : IWorkshopService
     {
         _workshopRepository = repository;
     }
-    public Task<WorkshopDto[]> GetWorkshops()
+    public Task<List<WorkshopDto>> GetWorkshops()
     {
         return _workshopRepository.GetAllWorkShops();    
     }
