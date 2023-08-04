@@ -42,7 +42,7 @@ namespace RGO.Repository.Repositories
             User user = new User(userDto);
             EntityEntry<User> newUser = _databaseContext.users.Add(user);
             await _databaseContext.SaveChangesAsync();
-            return user.ToDTO();
+            return newUser.Entity.ToDTO();
         }
 
     }

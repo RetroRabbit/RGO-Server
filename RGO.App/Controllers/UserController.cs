@@ -6,7 +6,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace RGO_Backend.Controllers
 {
-    [Route("/[controller]")]
+    [Route("/users/")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -37,10 +37,9 @@ namespace RGO_Backend.Controllers
         }
 
 
-        [HttpPost("addUser")]
+        [HttpPost("add")]
         public async Task<IActionResult> AddUser([FromBody] UserDto user)
         {
-            Console.Out.WriteLine("HERE");
              try
             {
                 var newUser = await _userService.AddUser(user);
@@ -48,10 +47,10 @@ namespace RGO_Backend.Controllers
 
             }
             catch (Exception e)
-            {
+              {
                 await Console.Out.WriteLineAsync(e.Message);
                 return BadRequest(e.Message);
-}
-            }
+             }
+         }
     }
 }

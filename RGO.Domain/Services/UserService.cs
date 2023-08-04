@@ -21,7 +21,7 @@ namespace RGO.Domain.Services
         public async Task<UserDto> AddUser(UserDto userDto)
         {
             var newUser = await _userRepository.AddUser(userDto);
-            return userDto;
+            return newUser;
         }
     }
 }
