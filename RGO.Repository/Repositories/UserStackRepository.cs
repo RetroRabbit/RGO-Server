@@ -20,12 +20,12 @@ namespace RGO.Repository.Repositories
         {
             Random random = new Random();
 
-            StacksDto[] backendStack = await _stackRepository.GetBackendStack();
-            var backendStackObject = backendStack[random.Next(0, backendStack.Length)];
-            StacksDto[] frontendStack = await _stackRepository.GetFrontendStack();
-            var frontendStackObject = frontendStack[random.Next(0, frontendStack.Length)];
-            StacksDto[] databaseStack = await _stackRepository.GetDatabaseStack();
-            var databaseStackObject = databaseStack[random.Next(0, databaseStack.Length)];
+            List<StacksDto> backendStack = await _stackRepository.GetBackendStack();
+            var backendStackObject = backendStack[random.Next(0, backendStack.Count)];
+            List<StacksDto> frontendStack = await _stackRepository.GetFrontendStack();
+            var frontendStackObject = frontendStack[random.Next(0, frontendStack.Count)];
+            List<StacksDto> databaseStack = await _stackRepository.GetDatabaseStack();
+            var databaseStackObject = databaseStack[random.Next(0, databaseStack.Count)];
 
             UserStackDto newUserStack = new UserStackDto
             (

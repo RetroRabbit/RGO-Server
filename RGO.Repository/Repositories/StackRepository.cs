@@ -14,30 +14,30 @@ namespace RGO.Repository.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async Task<StacksDto[]> GetBackendStack()
+        public async Task<List<StacksDto>> GetBackendStack()
         {
-            StacksDto[] stacks = await _databaseContext.stacks
+            List<StacksDto> stacks = await _databaseContext.stacks
                 .Where(x => x.StackType == 2)
                 .Select(x => x.ToDTO())
-                .ToArrayAsync();
+                .ToListAsync();
             return stacks;
         }
 
-        public async Task<StacksDto[]> GetDatabaseStack()
+        public async Task<List<StacksDto>> GetDatabaseStack()
         {
-            StacksDto[] stacks = await _databaseContext.stacks
+            List<StacksDto> stacks = await _databaseContext.stacks
                 .Where(x => x.StackType == 0)
                 .Select(x => x.ToDTO())
-                .ToArrayAsync();
+                .ToListAsync();
             return stacks;
         }
 
-        public async Task<StacksDto[]> GetFrontendStack()
+        public async Task<List<StacksDto>> GetFrontendStack()
         {
-            StacksDto[] stacks = await _databaseContext.stacks
+            List<StacksDto> stacks = await _databaseContext.stacks
                 .Where(x => x.StackType == 1)
                 .Select(x => x.ToDTO())
-                .ToArrayAsync();
+                .ToListAsync();
             return stacks;
         }
 

@@ -6,8 +6,8 @@ namespace RGO.Domain.Interfaces.Repository
     {
         Task<bool> StackExists(int id);
         Task<StacksDto> GetStack(int id);
-        Task<StacksDto[]> GetBackendStack();
-        Task<StacksDto[]> GetFrontendStack();
-        Task<StacksDto[]> GetDatabaseStack();
+        Task<List<StacksDto>> GetBackendStack();
+        Task<List<StacksDto>> GetFrontendStack();
+        Task<List<StacksDto>> GetDatabaseStack();
     }
 }
