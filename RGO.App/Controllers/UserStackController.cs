@@ -3,7 +3,7 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers
 {
-    [Route("/userstacks")]
+    [Route("/userstacks/")]
     [ApiController]
     public class UserStackController : ControllerBase
     {
