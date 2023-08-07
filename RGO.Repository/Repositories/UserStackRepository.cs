@@ -103,6 +103,7 @@ namespace RGO.Repository.Repositories
                 throw new Exception("User stack not found");
 
             userStack.Description = description;
+            userStack.Status = userStack.Status == (int)UserStackStatus.Saved ? (int)UserStackStatus.Pending : (int)UserStackStatus.Saved;
 
             var currentUserstack = _databaseContext.userStacks.Update(userStack);
             await _databaseContext.SaveChangesAsync();
