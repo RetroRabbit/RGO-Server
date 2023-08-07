@@ -90,4 +90,10 @@ enum EventType {
 enum FormType {
     
 }
+
+// userStack typestatus
+enum UserStackStatus {
+    Saved = 1,
+    Pending
+}
 ```
