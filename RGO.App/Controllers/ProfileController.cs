@@ -3,7 +3,7 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
-[Route("[controller]")]
+[Route("/profile/")]
 [ApiController]
 public class ProfileController : ControllerBase
 {
@@ -14,18 +14,17 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
-    [HttpGet("getuser")]
-    public async Task<IActionResult> GetUser([FromQuery]string email)
+    [HttpGet("get")]
+    public async Task<IActionResult> GetUserProfileByEmail([FromQuery]string email)
     {
         try
         {
-        var user = await _profileService.GetUserByEmail(email);
-            return Ok(user);
+        var userProfile = await _profileService.GetUserProfileByEmail(email);
+            return Ok(userProfile);
 
         }
         catch (Exception e)
         {
-            await Console.Out.WriteLineAsync(e.Message);
             return BadRequest(e.Message);
         }
     }

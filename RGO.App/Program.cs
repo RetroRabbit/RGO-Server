@@ -67,6 +67,7 @@ namespace ROG.App
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IProfileService, ProfileService>();
+            builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
             builder.Services.AddScoped<IWorkshopRepository, WorkshopRepository>();
             builder.Services.AddScoped<IWorkshopService, WorkshopService>();
             builder.Services.AddScoped<IStackRepository, StackRepository>();
