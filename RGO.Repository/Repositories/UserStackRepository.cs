@@ -35,7 +35,7 @@ namespace RGO.Repository.Repositories
                 frontendStackObject,
                 databaseStackObject,
                 "Personal project tech stack default text.",
-                1,
+                (UserStackStatus)1,
                 DateTime.UtcNow);
 
             try

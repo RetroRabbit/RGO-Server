@@ -40,7 +40,7 @@ public class UserStacks
         FrontendId = userStackDto.Frontend.Id;
         DatabaseId = userStackDto.Database.Id;
         Description = userStackDto.Description;
-        Status = userStackDto.Status;
+        Status = (int)userStackDto.Status;
         CreateDate = userStackDto.CreateDate;
     }
     public UserStackDto ToDTO()
@@ -52,7 +52,7 @@ public class UserStacks
             FrontendUserStack.ToDTO(),
             DatabaseUserStack.ToDTO(),
             Description,
-            Status,
+            (UserStackStatus)Status,
             CreateDate);
     }
 }

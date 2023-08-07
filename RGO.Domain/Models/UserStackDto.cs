@@ -7,6 +7,6 @@
         StacksDto Frontend,
         StacksDto Database,
         string Description,
-        int Status,
+        UserStackStatus Status,
         DateTime CreateDate);
 }
