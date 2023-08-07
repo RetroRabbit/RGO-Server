@@ -36,9 +36,9 @@ public class UserStacks
     {
         Id = userStackDto.Id;
         UserId = userStackDto.UserId;
-        BackendId = userStackDto.BackendId;
-        FrontendId = userStackDto.FrontendId;
-        DatabaseId = userStackDto.DatabaseId;
+        BackendId = userStackDto.Backend.Id;
+        FrontendId = userStackDto.Frontend.Id;
+        DatabaseId = userStackDto.Database.Id;
         Description = userStackDto.Description;
         Status = userStackDto.Status;
         CreateDate = userStackDto.CreateDate;
@@ -48,9 +48,9 @@ public class UserStacks
         return new UserStackDto(
             Id,
             UserId,
-            BackendId,
-            FrontendId,
-            DatabaseId,
+            BackendUserStack.ToDTO(),
+            FrontendUserStack.ToDTO(),
+            DatabaseUserStack.ToDTO(),
             Description,
             Status,
             CreateDate);

@@ -21,19 +21,19 @@ namespace RGO.Repository.Repositories
             Random random = new Random();
 
             StacksDto[] backendStack = await _stackRepository.GetBackendStack();
-            int backendStackId = backendStack[random.Next(0, backendStack.Length)].Id;
+            var backendStackObject = backendStack[random.Next(0, backendStack.Length)];
             StacksDto[] frontendStack = await _stackRepository.GetFrontendStack();
-            int frontendStackId = frontendStack[random.Next(0, frontendStack.Length)].Id;
+            var frontendStackObject = frontendStack[random.Next(0, frontendStack.Length)];
             StacksDto[] databaseStack = await _stackRepository.GetDatabaseStack();
-            int databaseStackId = databaseStack[random.Next(0, databaseStack.Length)].Id;
+            var databaseStackObject = databaseStack[random.Next(0, databaseStack.Length)];
 
             UserStackDto newUserStack = new UserStackDto
             (
                 0,
                 userId,
-                backendStackId,
-                frontendStackId,
-                databaseStackId,
+                backendStackObject,
+                frontendStackObject,
+                databaseStackObject,
                 "Personal project tech stack default text.",
                 1,
                 DateTime.UtcNow);
