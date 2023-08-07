@@ -7,10 +7,12 @@ namespace RGO.Domain.Services;
 public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
+
     public AuthService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
+
     public async Task<bool> CheckUserExist(string email)
     {
         return await _userRepository.UserExists(email);
