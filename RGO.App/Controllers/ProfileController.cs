@@ -14,13 +14,13 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
-    [HttpGet("getuser")]
-    public async Task<IActionResult> GetUser([FromQuery]string email)
+    [HttpGet("getuserprofile")]
+    public async Task<IActionResult> GetUserProfileByEmail([FromQuery]string email)
     {
         try
         {
-        var user = await _profileService.GetUserByEmail(email);
-            return Ok(user);
+        var userProfile = await _profileService.GetUserProfileByEmail(email);
+            return Ok(userProfile);
 
         }
         catch (Exception e)

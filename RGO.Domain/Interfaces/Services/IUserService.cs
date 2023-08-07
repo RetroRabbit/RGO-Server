@@ -10,5 +10,7 @@ namespace RGO.Domain.Interfaces.Services
         /// <param name="userDto"></param>
         /// <returns></returns>
         Task<UserDto> AddUser(UserDto userDto);
+
+        Task<UserDto> GetUserByEmail(string email);
     }
 }
