@@ -7,15 +7,12 @@ namespace RGO.Repository.Repositories
     public class ProfileRepository : IProfileRepository
     {
         private readonly IUserRepository _userRepository;
-        private readonly IProfileRepository _profileRepository;
-
         private readonly DatabaseContext _databaseContext;
 
-        public ProfileRepository(IUserRepository userRepository, IProfileRepository profileRepository, DatabaseContext databaseContext)
+        public ProfileRepository(IUserRepository userRepository, DatabaseContext databaseContext)
         {
             _userRepository = userRepository;
             _databaseContext = databaseContext;
-            _profileRepository = profileRepository;
         }
 
 
