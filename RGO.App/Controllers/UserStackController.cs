@@ -9,11 +9,12 @@ namespace RGO.App.Controllers
     {
         private readonly IUserStackService _userStackService;
         private readonly IProfileService _profileService;
+        private readonly IUserService _userService;
 
-        public UserStackController(IUserStackService userStackService, IProfileService profileService)
+        public UserStackController(IUserStackService userStackService, IUserService userService)
         {
             _userStackService = userStackService;
-            _profileService = profileService;
+            _userService = userService;
         }
 
         [HttpGet("get")]
@@ -21,7 +22,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var user = await _profileService.GetUserByEmail(email);
+                var user = await _userService.GetUserByEmail(email);
                 var userStack = await _userStackService.GetUserStack(user.Id);
                 return Ok(userStack);
             }
@@ -36,7 +37,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var user = await _profileService.GetUserByEmail(email);
+                var user = await _userService.GetUserByEmail(email);
                 var userStack = await _userStackService.AddUserStack(user.Id);
                 return Ok(userStack);
             }
@@ -51,7 +52,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var user = await _profileService.GetUserByEmail(email);
+                var user = await _userService.GetUserByEmail(email);
                 var userStack = await _userStackService.RemoveUserStack(user.Id);
                 return Ok(userStack);
             }
@@ -66,7 +67,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var user = await _profileService.GetUserByEmail(email);
+                var user = await _userService.GetUserByEmail(email);
                 var userStack = await _userStackService.UpdateUserStack(user.Id, description);
                 return Ok(userStack);
             }

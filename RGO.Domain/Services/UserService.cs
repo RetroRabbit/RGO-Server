@@ -23,5 +23,10 @@ namespace RGO.Domain.Services
             var newUser = await _userRepository.AddUser(userDto);
             return newUser;
         }
+
+        public async Task<UserDto> GetUserByEmail(string email)
+        {
+            return await _userRepository.GetUserByEmail(email);
+        }
     }
 }

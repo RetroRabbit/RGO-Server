@@ -6,15 +6,15 @@ namespace RGO.Domain.Services;
 
 public class ProfileService : IProfileService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IProfileRepository _profileRepository;
 
-    public ProfileService(IUserRepository userRepository)
+    public ProfileService(IProfileRepository profileRepository)
     {
-        _userRepository = userRepository;
+        _profileRepository = profileRepository;
     }
 
-    public async Task<UserDto> GetUserByEmail(string email)
+    public async Task<ProfileDto> GetUserProfileByEmail(string email)
     {
-        return await _userRepository.GetUserByEmail(email);
+        return await _profileRepository.GetUserProfileByEmail(email);
     }
 }

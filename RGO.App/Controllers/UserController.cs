@@ -25,7 +25,7 @@ namespace RGO_Backend.Controllers
         {
             try
             {
-                var user = await _profileService.GetUserByEmail(email);
+                var user = await _userService.GetUserByEmail(email);
                 return Ok(user);
 
             }
