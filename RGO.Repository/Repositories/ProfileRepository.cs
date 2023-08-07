@@ -7,17 +7,19 @@ namespace RGO.Repository.Repositories
     public class ProfileRepository : IProfileRepository
     {
         private readonly IUserRepository _userRepository;
+        private readonly IProfileRepository _profileRepository;
 
         private readonly DatabaseContext _databaseContext;
 
-        public ProfileRepository(IUserRepository userRepository, DatabaseContext databaseContext)
+        public ProfileRepository(IUserRepository userRepository, IProfileRepository profileRepository, DatabaseContext databaseContext)
         {
             _userRepository = userRepository;
             _databaseContext = databaseContext;
+            _profileRepository = profileRepository;
         }
 
 
-        async Task<ProfileDto> IProfileRepository.GetUserProfileByEmail(string email)
+        public async Task<ProfileDto> GetUserProfileByEmail(string email)
         {
             var user = await _userRepository.GetUserByEmail(email);
 
