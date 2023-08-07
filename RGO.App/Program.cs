@@ -70,6 +70,9 @@ namespace ROG.App
             builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
             builder.Services.AddScoped<IWorkshopRepository, WorkshopRepository>();
             builder.Services.AddScoped<IWorkshopService, WorkshopService>();
+            builder.Services.AddScoped<IStackRepository, StackRepository>();
+            builder.Services.AddScoped<IUserStackRepository, UserStackRepository>();
+            builder.Services.AddScoped<IUserStackService, UserStackService>();
 
             builder.Services.AddDbContext<DatabaseContext>();
 

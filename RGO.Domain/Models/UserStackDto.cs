@@ -3,8 +3,10 @@
     public record UserStackDto(
         int Id,
         int UserId,
-        int BackendId,
-        int FrontendId,
-        int DatabaseId,
+        StacksDto Backend,
+        StacksDto Frontend,
+        StacksDto Database,
+        string Description,
+        UserStackStatus Status,
         DateTime CreateDate);
 }
