@@ -12,5 +12,12 @@ public interface IUserRepository
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    Task<UserDto> AddUser(UserDto user);  
+    Task<UserDto> AddUser(UserDto user);
+
+    /// <summary>
+    /// Get All Users
+    /// </summary>
+    /// <param></param>
+    /// <returns>A list of UserDto</returns>
+    Task<List<UserDto>> GetUsers();
 }

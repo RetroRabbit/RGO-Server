@@ -45,5 +45,15 @@ namespace RGO.Repository.Repositories
             return newUser.Entity.ToDTO();
         }
 
+        public async Task<List<UserDto>> GetUsers()
+        {
+            var allUsers = await _databaseContext.users.ToListAsync();
+            var allUsersDto = new List<UserDto>();
+            foreach(var user in allUsers)
+            {
+                allUsersDto.Add(user.ToDTO());
+            }
+            return allUsersDto;
+        }
     }
 }
