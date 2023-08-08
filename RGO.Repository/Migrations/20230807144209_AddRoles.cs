@@ -7,13 +7,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RGO.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class NewSetupv20 : Migration
+    public partial class AddRoles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "stacks",
+                name: "Stacks",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -25,7 +25,7 @@ namespace RGO.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_stacks", x => x.id);
+                    table.PrimaryKey("PK_Stacks", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,7 +66,7 @@ namespace RGO.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "User",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -76,14 +76,13 @@ namespace RGO.Repository.Migrations
                     lastName = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
-                    joinDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    status = table.Column<int>(type: "integer", nullable: false)
+                    joinDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.id);
+                    table.PrimaryKey("PK_User", x => x.id);
                     table.ForeignKey(
-                        name: "FK_users_UserGroup_gradGroupId",
+                        name: "FK_User_UserGroup_gradGroupId",
                         column: x => x.gradGroupId,
                         principalTable: "UserGroup",
                         principalColumn: "id");
@@ -124,15 +123,15 @@ namespace RGO.Repository.Migrations
                 {
                     table.PrimaryKey("PK_Certifications", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Certifications_users_userId",
+                        name: "FK_Certifications_User_userId",
                         column: x => x.userId,
-                        principalTable: "users",
+                        principalTable: "User",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "projects",
+                name: "Projects",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -144,17 +143,37 @@ namespace RGO.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_projects", x => x.id);
+                    table.PrimaryKey("PK_Projects", x => x.id);
                     table.ForeignKey(
-                        name: "FK_projects_users_userId",
+                        name: "FK_Projects_User_userId",
                         column: x => x.userId,
-                        principalTable: "users",
+                        principalTable: "User",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "skill",
+                name: "roles",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_roles", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_roles_User_userId",
+                        column: x => x.userId,
+                        principalTable: "User",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Skill",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -165,17 +184,17 @@ namespace RGO.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_skill", x => x.id);
+                    table.PrimaryKey("PK_Skill", x => x.id);
                     table.ForeignKey(
-                        name: "FK_skill_users_userId",
+                        name: "FK_Skill_User_userId",
                         column: x => x.userId,
-                        principalTable: "users",
+                        principalTable: "User",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "social",
+                name: "Social",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -188,11 +207,11 @@ namespace RGO.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_social", x => x.id);
+                    table.PrimaryKey("PK_Social", x => x.id);
                     table.ForeignKey(
-                        name: "FK_social_users_userId",
+                        name: "FK_Social_User_userId",
                         column: x => x.userId,
-                        principalTable: "users",
+                        principalTable: "User",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -207,33 +226,35 @@ namespace RGO.Repository.Migrations
                     backendId = table.Column<int>(type: "integer", nullable: false),
                     frontendId = table.Column<int>(type: "integer", nullable: false),
                     databaseId = table.Column<int>(type: "integer", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
                     createDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserStacks", x => x.id);
                     table.ForeignKey(
-                        name: "FK_UserStacks_stacks_backendId",
+                        name: "FK_UserStacks_Stacks_backendId",
                         column: x => x.backendId,
-                        principalTable: "stacks",
+                        principalTable: "Stacks",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserStacks_stacks_databaseId",
+                        name: "FK_UserStacks_Stacks_databaseId",
                         column: x => x.databaseId,
-                        principalTable: "stacks",
+                        principalTable: "Stacks",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserStacks_stacks_frontendId",
+                        name: "FK_UserStacks_Stacks_frontendId",
                         column: x => x.frontendId,
-                        principalTable: "stacks",
+                        principalTable: "Stacks",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserStacks_users_userId",
+                        name: "FK_UserStacks_User_userId",
                         column: x => x.userId,
-                        principalTable: "users",
+                        principalTable: "User",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -249,23 +270,28 @@ namespace RGO.Repository.Migrations
                 column: "groupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_projects_userId",
-                table: "projects",
+                name: "IX_Projects_userId",
+                table: "Projects",
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_skill_userId",
-                table: "skill",
+                name: "IX_roles_userId",
+                table: "roles",
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_social_userId",
-                table: "social",
+                name: "IX_Skill_userId",
+                table: "Skill",
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_gradGroupId",
-                table: "users",
+                name: "IX_Social_userId",
+                table: "Social",
+                column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_gradGroupId",
+                table: "User",
                 column: "gradGroupId");
 
             migrationBuilder.CreateIndex(
@@ -301,13 +327,16 @@ namespace RGO.Repository.Migrations
                 name: "Certifications");
 
             migrationBuilder.DropTable(
-                name: "projects");
+                name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "skill");
+                name: "roles");
 
             migrationBuilder.DropTable(
-                name: "social");
+                name: "Skill");
+
+            migrationBuilder.DropTable(
+                name: "Social");
 
             migrationBuilder.DropTable(
                 name: "UserStacks");
@@ -316,10 +345,10 @@ namespace RGO.Repository.Migrations
                 name: "Workshop");
 
             migrationBuilder.DropTable(
-                name: "stacks");
+                name: "Stacks");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Events");

@@ -1,4 +1,4 @@
-﻿namespace RGO.Domain.Models
+﻿namespace RGO.Domain.Enums
 {
     public enum UserStackStatus
     {

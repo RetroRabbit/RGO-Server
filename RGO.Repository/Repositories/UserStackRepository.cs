@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RGO.Domain.Enums;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Models;
 using RGO.Repository.Entities;

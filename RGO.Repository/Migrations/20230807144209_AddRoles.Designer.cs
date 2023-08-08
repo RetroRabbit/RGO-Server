@@ -12,8 +12,8 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230804073029_ChangingTableNames")]
-    partial class ChangingTableNames
+    [Migration("20230807144209_AddRoles")]
+    partial class AddRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,6 +134,31 @@ namespace RGO.Repository.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Description");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("roles");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
@@ -271,10 +296,6 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("lastName");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer")
                         .HasColumnName("type");
@@ -326,9 +347,18 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("databaseId");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
                     b.Property<int>("FrontendId")
                         .HasColumnType("integer")
                         .HasColumnName("frontendId");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -400,6 +430,17 @@ namespace RGO.Repository.Migrations
                 {
                     b.HasOne("RGO.Repository.Entities.User", "User")
                         .WithMany("UserProjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.Role", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

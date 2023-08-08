@@ -1,4 +1,5 @@
-﻿using RGO.Domain.Models;
+﻿using RGO.Domain.Enums;
+using RGO.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

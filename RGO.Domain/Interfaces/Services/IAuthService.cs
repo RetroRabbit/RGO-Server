@@ -1,9 +1,10 @@
-﻿using RGO.Domain.Models;
+﻿using RGO.Domain.Enums;
 
 namespace RGO.Domain.Interfaces.Services;
 
 public interface IAuthService
 {
     Task<bool> CheckUserExist(string email);
-    Task<UserDto> GetUserByEmail(string email);
+
+    Task<List<UserRole>> GetUserRoles(string email);
 }

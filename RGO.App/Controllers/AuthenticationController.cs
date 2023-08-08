@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RGO.Domain.Enums;
 using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
 
 namespace RGO.App.Controllers;
 
@@ -25,9 +25,9 @@ public class AuthenticationController : ControllerBase
 
             if (!userExists) throw new Exception("User not found");
 
-            UserDto foundUser = await _authService.GetUserByEmail(email["email"]);
+            List<UserRole> roles = await _authService.GetUserRoles(email["email"]);
 
-            return Ok(foundUser.Type);
+            return Ok(roles);
         }
         catch (Exception ex)
         {

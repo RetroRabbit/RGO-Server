@@ -1,6 +1,6 @@
-﻿using RGO.Domain.Interfaces.Repository;
+﻿using RGO.Domain.Enums;
+using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
 
 namespace RGO.Domain.Services;
 
@@ -18,10 +18,11 @@ public class AuthService : IAuthService
         return await _userRepository.UserExists(email);
     }
 
-    public async Task<UserDto> GetUserByEmail(string email)
+    public async Task<List<UserRole>> GetUserRoles(string email)
     {
-        UserDto user = await _userRepository.GetUserByEmail(email);
-
-        return user;
+        List<int> roles = await _userRepository.GetUserRoles(email);
+        return roles
+            .Select(role => (UserRole)role)
+            .ToList();
     }
 }

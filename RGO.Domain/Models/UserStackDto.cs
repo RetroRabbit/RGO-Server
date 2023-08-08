@@ -1,4 +1,6 @@
-﻿namespace RGO.Domain.Models
+﻿using RGO.Domain.Enums;
+
+namespace RGO.Domain.Models
 {
     public record UserStackDto(
         int Id,
