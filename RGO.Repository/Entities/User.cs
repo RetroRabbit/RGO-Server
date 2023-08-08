@@ -29,8 +29,6 @@ public class User
     [Column("joinDate")]
     public DateTime JoinDate { get; set; }
 
-    [Column("status")]
-    public int Status { get; set; }
     public virtual UserGroup? UserGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }
     public virtual List<Skill> Skills { get; set; }
@@ -46,7 +44,6 @@ public class User
         Email = user.Email;
         Type = user.Type;
         JoinDate = user.JoinDate;
-        Status = user.Status;
     }
     public UserDto ToDTO()
     {
@@ -57,7 +54,6 @@ public class User
             LastName,
             Email,
             Type,
-            JoinDate,
-            Status);
+            JoinDate);
     }
 }

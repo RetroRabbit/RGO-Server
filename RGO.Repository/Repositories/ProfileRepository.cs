@@ -27,7 +27,6 @@ namespace RGO.Repository.Repositories
             string Email    = user.Email;
             int Type = user.Type;
             DateTime JoinDate = DateTime.Now;
-            int Status = user.Status;
 
             var projects = await _databaseContext.projects.Where(projects => projects.UserId == user.Id).Select(project => project.ToDTO()).ToListAsync();
             var skills = await _databaseContext.skill.Where(skills => skills.UserId == user.Id).Select(skill => skill.ToDTO()).ToListAsync();
@@ -44,7 +43,6 @@ namespace RGO.Repository.Repositories
                     Email,
                     Type,
                     JoinDate,
-                    Status,
                     skills,
                     social,
                     certs,

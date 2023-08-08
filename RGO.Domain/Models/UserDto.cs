@@ -7,7 +7,6 @@
         string LastName,
         string Email,
         int Type,
-        DateTime JoinDate,
-        int Status
+        DateTime JoinDate
         );
 }

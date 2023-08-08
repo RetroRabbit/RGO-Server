@@ -14,7 +14,6 @@ namespace RGO.Domain.Models
         string Email,
         int Type,
         DateTime JoinDate,
-        int Status,
         List<SkillDto> Skills,
         List<SocialDto> Socials,
         List<CertificationsDto> Certifications,

@@ -45,5 +45,27 @@ namespace RGO.Repository.Repositories
             return newUser.Entity.ToDTO();
         }
 
+        public async Task<List<int>> GetUserRoles(string email)
+        {
+            UserDto user = await GetUserByEmail(email);
+
+            List<int> roles = await _databaseContext.userRoles
+                .Where(ur => ur.UserId == user.Id)
+                .Select(ur => GetRole(ur.Role.Description.ToUpper()))
+                .ToListAsync();
+
+            return roles;
+        }
+
+        private static int GetRole(string role)
+        {
+            return role.ToUpper() switch
+            {
+                "GRAD" => 0,
+                "PRESENTER" => 1,
+                "MENTOR" => 2,
+                _ => 3,
+            };
+        }
     }
 }
