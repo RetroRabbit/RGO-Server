@@ -7,4 +7,5 @@ public interface IAuthService
     Task<bool> CheckUserExist(string email);
 
     Task<List<UserRole>> GetUserRoles(string email);
+    Task<string> GenerateToken(string email);
 }

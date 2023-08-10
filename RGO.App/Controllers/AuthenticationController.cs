@@ -25,9 +25,11 @@ public class AuthenticationController : ControllerBase
 
             if (!userExists) throw new Exception("User not found");
 
-            List<UserRole> roles = await _authService.GetUserRoles(email["email"]);
+            // List<UserRole> roles = await _authService.GetUserRoles(email["email"]);
 
-            return Ok(roles);
+            string token = await _authService.GenerateToken(email["email"]);
+
+            return Ok(token);
         }
         catch (Exception ex)
         {

@@ -1,14 +1,19 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Npgsql.Internal.TypeHandlers.DateTimeHandlers;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Services;
 using RGO.Repository;
+using RGO.Repository.Entities;
 using RGO.Repository.Repositories;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace ROG.App
 {
@@ -76,6 +81,23 @@ namespace ROG.App
 
             builder.Services.AddDbContext<DatabaseContext>();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero,
+                        ValidIssuer = "API",
+                        ValidAudience = "Client",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key for the rabbit "))
+                    };
+                });
+            builder.Services.AddAuthorization();
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -88,7 +110,7 @@ namespace ROG.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
-
+            
             app.UseHttpsRedirection();
 
             app.Use( async (context, next) =>
