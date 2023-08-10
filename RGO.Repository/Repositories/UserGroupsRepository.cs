@@ -17,13 +17,8 @@ public class UserGroupsRepository : IUserGroupsRepository
 
     public async Task<List<UserGroupDto>> GetUserGroups()
     {
-        var userGroups = await _databaseContext.usergroups.ToListAsync();
-        var userGroupsDto = new List<UserGroupDto>();
-        foreach (var userGroup in userGroups)
-        {
-            userGroupsDto.Add(userGroup.ToDTO());
-        }
-        
-        return userGroupsDto;
+        return await _databaseContext.usergroups
+            .Select(group => group.ToDTO())
+            .ToListAsync();
     }
 }
