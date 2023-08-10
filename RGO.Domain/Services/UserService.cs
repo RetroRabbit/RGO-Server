@@ -12,10 +12,12 @@ namespace RGO.Domain.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserGroupsRepository _userGroupsRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserGroupsRepository userGroupsRepository)
         {
             _userRepository = userRepository;
+            _userGroupsRepository = userGroupsRepository;
         }
 
         public async Task<UserDto> AddUser(UserDto userDto)
@@ -31,6 +33,11 @@ namespace RGO.Domain.Services
         public async Task<List<UserDto>> GetUsers()
         {
             return await _userRepository.GetUsers();
+        }
+
+        public async Task<List<UserGroupDto>> GetUserGroups()
+        {
+            return await _userGroupsRepository.GetUserGroups();
         }
     }
 }

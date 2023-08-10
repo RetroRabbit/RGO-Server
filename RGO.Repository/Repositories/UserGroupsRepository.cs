@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Models;
+using RGO.Repository.Entities;
 
 namespace RGO.Repository.Repositories;
 
@@ -14,11 +15,15 @@ public class UserGroupsRepository : IUserGroupsRepository
     }
 
 
-    public async Task<UserGroupDto[]> GetUserGroups()
+    public async Task<List<UserGroupDto>> GetUserGroups()
     {
-        return await _databaseContext.usergroups
-            .Select(group => new UserGroupDto(group.Id, group.Title))
-            .ToArrayAsync();
+        var userGroups = await _databaseContext.usergroups.ToListAsync();
+        var userGroupsDto = new List<UserGroupDto>();
+        foreach (var userGroup in userGroups)
+        {
+            userGroupsDto.Add(userGroup.ToDTO());
+        }
+        
+        return userGroupsDto;
     }
-
 }
