@@ -51,7 +51,7 @@ namespace RGO_Backend.Controllers
              }
          }
 
-        [HttpGet("allusers")]
+        [HttpGet("get")]
         public async Task<IActionResult> GetUsers()
         {
             try
