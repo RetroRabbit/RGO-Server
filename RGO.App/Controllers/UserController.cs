@@ -50,5 +50,20 @@ namespace RGO_Backend.Controllers
                 return BadRequest(e.Message);
              }
          }
+
+        [HttpGet("get")]
+        public async Task<IActionResult> GetUsers()
+        {
+            try
+            {
+                var user = await _userService.GetUsers();
+                return Ok(user);
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
