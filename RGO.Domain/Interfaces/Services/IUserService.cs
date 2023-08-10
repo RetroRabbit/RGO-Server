@@ -19,5 +19,11 @@ namespace RGO.Domain.Interfaces.Services
         /// <param></param>
         /// <returns>A list of UserDto</returns>
         Task<List<UserDto>> GetUsers();
+
+        /// <summary>
+        /// Retrieves user groups
+        /// </summary>
+        /// <returns>A list of user groupsS</returns>
+        Task<List<UserGroupDto>> GetUserGroups();
     }
 }
