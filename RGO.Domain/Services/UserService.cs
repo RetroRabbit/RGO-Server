@@ -28,5 +28,9 @@ namespace RGO.Domain.Services
         {
             return await _userRepository.GetUserByEmail(email);
         }
+        public async Task<List<UserDto>> GetUsers()
+        {
+            return await _userRepository.GetUsers();
+        }
     }
 }
