@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
-using RGO.Domain.Services;
 using RGO.Repository.Entities;
 using System.Reflection.Metadata.Ecma335;
 
@@ -51,20 +50,5 @@ namespace RGO_Backend.Controllers
                 return BadRequest(e.Message);
              }
          }
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] UserDto updatedUserDto)
-        {
-            try
-            {
-                UserDto updatedUser = await _userService.UpdateUser(email, updatedUserDto);
-                return Ok(updatedUser);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
-
 }
-

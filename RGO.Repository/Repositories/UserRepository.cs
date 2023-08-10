@@ -33,6 +33,7 @@ namespace RGO.Repository.Repositories
             return user.ToDTO();
         }
 
+
         public async Task<UserDto> AddUser(UserDto userDto)
         {
             bool userExists = await UserExists(userDto.Email);
@@ -43,45 +44,6 @@ namespace RGO.Repository.Repositories
             await _databaseContext.SaveChangesAsync();
             return newUser.Entity.ToDTO();
         }
-
-        public async Task<UserDto> UpdateUser(string email, UserDto updatedUserDto)
-        {
-            User? existingUser = await _databaseContext.users.FirstOrDefaultAsync(u => u.Email == email);
-
-            if (existingUser == null)
-            {
-                throw new Exception("User not found");
-            }
-
-            existingUser.FirstName = updatedUserDto.FirstName;
-            existingUser.LastName = updatedUserDto.LastName;
-            existingUser.Email = updatedUserDto.Email;
-            existingUser.Type = updatedUserDto.Type;
-            existingUser.JoinDate = updatedUserDto.JoinDate;
-            existingUser.Status = updatedUserDto.Status;
-            existingUser.Bio=updatedUserDto.Bio;
-            existingUser.Level = updatedUserDto.Level;
-            existingUser.Phone= updatedUserDto.Phone;
-            
-            var  currentUser =_databaseContext.users.Update(existingUser);
-            await _databaseContext.SaveChangesAsync();
-
-            return currentUser.Entity.ToDTO();
-        }
-        public async Task<User?> GetUserById(int userId)
-        {
-            return await _databaseContext.users.Include(u => u.Skills)
-                                                .Include(u => u.UserProjects)
-                                                .Include(u => u.UserCertifications)
-                                                .Include(u => u.Socials)
-                                                .FirstOrDefaultAsync(u => u.Id == userId);
-        }
-
-        public async Task SaveChanges()
-        {
-            await _databaseContext.SaveChangesAsync();
-        }
-
 
     }
 }

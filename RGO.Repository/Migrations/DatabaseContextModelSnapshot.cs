@@ -245,11 +245,6 @@ namespace RGO.Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Bio");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text")
@@ -272,15 +267,6 @@ namespace RGO.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("lastName");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("integer")
-                        .HasColumnName("Level");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Phone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer")
