@@ -8,6 +8,10 @@
         string Email,
         int Type,
         DateTime JoinDate,
-        int Status
+        int Status,
+        string Bio, 
+        int Level,
+        string Phone
         );
+
 }
