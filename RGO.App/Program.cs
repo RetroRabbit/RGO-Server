@@ -77,6 +77,8 @@ namespace ROG.App
             builder.Services.AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 
             if (app.Environment.IsDevelopment())
             {
@@ -88,6 +90,7 @@ namespace ROG.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
+            
 
             app.UseHttpsRedirection();
 
