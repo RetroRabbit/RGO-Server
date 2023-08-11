@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
+using RGO.Domain.Services;
 using RGO.Repository.Entities;
 using System.Reflection.Metadata.Ecma335;
 
@@ -50,6 +51,19 @@ namespace RGO_Backend.Controllers
                 return BadRequest(e.Message);
              }
          }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] ProfileDto profile)
+        {
+            try
+            {
+                ProfileDto updatedProfile = await _userService.UpdateUser(email, profile);
+                return Ok(updatedProfile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("users/get")]
         public async Task<IActionResult> GetUsers()
@@ -81,4 +95,6 @@ namespace RGO_Backend.Controllers
            
         }
     }
+
 }
+
