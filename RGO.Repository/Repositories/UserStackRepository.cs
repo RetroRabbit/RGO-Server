@@ -59,8 +59,6 @@ namespace RGO.Repository.Repositories
             {
                 throw new Exception($"Failed to create Tech Stack for User {userId}.(Error: {ex.Message})");
             }
-
-
         }
 
         public async Task<UserStackDto> GetUserStack(int userId)
