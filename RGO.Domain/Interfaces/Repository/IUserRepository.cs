@@ -19,7 +19,7 @@ public interface IUserRepository
     /// </summary>
     /// <param></param>
     /// <returns>Updated user profile</returns>
-    Task<UserDto> UpdateUser(string email, UserDto user);
+    Task<UserDto> UpdateUser(string email, ProfileDto updatedProfile);
 
     /// <summary>
     /// Get All Users

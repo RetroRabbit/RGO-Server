@@ -11,7 +11,7 @@ namespace RGO.Domain.Interfaces.Services
         /// <returns></returns>
         Task<UserDto> AddUser(UserDto userDto);
         Task<UserDto> GetUserByEmail(string email);
-        Task<UserDto> UpdateUser(string email, UserDto updatedUserDto);
+        Task<ProfileDto> UpdateUser(string email, ProfileDto profile);
         
         /// <summary>
         /// Get All users

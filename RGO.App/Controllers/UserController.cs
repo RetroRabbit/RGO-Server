@@ -52,12 +52,12 @@ namespace RGO_Backend.Controllers
              }
          }
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] UserDto updatedUserDto)
+        public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] ProfileDto profile)
         {
             try
             {
-                UserDto updatedUser = await _userService.UpdateUser(email, updatedUserDto);
-                return Ok(updatedUser);
+                ProfileDto updatedProfile = await _userService.UpdateUser(email, profile);
+                return Ok(updatedProfile);
             }
             catch (Exception ex)
             {
