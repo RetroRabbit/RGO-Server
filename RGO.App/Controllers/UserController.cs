@@ -7,7 +7,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace RGO_Backend.Controllers
 {
-    [Route("/users/")]
+    [Route("/user/")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace RGO_Backend.Controllers
             _userService = userService;
         }
 
-        [HttpGet("getuser")]
+        [HttpGet("get")]
         public async Task<IActionResult> GetUser([FromQuery] string email)
         {
             try
@@ -65,7 +65,7 @@ namespace RGO_Backend.Controllers
             }
         }
 
-        [HttpGet("get")]
+        [HttpGet("users/get")]
         public async Task<IActionResult> GetUsers()
         {
             try
@@ -78,6 +78,21 @@ namespace RGO_Backend.Controllers
             {
                 return BadRequest(e.Message);
             }
+        }
+
+        [HttpGet("groups")]
+        public async Task<IActionResult> GetUserGroups()
+        {
+            try
+            {
+                List<UserGroupDto> userGroups = await _userService.GetUserGroups();
+                return Ok(userGroups);
+            }
+            catch(Exception e) 
+            {
+                return BadRequest(e.Message);
+            }
+           
         }
     }
 
