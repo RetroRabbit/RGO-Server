@@ -40,7 +40,6 @@ public class User
     public int Level { get; set; }
 
     [Column("Phone")]
-
     public string Phone { get; set; }
     public virtual UserGroup? UserGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }

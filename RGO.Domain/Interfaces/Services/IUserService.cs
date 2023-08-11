@@ -10,7 +10,19 @@ namespace RGO.Domain.Interfaces.Services
         /// <param name="userDto"></param>
         /// <returns></returns>
         Task<UserDto> AddUser(UserDto userDto);
+
+        /// <summary>
+        /// Get a user
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         Task<UserDto> GetUserByEmail(string email);
+
+        /// <summary>
+        /// Update user profile
+        /// </summary>
+        /// <param></param>
+        /// <returns>user profile update of ProfileDto</returns>
         Task<ProfileDto> UpdateUser(string email, ProfileDto profile);
         
         /// <summary>

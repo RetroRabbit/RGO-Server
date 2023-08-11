@@ -17,7 +17,8 @@ public interface IUserRepository
     /// <summary>
     /// Update User Profile 
     /// </summary>
-    /// <param></param>
+    /// <param name="email"></param>
+    /// <param name="updatedProfile"></param>
     /// <returns>Updated user profile</returns>
     Task<UserDto> UpdateUser(string email, ProfileDto updatedProfile);
 

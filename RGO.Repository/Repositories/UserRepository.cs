@@ -57,7 +57,6 @@ namespace RGO.Repository.Repositories
                 throw new Exception("User not found");
             }
 
-            // Update user properties
             existingUser.FirstName = updatedProfile.FirstName;
             existingUser.LastName = updatedProfile.LastName;
             existingUser.Email = updatedProfile.Email;
@@ -68,7 +67,6 @@ namespace RGO.Repository.Repositories
             existingUser.Level = updatedProfile.Level;
             existingUser.Phone = updatedProfile.Phone;
 
-            // Clear existing related entities
             existingUser.Skills.Clear();
             existingUser.Socials.Clear();
             existingUser.UserProjects.Clear();
@@ -117,7 +115,6 @@ namespace RGO.Repository.Repositories
                     Description = updatedUserCertifications.Description,  
                 });
             }
-            // Update the existing user entity
             _databaseContext.users.Update(existingUser);
             await _databaseContext.SaveChangesAsync();
 
