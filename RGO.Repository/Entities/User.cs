@@ -11,6 +11,7 @@ public class User
     [Key]
     [Column("id")]
     public int Id { get; set; }
+
     [Column("gradGroupId")]
     [ForeignKey("UserGroup")]
     public int? GradGroupId { get; set; }
@@ -44,12 +45,15 @@ public class User
 
     [Column("gradType")]
     public int? GradType { get; set; }
+
     public virtual GradGroup? FradGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }
     public virtual List<Skill> Skills { get; set; }
     public virtual List<Projects> UserProjects { get; set; }
     public virtual List<Social> Socials { get; set; }
+
     public User() { }
+
     public User(UserDto user)
     {
         Id = user.Id;
@@ -66,6 +70,7 @@ public class User
         GradType = user.GradType;
 
     }
+
     public UserDto ToDTO()
     {
         return new UserDto(
