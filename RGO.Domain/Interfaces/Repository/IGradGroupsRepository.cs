@@ -7,6 +7,6 @@ public interface IGradGroupsRepository
     /// <summary>
     /// Retrieve Grad Groups
     /// </summary>
-    /// <returns>List of User Groups</returns>
+    /// <returns>List of Grad Groups</returns>
     public Task<List<GradGroupDto>> GetGradGroups();
 }
