@@ -24,7 +24,7 @@ public class Events {
     public DateTime EndDate { get; set; }
     [Column("eventType")]
     public int EventType { get; set; }
-    public virtual UserGroup? UserGroup { get; set; }
+    public virtual GradGroup? GradGroup { get; set; }
     public Events() { }
     public Events(EventsDto eventsDto)
     {

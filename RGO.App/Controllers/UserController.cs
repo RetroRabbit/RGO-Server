@@ -85,7 +85,7 @@ namespace RGO_Backend.Controllers
         {
             try
             {
-                List<UserGroupDto> userGroups = await _userService.GetUserGroups();
+                List<GradGroupDto> userGroups = await _userService.GetGradGroups();
                 return Ok(userGroups);
             }
             catch(Exception e) 

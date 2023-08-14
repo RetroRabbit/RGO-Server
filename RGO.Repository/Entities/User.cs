@@ -33,15 +33,18 @@ public class User
     [Column("status")]
     public int Status { get; set; }
 
-    [Column("Bio")]
+    [Column("bio")]
     public string Bio { get; set; }
 
-    [Column("Level")]
+    [Column("level")]
     public int Level { get; set; }
 
-    [Column("Phone")]
+    [Column("phone")]
     public string Phone { get; set; }
-    public virtual UserGroup? UserGroup { get; set; }
+
+    [Column("gradType")]
+    public int? GradType { get; set; }
+    public virtual GradGroup? FradGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }
     public virtual List<Skill> Skills { get; set; }
     public virtual List<Projects> UserProjects { get; set; }
@@ -60,6 +63,7 @@ public class User
         Bio = user.Bio;
         Level = user.Level;
         Phone = user.Phone;
+        GradType = user.GradType;
 
     }
     public UserDto ToDTO()
@@ -75,6 +79,7 @@ public class User
             Status,
             Bio,
             Level,
-            Phone);
+            Phone,
+            GradType);
     }
 }
