@@ -292,6 +292,19 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("lastName");
 
+                    b.Property<int>("Level")
+                        .HasColumnType("integer")
+                        .HasColumnName("Level");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Phone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
                     b.Property<int>("Type")
                         .HasColumnType("integer")
                         .HasColumnName("type");

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
+[Authorize(Policy = "isAdmin")]
 [Route("/profile/")]
 [ApiController]
 public class ProfileController : ControllerBase

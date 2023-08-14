@@ -48,8 +48,8 @@ public class AuthService : IAuthService
                 new Claim(ClaimTypes.Role, rolesString)
             }),
             Expires = DateTime.UtcNow.AddDays(7),
-            Issuer = "RGO API",
-            Audience = "RGO Client",
+            Issuer = "API",
+            Audience = "Client",
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

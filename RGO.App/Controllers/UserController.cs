@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
-using RGO.Domain.Services;
-using RGO.Repository.Entities;
-using System.Reflection.Metadata.Ecma335;
 
 namespace RGO_Backend.Controllers
 {
+    [Authorize(Policy = "isAdmin")]
+    [Authorize(Policy = "isGrad")]
     [Route("/user/")]
     [ApiController]
     public class UserController : ControllerBase

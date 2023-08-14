@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Enums;
 using RGO.Domain.Interfaces.Services;
 
@@ -16,6 +17,7 @@ public class AuthenticationController : ControllerBase
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> LoginUser([FromBody] Dictionary<string, string> email)
     {
@@ -30,6 +32,21 @@ public class AuthenticationController : ControllerBase
             string token = await _authService.GenerateToken(email["email"]);
 
             return Ok(token);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpGet("roles")]
+    public async Task<IActionResult> GetUserRoles([FromQuery] string email)
+    {
+        try
+        {
+            List<UserRole> roles = await _authService.GetUserRoles(email);
+
+            return Ok(roles);
         }
         catch (Exception ex)
         {

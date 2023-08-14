@@ -13,6 +13,7 @@ using RGO.Repository.Entities;
 using RGO.Repository.Repositories;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace ROG.App
@@ -95,8 +96,35 @@ namespace ROG.App
                         ValidAudience = "Client",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key for the rabbit "))
                     };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = context =>
+                        {
+                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                            Claim? roleClaims = claimsIdentity.Claims
+                                .FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                            if (roleClaims != null)
+                            {
+                                var roles = roleClaims.Value.Split(",");
+                                foreach (var role in roles)
+                                {
+                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+                                }
+                                claimsIdentity.RemoveClaim(roleClaims);
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    "isAdmin",
+                    policy => policy.RequireRole("ADMIN"));
+                options.AddPolicy(
+                    "isGrad",
+                    policy => policy.RequireRole("GRAD"));
+            });
 
             var app = builder.Build();
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -115,7 +143,7 @@ namespace ROG.App
             
             app.UseHttpsRedirection();
 
-            app.Use( async (context, next) =>
+            /*app.Use( async (context, next) =>
             {
                 if (!context.Request.Path.ToString().Contains("Authentication"))
                 {
@@ -132,7 +160,7 @@ namespace ROG.App
                     }
                 }
                 await next(context);
-            });
+            });*/
 
             app.UseAuthorization();
 

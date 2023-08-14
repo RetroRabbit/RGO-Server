@@ -7,11 +7,24 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RGO.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRoles : Migration
+    public partial class NewUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "roles",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_roles", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Stacks",
                 columns: table => new
@@ -76,7 +89,11 @@ namespace RGO.Repository.Migrations
                     lastName = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
-                    joinDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    joinDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
+                    Bio = table.Column<string>(type: "text", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,26 +170,6 @@ namespace RGO.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "roles",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    userId = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_roles", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_roles_User_userId",
-                        column: x => x.userId,
-                        principalTable: "User",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Skill",
                 columns: table => new
                 {
@@ -212,6 +209,32 @@ namespace RGO.Repository.Migrations
                         name: "FK_Social_User_userId",
                         column: x => x.userId,
                         principalTable: "User",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "userRoles",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    roleId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_userRoles", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_userRoles_User_userId",
+                        column: x => x.userId,
+                        principalTable: "User",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_userRoles_roles_roleId",
+                        column: x => x.roleId,
+                        principalTable: "roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -275,11 +298,6 @@ namespace RGO.Repository.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_roles_userId",
-                table: "roles",
-                column: "userId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Skill_userId",
                 table: "Skill",
                 column: "userId");
@@ -293,6 +311,16 @@ namespace RGO.Repository.Migrations
                 name: "IX_User_gradGroupId",
                 table: "User",
                 column: "gradGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userRoles_roleId",
+                table: "userRoles",
+                column: "roleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userRoles_userId",
+                table: "userRoles",
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserStacks_backendId",
@@ -330,19 +358,22 @@ namespace RGO.Repository.Migrations
                 name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "roles");
-
-            migrationBuilder.DropTable(
                 name: "Skill");
 
             migrationBuilder.DropTable(
                 name: "Social");
 
             migrationBuilder.DropTable(
+                name: "userRoles");
+
+            migrationBuilder.DropTable(
                 name: "UserStacks");
 
             migrationBuilder.DropTable(
                 name: "Workshop");
+
+            migrationBuilder.DropTable(
+                name: "roles");
 
             migrationBuilder.DropTable(
                 name: "Stacks");
