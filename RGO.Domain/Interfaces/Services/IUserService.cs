@@ -33,7 +33,7 @@ namespace RGO.Domain.Interfaces.Services
         Task<List<UserDto>> GetUsers();
 
         /// <summary>
-        /// Retrieves User Groups
+        /// Retrieves Grad Groups
         /// </summary>
         /// <returns>A list of Grad Groups</returns>
         Task<List<GradGroupDto>> GetGradGroups();
