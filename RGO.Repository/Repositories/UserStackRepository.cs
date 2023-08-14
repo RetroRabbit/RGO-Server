@@ -10,15 +10,25 @@ namespace RGO.Repository.Repositories
     {
         private readonly DatabaseContext _databaseContext;
         private readonly IStackRepository _stackRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserStackRepository(DatabaseContext databaseContext, IStackRepository stackRepository)
+        public UserStackRepository(DatabaseContext databaseContext, IStackRepository stackRepository, IUserRepository userRepository)
         {
             _databaseContext = databaseContext;
             _stackRepository = stackRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<UserStackDto> AddUserStack(int userId)
         {
+            var checkStack = await HasTechStack(userId);
+            
+            if (checkStack)
+            {
+                UserStackDto stack = await GetUserStack(userId);
+                return stack;
+            }
+                
             Random random = new Random();
 
             List<StacksDto> backendStack = await _stackRepository.GetBackendStack();
@@ -62,7 +72,7 @@ namespace RGO.Repository.Repositories
                 .FirstOrDefaultAsync(x => x.UserId == userId);
 
             if (userStack == null)
-                throw new Exception("User stack not found");
+                return null;
 
             return userStack.ToDTO();
         }

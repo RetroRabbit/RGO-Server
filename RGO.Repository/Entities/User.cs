@@ -1,6 +1,7 @@
 ﻿using RGO.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.Security;
 
 namespace RGO.Repository.Entities;
 
@@ -29,6 +30,17 @@ public class User
     [Column("joinDate")]
     public DateTime JoinDate { get; set; }
 
+    [Column("status")]
+    public int Status { get; set; }
+
+    [Column("Bio")]
+    public string Bio { get; set; }
+
+    [Column("Level")]
+    public int Level { get; set; }
+
+    [Column("Phone")]
+    public string Phone { get; set; }
     public virtual UserGroup? UserGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }
     public virtual List<Skill> Skills { get; set; }
@@ -44,6 +56,11 @@ public class User
         Email = user.Email;
         Type = user.Type;
         JoinDate = user.JoinDate;
+        Status = user.Status;
+        Bio = user.Bio;
+        Level = user.Level;
+        Phone = user.Phone;
+
     }
     public UserDto ToDTO()
     {
@@ -54,6 +71,10 @@ public class User
             LastName,
             Email,
             Type,
-            JoinDate);
+            JoinDate,
+            Status,
+            Bio,
+            Level,
+            Phone);
     }
 }

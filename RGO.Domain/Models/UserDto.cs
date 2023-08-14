@@ -7,6 +7,11 @@
         string LastName,
         string Email,
         int Type,
-        DateTime JoinDate
+        DateTime JoinDate,
+        int Status,
+        string Bio, 
+        int Level,
+        string Phone
         );
+
 }

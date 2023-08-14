@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Models;
+using RGO.Repository.Entities;
+using System.Linq;
 
 namespace RGO.Repository.Repositories
 {
@@ -27,6 +29,10 @@ namespace RGO.Repository.Repositories
             string Email    = user.Email;
             int Type = user.Type;
             DateTime JoinDate = DateTime.Now;
+            int Status = user.Status;
+            string Bio= user.Bio;
+            int Level= user.Level;
+            string Phone=user.Phone;
 
             var projects = await _databaseContext.projects.Where(projects => projects.UserId == user.Id).Select(project => project.ToDTO()).ToListAsync();
             var skills = await _databaseContext.skill.Where(skills => skills.UserId == user.Id).Select(skill => skill.ToDTO()).ToListAsync();
@@ -43,6 +49,10 @@ namespace RGO.Repository.Repositories
                     Email,
                     Type,
                     JoinDate,
+                    Status,
+                    Bio,
+                    Level,
+                    Phone,
                     skills,
                     social,
                     certs,

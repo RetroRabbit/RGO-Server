@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
+using RGO.Domain.Services;
 using RGO.Repository.Entities;
 using System.Reflection.Metadata.Ecma335;
 
 namespace RGO_Backend.Controllers
 {
-    [Route("/users/")]
+    [Route("/user/")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -20,7 +21,7 @@ namespace RGO_Backend.Controllers
             _userService = userService;
         }
 
-        [HttpGet("getuser")]
+        [HttpGet("get")]
         public async Task<IActionResult> GetUser([FromQuery] string email)
         {
             try
@@ -50,5 +51,50 @@ namespace RGO_Backend.Controllers
                 return BadRequest(e.Message);
              }
          }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] ProfileDto profile)
+        {
+            try
+            {
+                ProfileDto updatedProfile = await _userService.UpdateUser(email, profile);
+                return Ok(updatedProfile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("users/get")]
+        public async Task<IActionResult> GetUsers()
+        {
+            try
+            {
+                var user = await _userService.GetUsers();
+                return Ok(user);
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("groups")]
+        public async Task<IActionResult> GetUserGroups()
+        {
+            try
+            {
+                List<UserGroupDto> userGroups = await _userService.GetUserGroups();
+                return Ok(userGroups);
+            }
+            catch(Exception e) 
+            {
+                return BadRequest(e.Message);
+            }
+           
+        }
     }
+
 }
+
