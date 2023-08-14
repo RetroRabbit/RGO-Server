@@ -5,7 +5,7 @@ using RGO.Domain.Services;
 
 namespace RGO.App.Controllers;
 
-[Route("/[controller]")]
+[Route("/event/")]
 [ApiController]
 public class EventsController : ControllerBase
 {
