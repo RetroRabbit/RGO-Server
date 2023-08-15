@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Services;
 
 namespace RGO.App.Controllers;
 
@@ -15,6 +15,7 @@ public class WorkshopController : ControllerBase
         _workshopService = workshopService;
     }
 
+    [Authorize]
     [HttpGet("workshops")]
     public async Task<IActionResult> GetWorkShops()
     {

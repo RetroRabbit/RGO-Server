@@ -5,7 +5,7 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
-[Route("/[controller]")]
+[Route("/authentication/")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {   
@@ -19,17 +19,17 @@ public class AuthenticationController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> LoginUser([FromBody] Dictionary<string, string> email)
+    public async Task<IActionResult> LoginUser([FromQuery] string email)
     {
         try
         {
-            bool userExists = await _authService.CheckUserExist(email["email"]);
+            bool userExists = await _authService.CheckUserExist(email);
 
             if (!userExists) throw new Exception("User not found");
 
             // List<UserRole> roles = await _authService.GetUserRoles(email["email"]);
 
-            string token = await _authService.GenerateToken(email["email"]);
+            string token = await _authService.GenerateToken(email);
 
             return Ok(token);
         }
@@ -39,6 +39,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("roles")]
     public async Task<IActionResult> GetUserRoles([FromQuery] string email)
     {

@@ -4,7 +4,6 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
-[Authorize(Policy = "isAdmin")]
 [Route("/profile/")]
 [ApiController]
 public class ProfileController : ControllerBase
@@ -16,6 +15,7 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
+    [Authorize]
     [HttpGet("get")]
     public async Task<IActionResult> GetUserProfileByEmail([FromQuery]string email)
     {
