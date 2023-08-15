@@ -96,7 +96,7 @@ namespace ROG.App
 
             app.Use( async (context, next) =>
             {
-                if (!context.Request.Path.ToString().Contains("Authentication"))
+                if (!context.Request.Path.ToString().Contains("auth"))
                 {
                     if (context.Request.Headers.TryGetValue("Authorization", out var authorization))
                     {
