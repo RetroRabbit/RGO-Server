@@ -23,8 +23,8 @@ namespace RGO.App.Controllers
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _gradStackService.GetGradStack(user.Id);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.GetGradStack(user.Id);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
@@ -38,8 +38,8 @@ namespace RGO.App.Controllers
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _gradStackService.AddGradStack(user.Id);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.AddGradStack(user.Id);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
@@ -53,8 +53,8 @@ namespace RGO.App.Controllers
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _gradStackService.RemoveGradStack(user.Id);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.RemoveGradStack(user.Id);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
@@ -68,8 +68,8 @@ namespace RGO.App.Controllers
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _gradStackService.UpdateGradStack(user.Id, description);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.UpdateGradStack(user.Id, description);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
