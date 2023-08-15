@@ -5,26 +5,26 @@ using RGO.Repository.Entities;
 
 namespace RGO.Repository.Repositories
 {
-    public class UserStackRepository : IUserStackRepository
+    public class GradStackRepository : IGradStackRepository
     {
         private readonly DatabaseContext _databaseContext;
         private readonly IStackRepository _stackRepository;
         private readonly IUserRepository _userRepository;
 
-        public UserStackRepository(DatabaseContext databaseContext, IStackRepository stackRepository, IUserRepository userRepository)
+        public GradStackRepository(DatabaseContext databaseContext, IStackRepository stackRepository, IUserRepository userRepository)
         {
             _databaseContext = databaseContext;
             _stackRepository = stackRepository;
             _userRepository = userRepository;
         }
 
-        public async Task<UserStackDto> AddUserStack(int userId)
+        public async Task<GradStackDto> AddGradStack(int userId)
         {
             var checkStack = await HasTechStack(userId);
             
             if (checkStack)
             {
-                UserStackDto stack = await GetUserStack(userId);
+                GradStackDto stack = await GetGradStack(userId);
                 return stack;
             }
                 
@@ -37,7 +37,7 @@ namespace RGO.Repository.Repositories
             List<StacksDto> databaseStack = await _stackRepository.GetDatabaseStack();
             var databaseStackObject = databaseStack[random.Next(0, databaseStack.Count)];
 
-            UserStackDto newUserStack = new UserStackDto
+            GradStackDto newGradStack = new GradStackDto
             (
                 0,
                 userId,
@@ -45,12 +45,12 @@ namespace RGO.Repository.Repositories
                 frontendStackObject,
                 databaseStackObject,
                 "Personal project tech stack default text.",
-                (UserStackStatus)1,
+                (GradStackStatus)1,
                 DateTime.UtcNow);
 
             try
             {
-                var stack = await _databaseContext.userStacks.AddAsync(new UserStacks(newUserStack));
+                var stack = await _databaseContext.gradStacks.AddAsync(new GradStacks(newGradStack));
                 await _databaseContext.SaveChangesAsync();
 
                 return stack.Entity.ToDTO();
@@ -61,13 +61,13 @@ namespace RGO.Repository.Repositories
             }
         }
 
-        public async Task<UserStackDto> GetUserStack(int userId)
+        public async Task<GradStackDto> GetGradStack(int userId)
         {
-            UserStacks? userStack = await _databaseContext.userStacks
+            GradStacks? userStack = await _databaseContext.gradStacks
                 .Include(x => x.User)
-                .Include(x => x.BackendUserStack)
-                .Include(x => x.FrontendUserStack)
-                .Include(x => x.DatabaseUserStack)
+                .Include(x => x.BackendGradStack)
+                .Include(x => x.FrontendGradStack)
+                .Include(x => x.DatabaseGradStack)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
 
             if (userStack == null)
@@ -78,44 +78,44 @@ namespace RGO.Repository.Repositories
 
         public async Task<bool> HasTechStack(int userId)
         {
-            bool found = await _databaseContext.userStacks.AnyAsync(x => x.UserId == userId);
+            bool found = await _databaseContext.gradStacks.AnyAsync(x => x.UserId == userId);
             return found;
         }
 
-        public async Task<UserStackDto> RemoveUserStack(int userId)
+        public async Task<GradStackDto> RemoveGradStack(int userId)
         {
-            UserStacks? userStack = await _databaseContext.userStacks
+            GradStacks? userStack = await _databaseContext.gradStacks
                 .Include(x => x.User)
-                .Include(x => x.BackendUserStack)
-                .Include(x => x.FrontendUserStack)
-                .Include(x => x.DatabaseUserStack)
+                .Include(x => x.BackendGradStack)
+                .Include(x => x.FrontendGradStack)
+                .Include(x => x.DatabaseGradStack)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
 
             if (userStack == null)
                 throw new Exception("User stack not found");
 
-            var oldUserStack = _databaseContext.userStacks.Remove(userStack);
+            var oldUserStack = _databaseContext.gradStacks.Remove(userStack);
             await _databaseContext.SaveChangesAsync();
 
             return oldUserStack.Entity.ToDTO();
         }
 
-        public async Task<UserStackDto> UpdateUserStack(int userId, string description)
+        public async Task<GradStackDto> UpdateGradStack(int userId, string description)
         {
-            UserStacks? userStack = await _databaseContext.userStacks
+            GradStacks? gradStack = await _databaseContext.gradStacks
                 .Include(x => x.User)
-                .Include(x => x.BackendUserStack)
-                .Include(x => x.FrontendUserStack)
-                .Include(x => x.DatabaseUserStack)
+                .Include(x => x.BackendGradStack)
+                .Include(x => x.FrontendGradStack)
+                .Include(x => x.DatabaseGradStack)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
 
-            if (userStack == null)
+            if (gradStack == null)
                 throw new Exception("User stack not found");
 
-            userStack.Description = description;
-            userStack.Status = userStack.Status == (int)UserStackStatus.Saved ? (int)UserStackStatus.Pending : (int)UserStackStatus.Saved;
+            gradStack.Description = description;
+            gradStack.Status = gradStack.Status == (int)GradStackStatus.Saved ? (int)GradStackStatus.Pending : (int)GradStackStatus.Saved;
 
-            var currentUserstack = _databaseContext.userStacks.Update(userStack);
+            var currentUserstack = _databaseContext.gradStacks.Update(gradStack);
             await _databaseContext.SaveChangesAsync();
 
             return currentUserstack.Entity.ToDTO();

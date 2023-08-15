@@ -2,7 +2,7 @@
 
 namespace RGO.Domain.Interfaces.Services
 {
-    public interface IUserStackService
+    public interface IGradStackService
     {
         /// <summary>
         /// Checks if the user has a tech stack
@@ -16,21 +16,21 @@ namespace RGO.Domain.Interfaces.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<UserStackDto> GetUserStack(int userId);
+        Task<GradStackDto> GetGradStack(int userId);
 
         /// <summary>
         /// Adds a tech stack to the user
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<UserStackDto> AddUserStack(int userId);
+        Task<GradStackDto> AddGradStack(int userId);
 
         /// <summary>
         /// Removes a tech stack from the user
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<UserStackDto> RemoveUserStack(int userId);
+        Task<GradStackDto> RemoveGradStack(int userId);
 
         /// <summary>
         /// Updates the user's tech stack
@@ -38,6 +38,6 @@ namespace RGO.Domain.Interfaces.Services
         /// <param name="userId"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        Task<UserStackDto> UpdateUserStack(int userId, string description);
+        Task<GradStackDto> UpdateGradStack(int userId, string description);
     }
 }
