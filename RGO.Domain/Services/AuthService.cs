@@ -1,7 +1,9 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using RGO.Domain.Enums;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
+using RGO.Domain.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,10 +13,12 @@ namespace RGO.Domain.Services;
 public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IConfiguration _configuration;
 
-    public AuthService(IUserRepository userRepository)
+    public AuthService(IUserRepository userRepository, IConfiguration configuration)
     {
         _userRepository = userRepository;
+        _configuration = configuration;
     }
 
     public async Task<bool> CheckUserExist(string email)
@@ -24,11 +28,12 @@ public class AuthService : IAuthService
 
     public async Task<string> GenerateToken(string email)
     {
-        var user = await _userRepository.GetUserByEmail(email);
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes("super secret key for the rabbit ");
-        var roles = await GetUserRoles(email);
+        UserDto user = await _userRepository.GetUserByEmail(email);
+        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        byte[] key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]);
+        List<UserRole> roles = await GetUserRoles(email);
         string rolesString = string.Empty;
+
         try
         {
             rolesString = string.Join(",", roles.Select(role => role.ToString()));
@@ -37,21 +42,27 @@ public class AuthService : IAuthService
         {
             Console.WriteLine(ex.Message);
         }
+
+        Claim[] claims = new Claim[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
+            new Claim(ClaimTypes.Role, rolesString)
+        };
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
-                new Claim(ClaimTypes.Role, rolesString)
-            }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            Issuer = "API",
-            Audience = "Client",
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Auth:Expires"])),
+            Issuer = _configuration["Auth:Issuer"],
+            Audience = _configuration["Auth:Audience"],
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature)
         };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 

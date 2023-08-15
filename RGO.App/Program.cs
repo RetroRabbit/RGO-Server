@@ -30,6 +30,7 @@ namespace ROG.App
                 .Build();
 
             var builder = WebApplication.CreateBuilder(args);
+            var configuration = builder.Configuration;
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -93,9 +94,9 @@ namespace ROG.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = "API",
-                        ValidAudience = "Client",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key for the rabbit "))
+                        ValidIssuer = configuration["Auth:Issuer"],
+                        ValidAudience = configuration["Auth:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]))
                     };
 
                     options.Events = new JwtBearerEvents
