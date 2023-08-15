@@ -4,25 +4,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
 
-[Table("UserGroup")]
-public class UserGroup
+[Table("GradGroup")]
+public class GradGroup
 {
     [Key]
     [Column("id")]
     public int Id { get; set; }
+
     [Column("title")]
     public string Title { get; set; }
-    public UserGroup() { }
-    public UserGroup(UserGroupDto userGroup)
+
+    public GradGroup() { }
+
+    public GradGroup(GradGroup gradGroup)
     {
-        Id = userGroup.Id;
-        Title = userGroup.Title;  
-    }
-    public UserGroupDto ToDTO()
-    {
-        return new UserGroupDto(
-            Id,
-            Title);
+        Id = gradGroup.Id;
+        Title = gradGroup.Title;
     }
 
+    public GradGroupDto ToDTO()
+    {
+        return new GradGroupDto(
+            Id,
+            Title
+            );
+    }
 }

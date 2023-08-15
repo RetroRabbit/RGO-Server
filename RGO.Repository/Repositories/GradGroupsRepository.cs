@@ -5,19 +5,19 @@ using RGO.Repository.Entities;
 
 namespace RGO.Repository.Repositories;
 
-public class UserGroupsRepository : IUserGroupsRepository
+public class GradGroupsRepository : IGradGroupsRepository
 {
     private readonly DatabaseContext _databaseContext;
 
-    public UserGroupsRepository(DatabaseContext databaseContext)
+    public GradGroupsRepository(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
     }
 
 
-    public async Task<List<UserGroupDto>> GetUserGroups()
+    public async Task<List<GradGroupDto>> GetGradGroups()
     {
-        return await _databaseContext.usergroups
+        return await _databaseContext.gradGroups
             .Select(group => group.ToDTO())
             .ToListAsync();
     }
