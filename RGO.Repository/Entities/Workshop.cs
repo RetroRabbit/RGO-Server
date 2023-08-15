@@ -10,14 +10,14 @@ public class Workshop
     [Key]
     [Column("id")]
     public int Id { get; set; }
-    [Column("eventId")]
-    [ForeignKey("Events")]
+    [Column("gradEventId")]
+    [ForeignKey("GradEvents")]
     public int EventId { get; set; }
     [Column("presenter")]
     public string Presenter { get; set; }
     [Column("viewable")]
     public bool Viewable { get; set; }
-    public virtual GradEvents Events { get; set; }
+    public virtual GradEvents GradEvents { get; set; }
     public Workshop() { }
     public Workshop(WorkshopDto workshopDto)
     {
@@ -31,7 +31,7 @@ public class Workshop
         return new WorkshopDto
         (
             Id,
-            Events.ToDto(),
+            GradEvents.ToDto(),
             Presenter,
             Viewable
         );

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RGO.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class EventGroupRelationship : Migration
+    public partial class RenamedEvents : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,7 +42,7 @@ namespace RGO.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Events",
+                name: "GradEvents",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -53,15 +53,14 @@ namespace RGO.Repository.Migrations
                     userType = table.Column<int>(type: "integer", nullable: false),
                     startDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     endDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    eventType = table.Column<int>(type: "integer", nullable: false),
-                    GradGroupId = table.Column<int>(type: "integer", nullable: true)
+                    eventType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Events", x => x.id);
+                    table.PrimaryKey("PK_GradEvents", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Events_GradGroup_GradGroupId",
-                        column: x => x.GradGroupId,
+                        name: "FK_GradEvents_GradGroup_gradGroupId",
+                        column: x => x.gradGroupId,
                         principalTable: "GradGroup",
                         principalColumn: "id");
                 });
@@ -100,7 +99,7 @@ namespace RGO.Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    eventId = table.Column<int>(type: "integer", nullable: false),
+                    gradEventId = table.Column<int>(type: "integer", nullable: false),
                     presenter = table.Column<string>(type: "text", nullable: false),
                     viewable = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -108,9 +107,9 @@ namespace RGO.Repository.Migrations
                 {
                     table.PrimaryKey("PK_Workshop", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Workshop_Events_eventId",
-                        column: x => x.eventId,
-                        principalTable: "Events",
+                        name: "FK_Workshop_GradEvents_gradEventId",
+                        column: x => x.gradEventId,
+                        principalTable: "GradEvents",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -251,9 +250,9 @@ namespace RGO.Repository.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_GradGroupId",
-                table: "Events",
-                column: "GradGroupId");
+                name: "IX_GradEvents_gradGroupId",
+                table: "GradEvents",
+                column: "gradGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_userId",
@@ -296,9 +295,9 @@ namespace RGO.Repository.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Workshop_eventId",
+                name: "IX_Workshop_gradEventId",
                 table: "Workshop",
-                column: "eventId");
+                column: "gradEventId");
         }
 
         /// <inheritdoc />
@@ -329,7 +328,7 @@ namespace RGO.Repository.Migrations
                 name: "User");
 
             migrationBuilder.DropTable(
-                name: "Events");
+                name: "GradEvents");
 
             migrationBuilder.DropTable(
                 name: "GradGroup");

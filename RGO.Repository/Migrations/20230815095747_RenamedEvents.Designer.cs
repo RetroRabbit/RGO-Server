@@ -12,8 +12,8 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230815083855_EventGroupRelationship")]
-    partial class EventGroupRelationship
+    [Migration("20230815095747_RenamedEvents")]
+    partial class RenamedEvents
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,7 +55,7 @@ namespace RGO.Repository.Migrations
                     b.ToTable("Certifications");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.Events", b =>
+            modelBuilder.Entity("RGO.Repository.Entities.GradEvents", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,9 +77,6 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("eventType");
 
-                    b.Property<int?>("GradGroupId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("GroupId")
                         .HasColumnType("integer")
                         .HasColumnName("gradGroupId");
@@ -99,9 +96,9 @@ namespace RGO.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GradGroupId");
+                    b.HasIndex("GroupId");
 
-                    b.ToTable("Events");
+                    b.ToTable("GradEvents");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.GradGroup", b =>
@@ -388,7 +385,7 @@ namespace RGO.Repository.Migrations
 
                     b.Property<int>("EventId")
                         .HasColumnType("integer")
-                        .HasColumnName("eventId");
+                        .HasColumnName("gradEventId");
 
                     b.Property<string>("Presenter")
                         .IsRequired()
@@ -417,11 +414,11 @@ namespace RGO.Repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RGO.Repository.Entities.Events", b =>
+            modelBuilder.Entity("RGO.Repository.Entities.GradEvents", b =>
                 {
                     b.HasOne("RGO.Repository.Entities.GradGroup", "GradGroup")
                         .WithMany()
-                        .HasForeignKey("GradGroupId");
+                        .HasForeignKey("GroupId");
 
                     b.Navigation("GradGroup");
                 });
@@ -505,13 +502,13 @@ namespace RGO.Repository.Migrations
 
             modelBuilder.Entity("RGO.Repository.Entities.Workshop", b =>
                 {
-                    b.HasOne("RGO.Repository.Entities.Events", "Events")
+                    b.HasOne("RGO.Repository.Entities.GradEvents", "GradEvents")
                         .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Events");
+                    b.Navigation("GradEvents");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.User", b =>
