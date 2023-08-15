@@ -20,7 +20,7 @@ namespace RGO.Repository
 
         public DbSet<User> users { get; set; }
         public DbSet<GradGroup> gradGroups {  get; set; }
-        public DbSet<Events> events { get; set; }
+        public DbSet<GradEvents> events { get; set; }
         public DbSet<Stacks> stacks { get; set; }
         public DbSet<UserStacks> userStacks { get; set; }
         public DbSet<Workshop> workshop { get; set; }

@@ -2,7 +2,7 @@
 
 namespace RGO.Domain.Interfaces.Services;
 
-public interface IEventsService
+public interface IGradEventsService
 {
-    Task<EventsDto[]> GetEvents();
+    Task<GradEventsDto[]> GetEvents();
 }

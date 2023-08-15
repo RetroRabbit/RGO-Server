@@ -17,7 +17,7 @@ public class Workshop
     public string Presenter { get; set; }
     [Column("viewable")]
     public bool Viewable { get; set; }
-    public virtual Events Events { get; set; }
+    public virtual GradEvents Events { get; set; }
     public Workshop() { }
     public Workshop(WorkshopDto workshopDto)
     {
