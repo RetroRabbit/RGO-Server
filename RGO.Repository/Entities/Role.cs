@@ -2,15 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RGO.Repository.Entities
-{
-    public class Role
-    {
-        [Key]
-        [Column("id")]
-        public int Id { get; set; }
+namespace RGO.Repository.Entities;
 
-        [Column("Description")]
-        public string Description { get; set; }
-    }
+[Table("Role")]
+public class Role
+{
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+
+    [Column("Description")]
+    public string Description { get; set; }
 }

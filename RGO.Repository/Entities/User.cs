@@ -24,9 +24,6 @@ public class User
     [Column("email")]
     public string Email { get; set; }
 
-    [Column("type")]
-    public int Type { get; set; }
-
     [Column("joinDate")]
     public DateTime JoinDate { get; set; }
 
@@ -54,7 +51,6 @@ public class User
         FirstName = user.FirstName;
         LastName = user.LastName;
         Email = user.Email;
-        Type = user.Type;
         JoinDate = user.JoinDate;
         Status = user.Status;
         Bio = user.Bio;
@@ -70,7 +66,6 @@ public class User
             FirstName,
             LastName,
             Email,
-            Type,
             JoinDate,
             Status,
             Bio,

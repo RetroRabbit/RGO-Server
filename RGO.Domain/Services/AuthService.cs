@@ -3,7 +3,6 @@ using RGO.Domain.Enums;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
