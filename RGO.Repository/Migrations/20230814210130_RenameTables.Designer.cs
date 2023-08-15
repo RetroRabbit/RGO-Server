@@ -12,8 +12,8 @@ using RGO.Repository;
 namespace RGO.Repository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230814113803_NewUpdate")]
-    partial class NewUpdate
+    [Migration("20230814210130_RenameTables")]
+    partial class RenameTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,7 +152,7 @@ namespace RGO.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("roles");
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
@@ -308,10 +308,6 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("type");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GradGroupId");
@@ -361,7 +357,7 @@ namespace RGO.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("userRoles");
+                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.UserStacks", b =>
