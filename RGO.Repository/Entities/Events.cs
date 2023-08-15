@@ -11,8 +11,8 @@ public class Events
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("groupId")]
-    [ForeignKey("UserGroup")]
+    [Column("gradGroupId")]
+    [ForeignKey("GradGroup")]
     public int? GroupId { get; set; }
 
     [Column("title")]
