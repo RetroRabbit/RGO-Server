@@ -22,7 +22,6 @@ namespace ROG.App
     {
         public static void Main(params string[] args)
         {
-
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((context, services) =>
                 {
@@ -40,6 +39,10 @@ namespace ROG.App
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+
+            /// <summary>
+            /// Adds Swagger to the project and configures it to use JWT Bearer Authentication
+            /// </summary>
             builder.Services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Grad Onboarding Platform API", Version = "v1" });
@@ -82,6 +85,10 @@ namespace ROG.App
 
             builder.Services.AddDbContext<DatabaseContext>();
 
+            /// <summary>
+            /// Add authentication with JWT bearer token to the application
+            /// and set the token validation parameters.
+            /// </summary>
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -96,6 +103,7 @@ namespace ROG.App
                         ValidAudience = "Client",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key for the rabbit "))
                     };
+
                     options.Events = new JwtBearerEvents
                     {
                         OnTokenValidated = context =>
@@ -116,6 +124,11 @@ namespace ROG.App
                         }
                     };
                 });
+
+            /// <summary>
+            /// Authorization policies
+            /// e.g: options.AddPolicy([Policy Name], policy => policy.RequireRole([Role in DB and enum]));
+            /// </summary>
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy(
@@ -124,6 +137,12 @@ namespace ROG.App
                 options.AddPolicy(
                     "isGrad",
                     policy => policy.RequireRole("GRAD"));
+                options.AddPolicy(
+                    "isMentor",
+                    policy => policy.RequireRole("MENTOR"));
+                options.AddPolicy(
+                    "isPresenter",
+                    policy => policy.RequireRole("PRESENTER"));
             });
 
             var app = builder.Build();
@@ -142,25 +161,6 @@ namespace ROG.App
             .AllowAnyHeader());
             
             app.UseHttpsRedirection();
-
-            /*app.Use( async (context, next) =>
-            {
-                if (!context.Request.Path.ToString().Contains("Authentication"))
-                {
-                    if (context.Request.Headers.TryGetValue("Authorization", out var authorization))
-                    {
-                        var handler = new JwtSecurityTokenHandler();
-                        var token = handler.ReadJwtToken(authorization.ToString().Replace("Bearer ",""));
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 401;
-                        await context.Response.WriteAsync("Token is missing.");
-                        return;
-                    }
-                }
-                await next(context);
-            });*/
 
             app.UseAuthorization();
 
