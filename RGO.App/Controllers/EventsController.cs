@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
-using RGO.Domain.Services;
 
 namespace RGO.App.Controllers;
 

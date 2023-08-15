@@ -8,11 +8,11 @@ namespace RGO.App.Controllers;
 [Route("/authentication/")]
 [ApiController]
 public class AuthenticationController : ControllerBase
-{   
+{
 
     private readonly IAuthService _authService;
 
-    public AuthenticationController(IAuthService authService) 
+    public AuthenticationController(IAuthService authService)
     {
         _authService = authService;
     }

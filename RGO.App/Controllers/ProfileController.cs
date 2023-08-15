@@ -17,11 +17,11 @@ public class ProfileController : ControllerBase
 
     [Authorize]
     [HttpGet("get")]
-    public async Task<IActionResult> GetUserProfileByEmail([FromQuery]string email)
+    public async Task<IActionResult> GetUserProfileByEmail([FromQuery] string email)
     {
         try
         {
-        var userProfile = await _profileService.GetUserProfileByEmail(email);
+            var userProfile = await _profileService.GetUserProfileByEmail(email);
             return Ok(userProfile);
 
         }

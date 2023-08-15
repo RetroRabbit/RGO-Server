@@ -1,18 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Npgsql.Internal.TypeHandlers.DateTimeHandlers;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Services;
 using RGO.Repository;
-using RGO.Repository.Entities;
 using RGO.Repository.Repositories;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -68,7 +62,7 @@ namespace ROG.App
                 });
             });
 
-            builder.Services.AddScoped<IAuthService,AuthService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IEventsService, EventsService>();
             builder.Services.AddScoped<IEventsRepository, EventsRepository>();
@@ -159,7 +153,7 @@ namespace ROG.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
-            
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

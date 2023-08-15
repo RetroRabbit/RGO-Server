@@ -39,17 +39,17 @@ public class UserController : ControllerBase
     [HttpPost("add")]
     public async Task<IActionResult> AddUser([FromBody] UserDto user)
     {
-         try
+        try
         {
             var newUser = await _userService.AddUser(user);
             return Ok(newUser);
 
         }
         catch (Exception e)
-          {
+        {
             return BadRequest(e.Message);
-         }
-     }
+        }
+    }
 
     [Authorize]
     [HttpPut("update")]
@@ -91,11 +91,11 @@ public class UserController : ControllerBase
             List<UserGroupDto> userGroups = await _userService.GetUserGroups();
             return Ok(userGroups);
         }
-        catch(Exception e) 
+        catch (Exception e)
         {
             return BadRequest(e.Message);
         }
-       
+
     }
 }
 

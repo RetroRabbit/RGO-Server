@@ -21,7 +21,7 @@ public class WorkshopController : ControllerBase
     {
         try
         {
-            
+
             try
             {
                 var workshops = await _workshopService.GetWorkshops();
