@@ -60,7 +60,6 @@ namespace RGO.Repository.Repositories
             existingUser.FirstName = updatedProfile.FirstName;
             existingUser.LastName = updatedProfile.LastName;
             existingUser.Email = updatedProfile.Email;
-            existingUser.Type = updatedProfile.Type;
             existingUser.JoinDate = DateTime.UtcNow;
             existingUser.Status = updatedProfile.Status;
             existingUser.Bio = updatedProfile.Bio;
