@@ -52,9 +52,9 @@ namespace ROG.App
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-            builder.Services.AddScoped<IEventsService, EventsService>();
-            builder.Services.AddScoped<IEventsRepository, EventsRepository>();
-            builder.Services.AddScoped<IUserGroupsRepository, UserGroupsRepository>();
+            builder.Services.AddScoped<IGradEventsService, GradEventsService>();
+            builder.Services.AddScoped<IGradEventsRepository, GradEventsRepository>();
+            builder.Services.AddScoped<IGradGroupsRepository, GradGroupsRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IProfileService, ProfileService>();
@@ -62,8 +62,8 @@ namespace ROG.App
             builder.Services.AddScoped<IWorkshopRepository, WorkshopRepository>();
             builder.Services.AddScoped<IWorkshopService, WorkshopService>();
             builder.Services.AddScoped<IStackRepository, StackRepository>();
-            builder.Services.AddScoped<IUserStackRepository, UserStackRepository>();
-            builder.Services.AddScoped<IUserStackService, UserStackService>();
+            builder.Services.AddScoped<IGradStackRepository, GradStackRepository>();
+            builder.Services.AddScoped<IGradStackService, GradStackService>();
 
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["Default"]));
 

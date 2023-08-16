@@ -4,42 +4,54 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
 
-[Table("Events")]
-public class Events {
+[Table("GradEvents")]
+public class GradEvents
+{
     [Key]
     [Column("id")]
     public int Id { get; set; }
-    [Column("groupId")]
-    [ForeignKey("UserGroup")]
+
+    [Column("gradGroupId")]
+    [ForeignKey("GradGroup")]
     public int? GroupId { get; set; }
+
     [Column("title")]
     public string Title { get; set; }
+
     [Column("description")]
     public string Description { get; set; }
+
     [Column("userType")]
     public int UserType { get; set; }
+
     [Column("startDate")]
     public DateTime StartDate { get; set; }
+
     [Column("endDate")]
     public DateTime EndDate { get; set; }
+
     [Column("eventType")]
     public int EventType { get; set; }
-    public virtual UserGroup? UserGroup { get; set; }
-    public Events() { }
-    public Events(EventsDto eventsDto)
+
+    public virtual GradGroup? GradGroup { get; set; }
+
+    public GradEvents() { }
+
+    public GradEvents(GradEventsDto gradEventsDto)
     {
-        Id = eventsDto.Id;
-        GroupId = eventsDto.GroupId;
-        Title = eventsDto.Title;
-        Description = eventsDto.Description;
-        UserType = eventsDto.UserType;
-        StartDate = eventsDto.StartDate;
-        EndDate = eventsDto.EndDate;
-        EventType = eventsDto.EventType;
+        Id = gradEventsDto.Id;
+        GroupId = gradEventsDto.GroupId;
+        Title = gradEventsDto.Title;
+        Description = gradEventsDto.Description;
+        UserType = gradEventsDto.UserType;
+        StartDate = gradEventsDto.StartDate;
+        EndDate = gradEventsDto.EndDate;
+        EventType = gradEventsDto.EventType;
     }
-    public EventsDto ToDto()
+
+    public GradEventsDto ToDto()
     {
-        return new EventsDto(
+        return new GradEventsDto(
             Id,
             GroupId,
             Title,
@@ -50,4 +62,3 @@ public class Events {
             EventType);
     }
 }
-    

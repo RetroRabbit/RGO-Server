@@ -11,6 +11,7 @@ public class User
     [Key]
     [Column("id")]
     public int Id { get; set; }
+
     [Column("gradGroupId")]
     [ForeignKey("UserGroup")]
     public int? GradGroupId { get; set; }
@@ -30,20 +31,26 @@ public class User
     [Column("status")]
     public int Status { get; set; }
 
-    [Column("Bio")]
+    [Column("bio")]
     public string Bio { get; set; }
 
-    [Column("Level")]
+    [Column("level")]
     public int Level { get; set; }
 
-    [Column("Phone")]
+    [Column("phone")]
     public string Phone { get; set; }
-    public virtual UserGroup? UserGroup { get; set; }
+
+    [Column("gradType")]
+    public int? GradType { get; set; }
+
+    public virtual GradGroup? FradGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }
     public virtual List<Skill> Skills { get; set; }
     public virtual List<Projects> UserProjects { get; set; }
     public virtual List<Social> Socials { get; set; }
+
     public User() { }
+
     public User(UserDto user)
     {
         Id = user.Id;
@@ -56,8 +63,10 @@ public class User
         Bio = user.Bio;
         Level = user.Level;
         Phone = user.Phone;
+        GradType = user.GradType;
 
     }
+
     public UserDto ToDTO()
     {
         return new UserDto(
@@ -70,6 +79,7 @@ public class User
             Status,
             Bio,
             Level,
-            Phone);
+            Phone,
+            GradType);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace RGO.Domain.Models
 {
-    public record UserGroupDto(
+    public record GradGroupDto(
         int Id,
         string Title
         );

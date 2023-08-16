@@ -8,6 +8,18 @@ namespace RGO.App.Controllers;
 [ApiController]
 public class UserStackController : ControllerBase
 {
+    [Route("/gradstacks/")]
+    [ApiController]
+    public class GradStackController : ControllerBase
+    {
+        private readonly IGradStackService _gradStackService;
+        private readonly IProfileService _profileService;
+        private readonly IUserService _userService;
+
+        public GradStackController(IGradStackService gradStackService, IUserService userService)
+        {
+            _gradStackService = gradStackService;
+            _userService = userService;
     private readonly IUserStackService _userStackService;
     private readonly IProfileService _profileService;
     private readonly IUserService _userService;
@@ -31,6 +43,16 @@ public class UserStackController : ControllerBase
         }
         catch (Exception ex)
         {
+            try
+            {
+                var user = await _userService.GetUserByEmail(email);
+                var gradStack = await _gradStackService.GetGradStack(user.Id);
+                return Ok(gradStack);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return BadRequest(ex.Message);
         }
     }
@@ -42,6 +64,31 @@ public class UserStackController : ControllerBase
     {
         try
         {
+            try
+            {
+                var user = await _userService.GetUserByEmail(email);
+                var gradStack = await _gradStackService.AddGradStack(user.Id);
+                return Ok(gradStack);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("remove")]
+        public async Task<IActionResult> RemoveGradStack([FromQuery] string email)
+        {
+            try
+            {
+                var user = await _userService.GetUserByEmail(email);
+                var gradStack = await _gradStackService.RemoveGradStack(user.Id);
+                return Ok(gradStack);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             var user = await _userService.GetUserByEmail(email);
             var userStack = await _userStackService.AddUserStack(user.Id);
             return Ok(userStack);
@@ -52,6 +99,19 @@ public class UserStackController : ControllerBase
         }
     }
 
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateGradStack([FromQuery] string email, [FromBody] Dictionary<string, string> description)
+        {
+            try
+            {
+                var user = await _userService.GetUserByEmail(email);
+                var gradStack = await _gradStackService.UpdateGradStack(user.Id, description["description"]);
+                return Ok(gradStack);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
     [Authorize(Policy = "isGrad")]
     [Authorize(Policy = "isAdmin")]
     [HttpDelete("remove")]

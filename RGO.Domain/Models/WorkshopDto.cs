@@ -2,7 +2,7 @@
 {
 public record WorkshopDto(
     int Id, 
-    EventsDto EventId, 
+    GradEventsDto EventId, 
     string Presenter,
     bool Viewable
     );

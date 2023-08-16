@@ -6,12 +6,12 @@ namespace RGO.App.Controllers;
 
 [Route("/event/")]
 [ApiController]
-public class EventsController : ControllerBase
+public class GradEventsController : ControllerBase
 {
-    private readonly IEventsService _eventsService;
-    public EventsController(IEventsService eventsService)
+    private readonly IGradEventsService _gradEventsService;
+    public GradEventsController(IGradEventsService gradEventsService)
     {
-        _eventsService = eventsService;
+        _gradEventsService = gradEventsService;
     }
 
     [Authorize]
@@ -21,7 +21,7 @@ public class EventsController : ControllerBase
 
         try
         {
-            var events = await _eventsService.GetEvents();
+            var events = await _gradEventsService.GetEvents();
             return Ok(events);
 
         }

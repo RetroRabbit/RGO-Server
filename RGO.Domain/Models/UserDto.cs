@@ -10,7 +10,8 @@
         int Status,
         string Bio, 
         int Level,
-        string Phone
+        string Phone,
+        int? GradType
         );
 
 }

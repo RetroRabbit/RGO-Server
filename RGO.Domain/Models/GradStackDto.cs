@@ -2,13 +2,13 @@
 
 namespace RGO.Domain.Models
 {
-    public record UserStackDto(
+    public record GradStackDto(
         int Id,
         int UserId,
         StacksDto Backend,
         StacksDto Frontend,
         StacksDto Database,
         string Description,
-        UserStackStatus Status,
+        GradProjectStatus Status,
         DateTime CreateDate);
 }
