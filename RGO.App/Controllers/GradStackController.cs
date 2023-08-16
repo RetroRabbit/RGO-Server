@@ -63,12 +63,12 @@ namespace RGO.App.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateGradStack([FromQuery] string email, [FromBody] string description)
+        public async Task<IActionResult> UpdateGradStack([FromQuery] string email, [FromBody] Dictionary<string, string> description)
         {
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var gradStack = await _gradStackService.UpdateGradStack(user.Id, description);
+                var gradStack = await _gradStackService.UpdateGradStack(user.Id, description["description"]);
                 return Ok(gradStack);
             }
             catch (Exception ex)
