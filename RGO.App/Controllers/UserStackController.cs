@@ -4,7 +4,6 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
-[Authorize(Policy = "isGrad")]
 [Route("/userstacks/")]
 [ApiController]
 public class UserStackController : ControllerBase

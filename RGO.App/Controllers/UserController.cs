@@ -51,7 +51,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Policy = "isAdmin")]
     [HttpPut("update")]
     public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] ProfileDto profile)
     {

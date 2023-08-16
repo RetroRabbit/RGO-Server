@@ -5,7 +5,7 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
-[Route("/authentication/")]
+[Route("/auth/")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {

@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
-[Route("/[controller]")]
+[Route("/event/")]
 [ApiController]
 public class EventsController : ControllerBase
 {
@@ -13,6 +14,7 @@ public class EventsController : ControllerBase
         _eventsService = eventsService;
     }
 
+    [Authorize]
     [HttpGet("events")]
     public async Task<IActionResult> GetEvents()
     {

@@ -4,7 +4,7 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
 
-[Route("/[controller]")]
+[Route("/workshop/")]
 [ApiController]
 public class WorkshopController : ControllerBase
 {
