@@ -1,43 +1,43 @@
 ﻿using RGO.Domain.Models;
 
-namespace RGO.Domain.Interfaces.Services
+namespace RGO.Domain.Interfaces.Repository
 {
-    public interface IUserStackService
+    public interface IGradStackRepository
     {
         /// <summary>
-        /// Checks if the user has a tech stack
+        /// Checks if a grad has a tech stack 
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns> boolean </returns>
         Task<bool> HasTechStack(int userId);
 
         /// <summary>
-        /// Gets the user's tech stack
+        /// Gets a grad's tech stack 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>grad stack object</returns>
+        Task<GradStackDto> GetGradStack(int userId);
+
+        /// <summary>
+        /// adds a tech stack to a grad
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<UserStackDto> GetUserStack(int userId);
+        Task<GradStackDto> AddGradStack(int userId);
 
         /// <summary>
-        /// Adds a tech stack to the user
+        /// Removes a grad's tech stack     
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<UserStackDto> AddUserStack(int userId);
+        Task<GradStackDto> RemoveGradStack(int userId);
 
         /// <summary>
-        /// Removes a tech stack from the user
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task<UserStackDto> RemoveUserStack(int userId);
-
-        /// <summary>
-        /// Updates the user's tech stack
+        /// Updates grad's tech stack 
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        Task<UserStackDto> UpdateUserStack(int userId, string description);
+        Task<GradStackDto> UpdateGradStack(int userId, string description);
     }
 }

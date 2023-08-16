@@ -3,17 +3,17 @@ using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers
 {
-    [Route("/userstacks/")]
+    [Route("/gradstacks/")]
     [ApiController]
-    public class UserStackController : ControllerBase
+    public class GradStackController : ControllerBase
     {
-        private readonly IUserStackService _userStackService;
+        private readonly IGradStackService _gradStackService;
         private readonly IProfileService _profileService;
         private readonly IUserService _userService;
 
-        public UserStackController(IUserStackService userStackService, IUserService userService)
+        public GradStackController(IGradStackService gradStackService, IUserService userService)
         {
-            _userStackService = userStackService;
+            _gradStackService = gradStackService;
             _userService = userService;
         }
 
@@ -23,8 +23,8 @@ namespace RGO.App.Controllers
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _userStackService.GetUserStack(user.Id);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.GetGradStack(user.Id);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
@@ -38,8 +38,8 @@ namespace RGO.App.Controllers
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _userStackService.AddUserStack(user.Id);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.AddGradStack(user.Id);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
@@ -48,13 +48,13 @@ namespace RGO.App.Controllers
         }
 
         [HttpDelete("remove")]
-        public async Task<IActionResult> RemoveUserStack([FromQuery] string email)
+        public async Task<IActionResult> RemoveGradStack([FromQuery] string email)
         {
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _userStackService.RemoveUserStack(user.Id);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.RemoveGradStack(user.Id);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
@@ -63,13 +63,13 @@ namespace RGO.App.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateUserStack([FromQuery] string email, [FromBody] Dictionary<string, string> description)
+        public async Task<IActionResult> UpdateGradStack([FromQuery] string email, [FromBody] string description)
         {
             try
             {
                 var user = await _userService.GetUserByEmail(email);
-                var userStack = await _userStackService.UpdateUserStack(user.Id, description["description"]);
-                return Ok(userStack);
+                var gradStack = await _gradStackService.UpdateGradStack(user.Id, description);
+                return Ok(gradStack);
             }
             catch (Exception ex)
             {
