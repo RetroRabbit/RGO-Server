@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RGO.Domain.Enums;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Models;
 using RGO.Repository.Entities;
@@ -17,7 +18,7 @@ namespace RGO.Repository.Repositories
         public async Task<List<StacksDto>> GetBackendStack()
         {
             List<StacksDto> stacks = await _databaseContext.stacks
-                .Where(x => x.StackType == 2)
+                .Where(x => x.StackType == (int)StackTypes.Backend)
                 .Select(x => x.ToDTO())
                 .ToListAsync();
             return stacks;
@@ -26,7 +27,7 @@ namespace RGO.Repository.Repositories
         public async Task<List<StacksDto>> GetDatabaseStack()
         {
             List<StacksDto> stacks = await _databaseContext.stacks
-                .Where(x => x.StackType == 0)
+                .Where(x => x.StackType == (int)StackTypes.Database)
                 .Select(x => x.ToDTO())
                 .ToListAsync();
             return stacks;
@@ -35,7 +36,7 @@ namespace RGO.Repository.Repositories
         public async Task<List<StacksDto>> GetFrontendStack()
         {
             List<StacksDto> stacks = await _databaseContext.stacks
-                .Where(x => x.StackType == 1)
+                .Where(x => x.StackType == (int)StackTypes.Frontend)
                 .Select(x => x.ToDTO())
                 .ToListAsync();
             return stacks;

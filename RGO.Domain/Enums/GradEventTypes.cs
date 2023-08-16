@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RGO.Domain.Enums
 {
-    public enum EventTypes
+    public enum GradEventTypes
     {
         Events, 
         Workshops
