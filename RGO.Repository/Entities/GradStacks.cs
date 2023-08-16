@@ -1,4 +1,5 @@
-﻿using RGO.Domain.Models;
+﻿using RGO.Domain.Enums;
+using RGO.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -52,7 +53,7 @@ public class GradStacks
             FrontendGradStack.ToDTO(),
             DatabaseGradStack.ToDTO(),
             Description,
-            (GradStackStatus)Status,
+            (GradProjectStatus)Status,
             CreateDate);
     }
 }
