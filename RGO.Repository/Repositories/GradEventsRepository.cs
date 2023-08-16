@@ -5,18 +5,18 @@ using RGO.Repository.Entities;
 
 namespace RGO.Repository.Repositories
 {
-    public class EventsRepository : IEventsRepository
+    public class GradEventsRepository : IGradEventsRepository
     {
         private readonly DatabaseContext _databaseContext;
-        public EventsRepository(DatabaseContext databaseContext) 
+        public GradEventsRepository(DatabaseContext databaseContext) 
         {
             _databaseContext = databaseContext;
         }
 
-        public async Task<EventsDto[]> GetAllEvents()
+        public async Task<GradEventsDto[]> GetAllEvents()
         {
-            Events[] events = await _databaseContext.events.ToArrayAsync();
-            EventsDto[] eventsDtos = new EventsDto[events.Length];
+            GradEvents[] events = await _databaseContext.events.ToArrayAsync();
+            GradEventsDto[] eventsDtos = new GradEventsDto[events.Length];
             int counter = 0;
             foreach (var item  in events)
             {

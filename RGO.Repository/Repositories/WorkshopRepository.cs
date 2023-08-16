@@ -8,10 +8,10 @@ namespace RGO.Repository.Repositories
     public class WorkshopRepository:IWorkshopRepository
     {
         private readonly DatabaseContext _databaseContext;
-        private readonly IEventsRepository _eventsRepository;
+        private readonly IGradEventsRepository _eventsRepository;
 
 
-        public WorkshopRepository(DatabaseContext databaseContext, IEventsRepository eventsRepository)
+        public WorkshopRepository(DatabaseContext databaseContext, IGradEventsRepository eventsRepository)
         {
             _databaseContext = databaseContext;
             _eventsRepository = eventsRepository;

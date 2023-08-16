@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.Repository.Entities;
 
-[Table("Events")]
-public class Events
+[Table("GradEvents")]
+public class GradEvents
 {
     [Key]
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("groupId")]
-    [ForeignKey("UserGroup")]
+    [Column("gradGroupId")]
+    [ForeignKey("GradGroup")]
     public int? GroupId { get; set; }
 
     [Column("title")]
@@ -35,23 +35,23 @@ public class Events
 
     public virtual GradGroup? GradGroup { get; set; }
 
-    public Events() { }
+    public GradEvents() { }
 
-    public Events(EventsDto eventsDto)
+    public GradEvents(GradEventsDto gradEventsDto)
     {
-        Id = eventsDto.Id;
-        GroupId = eventsDto.GroupId;
-        Title = eventsDto.Title;
-        Description = eventsDto.Description;
-        UserType = eventsDto.UserType;
-        StartDate = eventsDto.StartDate;
-        EndDate = eventsDto.EndDate;
-        EventType = eventsDto.EventType;
+        Id = gradEventsDto.Id;
+        GroupId = gradEventsDto.GroupId;
+        Title = gradEventsDto.Title;
+        Description = gradEventsDto.Description;
+        UserType = gradEventsDto.UserType;
+        StartDate = gradEventsDto.StartDate;
+        EndDate = gradEventsDto.EndDate;
+        EventType = gradEventsDto.EventType;
     }
 
-    public EventsDto ToDto()
+    public GradEventsDto ToDto()
     {
-        return new EventsDto(
+        return new GradEventsDto(
             Id,
             GroupId,
             Title,
