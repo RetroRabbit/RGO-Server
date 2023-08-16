@@ -37,5 +37,12 @@ namespace RGO.Domain.Interfaces.Services
         /// </summary>
         /// <returns>A list of Grad Groups</returns>
         Task<List<GradGroupDto>> GetGradGroups();
+
+        /// <summary>
+        /// Removes a user
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<UserDto> RemoveUser(string email);
     }
 }
