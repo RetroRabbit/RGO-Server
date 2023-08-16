@@ -16,19 +16,6 @@ namespace ROG.App
     {
         public static void Main(params string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
-                .ConfigureServices((context, services) =>
-                {
-                    IConfiguration configuration = new ConfigurationBuilder()
-                        .AddJsonFile("appsettings.json", true, true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args)
-                        .Build();
-
-                    services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration.GetConnectionString("Default")));
-                })
-                .Build();
-
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
 
@@ -78,7 +65,7 @@ namespace ROG.App
             builder.Services.AddScoped<IUserStackRepository, UserStackRepository>();
             builder.Services.AddScoped<IUserStackService, UserStackService>();
 
-            builder.Services.AddDbContext<DatabaseContext>();
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["Default"]));
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
