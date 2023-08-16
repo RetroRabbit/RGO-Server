@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RGO.Domain.Enums;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Models;
 using RGO.Repository.Entities;
@@ -45,7 +46,7 @@ namespace RGO.Repository.Repositories
                 frontendStackObject,
                 databaseStackObject,
                 "Personal project tech stack default text.",
-                (GradStackStatus)1,
+                GradProjectStatus.Submitted,
                 DateTime.UtcNow);
 
             try
@@ -113,7 +114,7 @@ namespace RGO.Repository.Repositories
                 throw new Exception("User stack not found");
 
             gradStack.Description = description;
-            gradStack.Status = gradStack.Status == (int)GradStackStatus.Saved ? (int)GradStackStatus.Pending : (int)GradStackStatus.Saved;
+            gradStack.Status = gradStack.Status == (int)GradProjectStatus.Submitted ? (int)GradProjectStatus.Pending : (int)GradProjectStatus.Submitted;
 
             var currentUserstack = _databaseContext.gradStacks.Update(gradStack);
             await _databaseContext.SaveChangesAsync();
