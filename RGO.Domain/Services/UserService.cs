@@ -48,5 +48,10 @@ namespace RGO.Domain.Services
         {
             return await _gradGroupsRepository.GetGradGroups();
         }
+
+        public async Task<UserDto> RemoveUser(string email)
+        {
+            return await _userRepository.RemoveUser(email);
+        }
     }
 }
