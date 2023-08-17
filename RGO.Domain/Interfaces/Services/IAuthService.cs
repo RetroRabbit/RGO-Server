@@ -8,7 +8,7 @@ public interface IAuthService
     /// Check if user exist
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>true if user with given email is found else false</returns>
     Task<bool> CheckUserExist(string email);
 
     /// <summary>
