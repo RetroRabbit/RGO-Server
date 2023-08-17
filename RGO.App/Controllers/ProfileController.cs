@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 
 namespace RGO.App.Controllers;
@@ -14,12 +15,13 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
+    [Authorize]
     [HttpGet("get")]
-    public async Task<IActionResult> GetUserProfileByEmail([FromQuery]string email)
+    public async Task<IActionResult> GetUserProfileByEmail([FromQuery] string email)
     {
         try
         {
-        var userProfile = await _profileService.GetUserProfileByEmail(email);
+            var userProfile = await _profileService.GetUserProfileByEmail(email);
             return Ok(userProfile);
 
         }

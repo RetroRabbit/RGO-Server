@@ -13,7 +13,7 @@ public class User
     public int Id { get; set; }
 
     [Column("gradGroupId")]
-    [ForeignKey("UserGroup")]
+    [ForeignKey("GradGroup")]
     public int? GradGroupId { get; set; }
 
     [Column("firstName")]
@@ -24,9 +24,6 @@ public class User
 
     [Column("email")]
     public string Email { get; set; }
-
-    [Column("type")]
-    public int Type { get; set; }
 
     [Column("joinDate")]
     public DateTime JoinDate { get; set; }
@@ -46,7 +43,7 @@ public class User
     [Column("gradType")]
     public int? GradType { get; set; }
 
-    public virtual GradGroup? FradGroup { get; set; }
+    public virtual GradGroup? GradGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }
     public virtual List<Skill> Skills { get; set; }
     public virtual List<Projects> UserProjects { get; set; }
@@ -61,7 +58,6 @@ public class User
         FirstName = user.FirstName;
         LastName = user.LastName;
         Email = user.Email;
-        Type = user.Type;
         JoinDate = user.JoinDate;
         Status = user.Status;
         Bio = user.Bio;
@@ -79,7 +75,6 @@ public class User
             FirstName,
             LastName,
             Email,
-            Type,
             JoinDate,
             Status,
             Bio,

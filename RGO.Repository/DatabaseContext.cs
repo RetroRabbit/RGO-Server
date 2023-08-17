@@ -28,5 +28,7 @@ namespace RGO.Repository
         public DbSet<Skill> skill { get; set; }
         public DbSet<Certifications> certifications { get; set; }
         public DbSet<Projects> projects { get; set; }
+        public DbSet<Role> roles { get; set; }
+        public DbSet<UserRole> userRoles { get; set; }
     }
 }

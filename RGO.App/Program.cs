@@ -1,14 +1,14 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Npgsql.Internal.TypeHandlers.DateTimeHandlers;
 using RGO.Domain.Interfaces.Repository;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Services;
 using RGO.Repository;
 using RGO.Repository.Repositories;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace ROG.App
 {
@@ -16,24 +16,15 @@ namespace ROG.App
     {
         public static void Main(params string[] args)
         {
-
-            var host = Host.CreateDefaultBuilder(args)
-                .ConfigureServices((context, services) =>
-                {
-                    IConfiguration configuration = new ConfigurationBuilder()
-                        .AddJsonFile("appsettings.json", true, true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args)
-                        .Build();
-
-                    services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration.GetConnectionString("Default")));
-                })
-                .Build();
-
             var builder = WebApplication.CreateBuilder(args);
+            var configuration = builder.Configuration;
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+
+            /// <summary>
+            /// Adds Swagger to the project and configures it to use JWT Bearer Authentication
+            /// </summary>
             builder.Services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Grad Onboarding Platform API", Version = "v1" });
@@ -59,7 +50,7 @@ namespace ROG.App
                 });
             });
 
-            builder.Services.AddScoped<IAuthService,AuthService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IGradEventsService, GradEventsService>();
             builder.Services.AddScoped<IGradEventsRepository, GradEventsRepository>();
@@ -74,7 +65,67 @@ namespace ROG.App
             builder.Services.AddScoped<IGradStackRepository, GradStackRepository>();
             builder.Services.AddScoped<IGradStackService, GradStackService>();
 
-            builder.Services.AddDbContext<DatabaseContext>();
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["Default"]));
+
+            /// <summary>
+            /// Add authentication with JWT bearer token to the application
+            /// and set the token validation parameters.
+            /// </summary>
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero,
+                        ValidIssuer = configuration["Auth:Issuer"],
+                        ValidAudience = configuration["Auth:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]))
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = context =>
+                        {
+                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                            Claim? roleClaims = claimsIdentity.Claims
+                                .FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                            if (roleClaims != null)
+                            {
+                                var roles = roleClaims.Value.Split(",");
+                                foreach (var role in roles)
+                                {
+                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+                                }
+                                claimsIdentity.RemoveClaim(roleClaims);
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
+            /// <summary>
+            /// Authorization policies
+            /// e.g: options.AddPolicy([Policy Name], policy => policy.RequireRole([Role in DB and enum]));
+            /// </summary>
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    "isAdmin",
+                    policy => policy.RequireRole("ADMIN"));
+                options.AddPolicy(
+                    "isGrad",
+                    policy => policy.RequireRole("GRAD"));
+                options.AddPolicy(
+                    "isMentor",
+                    policy => policy.RequireRole("MENTOR"));
+                options.AddPolicy(
+                    "isPresenter",
+                    policy => policy.RequireRole("PRESENTER"));
+            });
 
             var app = builder.Build();
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -90,28 +141,8 @@ namespace ROG.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
-            
 
             app.UseHttpsRedirection();
-
-            app.Use( async (context, next) =>
-            {
-                if (!context.Request.Path.ToString().Contains("auth"))
-                {
-                    if (context.Request.Headers.TryGetValue("Authorization", out var authorization))
-                    {
-                        var handler = new JwtSecurityTokenHandler();
-                        var token = handler.ReadJwtToken(authorization.ToString().Replace("Bearer ",""));
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 401;
-                        await context.Response.WriteAsync("Token is missing.");
-                        return;
-                    }
-                }
-                await next(context);
-            });
 
             app.UseAuthorization();
 

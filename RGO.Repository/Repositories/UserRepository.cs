@@ -60,7 +60,6 @@ namespace RGO.Repository.Repositories
             existingUser.FirstName = updatedProfile.FirstName;
             existingUser.LastName = updatedProfile.LastName;
             existingUser.Email = updatedProfile.Email;
-            existingUser.Type = updatedProfile.Type;
             existingUser.JoinDate = DateTime.UtcNow;
             existingUser.Status = updatedProfile.Status;
             existingUser.Bio = updatedProfile.Bio;
@@ -132,13 +131,37 @@ namespace RGO.Repository.Repositories
             return allUsersDto;
         }
 
+        public async Task<List<int>> GetUserRoles(string email)
+        {
+            UserDto user = await GetUserByEmail(email);
+
+            List<int> roles = await _databaseContext.userRoles
+                .Where(ur => ur.UserId == user.Id)
+                .Select(ur => GetRole(ur.Role.Description.ToUpper()))
+                .ToListAsync();
+
+            return roles;
+        }
+
+        private static int GetRole(string role)
+        {
+            return role.ToUpper() switch
+            {
+                "GRAD" => 0,
+                "EMPLOYEE" => 1,
+                "PRESENTER" => 2,
+                "MENTOR" => 3,
+                _ => 4,
+            };
+        }
+
         public async Task<UserDto> RemoveUser(string email)
         {
             bool userExists = await UserExists(email);
 
             if (!userExists) throw new Exception("User already removed");
 
-            User user = await _databaseContext.users.FirstOrDefaultAsync(u => u.Email == email);
+            User user = await _databaseContext.users.FirstAsync(u => u.Email == email);
 
             var removedUser = _databaseContext.users.Remove(user);
             await _databaseContext.SaveChangesAsync();

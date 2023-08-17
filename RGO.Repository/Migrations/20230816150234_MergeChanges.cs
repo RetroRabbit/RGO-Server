@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RGO.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class _202308151316 : Migration
+    public partial class MergeChanges : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,19 @@ namespace RGO.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GradGroup", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Role",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Role", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,7 +88,6 @@ namespace RGO.Repository.Migrations
                     firstName = table.Column<string>(type: "text", nullable: false),
                     lastName = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
-                    type = table.Column<int>(type: "integer", nullable: false),
                     joinDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     status = table.Column<int>(type: "integer", nullable: false),
                     bio = table.Column<string>(type: "text", nullable: false),
@@ -244,6 +256,32 @@ namespace RGO.Repository.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserRole",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    roleId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRole", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_UserRole_Role_roleId",
+                        column: x => x.roleId,
+                        principalTable: "Role",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRole_User_userId",
+                        column: x => x.userId,
+                        principalTable: "User",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Certifications_userId",
                 table: "Certifications",
@@ -295,6 +333,16 @@ namespace RGO.Repository.Migrations
                 column: "gradGroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserRole_roleId",
+                table: "UserRole",
+                column: "roleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRole_userId",
+                table: "UserRole",
+                column: "userId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Workshop_gradEventId",
                 table: "Workshop",
                 column: "gradEventId");
@@ -319,10 +367,16 @@ namespace RGO.Repository.Migrations
                 name: "Social");
 
             migrationBuilder.DropTable(
+                name: "UserRole");
+
+            migrationBuilder.DropTable(
                 name: "Workshop");
 
             migrationBuilder.DropTable(
                 name: "Stacks");
+
+            migrationBuilder.DropTable(
+                name: "Role");
 
             migrationBuilder.DropTable(
                 name: "User");

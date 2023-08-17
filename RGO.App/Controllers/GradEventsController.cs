@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
-using RGO.Domain.Services;
 
 namespace RGO.App.Controllers;
 
@@ -15,6 +14,7 @@ public class GradEventsController : ControllerBase
         _gradEventsService = gradEventsService;
     }
 
+    [Authorize]
     [HttpGet("events")]
     public async Task<IActionResult> GetEvents()
     {

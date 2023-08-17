@@ -1,114 +1,113 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Models;
-using RGO.Domain.Services;
-using RGO.Repository.Entities;
-using System.Reflection.Metadata.Ecma335;
 
-namespace RGO_Backend.Controllers
+namespace RGO_Backend.Controllers;
+
+[Route("/user/")]
+[ApiController]
+public class UserController : ControllerBase
 {
-    [Route("/user/")]
-    [ApiController]
-    public class UserController : ControllerBase
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
     {
+        _userService = userService;
+    }
 
-        private readonly IProfileService _profileService;
-        private readonly IUserService _userService;
-
-        public UserController(IProfileService profileService, IUserService userService)
+    [Authorize]
+    [HttpGet("get")]
+    public async Task<IActionResult> GetUser([FromQuery] string email)
+    {
+        try
         {
-            _profileService = profileService;
-            _userService = userService;
+            var user = await _userService.GetUserByEmail(email);
+            return Ok(user);
+
         }
-
-        [HttpGet("get")]
-        public async Task<IActionResult> GetUser([FromQuery] string email)
+        catch (Exception e)
         {
-            try
-            {
-                var user = await _userService.GetUserByEmail(email);
-                return Ok(user);
-
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-
-        [HttpPost("add")]
-        public async Task<IActionResult> AddUser([FromBody] UserDto user)
-        {
-             try
-            {
-                var newUser = await _userService.AddUser(user);
-                return Ok(newUser);
-
-            }
-            catch (Exception e)
-              {
-                return BadRequest(e.Message);
-             }
-         }
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] ProfileDto profile)
-        {
-            try
-            {
-                ProfileDto updatedProfile = await _userService.UpdateUser(email, profile);
-                return Ok(updatedProfile);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("remove")]
-        public async Task<IActionResult> RemoveUser([FromQuery] string email)
-        {
-            try
-            {
-                var removedUser = await _userService.RemoveUser(email);
-                return Ok(removedUser);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("users/get")]
-        public async Task<IActionResult> GetUsers()
-        {
-            try
-            {
-                var user = await _userService.GetUsers();
-                return Ok(user);
-
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpGet("groups")]
-        public async Task<IActionResult> GetUserGroups()
-        {
-            try
-            {
-                List<GradGroupDto> userGroups = await _userService.GetGradGroups();
-                return Ok(userGroups);
-            }
-            catch(Exception e) 
-            {
-                return BadRequest(e.Message);
-            }
-           
+            return BadRequest(e.Message);
         }
     }
 
+    [Authorize(Policy = "isAdmin")]
+    [HttpPost("add")]
+    public async Task<IActionResult> AddUser([FromBody] UserDto user)
+    {
+        try
+        {
+            var newUser = await _userService.AddUser(user);
+            return Ok(newUser);
+
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Policy = "isAdmin")]
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] ProfileDto profile)
+    {
+        try
+        {
+            ProfileDto updatedProfile = await _userService.UpdateUser(email, profile);
+            return Ok(updatedProfile);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("users/get")]
+    public async Task<IActionResult> GetUsers()
+    {
+        try
+        {
+            var user = await _userService.GetUsers();
+            return Ok(user);
+
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("groups")]
+    public async Task<IActionResult> GetUserGroups()
+    {
+        try
+        {
+            List<GradGroupDto> userGroups = await _userService.GetGradGroups();
+            return Ok(userGroups);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+
+    }
+
+    [Authorize]
+    [HttpDelete("delete")]
+    public async Task<IActionResult> RemoveUser([FromQuery] string email)
+    {
+        try
+        {
+            var removedUser = await _userService.RemoveUser(email);
+            return Ok(removedUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
 

@@ -12,7 +12,6 @@ namespace RGO.Domain.Models
         string FirstName,
         string LastName,
         string Email,
-        int Type,
         DateTime JoinDate,
         int Status,
         string Bio,

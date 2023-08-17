@@ -203,6 +203,25 @@ namespace RGO.Repository.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("RGO.Repository.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Description");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("RGO.Repository.Entities.Skill", b =>
                 {
                     b.Property<int>("Id")
@@ -360,15 +379,37 @@ namespace RGO.Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("type");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GradGroupId");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("roleId");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Workshop", b =>
@@ -490,11 +531,30 @@ namespace RGO.Repository.Migrations
 
             modelBuilder.Entity("RGO.Repository.Entities.User", b =>
                 {
-                    b.HasOne("RGO.Repository.Entities.GradGroup", "FradGroup")
+                    b.HasOne("RGO.Repository.Entities.GradGroup", "GradGroup")
                         .WithMany()
                         .HasForeignKey("GradGroupId");
 
-                    b.Navigation("FradGroup");
+                    b.Navigation("GradGroup");
+                });
+
+            modelBuilder.Entity("RGO.Repository.Entities.UserRole", b =>
+                {
+                    b.HasOne("RGO.Repository.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RGO.Repository.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RGO.Repository.Entities.Workshop", b =>

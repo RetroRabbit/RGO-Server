@@ -27,7 +27,6 @@ namespace RGO.Repository.Repositories
             string FirstName = user.FirstName;
             string LastName = user.LastName;    
             string Email    = user.Email;
-            int Type = user.Type;
             DateTime JoinDate = DateTime.Now;
             int Status = user.Status;
             string Bio= user.Bio;
@@ -47,7 +46,6 @@ namespace RGO.Repository.Repositories
                     FirstName,
                     LastName,
                     Email,
-                    Type,
                     JoinDate,
                     Status,
                     Bio,
