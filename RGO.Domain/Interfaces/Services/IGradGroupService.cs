@@ -18,18 +18,20 @@ namespace RGO.Domain.Interfaces.Services
         /// <summary>
         /// Add new grad droup
         /// </summary>
+        /// <param GradGroupDto="new GradGroupDto Object "></param>
         Task<GradGroupDto> AddGradGroups(GradGroupDto newGroupDto);
 
         /// <summary>
         /// Removes grad group
         /// </summary>
-        /// <param name="gradGroupId"></param>
+        /// <param gradGroupId="gradGroupId"></param>
         Task<GradGroupDto> RemoveGradGroups(int gradGroupId);
 
         /// <summary>
         /// Update
         /// </summary>
-        /// <param name="gradGroupId"></param>
+        /// <param name="updatedGroup"></param>
+        /// <returns></returns>
         Task<GradGroupDto> UpdateGradGroups(GradGroupDto updatedGroup);
 
     }
