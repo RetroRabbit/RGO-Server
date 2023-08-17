@@ -96,7 +96,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete("remove")]
+    [HttpDelete("delete")]
     public async Task<IActionResult> RemoveUser([FromQuery] string email)
     {
         try
