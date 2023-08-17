@@ -28,10 +28,17 @@ public interface IUserRepository
     /// <param></param>
     /// <returns>A list of UserDto</returns>
     Task<List<UserDto>> GetUsers();
+
+    /// <summary>
+    /// Removes a user
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    Task<UserDto> RemoveUser(string email);
     /// Get user roles
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
     Task<List<int>> GetUserRoles(string email);
 }
-    
+
