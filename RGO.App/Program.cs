@@ -54,7 +54,8 @@ namespace ROG.App
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IGradEventsService, GradEventsService>();
             builder.Services.AddScoped<IGradEventsRepository, GradEventsRepository>();
-            builder.Services.AddScoped<IGradGroupsRepository, GradGroupsRepository>();
+            builder.Services.AddScoped<IGradGroupRepository, GradGroupRepository>();
+            builder.Services.AddScoped<IGradGroupService, GradGroupService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IProfileService, ProfileService>();
