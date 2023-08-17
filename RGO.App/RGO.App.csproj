@@ -21,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RGO.Repository\RGO.Repository.csproj" />
+    <ProjectReference Include="..\RGO.Domain\RGO.Services.csproj" />
+    <ProjectReference Include="..\RGO.Models\RGO.Models.csproj" />
+    <ProjectReference Include="..\RGO.UnitOfWork\RGO.UnitOfWork.csproj" />
   </ItemGroup>
 
 </Project>

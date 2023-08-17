@@ -1,46 +1,87 @@
-﻿using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using RGO.Models;
+using RGO.Models.Enums;
+using RGO.Services.Extensions;
+using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
+using RGO.UnitOfWork.Entities;
 
-namespace RGO.Domain.Services
+namespace RGO.Services.Services
 {
     public class GradStackService : IGradStackService
     {
-        private readonly IGradStackRepository _gradStackRepository;
+        private readonly IUnitOfWork _db;
 
-        public GradStackService(IGradStackRepository gradStackRepository)
+        public GradStackService(IUnitOfWork db)
         {
-            _gradStackRepository = gradStackRepository;
+            _db = db;
         }
 
-        public Task<GradStackDto> AddGradStack(int userId)
+        public async Task<GradStackDto> AddGradStack(int userId)
         {
-            return _gradStackRepository.AddGradStack(userId);
+            if (await HasTechStack(userId))
+            {
+                var stack = await GetGradStack(userId);
+                return stack;
+            }
+
+            var backendStackObject = await GetStack(StackTypes.Backend);
+            var frontendStackObject = await GetStack(StackTypes.Backend);
+            var databaseStackObject = await GetStack(StackTypes.Backend);
+
+            var newGradStack = new GradStackDto
+            (
+                0,
+                userId,
+                backendStackObject,
+                frontendStackObject,
+                databaseStackObject,
+                "Personal project tech stack default text.",
+                GradProjectStatus.Submitted,
+                DateTime.UtcNow);
+
+            try
+            {
+                return await _db.GradStack.Add(new GradStacks(newGradStack));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create Tech Stack for User {userId}.(Error: {ex.Message})");
+            }
         }
 
-        public Task<GradStackDto> GetGradStack(int userId)
+        public async Task<GradStackDto> GetGradStack(int userId)
         {
-            return _gradStackRepository.GetGradStack(userId);
+            return (await _db.GradStack.Get()
+                .Include(x => x.User)
+                .Include(x => x.BackendGradStack)
+                .Include(x => x.FrontendGradStack)
+                .Include(x => x.DatabaseGradStack)
+                .FirstOrDefaultAsync(x => x.UserId == userId))
+                .ToDto();
         }
 
-        public Task<bool> HasTechStack(int userId)
+        public async Task<bool> HasTechStack(int userId)
         {
-            return _gradStackRepository.HasTechStack(userId);
+            return await _db.GradStack.Any(x => x.UserId == userId);
         }
 
-        public Task<GradStackDto> RemoveGradStack(int userId)
+        public async Task<GradStackDto> RemoveGradStack(int userId)
         {
-            return _gradStackRepository.RemoveGradStack(userId);
+            var obj = await GetGradStack(userId);
+            return await _db.GradStack.Delete(obj.Id);
         }
 
-        public Task<GradStackDto> UpdateGradStack(int userId, string description)
+        public async Task<GradStackDto> UpdateGradStack(int userId, string description)
         {
-            return _gradStackRepository.UpdateGradStack(userId, description);
+            var obj = await GetGradStack(userId);
+            obj.Description = description;
+            return await _db.GradStack.Update(new GradStacks(obj));
+        }
+
+        private async Task<StacksDto> GetStack(StackTypes type)
+        {
+            return (await _db.Stack.GetAll(x => x.StackType == (int)type)).GetRandom();
         }
     }
 }

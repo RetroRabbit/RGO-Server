@@ -1,18 +1,20 @@
-﻿using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
+﻿using RGO.Models;
+using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
 
-namespace RGO.Domain.Services;
+namespace RGO.Services.Services;
 
 public class WorkshopService : IWorkshopService
 {
-    IWorkshopRepository _workshopRepository;
-    public WorkshopService(IWorkshopRepository repository)
+    private readonly IUnitOfWork _db;
+
+    public WorkshopService(IUnitOfWork db)
     {
-        _workshopRepository = repository;
+        _db = db;
     }
+
     public Task<List<WorkshopDto>> GetWorkshops()
     {
-        return _workshopRepository.GetAllWorkShops();    
+        return _db.Workshop.GetAllWorkShops();    
     }
 }

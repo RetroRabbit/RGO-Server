@@ -1,38 +1,39 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using RGO.Domain.Enums;
-using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using RGO.Models;
+using RGO.Models.Enums;
+using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
 
-namespace RGO.Domain.Services;
+namespace RGO.Services.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
+    private readonly IUnitOfWork _db;
 
-    public AuthService(IUserRepository userRepository, IConfiguration configuration)
+    public AuthService(IConfiguration configuration, IUnitOfWork db)
     {
-        _userRepository = userRepository;
         _configuration = configuration;
+        _db = db;
     }
 
     public async Task<bool> CheckUserExist(string email)
     {
-        return await _userRepository.UserExists(email);
+        return await _db.User.Any(x => x.Email == email);
     }
 
     public async Task<string> GenerateToken(string email)
     {
-        UserDto user = await _userRepository.GetUserByEmail(email);
-        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-        byte[] key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]);
-        List<UserRole> roles = await GetUserRoles(email);
-        string rolesString = string.Empty;
+
+        var user = await _db.User.GetByEmail(email);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]);
+        var roles = await GetUserRoles(email);
+        var rolesString = string.Empty;
 
         try
         {
@@ -43,7 +44,7 @@ public class AuthService : IAuthService
             throw new Exception(ex.Message);
         }
 
-        Claim[] claims = new Claim[]
+        var claims = new Claim[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
@@ -62,13 +63,13 @@ public class AuthService : IAuthService
                 SecurityAlgorithms.HmacSha256Signature)
         };
 
-        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 
     public async Task<List<UserRole>> GetUserRoles(string email)
     {
-        List<int> roles = await _userRepository.GetUserRoles(email);
+        var roles = await _db.User.GetUserRoles(email);
         return roles
             .Select(role => (UserRole)role)
             .ToList();

@@ -1,0 +1,17 @@
+﻿namespace RGO.Models
+{
+    public record UserDto(
+        int Id,
+        int? GradGroupId,
+        string FirstName,
+        string LastName,
+        string Email,
+        DateTime JoinDate,
+        int Status,
+        string Bio, 
+        int Level,
+        string Phone,
+        int? GradType
+        );
+
+}

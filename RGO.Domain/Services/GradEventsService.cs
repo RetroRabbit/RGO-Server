@@ -1,20 +1,20 @@
-﻿using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
+﻿using RGO.Models;
+using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
 
-namespace RGO.Domain.Services;
+namespace RGO.Services.Services;
 
 public class GradEventsService : IGradEventsService
 {
-    private readonly IGradEventsRepository _gradEventsrepository;
+    private readonly IUnitOfWork _db;
 
-    public GradEventsService(IGradEventsRepository gradEventsRepository)
+    public GradEventsService(IUnitOfWork db)
     {
-        _gradEventsrepository = gradEventsRepository;
+        _db = db;
     }
 
-    public async Task<GradEventsDto[]> GetEvents()
+    public async Task<List<GradEventsDto>> GetEvents()
     {
-        return await _gradEventsrepository.GetAllEvents();
+        return await _db.GradEvents.GetAll();
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RGO.Domain.Interfaces.Services;
+using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 

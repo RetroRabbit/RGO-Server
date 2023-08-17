@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
+using RGO.Models;
+using RGO.Services.Interfaces;
 
-namespace RGO_Backend.Controllers;
+namespace RGO.App.Controllers;
 
 [Route("/user/")]
 [ApiController]

@@ -1,40 +1,36 @@
-﻿using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RGO.Models;
+using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
+using RGO.UnitOfWork.Entities;
 
-namespace RGO.Domain.Services
+namespace RGO.Services.Services
 {
     public class GradGroupService : IGradGroupService
     {
-        private readonly IGradGroupRepository _gradGroupRepository;
+        private readonly IUnitOfWork _db;
 
-        public GradGroupService(IGradGroupRepository gradGroupRepository)
+        public GradGroupService(IUnitOfWork db)
         {
-            _gradGroupRepository = gradGroupRepository;
+            _db = db;
         }
-        public Task<GradGroupDto> AddGradGroups(GradGroupDto newGroupDto)
+        public async Task<GradGroupDto> AddGradGroups(GradGroupDto newGroupDto)
         {
-            return _gradGroupRepository.AddGradGroups(newGroupDto);
+            return await _db.GradGroup.Add(new GradGroup(newGroupDto));
         }
 
         public Task<List<GradGroupDto>> GetGradGroups()
         {
-            return _gradGroupRepository.GetGradGroups();
+            return _db.GradGroup.GetAll();
         }
 
-        public Task<GradGroupDto> RemoveGradGroups(int gradGroupId)
+        public async Task<GradGroupDto> RemoveGradGroups(int gradGroupId)
         {
-            return _gradGroupRepository.RemoveGradGroups(gradGroupId);
+            return await _db.GradGroup.Delete(gradGroupId);
         }
 
-        public Task<GradGroupDto> UpdateGradGroups(GradGroupDto updatedGroup)
+        public async Task<GradGroupDto> UpdateGradGroups(GradGroupDto updatedGroup)
         {
-            return _gradGroupRepository.UpdateGradGroups(updatedGroup);
+            return await _db.GradGroup.Update(new GradGroup(updatedGroup));
         }
     }
 }
