@@ -53,11 +53,11 @@ public class GradGroupController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateGradGroups([FromQuery]int gradGroupId, [FromBody]GradGroupDto updatedGroup)
+    public async Task<IActionResult> UpdateGradGroups([FromBody]GradGroupDto updatedGroup)
     {
         try
         {
-            var group = await _gradGroupService.UpdateGradGroups(gradGroupId, updatedGroup);
+            var group = await _gradGroupService.UpdateGradGroups(updatedGroup);
             return Ok(group);
         }
         catch (Exception ex)

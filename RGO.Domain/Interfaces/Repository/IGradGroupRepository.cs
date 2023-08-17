@@ -25,5 +25,5 @@ public interface IGradGroupRepository
     /// Update
     /// </summary>
     /// <param name="gradGroupId"></param>
-    Task<GradGroupDto> UpdateGradGroups(int gradGroupId, GradGroupDto updatedGroup);
+    Task<GradGroupDto> UpdateGradGroups(GradGroupDto updatedGroup);
 }

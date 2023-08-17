@@ -56,15 +56,16 @@ public class GradGroupRepository : IGradGroupRepository
         return removedGroup.Entity.ToDTO();
     }
 
-    public async Task<GradGroupDto> UpdateGradGroups(int gradGroupId, GradGroupDto updatedGroup)
+    public async Task<GradGroupDto> UpdateGradGroups(GradGroupDto updatedGroup)
     {
-        var existingGroup = await _databaseContext.gradGroups.FirstOrDefaultAsync(x => x.Id == gradGroupId);
+        var existingGroup = await _databaseContext.gradGroups.FirstOrDefaultAsync(x => x.Id == updatedGroup.Id);
         if (existingGroup == null) 
         {
             throw new KeyNotFoundException("GradGroup Not found with the provided ID");
         }
-        var newGroup = _databaseContext.gradGroups.Update(new GradGroup(updatedGroup));
+
+        existingGroup.Title = updatedGroup.Title;
         await _databaseContext.SaveChangesAsync();
-        return newGroup.Entity.ToDTO();
+        return existingGroup.ToDTO();
     }
 }

@@ -32,9 +32,9 @@ namespace RGO.Domain.Services
             return _gradGroupRepository.RemoveGradGroups(gradGroupId);
         }
 
-        public Task<GradGroupDto> UpdateGradGroups(int gradGroupId, GradGroupDto updatedGroup)
+        public Task<GradGroupDto> UpdateGradGroups(GradGroupDto updatedGroup)
         {
-            return UpdateGradGroups(gradGroupId, updatedGroup);
+            return _gradGroupRepository.UpdateGradGroups(updatedGroup);
         }
     }
 }
