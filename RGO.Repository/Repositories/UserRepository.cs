@@ -148,9 +148,10 @@ namespace RGO.Repository.Repositories
             return role.ToUpper() switch
             {
                 "GRAD" => 0,
-                "PRESENTER" => 1,
-                "MENTOR" => 2,
-                _ => 3,
+                "EMPLOYEE" => 1,
+                "PRESENTER" => 2,
+                "MENTOR" => 3,
+                _ => 4,
             };
         }
 
