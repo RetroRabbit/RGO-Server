@@ -9,13 +9,10 @@ namespace RGO_Backend.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-
-    private readonly IProfileService _profileService;
     private readonly IUserService _userService;
 
-    public UserController(IProfileService profileService, IUserService userService)
+    public UserController(IUserService userService)
     {
-        _profileService = profileService;
         _userService = userService;
     }
 
@@ -88,7 +85,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            List<UserGroupDto> userGroups = await _userService.GetUserGroups();
+            List<GradGroupDto> userGroups = await _userService.GetGradGroups();
             return Ok(userGroups);
         }
         catch (Exception e)

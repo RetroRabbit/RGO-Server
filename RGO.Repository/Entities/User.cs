@@ -13,7 +13,7 @@ public class User
     public int Id { get; set; }
 
     [Column("gradGroupId")]
-    [ForeignKey("UserGroup")]
+    [ForeignKey("GradGroup")]
     public int? GradGroupId { get; set; }
 
     [Column("firstName")]
@@ -43,7 +43,7 @@ public class User
     [Column("gradType")]
     public int? GradType { get; set; }
 
-    public virtual GradGroup? FradGroup { get; set; }
+    public virtual GradGroup? GradGroup { get; set; }
     public virtual List<Certifications> UserCertifications { get; set; }
     public virtual List<Skill> Skills { get; set; }
     public virtual List<Projects> UserProjects { get; set; }
