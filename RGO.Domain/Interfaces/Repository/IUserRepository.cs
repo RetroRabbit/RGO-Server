@@ -39,7 +39,7 @@ public interface IUserRepository
     /// Get user roles
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>list of integers representing UserRoles</returns>
     Task<List<int>> GetUserRoles(string email);
 }
 
