@@ -16,10 +16,10 @@ public class GradGroup
 
     public GradGroup() { }
 
-    public GradGroup(GradGroup gradGroup)
+    public GradGroup(GradGroupDto gradGroupDto)
     {
-        Id = gradGroup.Id;
-        Title = gradGroup.Title;
+        Id = gradGroupDto.Id;
+        Title = gradGroupDto.Title;
     }
 
     public GradGroupDto ToDTO()
