@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace RGO.Repository.Repositories;
 
-public class GradGroupsRepository : IGradGroupsRepository
+public class _GradGroupRepository : IGradGroupRepository
 {
     private readonly DatabaseContext _databaseContext;
 
-    public GradGroupsRepository(DatabaseContext databaseContext)
+    public _GradGroupRepository(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
     }

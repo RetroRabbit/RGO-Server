@@ -13,9 +13,9 @@ namespace RGO.Domain.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IProfileRepository _profileRepository;
-        private readonly IGradGroupsRepository _gradGroupsRepository;
+        private readonly IGradGroupRepository _gradGroupsRepository;
 
-        public UserService(IUserRepository userRepository, IGradGroupsRepository userGroupsRepository, IProfileRepository profileRepository)
+        public UserService(IUserRepository userRepository, IGradGroupRepository userGroupsRepository, IProfileRepository profileRepository)
         {
             _userRepository = userRepository;
             _profileRepository = profileRepository;
