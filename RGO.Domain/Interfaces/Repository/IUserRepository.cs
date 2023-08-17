@@ -33,7 +33,7 @@ public interface IUserRepository
     /// Removes a user
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>returns deleted user when successful</returns>
     Task<UserDto> RemoveUser(string email);
 
     /// Get user roles
