@@ -13,17 +13,21 @@ public interface IGradGroupRepository
     /// <summary>
     /// Add new grad droup
     /// </summary>
+    /// <param name="newGroupDto"></param>
+    /// <returns>Added Grad Group</returns>
     Task<GradGroupDto> AddGradGroups(GradGroupDto newGroupDto);
 
     /// <summary>
     /// Removes grad group
     /// </summary>
     /// <param name="gradGroupId"></param>
+    /// <returns> Removed GradGroup</returns>
     Task<GradGroupDto> RemoveGradGroups(int gradGroupId);
 
     /// <summary>
     /// Update
     /// </summary>
     /// <param name="gradGroupId"></param>
+    /// <returns> Updated GradGroup</returns>
     Task<GradGroupDto> UpdateGradGroups(GradGroupDto updatedGroup);
 }

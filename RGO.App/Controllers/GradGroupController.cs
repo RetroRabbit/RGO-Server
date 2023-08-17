@@ -16,6 +16,7 @@ public class GradGroupController : ControllerBase
         _gradGroupService = gradGroupService;
     }
 
+    [Authorize]
     [HttpGet("getall")]
     public async Task<IActionResult> GetGradGroups()
     {
@@ -23,6 +24,7 @@ public class GradGroupController : ControllerBase
         return Ok(gradGroups);
     }
 
+    [Authorize]
     [HttpPost("add")]
     public async Task<IActionResult> AddGradGroups([FromBody] GradGroupDto newGroupDto)
     {
@@ -37,6 +39,7 @@ public class GradGroupController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpDelete("delete")]
     public async Task<IActionResult> RemoveGradGroups([FromQuery]int gradGroupId)
     {
@@ -52,6 +55,7 @@ public class GradGroupController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("update")]
     public async Task<IActionResult> UpdateGradGroups([FromBody]GradGroupDto updatedGroup)
     {
