@@ -35,6 +35,7 @@ public interface IUserRepository
     /// <param name="email"></param>
     /// <returns></returns>
     Task<UserDto> RemoveUser(string email);
+
     /// Get user roles
     /// </summary>
     /// <param name="email"></param>

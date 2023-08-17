@@ -152,13 +152,15 @@ namespace RGO.Repository.Repositories
                 "MENTOR" => 2,
                 _ => 3,
             };
+        }
+
         public async Task<UserDto> RemoveUser(string email)
         {
             bool userExists = await UserExists(email);
 
             if (!userExists) throw new Exception("User already removed");
 
-            User user = await _databaseContext.users.FirstOrDefaultAsync(u => u.Email == email);
+            User user = await _databaseContext.users.FirstAsync(u => u.Email == email);
 
             var removedUser = _databaseContext.users.Remove(user);
             await _databaseContext.SaveChangesAsync();

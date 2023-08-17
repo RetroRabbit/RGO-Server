@@ -94,5 +94,20 @@ public class UserController : ControllerBase
         }
 
     }
+
+    [Authorize]
+    [HttpDelete("remove")]
+    public async Task<IActionResult> RemoveUser([FromQuery] string email)
+    {
+        try
+        {
+            var removedUser = await _userService.RemoveUser(email);
+            return Ok(removedUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
 
