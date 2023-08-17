@@ -40,7 +40,7 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
 
         Claim[] claims = new Claim[]
