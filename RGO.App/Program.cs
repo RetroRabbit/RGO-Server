@@ -7,6 +7,7 @@ using RGO.Domain.Interfaces.Services;
 using RGO.Domain.Services;
 using RGO.Repository;
 using RGO.Repository.Repositories;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -92,17 +93,29 @@ namespace ROG.App
                         OnTokenValidated = context =>
                         {
                             var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+
+                            var issuer = context.Principal.FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
+                            var audience = context.Principal.FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
+
+                            if (issuer != configuration["Auth:Issuer"] || audience != configuration["Auth:Audience"])
+                            {
+                                context.Fail("Token is not valid");
+                                return Task.CompletedTask;
+                            }
+
                             Claim? roleClaims = claimsIdentity.Claims
                                 .FirstOrDefault(c => c.Type == ClaimTypes.Role);
-                            if (roleClaims != null)
+                            
+                            if (roleClaims == null) return Task.CompletedTask;
+
+                            var roles = roleClaims.Value.Split(",");
+
+                            foreach (var role in roles)
                             {
-                                var roles = roleClaims.Value.Split(",");
-                                foreach (var role in roles)
-                                {
-                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-                                }
-                                claimsIdentity.RemoveClaim(roleClaims);
+                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
                             }
+
+                            claimsIdentity.RemoveClaim(roleClaims);
                             return Task.CompletedTask;
                         }
                     };
