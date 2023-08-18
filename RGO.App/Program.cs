@@ -49,11 +49,7 @@ namespace RGO.App
             });
 
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IGradEventsService, GradEventsService>();
-            builder.Services.AddScoped<IGradGroupService, GradGroupService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IProfileService, ProfileService>();
-            builder.Services.AddScoped<IWorkshopService, WorkshopService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 

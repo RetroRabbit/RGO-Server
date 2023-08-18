@@ -10,12 +10,10 @@ namespace RGO.Services.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _db;
-        private readonly IProfileService _profileService;
 
-        public UserService(IUnitOfWork db, IProfileService profileService)
+        public UserService(IUnitOfWork db)
         {
             _db = db;
-            _profileService = profileService;
         }
 
         public async Task<UserDto> AddUser(UserDto userDto)
@@ -26,12 +24,6 @@ namespace RGO.Services.Services
         public async Task<UserDto> GetUserByEmail(string email)
         {
             return await _db.User.GetByEmail(email);
-        }
-
-        public async Task<ProfileDto> UpdateUser(string email,ProfileDto profile)
-        {
-            await _db.User.UpdateUser(email, profile);
-            return await _profileService.GetUserProfileByEmail(email);
         }
 
         public async Task<List<UserDto>> GetUsers()

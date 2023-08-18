@@ -48,21 +48,6 @@ public class UserController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "isAdmin")]
-    [HttpPut("update")]
-    public async Task<IActionResult> UpdateUser([FromQuery] string email, [FromBody] ProfileDto profile)
-    {
-        try
-        {
-            ProfileDto updatedProfile = await _userService.UpdateUser(email, profile);
-            return Ok(updatedProfile);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
     [Authorize]
     [HttpGet("users/get")]
     public async Task<IActionResult> GetUsers()
