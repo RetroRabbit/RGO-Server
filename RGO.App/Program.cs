@@ -7,6 +7,8 @@ using Microsoft.OpenApi.Models;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
+using RGO.UnitOfWork.Interfaces;
+using RGO.UnitOfWork.Repositories;
 
 namespace RGO.App
 {
@@ -43,17 +45,29 @@ namespace RGO.App
                         {
                             Reference = new OpenApiReference{Type = ReferenceType.SecurityScheme, Id = "Bearer"}
                         },
-                        new string[]{}
+                        Array.Empty<string>()
                     }
                 });
             });
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["ConnectionStrings:Default"]));
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
-            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["Default"]));
+            // builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+            // builder.Services.AddScoped<IEmployeeAddressRepository, EmployeeAddressRepository>();
+            // builder.Services.AddScoped<IEmployeeCertificationRepository, EmployeeCertificationRepository>();
+            // builder.Services.AddScoped<IEmployeeDataRepository, EmployeeDataRepository>();
+            // builder.Services.AddScoped<IEmployeeDocumentRepository, EmployeeDocumentRepository>();
+            // builder.Services.AddScoped<IEmployeeProjectRepository, EmployeeProjectRepository>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddScoped<IEmployeeRoleRepository, EmployeeRoleRepository>();
+            builder.Services.AddScoped<IEmployeeTypeRepository, EmployeeTypeRepository>();
+            // builder.Services.AddScoped<IOnboardingDocumentsRepository, OnboardingDocumentsRepository>();
+            builder.Services.AddScoped<IRoleAccessRepository, RoleAccessRepository>();
+            // builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
@@ -69,17 +83,17 @@ namespace RGO.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = configuration["Auth:Issuer"],
-                        ValidAudience = configuration["Auth:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]))
+                        ValidIssuer = configuration["Auth:Issuer"]!,
+                        ValidAudience = configuration["Auth:Audience"]!,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]!))
                     };
 
                     options.Events = new JwtBearerEvents
                     {
                         OnTokenValidated = context =>
                         {
-                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
-                            Claim? roleClaims = claimsIdentity.Claims
+                            var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
+                            Claim? roleClaims = claimsIdentity!.Claims
                                 .FirstOrDefault(c => c.Type == ClaimTypes.Role);
                             if (roleClaims != null)
                             {

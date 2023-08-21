@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RGO.Models.Enums;
+using RGO.Models;
 using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
@@ -28,7 +28,27 @@ public class AuthenticationController : ControllerBase
             if (!userExists) throw new Exception("User not found");
 
 
-            string token = await _authService.GenerateToken(email);
+            string token = await _authService.Login(email);
+
+            return Ok(token);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeDto newEmployee)
+    {
+        try
+        {
+            bool userExists = await _authService.CheckUserExist(newEmployee.PersonalEmail);
+
+            if (userExists) throw new Exception("Employee already exists");
+
+            string token = await _authService.RegisterEmployee(newEmployee);
 
             return Ok(token);
         }
@@ -44,7 +64,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            List<UserRole> roles = await _authService.GetUserRoles(email);
+            List<RoleAccessDto> roles = await _authService.GetUserRoles(email);
 
             return Ok(roles);
         }
