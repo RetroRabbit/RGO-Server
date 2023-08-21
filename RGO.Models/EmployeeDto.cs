@@ -15,7 +15,7 @@ public record EmployeeDto(
     string CountryOfBirth,
     string Nationality,
     int Level,
-    EmployeeTypeDto EmployeeType,
+    string EmployeeType,
     string Title,
     string Name,
     string Initials,

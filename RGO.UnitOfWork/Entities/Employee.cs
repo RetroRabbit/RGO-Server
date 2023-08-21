@@ -105,7 +105,7 @@ public class Employee : IModel<EmployeeDto>
 
     public Employee() { }
 
-    public Employee(EmployeeDto employeeDto)
+    public Employee(EmployeeDto employeeDto, EmployeeTypeDto employeeType)
     {
         Id = employeeDto.Id;
         EmployeeNumber = employeeDto.EmployeeNumber;
@@ -119,7 +119,7 @@ public class Employee : IModel<EmployeeDto>
         CountryOfBirth = employeeDto.CountryOfBirth;
         Nationality = employeeDto.Nationality;
         Level = employeeDto.Level;
-        EmployeeTypeId = employeeDto.EmployeeType.Id;
+        EmployeeTypeId = employeeType.Id;
         Title = employeeDto.Title;
         Initials = employeeDto.Initials;
         Name = employeeDto.Name;
@@ -154,10 +154,10 @@ public class Employee : IModel<EmployeeDto>
             CountryOfBirth,
             Nationality,
             Level,
-            EmployeeType.ToDto(),
+            EmployeeType.Name,
             Title,
-            Initials,
             Name,
+            Initials,
             Surname,
             DateOfBirth,
             IdNumber,
