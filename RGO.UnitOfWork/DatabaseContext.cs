@@ -18,17 +18,13 @@ namespace RGO.UnitOfWork
             optionsBuilder.UseNpgsql(configuration.GetConnectionString("Default"));
         }
 
-        public DbSet<User> users { get; set; }
-        public DbSet<GradGroup> gradGroups {  get; set; }
-        public DbSet<GradEvents> events { get; set; }
-        public DbSet<Stacks> stacks { get; set; }
-        public DbSet<GradStacks> gradStacks { get; set; }
-        public DbSet<Workshop> workshop { get; set; }
-        public DbSet<Social> social { get; set; }
-        public DbSet<Skill> skill { get; set; }
-        public DbSet<Certifications> certifications { get; set; }
-        public DbSet<Projects> projects { get; set; }
+        public DbSet<Employee> employees { get; set; }
+        public DbSet<EmployeeRole> employeeRoles { get; set; }
+        public DbSet<EmployeeDocument> employeeDocuments { get; set; }
+        public DbSet<EmployeeProject> employeeProjects { get; set; }
         public DbSet<Role> roles { get; set; }
-        public DbSet<UserRole> userRoles { get; set; }
+        public DbSet<RoleAccess> roleAccess { get; set; }
+        public DbSet<OnboardingDocument> onboarding { get; set; }
+        public DbSet<AuditLog> auditLogs { get; set; }
     }
 }

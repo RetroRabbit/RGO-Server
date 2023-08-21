@@ -15,9 +15,18 @@ public class Role : IModel<RoleDto>
     [Column("Description")]
     public string Description { get; set; }
 
+    public Role() { }
+
+    public Role(RoleDto roleDto)
+    {
+        Id = roleDto.Id;
+        Description = roleDto.Description;
+    }
+
     public RoleDto ToDto()
     {
-        //TODO : Requires userId?
-        return new RoleDto(Id, 1, Description);
+        return new RoleDto(
+            Id,
+            Description);
     }
 }

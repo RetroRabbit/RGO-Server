@@ -1,4 +1,5 @@
-﻿using RGO.Models.Enums;
+﻿using RGO.Models;
+using RGO.Models.Enums;
 
 namespace RGO.Services.Interfaces;
 
@@ -16,12 +17,19 @@ public interface IAuthService
     /// </summary>
     /// <param name="email"></param>
     /// <returns>List of role, will reflect as list of int</returns>
-    Task<List<UserRole>> GetUserRoles(string email);
+    Task<List<AuthRoleResult>> GetUserRoles(string email);
 
     /// <summary>
-    /// Generate JWT token
+    /// Login user
     /// </summary>
     /// <param name="email"></param>
-    /// <returns>JWT token as string</returns>
-    Task<string> GenerateToken(string email);
+    /// <returns>JWT token</returns>
+    Task<string> Login(string email);
+
+    /// <summary>
+    /// Register new employee
+    /// </summary>
+    /// <param name="newEmployee"></param>
+    /// <returns>JWT token</returns>
+    Task<string> RegisterEmployee(EmployeeDto employeeDto);
 }

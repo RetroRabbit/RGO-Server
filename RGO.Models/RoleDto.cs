@@ -1,7 +1,5 @@
-﻿namespace RGO.Models
-{
-    public record RoleDto(
-        int Id,
-        int UserId,
-        string Description);
-}
+﻿namespace RGO.Models;
+
+public record RoleDto(
+    int Id,
+    string Description);

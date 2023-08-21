@@ -5,24 +5,35 @@ namespace RGO.UnitOfWork;
 
 public class UnitOfWork : IUnitOfWork
 {
-    public IGradEventsRepository GradEvents { get; private set; }
-    public IGradGroupRepository GradGroup { get; private set; }
-    public IGradStackRepository GradStack { get; private set; }
-    public IStackRepository Stack { get; private set; }
-    public IUserRepository User { get; private set; }
-    public IWorkshopRepository Workshop { get; private set; }
+    public IAuditLogRepository AuditLog { get; }
+    public IEmployeeAddressRepository EmployeeAddress { get; }
+    public IEmployeeCertificationRepository EmployeeCertification { get; }
+    public IEmployeeDocumentRepository EmployeeDocument { get; }
+    public IEmployeeProjectRepository EmployeeProject { get; }
+    public IEmployeeRepository Employee { get; }
+    public IEmployeeRoleRepository EmployeeRole { get; }
+    public IEmployeeTypeRepository EmployeeType { get; }
+    public IOnboardingDocumentsRepository OnboardingDocuments { get; }
+    public IRoleAccessRepository RoleAccess { get; }
+    public IRoleRepository Role { get; }
 
-    private DatabaseContext _db;
+
+    private readonly DatabaseContext _db;
 
     public UnitOfWork(DatabaseContext db)
     {
         _db = db;
-        GradEvents = new GradEventsRepository(_db);
-        GradGroup = new GradGroupRepository(_db);
-        Stack = new StackRepository(_db);
-        User = new UserRepository(_db);
-        Workshop = new WorkshopRepository(_db);
-        GradStack = new GradStackRepository(_db);
+        AuditLog = new AuditLogRepository(_db);
+        EmployeeAddress = new EmployeeAddressRepository(_db);
+        EmployeeCertification = new EmployeeCertificationRepository(_db);
+        EmployeeDocument = new EmployeeDocumentRepository(_db);
+        EmployeeProject = new EmployeeProjectRepository(_db);
+        Employee = new EmployeeRepository(_db);
+        EmployeeRole = new EmployeeRoleRepository(_db);
+        EmployeeType = new EmployeeTypeRepository(_db);
+        OnboardingDocuments = new OnboardingDocumentsRepository(_db);
+        RoleAccess = new RoleAccessRepository(_db);
+        Role = new RoleRepository(_db);
     }
 
     public async Task Save()

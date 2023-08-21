@@ -1,12 +1,13 @@
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RGO.Services;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
+using System.Security.Claims;
+using System.Text;
 
 namespace RGO.App
 {
@@ -43,21 +44,14 @@ namespace RGO.App
                         {
                             Reference = new OpenApiReference{Type = ReferenceType.SecurityScheme, Id = "Bearer"}
                         },
-                        new string[]{}
+                        Array.Empty<string>()
                     }
                 });
             });
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IGradEventsService, GradEventsService>();
-            builder.Services.AddScoped<IGradGroupService, GradGroupService>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IProfileService, ProfileService>();
-            builder.Services.AddScoped<IWorkshopService, WorkshopService>();
-
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
-
-            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["Default"]));
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["ConnectionStrings:Default"]));
+            builder.Services.RegisterRepository();
+            builder.Services.RegisterServices();
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
@@ -73,17 +67,17 @@ namespace RGO.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = configuration["Auth:Issuer"],
-                        ValidAudience = configuration["Auth:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]))
+                        ValidIssuer = configuration["Auth:Issuer"]!,
+                        ValidAudience = configuration["Auth:Audience"]!,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]!))
                     };
 
                     options.Events = new JwtBearerEvents
                     {
                         OnTokenValidated = context =>
                         {
-                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
-                            Claim? roleClaims = claimsIdentity.Claims
+                            var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
+                            Claim? roleClaims = claimsIdentity!.Claims
                                 .FirstOrDefault(c => c.Type == ClaimTypes.Role);
                             if (roleClaims != null)
                             {

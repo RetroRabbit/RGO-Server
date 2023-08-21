@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RGO.Models.Enums;
+using RGO.Models;
 using RGO.Services.Interfaces;
+using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
@@ -9,7 +10,6 @@ namespace RGO.App.Controllers;
 [ApiController]
 public class AuthenticationController : ControllerBase
 {
-
     private readonly IAuthService _authService;
 
     public AuthenticationController(IAuthService authService)
@@ -28,7 +28,27 @@ public class AuthenticationController : ControllerBase
             if (!userExists) throw new Exception("User not found");
 
 
-            string token = await _authService.GenerateToken(email);
+            string token = await _authService.Login(email);
+
+            return Ok(token);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeDto newEmployee)
+    {
+        try
+        {
+            bool userExists = await _authService.CheckUserExist(newEmployee.PersonalEmail);
+
+            if (userExists) throw new Exception("Employee already exists");
+
+            string token = await _authService.RegisterEmployee(newEmployee);
 
             return Ok(token);
         }
@@ -40,11 +60,17 @@ public class AuthenticationController : ControllerBase
 
     [Authorize]
     [HttpGet("roles")]
-    public async Task<IActionResult> GetUserRoles([FromQuery] string email)
+    public async Task<IActionResult> GetUserRoles()
     {
         try
         {
-            List<UserRole> roles = await _authService.GetUserRoles(email);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+
+            var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(email)) return Unauthorized("Token is missing claim(s)[e.g: email]");
+
+            List<AuthRoleResult> roles = await _authService.GetUserRoles(email);
 
             return Ok(roles);
         }

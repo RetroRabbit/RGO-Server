@@ -1,13 +1,19 @@
 ﻿using RGO.UnitOfWork.Interfaces;
+using System.Net;
 
 namespace RGO.UnitOfWork;
 
 public interface IUnitOfWork
 {
-    IGradEventsRepository GradEvents { get; }
-    IGradGroupRepository GradGroup { get; }
-    IGradStackRepository GradStack { get; }
-    IStackRepository Stack { get; }
-    IUserRepository User { get; }
-    IWorkshopRepository Workshop { get; }
+    IAuditLogRepository AuditLog { get; }
+    IEmployeeAddressRepository EmployeeAddress { get; }
+    IEmployeeCertificationRepository EmployeeCertification { get; }
+    IEmployeeDocumentRepository EmployeeDocument { get; }
+    IEmployeeProjectRepository EmployeeProject { get; }
+    IEmployeeRepository Employee { get; }
+    IEmployeeRoleRepository EmployeeRole { get; }
+    IEmployeeTypeRepository EmployeeType { get; }
+    IOnboardingDocumentsRepository OnboardingDocuments { get; }
+    IRoleAccessRepository RoleAccess { get; }
+    IRoleRepository Role { get; }
 }
