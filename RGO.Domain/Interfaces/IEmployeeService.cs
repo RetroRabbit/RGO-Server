@@ -1,14 +1,13 @@
 ﻿using RGO.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RGO.Services.Interfaces
+namespace RGO.Services.Interfaces;
+
+public interface IEmployeeService
 {
-    public interface IEmployeeService
-    {
-        Task<EmployeeDto> GetEmployee(string email);
-    }
+    Task<bool> CheckUserExist(string email);
+    Task<List<EmployeeDto>> GetAll();
+    Task<EmployeeDto> GetEmployee(string email);
+    Task<EmployeeDto> AddEmployee(EmployeeDto employeeDto);
+    Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email);
+    Task<EmployeeDto> DeleteEmployee(string email);
 }

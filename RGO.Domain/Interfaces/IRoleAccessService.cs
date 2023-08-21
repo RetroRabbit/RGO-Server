@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RGO.Models;
 
-namespace RGO.Services.Interfaces
+namespace RGO.Services.Interfaces;
+
+public interface IRoleAccessService
 {
-    internal interface IRoleAccessService
-    {
-    }
+    Task<RoleAccessDto> AddRoleAccess(RoleAccessDto roleAccessDto);
+    Task<RoleAccessDto> DeleteRoleAccess(string action);
+    Task<RoleAccessDto> GetRoleAccess(string action);
+    Task<List<RoleAccessDto>> GetAllRoleAccess();
+    Task<RoleAccessDto> UpdateRoleAccess(RoleAccessDto roleAccessDto);
 }

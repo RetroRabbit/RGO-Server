@@ -16,59 +16,40 @@ namespace RGO.Services.Services;
 public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
+    private readonly IEmployeeService _employeeService;
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IEmployeeRoleRepository _employeeRoleRepository;
     private readonly IRoleAccessRepository _roleAccessRepository;
-    private readonly IEmployeeTypeRepository _employeeTypeRepository;
 
-    public AuthService(IEmployeeRepository employeeRepository, IConfiguration configuration, IEmployeeRoleRepository employeeRoleRepository, IRoleAccessRepository roleAccessRepository, IEmployeeTypeRepository employeeTypeRepository)
+    public AuthService(
+        IConfiguration configuration,
+        IEmployeeRepository employeeRepository,
+        IEmployeeRoleRepository employeeRoleRepository,
+        IRoleAccessRepository roleAccessRepository,
+        IEmployeeService employeeService)
     {
         _employeeRepository = employeeRepository;
         _configuration = configuration;
         _employeeRoleRepository = employeeRoleRepository;
         _roleAccessRepository = roleAccessRepository;
-        _employeeTypeRepository = employeeTypeRepository;
+        _employeeService = employeeService;
     }
 
     public async Task<bool> CheckUserExist(string email)
     {
-        return await _employeeRepository
-            .Get(employee => employee.PersonalEmail == email)
-            .AnyAsync();
+        return await _employeeService.CheckUserExist(email);
     }
 
     public async Task<string> Login(string email)
     {
-        var employee = await _employeeRepository
-            .Get(employee => employee.PersonalEmail == email)
-            .Include(employee => employee.EmployeeType)
-            .Select(employee => employee.ToDto())
-            .Take(1)
-            .FirstOrDefaultAsync();
+        var employee = await _employeeService.GetEmployee(email);
 
         return employee == null ? throw new Exception("User not found") : await GenerateToken(employee);
     }
 
     public async Task<string> RegisterEmployee(EmployeeDto employeeDto)
     {
-        bool employeeTypeExists = await _employeeTypeRepository
-            .Get(employeeType => employeeType.Name == employeeDto.EmployeeType.Name)
-            .AnyAsync();
-
-
-        Employee employee = new Employee(employeeDto);
-
-        employee.Initials = employee.Name[0] + employee.Surname[0].ToString();
-
-        if (!employeeTypeExists)
-        {
-            var newEmployeeType = await _employeeTypeRepository.Add(new EmployeeType(employeeDto.EmployeeType));
-
-            employee.EmployeeTypeId = newEmployeeType.Id;
-            employee.EmployeeType = new EmployeeType(newEmployeeType);
-        }
-
-        var newEmployee = await _employeeRepository.Add(employee);
+        EmployeeDto newEmployee = await _employeeService.AddEmployee(employeeDto);
 
         return await GenerateToken(newEmployee);
     }
@@ -91,7 +72,6 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 
-        // claims.AddRange(rolesString);
         foreach (var role in rolesString) claims.Add(role);
 
         var tokenDescriptor = new SecurityTokenDescriptor
