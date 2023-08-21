@@ -17,7 +17,7 @@ public interface IAuthService
     /// </summary>
     /// <param name="email"></param>
     /// <returns>List of role, will reflect as list of int</returns>
-    Task<List<RoleAccessDto>> GetUserRoles(string email);
+    Task<List<AuthRoleResult>> GetUserRoles(string email);
 
     /// <summary>
     /// Login user
