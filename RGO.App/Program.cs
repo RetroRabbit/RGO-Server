@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RGO.Services;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
@@ -51,24 +52,8 @@ namespace RGO.App
             });
 
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["ConnectionStrings:Default"]));
-
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
-
-            // builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
-            // builder.Services.AddScoped<IEmployeeAddressRepository, EmployeeAddressRepository>();
-            // builder.Services.AddScoped<IEmployeeCertificationRepository, EmployeeCertificationRepository>();
-            // builder.Services.AddScoped<IEmployeeDataRepository, EmployeeDataRepository>();
-            // builder.Services.AddScoped<IEmployeeDocumentRepository, EmployeeDocumentRepository>();
-            // builder.Services.AddScoped<IEmployeeProjectRepository, EmployeeProjectRepository>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            builder.Services.AddScoped<IEmployeeRoleRepository, EmployeeRoleRepository>();
-            builder.Services.AddScoped<IEmployeeTypeRepository, EmployeeTypeRepository>();
-            // builder.Services.AddScoped<IOnboardingDocumentsRepository, OnboardingDocumentsRepository>();
-            builder.Services.AddScoped<IRoleAccessRepository, RoleAccessRepository>();
-            // builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.RegisterRepository();
+            builder.Services.RegisterServices();
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
