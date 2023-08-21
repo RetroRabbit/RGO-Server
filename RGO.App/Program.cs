@@ -68,6 +68,7 @@ namespace RGO.App
             // builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
