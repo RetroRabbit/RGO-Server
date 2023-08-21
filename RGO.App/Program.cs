@@ -1,15 +1,12 @@
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RGO.Services;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
-using RGO.UnitOfWork.Interfaces;
-using RGO.UnitOfWork.Repositories;
+using System.Security.Claims;
+using System.Text;
 
 namespace RGO.App
 {
