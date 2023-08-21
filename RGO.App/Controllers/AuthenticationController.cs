@@ -10,7 +10,6 @@ namespace RGO.App.Controllers;
 [ApiController]
 public class AuthenticationController : ControllerBase
 {
-
     private readonly IAuthService _authService;
 
     public AuthenticationController(IAuthService authService)
