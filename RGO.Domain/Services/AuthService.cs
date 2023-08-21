@@ -41,6 +41,7 @@ public class AuthService : IAuthService
     {
         var employee = await _employeeRepository
             .Get(employee => employee.PersonalEmail == email)
+            .Include(employee => employee.EmployeeType)
             .Select(employee => employee.ToDto())
             .Take(1)
             .FirstOrDefaultAsync();
@@ -90,7 +91,8 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 
-        claims.AddRange(rolesString);
+        // claims.AddRange(rolesString);
+        foreach (var role in rolesString) claims.Add(role);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -107,10 +109,13 @@ public class AuthService : IAuthService
         return tokenHandler.WriteToken(token);
     }
 
-    public async Task<List<RoleAccessDto>> GetUserRoles(string email)
+    public async Task<List<AuthRoleResult>> GetUserRoles(string email)
     {
         var employeeRoles = await _employeeRoleRepository
             .Get(employeeRole => employeeRole.Employee.PersonalEmail == email)
+            .Include(employeeRole => employeeRole.Role)
+            .Include(employeeRole => employeeRole.Employee)
+            .Include(employeeRole => employeeRole.Employee.EmployeeType)
             .Select(employeeRole => employeeRole.ToDto().Role.Description)
             .ToListAsync();
 
@@ -118,9 +123,17 @@ public class AuthService : IAuthService
 
         var role = await _roleAccessRepository
             .Get(roleAccess => employeeRoles.Contains(roleAccess.Role.Description))
+            .Include(roleAccess => roleAccess.Role)
             .Select(roleAccess => roleAccess.ToDto())
             .ToListAsync();
 
-        return role;
+        return role
+            .Select(r => new AuthRoleResult(
+                r.Role.Description,
+                r.Action,
+                r.View,
+                r.Edit,
+                r.Delete))
+            .ToList();
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
@@ -60,11 +61,17 @@ public class AuthenticationController : ControllerBase
 
     [Authorize]
     [HttpGet("roles")]
-    public async Task<IActionResult> GetUserRoles([FromQuery] string email)
+    public async Task<IActionResult> GetUserRoles()
     {
         try
         {
-            List<RoleAccessDto> roles = await _authService.GetUserRoles(email);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+
+            var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(email)) return Unauthorized("Token is missing claim(s)[e.g: email]");
+
+            List<AuthRoleResult> roles = await _authService.GetUserRoles(email);
 
             return Ok(roles);
         }
