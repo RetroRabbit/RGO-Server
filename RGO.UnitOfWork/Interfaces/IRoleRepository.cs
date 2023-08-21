@@ -3,6 +3,6 @@ using RGO.UnitOfWork.Entities;
 
 namespace RGO.UnitOfWork.Interfaces;
 
-public interface IGradGroupRepository : IRepository<GradGroup, GradGroupDto>
+public interface IRoleRepository : IRepository<Role, RoleDto>
 {
 }

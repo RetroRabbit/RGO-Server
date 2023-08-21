@@ -6,10 +6,10 @@ namespace RGO.UnitOfWork.Repositories;
 
 public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel<T>
 {
-    private readonly DbContext _db;
+    private readonly DatabaseContext _db;
     private readonly DbSet<TK> _entity;
 
-    public BaseRepository(DbContext db)
+    public BaseRepository(DatabaseContext db)
     {
         _db = db;
         _entity = db.Set<TK>();
