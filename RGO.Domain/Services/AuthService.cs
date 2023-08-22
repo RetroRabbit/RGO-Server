@@ -5,11 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RGO.Models;
-using RGO.Models.Enums;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using RGO.UnitOfWork.Interfaces;
 
 namespace RGO.Services.Services;
 
@@ -17,22 +14,16 @@ public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
     private readonly IEmployeeService _employeeService;
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IEmployeeRoleRepository _employeeRoleRepository;
-    private readonly IRoleAccessRepository _roleAccessRepository;
+    private readonly IUnitOfWork _db;
 
     public AuthService(
         IConfiguration configuration,
-        IEmployeeRepository employeeRepository,
-        IEmployeeRoleRepository employeeRoleRepository,
-        IRoleAccessRepository roleAccessRepository,
-        IEmployeeService employeeService)
+        IEmployeeService employeeService,
+        IUnitOfWork db)
     {
-        _employeeRepository = employeeRepository;
         _configuration = configuration;
-        _employeeRoleRepository = employeeRoleRepository;
-        _roleAccessRepository = roleAccessRepository;
         _employeeService = employeeService;
+        _db = db;
     }
 
     public async Task<bool> CheckUserExist(string email)
@@ -58,11 +49,24 @@ public class AuthService : IAuthService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);
-        var roles = await GetUserRoles(employee.PersonalEmail);
-        var rolesString = roles
-            .Select(role => $"{role.Action}#{role.View}|{role.Edit}|{role.Delete}")
-            .Select(role => role.Replace("True", "1").Replace("False", "0"))
-            .Select(role => new Claim(ClaimTypes.Role, role))
+        List<AuthRoleResult> roles = await GetUserRoles(employee.PersonalEmail);
+        var collectionOfRoleClaims = roles
+            .Select(role =>
+            {
+                string upperRole = role.Role.ToUpper();
+
+                List<Claim> roleClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, upperRole),
+                    new Claim($"{upperRole}-Action", role.Action)
+                };
+
+                if (role.View) roleClaims.Add(new Claim($"{upperRole}-View", "true"));
+                if (role.Edit) roleClaims.Add(new Claim($"{upperRole}-Edit", "true"));
+                if (role.Delete) roleClaims.Add(new Claim($"{upperRole}-Delete", "true"));
+
+                return roleClaims;
+            })
             .ToList();
 
         var claims = new List<Claim>
@@ -72,7 +76,7 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 
-        foreach (var role in rolesString) claims.Add(role);
+        foreach (var role in collectionOfRoleClaims) claims.AddRange(role);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -91,8 +95,9 @@ public class AuthService : IAuthService
 
     public async Task<List<AuthRoleResult>> GetUserRoles(string email)
     {
-        var employeeRoles = await _employeeRoleRepository
+        var employeeRoles = await _db.EmployeeRole
             .Get(employeeRole => employeeRole.Employee.PersonalEmail == email)
+            .AsNoTracking()
             .Include(employeeRole => employeeRole.Role)
             .Include(employeeRole => employeeRole.Employee)
             .Include(employeeRole => employeeRole.Employee.EmployeeType)
@@ -101,8 +106,9 @@ public class AuthService : IAuthService
 
         if (employeeRoles.Count <= 0 && employeeRoles == null) throw new Exception("User not assigned role(s)");
 
-        var role = await _roleAccessRepository
+        var role = await _db.RoleAccess
             .Get(roleAccess => employeeRoles.Contains(roleAccess.Role.Description))
+            .AsNoTracking()
             .Include(roleAccess => roleAccess.Role)
             .Select(roleAccess => roleAccess.ToDto())
             .ToListAsync();

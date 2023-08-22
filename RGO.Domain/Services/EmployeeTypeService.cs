@@ -1,23 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using RGO.UnitOfWork.Interfaces;
 
 namespace RGO.Services.Services;
 
 public class EmployeeTypeService : IEmployeeTypeService
 {
-    private readonly IEmployeeTypeRepository _employeeTypeRepository;
+    private readonly IUnitOfWork _db;
 
-    public EmployeeTypeService(IEmployeeTypeRepository employeeTypeRepository)
+    public EmployeeTypeService(IUnitOfWork db)
     {
-        _employeeTypeRepository = employeeTypeRepository;
+        _db = db;
     }
 
     public async Task<EmployeeTypeDto> AddEmployeeType(EmployeeTypeDto employeeTypeDto)
     {
-        EmployeeTypeDto newEmployeeType = await _employeeTypeRepository
+        EmployeeTypeDto newEmployeeType = await _db.EmployeeType
             .Add(new EmployeeType(employeeTypeDto));
 
         return newEmployeeType;
@@ -27,7 +27,7 @@ public class EmployeeTypeService : IEmployeeTypeService
     {
         EmployeeTypeDto existingEmployeeType = await GetEmployeeType(name);
 
-        EmployeeTypeDto deletedEmployeeType = await _employeeTypeRepository
+        EmployeeTypeDto deletedEmployeeType = await _db.EmployeeType
             .Delete(existingEmployeeType.Id);
 
         return deletedEmployeeType;
@@ -35,13 +35,13 @@ public class EmployeeTypeService : IEmployeeTypeService
 
     public async Task<List<EmployeeTypeDto>> GetAllEmployeeType()
     {
-        return await _employeeTypeRepository
+        return await _db.EmployeeType
             .GetAll();
     }
 
     public async Task<EmployeeTypeDto> GetEmployeeType(string name)
     {
-        EmployeeTypeDto existingEmployeeType = await _employeeTypeRepository
+        EmployeeTypeDto existingEmployeeType = await _db.EmployeeType
             .Get(employeeType => employeeType.Name == name)
             .Select(employeeType => employeeType.ToDto())
             .FirstAsync();
@@ -51,7 +51,7 @@ public class EmployeeTypeService : IEmployeeTypeService
 
     public async Task<EmployeeTypeDto> UpdateEmployeeType(EmployeeTypeDto employeeTypeDto)
     {
-        EmployeeTypeDto updatedEmployeeType = await _employeeTypeRepository
+        EmployeeTypeDto updatedEmployeeType = await _db.EmployeeType
             .Update(new EmployeeType(employeeTypeDto));
 
         return updatedEmployeeType;

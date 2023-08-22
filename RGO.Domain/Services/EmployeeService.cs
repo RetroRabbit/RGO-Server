@@ -1,20 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using RGO.UnitOfWork.Interfaces;
 
 namespace RGO.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private readonly IEmployeeRepository _employeeRepository;
     private readonly IEmployeeTypeService _employeeTypeService;
+    private readonly IUnitOfWork _db;
 
-    public EmployeeService(IEmployeeRepository employeeRepository, IEmployeeTypeService employeeTypeService)
+    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db)
     {
-        _employeeRepository = employeeRepository;
         _employeeTypeService = employeeTypeService;
+        _db = db;
     }
 
     public async Task<EmployeeDto> AddEmployee(EmployeeDto employeeDto)
@@ -36,14 +36,14 @@ public class EmployeeService : IEmployeeService
             employee = new Employee(employeeDto, newEmployeeType);
         }
 
-        EmployeeDto newEmployee = await _employeeRepository.Add(employee);
+        EmployeeDto newEmployee = await _db.Employee.Add(employee);
 
         return newEmployee;
     }
 
     public async Task<bool> CheckUserExist(string email)
     {
-        return await _employeeRepository
+        return await _db.Employee
             .Get(employee => employee.PersonalEmail == email)
             .AnyAsync();
     }
@@ -52,13 +52,14 @@ public class EmployeeService : IEmployeeService
     {
         var existingEmployee = await GetEmployee(email);
 
-        return await _employeeRepository.Delete(existingEmployee.Id);
+        return await _db.Employee.Delete(existingEmployee.Id);
     }
 
     public async Task<List<EmployeeDto>> GetAll()
     {
-        return await _employeeRepository
+        return await _db.Employee
             .Get()
+            .AsNoTracking()
             .Include(employee => employee.EmployeeType)
             .Select(employee => employee.ToDto())
             .ToListAsync();
@@ -66,8 +67,9 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> GetEmployee(string email)
     {
-        var employee = await _employeeRepository
+        var employee = await _db.Employee
             .Get(employee => employee.PersonalEmail == email)
+            .AsNoTracking()
             .Include(employee => employee.EmployeeType)
             .Select(employee => employee.ToDto())
             .Take(1)
@@ -87,6 +89,6 @@ public class EmployeeService : IEmployeeService
 
         employee.PersonalEmail = email;
 
-        return await _employeeRepository.Update(employee);
+        return await _db.Employee.Update(employee);
     }
 }

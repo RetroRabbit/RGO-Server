@@ -1,23 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using RGO.UnitOfWork.Interfaces;
 
 namespace RGO.Services.Services;
 
 public class OnboardingDocumentService : IOnboardingDocumentService
 {
-    private readonly IOnboardingDocumentsRepository _onboardingDocumentRepository;
+    private readonly IUnitOfWork _db;
 
-    public OnboardingDocumentService(IOnboardingDocumentsRepository onboardingDocumentRepository)
+    public OnboardingDocumentService(IUnitOfWork db)
     {
-        _onboardingDocumentRepository = onboardingDocumentRepository;
+        _db = db;
     }
 
     public async Task<OnboardingDocumentDto> AddOnboardingDocument(OnboardingDocumentDto onboardingDocumentDto)
     {
-        OnboardingDocumentDto newOnboardingDocument = await _onboardingDocumentRepository.Add(new OnboardingDocument(onboardingDocumentDto));
+        OnboardingDocumentDto newOnboardingDocument = await _db.OnboardingDocuments.Add(new OnboardingDocument(onboardingDocumentDto));
 
         return newOnboardingDocument;
     }
@@ -26,7 +26,7 @@ public class OnboardingDocumentService : IOnboardingDocumentService
     {
         OnboardingDocumentDto existingOnboardingDocument = await GetOnboardingDocument(id);
 
-        OnboardingDocumentDto deletedOnboardingDocument = await _onboardingDocumentRepository
+        OnboardingDocumentDto deletedOnboardingDocument = await _db.OnboardingDocuments
             .Delete(existingOnboardingDocument.Id);
 
         return deletedOnboardingDocument;
@@ -34,13 +34,13 @@ public class OnboardingDocumentService : IOnboardingDocumentService
 
     public Task<List<OnboardingDocumentDto>> GetAllOnboardingDocument()
     {
-        return _onboardingDocumentRepository
+        return _db.OnboardingDocuments
             .GetAll();
     }
 
     public async Task<OnboardingDocumentDto> GetOnboardingDocument(int id)
     {
-        OnboardingDocumentDto existingOnboardingDocument = await _onboardingDocumentRepository
+        OnboardingDocumentDto existingOnboardingDocument = await _db.OnboardingDocuments
             .Get(onboardingDocument => onboardingDocument.Id == id)
             .Select(onboardingDocument => onboardingDocument.ToDto())
             .FirstAsync();
@@ -50,7 +50,7 @@ public class OnboardingDocumentService : IOnboardingDocumentService
 
     public async Task<OnboardingDocumentDto> UpdateOnboardingDocument(OnboardingDocumentDto onboardingDocumentDto)
     {
-        OnboardingDocumentDto updatedOnboardingDocument = await _onboardingDocumentRepository
+        OnboardingDocumentDto updatedOnboardingDocument = await _db.OnboardingDocuments
             .Update(new OnboardingDocument(onboardingDocumentDto));
 
         return updatedOnboardingDocument;
