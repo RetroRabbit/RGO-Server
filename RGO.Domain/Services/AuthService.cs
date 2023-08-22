@@ -16,30 +16,25 @@ namespace RGO.Services.Services;
 public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IEmployeeRoleRepository _employeeRoleRepository;
-    private readonly IRoleAccessRepository _roleAccessRepository;
-    private readonly IEmployeeTypeRepository _employeeTypeRepository;
+    private readonly IUnitOfWork _db;
 
-    public AuthService(IEmployeeRepository employeeRepository, IConfiguration configuration, IEmployeeRoleRepository employeeRoleRepository, IRoleAccessRepository roleAccessRepository, IEmployeeTypeRepository employeeTypeRepository)
+    public AuthService(IConfiguration configuration, IUnitOfWork db)
     {
-        _employeeRepository = employeeRepository;
         _configuration = configuration;
-        _employeeRoleRepository = employeeRoleRepository;
-        _roleAccessRepository = roleAccessRepository;
-        _employeeTypeRepository = employeeTypeRepository;
+        _db = db;
+ 
     }
 
     public async Task<bool> CheckUserExist(string email)
     {
-        return await _employeeRepository
+        return await _db.Employee
             .Get(employee => employee.PersonalEmail == email)
             .AnyAsync();
     }
 
     public async Task<string> Login(string email)
     {
-        var employee = await _employeeRepository
+        var employee = await _db.Employee
             .Get(employee => employee.PersonalEmail == email)
             .Include(employee => employee.EmployeeType)
             .Select(employee => employee.ToDto())
@@ -51,7 +46,7 @@ public class AuthService : IAuthService
 
     public async Task<string> RegisterEmployee(EmployeeDto employeeDto)
     {
-        bool employeeTypeExists = await _employeeTypeRepository
+        bool employeeTypeExists = await _db.Employee
             .Get(employeeType => employeeType.Name == employeeDto.EmployeeType.Name)
             .AnyAsync();
 
@@ -62,13 +57,13 @@ public class AuthService : IAuthService
 
         if (!employeeTypeExists)
         {
-            var newEmployeeType = await _employeeTypeRepository.Add(new EmployeeType(employeeDto.EmployeeType));
+            var newEmployeeType = await _db.EmployeeType.Add(new EmployeeType(employeeDto.EmployeeType));
 
             employee.EmployeeTypeId = newEmployeeType.Id;
             employee.EmployeeType = new EmployeeType(newEmployeeType);
         }
 
-        var newEmployee = await _employeeRepository.Add(employee);
+        var newEmployee = await _db.Employee.Add(employee);
 
         return await GenerateToken(newEmployee);
     }
@@ -111,7 +106,7 @@ public class AuthService : IAuthService
 
     public async Task<List<AuthRoleResult>> GetUserRoles(string email)
     {
-        var employeeRoles = await _employeeRoleRepository
+        var employeeRoles = await _db.EmployeeRole
             .Get(employeeRole => employeeRole.Employee.PersonalEmail == email)
             .Include(employeeRole => employeeRole.Role)
             .Include(employeeRole => employeeRole.Employee)
@@ -121,7 +116,7 @@ public class AuthService : IAuthService
 
         if (employeeRoles.Count <= 0 && employeeRoles == null) throw new Exception("User not assigned role(s)");
 
-        var role = await _roleAccessRepository
+        var role = await _db.RoleAccess
             .Get(roleAccess => employeeRoles.Contains(roleAccess.Role.Description))
             .Include(roleAccess => roleAccess.Role)
             .Select(roleAccess => roleAccess.ToDto())

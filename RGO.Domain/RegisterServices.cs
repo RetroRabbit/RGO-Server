@@ -15,6 +15,10 @@ namespace RGO.Services
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IEmployeeAddressService, EmployeeAddressService>();
+            services.AddScoped<IEmployeeCertificationService, EmployeeCertificationService>();
+            services.AddScoped<IEmployeeDocumentService, EmployeeDocumentService>();
+            services.AddScoped<IEmployeeDataService, EmployeeDataService>();
         }
     }
 }
