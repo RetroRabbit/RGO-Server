@@ -44,7 +44,7 @@ public class EmployeeService : IEmployeeService
     public async Task<bool> CheckUserExist(string email)
     {
         return await _db.Employee
-            .Get(employee => employee.PersonalEmail == email)
+            .Get(employee => employee.Email == email)
             .AnyAsync();
     }
 
@@ -68,7 +68,7 @@ public class EmployeeService : IEmployeeService
     public async Task<EmployeeDto> GetEmployee(string email)
     {
         var employee = await _db.Employee
-            .Get(employee => employee.PersonalEmail == email)
+            .Get(employee => employee.Email == email)
             .AsNoTracking()
             .Include(employee => employee.EmployeeType)
             .Select(employee => employee.ToDto())
@@ -87,7 +87,7 @@ public class EmployeeService : IEmployeeService
 
         Employee employee = new Employee(employeeDto, employeeTypeDto);
 
-        employee.PersonalEmail = email;
+        employee.Email = email;
 
         return await _db.Employee.Update(employee);
     }

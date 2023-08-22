@@ -89,6 +89,9 @@ public class Employee : IModel<EmployeeDto>
     [Column("pronouns")]
     public string Pronouns { get; set; }
 
+    [Column("email")]
+    public string Email { get; set; }
+
     [Column("personalEmail")]
     public string PersonalEmail { get; set; }
 
@@ -133,6 +136,7 @@ public class Employee : IModel<EmployeeDto>
         Gender = employeeDto.Gender;
         KnownAs = employeeDto.KnownAs;
         Pronouns = employeeDto.Pronouns;
+        Email = employeeDto.Email;
         PersonalEmail = employeeDto.PersonalEmail;
         CellphoneNo = employeeDto.CellphoneNo;
         TshirtSize = employeeDto.TshirtSize;
@@ -168,6 +172,7 @@ public class Employee : IModel<EmployeeDto>
             Gender,
             KnownAs,
             Pronouns,
+            Email,
             PersonalEmail,
             CellphoneNo,
             TshirtSize,

@@ -29,6 +29,7 @@ public record EmployeeDto(
     Gender Gender,
     string KnownAs,
     string Pronouns,
+    string Email,
     string PersonalEmail,
     string CellphoneNo,
     TShirtSize TshirtSize,

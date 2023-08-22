@@ -49,7 +49,7 @@ public class AuthService : IAuthService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);
-        List<AuthRoleResult> roles = await GetUserRoles(employee.PersonalEmail);
+        List<AuthRoleResult> roles = await GetUserRoles(employee.Email);
         var collectionOfRoleClaims = roles
             .Select(role =>
             {
@@ -72,7 +72,7 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
-            new Claim(ClaimTypes.Email, employee.PersonalEmail),
+            new Claim(ClaimTypes.Email, employee.Email),
             new Claim(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 
@@ -96,7 +96,7 @@ public class AuthService : IAuthService
     public async Task<List<AuthRoleResult>> GetUserRoles(string email)
     {
         var employeeRoles = await _db.EmployeeRole
-            .Get(employeeRole => employeeRole.Employee.PersonalEmail == email)
+            .Get(employeeRole => employeeRole.Employee.Email == email)
             .AsNoTracking()
             .Include(employeeRole => employeeRole.Role)
             .Include(employeeRole => employeeRole.Employee)
