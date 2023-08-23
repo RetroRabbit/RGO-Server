@@ -16,7 +16,7 @@ public class RoleAccessService : IRoleAccessService
         _db = db;
     }
 
-    public async Task<RoleAccessDto> AddRoleAccess(RoleAccessDto roleAccessDto)
+    public async Task<RoleAccessDto> SaveRoleAccess(RoleAccessDto roleAccessDto)
     {
         RoleAccessDto newRoleAccess = await _db.RoleAccess.Add(new RoleAccess(roleAccessDto));
 

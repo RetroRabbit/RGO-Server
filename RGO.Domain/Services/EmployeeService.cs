@@ -17,7 +17,7 @@ public class EmployeeService : IEmployeeService
         _db = db;
     }
 
-    public async Task<EmployeeDto> AddEmployee(EmployeeDto employeeDto)
+    public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
     {
         Employee employee;
 
@@ -31,7 +31,7 @@ public class EmployeeService : IEmployeeService
         catch (Exception)
         {
             EmployeeTypeDto newEmployeeType = await _employeeTypeService
-                .AddEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType));
+                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType));
 
             employee = new Employee(employeeDto, newEmployeeType);
         }
@@ -57,12 +57,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task<List<EmployeeDto>> GetAll()
     {
-        return await _db.Employee
-            .Get()
-            .AsNoTracking()
-            .Include(employee => employee.EmployeeType)
-            .Select(employee => employee.ToDto())
-            .ToListAsync();
+        return await _db.Employee.GetAll();
     }
 
     public async Task<EmployeeDto> GetEmployee(string email)

@@ -4,7 +4,7 @@ namespace RGO.Services.Interfaces;
 
 public interface IRoleAccessService
 {
-    Task<RoleAccessDto> AddRoleAccess(RoleAccessDto roleAccessDto);
+    Task<RoleAccessDto> SaveRoleAccess(RoleAccessDto roleAccessDto);
     Task<RoleAccessDto> DeleteRoleAccess(string action);
     Task<RoleAccessDto> GetRoleAccess(string action);
     Task<List<RoleAccessDto>> GetRoleAccessByRole(string description);

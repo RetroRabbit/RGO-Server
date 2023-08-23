@@ -15,7 +15,7 @@ public class EmployeeTypeService : IEmployeeTypeService
         _db = db;
     }
 
-    public async Task<EmployeeTypeDto> AddEmployeeType(EmployeeTypeDto employeeTypeDto)
+    public async Task<EmployeeTypeDto> SaveEmployeeType(EmployeeTypeDto employeeTypeDto)
     {
         EmployeeTypeDto newEmployeeType = await _db.EmployeeType
             .Add(new EmployeeType(employeeTypeDto));
@@ -35,8 +35,7 @@ public class EmployeeTypeService : IEmployeeTypeService
 
     public async Task<List<EmployeeTypeDto>> GetAllEmployeeType()
     {
-        return await _db.EmployeeType
-            .GetAll();
+        return await _db.EmployeeType.GetAll();
     }
 
     public async Task<EmployeeTypeDto> GetEmployeeType(string name)

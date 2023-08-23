@@ -15,7 +15,7 @@ public class RoleService : IRoleService
         _db = db;
     }
 
-    public async Task<RoleDto> AddRole(RoleDto roleDto)
+    public async Task<RoleDto> SaveRole(RoleDto roleDto)
     {
         RoleDto newRole = await _db.Role.Add(new Role(roleDto));
 
@@ -34,8 +34,7 @@ public class RoleService : IRoleService
 
     public async Task<List<RoleDto>> GetAll()
     {
-        return await _db.Role
-            .GetAll();
+        return await _db.Role.GetAll();
     }
 
     public async Task<RoleDto> GetRole(string name)

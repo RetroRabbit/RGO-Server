@@ -15,7 +15,7 @@ public class OnboardingDocumentService : IOnboardingDocumentService
         _db = db;
     }
 
-    public async Task<OnboardingDocumentDto> AddOnboardingDocument(OnboardingDocumentDto onboardingDocumentDto)
+    public async Task<OnboardingDocumentDto> SaveOnboardingDocument(OnboardingDocumentDto onboardingDocumentDto)
     {
         OnboardingDocumentDto newOnboardingDocument = await _db.OnboardingDocuments.Add(new OnboardingDocument(onboardingDocumentDto));
 
