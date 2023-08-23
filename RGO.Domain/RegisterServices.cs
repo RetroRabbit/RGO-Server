@@ -8,17 +8,12 @@ public static class RegisterServicesExtension
 {
     public static void RegisterServices(this IServiceCollection services)
     {
-        public static void RegisterServices(this IServiceCollection services)
-        {
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IEmployeeService, EmployeeService>();
-            services.AddScoped<IEmployeeAddressService, EmployeeAddressService>();
-            services.AddScoped<IEmployeeCertificationService, EmployeeCertificationService>();
-            services.AddScoped<IEmployeeDocumentService, EmployeeDocumentService>();
-            services.AddScoped<IEmployeeDataService, EmployeeDataService>();
-        }
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
+        services.AddScoped<IEmployeeAddressService, EmployeeAddressService>();
+        services.AddScoped<IEmployeeCertificationService, EmployeeCertificationService>();
+        services.AddScoped<IEmployeeDocumentService, EmployeeDocumentService>();
+        services.AddScoped<IEmployeeDataService, EmployeeDataService>();
         services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
         services.AddScoped<IOnboardingDocumentService, OnboardingDocumentService>();
         services.AddScoped<IRoleAccessService, RoleAccessService>();

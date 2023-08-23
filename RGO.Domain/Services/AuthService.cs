@@ -40,7 +40,7 @@ public class AuthService : IAuthService
 
     public async Task<string> RegisterEmployee(EmployeeDto employeeDto)
     {
-        EmployeeDto newEmployee = await _employeeService.AddEmployee(employeeDto);
+        EmployeeDto newEmployee = await _employeeService.SaveEmployee(employeeDto);
 
         return await GenerateToken(newEmployee);
     }
