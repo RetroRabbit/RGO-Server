@@ -9,6 +9,6 @@ public record EmployeeCertificationDto(
     string Title,
     string Publisher,
     EmployeeCertificationStatus Status,
-    int? AuditBy,
+    EmployeeDto? AuditBy,
     DateTime? AuditDate,
     string? AuditNote);

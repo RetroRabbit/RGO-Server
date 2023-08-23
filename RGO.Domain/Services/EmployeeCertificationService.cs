@@ -3,11 +3,6 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Services.Services
 {
@@ -49,7 +44,7 @@ namespace RGO.Services.Services
                 .Get(employeeCertification => employeeCertification.EmployeeId == employeeId)
                 .AsNoTracking()
                 .Include(employeeCertification => employeeCertification.Employee)
-                .Select(employeeCertification  => employeeCertification.ToDto())
+                .Select(employeeCertification => employeeCertification.ToDto())
                 .Take(1)
                 .FirstOrDefaultAsync();
 

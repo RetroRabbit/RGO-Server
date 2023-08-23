@@ -3,7 +3,6 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using RGO.UnitOfWork.Interfaces;
 
 namespace RGO.Services.Services;
 

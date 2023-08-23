@@ -3,11 +3,6 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Services.Services
 {
