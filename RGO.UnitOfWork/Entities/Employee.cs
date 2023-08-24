@@ -28,20 +28,11 @@ public class Employee : IModel<EmployeeDto>
     [Column("reportingLine")]
     public int? ReportingLine { get; set; }
 
-    [Column("highestQualification")]
-    public string HighestQualification { get; set; }
-
     [Column("disability")]
     public bool Disability { get; set; }
 
     [Column("disabilityNotes")]
     public string DisabilityNotes { get; set; }
-
-    [Column("countryOfBirth")]
-    public string CountryOfBirth { get; set; }
-
-    [Column("nationality")]
-    public string Nationality { get; set; }
 
     [Column("level")]
     public int Level { get; set; }
@@ -49,6 +40,21 @@ public class Employee : IModel<EmployeeDto>
     [Column("employeeTypeId")]
     [ForeignKey("EmployeeType")]
     public int EmployeeTypeId { get; set; }
+
+    [Column("Notes")]
+    public string Notes { get; set; }
+
+    [Column("leaveInterval")]
+    public float LeaveInterval { get; set; }
+
+    [Column("salaryDays")]
+    public float SalaryDays { get; set; }
+
+    [Column("payRate")]
+    public float PayRate { get; set; }
+
+    [Column("salary")]
+    public int Salary{ get; set; }
 
     [Column("title")]
     public string Title { get; set; }
@@ -64,6 +70,12 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("dateOfBirth")]
     public DateTime DateOfBirth { get; set; }
+
+    [Column("countryOfBirth")]
+    public string CountryOfBirth { get; set; }
+
+    [Column("nationality")]
+    public string Nationality { get; set; }
 
     [Column("idNumber")]
     public string IdNumber { get; set; }
@@ -83,23 +95,14 @@ public class Employee : IModel<EmployeeDto>
     [Column("gender")]
     public Gender Gender { get; set; }
 
-    [Column("knownAs")]
-    public string KnownAs { get; set; }
-
-    [Column("pronouns")]
-    public string Pronouns { get; set; }
+    [Column("photo")]
+    public string Photo { get; set; }
 
     [Column("personalEmail")]
     public string PersonalEmail { get; set; }
 
     [Column("cellphoneNo")]
     public string CellphoneNo { get; set; }
-
-    [Column("tshirtSize")]
-    public TShirtSize TshirtSize { get; set; }
-
-    [Column("dietaryRestrictions")]
-    public string DietaryRestrictions { get; set; }
 
     public virtual EmployeeType EmployeeType { get; set; }
 
@@ -113,30 +116,31 @@ public class Employee : IModel<EmployeeDto>
         EngagementDate = employeeDto.EngagementDate;
         TerminationDate = employeeDto.TerminationDate;
         ReportingLine = employeeDto.ReportingLine;
-        HighestQualification = employeeDto.HighestQualification;
         Disability = employeeDto.Disability;
         DisabilityNotes = employeeDto.DisabilityNotes;
-        CountryOfBirth = employeeDto.CountryOfBirth;
-        Nationality = employeeDto.Nationality;
         Level = employeeDto.Level;
         EmployeeTypeId = employeeDto.EmployeeType.Id;
+        Notes = employeeDto.Notes;
+        LeaveInterval = employeeDto.LeaveInterval;
+        SalaryDays = employeeDto.SalaryDays;
+        PayRate = employeeDto.PayRate;
+        Salary = employeeDto.Salary;
         Title = employeeDto.Title;
         Initials = employeeDto.Initials;
         Name = employeeDto.Name;
         Surname = employeeDto.Surname;
         DateOfBirth = employeeDto.DateOfBirth;
+        CountryOfBirth = employeeDto.CountryOfBirth;
+        Nationality = employeeDto.Nationality;
         IdNumber = employeeDto.IdNumber;
         PassportNumber = employeeDto.PassportNumber;
         PassportExpirationDate = employeeDto.PassportExpirationDate;
         PassportCountryIssue = employeeDto.PassportCountryIssue;
         Race = employeeDto.Race;
         Gender = employeeDto.Gender;
-        KnownAs = employeeDto.KnownAs;
-        Pronouns = employeeDto.Pronouns;
+        Photo = employeeDto.Photo;
         PersonalEmail = employeeDto.PersonalEmail;
         CellphoneNo = employeeDto.CellphoneNo;
-        TshirtSize = employeeDto.TshirtSize;
-        DietaryRestrictions = employeeDto.DietaryRestrictions;
     }
 
     public EmployeeDto ToDto()
@@ -148,29 +152,30 @@ public class Employee : IModel<EmployeeDto>
             EngagementDate,
             TerminationDate,
             ReportingLine,
-            HighestQualification,
             Disability,
             DisabilityNotes,
-            CountryOfBirth,
-            Nationality,
             Level,
             EmployeeType.ToDto(),
+            Notes,
+            LeaveInterval,
+            SalaryDays,
+            PayRate,
+            Salary,
             Title,
             Initials,
             Name,
             Surname,
             DateOfBirth,
+            CountryOfBirth,
+            Nationality,
             IdNumber,
             PassportNumber,
             PassportExpirationDate,
             PassportCountryIssue,
             Race,
             Gender,
-            KnownAs,
-            Pronouns,
+            Photo,
             PersonalEmail,
-            CellphoneNo,
-            TshirtSize,
-            DietaryRestrictions);
+            CellphoneNo);
     }
 }
