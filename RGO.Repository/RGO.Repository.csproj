@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RGO.Domain\RGO.Domain.csproj" />
+    <ProjectReference Include="..\RGO.UnitOfWork\RGO.UnitOfWork.csproj" />
   </ItemGroup>
 
 </Project>

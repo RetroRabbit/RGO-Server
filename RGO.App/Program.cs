@@ -1,17 +1,16 @@
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Services;
-using RGO.Repository;
-using RGO.Repository.Repositories;
-using System.IdentityModel.Tokens.Jwt;
+using RGO.Services;
+using RGO.Services.Interfaces;
+using RGO.Services.Services;
+using RGO.UnitOfWork;
 using System.Security.Claims;
 using System.Text;
 
-namespace ROG.App
+namespace RGO.App
 {
     public class Program
     {
@@ -46,28 +45,14 @@ namespace ROG.App
                         {
                             Reference = new OpenApiReference{Type = ReferenceType.SecurityScheme, Id = "Bearer"}
                         },
-                        new string[]{}
+                        Array.Empty<string>()
                     }
                 });
             });
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-            builder.Services.AddScoped<IGradEventsService, GradEventsService>();
-            builder.Services.AddScoped<IGradEventsRepository, GradEventsRepository>();
-            builder.Services.AddScoped<IGradGroupRepository, GradGroupRepository>();
-            builder.Services.AddScoped<IGradGroupService, GradGroupService>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IProfileService, ProfileService>();
-            builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
-            builder.Services.AddScoped<IWorkshopRepository, WorkshopRepository>();
-            builder.Services.AddScoped<IWorkshopService, WorkshopService>();
-            builder.Services.AddScoped<IStackRepository, StackRepository>();
-            builder.Services.AddScoped<IGradStackRepository, GradStackRepository>();
-            builder.Services.AddScoped<IGradStackService, GradStackService>();
-
-            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["Default"]));
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["ConnectionStrings:Default"]));
+            builder.Services.RegisterRepository();
+            builder.Services.RegisterServices();
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
@@ -83,9 +68,9 @@ namespace ROG.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = configuration["Auth:Issuer"],
-                        ValidAudience = configuration["Auth:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]))
+                        ValidIssuer = configuration["Auth:Issuer"]!,
+                        ValidAudience = configuration["Auth:Audience"]!,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]!))
                     };
 
                     options.Events = new JwtBearerEvents

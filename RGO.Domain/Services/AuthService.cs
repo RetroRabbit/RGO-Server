@@ -1,60 +1,87 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using RGO.Domain.Enums;
-using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Interfaces.Services;
-using RGO.Domain.Models;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using RGO.Models;
+using RGO.Services.Interfaces;
+using RGO.UnitOfWork;
 
-namespace RGO.Domain.Services;
+namespace RGO.Services.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
+    private readonly IEmployeeService _employeeService;
+    private readonly IUnitOfWork _db;
 
-    public AuthService(IUserRepository userRepository, IConfiguration configuration)
+    public AuthService(
+        IConfiguration configuration,
+        IEmployeeService employeeService,
+        IUnitOfWork db)
     {
-        _userRepository = userRepository;
         _configuration = configuration;
+        _employeeService = employeeService;
+        _db = db;
     }
 
     public async Task<bool> CheckUserExist(string email)
     {
-        return await _userRepository.UserExists(email);
+        return await _employeeService.CheckUserExist(email);
     }
 
-    public async Task<string> GenerateToken(string email)
+    public async Task<string> Login(string email)
     {
-        UserDto user = await _userRepository.GetUserByEmail(email);
-        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-        byte[] key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]);
-        List<UserRole> roles = await GetUserRoles(email);
-        string rolesString = string.Empty;
+        var employee = await _employeeService.GetEmployee(email);
 
-        try
-        {
-            rolesString = string.Join(",", roles.Select(role => role.ToString()));
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return employee == null ? throw new Exception("User not found") : await GenerateToken(employee);
+    }
 
-        Claim[] claims = new Claim[]
+    public async Task<string> RegisterEmployee(EmployeeDto employeeDto)
+    {
+        EmployeeDto newEmployee = await _employeeService.SaveEmployee(employeeDto);
+
+        return await GenerateToken(newEmployee);
+    }
+
+    private async Task<string> GenerateToken(EmployeeDto employee)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);
+        List<AuthRoleResult> roles = await GetUserRoles(employee.Email);
+        var collectionOfRoleClaims = roles
+            .Select(role =>
+            {
+                string upperRole = role.Role.ToUpper();
+
+                List<Claim> roleClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, upperRole),
+                    new Claim($"{upperRole}-Action", role.Action)
+                };
+
+                if (role.View) roleClaims.Add(new Claim($"{upperRole}-View", "true"));
+                if (role.Edit) roleClaims.Add(new Claim($"{upperRole}-Edit", "true"));
+                if (role.Delete) roleClaims.Add(new Claim($"{upperRole}-Delete", "true"));
+
+                return roleClaims;
+            })
+            .ToList();
+
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
-            new Claim(ClaimTypes.Role, rolesString)
+            new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
+            new Claim(ClaimTypes.Email, employee.Email),
+            new Claim(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
+
+        foreach (var role in collectionOfRoleClaims) claims.AddRange(role);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Auth:Expires"])),
+            Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Auth:Expires"]!)),
             Issuer = _configuration["Auth:Issuer"],
             Audience = _configuration["Auth:Audience"],
             SigningCredentials = new SigningCredentials(
@@ -62,15 +89,37 @@ public class AuthService : IAuthService
                 SecurityAlgorithms.HmacSha256Signature)
         };
 
-        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 
-    public async Task<List<UserRole>> GetUserRoles(string email)
+    public async Task<List<AuthRoleResult>> GetUserRoles(string email)
     {
-        List<int> roles = await _userRepository.GetUserRoles(email);
-        return roles
-            .Select(role => (UserRole)role)
+        var employeeRoles = await _db.EmployeeRole
+            .Get(employeeRole => employeeRole.Employee.Email == email)
+            .AsNoTracking()
+            .Include(employeeRole => employeeRole.Role)
+            .Include(employeeRole => employeeRole.Employee)
+            .Include(employeeRole => employeeRole.Employee.EmployeeType)
+            .Select(employeeRole => employeeRole.ToDto().Role.Description)
+            .ToListAsync();
+
+        if (employeeRoles.Count <= 0 && employeeRoles == null) throw new Exception("User not assigned role(s)");
+
+        var role = await _db.RoleAccess
+            .Get(roleAccess => employeeRoles.Contains(roleAccess.Role.Description))
+            .AsNoTracking()
+            .Include(roleAccess => roleAccess.Role)
+            .Select(roleAccess => roleAccess.ToDto())
+            .ToListAsync();
+
+        return role
+            .Select(r => new AuthRoleResult(
+                r.Role.Description,
+                r.Action,
+                r.View,
+                r.Edit,
+                r.Delete))
             .ToList();
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Models;
-using RGO.Repository.Entities;
-using System.Linq;
+using RGO.Models;
+using RGO.Repository.Interfaces;
 
 namespace RGO.Repository.Repositories
 {

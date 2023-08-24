@@ -1,19 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using RGO.Domain.Interfaces.Repository;
-using RGO.Domain.Models;
-using RGO.Repository.Entities;
+using RGO.Models;
+using RGO.Repository.Interfaces;
+using RGO.UnitOfWork.Entities;
 
 namespace RGO.Repository.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : BaseRepository<User>, IUserRepository
     {
         private readonly DatabaseContext _databaseContext;
 
-        public UserRepository(DatabaseContext databaseContext)
+        public UserRepository(DatabaseContext db) : base(db)
         {
-            _databaseContext = databaseContext;
+            _databaseContext = db;
         }
+
         public async Task<bool> UserExists(string email)
         {
             bool userExists = await _databaseContext.users.AnyAsync(u => u.Email == email);
