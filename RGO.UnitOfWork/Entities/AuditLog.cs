@@ -13,9 +13,11 @@ public class AuditLog : IModel<AuditLogDto>
     public int Id { get; set; }
 
     [Column("editFor")]
+    [ForeignKey("EmployeeEditFor")]
     public int EditFor { get; set; }
 
     [Column("editBy")]
+    [ForeignKey("EmployeeEditBy")]
     public int EditBy { get; set; }
 
     [Column("editDate")]
@@ -24,13 +26,16 @@ public class AuditLog : IModel<AuditLogDto>
     [Column("description")]
     public string Description { get; set; }
 
+    public virtual Employee EmployeeEditFor { get; set; }
+    public virtual Employee EmployeeEditBy { get; set; }
+
     public AuditLog() { }
 
     public AuditLog(AuditLogDto auditLogsDto)
     {
         Id = auditLogsDto.Id;
-        EditFor = auditLogsDto.EditFor;
-        EditBy = auditLogsDto.EditBy;
+        EditFor = auditLogsDto.EditFor.Id;
+        EditBy = auditLogsDto.EditBy.Id;
         EditDate = auditLogsDto.EditDate;
         Description = auditLogsDto.Description;
     }
@@ -39,8 +44,8 @@ public class AuditLog : IModel<AuditLogDto>
     {
         return new AuditLogDto(
             Id,
-            EditFor,
-            EditBy,
+            EmployeeEditFor.ToDto(),
+            EmployeeEditBy.ToDto(),
             EditDate,
             Description);
     }

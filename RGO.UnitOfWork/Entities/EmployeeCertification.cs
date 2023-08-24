@@ -31,6 +31,7 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
     public EmployeeCertificationStatus Status { get; set; }
 
     [Column("auditBy")]
+    [ForeignKey("EmployeeAuditBy")]
     public int? AuditBy { get; set; }
 
     [Column("auditDate")]
@@ -40,6 +41,7 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
     public string? AuditNote { get; set; }
 
     public virtual Employee Employee { get; set; }
+    public virtual Employee EmployeeAuditBy { get; set; }
     public virtual EmployeeDocument EmployeeDocument { get; set; }
 
     public EmployeeCertification() { }
@@ -52,7 +54,7 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
         Title = employeeCertificationDto.Title;
         Publisher = employeeCertificationDto.Publisher;
         Status = employeeCertificationDto.Status;
-        AuditBy = employeeCertificationDto.AuditBy;
+        AuditBy = employeeCertificationDto.AuditBy?.Id;
         AuditDate = employeeCertificationDto.AuditDate;
         AuditNote = employeeCertificationDto.AuditNote;
     }
@@ -66,7 +68,7 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
             Title,
             Publisher,
             Status,
-            AuditBy,
+            EmployeeAuditBy?.ToDto(),
             AuditDate,
             AuditNote);
     }

@@ -8,6 +8,7 @@ public class UnitOfWork : IUnitOfWork
     public IAuditLogRepository AuditLog { get; }
     public IEmployeeAddressRepository EmployeeAddress { get; }
     public IEmployeeCertificationRepository EmployeeCertification { get; }
+    public IEmployeeDataRepository EmployeeData { get; }
     public IEmployeeDocumentRepository EmployeeDocument { get; }
     public IEmployeeProjectRepository EmployeeProject { get; }
     public IEmployeeRepository Employee { get; }
@@ -27,6 +28,7 @@ public class UnitOfWork : IUnitOfWork
         EmployeeAddress = new EmployeeAddressRepository(_db);
         EmployeeCertification = new EmployeeCertificationRepository(_db);
         EmployeeDocument = new EmployeeDocumentRepository(_db);
+        EmployeeData = new EmployeeDataRepository(_db);
         EmployeeProject = new EmployeeProjectRepository(_db);
         Employee = new EmployeeRepository(_db);
         EmployeeRole = new EmployeeRoleRepository(_db);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RGO.Models;
 using RGO.Services.Interfaces;
 using System.Security.Claims;
 
@@ -29,6 +30,21 @@ public class EmployeeController : ControllerBase
             var employee = await _employeeService.GetEmployee(email);
 
             return Ok(employee);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string email)
+    {
+        try
+        {
+            var updatedEmployee = await _employeeService.UpdateEmployee(employee, email);
+
+            return Ok(updatedEmployee);
         }
         catch (Exception ex)
         {

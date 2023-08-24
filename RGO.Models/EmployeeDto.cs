@@ -18,6 +18,7 @@ public record EmployeeDto(
     float SalaryDays, 
     float PayRate,
     int Salary, 
+    string EmployeeType,
     string Title,
     string Name,
     string Initials,
@@ -32,5 +33,8 @@ public record EmployeeDto(
     Race Race,
     Gender Gender,
     string Photo,
+    string KnownAs,
+    string Pronouns,
+    string Email,
     string PersonalEmail,
     string CellphoneNo);

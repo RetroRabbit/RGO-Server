@@ -98,6 +98,9 @@ public class Employee : IModel<EmployeeDto>
     [Column("photo")]
     public string Photo { get; set; }
 
+    [Column("email")]
+    public string Email { get; set; }
+
     [Column("personalEmail")]
     public string PersonalEmail { get; set; }
 
@@ -108,7 +111,7 @@ public class Employee : IModel<EmployeeDto>
 
     public Employee() { }
 
-    public Employee(EmployeeDto employeeDto)
+    public Employee(EmployeeDto employeeDto, EmployeeTypeDto employeeType)
     {
         Id = employeeDto.Id;
         EmployeeNumber = employeeDto.EmployeeNumber;
@@ -125,6 +128,7 @@ public class Employee : IModel<EmployeeDto>
         SalaryDays = employeeDto.SalaryDays;
         PayRate = employeeDto.PayRate;
         Salary = employeeDto.Salary;
+        EmployeeTypeId = employeeType.Id;
         Title = employeeDto.Title;
         Initials = employeeDto.Initials;
         Name = employeeDto.Name;
@@ -139,6 +143,9 @@ public class Employee : IModel<EmployeeDto>
         Race = employeeDto.Race;
         Gender = employeeDto.Gender;
         Photo = employeeDto.Photo;
+        KnownAs = employeeDto.KnownAs;
+        Pronouns = employeeDto.Pronouns;
+        Email = employeeDto.Email;
         PersonalEmail = employeeDto.PersonalEmail;
         CellphoneNo = employeeDto.CellphoneNo;
     }
@@ -161,9 +168,10 @@ public class Employee : IModel<EmployeeDto>
             SalaryDays,
             PayRate,
             Salary,
+            EmployeeType.Name,
             Title,
-            Initials,
             Name,
+            Initials,
             Surname,
             DateOfBirth,
             CountryOfBirth,
@@ -175,6 +183,9 @@ public class Employee : IModel<EmployeeDto>
             Race,
             Gender,
             Photo,
+            KnownAs,
+            Pronouns,
+            Email,
             PersonalEmail,
             CellphoneNo);
     }
