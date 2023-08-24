@@ -26,5 +26,7 @@ namespace RGO.UnitOfWork
         public DbSet<RoleAccess> roleAccess { get; set; }
         public DbSet<OnboardingDocument> onboarding { get; set; }
         public DbSet<AuditLog> auditLogs { get; set; }
+        public DbSet<Chart> Chart { get; set; }
+        public DbSet<ChartRoleLink> ChartRoleLink { get; set; }
     }
 }
