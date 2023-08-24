@@ -2,6 +2,6 @@
 
 public enum DocumentStatus
 {
-    ACTIVE = 1,
-    ARCHIVE
+    Active,
+    Archive
 }

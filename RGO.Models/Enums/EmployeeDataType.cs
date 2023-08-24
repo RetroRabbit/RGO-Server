@@ -2,6 +2,6 @@
 
 public enum EmployeeDataType
 {
-    SOCIAL = 1,
-    SKILL
+    Social,
+    Skill
 }
