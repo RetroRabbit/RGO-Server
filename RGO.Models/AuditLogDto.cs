@@ -4,7 +4,7 @@ namespace RGO.Models;
 
 public record AuditLogDto(
     int Id,
-    int EditFor,
-    int EditBy,
+    EmployeeDto EditFor,
+    EmployeeDto EditBy,
     DateTime EditDate,
     string Description);

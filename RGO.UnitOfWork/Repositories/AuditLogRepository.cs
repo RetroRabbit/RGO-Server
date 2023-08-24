@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RGO.Models;
+﻿using RGO.Models;
 using RGO.UnitOfWork.Entities;
 using RGO.UnitOfWork.Interfaces;
 
