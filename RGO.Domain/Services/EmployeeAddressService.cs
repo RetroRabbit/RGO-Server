@@ -15,7 +15,7 @@ namespace RGO.Services.Services
             _db = db;
         }
 
-        public async Task SaveEmployeeAddress(EmployeeAddressDto employeeAddressDto)
+        public async Task<EmployeeAddressDto> SaveEmployeeAddress(EmployeeAddressDto employeeAddressDto)
         {
             var ifEmployee = await CheckEmployee(employeeAddressDto.Employee.Id);
 
@@ -31,7 +31,9 @@ namespace RGO.Services.Services
                 .FirstOrDefaultAsync();
 
             if (existingAddress != null) { throw new Exception("Existing employee address record found"); }
-            await _db.EmployeeAddress.Add(employeeAddress);
+            var newEmployeeAdress = await _db.EmployeeAddress.Add(employeeAddress);
+
+            return newEmployeeAdress;
         }
 
         public async Task<EmployeeAddressDto> GetEmployeeAddress(int employeeId)
@@ -52,23 +54,27 @@ namespace RGO.Services.Services
             return employeeAddress;
         }
 
-        public async Task UpdateEmployeeAddress(EmployeeAddressDto employeeAddressDto)
+        public async Task<EmployeeAddressDto> UpdateEmployeeAddress(EmployeeAddressDto employeeAddressDto)
         {
             var ifEmployee = await CheckEmployee(employeeAddressDto.Employee.Id);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
             EmployeeAddress employeeAddress = new EmployeeAddress(employeeAddressDto);
-            await _db.EmployeeAddress.Update(employeeAddress);
+            var updatedEmployeeAddress = await _db.EmployeeAddress.Update(employeeAddress);
+
+            return updatedEmployeeAddress;
         }
 
-        public async Task DeleteEmployeeAddress(EmployeeAddressDto employeeAddressDto)
+        public async Task<EmployeeAddressDto> DeleteEmployeeAddress(EmployeeAddressDto employeeAddressDto)
         {
             var ifEmployee = await CheckEmployee(employeeAddressDto.Employee.Id);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
 
             EmployeeAddress employeeAddress = new EmployeeAddress(employeeAddressDto);
-            await _db.EmployeeAddress.Delete(employeeAddress.Id);
+            var deletedEmployeeAddress = await _db.EmployeeAddress.Delete(employeeAddress.Id);
+
+            return deletedEmployeeAddress;
         }
 
         private async Task<bool> CheckEmployee(int employeeId)

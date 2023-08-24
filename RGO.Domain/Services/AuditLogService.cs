@@ -15,10 +15,12 @@ namespace RGO.Services.Services
             _db = db;
         }
 
-        public async Task SaveAuditLog(AuditLogDto auditLogDto)
+        public async Task<AuditLogDto> SaveAuditLog(AuditLogDto auditLogDto)
         {
             AuditLog auditLog = new AuditLog(auditLogDto);
-            await _db.AuditLog.Add(auditLog);
+            var newAuditLog = await _db.AuditLog.Add(auditLog);
+
+            return newAuditLog;
         }
 
         public async Task<List<AuditLogDto>> GetAuditLogByEditedById(int editedById)
@@ -36,22 +38,26 @@ namespace RGO.Services.Services
             return await _db.AuditLog.GetAll();
         }
 
-        public async Task UpdateAuditLog(AuditLogDto auditLogDto)
+        public async Task<AuditLogDto> UpdateAuditLog(AuditLogDto auditLogDto)
         {
             var ifAuditLog = await CheckAuditLog(auditLogDto.Id);
             if (!ifAuditLog) { throw new Exception("Audit Log not found"); }
 
             AuditLog auditLog = new AuditLog(auditLogDto);
-            await _db.AuditLog.Update(auditLog);
+            var updatedAuditLog = await _db.AuditLog.Update(auditLog);
+
+            return updatedAuditLog;
         }
 
-        public async Task DeleteAuditLog(AuditLogDto auditLogDto)
+        public async Task<AuditLogDto> DeleteAuditLog(AuditLogDto auditLogDto)
         {
             var ifAuditLog = await CheckAuditLog(auditLogDto.Id);
             if (!ifAuditLog) { throw new Exception("Audit Log not found"); }
 
             AuditLog auditLog = new AuditLog(auditLogDto);
-            await _db.AuditLog.Delete(auditLog.Id);
+            var deletedAuditLog = await _db.AuditLog.Delete(auditLog.Id);
+
+            return deletedAuditLog;
         }
 
         private async Task<bool> CheckAuditLog(int auditLogId)

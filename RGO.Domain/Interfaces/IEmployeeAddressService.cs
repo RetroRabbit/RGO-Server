@@ -1,17 +1,35 @@
 ﻿using RGO.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Services.Interfaces
 {
     public interface IEmployeeAddressService
     {
-        Task SaveEmployeeAddress(EmployeeAddressDto employeeAddressDto);
+        /// <summary>
+        /// Save Employee Address
+        /// </summary>
+        /// <param name="employeeAddressDto"></param>
+        /// <returns>Employee Address</returns>
+        Task<EmployeeAddressDto> SaveEmployeeAddress(EmployeeAddressDto employeeAddressDto);
+
+        /// <summary>
+        /// Get Employee Address
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns>Employee Address</returns>
         Task<EmployeeAddressDto> GetEmployeeAddress(int employeeId);
-        Task UpdateEmployeeAddress(EmployeeAddressDto employeeAddressDto);
-        Task DeleteEmployeeAddress(EmployeeAddressDto employeeAddressDto);
+
+        /// <summary>
+        /// Update Employee Address
+        /// </summary>
+        /// <param name="employeeAddressDto"></param>
+        /// <returns>Employee Address</returns>
+        Task<EmployeeAddressDto> UpdateEmployeeAddress(EmployeeAddressDto employeeAddressDto);
+
+        /// <summary>
+        /// Delete Employee Address
+        /// </summary>
+        /// <param name="employeeAddressDto"></param>
+        /// <returns>Employee Address</returns>
+        Task<EmployeeAddressDto> DeleteEmployeeAddress(EmployeeAddressDto employeeAddressDto);
     }
 }

@@ -1,17 +1,43 @@
 ﻿using RGO.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Services.Interfaces
 {
     public interface IEmployeeCertificationService
     {
-        Task SaveEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
-        Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId);
-        Task UpdateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
-        Task DeleteEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
+        /// <summary>
+        /// Save Employee Certification
+        /// </summary>
+        /// <param name="employeeCertificationDto"></param>
+        /// <returns></returns>
+        Task<EmployeeCertificationDto> SaveEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
+
+        /// <summary>
+        /// Get Employee Certification
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="certificationId"></param>
+        /// <returns></returns>
+        Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId, int certificationId);
+
+        /// <summary>
+        /// Get All Employee Certifications
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
+        Task<List<EmployeeCertificationDto>> GetAllEmployeeCertifications(int employeeId);
+
+        /// <summary>
+        /// Update Employee Certification
+        /// </summary>
+        /// <param name="employeeCertificationDto"></param>
+        /// <returns></returns>
+        Task<EmployeeCertificationDto> UpdateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
+
+        /// <summary>
+        /// Delete Employee Certification
+        /// </summary>
+        /// <param name="employeeCertificationDto"></param>
+        /// <returns></returns>
+        Task<EmployeeCertificationDto> DeleteEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
     }
 }

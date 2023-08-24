@@ -15,7 +15,7 @@ namespace RGO.Services.Services
             _db = db;
         }
 
-        public async Task SaveEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
+        public async Task<EmployeeDocumentDto> SaveEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
         {
             var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);
 
@@ -31,17 +31,21 @@ namespace RGO.Services.Services
                 .FirstOrDefaultAsync();
 
             if (existingDocument != null) { throw new Exception("Existing employee certification record found"); }
-            await _db.EmployeeDocument.Add(employeeDocument);
+            var newRmployeeDocument = await _db.EmployeeDocument.Add(employeeDocument);
+
+            return newRmployeeDocument;
         }
 
-        public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId)
+        public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename)
         {
             var ifEmployee = await CheckEmployee(employeeId);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
 
             var employeeDocument = await _db.EmployeeDocument
-                .Get(employeeDocument => employeeDocument.EmployeeId == employeeId)
+                .Get(employeeDocument =>
+                    employeeDocument.EmployeeId == employeeId &&
+                    employeeDocument.FileName.Equals(filename, StringComparison.CurrentCultureIgnoreCase))
                 .AsNoTracking()
                 .Include(employeeDocument => employeeDocument.Employee)
                 .Select(employeeDocument => employeeDocument.ToDto())
@@ -52,23 +56,44 @@ namespace RGO.Services.Services
             return employeeDocument;
         }
 
-        public async Task UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
+        public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId)
         {
-            var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);
+            var ifEmployee = await CheckEmployee(employeeId);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
-            EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
-            await _db.EmployeeDocument.Update(employeeDocument);
+
+            var employeeDocuments = await _db.EmployeeDocument
+                .Get(employeeDocument => employeeDocument.EmployeeId == employeeId)
+                .AsNoTracking()
+                .Include(employeeDocument => employeeDocument.Employee)
+                .Select(employeeDocument => employeeDocument.ToDto())
+                .ToListAsync();
+
+            return employeeDocuments;
         }
 
-        public async Task DeleteEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
+        public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
         {
             var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
 
             EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
-            await _db.EmployeeAddress.Delete(employeeDocument.Id);
+            var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
+
+            return updatedEmployeeDocument;
+        }
+
+        public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
+        {
+            var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);
+
+            if (!ifEmployee) { throw new Exception("Employee not found"); }
+
+            EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
+            var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(employeeDocument.Id);
+
+            return deletedEmployeeDocument;
         }
 
         private async Task<bool> CheckEmployee(int employeeId)

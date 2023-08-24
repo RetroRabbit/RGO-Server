@@ -15,7 +15,7 @@ namespace RGO.Services.Services
             _db = db;
         }
 
-        public async Task SaveEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
+        public async Task<EmployeeCertificationDto> SaveEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
         {
             var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee.Id);
 
@@ -31,17 +31,21 @@ namespace RGO.Services.Services
                 .FirstOrDefaultAsync();
 
             if (existingCertification != null) { throw new Exception("Existing employee certification record found"); }
-            await _db.EmployeeCertification.Add(employeeCertification);
+            var newEmployeeCertification = await _db.EmployeeCertification.Add(employeeCertification);
+
+            return newEmployeeCertification;
         }
 
-        public async Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId)
+        public async Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId, int certificationId)
         {
             var ifEmployee = await CheckEmployee(employeeId);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
 
             var employeeCertification = await _db.EmployeeCertification
-                .Get(employeeCertification => employeeCertification.EmployeeId == employeeId)
+                .Get(employeeCertification =>
+                    employeeCertification.EmployeeId == employeeId &&
+                    employeeCertification.Id == certificationId)
                 .AsNoTracking()
                 .Include(employeeCertification => employeeCertification.Employee)
                 .Select(employeeCertification => employeeCertification.ToDto())
@@ -52,23 +56,45 @@ namespace RGO.Services.Services
             return employeeCertification;
         }
 
-        public async Task UpdateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
+        public async Task<List<EmployeeCertificationDto>> GetAllEmployeeCertifications(int employeeId)
         {
-            var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee.Id);
+            var ifEmployee = await CheckEmployee(employeeId);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
-            EmployeeCertification employeeCertification = new EmployeeCertification(employeeCertificationDto);
-            await _db.EmployeeCertification.Update(employeeCertification);
+
+            var employeeCertifications = await _db.EmployeeCertification
+                .Get(employeeCertification => employeeCertification.EmployeeId == employeeId)
+                .AsNoTracking()
+                .Include(employeeCertification => employeeCertification.Employee)
+                .Select(employeeCertification => employeeCertification.ToDto())
+                .ToListAsync();
+
+            if (employeeCertifications == null) { throw new Exception("Employee certification records not found"); }
+
+            return employeeCertifications;
         }
 
-        public async Task DeleteEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
+        public async Task<EmployeeCertificationDto> UpdateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
+        {
+            var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee.Id);
+
+            if (!ifEmployee) { throw new Exception("Employee not found"); }
+            EmployeeCertification employeeCertification = new EmployeeCertification(employeeCertificationDto);
+            var updatedEmployeeCertification = await _db.EmployeeCertification.Update(employeeCertification);
+
+            return updatedEmployeeCertification;
+        }
+
+        public async Task<EmployeeCertificationDto> DeleteEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
         {
             var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee.Id);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
 
             EmployeeCertification employeeCertification = new EmployeeCertification(employeeCertificationDto);
-            await _db.EmployeeAddress.Delete(employeeCertification.Id);
+            var deletedEmployeeCertification = await _db.EmployeeCertification.Delete(employeeCertification.Id);
+
+            return deletedEmployeeCertification;
         }
 
         private async Task<bool> CheckEmployee(int employeeId)
