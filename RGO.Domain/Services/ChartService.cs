@@ -1,6 +1,7 @@
 ﻿using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
+using RGO.UnitOfWork.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,13 @@ namespace RGO.Services.Services
         {
             return _db.Employee.GetAll().Result.Count();
         }
+        
+        public async Task<ChartDto> CreateChart(ChartDto chartDto)
+        {
+            ChartDto chart= await _db.Chart.Add(new Chart(chartDto));
+
+            return chart;
+        }
+
     }
 }

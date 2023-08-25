@@ -17,16 +17,16 @@ namespace RGO.UnitOfWork.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("Name")]
+        [Column("name")]
         public string Name{ get; set; }
 
-        [Column("Type")]
+        [Column("type")]
         public string Type { get; set; }
 
-        [Column("Labels")]
+        [Column("labels")]
         public List<string> Labels { get; set; }
 
-        [Column("Data")]
+        [Column("data")]
         public List<int> Data{ get; set; }
 
         public Chart() { }

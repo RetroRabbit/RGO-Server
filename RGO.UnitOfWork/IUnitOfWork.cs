@@ -20,5 +20,5 @@ public interface IUnitOfWork
 
     IChartRepository Chart { get; }
 
-    IChartRoleLinkRepositories ChartRoleLinkRepositories { get; }
+    IChartRoleLinkRepositories ChartRoleLink { get; }
 }
