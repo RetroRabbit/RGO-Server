@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RGO.App.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/chart/")]
     [ApiController]
     public class ChartsController : ControllerBase
     {

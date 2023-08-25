@@ -10,6 +10,6 @@ namespace RGO.Services.Interfaces
     public interface IChartService
     {
         Task<List<ChartDto>> GetAllCharts();
-
+        Task<ChartDto> CreateChart(ChartDto chartDto);
     }
 }
