@@ -8,4 +8,4 @@ public record OnboardingDocumentDto(
     string Description,
     string FileName,
     byte[] Blob,
-    DocumentStatus Status);
+    ItemStatus Status);

@@ -35,7 +35,7 @@ namespace RGO.UnitOfWork.Entities
         public FieldCodeType Type { get; set; }
 
         [Column("status")]
-        public FieldCodeStatus Status { get; set; }
+        public ItemStatus Status { get; set; }
 
         public FieldCode() { }
         public FieldCode(FieldCodeDto fieldCodeDto) {

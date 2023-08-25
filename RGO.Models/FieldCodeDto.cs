@@ -14,5 +14,5 @@ namespace RGO.Models
         string? Description, 
         string? Regex,
         FieldCodeType Type, 
-        FieldCodeStatus Status );
+        ItemStatus Status );
 }

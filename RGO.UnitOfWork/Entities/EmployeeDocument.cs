@@ -31,7 +31,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     public byte[] Blob { get; set; }
 
     [Column("status")]
-    public DocumentStatus Status { get; set; }
+    public ItemStatus Status { get; set; }
 
     [Column("uploadDate")]
     public DateTime UploadDate { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace RGO.Models.Enums
 {
-    public enum FieldCodeStatus
+    public enum ItemStatus
     {
         Active,
         Archive
