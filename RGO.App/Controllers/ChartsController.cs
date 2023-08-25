@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RGO.Models;
+using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers
 {
@@ -7,18 +9,49 @@ namespace RGO.App.Controllers
     [ApiController]
     public class ChartsController : ControllerBase
     {
-        public readonly IChartRepository
-        public ChartsController() { }
+        private readonly IChartService _chartService;
 
-        [HttpPost("create")]
-        public async Task<IActionResult> RegisterEmployee([FromBody] ChartDto newEmployee)
+        public ChartsController(IChartService chartService)
+        {
+            _chartService = chartService;
+        }
+
+        [HttpGet("get")]
+        public async Task<IActionResult> GetAllCharts()
         {
             try
             {
-              
-                var chart = await _authService.RegisterEmployee(newEmployee);
+                var chart = await _chartService.GetAllCharts();
+                return Ok(chart);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
 
-                return Ok(token);
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateChart([FromBody] ChartDto newChart)
+        {
+            try
+            {
+                await _chartService.CreateChart(newChart);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("employees/total")]
+        public async Task<IActionResult> GetNumberOfEmployees()
+        {
+            try
+            {
+                var numOfEmployees = _chartService.GetTotalEmployees();
+                return Ok(numOfEmployees);
             }
             catch (Exception ex)
             {

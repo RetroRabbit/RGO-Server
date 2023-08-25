@@ -19,7 +19,15 @@ namespace RGO.Services.Interfaces
         /// Gets the count of all employees
         /// </summary>
         /// <returns>int</returns>
-        Task<int> GetTotalEmployeeEmployee();
+        Task<int> GetTotalEmployees();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="chartDto"></param>
+        /// <returns></returns>
+        Task<ChartDto> CreateChart(ChartDto chartDto);
+       
 
 
 
