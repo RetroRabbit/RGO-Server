@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RGO.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace RGO.Models
         string BankName,
         string Branch,
         string AccountNo,
-        int AccountType,
+        EmployeeBankingAccountType AccountType,
         string AccountHolderName
         );
 }

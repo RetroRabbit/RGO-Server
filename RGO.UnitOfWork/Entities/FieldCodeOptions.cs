@@ -18,6 +18,7 @@ namespace RGO.UnitOfWork.Entities
 
         [Column("option")]
         public string Option { get; set; }  
+
         public virtual FieldCode FieldCode { get; set; }
 
         public FieldCodeOptions() { }
@@ -33,7 +34,7 @@ namespace RGO.UnitOfWork.Entities
             return new FieldCodeOptionsDto(
                 Id,
                 FieldCode.ToDto(),
-                Option         
+                Option
                 );
         }
     }

@@ -26,6 +26,7 @@ public class Employee : IModel<EmployeeDto>
     public DateTime TerminationDate { get; set; }
 
     [Column("reportingLine")]
+    [ForeignKey("ReportingEmployee")]
     public int? ReportingLine { get; set; }
 
     [Column("disability")]
@@ -41,7 +42,7 @@ public class Employee : IModel<EmployeeDto>
     [ForeignKey("EmployeeType")]
     public int EmployeeTypeId { get; set; }
 
-    [Column("Notes")]
+    [Column("notes")]
     public string Notes { get; set; }
 
     [Column("leaveInterval")]
@@ -108,6 +109,7 @@ public class Employee : IModel<EmployeeDto>
     public string CellphoneNo { get; set; }
 
     public virtual EmployeeType EmployeeType { get; set; }
+    public virtual Employee ReportingEmployee { get; set; }
 
     public Employee() { }
 
@@ -118,7 +120,7 @@ public class Employee : IModel<EmployeeDto>
         TaxNumber = employeeDto.TaxNumber;
         EngagementDate = employeeDto.EngagementDate;
         TerminationDate = employeeDto.TerminationDate;
-        ReportingLine = employeeDto.ReportingLine;
+        ReportingLine = employeeDto.ReportingLine.Id;
         Disability = employeeDto.Disability;
         DisabilityNotes = employeeDto.DisabilityNotes;
         Level = employeeDto.Level;
@@ -128,7 +130,6 @@ public class Employee : IModel<EmployeeDto>
         SalaryDays = employeeDto.SalaryDays;
         PayRate = employeeDto.PayRate;
         Salary = employeeDto.Salary;
-        EmployeeTypeId = employeeType.Id;
         Title = employeeDto.Title;
         Initials = employeeDto.Initials;
         Name = employeeDto.Name;
@@ -143,8 +144,6 @@ public class Employee : IModel<EmployeeDto>
         Race = employeeDto.Race;
         Gender = employeeDto.Gender;
         Photo = employeeDto.Photo;
-        KnownAs = employeeDto.KnownAs;
-        Pronouns = employeeDto.Pronouns;
         Email = employeeDto.Email;
         PersonalEmail = employeeDto.PersonalEmail;
         CellphoneNo = employeeDto.CellphoneNo;
@@ -158,7 +157,7 @@ public class Employee : IModel<EmployeeDto>
             TaxNumber,
             EngagementDate,
             TerminationDate,
-            ReportingLine,
+            ReportingEmployee.ToDto(),
             Disability,
             DisabilityNotes,
             Level,
@@ -168,7 +167,6 @@ public class Employee : IModel<EmployeeDto>
             SalaryDays,
             PayRate,
             Salary,
-            EmployeeType.Name,
             Title,
             Name,
             Initials,
@@ -183,8 +181,6 @@ public class Employee : IModel<EmployeeDto>
             Race,
             Gender,
             Photo,
-            KnownAs,
-            Pronouns,
             Email,
             PersonalEmail,
             CellphoneNo);

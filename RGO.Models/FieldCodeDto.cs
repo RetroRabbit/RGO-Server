@@ -11,8 +11,8 @@ namespace RGO.Models
         int Id,
         string Code, 
         string Name,
-        string Description, 
-        string Regex,
+        string? Description, 
+        string? Regex,
         FieldCodeType Type, 
         FieldCodeStatus Status );
 }

@@ -32,7 +32,7 @@ namespace RGO.UnitOfWork.Entities
         public string AccountNo { get; set; }
 
         [Column("accountType")]
-        public int AccountType { get; set; }
+        public EmployeeBankingAccountType AccountType { get; set; }
 
         [Column("accountHolderName")]
         public string AccountHolderName { get; set; }

@@ -24,14 +24,14 @@ public class EmployeeService : IEmployeeService
         try
         {
             var ExistingEmployeeType = await _employeeTypeService
-                .GetEmployeeType(employeeDto.EmployeeType);
+                .GetEmployeeType(employeeDto.EmployeeType.Name);
 
             employee = new Employee(employeeDto, ExistingEmployeeType);
         }
         catch (Exception)
         {
             EmployeeTypeDto newEmployeeType = await _employeeTypeService
-                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType));
+                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType.Name));
 
             employee = new Employee(employeeDto, newEmployeeType);
         }
@@ -78,7 +78,7 @@ public class EmployeeService : IEmployeeService
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email)
     {
         EmployeeTypeDto employeeTypeDto = await _employeeTypeService
-            .GetEmployeeType(employeeDto.EmployeeType);
+            .GetEmployeeType(employeeDto.EmployeeType.Name);
 
         Employee employee = new Employee(employeeDto, employeeTypeDto);
 

@@ -26,10 +26,10 @@ namespace RGO.UnitOfWork.Entities
         public string Name { get; set; }
 
         [Column("description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Column("regex")]
-        public string Regex { get; set; }
+        public string? Regex { get; set; }
 
         [Column("type")]
         public FieldCodeType Type { get; set; }
