@@ -5,6 +5,5 @@ namespace RGO.Models;
 public record EmployeeDataDto(
     int Id,
     EmployeeDto Employee,
-    EmployeeDataType DataType,
-    EmployeeDataSubType SubType,
+    FieldCodeDto FieldCode,
     string Value);

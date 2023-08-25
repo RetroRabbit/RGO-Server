@@ -9,5 +9,5 @@ public record EmployeeDocumentDto(
     string Reference,
     string FileName,
     byte[] Blob,
-    DocumentStatus Status,
+    ItemStatus Status,
     DateTime UploadDate);

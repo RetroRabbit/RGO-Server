@@ -26,7 +26,7 @@ public class OnboardingDocument : IModel<OnboardingDocumentDto>
     public byte[] Blob { get; set; }
 
     [Column("status")]
-    public DocumentStatus Status { get; set; }
+    public ItemStatus Status { get; set; }
 
     public OnboardingDocument() { }
 

@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -76,18 +77,30 @@ namespace RGO.App
                     {
                         OnTokenValidated = context =>
                         {
-                            var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
-                            Claim? roleClaims = claimsIdentity!.Claims
-                                .FirstOrDefault(c => c.Type == ClaimTypes.Role);
-                            if (roleClaims != null)
+                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+
+                            var issuer = context.Principal.FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
+                            var audience = context.Principal.FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
+
+                            if (issuer != configuration["Auth:Issuer"] || audience != configuration["Auth:Audience"])
                             {
-                                var roles = roleClaims.Value.Split(",");
-                                foreach (var role in roles)
-                                {
-                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-                                }
-                                claimsIdentity.RemoveClaim(roleClaims);
+                                context.Fail("Token is not valid");
+                                return Task.CompletedTask;
                             }
+
+                            Claim? roleClaims = claimsIdentity.Claims
+                                .FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                            
+                            if (roleClaims == null) return Task.CompletedTask;
+
+                            var roles = roleClaims.Value.Split(",");
+
+                            foreach (var role in roles)
+                            {
+                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+                            }
+
+                            claimsIdentity.RemoveClaim(roleClaims);
                             return Task.CompletedTask;
                         }
                     };

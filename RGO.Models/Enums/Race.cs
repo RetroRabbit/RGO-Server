@@ -2,7 +2,7 @@
 
 public enum Race
 {
-    Black = 1,
+    Black,
     White,
     Indian,
     Coloured,

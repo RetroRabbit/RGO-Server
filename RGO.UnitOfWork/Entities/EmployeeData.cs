@@ -17,27 +17,23 @@ public class EmployeeData : IModel<EmployeeDataDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("dataType")]
-    public EmployeeDataType DataType { get; set; }
+    [Column("fieldCodeId")]
+    [ForeignKey("FieldCode")]
+    public int FieldCodeId { get; set; }
 
-    [Column("dataSubType")]
-    public EmployeeDataSubType SubType { get; set; }
-
-    [Column("dataValue")]
+    [Column("value")]
     public string Value { get; set; } = null!;
 
     public virtual Employee Employee { get; set; } = null!;
+    public virtual FieldCode FieldCode { get; set; }
 
-    public EmployeeData()
-    {
-    }
-
+    public EmployeeData() { }
+    
     public EmployeeData(EmployeeDataDto employeeDataDto)
     {
         Id = employeeDataDto.Id;
         EmployeeId = employeeDataDto.Employee.Id;
-        DataType = employeeDataDto.DataType;
-        SubType = employeeDataDto.SubType;
+        FieldCodeId = employeeDataDto.FieldCode.Id;
         Value = employeeDataDto.Value;
     }
 
@@ -46,8 +42,7 @@ public class EmployeeData : IModel<EmployeeDataDto>
         return new EmployeeDataDto(
             Id,
             Employee.ToDto(),
-            DataType,
-            SubType,
+            FieldCode.ToDto(),
             Value);
     }
 }
