@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
     public IOnboardingDocumentsRepository OnboardingDocuments { get; }
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
+    public IFieldCodeRepository FieldCode { get; }
 
 
     private readonly DatabaseContext _db;
@@ -36,6 +37,7 @@ public class UnitOfWork : IUnitOfWork
         OnboardingDocuments = new OnboardingDocumentsRepository(_db);
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
+        FieldCode = new FieldCodeRepository(_db);
     }
 
     public async Task Save()
