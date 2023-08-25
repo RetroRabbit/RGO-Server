@@ -120,11 +120,11 @@ public class Employee : IModel<EmployeeDto>
         TaxNumber = employeeDto.TaxNumber;
         EngagementDate = employeeDto.EngagementDate;
         TerminationDate = employeeDto.TerminationDate;
-        ReportingLine = employeeDto.ReportingLine.Id;
+        ReportingLine = employeeDto.ReportingLine?.Id;
         Disability = employeeDto.Disability;
         DisabilityNotes = employeeDto.DisabilityNotes;
         Level = employeeDto.Level;
-        EmployeeTypeId = employeeDto.EmployeeType.Id;
+        EmployeeTypeId = employeeType.Id;
         Notes = employeeDto.Notes;
         LeaveInterval = employeeDto.LeaveInterval;
         SalaryDays = employeeDto.SalaryDays;
@@ -157,7 +157,7 @@ public class Employee : IModel<EmployeeDto>
             TaxNumber,
             EngagementDate,
             TerminationDate,
-            ReportingEmployee.ToDto(),
+            ReportingEmployee?.ToDto(),
             Disability,
             DisabilityNotes,
             Level,
