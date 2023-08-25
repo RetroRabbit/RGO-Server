@@ -21,5 +21,10 @@ namespace RGO.Services.Services
         {
             return await _db.Chart.GetAll();
         }
+
+        public async Task<int> GetTotalEmployeeEmployee()
+        {
+            return _db.Employee.GetAll().Result.Count();
+        }
     }
 }
