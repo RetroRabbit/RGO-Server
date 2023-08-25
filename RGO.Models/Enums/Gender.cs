@@ -2,7 +2,7 @@
 
 public enum Gender
 {
-    PreferNotToSay = 0,
+    PreferNotToSay,
     Male,
     Female,
 }

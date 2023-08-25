@@ -2,7 +2,7 @@
 
 public enum AddressType
 {
-    Suburb = 1,
+    Suburb,
     Complex,
     City
 }

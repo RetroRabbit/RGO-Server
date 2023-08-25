@@ -2,9 +2,9 @@
 
 public enum EmployeeDataSubType
 {
-    None = 0,
+    None,
     SocialDiscord,
-    SocialGithub,
+    SocialGitHub,
     SocialLinkedIn,
     SkillAngular,
     SkillJava,
