@@ -17,4 +17,8 @@ public interface IUnitOfWork
     IOnboardingDocumentsRepository OnboardingDocuments { get; }
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
+
+    IChartRepository Chart { get; }
+
+    IChartRoleLinkRepositories ChartRoleLinkRepositories { get; }
 }

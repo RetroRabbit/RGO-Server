@@ -19,7 +19,7 @@ public class UnitOfWork : IUnitOfWork
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
     public IChartRepository Chart { get; }
-    public IChartRoleLinkRepositories ChartRoleLinkRepositories { get; }
+    public IChartRoleLinkRepositories ChartRoleLink { get; }
 
 
     private readonly DatabaseContext _db;
@@ -40,6 +40,7 @@ public class UnitOfWork : IUnitOfWork
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
         Chart= new ChartRepository(_db);
+        ChartRoleLink = new ChartRoleLinkRepository(_db);
     }
 
     public async Task Save()
