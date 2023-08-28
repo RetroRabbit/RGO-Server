@@ -53,7 +53,7 @@ public class ChartService : IChartService
                 Data= data
             };
 
-            ChartDto chartDto =await _db.Chart.Add(chartEntity);
+            ChartDto chartDto = await _db.Chart.Add(chartEntity);
 
             return chartDto;
         }
