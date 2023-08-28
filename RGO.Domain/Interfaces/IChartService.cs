@@ -22,12 +22,15 @@ namespace RGO.Services.Interfaces
         Task<int> GetTotalEmployees();
 
         /// <summary>
-        /// 
+        /// Create a chart
         /// </summary>
-        /// <param name="chartDto"></param>
+        /// <param name="dataType"></param>
+        /// <param name="chartName"></param>
+        /// <param name="chartType"></param>
         /// <returns></returns>
-        Task<ChartDto> CreateChart(ChartDto chartDto);
-       
+        Task<ChartDto> CreateChart(string dataType, string chartName, string chartType);
+
+
 
 
 

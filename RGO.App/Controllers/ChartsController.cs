@@ -31,11 +31,11 @@ namespace RGO.App.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateChart([FromBody] ChartDto newChart)
+        public async Task<IActionResult> CreateChart([FromQuery] string dataType,string chartName,string chartType)
         {
             try
             {
-                await _chartService.CreateChart(newChart);
+                await _chartService.CreateChart(dataType,chartName,chartType);
 
                 return Ok();
             }

@@ -1,7 +1,9 @@
-﻿using RGO.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace RGO.Services.Services;
 
@@ -32,12 +34,33 @@ public class ChartService : IChartService
             return 0;
         }
     }
-        
-    public async Task<ChartDto> CreateChart(ChartDto chartDto)
-    {
-        ChartDto chart= await _db.Chart.Add(new Chart(chartDto));
 
-        return chart;
+    public async Task<ChartDto> CreateChart(string dataType,string chartName,string chartType)
+    {
+        if (dataType == "Gender")
+        {
+            var employess = await _employeeService.GetAll();
+            var genderCounts = employess.GroupBy(x => x.Gender).ToList();
+
+            var labels = genderCounts.Select(group => group.Key.ToString()).ToList();
+            var data = genderCounts.Select(group => group.Count()).ToList();
+
+            var chartEntity = new Chart
+            { 
+                Name= chartName,
+                Type= chartType,
+                Labels= labels,
+                Data= data
+            };
+
+            ChartDto chartDto =await _db.Chart.Add(chartEntity);
+
+            return chartDto;
+        }
+        else
+        {
+            return null;
+        }
     }
 
 }
