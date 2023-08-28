@@ -17,5 +17,8 @@ public interface IUnitOfWork
     IOnboardingDocumentsRepository OnboardingDocuments { get; }
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
+    IPropertyAccessRepository PropertyAccess { get; }
+    IMetaPropertyRepository MetaProperty { get; }
+    IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
 
 }

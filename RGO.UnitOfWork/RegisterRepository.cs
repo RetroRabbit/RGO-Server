@@ -20,5 +20,8 @@ public static class RegisterRepositoryExtension
         services.AddScoped<IOnboardingDocumentsRepository, OnboardingDocumentsRepository>();
         services.AddScoped<IRoleAccessRepository, RoleAccessRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IPropertyAccessRepository, PropertyAccessRepository>();
+        services.AddScoped<IMetaPropertyRepository, MetaPropertyRepository>();
+        services.AddScoped<IMetaPropertyOptionsRepository, MetaPropertyOptionsRepository>();
     }
 }

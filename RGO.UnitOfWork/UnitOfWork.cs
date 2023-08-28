@@ -17,6 +17,8 @@ public class UnitOfWork : IUnitOfWork
     public IOnboardingDocumentsRepository OnboardingDocuments { get; }
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
+    public IPropertyAccessRepository PropertyAccess { get; }
+    public IMetaPropertyRepository MetaProperty { get; }
 
 
     private readonly DatabaseContext _db;
@@ -36,6 +38,7 @@ public class UnitOfWork : IUnitOfWork
         OnboardingDocuments = new OnboardingDocumentsRepository(_db);
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
+        PropertyAccess = new PropertyAccessRepository(_db);
     }
 
     public async Task Save()
