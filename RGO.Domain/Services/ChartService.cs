@@ -45,7 +45,7 @@ public class ChartService : IChartService
             var labels = genderCounts.Select(group => group.Key.ToString()).ToList();
             var data = genderCounts.Select(group => group.Count()).ToList();
 
-            var chartEntity = new Chart
+            var chart = new Chart
             { 
                 Name= chartName,
                 Type= chartType,
@@ -53,9 +53,7 @@ public class ChartService : IChartService
                 Data= data
             };
 
-            ChartDto chartDto = await _db.Chart.Add(chartEntity);
-
-            return chartDto;
+            return await _db.Chart.Add(chart);
         }
         else
         {
