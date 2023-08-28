@@ -42,6 +42,8 @@ public class RoleAccessService : IRoleAccessService
     {
         RoleAccessDto existingRoleAccess = await _db.RoleAccess
             .Get(roleAccess => roleAccess.Action == action)
+            .AsNoTracking()
+            .Include(roleAccess => roleAccess.Role)
             .Select(roleAccess => roleAccess.ToDto())
             .FirstAsync();
 

@@ -57,7 +57,12 @@ public class EmployeeService : IEmployeeService
 
     public async Task<List<EmployeeDto>> GetAll()
     {
-        return await _db.Employee.GetAll();
+        return await _db.Employee
+            .Get(x => true)
+            .AsNoTracking()
+            .Include(employee => employee.EmployeeType)
+            .Select(employee => employee.ToDto())
+            .ToListAsync();
     }
 
     public async Task<EmployeeDto> GetEmployee(string email)

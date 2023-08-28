@@ -42,6 +42,9 @@ public class EmployeeRoleService : IEmployeeRoleService
     {
         EmployeeRoleDto existingRmployeeRole = await _db.EmployeeRole
             .Get(employeeRole => employeeRole.Employee.Email == email)
+            .AsNoTracking()
+            .Include(employeeRole => employeeRole.Employee)
+            .Include(employeeRole => employeeRole.Role)
             .Select(employeeRole => employeeRole.ToDto())
             .FirstAsync();
 
