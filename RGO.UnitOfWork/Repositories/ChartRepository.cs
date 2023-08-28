@@ -3,12 +3,11 @@ using RGO.Models;
 using RGO.UnitOfWork.Entities;
 using RGO.UnitOfWork.Interfaces;
 
-namespace RGO.UnitOfWork.Repositories
+namespace RGO.UnitOfWork.Repositories;
+
+public class ChartRepository : BaseRepository<Chart,ChartDto>, IChartRepository
 {
-    public class ChartRepository : BaseRepository<Chart,ChartDto>, IChartRepository
+    public ChartRepository(DatabaseContext db) : base(db)
     {
-        public ChartRepository(DatabaseContext db) : base(db)
-        {
-        }
     }
 }

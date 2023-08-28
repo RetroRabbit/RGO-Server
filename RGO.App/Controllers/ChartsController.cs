@@ -50,7 +50,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var numOfEmployees = _chartService.GetTotalEmployees();
+                var numOfEmployees = await _chartService.GetTotalEmployees();
                 return Ok(numOfEmployees);
             }
             catch (Exception ex)
