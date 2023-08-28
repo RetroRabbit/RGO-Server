@@ -19,7 +19,7 @@ public class UnitOfWork : IUnitOfWork
     public IRoleRepository Role { get; }
     public IPropertyAccessRepository PropertyAccess { get; }
     public IMetaPropertyRepository MetaProperty { get; }
-
+    public IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
 
     private readonly DatabaseContext _db;
 
@@ -39,10 +39,7 @@ public class UnitOfWork : IUnitOfWork
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
         PropertyAccess = new PropertyAccessRepository(_db);
-    }
-
-    public async Task Save()
-    {
-        await _db.SaveChangesAsync();
+        MetaProperty = new MetaPropertyRepository(_db);
+        MetaPropertyOptions = new MetaPropertyOptionsRepository(_db);
     }
 }

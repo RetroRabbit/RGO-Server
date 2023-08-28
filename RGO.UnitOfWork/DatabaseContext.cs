@@ -18,6 +18,14 @@ namespace RGO.UnitOfWork
             optionsBuilder.UseNpgsql(configuration.GetConnectionString("Default"));
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<EmployeeType>().HasData(ModelStateManage.EmployeeTypeSet());
+            modelBuilder.Entity<FieldCode>().HasData(ModelStateManage.FieldCodeSet());
+            modelBuilder.Entity<FieldCodeOptions>().HasData(ModelStateManage.FieldCodeOptionSet());
+        }
+
         public DbSet<Employee> employees { get; set; }
         public DbSet<EmployeeRole> employeeRoles { get; set; }
         public DbSet<EmployeeDocument> employeeDocuments { get; set; }
