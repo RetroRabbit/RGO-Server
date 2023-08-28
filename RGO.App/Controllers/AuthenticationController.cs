@@ -58,19 +58,19 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize("AdminView")]
     [HttpGet("roles")]
-    public async Task<IActionResult> GetUserRoles()
+    public async Task<IActionResult> GetUserRoles([FromQuery] string? email)
     {
         try
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
 
-            var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            string? emailToUse = string.IsNullOrEmpty(email)
+                ? claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value
+                : email;
 
-            if (string.IsNullOrEmpty(email)) return Unauthorized("Token is missing claim(s)[e.g: email]");
-
-            List<AuthRoleResult> roles = await _authService.GetUserRoles(email);
+            List<AuthRoleResult> roles = await _authService.GetUserRoles(emailToUse??"");
 
             return Ok(roles);
         }

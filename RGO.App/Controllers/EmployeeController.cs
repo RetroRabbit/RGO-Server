@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using System.Security.Claims;
@@ -14,6 +15,22 @@ public class EmployeeController : ControllerBase
     public EmployeeController(IEmployeeService employeeService)
     {
         _employeeService = employeeService;
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("add")]
+    public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
+    {
+        try
+        {
+            var employee = await _employeeService.SaveEmployee(newEmployee);
+
+            return CreatedAtAction(nameof(AddEmployee), new { email = employee.Email }, employee);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpGet("get")]
@@ -44,7 +61,37 @@ public class EmployeeController : ControllerBase
         {
             var updatedEmployee = await _employeeService.UpdateEmployee(employee, email);
 
-            return Ok(updatedEmployee);
+            return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpGet("get-all")]
+    public async Task<IActionResult> GetAllEmployees()
+    {
+        try
+        {
+            var employees = await _employeeService.GetAll();
+
+            return Ok(employees);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpGet("count-all")]
+    public async Task<IActionResult> CountAllEmployees()
+    {
+        try
+        {
+            var employees = await _employeeService.GetAll();
+
+            return Ok(employees.Count);
         }
         catch (Exception ex)
         {
