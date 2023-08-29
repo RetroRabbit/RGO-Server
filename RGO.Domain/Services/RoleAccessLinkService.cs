@@ -31,35 +31,33 @@ public class RoleAccessLinkService : IRoleAccessLinkService
         var roleAccessLink = await _db.RoleAccessLink
             .Get(r => r.Role.Description == role && r.RoleAccess.Permission == permission)
             .AsNoTracking()
+            .Include(r => r.Role)
+            .Include(r => r.RoleAccess)
             .Select(r => r.ToDto())
             .FirstOrDefaultAsync();
 
         if (roleAccessLink == null) throw new Exception($"Role Access Link not found(Role:{role},Permission:{permission})");
 
-        var deletedRoleAccessLink = await _db.RoleAccessLink.Delete(roleAccessLink.Id);
+        RoleAccessLinkDto? deleted = null;
 
-        return deletedRoleAccessLink;
+        try
+        {
+            deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id)??null;
+        }
+        catch (Exception)
+        {
+            
+        }
+
+        return deleted == null ?
+            roleAccessLink :
+            deleted;
     }
 
     public async Task<Dictionary<string, List<string>>> GetAll()
     {
         var roleAccessLinks = await _db.RoleAccessLink
             .Get(r => true)
-            .AsNoTracking()
-            .Include(r => r.Role)
-            .Include(r => r.RoleAccess)
-            .GroupBy(r => r.Role.Description)
-            .ToDictionaryAsync(
-                group => group.Key,
-                group => group.Select(link => link.RoleAccess.Permission).ToList());
-
-        return roleAccessLinks;
-    }
-
-    public async Task<Dictionary<string, List<string>>> GetByPermission(string permission)
-    {
-        var roleAccessLinks = await _db.RoleAccessLink
-            .Get(r => r.RoleAccess.Permission == permission)
             .AsNoTracking()
             .Include(r => r.Role)
             .Include(r => r.RoleAccess)
@@ -88,19 +86,25 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
     public async Task<Dictionary<string, List<string>>> GetRoleByEmployee(string email)
     {
-         var employeeRole = await _employeeRoleService.GetEmployeeRole(email);
+         var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
+            .Select(r => r.Role.Description)
+            .ToList();
 
-        var roleAccessLinks = await _db.RoleAccessLink
-            .Get(r => r.Role.Id == employeeRole.Role.Id)
-            .AsNoTracking()
-            .Include(r => r.Role)
-            .Include(r => r.RoleAccess)
-            .GroupBy(r => r.Role.Description)
-            .ToDictionaryAsync(
-                group => group.Key,
-                group => group.Select(link => link.RoleAccess.Permission).ToList());
+        List<Dictionary<string, List<string>>> accessRoles = new();
 
-        return roleAccessLinks;
+        foreach (var role in employeeRoles)
+        {
+            var roleAccessLinks = await GetByRole(role);
+
+            accessRoles.Add(roleAccessLinks);
+        }
+
+        Dictionary<string, List<string>> mergedRoleAccessLinks = accessRoles
+            .SelectMany(dict => dict)
+            .ToLookup(pair => pair.Key, pair => pair.Value)
+            .ToDictionary(group => group.Key, group => group.SelectMany(list => list).ToList());
+
+       return mergedRoleAccessLinks;
     }
 
     public Task<RoleAccessLinkDto> Update(RoleAccessLinkDto roleAccessLinkDto)

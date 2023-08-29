@@ -88,33 +88,8 @@ public class AuthService : IAuthService
 
     public async Task<Dictionary<string, List<string>>> GetUserRoles(string email)
     {
-        List<string> employeeRoles = await _db.EmployeeRole
-            .Get(employeeRole => employeeRole.Employee.Email == email)
-            .AsNoTracking()
-            .Include(employeeRole => employeeRole.Role)
-            .Include(employeeRole => employeeRole.Employee)
-            .Include(employeeRole => employeeRole.Employee.EmployeeType)
-            .Select(employeeRole => employeeRole.ToDto().Role.Description)
-            .ToListAsync();
+        var roles = await _roleAccessLinkService.GetRoleByEmployee(email);
 
-        if (employeeRoles.Count <= 0 && employeeRoles == null) throw new Exception("User not assigned role(s)");
-
-        List<Dictionary<string, List<string>>> accessRoles = new();
-        
-        foreach (var role in employeeRoles)
-        {
-            var access = await _roleAccessLinkService.GetByRole(role);
-
-            accessRoles.Add(access);
-        }
-
-        Dictionary<string, List<string>> mergedAccessRoles = accessRoles
-            .SelectMany(dict => dict)
-            .GroupBy(pair => pair.Key)
-            .ToDictionary(
-                group => group.Key,
-                group => group.SelectMany(pair => pair.Value).ToList());
-
-        return mergedAccessRoles;
+        return roles;
     }
 }

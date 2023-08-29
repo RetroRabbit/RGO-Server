@@ -16,14 +16,14 @@ public interface IEmployeeRoleService
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<EmployeeRoleDto> DeleteEmployeeRole(string name);
+    Task<EmployeeRoleDto> DeleteEmployeeRole(string name, string role);
 
     /// <summary>
     /// Get Employee Role
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<EmployeeRoleDto> GetEmployeeRole(string name);
+    Task<EmployeeRoleDto> GetEmployeeRole(string email, string role);
 
     /// <summary>
     /// Get All Employee Roles
@@ -38,7 +38,7 @@ public interface IEmployeeRoleService
     /// <returns></returns>
     Task<EmployeeRoleDto> UpdateEmployeeRole(EmployeeRoleDto employeeRoleDto);
 
-    Task<EmployeeRoleDto> GetEmployeeRoleByEmail(string email);
+    Task<List<EmployeeRoleDto>> GetEmployeeRoles(string email);
 
     Task<bool> CheckEmployeeRole(string email, string role);
 }
