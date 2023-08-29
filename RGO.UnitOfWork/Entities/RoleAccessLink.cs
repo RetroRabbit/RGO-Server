@@ -36,7 +36,7 @@ public class RoleAccessLink : IModel<RoleAccessLinkDto>
     {
         return new RoleAccessLinkDto(
             Id,
-            Role.ToDto(),
-            RoleAccess.ToDto());
+            Role?.ToDto(),
+            RoleAccess?.ToDto());
     }
 }
