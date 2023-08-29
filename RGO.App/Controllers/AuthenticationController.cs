@@ -27,7 +27,6 @@ public class AuthenticationController : ControllerBase
 
             if (!userExists) throw new Exception("User not found");
 
-
             string token = await _authService.Login(email);
 
             return Ok(token);
@@ -50,7 +49,7 @@ public class AuthenticationController : ControllerBase
 
             string token = await _authService.RegisterEmployee(newEmployee);
 
-            return Ok(token);
+            return CreatedAtAction(nameof(RegisterEmployee), newEmployee);
         }
         catch (Exception ex)
         {
@@ -58,7 +57,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [Authorize("AdminView")]
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("roles")]
     public async Task<IActionResult> GetUserRoles([FromQuery] string? email)
     {
@@ -70,7 +69,7 @@ public class AuthenticationController : ControllerBase
                 ? claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value
                 : email;
 
-            List<AuthRoleResult> roles = await _authService.GetUserRoles(emailToUse??"");
+            var roles = await _authService.GetUserRoles(emailToUse??"");
 
             return Ok(roles);
         }

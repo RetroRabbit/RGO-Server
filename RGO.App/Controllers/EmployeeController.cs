@@ -17,7 +17,7 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "AdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
@@ -33,18 +33,18 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("get")]
-    public async Task<IActionResult> GetEmployee()
+    public async Task<IActionResult> GetEmployee([FromQuery] string? email)
     {
         try
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
 
-            var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            string emailToUse = email ??
+                claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
 
-            if (string.IsNullOrEmpty(email)) return Unauthorized("Token is missing claim(s)[e.g: email]");
-
-            var employee = await _employeeService.GetEmployee(email);
+            var employee = await _employeeService.GetEmployee(emailToUse);
 
             return Ok(employee);
         }
@@ -54,6 +54,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpPut("update")]
     public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string email)
     {
@@ -69,6 +70,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminPolicy")]
     [HttpGet("get-all")]
     public async Task<IActionResult> GetAllEmployees()
     {
@@ -84,6 +86,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminPolicy")]
     [HttpGet("count-all")]
     public async Task<IActionResult> CountAllEmployees()
     {
