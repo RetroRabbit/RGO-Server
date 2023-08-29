@@ -30,7 +30,7 @@ public class RoleManageController : ControllerBase
         _roleAccessService = roleAccessService;
     }
 
-    [Authorize]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddRoleAccessLink([FromQuery] string? email,
         [FromBody] RoleAccessLinkDto newRoleAccessLink)
@@ -48,7 +48,7 @@ public class RoleManageController : ControllerBase
                 await _roleService.SaveRole(newRoleAccessLink.Role);
 
             var employeRole = await _employeeRoleService.CheckEmployeeRole(emailToUse, role.Description) ?
-                await _employeeRoleService.GetEmployeeRoleByEmail(emailToUse) :
+                await _employeeRoleService.GetEmployeeRole(emailToUse, role.Description) :
                 await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto(0, employee, role));
 
             var roleAccess = await _roleAccessService.CheckRoleAccess(newRoleAccessLink.RoleAccess.Permission) ?
@@ -65,7 +65,7 @@ public class RoleManageController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetRoleAccessLink([FromQuery] string? email)
     {
@@ -78,9 +78,25 @@ public class RoleManageController : ControllerBase
 
             var employee = await _employeeService.GetEmployee(emailToUse);
 
-            var roleAccessLink = await _roleAccessLinkService.GetRoleByEmployee(employee.EmployeeType.Name);
+            var roleAccessLink = await _roleAccessLinkService.GetRoleByEmployee(emailToUse);
 
             return Ok(roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteRoleAccessLink([FromQuery] string role, [FromQuery] string access)
+    {
+        try
+        {
+            var roleAccessLink = await _roleAccessLinkService.Delete(role, access);
+
+            return CreatedAtAction(nameof(DeleteRoleAccessLink), roleAccessLink);
         }
         catch (Exception ex)
         {
