@@ -29,5 +29,6 @@ namespace RGO.UnitOfWork
         public DbSet<FieldCode> fieldCodes { get; set; }
         public DbSet<FieldCodeOptions> fieldCodesOptions { get; set; }
         public DbSet<EmployeeData> employeeData { get; set; }
+        public DbSet<RoleAccessLink> roleAccessLinks { get; set; }
     }
 }
