@@ -15,57 +15,51 @@ public class RoleAccessService : IRoleAccessService
         _db = db;
     }
 
-    public async Task<RoleAccessDto> SaveRoleAccess(RoleAccessDto roleAccessDto)
+    public Task<bool> CheckRoleAccess(string permission)
     {
-        RoleAccessDto newRoleAccess = await _db.RoleAccess.Add(new RoleAccess(roleAccessDto));
-
-        return newRoleAccess;
+        return _db.RoleAccess
+            .Any(r => r.Permission == permission);
     }
 
-    public async Task<RoleAccessDto> DeleteRoleAccess(string action)
+    public async Task<RoleAccessDto> DeleteRoleAccess(string permission)
     {
-        RoleAccessDto existingRoleAccess = await GetRoleAccess(action);
+        var roleAccess = await GetRoleAccess(permission);
 
-        RoleAccessDto deletedRoleAccess = await _db.RoleAccess
-            .Delete(existingRoleAccess.Id);
+        if (roleAccess == null)
+        {
+            throw new Exception("Role Access not found");
+        }
+
+        var deletedRoleAccess = await _db.RoleAccess.Delete(roleAccess.Id);
 
         return deletedRoleAccess;
     }
 
-    public async Task<List<RoleAccessDto>> GetAllRoleAccess()
+    public Task<List<RoleAccessDto>> GetAllRoleAccess()
     {
-        return await _db.RoleAccess
-            .GetAll();
+        return _db.RoleAccess.GetAll();
     }
 
-    public async Task<RoleAccessDto> GetRoleAccess(string action)
+    public async Task<RoleAccessDto> GetRoleAccess(string permission)
     {
-        RoleAccessDto existingRoleAccess = await _db.RoleAccess
-            .Get(roleAccess => roleAccess.Action == action)
-            .AsNoTracking()
-            .Include(roleAccess => roleAccess.Role)
-            .Select(roleAccess => roleAccess.ToDto())
+        var roleAccess = await _db.RoleAccess
+            .Get(r => r.Permission == permission)
+            .Select(r => r.ToDto())
             .FirstAsync();
 
-        return existingRoleAccess;
+        return roleAccess;
     }
 
-    public async Task<List<RoleAccessDto>> GetRoleAccessByRole(string description)
+    public async Task<RoleAccessDto> SaveRoleAccess(RoleAccessDto roleAccessDto)
     {
-        return await _db.RoleAccess
-            .Get(roleAccess => roleAccess.Role.Description == description)
-            .AsNoTracking()
-            .Include(roleAccess => roleAccess.Role)
-            .Select(roleAccess => roleAccess.ToDto())
-            .ToListAsync();
+        var addedRoleAccess = await _db.RoleAccess.Add(new RoleAccess(roleAccessDto));
+
+        return addedRoleAccess;
     }
 
     public async Task<RoleAccessDto> UpdateRoleAccess(RoleAccessDto roleAccessDto)
     {
-        RoleAccessDto existingRoleAccess = await GetRoleAccess(roleAccessDto.Action);
-
-        RoleAccessDto updatedRoleAccess = await _db.RoleAccess
-            .Update(new RoleAccess(existingRoleAccess));
+        var updatedRoleAccess = await _db.RoleAccess.Update(new RoleAccess(roleAccessDto));
 
         return updatedRoleAccess;
     }

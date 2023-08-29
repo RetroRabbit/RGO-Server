@@ -56,4 +56,9 @@ public class RoleService : IRoleService
 
         return updatedRole;
     }
+
+    public Task<bool> CheckRole(string name)
+    {
+        return _db.Role.Any(role => role.Description == name);
+    }
 }

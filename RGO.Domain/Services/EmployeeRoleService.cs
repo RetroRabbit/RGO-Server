@@ -9,10 +9,12 @@ namespace RGO.Services.Services;
 public class EmployeeRoleService : IEmployeeRoleService
 {
     private readonly IUnitOfWork _db;
+    private readonly IEmployeeService _employeeService;
 
-    public EmployeeRoleService(IUnitOfWork db)
+    public EmployeeRoleService(IUnitOfWork db, IEmployeeService employeeService)
     {
         _db = db;
+        _employeeService = employeeService;
     }
 
     public async Task<EmployeeRoleDto> SaveEmployeeRole(EmployeeRoleDto employeeRoleDto)
@@ -59,5 +61,25 @@ public class EmployeeRoleService : IEmployeeRoleService
             .Update(new EmployeeRole(existingEmployeeRole));
 
         return updatedEmployeeRole;
+    }
+
+    public async Task<EmployeeRoleDto> GetEmployeeRoleByEmail(string email)
+    {
+        EmployeeRoleDto existingEmployeeRole = await _db.EmployeeRole
+            .Get(employeeRole => employeeRole.Employee.Email == email)
+            .AsNoTracking()
+            .Include(employeeRole => employeeRole.Employee)
+            .Include(employeeRole => employeeRole.Employee.EmployeeType)
+            .Include(employeeRole => employeeRole.Role)
+            .Select(employeeRole => employeeRole.ToDto())
+            .FirstAsync();
+
+        return existingEmployeeRole;
+    }
+
+    public async Task<bool> CheckEmployeeRole(string email, string role)
+    {
+        return await _db.EmployeeRole
+            .Any(employeeRole => employeeRole.Employee.Email == email && employeeRole.Role.Description == role);
     }
 }
