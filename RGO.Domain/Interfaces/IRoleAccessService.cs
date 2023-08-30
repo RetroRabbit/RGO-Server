@@ -16,21 +16,14 @@ public interface IRoleAccessService
     /// </summary>
     /// <param name="action"></param>
     /// <returns></returns>
-    Task<RoleAccessDto> DeleteRoleAccess(string action);
+    Task<RoleAccessDto> DeleteRoleAccess(string permission);
 
     /// <summary>
     /// Get Role Access
     /// </summary>
     /// <param name="action"></param>
     /// <returns></returns>
-    Task<RoleAccessDto> GetRoleAccess(string action);
-
-    /// <summary>
-    /// Get Role Access By Role
-    /// </summary>
-    /// <param name="description"></param>
-    /// <returns></returns>
-    Task<List<RoleAccessDto>> GetRoleAccessByRole(string description);
+    Task<RoleAccessDto> GetRoleAccess(string permission);
 
     /// <summary>
     /// Get All Role Access
@@ -44,4 +37,11 @@ public interface IRoleAccessService
     /// <param name="roleAccessDto"></param>
     /// <returns></returns>
     Task<RoleAccessDto> UpdateRoleAccess(RoleAccessDto roleAccessDto);
+
+    /// <summary>
+    /// Check Role Access
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
+    Task<bool> CheckRoleAccess(string permission);
 }

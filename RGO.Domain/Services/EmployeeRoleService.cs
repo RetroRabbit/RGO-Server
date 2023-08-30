@@ -3,6 +3,7 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Xml.Linq;
 
 namespace RGO.Services.Services;
 
@@ -22,39 +23,80 @@ public class EmployeeRoleService : IEmployeeRoleService
         return newEmployeeRole;
     }
 
-    public async Task<EmployeeRoleDto> DeleteEmployeeRole(string email)
+    public async Task<EmployeeRoleDto> DeleteEmployeeRole(string email, string role)
     {
-        EmployeeRoleDto existingEmployeeRole = await GetEmployeeRole(email);
+        var employeeRoles = await GetEmployeeRoles(email);
 
-        EmployeeRoleDto employeeRoleDto = await _db.EmployeeRole
-            .Delete(existingEmployeeRole.Id);
+        EmployeeRoleDto? toDelete = employeeRoles
+            .Where(employeeRole => employeeRole.Role.Description == role)
+            .Select(employeeRole => employeeRole)
+            .FirstOrDefault();
 
-        return employeeRoleDto;
+        if (toDelete is null)
+        {
+            throw new Exception("Employee Role not found");
+        }
 
+        EmployeeRoleDto deletedEmployeeRole = await _db.EmployeeRole
+                .Delete(toDelete.Id);
+
+        return deletedEmployeeRole;
     }
 
     public Task<List<EmployeeRoleDto>> GetAllEmployeeRoles()
     {
-        return _db.EmployeeRole.GetAll();
+        return _db.EmployeeRole
+            .GetAll();
     }
 
-    public async Task<EmployeeRoleDto> GetEmployeeRole(string email)
+    public async Task<List<EmployeeRoleDto>> GetEmployeeRoles(string email)
     {
-        EmployeeRoleDto existingRmployeeRole = await _db.EmployeeRole
+        List<EmployeeRoleDto> existingRmployeeRole = await _db.EmployeeRole
             .Get(employeeRole => employeeRole.Employee.Email == email)
+            .AsNoTracking()
+            .Include(employeeRole => employeeRole.Role)
+            .Include(employeeRole => employeeRole.Employee)
+            .Include(employeeRole => employeeRole.Employee.EmployeeType)
             .Select(employeeRole => employeeRole.ToDto())
-            .FirstAsync();
+            .ToListAsync();
 
         return existingRmployeeRole;
     }
 
     public async Task<EmployeeRoleDto> UpdateEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
-        EmployeeRoleDto existingEmployeeRole = await GetEmployeeRole(employeeRoleDto.Employee.Email);
+        bool exists = await CheckEmployeeRole(employeeRoleDto.Employee.Email, employeeRoleDto.Role.Description);
+
+        if (!exists)
+        {
+            throw new Exception("Employee Role not found");
+        }
 
         EmployeeRoleDto updatedEmployeeRole = await _db.EmployeeRole
-            .Update(new EmployeeRole(existingEmployeeRole));
+            .Update(new EmployeeRole(employeeRoleDto));
 
         return updatedEmployeeRole;
+    }
+
+    public async Task<EmployeeRoleDto> GetEmployeeRole(string email, string role)
+    {
+        EmployeeRoleDto existingEmployeeRole = await _db.EmployeeRole
+            .Get(employeeRole =>
+                employeeRole.Role.Description == role &&
+                employeeRole.Employee.Email == email)
+            .AsNoTracking()
+            .Include(employeeRole => employeeRole.Employee)
+            .Include(employeeRole => employeeRole.Employee.EmployeeType)
+            .Include(employeeRole => employeeRole.Role)
+            .Select(employeeRole => employeeRole.ToDto())
+            .FirstAsync();
+
+        return existingEmployeeRole;
+    }
+
+    public async Task<bool> CheckEmployeeRole(string email, string role)
+    {
+        return await _db.EmployeeRole
+            .Any(employeeRole => employeeRole.Employee.Email == email && employeeRole.Role.Description == role);
     }
 }

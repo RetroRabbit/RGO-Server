@@ -18,6 +18,7 @@ public class UnitOfWork : IUnitOfWork
     public IOnboardingDocumentsRepository OnboardingDocuments { get; }
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
+    public IRoleAccessLinkRepository RoleAccessLink { get; }
     public IChartRepository Chart { get; }
     public IChartRoleLinkRepositories ChartRoleLink { get; }
 
@@ -39,6 +40,7 @@ public class UnitOfWork : IUnitOfWork
         OnboardingDocuments = new OnboardingDocumentsRepository(_db);
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
+        RoleAccessLink = new RoleAccessLinkRepository(_db);
         Chart= new ChartRepository(_db);
         ChartRoleLink = new ChartRoleLinkRepository(_db);
     }

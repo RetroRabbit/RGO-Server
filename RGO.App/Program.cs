@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RGO.Services;
-using RGO.Services.Interfaces;
-using RGO.Services.Services;
 using RGO.UnitOfWork;
 using System.Security.Claims;
 using System.Text;
+using RGO.Models;
 
 namespace RGO.App
 {
@@ -17,7 +16,8 @@ namespace RGO.App
         public static void Main(params string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var configuration = builder.Configuration;
+            ConfigurationManager configuration = builder.Configuration;
+            configuration.AddJsonFile("appsettings.json");
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -110,20 +110,46 @@ namespace RGO.App
             /// Authorization policies
             /// e.g: options.AddPolicy([Policy Name], policy => policy.RequireRole([Role in DB and enum]));
             /// </summary>
-            builder.Services.AddAuthorization(options =>
+
+            var confBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var test = confBuilder
+                .AsEnumerable()
+                .Where(x => x.Key.Contains("Security") && x.Value?.Length > 0)
+                .GroupBy(x =>
+                {
+                    var split = x.Key.Split(":");
+                    return $"{split[0]}:{split[1]}:{split[2]}:{split[3]}";
+                })
+                .ToDictionary(x => x.Key, x =>
+                    x.GroupBy(y => y.Key.Split(":")[4])
+                    .ToDictionary(
+                        y => y.Key,
+                        y => y.Select(x => x.Value).ToList()));
+
+            new AuthorizationPolicySettings
             {
-                options.AddPolicy(
-                    "isAdmin",
-                    policy => policy.RequireRole("ADMIN"));
-                options.AddPolicy(
-                    "isGrad",
-                    policy => policy.RequireRole("GRAD"));
-                options.AddPolicy(
-                    "isMentor",
-                    policy => policy.RequireRole("MENTOR"));
-                options.AddPolicy(
-                    "isPresenter",
-                    policy => policy.RequireRole("PRESENTER"));
+                Policies = test
+                .Select(policy => new PolicySettings(
+                    policy.Value["Name"].First(),
+                    policy.Value["Roles"],
+                    policy.Value["Permissions"]))
+                .ToList()
+            }.Policies.ForEach(policySettings =>
+            {
+                builder.Services.AddAuthorization(options =>
+                {
+                    options.AddPolicy(
+                        policySettings.Name,
+                        policy =>
+                        {
+                            policy.RequireRole(policySettings.Roles);
+                            policy.RequireClaim("Permission", policySettings.Permissions);
+                        });
+                });
             });
 
             var app = builder.Build();

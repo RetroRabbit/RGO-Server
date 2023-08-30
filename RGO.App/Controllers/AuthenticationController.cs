@@ -27,7 +27,6 @@ public class AuthenticationController : ControllerBase
 
             if (!userExists) throw new Exception("User not found");
 
-
             string token = await _authService.Login(email);
 
             return Ok(token);
@@ -50,7 +49,7 @@ public class AuthenticationController : ControllerBase
 
             string token = await _authService.RegisterEmployee(newEmployee);
 
-            return Ok(token);
+            return CreatedAtAction(nameof(RegisterEmployee), newEmployee);
         }
         catch (Exception ex)
         {
@@ -58,19 +57,19 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("roles")]
-    public async Task<IActionResult> GetUserRoles()
+    public async Task<IActionResult> GetUserRoles([FromQuery] string? email)
     {
         try
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
 
-            var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            string? emailToUse = string.IsNullOrEmpty(email)
+                ? claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value
+                : email;
 
-            if (string.IsNullOrEmpty(email)) return Unauthorized("Token is missing claim(s)[e.g: email]");
-
-            List<AuthRoleResult> roles = await _authService.GetUserRoles(email);
+            var roles = await _authService.GetUserRoles(emailToUse??"");
 
             return Ok(roles);
         }

@@ -44,8 +44,7 @@ public class EmployeeService : IEmployeeService
     public async Task<bool> CheckUserExist(string email)
     {
         return await _db.Employee
-            .Get(employee => employee.Email == email)
-            .AnyAsync();
+            .Any(employee => employee.Email == email);
     }
 
     public async Task<EmployeeDto> DeleteEmployee(string email)
@@ -63,7 +62,6 @@ public class EmployeeService : IEmployeeService
             .Include(employee => employee.EmployeeType)
             .Select(employee => employee.ToDto())
             .ToListAsync();
-
     }
 
     public async Task<EmployeeDto> GetEmployee(string email)
