@@ -45,7 +45,7 @@ namespace RGO.Services.Services
             return await _db.FieldCode.GetAll();
         }
 
-        public async Task<FieldCode> UpdateFieldCodes(FieldCodeDto fieldCodeDto)
+        public async Task<FieldCode> UpdateFieldCode(FieldCodeDto fieldCodeDto)
         {
             var ifFieldCode = await _db.FieldCode
             .Get(fieldCode => fieldCode.Id == fieldCodeDto.Id)
@@ -57,7 +57,7 @@ namespace RGO.Services.Services
             return updatedFieldCode;
         }
 
-        public async Task<FieldCode> DeleteFieldCodes(FieldCodeDto fieldCodeDto)
+        public async Task<FieldCode> DeleteFieldCode(FieldCodeDto fieldCodeDto)
         {
             var ifFieldCode = await CheckFieldCode(fieldCodeDto.Name);
             if (!ifFieldCode) { throw new Exception("No field with that name found"); }

@@ -65,7 +65,7 @@ namespace RGO.App.Controllers
                             Id: 0,
                             FieldCode: getFieldCode,
                             Option: item.Option);
-                        await _fieldCodeOptionsService.SaveFieldCodeOption(fieldCodeOptionsDto);
+                        await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
                     }
                 }
                 return Ok();
@@ -85,13 +85,13 @@ namespace RGO.App.Controllers
                 {
                     foreach (var item in fieldCodeData.NewFieldCode)
                     {
-                        await _fieldCodeService.UpdateFieldCodes(item);
+                        await _fieldCodeService.UpdateFieldCode(item);
                     }
                 }
 
                 if (fieldCodeData.FieldCodeOptions.Count > 0)
                 {
-                    await _fieldCodeOptionsService.CheckUpdate(fieldCodeData.FieldCodeOptions);
+                    await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeData.FieldCodeOptions);
                 }
                 return Ok();
             }
@@ -110,7 +110,7 @@ namespace RGO.App.Controllers
                 {
                     foreach (var item in fieldCodeData.NewFieldCode)
                     {
-                        await _fieldCodeService.DeleteFieldCodes(item);
+                        await _fieldCodeService.DeleteFieldCode(item);
                     }
                 }
 

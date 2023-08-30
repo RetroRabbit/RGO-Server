@@ -10,12 +10,39 @@ namespace RGO.Services.Interfaces
 {
     public interface IFieldCodeOptionsService
     {
-        Task<FieldCodeOptionsDto> SaveFieldCodeOption(FieldCodeOptionsDto fieldCodeOptionsDto);
+        /// <summary>
+        /// Save field code options
+        /// </summary>
+        /// <param name="fieldCodeOptionsDto"></param>
+        /// <returns></returns>
+        Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto);
+
+        /// <summary>
+        /// Get field code options by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<List<FieldCodeOptionsDto>> GetFieldCodeOptions(int id);
+
+        /// <summary>
+        /// Get all field code options 
+        /// </summary>
+        /// <returns></returns>
         Task<List<FieldCodeOptionsDto>> GetAllFieldCodeOptions();
-        Task<FieldCodeOptions> UpdateFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto);
+
+        /// <summary>
+        /// Update field code options
+        /// </summary>
+        /// <param name="fieldCodeOptionsDto"></param>
+        /// <returns></returns>
+        Task UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto);
+
+        /// <summary>
+        /// Delete field code options
+        /// </summary>
+        /// <param name="fieldCodeOptionsDto"></param>
+        /// <returns></returns>
         Task<FieldCodeOptions> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto);
-        Task CheckUpdate(List<FieldCodeOptionsDto> fieldCodeOptionsDto);
     }
 
 }

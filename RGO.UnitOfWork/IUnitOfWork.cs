@@ -18,12 +18,9 @@ public interface IUnitOfWork
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
     IFieldCodeRepository FieldCode { get; }
-<<<<<<< Updated upstream
 
     IChartRepository Chart { get; }
 
     IChartRoleLinkRepositories ChartRoleLink { get; }
-=======
     IFieldCodeOptionsRepository FieldCodeOptions { get; }
->>>>>>> Stashed changes
 }

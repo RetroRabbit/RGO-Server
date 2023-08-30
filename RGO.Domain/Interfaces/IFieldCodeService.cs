@@ -1,19 +1,42 @@
 ﻿using RGO.Models;
 using RGO.UnitOfWork.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGO.Services.Interfaces
 {
     public interface IFieldCodeService
     {
+        /// <summary>
+        /// Save field code
+        /// </summary>
+        /// <param name="fieldCodeDto"></param>
+        /// <returns></returns>
         Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto);
+
+        /// <summary>
+        /// Get field code by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         Task<FieldCodeDto?> GetFieldCode(string name);
+
+        /// <summary>
+        /// Get all field codes
+        /// </summary>
+        /// <returns></returns>
         Task<List<FieldCodeDto>> GetAllFieldCodes();
-        Task<FieldCode> UpdateFieldCodes(FieldCodeDto fieldCodeDto);
-        Task<FieldCode> DeleteFieldCodes(FieldCodeDto fieldCodeDto);
+
+        /// <summary>
+        /// Update field code
+        /// </summary>
+        /// <param name="fieldCodeDto"></param>
+        /// <returns></returns>
+        Task<FieldCode> UpdateFieldCode(FieldCodeDto fieldCodeDto);
+
+        /// <summary>
+        /// Delete field code
+        /// </summary>
+        /// <param name="fieldCodeDto"></param>
+        /// <returns></returns>
+        Task<FieldCode> DeleteFieldCode(FieldCodeDto fieldCodeDto);
     }
 }

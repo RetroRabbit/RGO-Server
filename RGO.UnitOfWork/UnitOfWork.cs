@@ -19,12 +19,9 @@ public class UnitOfWork : IUnitOfWork
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
     public IFieldCodeRepository FieldCode { get; }
-<<<<<<< Updated upstream
     public IChartRepository Chart { get; }
     public IChartRoleLinkRepositories ChartRoleLink { get; }
-=======
     public IFieldCodeOptionsRepository FieldCodeOptions { get; }
->>>>>>> Stashed changes
 
 
     private readonly DatabaseContext _db;
@@ -45,12 +42,9 @@ public class UnitOfWork : IUnitOfWork
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
         FieldCode = new FieldCodeRepository(_db);
-<<<<<<< Updated upstream
         Chart= new ChartRepository(_db);
         ChartRoleLink = new ChartRoleLinkRepository(_db);
-=======
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);
->>>>>>> Stashed changes
     }
 
     public async Task Save()

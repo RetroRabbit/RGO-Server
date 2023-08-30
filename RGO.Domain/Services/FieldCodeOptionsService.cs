@@ -20,7 +20,7 @@ namespace RGO.Services.Services
             _db = db;
         }
 
-        public async Task<FieldCodeOptionsDto> SaveFieldCodeOption(FieldCodeOptionsDto fieldCodeOptionsDto)
+        public async Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
         {
             var ifFieldCodeOption = await CheckFieldCodeOption(fieldCodeOptionsDto);
             if (ifFieldCodeOption) { throw new Exception("Field option with that name found"); }
@@ -41,12 +41,39 @@ namespace RGO.Services.Services
             return await _db.FieldCodeOptions.GetAll();
         }
 
-        public async Task<FieldCodeOptions> UpdateFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
+        public async Task UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
         {
-           
-            FieldCodeOptions updatedFieldCodeOptions = new FieldCodeOptions(fieldCodeOptionsDto);
-            await _db.FieldCodeOptions.Update(updatedFieldCodeOptions);
-            return updatedFieldCodeOptions;
+            foreach (var option in fieldCodeOptionsDto)
+            {
+                var existingOptions = await _db.FieldCodeOptions
+                    .Get(fieldCodeOption => fieldCodeOption.FieldCode.Id == option.FieldCode.Id && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
+                    .FirstOrDefaultAsync();
+
+                if (existingOptions == null)
+                {
+                    FieldCodeOptions addFieldCode = new FieldCodeOptions(option);
+                    await _db.FieldCodeOptions.Add(addFieldCode);
+                }
+            }
+
+            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCode.Id);
+            bool check = true;
+            foreach (var option in existingFieldCodeOptions)
+            {
+                foreach (var fieldCode in fieldCodeOptionsDto)
+                {
+                    if (option.FieldCode.Id == fieldCode.FieldCode.Id && option.Option.ToLower() == fieldCode.Option.ToLower())
+                    {
+                        check = true;
+                        break;
+                    }
+                    check = false;
+                }
+                if (!check)
+                {
+                    await _db.FieldCodeOptions.Delete(option.Id);
+                }
+            }
         }
 
         public async Task<FieldCodeOptions> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
@@ -67,40 +94,6 @@ namespace RGO.Services.Services
 
             if (fieldCodeOption == null) { return false; }
             else { return true; }
-        }
-
-        public async Task CheckUpdate(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
-        {
-            foreach(var option in fieldCodeOptionsDto)
-            {
-                var existingOptions = await _db.FieldCodeOptions
-                    .Get(fieldCodeOption => fieldCodeOption.FieldCode.Id == option.FieldCode.Id && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
-                    .FirstOrDefaultAsync();
-
-                if (existingOptions == null)
-                {
-                    FieldCodeOptions addFieldCode = new FieldCodeOptions(option);
-                    await _db.FieldCodeOptions.Add(addFieldCode);
-                }
-            }
-
-            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCode.Id);
-            bool check = true;
-            foreach (var option in existingFieldCodeOptions) {
-                foreach(var fieldCode in fieldCodeOptionsDto)
-                {
-                    if (option.FieldCode.Id == fieldCode.FieldCode.Id && option.Option.ToLower() == fieldCode.Option.ToLower())
-                    {
-                        check = true;
-                        break;
-                    }
-                    check = false;
-                }
-                if (!check)
-                {
-                    await _db.FieldCodeOptions.Delete(option.Id);
-                }
-            }
         }
     }
 }
