@@ -1,4 +1,5 @@
-﻿using RGO.UnitOfWork.Interfaces;
+﻿using RGO.UnitOfWork.Entities;
+using RGO.UnitOfWork.Interfaces;
 using RGO.UnitOfWork.Repositories;
 
 namespace RGO.UnitOfWork;
@@ -18,6 +19,8 @@ public class UnitOfWork : IUnitOfWork
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
     public IFieldCodeRepository FieldCode { get; }
+    public IChartRepository Chart { get; }
+    public IChartRoleLinkRepositories ChartRoleLink { get; }
 
 
     private readonly DatabaseContext _db;
@@ -38,6 +41,8 @@ public class UnitOfWork : IUnitOfWork
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
         FieldCode = new FieldCodeRepository(_db);
+        Chart= new ChartRepository(_db);
+        ChartRoleLink = new ChartRoleLinkRepository(_db);
     }
 
     public async Task Save()
