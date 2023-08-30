@@ -37,4 +37,6 @@ public interface IRoleService
     /// <param name="name"></param>
     /// <returns></returns>
     Task<RoleDto> DeleteRole(string name);
+
+    Task<bool> CheckRole(string name);
 }

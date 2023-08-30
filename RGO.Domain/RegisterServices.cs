@@ -19,6 +19,8 @@ public static class RegisterServicesExtension
         services.AddScoped<IRoleAccessService, RoleAccessService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IPropertyAccessService, PropertyAccessService>();
+        services.AddScoped<IRoleAccessLinkService, RoleAccessLinkService>();
+        services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
         services.AddScoped<IChartService, ChartService>();
     }
 }

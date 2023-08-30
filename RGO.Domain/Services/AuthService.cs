@@ -14,16 +14,19 @@ public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
     private readonly IEmployeeService _employeeService;
+    private readonly IRoleAccessLinkService _roleAccessLinkService;
     private readonly IUnitOfWork _db;
 
     public AuthService(
         IConfiguration configuration,
         IEmployeeService employeeService,
-        IUnitOfWork db)
+        IUnitOfWork db,
+        IRoleAccessLinkService roleAccessLinkService)
     {
         _configuration = configuration;
         _employeeService = employeeService;
         _db = db;
+        _roleAccessLinkService = roleAccessLinkService;
     }
 
     public async Task<bool> CheckUserExist(string email)
@@ -35,7 +38,7 @@ public class AuthService : IAuthService
     {
         var employee = await _employeeService.GetEmployee(email);
 
-        return employee == null ? throw new Exception("User not found") : await GenerateToken(employee);
+        return await GenerateToken(employee);
     }
 
     public async Task<string> RegisterEmployee(EmployeeDto employeeDto)
@@ -49,25 +52,7 @@ public class AuthService : IAuthService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);
-        List<AuthRoleResult> roles = await GetUserRoles(employee.Email);
-        var collectionOfRoleClaims = roles
-            .Select(role =>
-            {
-                string upperRole = role.Role.ToUpper();
-
-                List<Claim> roleClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Role, upperRole),
-                    new Claim($"{upperRole}-Action", role.Action)
-                };
-
-                if (role.View) roleClaims.Add(new Claim($"{upperRole}-View", "true"));
-                if (role.Edit) roleClaims.Add(new Claim($"{upperRole}-Edit", "true"));
-                if (role.Delete) roleClaims.Add(new Claim($"{upperRole}-Delete", "true"));
-
-                return roleClaims;
-            })
-            .ToList();
+        var roles = await GetUserRoles(employee.Email);
 
         var claims = new List<Claim>
         {
@@ -76,7 +61,15 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 
-        foreach (var role in collectionOfRoleClaims) claims.AddRange(role);
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role.Key));
+
+            foreach (var permission in role.Value)
+            {
+                claims.Add(new Claim("Permission", permission));
+            }
+        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -93,33 +86,10 @@ public class AuthService : IAuthService
         return tokenHandler.WriteToken(token);
     }
 
-    public async Task<List<AuthRoleResult>> GetUserRoles(string email)
+    public async Task<Dictionary<string, List<string>>> GetUserRoles(string email)
     {
-        var employeeRoles = await _db.EmployeeRole
-            .Get(employeeRole => employeeRole.Employee.Email == email)
-            .AsNoTracking()
-            .Include(employeeRole => employeeRole.Role)
-            .Include(employeeRole => employeeRole.Employee)
-            .Include(employeeRole => employeeRole.Employee.EmployeeType)
-            .Select(employeeRole => employeeRole.ToDto().Role.Description)
-            .ToListAsync();
+        var roles = await _roleAccessLinkService.GetRoleByEmployee(email);
 
-        if (employeeRoles.Count <= 0 && employeeRoles == null) throw new Exception("User not assigned role(s)");
-
-        var role = await _db.RoleAccess
-            .Get(roleAccess => employeeRoles.Contains(roleAccess.Role.Description))
-            .AsNoTracking()
-            .Include(roleAccess => roleAccess.Role)
-            .Select(roleAccess => roleAccess.ToDto())
-            .ToListAsync();
-
-        return role
-            .Select(r => new AuthRoleResult(
-                r.Role.Description,
-                r.Action,
-                r.View,
-                r.Edit,
-                r.Delete))
-            .ToList();
+        return roles;
     }
 }

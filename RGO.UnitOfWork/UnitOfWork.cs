@@ -21,9 +21,9 @@ public class UnitOfWork : IUnitOfWork
     public IPropertyAccessRepository PropertyAccess { get; }
     public IMetaPropertyRepository MetaProperty { get; }
     public IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
+    public IRoleAccessLinkRepository RoleAccessLink { get; }
     public IChartRepository Chart { get; }
     public IChartRoleLinkRepositories ChartRoleLink { get; }
-
     public IFieldCodeRepository FieldCode { get; }
     public IFieldCodeOptionsRepository FieldCodeOptions { get; }
 
@@ -47,6 +47,7 @@ public class UnitOfWork : IUnitOfWork
         PropertyAccess = new PropertyAccessRepository(_db);
         MetaProperty = new MetaPropertyRepository(_db);
         MetaPropertyOptions = new MetaPropertyOptionsRepository(_db);
+        RoleAccessLink = new RoleAccessLinkRepository(_db);
         Chart= new ChartRepository(_db);
         ChartRoleLink = new ChartRoleLinkRepository(_db);
         FieldCode = new FieldCodeRepository(_db);
