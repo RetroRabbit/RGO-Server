@@ -38,16 +38,7 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
         if (roleAccessLink == null) throw new Exception($"Role Access Link not found(Role:{role},Permission:{permission})");
 
-        RoleAccessLinkDto? deleted = null;
-
-        try
-        {
-            deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id)??null;
-        }
-        catch (Exception)
-        {
-            
-        }
+        RoleAccessLinkDto? deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id) ?? null;
 
         return deleted == null ?
             roleAccessLink :

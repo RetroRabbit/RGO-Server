@@ -38,7 +38,18 @@ public interface IEmployeeRoleService
     /// <returns></returns>
     Task<EmployeeRoleDto> UpdateEmployeeRole(EmployeeRoleDto employeeRoleDto);
 
+    /// <summary>
+    /// Get Employee Roles
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
     Task<List<EmployeeRoleDto>> GetEmployeeRoles(string email);
 
+    /// <summary>
+    /// Check Employee Role
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="role"></param>
+    /// <returns></returns>
     Task<bool> CheckEmployeeRole(string email, string role);
 }
