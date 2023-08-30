@@ -41,26 +41,50 @@ namespace RGO.Services.Services
                                         { "FieldCode" ,fc != null ? fc.ToDto() : null }
                                     });*/
 
-            var query = _db.PropertyAccess.Get(access => role.Contains(access.RoleId))
+            var propertyAccessQuery = _db.PropertyAccess.Get(access => role.Contains(access.RoleId))
                 .AsNoTracking()
                 .Include(access => access.Role)
                 .Include(access => access.FieldCode)
                 .Include(access => access.MetaProperty)
-                .Select(access => new EmployeeAccessDto(new Dictionary<string, object>()
-                {
-                    {"PropertyAccess", access },
-                    {"FieldCode", access.FieldCodeId },
-                    {"MetaPropery", access.MetaPropertyId },
-                }))
+                .Select(access => access.ToDto())
+                .Select(access => new EmployeeAccessDto(
+                    access.Id,
+                    access.Condition,
+                    access.MetaPropertyId == null ? 0 : 1, // 0 is custom 1 is meta
+                    access.FieldCodeId == null ? access.FieldCodeId.Code : access.metaField,
+                    access.FieldCodeId == null ? access.FieldCodeId.Name : access.metaField,
+                    "text",//ToDo
+                    access.FieldCodeId != null ? access.FieldCodeId.Description : null,
+                    access.FieldCodeId != null ? access.FieldCodeId.Regex : null,
+
+                    this.PassOptions(access, "text")
+                    ))
                 .ToList();
 
+            /*var metaFieldOptionsQuery = _db.MetaPropertyOptions.Get(options => )*/
 
-            return query;
+
+            return propertyAccessQuery;
         }
 
         public Task<RoleAccessDto> UpdatePropertiesWithAccess(EmployeeAccessDto Fields)
         {
             throw new NotImplementedException();
+        }
+
+        private static List<string> PassOptions(PropertyAccessDto access, string type)
+        {
+            if (type.Equals("dropdown",StringComparison.CurrentCultureIgnoreCase))
+            {
+                return null;
+            }
+
+            if (access.FieldCodeId != null)
+                return _db.FieldCodeOptions.Get(options => options.FieldCodeId == access.FieldCodeId.Id)
+                    .Select(options => options.Option).ToList();
+
+            return _db.MetaPropertyOptions.Get(options => options.MetaPropertyId == access.MetaPropertyId.Id)
+                    .Select(options => options.Option).ToList();
         }
     }
 }
