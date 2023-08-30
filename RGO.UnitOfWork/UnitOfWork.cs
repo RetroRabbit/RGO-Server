@@ -19,6 +19,7 @@ public class UnitOfWork : IUnitOfWork
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
     public IFieldCodeRepository FieldCode { get; }
+    public IRoleAccessLinkRepository RoleAccessLink { get; }
     public IChartRepository Chart { get; }
     public IChartRoleLinkRepositories ChartRoleLink { get; }
     public IFieldCodeOptionsRepository FieldCodeOptions { get; }
@@ -42,6 +43,7 @@ public class UnitOfWork : IUnitOfWork
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
         FieldCode = new FieldCodeRepository(_db);
+        RoleAccessLink = new RoleAccessLinkRepository(_db);
         Chart= new ChartRepository(_db);
         ChartRoleLink = new ChartRoleLinkRepository(_db);
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);

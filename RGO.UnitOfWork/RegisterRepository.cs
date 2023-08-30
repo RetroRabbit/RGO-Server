@@ -18,6 +18,7 @@ public static class RegisterRepositoryExtension
         services.AddScoped<IEmployeeRoleRepository, EmployeeRoleRepository>();
         services.AddScoped<IEmployeeTypeRepository, EmployeeTypeRepository>();
         services.AddScoped<IOnboardingDocumentsRepository, OnboardingDocumentsRepository>();
+        services.AddScoped<IRoleAccessLinkRepository, RoleAccessLinkRepository>();
         services.AddScoped<IRoleAccessRepository, RoleAccessRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IChartRepository, ChartRepository>();

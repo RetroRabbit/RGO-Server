@@ -18,6 +18,7 @@ public interface IUnitOfWork
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
     IFieldCodeRepository FieldCode { get; }
+    IRoleAccessLinkRepository RoleAccessLink { get; }
 
     IChartRepository Chart { get; }
 
