@@ -24,6 +24,8 @@ public class UnitOfWork : IUnitOfWork
     public IChartRepository Chart { get; }
     public IChartRoleLinkRepositories ChartRoleLink { get; }
 
+    public IFieldCodeRepository FieldCode { get; }
+    public IFieldCodeOptionsRepository FieldCodeOptions { get; }
 
     private readonly DatabaseContext _db;
 
@@ -47,6 +49,8 @@ public class UnitOfWork : IUnitOfWork
         MetaPropertyOptions = new MetaPropertyOptionsRepository(_db);
         Chart= new ChartRepository(_db);
         ChartRoleLink = new ChartRoleLinkRepository(_db);
+        FieldCode = new FieldCodeRepository(_db);
+        FieldCodeOptions = new FieldCodeOptionsRepository(_db);
     }
 
     public async Task Save()

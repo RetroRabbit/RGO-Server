@@ -21,12 +21,11 @@ public class PropertyAccess : IModel<PropertyAccessDto>
 
     [Column("fieldCodeId")]
     [ForeignKey("FieldCode")]
-    public int FieldCodeId { get; set; }
+    public int? FieldCodeId { get; set; }
 
     [Column("metaPropertyId")]
     [ForeignKey("MetaProperty")]
-
-    public int MetaPropertyId { get; set; }
+    public int? MetaPropertyId { get; set; }
 
     [Column("metaField")]
     public string MetaField { get; set; }

@@ -22,4 +22,7 @@ public interface IUnitOfWork
     IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
     IChartRepository Chart { get; }
     IChartRoleLinkRepositories ChartRoleLink { get; }
+    IFieldCodeRepository FieldCode { get; }
+    IFieldCodeOptionsRepository FieldCodeOptions { get; }
+
 }
