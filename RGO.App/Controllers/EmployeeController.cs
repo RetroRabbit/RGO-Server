@@ -87,7 +87,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminPolicy")]
-    [HttpGet("count-all")]
+    [HttpGet("employees/count")]
     public async Task<IActionResult> CountAllEmployees()
     {
         try
