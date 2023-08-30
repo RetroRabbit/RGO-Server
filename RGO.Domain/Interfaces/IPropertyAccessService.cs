@@ -1,4 +1,5 @@
 ﻿using RGO.Models;
+using RGO.Models.Update;
 
 namespace RGO.Services.Interfaces
 {
@@ -16,6 +17,6 @@ namespace RGO.Services.Interfaces
         /// </summary>
         /// <param name="Fields"></param>
         /// <returns></returns>
-        Task<RoleAccessDto> UpdatePropertiesWithAccess(EmployeeAccessDto Fields);
+        Task UpdatePropertiesWithAccess(List<UpdateFieldValueDto> field, string email);
     }
 }

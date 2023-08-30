@@ -36,6 +36,8 @@ public static class ModelStateManage
             new FieldCode { Id = 12, Name = "Location", Code = "location", Status = ItemStatus.Active, Type = FieldCodeType.String },
             new FieldCode { Id = 13, Name = "People's Champion", Code = "champion", Status = ItemStatus.Active, Type = FieldCodeType.String },
             new FieldCode { Id = 14, Name = "Risk", Code = "risk", Status = ItemStatus.Active, Type = FieldCodeType.String },
+            new FieldCode { Id = 15, Name = "Employee Name", Code = "name", Status = ItemStatus.Active, Type = FieldCodeType.String, Internal = true, InternalTable = "Employee" },
+            new FieldCode { Id = 16, Name = "Gender", Code = "gender", Status = ItemStatus.Active, Type = FieldCodeType.String, Internal = true, InternalTable = "Employee" },
         };
     }
 
@@ -44,6 +46,10 @@ public static class ModelStateManage
         var id = 1;
         return new FieldCodeOptions[]
         {
+            new FieldCodeOptions { Id = id++, FieldCodeId = 16, Option = "Male"},
+            new FieldCodeOptions { Id = id++, FieldCodeId = 16, Option = "Female"},
+            new FieldCodeOptions { Id = id++, FieldCodeId = 16, Option = "Other"},
+
             new FieldCodeOptions { Id = id++, FieldCodeId = 14, Option = "Very Low"},
             new FieldCodeOptions { Id = id++, FieldCodeId = 14, Option = "Low"},
             new FieldCodeOptions { Id = id++, FieldCodeId = 14, Option = "Medium"},
@@ -131,15 +137,6 @@ public static class ModelStateManage
             new FieldCodeOptions { Id = id++, FieldCodeId = 3, Option = "NQF 8"},
             new FieldCodeOptions { Id = id++, FieldCodeId = 3, Option = "NQF 9"},
             new FieldCodeOptions { Id = id++, FieldCodeId = 3, Option = "NQF 10"},
-        };
-    }
-
-    public static MetaProperty[] MetaPropertySet()
-    {
-        var id = 1;
-        return new MetaProperty[]
-        {
-            new MetaProperty { Id = id++, Table = "Employee" },
         };
     }
 }

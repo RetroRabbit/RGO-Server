@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Models;
+using RGO.Models.Update;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
@@ -24,67 +25,60 @@ namespace RGO.Services.Services
                 .Select(r => r.Role.Id)
                 .ToList();
 
-            /*            var query = from p in _db.PropertyAccess.Get()
-
-                                    join mp in _db.MetaProperty.Get() on p.MetaPropertyId equals mp.Id into mp_join
-                                    from mp in mp_join.DefaultIfEmpty()
-
-                                    join fc in _db.FieldCode.Get() on p.FieldCodeId equals fc.Id into fc_join
-                                    from fc in fc_join.DefaultIfEmpty()
-
-                                    where role.Contains(p.Id)
-
-                                    select new EmployeeAccessDto(new Dictionary<string, object>()
-                                    {
-                                        { "PropertyAccess" ,p.ToDto() },
-                                        { "MetaProperty" ,mp !=null ? mp.ToDto() : null },
-                                        { "FieldCode" ,fc != null ? fc.ToDto() : null }
-                                    });*/
-
-            var propertyAccessQuery = _db.PropertyAccess.Get(access => role.Contains(access.RoleId))
+            var query = (await _db.PropertyAccess.Get(access => role.Contains(access.RoleId))
                 .AsNoTracking()
                 .Include(access => access.Role)
                 .Include(access => access.FieldCode)
-                .Include(access => access.MetaProperty)
                 .Select(access => access.ToDto())
+                .ToListAsync())
                 .Select(access => new EmployeeAccessDto(
                     access.Id,
                     access.Condition,
-                    access.MetaPropertyId == null ? 0 : 1, // 0 is custom 1 is meta
-                    access.FieldCodeId == null ? access.FieldCodeId.Code : access.metaField,
-                    access.FieldCodeId == null ? access.FieldCodeId.Name : access.metaField,
-                    "text",//ToDo
-                    access.FieldCodeId != null ? access.FieldCodeId.Description : null,
-                    access.FieldCodeId != null ? access.FieldCodeId.Regex : null,
-
-                    this.PassOptions(access, "text")
-                    ))
+                    access.FieldCode.Internal,
+                    access.FieldCode.Code,
+                    access.FieldCode.Name,
+                    access.FieldCode.Type.ToString().ToLower(),
+                    access.FieldCode.Description,
+                    access.FieldCode.Regex,
+                    this.PassOptions(access)
+                ))
                 .ToList();
 
-            /*var metaFieldOptionsQuery = _db.MetaPropertyOptions.Get(options => )*/
+            // TODO : Filter out by role and view/edit condition
 
-
-            return propertyAccessQuery;
+            return query;
         }
 
-        public Task<RoleAccessDto> UpdatePropertiesWithAccess(EmployeeAccessDto Fields)
+        public async Task UpdatePropertiesWithAccess(List<UpdateFieldValueDto> fields, string email)
         {
-            throw new NotImplementedException();
-        }
+            var employee = new Employee();// TODO : Get Employee and roles to validate if we can edit the field
 
-        private static List<string> PassOptions(PropertyAccessDto access, string type)
-        {
-            if (type.Equals("dropdown",StringComparison.CurrentCultureIgnoreCase))
+            foreach (var fieldValue in fields)
             {
-                return null;
+                var field = await _db.FieldCode.GetById(fieldValue.fieldId);
+                if (field.Internal)
+                {
+                    // TODO : Go to the table and saved the value in the selected table
+                    // TODO : Check if row for employee exist in the internal table
+                    // TODO : If it exist, update to new value
+                    // TODO : else ...throw error
+                    // TODO : We do not insert a new row for internal tables. We only do updates here.
+                }
+                else
+                {
+                    // TODO : Check if FieldCode is in EmployeeData already
+                    // TODO : If it is, update existing value
+                    // TODO : Else insert new row
+                }
             }
+        }
 
-            if (access.FieldCodeId != null)
-                return _db.FieldCodeOptions.Get(options => options.FieldCodeId == access.FieldCodeId.Id)
-                    .Select(options => options.Option).ToList();
-
-            return _db.MetaPropertyOptions.Get(options => options.MetaPropertyId == access.MetaPropertyId.Id)
-                    .Select(options => options.Option).ToList();
+        private List<string> PassOptions(PropertyAccessDto access)
+        {
+            return _db.FieldCodeOptions
+                .Get(options => options.FieldCodeId == access.Id)
+                .Select(options => options.Option)
+                .ToList();
         }
     }
 }

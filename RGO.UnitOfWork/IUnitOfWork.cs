@@ -18,8 +18,6 @@ public interface IUnitOfWork
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
     IPropertyAccessRepository PropertyAccess { get; }
-    IMetaPropertyRepository MetaProperty { get; }
-    IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
     IRoleAccessLinkRepository RoleAccessLink { get; }
     IChartRepository Chart { get; }
     IChartRoleLinkRepositories ChartRoleLink { get; }

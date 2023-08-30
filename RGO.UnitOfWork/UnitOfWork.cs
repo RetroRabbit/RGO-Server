@@ -19,8 +19,6 @@ public class UnitOfWork : IUnitOfWork
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
     public IPropertyAccessRepository PropertyAccess { get; }
-    public IMetaPropertyRepository MetaProperty { get; }
-    public IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
     public IRoleAccessLinkRepository RoleAccessLink { get; }
     public IChartRepository Chart { get; }
     public IChartRoleLinkRepositories ChartRoleLink { get; }
@@ -45,17 +43,10 @@ public class UnitOfWork : IUnitOfWork
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
         PropertyAccess = new PropertyAccessRepository(_db);
-        MetaProperty = new MetaPropertyRepository(_db);
-        MetaPropertyOptions = new MetaPropertyOptionsRepository(_db);
         RoleAccessLink = new RoleAccessLinkRepository(_db);
         Chart= new ChartRepository(_db);
         ChartRoleLink = new ChartRoleLinkRepository(_db);
         FieldCode = new FieldCodeRepository(_db);
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);
-    }
-
-    public async Task Save()
-    {
-        await _db.SaveChangesAsync();
     }
 }

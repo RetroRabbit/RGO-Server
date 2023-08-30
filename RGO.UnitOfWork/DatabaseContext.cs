@@ -40,8 +40,6 @@ namespace RGO.UnitOfWork
         public DbSet<FieldCodeOptions> fieldCodesOptions { get; set; }
         public DbSet<EmployeeData> employeeData { get; set; }
         public DbSet<PropertyAccess> propertyAccesses { get; set; }
-        public DbSet<MetaProperty> metaProperties { get; set; }
-        public DbSet<MetaPropertyOptions> metaPropertyOptions { get; set; }
         public DbSet<RoleAccessLink> roleAccessLinks { get; set; }
     }
 }

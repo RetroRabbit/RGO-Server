@@ -9,10 +9,12 @@ namespace RGO.Models
 {
     public record FieldCodeDto(
         int Id,
-        string Code, 
+        string Code,
         string Name,
-        string? Description, 
+        string? Description,
         string? Regex,
-        FieldCodeType Type, 
-        ItemStatus Status );
+        FieldCodeType Type,
+        ItemStatus Status, 
+        bool Internal, 
+        string? InternalTable);
 }

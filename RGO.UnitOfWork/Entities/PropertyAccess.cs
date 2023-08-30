@@ -23,32 +23,20 @@ public class PropertyAccess : IModel<PropertyAccessDto>
     [ForeignKey("FieldCode")]
     public int? FieldCodeId { get; set; }
 
-    [Column("metaPropertyId")]
-    [ForeignKey("MetaProperty")]
-    public int? MetaPropertyId { get; set; }
-
-    [Column("metaField")]
-    public string MetaField { get; set; }
-
     public virtual Role Role { get; set; }
 
     public virtual FieldCode? FieldCode { get; set; }
-
-    public virtual MetaProperty? MetaProperty { get; set; }
 
     public PropertyAccess()
     {
     }
 
-/*    public PropertyAccess(MetaPropertyDto metaPropertyDto, FieldCodeDto fieldCodeDto ,PropertyAccessDto propertyAccessDto, RoleDto roleDto)*/
     public PropertyAccess(PropertyAccessDto propertyAccessDto)
     {
         Id = propertyAccessDto.Id;
         RoleId = propertyAccessDto.Role.Id;
         Condition = propertyAccessDto.Condition;
-        FieldCodeId = propertyAccessDto.FieldCodeId?.Id;
-        MetaPropertyId = propertyAccessDto.MetaPropertyId?.Id;
-        MetaField = propertyAccessDto.metaField;
+        FieldCodeId = propertyAccessDto.FieldCode?.Id;
     }
 
     public PropertyAccessDto ToDto()
@@ -57,8 +45,6 @@ public class PropertyAccess : IModel<PropertyAccessDto>
             Id,
             Role.ToDto(),
             Condition,
-            FieldCode?.ToDto(),
-            MetaProperty?.ToDto(),
-            MetaField);
+            FieldCode?.ToDto());
     }
 }
