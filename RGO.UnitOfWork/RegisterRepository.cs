@@ -23,5 +23,7 @@ public static class RegisterRepositoryExtension
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IChartRepository, ChartRepository>();
         services.AddScoped<IChartRoleLinkRepositories, ChartRoleLinkRepository>();
+        services.AddScoped<IFieldCodeRepository, FieldCodeRepository>();
+        services.AddScoped<IFieldCodeOptionsRepository, FieldCodeOptionsRepository>();
     }
 }
