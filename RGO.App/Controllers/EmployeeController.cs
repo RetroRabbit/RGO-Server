@@ -23,7 +23,48 @@ public class EmployeeController : ControllerBase
     {
         try
         {
+        /*  if (newEmployee.EngagementDate == null)
+            {
+                newEmployee.EngagementDate = DateOnly.FromDateTime(new DateTime());
+            }*/
+
+/*            newEmployee = new EmployeeDto(
+                newEmployee.Id,
+                newEmployee.EmployeeNumber,
+                newEmployee.TaxNumber,
+                DateOnly.FromDateTime(DateTime.Now),
+                null,
+                null,
+                newEmployee.Disability,
+                newEmployee.DisabilityNotes,
+                newEmployee.Level,
+                newEmployee.EmployeeType,
+                newEmployee.Notes,
+                newEmployee.LeaveInterval,
+                newEmployee.SalaryDays,
+                newEmployee.PayRate,
+                newEmployee.Salary,
+                newEmployee.Title,
+                newEmployee.Name,
+                newEmployee.Initials,
+                newEmployee.Surname,
+                DateOnly.FromDateTime(DateTime.Now),
+                newEmployee.CountryOfBirth,
+                newEmployee.Nationality,
+                newEmployee.IdNumber,
+                newEmployee.PassportNumber,
+                DateOnly.FromDateTime(DateTime.Now),
+                newEmployee.PassportCountryIssue,
+                newEmployee.Race,
+                newEmployee.Gender,
+                newEmployee.Photo,
+                newEmployee.Email,
+                newEmployee.PersonalEmail,
+                newEmployee.CellphoneNo);*/
+
             var employee = await _employeeService.SaveEmployee(newEmployee);
+
+           
 
             return CreatedAtAction(nameof(AddEmployee), new { email = employee.Email }, employee);
         }

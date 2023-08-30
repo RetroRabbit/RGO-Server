@@ -9,7 +9,7 @@ namespace RGO.Services.Interfaces
         /// </summary>
         /// <param name="email"></param>
         /// <returns>dictionary of properties with the access level for selected user</returns>
-        Task<List<RoleAccessDto>> GetPropertiesWithAccess(string email);
+        Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email);
 
         /// <summary>
         /// Updates fields that employee has access to

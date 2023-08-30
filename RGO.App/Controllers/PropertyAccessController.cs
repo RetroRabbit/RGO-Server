@@ -17,11 +17,12 @@ public class PropertyAccessController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IActionResult> GetPropertyWithAccess()
+    public async Task<IActionResult> GetPropertyWithAccess([FromQuery] string email)
     {
         try
         {
-            return NotFound("pieter");
+            var access = await _propertyService.GetPropertiesWithAccess(email);
+            return Ok(access);
 
         }
         catch (Exception ex)

@@ -32,21 +32,22 @@ public class PropertyAccess : IModel<PropertyAccessDto>
 
     public virtual Role Role { get; set; }
 
-    public virtual FieldCode FieldCode { get; set; }
+    public virtual FieldCode? FieldCode { get; set; }
 
-    public virtual MetaProperty MetaProperty { get; set; }
+    public virtual MetaProperty? MetaProperty { get; set; }
 
     public PropertyAccess()
     {
     }
 
-    public PropertyAccess(MetaPropertyDto metaPropertyDto, FieldCodeDto fieldCodeDto ,PropertyAccessDto propertyAccessDto, RoleDto roleDto)
+/*    public PropertyAccess(MetaPropertyDto metaPropertyDto, FieldCodeDto fieldCodeDto ,PropertyAccessDto propertyAccessDto, RoleDto roleDto)*/
+    public PropertyAccess(PropertyAccessDto propertyAccessDto)
     {
         Id = propertyAccessDto.Id;
-        RoleId = roleDto.Id;
+        RoleId = propertyAccessDto.Role.Id;
         Condition = propertyAccessDto.Condition;
-        FieldCodeId = fieldCodeDto.Id;
-        MetaPropertyId = metaPropertyDto.Id;
+        FieldCodeId = propertyAccessDto.FieldCodeId?.Id;
+        MetaPropertyId = propertyAccessDto.MetaPropertyId?.Id;
         MetaField = propertyAccessDto.metaField;
     }
 
@@ -56,8 +57,8 @@ public class PropertyAccess : IModel<PropertyAccessDto>
             Id,
             Role.ToDto(),
             Condition,
-            FieldCode.ToDto(),
-            MetaProperty.ToDto(),
+            FieldCode?.ToDto(),
+            MetaProperty?.ToDto(),
             MetaField);
     }
 }
