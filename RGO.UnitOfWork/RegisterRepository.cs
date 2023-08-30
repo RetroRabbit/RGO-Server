@@ -20,7 +20,12 @@ public static class RegisterRepositoryExtension
         services.AddScoped<IOnboardingDocumentsRepository, OnboardingDocumentsRepository>();
         services.AddScoped<IRoleAccessRepository, RoleAccessRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+<<<<<<< Updated upstream
         services.AddScoped<IChartRepository, ChartRepository>();
         services.AddScoped<IChartRoleLinkRepositories, ChartRoleLinkRepository>();
+=======
+        services.AddScoped<IFieldCodeRepository, FieldCodeRepository>();
+        services.AddScoped<IFieldCodeOptionsRepository, FieldCodeOptionsRepository>();
+>>>>>>> Stashed changes
     }
 }

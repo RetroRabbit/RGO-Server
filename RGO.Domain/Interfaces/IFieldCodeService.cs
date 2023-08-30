@@ -1,4 +1,5 @@
 ﻿using RGO.Models;
+using RGO.UnitOfWork.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,10 @@ namespace RGO.Services.Interfaces
 {
     public interface IFieldCodeService
     {
-        Task SaveFieldCode(FieldCodeDto fieldCodeDto);
-        Task<FieldCodeDto> GetFieldCode(string name);
-        Task<FieldCodeDto> GetFieldCodeAsync(string name);
-        Task<bool> CheckFieldExist(string name);
+        Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto);
+        Task<FieldCodeDto?> GetFieldCode(string name);
         Task<List<FieldCodeDto>> GetAllFieldCodes();
-        Task UpdateFieldCodes(FieldCodeDto fieldCodeDto);
-        Task DeleteFieldCodes(string name);
+        Task<FieldCode> UpdateFieldCodes(FieldCodeDto fieldCodeDto);
+        Task<FieldCode> DeleteFieldCodes(FieldCodeDto fieldCodeDto);
     }
 }

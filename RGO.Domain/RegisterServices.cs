@@ -18,6 +18,11 @@ public static class RegisterServicesExtension
         services.AddScoped<IOnboardingDocumentService, OnboardingDocumentService>();
         services.AddScoped<IRoleAccessService, RoleAccessService>();
         services.AddScoped<IRoleService, RoleService>();
+<<<<<<< Updated upstream
         services.AddScoped<IChartService, ChartService>();
+=======
+        services.AddScoped<IFieldCodeService, FieldCodeService>();
+        services.AddScoped<IFieldCodeOptionsService, FieldCodeOptionsService>();
+>>>>>>> Stashed changes
     }
 }

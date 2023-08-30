@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Models;
+using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Xml.Linq;
 
 namespace RGO.Services.Services
 {
-    public class FieldCodeService
+    public class FieldCodeService : IFieldCodeService
     {
         private readonly IUnitOfWork _db;
 
@@ -14,91 +16,65 @@ namespace RGO.Services.Services
             _db = db;
         }
 
-        public async Task SaveFieldCode(FieldCodeDto fieldCodeDto)
+        public async Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto)
         {
-            var ifFieldCodeExists = await CheckFieldExist(fieldCodeDto.Name);
+            var ifFieldCode = await CheckFieldCode(fieldCodeDto.Name);
 
-            if (!ifFieldCodeExists)
-            {
-                var fieldCode = new FieldCode
-                {
-                    Name = fieldCodeDto.Name,
+            if (ifFieldCode) { throw new Exception("Field with that name found"); }
 
-                };
-                await _db.FieldCode.AddAsync(fieldCode);
-                await _db.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("Field code with that name already exists!");
-            }
+            FieldCode fieldCode = new FieldCode(fieldCodeDto);
+            var newFieldCode = await _db.FieldCode.Add(fieldCode);
+            return newFieldCode;
         }
 
-        public async Task<FieldCodeDto> GetFieldCode(string name)
+        public async Task<FieldCodeDto?> GetFieldCode(string name)
         {
-            var ifFieldCode = await CheckFieldExist(name);
+            var ifFieldCode = await CheckFieldCode(name);
             if (!ifFieldCode) { throw new Exception("No field with that name found"); }
 
             var fieldCode = await _db.FieldCode
-                .Where(fieldCode => fieldCode.Name == name)
+                .Get(fieldCode => fieldCode.Name == name)
                 .Select(fieldCode => fieldCode.ToDto())
                 .FirstOrDefaultAsync();
 
             return fieldCode;
         }
 
-        public async Task<bool> CheckFieldExist(string name)
-        {
-            return await _db.FieldCode
-                .AnyAsync(fieldCode => fieldCode.Name == name);
-        }
-
         public async Task<List<FieldCodeDto>> GetAllFieldCodes() 
-        { 
-            return await _db.FieldCode
-                .Select(fieldCode => fieldCode.ToDto())
-                .ToListAsync(); 
+        {
+            return await _db.FieldCode.GetAll();
         }
 
-        public async Task UpdateFieldCodes(FieldCodeDto fieldCodeDto)
+        public async Task<FieldCode> UpdateFieldCodes(FieldCodeDto fieldCodeDto)
+        {
+            var ifFieldCode = await _db.FieldCode
+            .Get(fieldCode => fieldCode.Id == fieldCodeDto.Id)
+            .FirstOrDefaultAsync();
+            if (ifFieldCode == null) { throw new Exception("No field with that id found"); }
+
+            FieldCode updatedFieldCode = new FieldCode(fieldCodeDto);
+            await _db.FieldCode.Update(updatedFieldCode);
+            return updatedFieldCode;
+        }
+
+        public async Task<FieldCode> DeleteFieldCodes(FieldCodeDto fieldCodeDto)
+        {
+            var ifFieldCode = await CheckFieldCode(fieldCodeDto.Name);
+            if (!ifFieldCode) { throw new Exception("No field with that name found"); }
+
+            FieldCode fieldCode = new FieldCode(fieldCodeDto);
+            await _db.FieldCode.Delete(fieldCode.Id);
+            return fieldCode;
+        }
+
+        private async Task<bool> CheckFieldCode(string name)
         {
             var fieldCode = await _db.FieldCode
-                .FirstOrDefaultAsync(fc => fc.Name == fieldCodeDto.Name);
+            .Get(fieldCode => fieldCode.Name.ToLower() == name.ToLower())
+            .FirstOrDefaultAsync();
 
-            if (fieldCode != null)
-            {
-                fieldCode.Name = fieldCodeDto.Name;
-
-                _db.FieldCode.Update(fieldCode);
-                await _db.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("Field code with that name not found.");
-            }
-        }
-
-        public async Task DeleteFieldCodes(string name)
-        {
-            var fieldCode = await _db.FieldCode
-                .FirstOrDefaultAsync(fc => fc.Name == name);
-
-            if (fieldCode != null)
-            {
-                _db.FieldCode.Remove(fieldCode);
-                await _db.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("Field code with that name not found.");
-            }
-        }
-
-        public async Task<bool> CheckFieldExist(string name)
-        {
-            return await _db.FieldCode
-                .Get(fieldCode => fieldCode.Name == name)
-                .AnyAsync();
+            if (fieldCode == null) { return false; }
+            else { return true; }
         }
     }
 }
