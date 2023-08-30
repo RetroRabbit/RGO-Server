@@ -20,5 +20,6 @@ public interface IUnitOfWork
     IPropertyAccessRepository PropertyAccess { get; }
     IMetaPropertyRepository MetaProperty { get; }
     IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
-
+    IChartRepository Chart { get; }
+    IChartRoleLinkRepositories ChartRoleLink { get; }
 }

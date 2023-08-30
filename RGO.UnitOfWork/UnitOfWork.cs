@@ -1,4 +1,5 @@
-﻿using RGO.UnitOfWork.Interfaces;
+﻿using RGO.UnitOfWork.Entities;
+using RGO.UnitOfWork.Interfaces;
 using RGO.UnitOfWork.Repositories;
 
 namespace RGO.UnitOfWork;
@@ -20,6 +21,9 @@ public class UnitOfWork : IUnitOfWork
     public IPropertyAccessRepository PropertyAccess { get; }
     public IMetaPropertyRepository MetaProperty { get; }
     public IMetaPropertyOptionsRepository MetaPropertyOptions { get; }
+    public IChartRepository Chart { get; }
+    public IChartRoleLinkRepositories ChartRoleLink { get; }
+
 
     private readonly DatabaseContext _db;
 
@@ -41,5 +45,12 @@ public class UnitOfWork : IUnitOfWork
         PropertyAccess = new PropertyAccessRepository(_db);
         MetaProperty = new MetaPropertyRepository(_db);
         MetaPropertyOptions = new MetaPropertyOptionsRepository(_db);
+        Chart= new ChartRepository(_db);
+        ChartRoleLink = new ChartRoleLinkRepository(_db);
+    }
+
+    public async Task Save()
+    {
+        await _db.SaveChangesAsync();
     }
 }
