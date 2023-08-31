@@ -61,4 +61,29 @@ public class ChartService : IChartService
         }
     }
 
+    public async Task<ChartDataDto> GetChartData(string dataType)
+    {
+        if (dataType == "Gender")
+        {
+            var employess = await _employeeService.GetAll();
+            var genderCounts = employess.GroupBy(x => x.Gender).ToList();
+
+            var labels = genderCounts.Select(group => group.Key.ToString()).ToList();
+            var data = genderCounts.Select(group => group.Count()).ToList();
+
+            var chartData = new ChartDataDto
+            {
+                Labels =labels,
+                Data = data
+            };
+
+            return chartData;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
 }
