@@ -25,12 +25,15 @@ namespace RGO.Services.Services
                 .Select(r => r.Role.Id)
                 .ToList();
 
-            var query = (await _db.PropertyAccess.Get(access => role.Contains(access.RoleId))
+            var testvar = _db.PropertyAccess.Get(access => role.Contains(access.RoleId));
+
+            var query = (await testvar
                 .AsNoTracking()
                 .Include(access => access.Role)
                 .Include(access => access.FieldCode)
                 .Select(access => access.ToDto())
                 .ToListAsync())
+                .Where(access => access.Condition!=0)
                 .Select(access => new EmployeeAccessDto(
                     access.Id,
                     access.Condition,
@@ -43,8 +46,6 @@ namespace RGO.Services.Services
                     this.PassOptions(access)
                 ))
                 .ToList();
-
-            // TODO : Filter out by role and view/edit condition
 
             return query;
         }
@@ -76,7 +77,7 @@ namespace RGO.Services.Services
         private List<string> PassOptions(PropertyAccessDto access)
         {
             return _db.FieldCodeOptions
-                .Get(options => options.FieldCodeId == access.Id)
+                .Get(options => options.FieldCodeId == access.FieldCode.Id)
                 .Select(options => options.Option)
                 .ToList();
         }

@@ -1,5 +1,8 @@
-﻿using RGO.Models.Enums;
+﻿using RGO.Models;
+using RGO.Models.Enums;
 using RGO.UnitOfWork.Entities;
+using System.Reflection.Emit;
+using System.Xml.Linq;
 
 namespace RGO.UnitOfWork;
 
@@ -15,6 +18,129 @@ public static class ModelStateManage
             new EmployeeType { Id = 4, Name = "Scrum Master"},
             new EmployeeType { Id = 5, Name = "Business Support"},
             new EmployeeType { Id = 6, Name = "Account Manager"},
+        };
+    }
+
+    public static Employee[] EmployeeSet()
+    {
+        var id = 1;
+        return new Employee[]
+        {
+            new Employee
+            {
+                Id = id,
+                EmployeeNumber = "8464",
+                TaxNumber = "8465468",
+                EngagementDate = DateOnly.FromDateTime(DateTime.Now),
+                TerminationDate = null,
+                ReportingLine = null,
+                Disability = false,
+                DisabilityNotes = "na",
+                Level = 4,
+                EmployeeTypeId = 2,
+                Notes = "asdsd asdsad sadsad",
+                LeaveInterval = 1,
+                SalaryDays = 1,
+                PayRate = 1,
+                Salary = 10,
+                Title = "Mr",
+                Initials = "ads",
+                Name = "Carl",
+                Surname = "Wehl",
+                DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
+                CountryOfBirth = "SA",
+                Nationality = "asd",
+                IdNumber = "0231646",
+                PassportNumber = null,
+                PassportExpirationDate = null,
+                PassportCountryIssue = null,
+                Race = (Race)1,
+                Gender = (Gender)1,
+                Photo = "asfsadf/asdfsad",
+                Email = "cwehl@retrorabbit.co.za",
+                PersonalEmail = "asdasd@gmail.com",
+                CellphoneNo = "085456565656"
+            }
+        };
+    }
+    
+    public static Role[] RoleSet()
+    {
+        var id = 1;
+        return new Role[]
+        {
+            new Role{Id = id++, Description = "SuperAdmin"},
+            new Role{Id = id++, Description = "Admin"},
+            new Role{Id = id++, Description = "Employee"},
+            new Role{Id = id++, Description = "Talent"},
+        };
+    }
+
+    public static RoleAccess[] RoleAccessSet()
+    {
+        var id = 1;
+        return new RoleAccess[]
+        {
+            new RoleAccess{Id = id++, Permission = "ViewEmployee"},
+            new RoleAccess{Id = id++, Permission = "AddEmployee"},
+            new RoleAccess{Id = id++, Permission = "EditEmployee"},
+            new RoleAccess{Id = id++, Permission = "DeleteEmployee"},
+            new RoleAccess{Id = id++, Permission = "ViewChart"},
+            new RoleAccess{Id = id++, Permission = "AddChart"},
+            new RoleAccess{Id = id++, Permission = "EditChart"},
+            new RoleAccess{Id = id++, Permission = "DeleteChart"},
+            new RoleAccess{Id = id++, Permission = "ViewOwnInfo"},
+            new RoleAccess{Id = id++, Permission = "EditOwnInfo"},
+        };
+    }
+
+    public static RoleAccessLink[] RoleAccessLinkSet()
+    {
+        var id = 1;
+        return new RoleAccessLink[]
+        {
+            //superAdmin
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 1},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 2},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 3},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 4},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 5},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 6},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 7},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 8},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 9},
+            new RoleAccessLink{Id = id++, RoleId = 1 , RoleAccessId = 10},
+            //Admin
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 1},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 2},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 3},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 4},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 5},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 6},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 7},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 8},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 9},
+            new RoleAccessLink{Id = id++, RoleId = 2 , RoleAccessId = 10},
+            //Employee
+            new RoleAccessLink{Id = id++, RoleId = 3 , RoleAccessId = 1},
+            new RoleAccessLink{Id = id++, RoleId = 3 , RoleAccessId = 3},
+            new RoleAccessLink{Id = id++, RoleId = 3 , RoleAccessId = 9},
+            new RoleAccessLink{Id = id++, RoleId = 3 , RoleAccessId = 10},
+            //Talent
+            new RoleAccessLink{Id = id++, RoleId = 4 , RoleAccessId = 5},
+            new RoleAccessLink{Id = id++, RoleId = 4 , RoleAccessId = 6},
+            new RoleAccessLink{Id = id++, RoleId = 4 , RoleAccessId = 7},
+            new RoleAccessLink{Id = id++, RoleId = 4 , RoleAccessId = 8},
+        };
+    }
+
+
+    public static EmployeeRole[] EmployeeRole()
+    {
+        var id = 1;
+        return new EmployeeRole[]
+        {
+            new EmployeeRole{Id = id, EmployeeId = 1, RoleId =1},
         };
     }
 
@@ -139,4 +265,20 @@ public static class ModelStateManage
             new FieldCodeOptions { Id = id++, FieldCodeId = 3, Option = "NQF 10"},
         };
     }
+
+    public static PropertyAccess[] PropertyAccessSet()
+    {
+        var id = 1;
+        return new PropertyAccess[]
+        {
+            new PropertyAccess{Id = id++, RoleId = 1, Condition = 0, FieldCodeId= 9},
+            new PropertyAccess{Id = id++, RoleId = 1, Condition = 1, FieldCodeId= 1},
+            new PropertyAccess{Id = id++, RoleId = 1, Condition = 1, FieldCodeId= 7},
+            new PropertyAccess{Id = id++, RoleId = 1, Condition = 1, FieldCodeId= 13},
+            new PropertyAccess{Id = id++, RoleId = 1, Condition = 2, FieldCodeId= 15},
+            new PropertyAccess{Id = id++, RoleId = 1, Condition = 2, FieldCodeId= 16},
+        };
+    }
+
+
 }

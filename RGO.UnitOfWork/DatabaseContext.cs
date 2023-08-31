@@ -22,8 +22,16 @@ namespace RGO.UnitOfWork
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<EmployeeType>().HasData(ModelStateManage.EmployeeTypeSet());
+            modelBuilder.Entity<Employee>().HasData(ModelStateManage.EmployeeSet());
+            modelBuilder.Entity<Role>().HasData(ModelStateManage.RoleSet());
+            modelBuilder.Entity<RoleAccess>().HasData(ModelStateManage.RoleAccessSet());
+            modelBuilder.Entity<RoleAccessLink>().HasData(ModelStateManage.RoleAccessLinkSet());
+            modelBuilder.Entity<EmployeeRole>().HasData(ModelStateManage.EmployeeRole());
             modelBuilder.Entity<FieldCode>().HasData(ModelStateManage.FieldCodeSet());
             modelBuilder.Entity<FieldCodeOptions>().HasData(ModelStateManage.FieldCodeOptionSet());
+            modelBuilder.Entity<PropertyAccess>().HasData(ModelStateManage.PropertyAccessSet());
+
+            //TODO : Add new tables
         }
 
         public DbSet<Employee> employees { get; set; }
