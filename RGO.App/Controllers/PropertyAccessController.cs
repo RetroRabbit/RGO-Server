@@ -23,7 +23,6 @@ public class PropertyAccessController : ControllerBase
         {
             var access = await _propertyService.GetPropertiesWithAccess(email);
             return Ok(access);
-
         }
         catch (Exception ex)
         {

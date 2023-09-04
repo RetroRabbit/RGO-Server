@@ -23,5 +23,4 @@ public interface IUnitOfWork
     IChartRepository Chart { get; }
     IChartRoleLinkRepositories ChartRoleLink { get; }
     IFieldCodeOptionsRepository FieldCodeOptions { get; }
-
 }

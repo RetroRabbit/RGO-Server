@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RGO.UnitOfWork.Entities;
 
+[Table("PropertyAccess")]
 public class PropertyAccess : IModel<PropertyAccessDto>
 {
     [Key]

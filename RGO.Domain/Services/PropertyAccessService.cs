@@ -21,7 +21,6 @@ namespace RGO.Services.Services
             _db = db;
             _employeeRoleService = employeeRoleService;
             _employeeDataService = employeeDataService;
-
         }
 
         public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
@@ -29,7 +28,6 @@ namespace RGO.Services.Services
             var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
                 .Select(r => r.Role.Id)
                 .ToList();
-
 
             var query = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
                 .AsNoTracking()
@@ -143,7 +141,6 @@ namespace RGO.Services.Services
 
         public static object FindRepository(IUnitOfWork unitOfWork, string table)
         {
-
             var repository = typeof(IUnitOfWork)
             .GetProperties()
             .Where(property => property.Name.Contains(table, StringComparison.OrdinalIgnoreCase))
