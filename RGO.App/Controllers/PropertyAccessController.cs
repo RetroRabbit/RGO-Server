@@ -36,7 +36,7 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            return NotFound("pieter 2");
+            return NotFound("This section of the feature is still under Development");
         }
         catch (Exception ex)
         {
