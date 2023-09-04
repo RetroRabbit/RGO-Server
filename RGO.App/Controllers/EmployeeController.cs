@@ -17,7 +17,7 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [Authorize(Roles = "AdminPolicy")]
+    [Authorize(Roles = "AdminOrSuperAdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
@@ -70,7 +70,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("employees")]
     public async Task<IActionResult> GetAllEmployees()
     {
@@ -86,7 +86,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("employees/count")]
     public async Task<IActionResult> CountAllEmployees()
     {
