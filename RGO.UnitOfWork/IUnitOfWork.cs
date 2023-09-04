@@ -17,11 +17,10 @@ public interface IUnitOfWork
     IOnboardingDocumentsRepository OnboardingDocuments { get; }
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
+    IPropertyAccessRepository PropertyAccess { get; }
     IFieldCodeRepository FieldCode { get; }
     IRoleAccessLinkRepository RoleAccessLink { get; }
-
     IChartRepository Chart { get; }
-
     IChartRoleLinkRepositories ChartRoleLink { get; }
     IFieldCodeOptionsRepository FieldCodeOptions { get; }
 }

@@ -37,7 +37,17 @@ namespace RGO.UnitOfWork.Entities
         [Column("status")]
         public ItemStatus Status { get; set; }
 
-        public FieldCode() { }
+        [Column("internal")]
+        public bool Internal { get; set; }
+
+        [Column("internalTable")]
+        public string? InternalTable { get; set; }
+
+        public FieldCode()
+        {
+            Internal = false;
+        }
+
         public FieldCode(FieldCodeDto fieldCodeDto) {
             Id = fieldCodeDto.Id;
             Code = fieldCodeDto.Code;
@@ -46,6 +56,8 @@ namespace RGO.UnitOfWork.Entities
             Regex = fieldCodeDto.Regex;
             Type = fieldCodeDto.Type;
             Status = fieldCodeDto.Status;
+            Internal = fieldCodeDto.Internal;
+            InternalTable = fieldCodeDto.InternalTable;
         }
 
         public FieldCodeDto ToDto()
@@ -57,7 +69,9 @@ namespace RGO.UnitOfWork.Entities
                 Description,
                 Regex,
                 Type,
-                Status);
+                Status,
+                Internal,
+                InternalTable);
         }
     }
 }
