@@ -90,24 +90,23 @@ namespace RGO.Services.Services
                 {
                     var table = field.InternalTable;
 
-
-
                     // TODO : Go to the table and saved the value in the selected table
                     // TODO : Check if row for employee exist in the internal table
                     // TODO : If it exist, update to new value
-                    string updateQuery = $"UPDATE {table} SET {field.Name} = {fieldValue.value}";
                     // TODO : else ...throw error
                     // TODO : We do not insert a new row for internal tables. We only do updates here.
 
                 }
                 else
                 {
+                    // TODO : Check if FieldCode is in EmployeeData already
                     var data = await _db.EmployeeData.Get(ed => ed.EmployeeId == employee.Id && ed.FieldCodeId == fieldValue.fieldId)
                                         .Select(ed => ed.ToDto())
                                         .FirstOrDefaultAsync();
 
                     if (data != null)
                     {
+                        // TODO : If it is, update existing value
                         // Update existing value
                         var updateEmployeeData = new EmployeeDataDto(
                             data.Id,
@@ -120,6 +119,7 @@ namespace RGO.Services.Services
                     }
                     else
                     {
+                        // TODO : Else insert new row
                         //Create new EmployeeData record
                         var updateEmployeeData = new EmployeeDataDto(
                             0,
@@ -129,123 +129,9 @@ namespace RGO.Services.Services
                             );
                         await _employeeDataService.SaveEmployeeData(updateEmployeeData);
                     }
-
-                    // TODO : Check if FieldCode is in EmployeeData already
-                    // TODO : If it is, update existing value
-                    // TODO : Else insert new row
-                }
-
-
-
-
-
-
-                    /*                var field = await _db.FieldCode.GetById(fieldValue.fieldId);
-                                    if (field.Internal)
-                                    {
-                                        switch (field.InternalTable)
-                                        {
-                                            case "Employee":
-
-
-                                                break;
-
-                                            case "":
-                                                break;
-
-                                            default:
-                                                break;
-                                        }*/
-                    /*var repository = FindRepository(_db, field.InternalTable); // assuming field.TableName gives you the name of the table
-
-                    if (repository == null)
-                    {
-                        throw new Exception($"Repository for {field.InternalTable} not found.");
-                    }
-
-                    // Assuming the repository has a method named 'GetByEmployeeId' 
-                    // (You may need to cast the repository to its specific type or create a common interface)
-                    var data = await (repository as IYourRepositoryType).GetByEmployeeId(employee.Id);
-
-                    if (data != null)
-                    {
-                        // Update the field value in the selected table
-                        data.FieldValue = fieldValue.NewValue; // Assuming 'NewValue' is a property in UpdateFieldValueDto that holds the new value
-                        await _db.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        // Error because we only do updates
-                        throw new Exception("No existing data found for the employee in the internal table.");
-                    }
-                }
-                else
-                {
-                    var data = await _db.EmployeeData.FirstOrDefaultAsync(ed => ed.EmployeeId == employee.Id && ed.FieldCodeId == fieldValue.fieldId);
-
-                    if (data != null)
-                    {
-                        // Update existing value
-                        data.FieldValue = fieldValue.NewValue;
-                    }
-                    else
-                    {
-                        // Insert new row
-                        var newData = new EmployeeData
-                        {
-                            EmployeeId = employee.Id,
-                            FieldCodeId = fieldValue.fieldId,
-                            FieldValue = fieldValue.NewValue
-                        };
-              + /* var employee = _db.Employee.Get(e => e.Email == email)
-                         .Select(e=>e.ToDto());
-                     if (employee == null)
-                     {
-                         throw new Exception("Employee not found.");
-                     }
-
-                     var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-                         .Select(r => r.Role.Id)
-                         .ToList(); // TODO : Get Employee and roles to validate if we can edit the field
-
-                     bool canEdit = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
-                         .AsNoTracking()
-                         .Include(access => access.Role)
-                         .Include(access => access.FieldCode)
-                         .Select(access => access.ToDto())
-                         .ToListAsync())
-                         .Where(access => access.Condition != 2).Any();
-
-                     if (!canEdit)
-                     {
-                         throw new Exception("No edit access");
-                     }
-
-                     foreach (var fieldValue in fields)
-                     {*/
-                    /*
-                                    var field = await _db.FieldCode.GetById(fieldValue.fieldId);
-                                    if (field.Internal)
-                                    {
-
-                                        // TODO : Go to the table and saved the value in the selected table
-                                        // TODO : Check if row for employee exist in the internal table
-                                        // TODO : If it exist, update to new value
-                                        // TODO : else ...throw error
-                                        // TODO : We do not insert a new row for internal tables. We only do updates here.
-
-
-                                    }
-                                    else
-                                    {
-                                        // TODO : Check if FieldCode is in EmployeeData already
-                                        // TODO : If it is, update existing value
-                                      */  // TODO : Else insert new row
-                                          //}
-                                          //}
-                                          //}
                 }
             }
+        }
 
         private List<string> PassOptions(PropertyAccessDto access)
         {
