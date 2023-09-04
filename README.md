@@ -1,5 +1,5 @@
 # Introduction 
-This platform is, somewhat for making the grad onboarding process simpler. Also for creating a central location for tracking changes to personal information, certification, skills,project and etc.
+This system is an employee management system for Retro Rabbit
 
 # Getting Started
 ### Cloning the [repository](https://retro-rabbit@dev.azure.com/retro-rabbit/RetroGradOnboard/_git/RGO-Server)
@@ -38,9 +38,29 @@ insert into social(discord, codewars, github, linkedin)
 values ('discord', 'codewars','github', 'linkedin');
 insert into users(firstName, lastName, email, [type], joinDate, [status])
 values ('Firstname', 'Lastname', 'email@retrorabbit.co.za', 0, now(), 1, 1);
-
 ```
-### FAQ(Idiots Edtion)
+
+### Unit Test Coverage
+With every pull request, there is a requirement to prove coverage of your code. Attached a screen shot of your code coverage to your PR description
+```
+Install the dotnet coverage tool
+    dotnet tool install -g dotnet-coverage
+
+Install the dotnet report generator tool
+    dotnet tool install -g dotnet-reportgenerator-globaltool
+    
+Run the command to check coverage on your project
+    dotnet-coverage collect -f xml -o coverage.xml dotnet test <solution/project>
+    (<solution/project> can be omitted to test the entire project) 
+    
+Generate report
+    reportgenerator -reports:coverage.xml -targetdir:coverage/report
+    
+Navigate to the %temp% / report folder and open index.html using your prefered browser
+```
+
+
+### FAQ
 ```typescript
 // user type
 enum UserType {
