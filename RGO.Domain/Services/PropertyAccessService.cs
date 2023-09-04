@@ -14,11 +14,14 @@ namespace RGO.Services.Services
     {
         private readonly IUnitOfWork _db;
         private readonly IEmployeeRoleService _employeeRoleService;
+        private readonly IEmployeeDataService _employeeDataService;
 
-        public PropertyAccessService(IUnitOfWork db, IEmployeeRoleService employeeRoleService)
+        public PropertyAccessService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, IEmployeeDataService employeeDataService )
         {
             _db = db;
             _employeeRoleService = employeeRoleService;
+            _employeeDataService = employeeDataService;
+
         }
 
         public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
@@ -92,12 +95,41 @@ namespace RGO.Services.Services
                     // TODO : Go to the table and saved the value in the selected table
                     // TODO : Check if row for employee exist in the internal table
                     // TODO : If it exist, update to new value
+                    string updateQuery = $"UPDATE {table} SET {field.Name} = {fieldValue.value}";
                     // TODO : else ...throw error
                     // TODO : We do not insert a new row for internal tables. We only do updates here.
 
                 }
                 else
                 {
+                    var data = await _db.EmployeeData.Get(ed => ed.EmployeeId == employee.Id && ed.FieldCodeId == fieldValue.fieldId)
+                                        .Select(ed => ed.ToDto())
+                                        .FirstOrDefaultAsync();
+
+                    if (data != null)
+                    {
+                        // Update existing value
+                        var updateEmployeeData = new EmployeeDataDto(
+                            data.Id,
+                            data.Employee,
+                            data.FieldCode,
+                            fieldValue.value
+                            );
+
+                        await _employeeDataService.UpdateEmployeeData(updateEmployeeData);
+                    }
+                    else
+                    {
+                        //Create new EmployeeData record
+                        var updateEmployeeData = new EmployeeDataDto(
+                            0,
+                            employee,
+                            field,
+                            fieldValue.value
+                            );
+                        await _employeeDataService.SaveEmployeeData(updateEmployeeData);
+                    }
+
                     // TODO : Check if FieldCode is in EmployeeData already
                     // TODO : If it is, update existing value
                     // TODO : Else insert new row
