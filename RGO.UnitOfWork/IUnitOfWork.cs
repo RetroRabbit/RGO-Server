@@ -1,4 +1,4 @@
-﻿using RGO.UnitOfWork.Interfaces;
+using RGO.UnitOfWork.Interfaces;
 using System.Net;
 
 namespace RGO.UnitOfWork;
@@ -18,10 +18,10 @@ public interface IUnitOfWork
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
     IPropertyAccessRepository PropertyAccess { get; }
+    IFieldCodeRepository FieldCode { get; }
     IRoleAccessLinkRepository RoleAccessLink { get; }
     IChartRepository Chart { get; }
     IChartRoleLinkRepositories ChartRoleLink { get; }
-    IFieldCodeRepository FieldCode { get; }
     IFieldCodeOptionsRepository FieldCodeOptions { get; }
 
 }

@@ -25,6 +25,7 @@ public class UnitOfWork : IUnitOfWork
     public IFieldCodeRepository FieldCode { get; }
     public IFieldCodeOptionsRepository FieldCodeOptions { get; }
 
+
     private readonly DatabaseContext _db;
 
     public UnitOfWork(DatabaseContext db)
@@ -49,4 +50,10 @@ public class UnitOfWork : IUnitOfWork
         FieldCode = new FieldCodeRepository(_db);
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);
     }
+
+    public async Task Save()
+    {
+        await _db.SaveChangesAsync();
+    }
 }
+

@@ -38,5 +38,10 @@ public interface IRoleAccessService
     /// <returns></returns>
     Task<RoleAccessDto> UpdateRoleAccess(RoleAccessDto roleAccessDto);
 
+    /// <summary>
+    /// Check Role Access
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
     Task<bool> CheckRoleAccess(string permission);
 }

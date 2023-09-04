@@ -26,4 +26,8 @@
     <ProjectReference Include="..\RGO.UnitOfWork\RGO.UnitOfWork.csproj" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="if $(ConfigurationName) == Debug node ../Scripts/init.js" />
+  </Target>
+
 </Project>

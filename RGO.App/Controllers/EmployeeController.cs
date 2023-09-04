@@ -112,7 +112,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminPolicy")]
-    [HttpGet("get-all")]
+    [HttpGet("employees")]
     public async Task<IActionResult> GetAllEmployees()
     {
         try
@@ -128,7 +128,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminPolicy")]
-    [HttpGet("count-all")]
+    [HttpGet("employees/count")]
     public async Task<IActionResult> CountAllEmployees()
     {
         try
