@@ -1,3 +1,4 @@
+using Npgsql;
 using RGO.UnitOfWork.Interfaces;
 using System.Net;
 
@@ -24,4 +25,5 @@ public interface IUnitOfWork
     IChartRoleLinkRepositories ChartRoleLink { get; }
     IFieldCodeOptionsRepository FieldCodeOptions { get; }
 
+    Task RawSql(string sql, params NpgsqlParameter[] parameters);
 }

@@ -1,4 +1,6 @@
-﻿using RGO.UnitOfWork.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using RGO.UnitOfWork.Entities;
 using RGO.UnitOfWork.Interfaces;
 using RGO.UnitOfWork.Repositories;
 
@@ -24,8 +26,7 @@ public class UnitOfWork : IUnitOfWork
     public IChartRoleLinkRepositories ChartRoleLink { get; }
     public IFieldCodeRepository FieldCode { get; }
     public IFieldCodeOptionsRepository FieldCodeOptions { get; }
-
-
+    
     private readonly DatabaseContext _db;
 
     public UnitOfWork(DatabaseContext db)
@@ -51,9 +52,9 @@ public class UnitOfWork : IUnitOfWork
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);
     }
 
-    public async Task Save()
+    public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
-        await _db.SaveChangesAsync();
+        await _db.Database.ExecuteSqlRawAsync(sql, parameters);
     }
 }
 

@@ -6,6 +6,7 @@ using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using RGO.UnitOfWork.Interfaces;
 using System.Data;
+using Npgsql;
 
 
 namespace RGO.Services.Services
@@ -89,6 +90,10 @@ namespace RGO.Services.Services
                 if (field.Internal)
                 {
                     var table = field.InternalTable;
+                    var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
+
+                    await _db.RawSql("UPDATE {@table} SET {@column} = '{@value}' WHERE {@employeeFilter} = '{@id}'",
+                        new NpgsqlParameter("@table", table));
 
                     // TODO : Go to the table and saved the value in the selected table
                     // TODO : Check if row for employee exist in the internal table
