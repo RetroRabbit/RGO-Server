@@ -6,9 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RGO.UnitOfWork.Interfaces
+namespace RGO.UnitOfWork.Interfaces;
+
+public interface IFieldCodeOptionsRepository : IRepository<FieldCodeOptions, FieldCodeOptionsDto>
 {
-    public interface IFieldCodeOptionsRepository : IRepository<FieldCodeOptions, FieldCodeOptionsDto>
-    {
-    }
 }

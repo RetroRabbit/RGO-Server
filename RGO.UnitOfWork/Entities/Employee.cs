@@ -20,10 +20,10 @@ public class Employee : IModel<EmployeeDto>
     public string TaxNumber { get; set; }
 
     [Column("engagementDate")]
-    public DateTime EngagementDate { get; set; }
+    public DateOnly EngagementDate { get; set; }
 
     [Column("terminationDate")]
-    public DateTime TerminationDate { get; set; }
+    public DateOnly? TerminationDate { get; set; }
 
     [Column("reportingLine")]
     [ForeignKey("ReportingEmployee")]
@@ -70,7 +70,7 @@ public class Employee : IModel<EmployeeDto>
     public string Surname { get; set; }
 
     [Column("dateOfBirth")]
-    public DateTime DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
 
     [Column("countryOfBirth")]
     public string CountryOfBirth { get; set; }
@@ -79,16 +79,16 @@ public class Employee : IModel<EmployeeDto>
     public string Nationality { get; set; }
 
     [Column("idNumber")]
-    public string IdNumber { get; set; }
+    public string? IdNumber { get; set; }
 
     [Column("passportNumber")]
-    public string PassportNumber { get; set; }
+    public string? PassportNumber { get; set; }
 
     [Column("passportExpirationDate")]
-    public DateTime PassportExpirationDate { get; set; }
+    public DateOnly? PassportExpirationDate { get; set; }
 
     [Column("passportCountryIssue")]
-    public string PassportCountryIssue { get; set; }
+    public string? PassportCountryIssue { get; set; }
 
     [Column("race")]
     public Race Race { get; set; }
