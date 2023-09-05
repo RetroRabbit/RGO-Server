@@ -63,7 +63,7 @@ namespace RGO.App.Controllers
                     {
                         var fieldCodeOptionsDto = new FieldCodeOptionsDto(
                             Id: 0,
-                            FieldCode: getFieldCode,
+                            FieldCodeId: getFieldCode.Id,
                             Option: item.Option);
                         await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
                     }
