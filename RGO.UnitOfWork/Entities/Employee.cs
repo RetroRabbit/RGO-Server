@@ -150,7 +150,7 @@ public class Employee : IModel<EmployeeDto>
     }
 
     public EmployeeDto ToDto()
-    {
+     {
         return new EmployeeDto(
             Id,
             EmployeeNumber,
@@ -161,7 +161,7 @@ public class Employee : IModel<EmployeeDto>
             Disability,
             DisabilityNotes,
             Level,
-            EmployeeType.ToDto(),
+            EmployeeType?.ToDto(),
             Notes,
             LeaveInterval,
             SalaryDays,

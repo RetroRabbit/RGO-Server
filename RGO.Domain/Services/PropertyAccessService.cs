@@ -25,35 +25,112 @@ namespace RGO.Services.Services
 
         }
 
-        public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
+      /*  public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
         {
+            var employee = await _db.Employee.Get(e => e.Email == email)
+               .Select(e => e.ToDto())
+               .FirstOrDefaultAsync();
+
             var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
                 .Select(r => r.Role.Id)
                 .ToList();
 
+            var propertiesWithAccess =( await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
+                  .AsNoTracking()
+                 .Include(access => access.Role)
+                 .Include(access => access.FieldCode)
+                 .Select(access => access.ToDto())
+                 .ToListAsync());
 
-            var query = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
-                .AsNoTracking()
+*//*                .AsNoTracking()
                 .Include(access => access.Role)
                 .Include(access => access.FieldCode)
-                .Select(access => access.ToDto())
-                .ToListAsync())
-                .Where(access => access.Condition != 0)
-                .Select(access => new EmployeeAccessDto(
-                    access.Id,
-                    access.Condition,
-                    access.FieldCode.Internal,
-                    access.FieldCode.Code,
-                    access.FieldCode.Name,
-                    access.FieldCode.Type.ToString().ToLower(),
-                    access.FieldCode.Description,
-                    access.FieldCode.Regex,
-                    this.PassOptions(access)
-                ))
-                .ToList();
+                .ToListAsync();*//*
 
-            return query;
-        }
+
+
+            var results = new List<EmployeeAccessDto>();
+
+            foreach (var access in propertiesWithAccess)
+            {
+                string? tableName = access.FieldCode.InternalTable;
+                string query;
+                var value; 
+
+
+                if (!access.FieldCode.Internal)
+                {
+                    query = $"SELECT {access.FieldCode.Name} FROM EmployeeData WHERE fieldcodeid = @fieldcodeid && employeeId == @employeeId ";
+                    value = (await _db.RawSql(query, 
+                        new NpgsqlParameter("fieldcodeid", access.FieldCode.Id),
+                        new NpgsqlParameter("employeeId", employee.Id)).FirstOrDefaultAsync();
+
+                }
+                else 
+                {
+                    if (tableName == "Employee")
+                    {
+                        query = $"SELECT {access.FieldCode.Name} FROM {tableName} WHERE Id = @condition";
+                    }
+                    else
+                    {
+                        query = $"SELECT {access.FieldCode.Name} FROM {tableName} WHERE employeeId = @condition";
+                    }
+                }
+
+
+
+
+                if (access.Condition != 0)
+                {
+                    var dto = new EmployeeAccessDto(
+                        access.Id,
+                        access.Condition,
+                        access.FieldCode.Internal,
+                        access.FieldCode.Code,
+                        access.FieldCode.Name,
+                        access.FieldCode.Type.ToString().ToLower(),
+                        value,  // Use the value retrieved from the above query
+                        access.FieldCode.Description,
+                        access.FieldCode.Regex,
+                        this.PassOptions(access)
+                    );
+                    results.Add(dto);
+                }
+            }
+
+            return results;
+        }*/
+
+         public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
+         {
+             var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
+                 .Select(r => r.Role.Id)
+                 .ToList();
+
+             var query = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
+                 .AsNoTracking()
+                 .Include(access => access.Role)
+                 .Include(access => access.FieldCode)
+                 .Select(access => access.ToDto())
+                 .ToListAsync())
+                 .Where(access => access.Condition != 0)
+                 .Select(access => new EmployeeAccessDto(
+                     access.FieldCode.Id,
+                     access.Condition,
+                     access.FieldCode.Internal,
+                     access.FieldCode.Code,
+                     access.FieldCode.Name,
+                     access.FieldCode.Type.ToString().ToLower(),
+                     "asd",
+                     access.FieldCode.Description,
+                     access.FieldCode.Regex,
+                     this.PassOptions(access)
+                 ))
+                 .ToList();
+
+             return query;
+         }
 
         public async Task UpdatePropertiesWithAccess(List<UpdateFieldValueDto> fields, string email)
         {
@@ -91,13 +168,16 @@ namespace RGO.Services.Services
                 {
                     var table = field.InternalTable;
                     var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
-                    var query = $"UPDATE {field.InternalTable} SET {field.Name} = @value WHERE {employeeFilterByColumn} = @id";
+                    var query = $"UPDATE \"{field.InternalTable}\" SET \"{field.Code}\" = @value WHERE {employeeFilterByColumn} = @id";
 
-                    await _db.RawSql(query,
-                        new NpgsqlParameter("value", fieldValue.value),
-                        new NpgsqlParameter("id", employee.Id));
+                    var valueParam = new NpgsqlParameter("value", fieldValue.value);
+                    var idParam = new NpgsqlParameter("id", employee.Id);
 
-                    
+                    await _db.RawSql(query, valueParam, idParam);
+
+                    /*                    await _db.RawSql(query);
+                                            new NpgsqlParameter("value", fieldValue.value);
+                                            new NpgsqlParameter("id", employee.Id);*/
 
                     // TODO : Go to the table and saved the value in the selected table
                     // TODO : Check if row for employee exist in the internal table
