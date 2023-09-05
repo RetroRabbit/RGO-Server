@@ -15,11 +15,11 @@ public class EmployeeData : IModel<EmployeeDataDto>
 
     [Column("employeeId")]
     [ForeignKey("Employee")]
-    public int? EmployeeId { get; set; }
+    public int EmployeeId { get; set; }
 
     [Column("fieldCodeId")]
     [ForeignKey("FieldCode")]
-    public int? FieldCodeId { get; set; }
+    public int FieldCodeId { get; set; }
 
     [Column("value")]
     public string Value { get; set; } = null!;
@@ -32,8 +32,8 @@ public class EmployeeData : IModel<EmployeeDataDto>
     public EmployeeData(EmployeeDataDto employeeDataDto)
     {
         Id = employeeDataDto.Id;
-        EmployeeId = employeeDataDto.Employee?.Id;
-        FieldCodeId = employeeDataDto.FieldCode?.Id;
+        EmployeeId = employeeDataDto.Employee.Id;
+        FieldCodeId = employeeDataDto.FieldCode.Id;
         Value = employeeDataDto.Value;
     }
 
@@ -41,8 +41,8 @@ public class EmployeeData : IModel<EmployeeDataDto>
     {
         return new EmployeeDataDto(
             Id,
-            Employee?.ToDto(),
-            FieldCode?.ToDto(),
+            Employee.ToDto(),
+            FieldCode.ToDto(),
             Value);
     }
 }
