@@ -161,7 +161,7 @@ public class Employee : IModel<EmployeeDto>
             Disability,
             DisabilityNotes,
             Level,
-            EmployeeType.ToDto(),
+            EmployeeType?.ToDto(),
             Notes,
             LeaveInterval,
             SalaryDays,

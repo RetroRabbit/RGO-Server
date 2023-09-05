@@ -24,7 +24,7 @@ public class EmployeeData : IModel<EmployeeDataDto>
     [Column("value")]
     public string Value { get; set; } = null!;
 
-    public virtual Employee Employee { get; set; } = null!;
+    public virtual Employee Employee { get; set; }
     public virtual FieldCode FieldCode { get; set; }
 
     public EmployeeData() { }
