@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
+using RGO.Models.Update;
 using RGO.Services.Interfaces;
-using RGO.Services.Services;
-using System.Security.Claims;
+
 
 namespace RGO.App.Controllers;
 
 [Route("/access/")]
 public class PropertyAccessController : ControllerBase
 {
-    private readonly IPropertyAccessService _propertyService;
+    private readonly IPropertyAccessService _propertyAccessService;
 
-    public PropertyAccessController(IPropertyAccessService propertyAccess)
+    public PropertyAccessController(IPropertyAccessService propertyAccessService)
     {
-        _propertyService = propertyAccess;
+        _propertyAccessService = propertyAccessService;
     }
 
     [HttpGet("get")]
@@ -21,7 +21,7 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            var access = await _propertyService.GetPropertiesWithAccess(email);
+            var access = await _propertyAccessService.GetPropertiesWithAccess(email);
             return Ok(access);
 
         }
@@ -32,11 +32,12 @@ public class PropertyAccessController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] EmployeeDto employee, [FromQuery] string email)
+    public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields, [FromQuery] string email)
     {
         try
         {
-            return NotFound("pieter 2");
+            await _propertyAccessService.UpdatePropertiesWithAccess( fields, email);
+            return Ok(); 
         }
         catch (Exception ex)
         {

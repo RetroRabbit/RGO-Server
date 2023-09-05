@@ -91,9 +91,13 @@ namespace RGO.Services.Services
                 {
                     var table = field.InternalTable;
                     var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
+                    var query = $"UPDATE {field.InternalTable} SET {field.Name} = @value WHERE {employeeFilterByColumn} = @id";
 
-                    await _db.RawSql("UPDATE {@table} SET {@column} = '{@value}' WHERE {@employeeFilter} = '{@id}'",
-                        new NpgsqlParameter("@table", table));
+                    await _db.RawSql(query,
+                        new NpgsqlParameter("value", fieldValue.value),
+                        new NpgsqlParameter("id", employee.Id));
+
+                    
 
                     // TODO : Go to the table and saved the value in the selected table
                     // TODO : Check if row for employee exist in the internal table

@@ -141,6 +141,9 @@ public static class ModelStateManage
         return new EmployeeRole[]
         {
             new EmployeeRole{Id = id, EmployeeId = 1, RoleId =1},
+            new EmployeeRole{Id = id, EmployeeId = 1, RoleId =2},
+            new EmployeeRole{Id = id, EmployeeId = 1, RoleId =3},
+            new EmployeeRole{Id = id, EmployeeId = 1, RoleId =4},
         };
     }
 
