@@ -40,7 +40,7 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("employeeTypeId")]
     [ForeignKey("EmployeeType")]
-    public int EmployeeTypeId { get; set; }
+    public int? EmployeeTypeId { get; set; }
 
     [Column("notes")]
     public string Notes { get; set; }
@@ -124,7 +124,7 @@ public class Employee : IModel<EmployeeDto>
         Disability = employeeDto.Disability;
         DisabilityNotes = employeeDto.DisabilityNotes;
         Level = employeeDto.Level;
-        EmployeeTypeId = employeeType.Id;
+        EmployeeTypeId = employeeType?.Id;
         Notes = employeeDto.Notes;
         LeaveInterval = employeeDto.LeaveInterval;
         SalaryDays = employeeDto.SalaryDays;
@@ -161,7 +161,7 @@ public class Employee : IModel<EmployeeDto>
             Disability,
             DisabilityNotes,
             Level,
-            EmployeeType.ToDto(),
+            EmployeeType?.ToDto(),
             Notes,
             LeaveInterval,
             SalaryDays,
