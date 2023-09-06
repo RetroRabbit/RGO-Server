@@ -53,6 +53,11 @@ public class ChartService : IChartService
                     .GroupBy(x => x.Race)
                     .ToDictionary(group => group.Key.ToString(), group => group.Count());
                 break;
+            case "Nationality":
+                dataDictionary = employees
+                    .GroupBy(x => x.Nationality)
+                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
+                break;
             case "Level":
                 dataDictionary = employees
                     .GroupBy(x => x.Level)
@@ -95,6 +100,11 @@ public class ChartService : IChartService
             case "Race":
                 chartData = employees
                     .GroupBy(x => x.Race)
+                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
+                break;
+            case "Nationality":
+                chartData = employees
+                    .GroupBy(x => x.Nationality)
                     .ToDictionary(group => group.Key.ToString(), group => group.Count());
                 break;
             case "Level":
