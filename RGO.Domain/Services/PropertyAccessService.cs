@@ -3,8 +3,6 @@ using RGO.Models;
 using RGO.Models.Update;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using RGO.UnitOfWork.Interfaces;
 using System.Data;
 using Npgsql;
 
@@ -22,121 +20,69 @@ namespace RGO.Services.Services
             _db = db;
             _employeeRoleService = employeeRoleService;
             _employeeDataService = employeeDataService;
-
         }
 
-      /*  public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
+        public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
         {
             var employee = await _db.Employee.Get(e => e.Email == email)
                .Select(e => e.ToDto())
                .FirstOrDefaultAsync();
 
             var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-                .Select(r => r.Role.Id)
-                .ToList();
+                 .Select(r => r.Role.Id)
+                 .ToList();
 
-            var propertiesWithAccess =( await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
-                  .AsNoTracking()
+            var properties = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
+                 .AsNoTracking()
                  .Include(access => access.Role)
                  .Include(access => access.FieldCode)
                  .Select(access => access.ToDto())
                  .ToListAsync());
 
-*//*                .AsNoTracking()
-                .Include(access => access.Role)
-                .Include(access => access.FieldCode)
-                .ToListAsync();*//*
+            var result = new List<EmployeeAccessDto>();
 
-
-
-            var results = new List<EmployeeAccessDto>();
-
-            foreach (var access in propertiesWithAccess)
+            foreach (var access in properties)
             {
-                string? tableName = access.FieldCode.InternalTable;
-                string query;
-                var value; 
-
-
-                if (!access.FieldCode.Internal)
+                if (access.Condition != 0)
                 {
-                    query = $"SELECT {access.FieldCode.Name} FROM EmployeeData WHERE fieldcodeid = @fieldcodeid && employeeId == @employeeId ";
-                    value = (await _db.RawSql(query, 
-                        new NpgsqlParameter("fieldcodeid", access.FieldCode.Id),
-                        new NpgsqlParameter("employeeId", employee.Id)).FirstOrDefaultAsync();
+                    var table = access.FieldCode.InternalTable;
+                    var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
+                    string value;
 
-                }
-                else 
-                {
-                    if (tableName == "Employee")
+                    if (access.FieldCode.Internal)
                     {
-                        query = $"SELECT {access.FieldCode.Name} FROM {tableName} WHERE Id = @condition";
+                        value = await _db.RawSqlGet($"SELECT \"{access.FieldCode.Code}\" FROM \"{access.FieldCode.InternalTable}\" WHERE {employeeFilterByColumn} = {employee.Id}");
                     }
                     else
                     {
-                        query = $"SELECT {access.FieldCode.Name} FROM {tableName} WHERE employeeId = @condition";
+                        value = await _db.RawSqlGet($"SELECT \"value\" FROM \"EmployeeData\" WHERE \"employeeId\" = {employee.Id} AND \"fieldCodeId\" = {access.FieldCode.Id}");
                     }
-                }
 
-
-
-
-                if (access.Condition != 0)
-                {
                     var dto = new EmployeeAccessDto(
-                        access.Id,
+                        access.FieldCode.Id,
                         access.Condition,
                         access.FieldCode.Internal,
                         access.FieldCode.Code,
                         access.FieldCode.Name,
                         access.FieldCode.Type.ToString().ToLower(),
-                        value,  // Use the value retrieved from the above query
+                        value,
                         access.FieldCode.Description,
                         access.FieldCode.Regex,
                         this.PassOptions(access)
                     );
-                    results.Add(dto);
+
+                    result.Add(dto);
                 }
             }
+            return result;
+        }
 
-            return results;
-        }*/
-
-         public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
-         {
-             var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-                 .Select(r => r.Role.Id)
-                 .ToList();
-
-             var query = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
-                 .AsNoTracking()
-                 .Include(access => access.Role)
-                 .Include(access => access.FieldCode)
-                 .Select(access => access.ToDto())
-                 .ToListAsync())
-                 .Where(access => access.Condition != 0)
-                 .Select(access => new EmployeeAccessDto(
-                     access.FieldCode.Id,
-                     access.Condition,
-                     access.FieldCode.Internal,
-                     access.FieldCode.Code,
-                     access.FieldCode.Name,
-                     access.FieldCode.Type.ToString().ToLower(),
-                     "asd",
-                     access.FieldCode.Description,
-                     access.FieldCode.Regex,
-                     this.PassOptions(access)
-                 ))
-                 .ToList();
-
-             return query;
-         }
 
         public async Task UpdatePropertiesWithAccess(List<UpdateFieldValueDto> fields, string email)
          {
             var employee = await _db.Employee.Get(e => e.Email == email)
                .Select(e => e.ToDto())
-               .FirstOrDefaultAsync(); // ensure you get the first item or default
+               .FirstOrDefaultAsync();
 
             if (employee == null)
             {
@@ -162,7 +108,6 @@ namespace RGO.Services.Services
 
             foreach (var fieldValue in fields)
             {
-
                 var field = await _db.FieldCode.GetById(fieldValue.fieldId);
                 if (field.Internal)
                 {
@@ -171,41 +116,41 @@ namespace RGO.Services.Services
                     var query = $"UPDATE \"{field.InternalTable}\" SET \"{field.Code}\" = @value WHERE {employeeFilterByColumn} = @id";
                     NpgsqlParameter valueParam;
 
-                    if (int.TryParse(fieldValue.value.ToString(), out int intValue) && !ShouldParse(field.Code))
+                    switch (field.Type)
                     {
-                        valueParam = new NpgsqlParameter("value", intValue);
-                    }
-                    else
-                    {
-                        valueParam = new NpgsqlParameter("value", fieldValue.value.ToString());
+                        case Models.Enums.FieldCodeType.Date:
+                            valueParam = new NpgsqlParameter("value", DateOnly.Parse(fieldValue.value.ToString()));
+                            break;
+
+                        case Models.Enums.FieldCodeType.String:
+                            valueParam = new NpgsqlParameter("value", fieldValue.value.ToString());
+                            break;
+
+                        case Models.Enums.FieldCodeType.Int:
+                            int.TryParse(fieldValue.value.ToString(), out int intValue);
+                            valueParam = new NpgsqlParameter("value", intValue);
+                            break;
+
+                        case Models.Enums.FieldCodeType.Float:
+                            valueParam = new NpgsqlParameter("value", float.Parse(fieldValue.value.ToString()));
+                            break;
+
+                        default:
+                            throw new Exception("Format Invalid");
                     }
 
-                    
                     var idParam = new NpgsqlParameter("id", employee.Id);
                     await _db.RawSql(query, valueParam, idParam);
-
-                    /*                    await _db.RawSql(query);
-                                            new NpgsqlParameter("value", fieldValue.value);
-                                            new NpgsqlParameter("id", employee.Id);*/
-
-                    // TODO : Go to the table and saved the value in the selected table
-                    // TODO : Check if row for employee exist in the internal table
-                    // TODO : If it exist, update to new value
-                    // TODO : else ...throw error
-                    // TODO : We do not insert a new row for internal tables. We only do updates here.
 
                 }
                 else
                 {
-                    // TODO : Check if FieldCode is in EmployeeData already
                     var data = await _db.EmployeeData.Get(ed => ed.EmployeeId == employee.Id && ed.FieldCodeId == fieldValue.fieldId)
                                         .Select(ed => ed.ToDto())
                                         .FirstOrDefaultAsync();
 
                     if (data != null)
                     {
-                        // TODO : If it is, update existing value
-                        // Update existing value
                         var updateEmployeeData = new EmployeeDataDto(
                             data.Id,
                             data.Employee,
@@ -217,8 +162,6 @@ namespace RGO.Services.Services
                     }
                     else
                     {
-                        // TODO : Else insert new row
-                        //Create new EmployeeData record
                         var updateEmployeeData = new EmployeeDataDto(
                             0,
                             employee,
