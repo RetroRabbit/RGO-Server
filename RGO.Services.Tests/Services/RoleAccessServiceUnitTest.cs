@@ -62,7 +62,7 @@ public class RoleAccessServiceUnitTest
             new RoleAccess { Id = 3, Permission = "ViewAdmin" }
         }.AsQueryable().BuildMock();
 
-        var randPermission = permissions.Where(r => r.Id == new Random().Next(1, 3)).Select(r => r.Permission).First();
+        var randPermission = permissions.Where(r => r.Id == 3).Select(r => r.Permission).First();
 
         Expression<Func<RoleAccess, bool>> criteria = r => r.Permission == randPermission;
         var expect = await permissions.Where(criteria).Select(r => r.ToDto()).FirstAsync();
@@ -102,7 +102,7 @@ public class RoleAccessServiceUnitTest
             new RoleAccess { Id = 3, Permission = "ViewAdmin" }
         }.AsQueryable().BuildMock();
 
-        var randPermission = permissions.Where(r => r.Id == new Random().Next(1, 3)).Select(r => r.Permission).First();
+        var randPermission = permissions.Where(r => r.Id == 3).Select(r => r.Permission).First();
 
         Expression<Func<RoleAccess, bool>> criteria = r => r.Permission == randPermission;
         var expect = await permissions.Where(criteria).Select(r => r.ToDto()).FirstAsync();

@@ -56,7 +56,7 @@ public class RoleAccessLinkServiceUnitTest
         }.AsQueryable().BuildMock();
 
         var randLink = roleAccessLinks
-            .Where(r => r.Id == new Random().Next(1, 4))
+            .Where(r => r.Id == 2)
             .Select(r => r.ToDto())
             .First();
 
