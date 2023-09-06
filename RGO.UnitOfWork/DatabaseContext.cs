@@ -36,6 +36,10 @@ namespace RGO.UnitOfWork
 
         public DbSet<Employee> employees { get; set; }
         public DbSet<EmployeeRole> employeeRoles { get; set; }
+
+        // TODO : Find out why these are not included ?
+/*        public DbSet<EmployeeAddress> employeeAddresses { get; set; }
+        public DbSet<EmployeeBanking> employeeBankings { get; set; }*/
         public DbSet<EmployeeDocument> employeeDocuments { get; set; }
         public DbSet<EmployeeProject> employeeProjects { get; set; }
         public DbSet<Role> roles { get; set; }

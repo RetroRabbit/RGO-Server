@@ -133,7 +133,7 @@ namespace RGO.Services.Services
          }
 
         public async Task UpdatePropertiesWithAccess(List<UpdateFieldValueDto> fields, string email)
-        {
+         {
             var employee = await _db.Employee.Get(e => e.Email == email)
                .Select(e => e.ToDto())
                .FirstOrDefaultAsync(); // ensure you get the first item or default
@@ -169,10 +169,19 @@ namespace RGO.Services.Services
                     var table = field.InternalTable;
                     var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
                     var query = $"UPDATE \"{field.InternalTable}\" SET \"{field.Code}\" = @value WHERE {employeeFilterByColumn} = @id";
+                    NpgsqlParameter valueParam;
 
-                    var valueParam = new NpgsqlParameter("value", fieldValue.value);
+                    if (int.TryParse(fieldValue.value.ToString(), out int intValue) && !ShouldParse(field.Code))
+                    {
+                        valueParam = new NpgsqlParameter("value", intValue);
+                    }
+                    else
+                    {
+                        valueParam = new NpgsqlParameter("value", fieldValue.value.ToString());
+                    }
+
+                    
                     var idParam = new NpgsqlParameter("id", employee.Id);
-
                     await _db.RawSql(query, valueParam, idParam);
 
                     /*                    await _db.RawSql(query);
@@ -201,7 +210,7 @@ namespace RGO.Services.Services
                             data.Id,
                             data.Employee,
                             data.FieldCode,
-                            fieldValue.value
+                            fieldValue.value.ToString()
                             );
 
                         await _employeeDataService.UpdateEmployeeData(updateEmployeeData);
@@ -214,7 +223,7 @@ namespace RGO.Services.Services
                             0,
                             employee,
                             field,
-                            fieldValue.value
+                            fieldValue.value.ToString()
                             );
                         await _employeeDataService.SaveEmployeeData(updateEmployeeData);
                     }
@@ -243,6 +252,25 @@ namespace RGO.Services.Services
                 throw new Exception("table not found");
             }
             return repository;
+        }
+
+        public static bool ShouldParse(string code)
+        {
+            string[] notAllowedStrings = {
+                "employeeNumber",
+                "taxNumber",
+                "idNumber",
+                "passportNumber",
+                "cellphoneNo",
+                "unitNumber",
+                "streetNumber",
+                "postalCode",
+                "accountNo"
+            };
+
+            bool allowed = notAllowedStrings.Contains(code.Trim());
+
+            return allowed;
         }
     }
 }
