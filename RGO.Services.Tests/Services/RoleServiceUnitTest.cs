@@ -1,10 +1,12 @@
 ﻿using Moq;
+using MockQueryable.Moq;
 using RGO.Models;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Linq.Expressions;
 using Xunit;
+using Microsoft.EntityFrameworkCore;
 
 namespace RGO.Services.Tests.Services;
 
@@ -51,7 +53,28 @@ public class RoleServiceUnitTest
     [Fact]
     public async Task DeleteRoleTest()
     {
-        Assert.True(true);
+        var roleQueryable = new List<Role>
+        {
+            new Role { Id = 2, Description = "Manager"},
+            new Role { Id = 3, Description = "Admin"}
+        }.AsQueryable().BuildMock();
+
+        Expression<Func<Role, bool>> criteria = r => r.Description == "Admin";
+        var expect = await roleQueryable.Where(criteria).FirstAsync();
+
+        _dbMock
+            .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Returns(roleQueryable.Where(criteria));
+
+        _dbMock
+            .Setup(r => r.Role.Delete(It.IsAny<int>()))
+            .Returns(Task.FromResult(expect.ToDto()));
+
+        var result = await _roleService.DeleteRole("Admin");
+
+        Assert.NotNull(result);
+        Assert.Equal(expect.ToDto(), result);
+        _dbMock.Verify(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()), Times.Once);
     }
 
     [Fact]
@@ -73,12 +96,43 @@ public class RoleServiceUnitTest
     [Fact]
     public async Task GetRoleTest()
     {
-        Assert.True(true);
+        var roleQueryable = new List<Role> { new Role(_roleDto) }.AsQueryable().BuildMock();
+
+        _dbMock
+            .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Returns(roleQueryable);
+
+        var result = await _roleService.GetRole(_roleDto.Description);
+
+        Assert.NotNull(result);
+        Assert.Equal(_roleDto, result);
+        _dbMock.Verify(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()), Times.Once);
     }
 
     [Fact]
     public async Task UpdateRoleTest()
     {
-        Assert.True(true);
+        var roleQueryable = new List<Role>
+        {
+            new Role { Id = 2, Description = "Manager"},
+            new Role { Id = 3, Description = "Admin"}
+        }.AsQueryable().BuildMock();
+
+        Expression<Func<Role, bool>> criteria = r => r.Description == "Admin";
+        var expect = await roleQueryable.Where(criteria).FirstAsync();
+
+        _dbMock
+            .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Returns(roleQueryable.Where(criteria));
+
+        _dbMock
+            .Setup(r => r.Role.Update(It.IsAny<Role>()))
+            .Returns(Task.FromResult(expect.ToDto()));
+
+        var result = await _roleService.UpdateRole("Admin");
+
+        Assert.NotNull(result);
+        Assert.Equal(expect.ToDto(), result);
+        _dbMock.Verify(r => r.Role.Update(It.IsAny<Role>()), Times.Once);
     }
 }
