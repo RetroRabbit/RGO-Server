@@ -46,7 +46,7 @@ namespace RGO.Services.Services
             foreach (var option in fieldCodeOptionsDto)
             {
                 var existingOptions = await _db.FieldCodeOptions
-                    .Get(fieldCodeOption => fieldCodeOption.FieldCode.Id == option.FieldCode.Id && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
+                    .Get(fieldCodeOption => fieldCodeOption.FieldCode.Id == option.FieldCodeId && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
                     .FirstOrDefaultAsync();
 
                 if (existingOptions == null)
@@ -56,13 +56,13 @@ namespace RGO.Services.Services
                 }
             }
 
-            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCode.Id);
+            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
             bool check = true;
             foreach (var option in existingFieldCodeOptions)
             {
                 foreach (var fieldCode in fieldCodeOptionsDto)
                 {
-                    if (option.FieldCode.Id == fieldCode.FieldCode.Id && option.Option.ToLower() == fieldCode.Option.ToLower())
+                    if (option.FieldCodeId == fieldCode.FieldCodeId && option.Option.ToLower() == fieldCode.Option.ToLower())
                     {
                         check = true;
                         break;
