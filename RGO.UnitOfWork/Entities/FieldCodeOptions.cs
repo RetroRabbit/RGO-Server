@@ -26,14 +26,14 @@ namespace RGO.UnitOfWork.Entities
         {
             Id = fieldCodeOptionsDto.Id;
             Option = fieldCodeOptionsDto.Option;
-            FieldCodeId = fieldCodeOptionsDto.FieldCode.Id;
+            FieldCodeId = fieldCodeOptionsDto.FieldCodeId;
         }
 
         public FieldCodeOptionsDto ToDto()
         {
             return new FieldCodeOptionsDto(
                 Id,
-                FieldCode.ToDto(),
+                FieldCodeId,
                 Option
                 );
         }
