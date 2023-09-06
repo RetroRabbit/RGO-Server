@@ -108,8 +108,8 @@ namespace RGO.Services.Services
                         // Update existing value
                         var updateEmployeeData = new EmployeeDataDto(
                             data.Id,
-                            data.Employee,
-                            data.FieldCode,
+                            data.EmployeeId,
+                            data.FieldCodeId,
                             fieldValue.value
                             );
 
@@ -121,8 +121,8 @@ namespace RGO.Services.Services
                         //Create new EmployeeData record
                         var updateEmployeeData = new EmployeeDataDto(
                             0,
-                            employee,
-                            field,
+                            employee.Id,
+                            field.Id,
                             fieldValue.value
                             );
                         await _employeeDataService.SaveEmployeeData(updateEmployeeData);

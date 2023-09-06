@@ -19,22 +19,22 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto)
         {
-            var ifEmployeeData = await CheckEmployee(employeeDataDto.Employee.Id);
+            var ifEmployeeData = await CheckEmployee(employeeDataDto.EmployeeId);
 
             if (!ifEmployeeData) { throw new Exception("Employee not found"); }
 
             EmployeeData employeeData = new EmployeeData(employeeDataDto);
             var existingData = await _db.EmployeeData
-                .Get(employeeData => employeeData.EmployeeId == employeeDataDto.Employee.Id && employeeData.FieldCodeId == employeeDataDto.FieldCode.Id)
+                .Get(employeeData => employeeData.EmployeeId == employeeDataDto.EmployeeId && employeeData.FieldCodeId == employeeDataDto.FieldCodeId)
                 .FirstOrDefaultAsync();
 
             if (existingData != null) { throw new Exception("Existing employee data record found"); }
             var newEmployeeData = await _db.EmployeeData.Add(employeeData);
-            if (newEmployeeData.Employee.EmployeeType == null || newEmployeeData.FieldCode == null)
-            {
-               var newData = await GetEmployeeData(newEmployeeData.Employee.Id, newEmployeeData.Value);
-                return newData;
-            }
+            //if (newEmployeeData.Employee.EmployeeType == null || newEmployeeData.FieldCode == null)
+            //{
+            //   var newData = await GetEmployeeData(newEmployeeData.Employee.Id, newEmployeeData.Value);
+            //    return newData;
+            //}
 
             return newEmployeeData;
         }
@@ -82,22 +82,22 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDataDto> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
         {
-            var ifEmployee = await CheckEmployee(employeeDataDto.Employee.Id);
+            var ifEmployee = await CheckEmployee(employeeDataDto.EmployeeId);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
             EmployeeData employeeData = new EmployeeData(employeeDataDto);
             var updatedEmployeeData = await _db.EmployeeData.Update(employeeData);
-            if (updatedEmployeeData.Employee.EmployeeType == null || updatedEmployeeData.FieldCode == null)
-            {
-                var newData = await GetEmployeeData(updatedEmployeeData.Employee.Id, updatedEmployeeData.Value);
-                return newData;
-            }
+            //if (updatedEmployeeData.Employee.EmployeeType == null || updatedEmployeeData.FieldCode == null)
+            //{
+            //    var newData = await GetEmployeeData(updatedEmployeeData.EmployeeId, updatedEmployeeData.Value);
+            //    return newData;
+            //}
             return updatedEmployeeData;
         }
 
         public async Task DeleteEmployeeData(EmployeeDataDto employeeDataDto)
         {
-            var ifEmployee = await CheckEmployee(employeeDataDto.Employee.Id);
+            var ifEmployee = await CheckEmployee(employeeDataDto.EmployeeId);
 
             if (!ifEmployee) { throw new Exception("Employee not found"); }
 
