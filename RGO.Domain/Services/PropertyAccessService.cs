@@ -10,7 +10,7 @@ using System.Data;
 
 namespace RGO.Services.Services
 {
-    internal class PropertyAccessService : IPropertyAccessService
+    public class PropertyAccessService : IPropertyAccessService
     {
         private readonly IUnitOfWork _db;
         private readonly IEmployeeRoleService _employeeRoleService;
