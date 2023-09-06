@@ -114,13 +114,6 @@ namespace RGO.App.Controllers
                     }
                 }
 
-                if (fieldCodeData.FieldCodeOptions.Count > 0)
-                {
-                    foreach (var item in fieldCodeData.FieldCodeOptions)
-                    {
-                        await _fieldCodeOptionsService.DeleteFieldCodeOptions(item);
-                    }
-                }
                 return Ok();
             }
             catch (Exception ex)

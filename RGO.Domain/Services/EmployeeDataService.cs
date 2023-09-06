@@ -30,12 +30,7 @@ namespace RGO.Services.Services
 
             if (existingData != null) { throw new Exception("Existing employee data record found"); }
             var newEmployeeData = await _db.EmployeeData.Add(employeeData);
-            //if (newEmployeeData.Employee.EmployeeType == null || newEmployeeData.FieldCode == null)
-            //{
-            //   var newData = await GetEmployeeData(newEmployeeData.Employee.Id, newEmployeeData.Value);
-            //    return newData;
-            //}
-
+         
             return newEmployeeData;
         }
 
@@ -87,11 +82,7 @@ namespace RGO.Services.Services
             if (!ifEmployee) { throw new Exception("Employee not found"); }
             EmployeeData employeeData = new EmployeeData(employeeDataDto);
             var updatedEmployeeData = await _db.EmployeeData.Update(employeeData);
-            //if (updatedEmployeeData.Employee.EmployeeType == null || updatedEmployeeData.FieldCode == null)
-            //{
-            //    var newData = await GetEmployeeData(updatedEmployeeData.EmployeeId, updatedEmployeeData.Value);
-            //    return newData;
-            //}
+
             return updatedEmployeeData;
         }
 
