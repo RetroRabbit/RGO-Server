@@ -26,4 +26,5 @@ public interface IUnitOfWork
     IFieldCodeOptionsRepository FieldCodeOptions { get; }
 
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
+    Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
 }

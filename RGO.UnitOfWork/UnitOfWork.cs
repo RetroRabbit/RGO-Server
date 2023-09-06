@@ -56,5 +56,30 @@ public class UnitOfWork : IUnitOfWork
     {
         await _db.Database.ExecuteSqlRawAsync(sql, parameters);
     }
+
+    public async Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters)
+    {
+        try
+        {
+            using (var command = _db.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = sql;
+                command.Parameters.AddRange(parameters);
+
+                if (command.Connection.State == System.Data.ConnectionState.Closed)
+                {
+                    await command.Connection.OpenAsync();
+                }
+
+                object result = await command.ExecuteScalarAsync();
+
+                return result?.ToString();
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
 }
 
