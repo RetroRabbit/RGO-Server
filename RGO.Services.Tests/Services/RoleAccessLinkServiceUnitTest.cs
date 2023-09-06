@@ -1,9 +1,14 @@
-﻿using Moq;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using MockQueryable.Moq;
+using Moq;
+using Moq.EntityFrameworkCore;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Xunit;
 
@@ -45,43 +50,44 @@ public class RoleAccessLinkServiceUnitTest
     [Fact]
     public async Task DeleteTest()
     {
-        List<RoleAccessLinkDto> roleAccessLinks = new List<RoleAccessLinkDto>() { _roleAccessLinkDto };
+        var roleAccessLinksData = new List<RoleAccessLink>() { new(_roleAccessLinkDto) };
+
+        var mock = roleAccessLinksData.BuildMock();
 
         _dbMock
-            .Setup(r => r.RoleAccessLink.GetAll(null))
-            .Returns(Task.FromResult(roleAccessLinks));
-
-        _dbMock
-            .Setup(r => r.RoleAccessLink.Delete(It.IsAny<int>()))
-            .Returns(Task.FromResult(_roleAccessLinkDto));
+            .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
+            .Returns(mock);
 
         var result = await _roleAccessLinkService.Delete(_roleDto.Description, _roleAccessDto.Permission);
 
         Assert.NotNull(result);
-        Assert.Equal(roleAccessLinks.First().Id, result.Id);
-        _dbMock.Verify(r => r.RoleAccessLink.GetAll(null), Times.Once);
+        Assert.Equal(_roleAccessLinkDto.Id, result.Id);
+        _dbMock.Verify(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()), Times.AtLeastOnce);
     }
 
     [Fact]
     public async Task GetAllTest()
     {
-        var roleAccessLinks = new List<RoleAccessLinkDto>() { _roleAccessLinkDto };
-        var mergedRoleAccessLinks = roleAccessLinks
+        var roleAccessLinksData = new List<RoleAccessLink>() { new(_roleAccessLinkDto) };
+
+        var mock = roleAccessLinksData.BuildMock();
+
+        var mergedRoleAccessLinks = mock
             .GroupBy(r => r.Role.Description)
             .ToDictionary(
                 group => group.Key,
                 group => group.Select(link => link.RoleAccess.Permission).ToList());
 
         _dbMock
-            .Setup(r => r.RoleAccessLink.GetAll(null))
-            .Returns(Task.FromResult(roleAccessLinks));
+            .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
+            .Returns(mock);
 
         var result = await _roleAccessLinkService.GetAll();
 
         Assert.NotNull(result);
         Assert.Equal(mergedRoleAccessLinks.Keys, result.Keys);
         Assert.Equal(mergedRoleAccessLinks.Values, result.Values);
-        _dbMock.Verify(r => r.RoleAccessLink.GetAll(null), Times.Once);
+        _dbMock.Verify(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()), Times.Once);
     }
 
     [Fact]
