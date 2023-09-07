@@ -59,7 +59,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("get/chartdata")]
+        [HttpGet("data")]
         public async Task<IActionResult> GetChartData([FromQuery] string dataType)
         {
             try
