@@ -2,5 +2,5 @@
 
 public record EmployeeRoleDto(
     int Id,
-    EmployeeDto Employee,
-    RoleDto Role);
+    EmployeeDto? Employee,
+    RoleDto? Role);

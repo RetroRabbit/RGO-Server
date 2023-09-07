@@ -28,8 +28,8 @@ public class RoleAccessLink : IModel<RoleAccessLinkDto>
     public RoleAccessLink(RoleAccessLinkDto roleAccessLinkDto)
     {
         Id = roleAccessLinkDto.Id;
-        RoleId = roleAccessLinkDto.Role.Id;
-        RoleAccessId = roleAccessLinkDto.RoleAccess.Id;
+        RoleId = roleAccessLinkDto.Role!.Id;
+        RoleAccessId = roleAccessLinkDto.RoleAccess!.Id;
     }
 
     public RoleAccessLinkDto ToDto()
