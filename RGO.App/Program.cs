@@ -136,7 +136,7 @@ namespace RGO.App
                 .ToList()
                 .ForEach(key =>
                 {
-                    polocies[key]["Permissions"] = new List<string>();
+                    policies[key]["Permissions"] = new List<string>();
                 });
 
             new AuthorizationPolicySettings
