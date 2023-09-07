@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using Xunit;
 using Microsoft.EntityFrameworkCore;
 
-namespace RGO.Services.Tests.Services;
+namespace RGO.Tests.Services;
 
 public class RoleAccessServiceUnitTest
 {

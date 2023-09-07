@@ -9,7 +9,7 @@ using RGO.UnitOfWork.Entities;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace RGO.Services.Tests.Services;
+namespace RGO.Tests.Services;
 
 public class RoleAccessLinkServiceUnitTest
 {
