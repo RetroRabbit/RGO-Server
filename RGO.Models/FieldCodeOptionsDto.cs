@@ -3,6 +3,6 @@
     public record FieldCodeOptionsDto
     (
         int Id,
-        FieldCodeDto FieldCode,
+        int FieldCodeId,
         string Option);
 }
