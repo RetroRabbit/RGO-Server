@@ -36,10 +36,5 @@ namespace RGO.Services.Interfaces
         /// <param name="dataType"></param>
         /// <returns></returns>
         Task<ChartDataDto> GetChartData(string dataType);
-
-
-
-
-
     }
 }
