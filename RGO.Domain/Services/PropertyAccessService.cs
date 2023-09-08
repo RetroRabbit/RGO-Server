@@ -31,7 +31,7 @@ namespace RGO.Services.Services
             var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
                  .Select(r => r.Role.Id)
                  .ToList();
-
+            
             var properties = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
                  .AsNoTracking()
                  .Include(access => access.Role)
@@ -54,7 +54,8 @@ namespace RGO.Services.Services
                         value = await _db.RawSqlGet($"SELECT \"{access.FieldCode.Code}\" FROM \"{access.FieldCode.InternalTable}\" WHERE {employeeFilterByColumn} = {employee.Id}");
                     }
                     else
-                    {
+                     
+                                      {
                         value = await _db.RawSqlGet($"SELECT \"value\" FROM \"EmployeeData\" WHERE \"employeeId\" = {employee.Id} AND \"fieldCodeId\" = {access.FieldCode.Id}");
                     }
 

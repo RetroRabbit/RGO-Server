@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Models.Update;
 using RGO.Services.Interfaces;
 
 
 namespace RGO.App.Controllers;
+
 
 [Route("/access/")]
 public class PropertyAccessController : ControllerBase
@@ -16,6 +18,7 @@ public class PropertyAccessController : ControllerBase
         _propertyAccessService = propertyAccessService;
     }
 
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetPropertyWithAccess([FromQuery] string email)
     {
@@ -31,6 +34,7 @@ public class PropertyAccessController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpPut("update")]
     public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields, [FromQuery] string email)
     {
