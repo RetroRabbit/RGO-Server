@@ -68,8 +68,8 @@ namespace RGO.App.Controllers
         {
             try
             {
-                await _employeeDataService.DeleteEmployeeData(employeeDataDto);
-                return Ok();
+                var deletedEmployeeData = await _employeeDataService.DeleteEmployeeData(employeeDataDto);
+                return Ok(deletedEmployeeData);
             }
             catch (Exception ex)
             {
