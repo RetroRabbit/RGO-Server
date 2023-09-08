@@ -20,6 +20,9 @@ public class EmployeeRoleService : IEmployeeRoleService
     {
         EmployeeRoleDto newEmployeeRole = await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
+        if (newEmployeeRole.Employee == null || newEmployeeRole.Role == null)
+            newEmployeeRole = await _db.EmployeeRole.GetById(newEmployeeRole.Id);
+
         return newEmployeeRole;
     }
 

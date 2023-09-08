@@ -30,9 +30,11 @@ namespace RGO.Services.Interfaces
         /// <returns></returns>
         Task<ChartDto> CreateChart(string dataType, string chartName, string chartType);
 
-
-
-
-
+        /// <summary>
+        ///Gets data point selected by the user
+        /// </summary>
+        /// <param name="dataType"></param>
+        /// <returns></returns>
+        Task<ChartDataDto> GetChartData(string dataType);
     }
 }

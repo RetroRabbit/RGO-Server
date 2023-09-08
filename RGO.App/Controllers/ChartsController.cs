@@ -58,5 +58,19 @@ namespace RGO.App.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("data")]
+        public async Task<IActionResult> GetChartData([FromQuery] string dataType)
+        {
+            try
+            {
+                var chartData = await _chartService.GetChartData(dataType);
+                return Ok(chartData);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

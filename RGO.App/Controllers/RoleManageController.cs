@@ -103,4 +103,20 @@ public class RoleManageController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getall")]
+    public async Task<IActionResult> GetAllRoleAccessLink()
+    {
+        try
+        {
+            var roleAccessLink = await _roleAccessLinkService.GetAll();
+
+            return Ok(roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }
