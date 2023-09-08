@@ -19,7 +19,7 @@ namespace RGO.App.Controllers
 
         [Authorize(Policy = "AdminPolicy")]
         [HttpGet("types")]
-        public async Task<IActionResult> GetAllEmployees()
+        public async Task<IActionResult> GetAllEmployeeTypes()
         {
             try
             {
