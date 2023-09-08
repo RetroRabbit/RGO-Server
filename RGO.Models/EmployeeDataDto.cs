@@ -4,6 +4,6 @@ namespace RGO.Models;
 
 public record EmployeeDataDto(
     int Id,
-    EmployeeDto Employee,
-    FieldCodeDto FieldCode,
+    int EmployeeId,
+    int FieldCodeId,
     string Value);

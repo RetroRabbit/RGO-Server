@@ -24,7 +24,7 @@ public class EmployeeData : IModel<EmployeeDataDto>
     [Column("value")]
     public string Value { get; set; } = null!;
 
-    public virtual Employee Employee { get; set; } = null!;
+    public virtual Employee Employee { get; set; }
     public virtual FieldCode FieldCode { get; set; }
 
     public EmployeeData() { }
@@ -32,8 +32,8 @@ public class EmployeeData : IModel<EmployeeDataDto>
     public EmployeeData(EmployeeDataDto employeeDataDto)
     {
         Id = employeeDataDto.Id;
-        EmployeeId = employeeDataDto.Employee.Id;
-        FieldCodeId = employeeDataDto.FieldCode.Id;
+        EmployeeId = employeeDataDto.EmployeeId;
+        FieldCodeId = employeeDataDto.FieldCodeId;
         Value = employeeDataDto.Value;
     }
 
@@ -41,8 +41,8 @@ public class EmployeeData : IModel<EmployeeDataDto>
     {
         return new EmployeeDataDto(
             Id,
-            Employee.ToDto(),
-            FieldCode.ToDto(),
+            EmployeeId,
+            FieldCodeId,
             Value);
     }
 }
