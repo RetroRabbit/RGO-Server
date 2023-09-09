@@ -5,82 +5,58 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using System.Data;
 using Npgsql;
+using RGO.UnitOfWork.Entities;
+using Newtonsoft.Json.Linq;
 
 
 namespace RGO.Services.Services
 {
-    internal class PropertyAccessService : IPropertyAccessService
+    public class PropertyAccessService : IPropertyAccessService
     {
         private readonly IUnitOfWork _db;
         private readonly IEmployeeRoleService _employeeRoleService;
         private readonly IEmployeeDataService _employeeDataService;
+        private readonly IEmployeeService _employeeService;
 
-        public PropertyAccessService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, IEmployeeDataService employeeDataService )
+        public PropertyAccessService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, IEmployeeDataService employeeDataService, IEmployeeService employeeService)
         {
             _db = db;
             _employeeRoleService = employeeRoleService;
             _employeeDataService = employeeDataService;
+            _employeeService = employeeService;
         }
 
         public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
         {
-            var employee = await _db.Employee.Get(e => e.Email == email)
-               .Select(e => e.ToDto())
-               .FirstOrDefaultAsync();
-
-            var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-                 .Select(r => r.Role.Id)
-                 .ToList();
-            
-            var properties = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
-                 .AsNoTracking()
-                 .Include(access => access.Role)
-                 .Include(access => access.FieldCode)
-                 .Select(access => access.ToDto())
-                 .ToListAsync());
+            var employee = await _employeeService.GetEmployee(email);
+            var properties = await _db.PropertyAccess.GetForEmployee(email);
 
             var result = new List<EmployeeAccessDto>();
 
-            foreach (var access in properties)
+            foreach (var access in properties.Where(a => a.Condition != 0))
             {
-                if (access.Condition != 0)
-                {
-                    var table = access.FieldCode.InternalTable;
-                    var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
-                    string value;
+                string value = await GetSqlValues(access.FieldCode,  employee);
+                  
+                var dto = new EmployeeAccessDto(
+                    access.FieldCode.Id,
+                    access.Condition,
+                    access.FieldCode.Internal,
+                    access.FieldCode.Code,
+                    access.FieldCode.Name,
+                    access.FieldCode.Type.ToString().ToLower(),
+                    value,
+                    access.FieldCode.Description,
+                    access.FieldCode.Regex,
+                    access.FieldCode.Options?.Select(x => x.Option).ToList() ?? null
+                );
 
-                    if (access.FieldCode.Internal)
-                    {
-                        value = await _db.RawSqlGet($"SELECT \"{access.FieldCode.Code}\" FROM \"{access.FieldCode.InternalTable}\" WHERE {employeeFilterByColumn} = {employee.Id}");
-                    }
-                    else
-                     
-                                      {
-                        value = await _db.RawSqlGet($"SELECT \"value\" FROM \"EmployeeData\" WHERE \"employeeId\" = {employee.Id} AND \"fieldCodeId\" = {access.FieldCode.Id}");
-                    }
-
-                    var dto = new EmployeeAccessDto(
-                        access.FieldCode.Id,
-                        access.Condition,
-                        access.FieldCode.Internal,
-                        access.FieldCode.Code,
-                        access.FieldCode.Name,
-                        access.FieldCode.Type.ToString().ToLower(),
-                        value,
-                        access.FieldCode.Description,
-                        access.FieldCode.Regex,
-                        this.PassOptions(access)
-                    );
-
-                    result.Add(dto);
-                }
+                result.Add(dto);
             }
             return result;
         }
 
-
         public async Task UpdatePropertiesWithAccess(List<UpdateFieldValueDto> fields, string email)
-         {
+        {
             var employee = await _db.Employee.Get(e => e.Email == email)
                .Select(e => e.ToDto())
                .FirstOrDefaultAsync();
@@ -175,14 +151,6 @@ namespace RGO.Services.Services
             }
         }
 
-        private List<string> PassOptions(PropertyAccessDto access)
-        {
-            return _db.FieldCodeOptions
-                .Get(options => options.FieldCodeId == access.FieldCode.Id)
-                .Select(options => options.Option)
-                .ToList();
-        }
-
         public static object FindRepository(IUnitOfWork unitOfWork, string table)
         {
 
@@ -213,8 +181,22 @@ namespace RGO.Services.Services
             };
 
             bool allowed = notAllowedStrings.Contains(code.Trim());
-
             return allowed;
+        }
+
+        public async Task<string> GetSqlValues(FieldCodeDto fieldCode, EmployeeDto employee)
+        {
+            var employeeFilterByColumn = fieldCode.InternalTable == "Employee" ? "id" : "employeeId";
+
+            if (fieldCode.Internal)
+            {
+                return await _db.RawSqlGet($"SELECT \"{fieldCode.Code}\" FROM \"{fieldCode.InternalTable}\" WHERE {employeeFilterByColumn} = {employee.Id}");
+            }
+            else
+            {
+                return await _db.RawSqlGet($"SELECT \"value\" FROM \"EmployeeData\" WHERE \"employeeId\" = {employee.Id} AND \"fieldCodeId\" = {fieldCode.Id}");
+            }
+
         }
     }
 }

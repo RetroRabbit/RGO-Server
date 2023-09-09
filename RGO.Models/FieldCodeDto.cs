@@ -14,7 +14,10 @@ namespace RGO.Models
         string? Description,
         string? Regex,
         FieldCodeType Type,
-        ItemStatus Status, 
-        bool Internal, 
-        string? InternalTable);
+        ItemStatus Status,
+        bool Internal,
+        string? InternalTable)
+    {
+        public List<FieldCodeOptionsDto> Options { get; set; }
+    }
 }
