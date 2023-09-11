@@ -25,11 +25,6 @@ public class RoleAccessService : IRoleAccessService
     {
         var roleAccess = await GetRoleAccess(permission);
 
-        if (roleAccess == null)
-        {
-            throw new Exception("Role Access not found");
-        }
-
         var deletedRoleAccess = await _db.RoleAccess.Delete(roleAccess.Id);
 
         return deletedRoleAccess;

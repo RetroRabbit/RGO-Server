@@ -153,7 +153,6 @@ namespace RGO.Services.Services
 
         public static object FindRepository(IUnitOfWork unitOfWork, string table)
         {
-
             var repository = typeof(IUnitOfWork)
             .GetProperties()
             .Where(property => property.Name.Contains(table, StringComparison.OrdinalIgnoreCase))

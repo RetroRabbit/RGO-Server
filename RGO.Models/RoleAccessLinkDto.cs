@@ -2,5 +2,5 @@
 
 public record RoleAccessLinkDto(
     int Id,
-    RoleDto Role,
-    RoleAccessDto RoleAccess);
+    RoleDto? Role,
+    RoleAccessDto? RoleAccess);

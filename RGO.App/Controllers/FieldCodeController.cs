@@ -53,7 +53,7 @@ namespace RGO.App.Controllers
                     foreach (var item in fieldCodeData.NewFieldCode)
                     {
                         await _fieldCodeService.SaveFieldCode(item);
-                    }
+                }
                 }
                 var getFieldCode = await _fieldCodeService.GetFieldCode(fieldCodeData.NewFieldCode[0].Name);
 
@@ -63,7 +63,7 @@ namespace RGO.App.Controllers
                     {
                         var fieldCodeOptionsDto = new FieldCodeOptionsDto(
                             Id: 0,
-                            FieldCode: getFieldCode,
+                            FieldCodeId: getFieldCode.Id,
                             Option: item.Option);
                         await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
                     }
@@ -114,13 +114,6 @@ namespace RGO.App.Controllers
                     }
                 }
 
-                if (fieldCodeData.FieldCodeOptions.Count > 0)
-                {
-                    foreach (var item in fieldCodeData.FieldCodeOptions)
-                    {
-                        await _fieldCodeOptionsService.DeleteFieldCodeOptions(item);
-                    }
-                }
                 return Ok();
             }
             catch (Exception ex)

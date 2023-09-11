@@ -1,8 +1,5 @@
-﻿using RGO.Models;
-using RGO.Models.Enums;
+﻿using RGO.Models.Enums;
 using RGO.UnitOfWork.Entities;
-using System.Reflection.Emit;
-using System.Xml.Linq;
 
 namespace RGO.UnitOfWork;
 
@@ -44,20 +41,20 @@ public static class ModelStateManage
                 PayRate = 1,
                 Salary = 10,
                 Title = "Mr",
-                Initials = "ads",
-                Name = "Carl",
-                Surname = "Wehl",
+                Initials = "KGM",
+                Name = "Kamogelo",
+                Surname = "Matsomela",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
                 CountryOfBirth = "SA",
-                Nationality = "asd",
+                Nationality = "South African",
                 IdNumber = "0231646",
                 PassportNumber = null,
                 PassportExpirationDate = null,
                 PassportCountryIssue = null,
-                Race = (Race)1,
-                Gender = (Gender)1,
+                Race = Race.Black,
+                Gender = Gender.Male,
                 Photo = "asfsadf/asdfsad",
-                Email = "cwehl@retrorabbit.co.za",
+                Email = "kmatsomela@retrorabbit.co.za",
                 PersonalEmail = "asdasd@gmail.com",
                 CellphoneNo = "085456565656"
             }

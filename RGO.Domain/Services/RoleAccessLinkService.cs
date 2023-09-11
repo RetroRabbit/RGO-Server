@@ -38,17 +38,15 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
         if (roleAccessLink == null) throw new Exception($"Role Access Link not found(Role:{role},Permission:{permission})");
 
-        RoleAccessLinkDto? deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id) ?? null;
+        RoleAccessLinkDto deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id);
 
-        return deleted == null ?
-            roleAccessLink :
-            deleted;
+        return deleted.Role != null ? deleted : roleAccessLink;
     }
 
     public async Task<Dictionary<string, List<string>>> GetAll()
     {
         var roleAccessLinks = await _db.RoleAccessLink
-            .Get(r => true)
+            .Get()
             .AsNoTracking()
             .Include(r => r.Role)
             .Include(r => r.RoleAccess)
@@ -93,7 +91,7 @@ public class RoleAccessLinkService : IRoleAccessLinkService
         Dictionary<string, List<string>> mergedRoleAccessLinks = accessRoles
             .SelectMany(dict => dict)
             .ToLookup(pair => pair.Key, pair => pair.Value)
-            .ToDictionary(group => group.Key, group => group.SelectMany(list => list).ToList());
+            .ToDictionary(group => group.Key, group => group.SelectMany(list => list).Distinct().ToList());
 
        return mergedRoleAccessLinks;
     }

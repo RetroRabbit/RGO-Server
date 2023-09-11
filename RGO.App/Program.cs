@@ -116,7 +116,7 @@ namespace RGO.App
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var test = confBuilder
+            var policies = confBuilder
                 .AsEnumerable()
                 .Where(x => x.Key.Contains("Security") && x.Value?.Length > 0)
                 .GroupBy(x =>
@@ -130,9 +130,18 @@ namespace RGO.App
                         y => y.Key,
                         y => y.Select(x => x.Value).ToList()));
 
+            policies
+                .Where(p => p.Value.Count == 2)
+                .Select(p => p.Key)
+                .ToList()
+                .ForEach(key =>
+                {
+                    policies[key]["Permissions"] = new List<string>();
+                });
+
             new AuthorizationPolicySettings
             {
-                Policies = test
+                Policies = policies
                 .Select(policy => new PolicySettings(
                     policy.Value["Name"].First(),
                     policy.Value["Roles"],
@@ -147,7 +156,8 @@ namespace RGO.App
                         policy =>
                         {
                             policy.RequireRole(policySettings.Roles);
-                            policy.RequireClaim("Permission", policySettings.Permissions);
+                            if (policySettings.Permissions.Count > 0)
+                                policy.RequireClaim("Permission", policySettings.Permissions);
                         });
                 });
             });

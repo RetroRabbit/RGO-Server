@@ -17,6 +17,3 @@ public record EmployeeAccessDto(
     string? Description,        //additional front-end info
     string? Regex,              //additional validation for front-end
     List<string>? Options);     //for drop-downs
-
-
-

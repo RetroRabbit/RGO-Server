@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RGO.Services.Services
 {
@@ -22,17 +23,27 @@ namespace RGO.Services.Services
 
         public async Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
         {
-            var ifFieldCodeOption = await CheckFieldCodeOption(fieldCodeOptionsDto);
-            if (ifFieldCodeOption) { throw new Exception("Field option with that name found"); }
+            var fieldCodes = await GetAllFieldCodeOptions();
+            var fieldCode = fieldCodes
+                .Where(fieldCode => fieldCode.Id == fieldCodeOptionsDto.FieldCodeId && fieldCode.Option.ToLower() == fieldCodeOptionsDto.Option.ToLower())
+                .Select(fieldCode => fieldCode)
+                .FirstOrDefault();
 
-            FieldCodeOptions fieldCodeOptions = new FieldCodeOptions(fieldCodeOptionsDto);
-            var newFieldCodeOption = await _db.FieldCodeOptions.Add(fieldCodeOptions);
+ 
+            if (fieldCode != null) { throw new Exception("Field option with that name found"); }
+
+            var newFieldCodeOption = await _db.FieldCodeOptions.Add(new FieldCodeOptions(fieldCodeOptionsDto));
             return newFieldCodeOption;
         }
 
         public async Task<List<FieldCodeOptionsDto>> GetFieldCodeOptions(int id)
         {
-            return await _db.FieldCodeOptions.GetAll(fieldCodeOptions => fieldCodeOptions.FieldCode.Id == id);
+            var fieldCodes = await GetAllFieldCodeOptions();
+            var fieldCode = fieldCodes
+                .Where(fieldCode => fieldCode.FieldCodeId == id)
+                .ToList();
+
+            return fieldCode;
         }
 
 
@@ -41,13 +52,15 @@ namespace RGO.Services.Services
             return await _db.FieldCodeOptions.GetAll();
         }
 
-        public async Task UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
+        public async Task<List<FieldCodeOptionsDto>> UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
         {
+            var deletedOptions = new List<FieldCodeOptionsDto>();
             foreach (var option in fieldCodeOptionsDto)
             {
-                var existingOptions = await _db.FieldCodeOptions
-                    .Get(fieldCodeOption => fieldCodeOption.FieldCode.Id == option.FieldCode.Id && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
-                    .FirstOrDefaultAsync();
+                var field = await GetAllFieldCodeOptions();
+                var existingOptions = field
+                    .Where(fieldCodeOption => fieldCodeOption.FieldCodeId == option.FieldCodeId && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
+                    .FirstOrDefault();
 
                 if (existingOptions == null)
                 {
@@ -56,13 +69,13 @@ namespace RGO.Services.Services
                 }
             }
 
-            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCode.Id);
+            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
             bool check = true;
             foreach (var option in existingFieldCodeOptions)
             {
                 foreach (var fieldCode in fieldCodeOptionsDto)
                 {
-                    if (option.FieldCode.Id == fieldCode.FieldCode.Id && option.Option.ToLower() == fieldCode.Option.ToLower())
+                    if (option.FieldCodeId == fieldCode.FieldCodeId && option.Option.ToLower() == fieldCode.Option.ToLower())
                     {
                         check = true;
                         break;
@@ -71,29 +84,22 @@ namespace RGO.Services.Services
                 }
                 if (!check)
                 {
-                    await _db.FieldCodeOptions.Delete(option.Id);
+                    var deletedOption = await _db.FieldCodeOptions.Delete(option.Id);
+                    deletedOptions.Add(deletedOption);
                 }
             }
+            return deletedOptions;
         }
 
-        public async Task<FieldCodeOptions> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
-        {
-            var ifFieldCodeOption = await CheckFieldCodeOption(fieldCodeOptionsDto);
-            if (!ifFieldCodeOption) { throw new Exception("No field with that name found"); }
 
-            FieldCodeOptions deleteFieldCodeOptions = new FieldCodeOptions(fieldCodeOptionsDto);
-            await _db.FieldCodeOptions.Delete(deleteFieldCodeOptions.Id);
+
+        public async Task<FieldCodeOptionsDto> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
+        {
+            var ifFieldCodeOption = await GetFieldCodeOptions(fieldCodeOptionsDto.Id);
+            if (ifFieldCodeOption == null) { throw new Exception("No field with that name found"); }
+
+            var deleteFieldCodeOptions = await _db.FieldCodeOptions.Delete(new FieldCodeOptions(fieldCodeOptionsDto).Id);
             return deleteFieldCodeOptions;
-        }
-
-        private async Task<bool> CheckFieldCodeOption(FieldCodeOptionsDto fieldCodeOptionsDto)
-        {
-            var fieldCodeOption = await _db.FieldCodeOptions
-            .Get(fieldCodeOption => fieldCodeOption.Id == fieldCodeOptionsDto.Id && fieldCodeOption.Option.ToLower() == fieldCodeOptionsDto.Option.ToLower() )
-            .FirstOrDefaultAsync();
-
-            if (fieldCodeOption == null) { return false; }
-            else { return true; }
         }
     }
 }
