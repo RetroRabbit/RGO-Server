@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RGO.Models;
 using RGO.Models.Update;
 using RGO.Services.Interfaces;
-
-
 namespace RGO.App.Controllers;
-
 
 [Route("/access/")]
 public class PropertyAccessController : ControllerBase

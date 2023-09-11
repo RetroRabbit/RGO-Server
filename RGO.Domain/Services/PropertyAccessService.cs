@@ -5,9 +5,6 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using System.Data;
 using Npgsql;
-using RGO.UnitOfWork.Entities;
-using Newtonsoft.Json.Linq;
-
 
 namespace RGO.Services.Services
 {
@@ -174,7 +171,8 @@ namespace RGO.Services.Services
                 "passportNumber",
                 "cellphoneNo",
                 "unitNumber",
-                "streetNumber",                "postalCode",
+                "streetNumber",                
+                "postalCode",
                 "accountNo"
             };
 
@@ -194,7 +192,6 @@ namespace RGO.Services.Services
             {
                 return await _db.RawSqlGet($"SELECT \"value\" FROM \"EmployeeData\" WHERE \"employeeId\" = {employee.Id} AND \"fieldCodeId\" = {fieldCode.Id}");
             }
-
         }
     }
 }
