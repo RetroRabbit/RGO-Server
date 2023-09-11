@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using System.Security.Claims;
@@ -17,8 +18,8 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [Authorize(Roles = "AdminOrSuperAdminPolicy")]
-    [HttpPost("add")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("add")]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
         try
@@ -69,7 +70,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")] 
     [HttpGet("employees")]
     public async Task<IActionResult> GetAllEmployees()
     {
