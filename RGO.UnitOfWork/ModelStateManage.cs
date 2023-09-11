@@ -137,7 +137,10 @@ public static class ModelStateManage
         var id = 1;
         return new EmployeeRole[]
         {
-            new EmployeeRole{Id = id, EmployeeId = 1, RoleId =1},
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =1},
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =2},
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =3},
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =4},
         };
     }
 
@@ -160,7 +163,8 @@ public static class ModelStateManage
             new FieldCode { Id = 13, Name = "People's Champion", Code = "champion", Status = ItemStatus.Active, Type = FieldCodeType.String },
             new FieldCode { Id = 14, Name = "Risk", Code = "risk", Status = ItemStatus.Active, Type = FieldCodeType.String },
             new FieldCode { Id = 15, Name = "Employee Name", Code = "name", Status = ItemStatus.Active, Type = FieldCodeType.String, Internal = true, InternalTable = "Employee" },
-            new FieldCode { Id = 16, Name = "Gender", Code = "gender", Status = ItemStatus.Active, Type = FieldCodeType.String, Internal = true, InternalTable = "Employee" },
+            new FieldCode { Id = 16, Name = "Gender", Code = "gender", Status = ItemStatus.Active, Type = FieldCodeType.Int, Internal = true, InternalTable = "Employee" },
+            new FieldCode { Id = 17, Name = "Cell Phone Number", Code = "cellphoneNo", Status = ItemStatus.Active, Type = FieldCodeType.String, Internal = true, InternalTable = "Employee" },
         };
     }
 
