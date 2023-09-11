@@ -130,8 +130,8 @@ namespace RGO.Services.Services
                     {
                         var updateEmployeeData = new EmployeeDataDto(
                             data.Id,
-                            data.Employee,
-                            data.FieldCode,
+                            data.EmployeeId,
+                            data.FieldCodeId,
                             fieldValue.value.ToString()
                             );
 
@@ -141,8 +141,8 @@ namespace RGO.Services.Services
                     {
                         var updateEmployeeData = new EmployeeDataDto(
                             0,
-                            employee,
-                            field,
+                            employee.Id,
+                            field.Id,
                             fieldValue.value.ToString()
                             );
                         await _employeeDataService.SaveEmployeeData(updateEmployeeData);
@@ -174,8 +174,7 @@ namespace RGO.Services.Services
                 "passportNumber",
                 "cellphoneNo",
                 "unitNumber",
-                "streetNumber",
-                "postalCode",
+                "streetNumber",                "postalCode",
                 "accountNo"
             };
 
