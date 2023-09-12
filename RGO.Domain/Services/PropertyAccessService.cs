@@ -5,7 +5,6 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using System.Data;
 using Npgsql;
-using System.Net.WebSockets;
 
 namespace RGO.Services.Services
 {
@@ -71,11 +70,6 @@ namespace RGO.Services.Services
             var get = _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId));
 
             bool canEdit = (get)
-/*                .AsNoTracking()
-                .Include(access => access.Role)
-                .Include(access => access.FieldCode)
-                .Select(access => access.ToDto()*/
-                //.ToListAsync()
                 .Where(access => access.Condition == 2).Any();
 
             if (!canEdit)

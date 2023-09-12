@@ -107,41 +107,6 @@ namespace RGO.Services.Tests.Services
 
         }
 
-        /*        [Fact]
-                public async Task ThrowsExceptionWhenEmployeeNotFound()
-                {
-                    _dbMock
-                        .Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                        .Returns(Enumerable.Empty<Employee>().AsQueryable());
-
-                    var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object);
-
-                    await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>(), "test@mail.com"));
-                }
-
-                [Fact]
-                public async Task ThrowsExceptionWhenNoEditAccess()
-                {
-                    var employee = new Employee { Id = 1, Email = "test@mail.com" };
-
-                    // Here, we are converting the list to IQueryable
-                    var employeesQueryable = new List<Employee> { employee }.AsQueryable();
-                    var propertyAccessQueryable = new List<PropertyAccess>().AsQueryable();
-
-                    // Setup the mock to return the IQueryable
-                    _dbMock
-                        .Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                        .Returns(employeesQueryable);
-
-                    _dbMock
-                        .Setup(r => r.PropertyAccess.Get(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
-                        .Returns(propertyAccessQueryable);
-
-                    var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object);
-
-                    await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>(), "test@mail.com"));
-                }*/
-
          [Fact]
         public async Task UpdatesInternalField()
         {
