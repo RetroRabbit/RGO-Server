@@ -23,6 +23,11 @@ public class EmployeeTypeService : IEmployeeTypeService
         return newEmployeeType;
     }
 
+    public async Task<List<EmployeeTypeDto>> GetEmployeeTypes()
+    {
+        return await _db.EmployeeType.GetAll();
+    }
+
     public async Task<EmployeeTypeDto> DeleteEmployeeType(string name)
     {
         EmployeeTypeDto existingEmployeeType = await GetEmployeeType(name);

@@ -53,7 +53,7 @@ namespace RGO.App.Controllers
                     foreach (var item in fieldCodeData.NewFieldCode)
                     {
                         await _fieldCodeService.SaveFieldCode(item);
-                    }
+                }
                 }
                 var getFieldCode = await _fieldCodeService.GetFieldCode(fieldCodeData.NewFieldCode[0].Name);
 

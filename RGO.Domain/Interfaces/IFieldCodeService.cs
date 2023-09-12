@@ -30,13 +30,13 @@ namespace RGO.Services.Interfaces
         /// </summary>
         /// <param name="fieldCodeDto"></param>
         /// <returns></returns>
-        Task<FieldCode> UpdateFieldCode(FieldCodeDto fieldCodeDto);
+        Task<FieldCodeDto> UpdateFieldCode(FieldCodeDto fieldCodeDto);
 
         /// <summary>
         /// Delete field code
         /// </summary>
         /// <param name="fieldCodeDto"></param>
         /// <returns></returns>
-        Task<FieldCode> DeleteFieldCode(FieldCodeDto fieldCodeDto);
+        Task<FieldCodeDto> DeleteFieldCode(FieldCodeDto fieldCodeDto);
     }
 }
