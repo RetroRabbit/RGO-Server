@@ -12,7 +12,8 @@ public record EmployeeAccessDto(
     bool Internal,              //Custom or internal
     string PropName,            //unique identifier
     string Label,               //Just for display
-    string Type,                //text, bool, int,
+    string Type,                //text, bool, int
+    string Value,               //value of the selected value
     string? Description,        //additional front-end info
     string? Regex,              //additional validation for front-end
     List<string>? Options);     //for drop-downs

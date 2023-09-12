@@ -150,7 +150,7 @@ public class Employee : IModel<EmployeeDto>
     }
 
     public EmployeeDto ToDto()
-    {
+     {
         return new EmployeeDto(
             Id,
             EmployeeNumber,
