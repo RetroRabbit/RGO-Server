@@ -5,7 +5,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/employeerolemanage/")]
+[Route("/employeerolemanager/")]
 [ApiController]
 public class EmployeeRoleManageController : ControllerBase
 {
