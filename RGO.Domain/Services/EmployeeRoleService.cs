@@ -18,6 +18,9 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<EmployeeRoleDto> SaveEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
+        if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
+            throw new Exception("Employee or Role not found");
+
         bool isEmployeeRoleExist = await CheckEmployeeRole(employeeRoleDto.Employee!.Email, employeeRoleDto.Role!.Description);
 
         if (isEmployeeRoleExist)
@@ -42,9 +45,6 @@ public class EmployeeRoleService : IEmployeeRoleService
             .Where(employeeRole => employeeRole.Role.Description == role)
             .Select(employeeRole => employeeRole)
             .FirstOrDefault();
-
-        if (toDelete is null)
-            throw new Exception("Employee Role not found");
 
         EmployeeRoleDto deletedEmployeeRole = await _db.EmployeeRole
                 .Delete(toDelete.Id);

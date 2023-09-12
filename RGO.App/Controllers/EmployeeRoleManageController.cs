@@ -21,81 +21,90 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [ProducesResponseType(typeof(Dictionary<string, List<string>>), 200)]
-    [ProducesErrorResponseType(typeof(string))]
-    [HttpGet("get")]
-    public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
+    [HttpPost("add")]
+    public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
         try
         {
-            var employeeRole = await _employeeRoleService.GetEmployeeRoles(email);
+            var employee = await _employeeService.GetEmployee(email);
 
-            Dictionary<string, List<string>> listOfRoles = employeeRole
-                            .GroupBy(e => e.Employee!.Email)
-                            .ToDictionary(
-                                e => e.Key,
-                                e => e.Select(employeeRole => employeeRole.Role!.Description).Distinct().ToList());
+            var currRole = await _roleService.CheckRole(role) ?
+                await _roleService.GetRole(role) :
+                await _roleService.SaveRole(new RoleDto(0, role));
 
-            return base.Ok(listOfRoles);
+            var employeeRole = new EmployeeRoleDto(0, employee, currRole);
+
+            var employeeRoleSaved = await _employeeRoleService.SaveEmployeeRole(employeeRole);
+
+            return CreatedAtAction(nameof(AddRole), employeeRoleSaved);
         }
         catch (Exception ex)
         {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [ProducesResponseType(201)]
-    [ProducesErrorResponseType(typeof(string))]
-    [HttpPost("assign/role")]
-    public async Task<IActionResult> AssignRole(
-        [FromQuery] string email,
-        [FromQuery] string role)
-    {
-        try
-        {
-            RoleDto roleDto;
-
-            try
-            {
-                roleDto = await _roleService.GetRole(role);
-            }
-            catch (Exception)
-            {
-                roleDto = await _roleService.SaveRole(new RoleDto(0, role));
-            }
-            var employeeRole = new EmployeeRoleDto(
-                0,
-                await _employeeService.GetEmployee(email),
-                roleDto);
-
-            var newEmployeeRole = await _employeeRoleService.SaveEmployeeRole(employeeRole);
-
-            return CreatedAtAction(nameof(AssignRole), new { email = newEmployeeRole.Employee!.Email, role = newEmployeeRole.Role!.Description }, newEmployeeRole);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [ProducesResponseType(typeof(EmployeeRoleDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
-    [HttpDelete("unassign/role")]
-    public async Task<IActionResult> UnassignRole(
-        [FromQuery] string email,
-        [FromQuery] string role)
+    [HttpDelete("remove")]
+    public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
         try
         {
-            var deletedEmployeeRole = await _employeeRoleService.DeleteEmployeeRole(email, role);
+            var employee = await _employeeService.GetEmployee(email);
 
-            return CreatedAtAction(nameof(UnassignRole), deletedEmployeeRole);
+            var roleToRemove = await _roleService.GetRole(role);
+
+            var employeeRole = await _employeeRoleService.GetEmployeeRole(email, role);
+
+            var employeeRoleRemoved = await _employeeRoleService.DeleteEmployeeRole(email, role);
+
+            return Ok(employeeRoleRemoved);
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [HttpGet("get")]
+    public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
+    {
+        try
+        {
+            var employeeRoles = await _employeeRoleService.GetEmployeeRoles(email);
+
+            var roles = employeeRoles
+                .Select(employeeRole => employeeRole.Role!.Description)
+                .ToList();
+
+            return Ok(roles);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("get-all")]
+    public async Task<IActionResult> GetAllRoles()
+    {
+        try
+        {
+            var roles = await _roleService.GetAll();
+
+            var rolesDescriptions = roles
+                .Select(role => role.Description)
+                .ToList();
+
+            return Ok(rolesDescriptions);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
         }
     }
 }

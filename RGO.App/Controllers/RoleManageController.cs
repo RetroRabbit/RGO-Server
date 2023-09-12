@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using RGO.UnitOfWork.Entities;
+using System.Security;
 
 namespace RGO.App.Controllers;
 
@@ -24,55 +26,22 @@ public class RoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("assign/permission")]
-    public async Task<IActionResult> AssignPermission(
-        [FromQuery] string role,
-        [FromQuery] string permission)
+    [HttpPost("add")]
+    public async Task<IActionResult> AddPermission([FromQuery] string role, [FromQuery] string permission)
     {
         try
         {
-            RoleDto roleDto;
-            try
-            {
-                roleDto = await _roleService.GetRole(role);
-            }
-            catch (Exception)
-            {
-                roleDto = await _roleService.SaveRole(new RoleDto(0, role));
-            }
+            var foundRole = await _roleService.CheckRole(role) ?
+                await _roleService.GetRole(role) :
+                await _roleService.SaveRole(new RoleDto(0, role));
 
-            RoleAccessDto roleAccessDto;
+            var roleAccess = await _roleAccessService.CheckRoleAccess(permission) ?
+                await _roleAccessService.GetRoleAccess(permission) :
+                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission));
 
-            try
-            {
-                roleAccessDto = await _roleAccessService.GetRoleAccess(permission);
-            }
-            catch (Exception)
-            {
-                roleAccessDto = await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission));
-            }
+            var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto(0, foundRole, roleAccess));
 
-            var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto(0,roleDto, roleAccessDto));
-
-            return CreatedAtAction(nameof(AssignPermission), new { role = roleAccessLink.Role!.Description, permission = roleAccessLink.RoleAccess!.Permission }, roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [ProducesResponseType(typeof(List<string>), 200)]
-    [ProducesErrorResponseType(typeof(string))]
-    [HttpGet("get")]
-    public async Task<IActionResult> GetRoleAccessLink([FromQuery] string role)
-    {
-        try
-        {
-            var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
-
-            return Ok(roleAccessLink.First().Value);
+            return CreatedAtAction(nameof(AddPermission), roleAccessLink);
         }
         catch (Exception ex)
         {
@@ -83,16 +52,56 @@ public class RoleManageController : ControllerBase
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(RoleAccessLinkDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
-    [HttpDelete("unassign/permission")]
-    public async Task<IActionResult> DeleteRoleAccessLink(
-        [FromQuery] string role,
-        [FromQuery] string access)
+    [HttpDelete("remove")]
+    public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission)
     {
         try
         {
-            var roleAccessLink = await _roleAccessLinkService.Delete(role, access);
+            var foundRole = await _roleService.CheckRole(role) ?
+                await _roleService.GetRole(role) :
+                await _roleService.SaveRole(new RoleDto(0, role));
 
-            return CreatedAtAction(nameof(DeleteRoleAccessLink), roleAccessLink);
+            var roleAccess = await _roleAccessService.CheckRoleAccess(permission) ?
+                await _roleAccessService.GetRoleAccess(permission) :
+                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission));
+
+            var roleAccessLink = await _roleAccessLinkService.Delete(role, permission);
+
+            return CreatedAtAction(nameof(RemovePermission), roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [ProducesResponseType(typeof(List<string>), 200)]
+    [ProducesErrorResponseType(typeof(string))]
+    [HttpGet("get")]
+    public async Task<IActionResult> GetRolePermissions([FromQuery] string role)
+    {
+        try
+        {
+            var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
+
+            return Ok(roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getall")]
+    public async Task<IActionResult> GetAllRoleAccessLink()
+    {
+        try
+        {
+            var roleAccessLink = await _roleAccessLinkService.GetAll();
+
+            return Ok(roleAccessLink);
         }
         catch (Exception ex)
         {
