@@ -20,7 +20,7 @@ public class EmployeeRoleManageController : ControllerBase
         _roleService = roleService;
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
@@ -44,7 +44,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(EmployeeRoleDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
     [HttpDelete("remove")]
@@ -68,7 +68,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
     {
