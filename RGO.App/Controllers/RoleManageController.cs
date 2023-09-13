@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
-using System.Security.Claims;
+using RGO.UnitOfWork.Entities;
+using System.Security;
 
 namespace RGO.App.Controllers;
 
@@ -11,20 +12,14 @@ namespace RGO.App.Controllers;
 public class RoleManageController : ControllerBase
 {
     private readonly IRoleAccessLinkService _roleAccessLinkService;
-    private readonly IEmployeeService _employeeService;
-    private readonly IEmployeeRoleService _employeeRoleService;
     private readonly IRoleService _roleService;
     private readonly IRoleAccessService _roleAccessService;
 
     public RoleManageController(
-        IEmployeeRoleService employeeRoleService,
-        IEmployeeService employeeService,
         IRoleAccessLinkService roleAccessLinkService,
         IRoleService roleService,
         IRoleAccessService roleAccessService)
     {
-        _employeeRoleService = employeeRoleService;
-        _employeeService = employeeService;
         _roleAccessLinkService = roleAccessLinkService;
         _roleService = roleService;
         _roleAccessService = roleAccessService;
@@ -32,55 +27,21 @@ public class RoleManageController : ControllerBase
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost("add")]
-    public async Task<IActionResult> AddRoleAccessLink([FromQuery] string? email,
-        [FromBody] RoleAccessLinkDto newRoleAccessLink)
+    public async Task<IActionResult> AddPermission([FromQuery] string role, [FromQuery] string permission)
     {
         try
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            string emailToUse = email ??
-                claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
+            var foundRole = await _roleService.CheckRole(role) ?
+                await _roleService.GetRole(role) :
+                await _roleService.SaveRole(new RoleDto(0, role));
 
-            var employee = await _employeeService.GetEmployee(emailToUse);
+            var roleAccess = await _roleAccessService.CheckRoleAccess(permission) ?
+                await _roleAccessService.GetRoleAccess(permission) :
+                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission));
 
-            var role = await _roleService.CheckRole(newRoleAccessLink.Role.Description) ?
-                await _roleService.GetRole(newRoleAccessLink.Role.Description) :
-                await _roleService.SaveRole(newRoleAccessLink.Role);
+            var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto(0, foundRole, roleAccess));
 
-            var employeRole = await _employeeRoleService.CheckEmployeeRole(emailToUse, role.Description) ?
-                await _employeeRoleService.GetEmployeeRole(emailToUse, role.Description) :
-                await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto(0, employee, role));
-
-            var roleAccess = await _roleAccessService.CheckRoleAccess(newRoleAccessLink.RoleAccess.Permission) ?
-                await _roleAccessService.GetRoleAccess(newRoleAccessLink.RoleAccess.Permission) :
-                await _roleAccessService.SaveRoleAccess(newRoleAccessLink.RoleAccess);
-
-            var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto(0,role, roleAccess));
-
-            return CreatedAtAction(nameof(AddRoleAccessLink), new { role = roleAccessLink.Role.Description, permission = roleAccessLink.RoleAccess.Permission }, roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("get")]
-    public async Task<IActionResult> GetRoleAccessLink([FromQuery] string? email)
-    {
-        try
-        {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-
-            string emailToUse = email ??
-                claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
-
-            var employee = await _employeeService.GetEmployee(emailToUse);
-
-            var roleAccessLink = await _roleAccessLinkService.GetRoleByEmployee(emailToUse);
-
-            return Ok(roleAccessLink);
+            return CreatedAtAction(nameof(AddPermission), roleAccessLink);
         }
         catch (Exception ex)
         {
@@ -89,14 +50,42 @@ public class RoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteRoleAccessLink([FromQuery] string role, [FromQuery] string access)
+    [ProducesResponseType(typeof(RoleAccessLinkDto), 200)]
+    [ProducesErrorResponseType(typeof(string))]
+    [HttpDelete("remove")]
+    public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission)
     {
         try
         {
-            var roleAccessLink = await _roleAccessLinkService.Delete(role, access);
+            var foundRole = await _roleService.CheckRole(role) ?
+                await _roleService.GetRole(role) :
+                await _roleService.SaveRole(new RoleDto(0, role));
 
-            return CreatedAtAction(nameof(DeleteRoleAccessLink), roleAccessLink);
+            var roleAccess = await _roleAccessService.CheckRoleAccess(permission) ?
+                await _roleAccessService.GetRoleAccess(permission) :
+                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission));
+
+            var roleAccessLink = await _roleAccessLinkService.Delete(role, permission);
+
+            return CreatedAtAction(nameof(RemovePermission), roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [ProducesResponseType(typeof(List<string>), 200)]
+    [ProducesErrorResponseType(typeof(string))]
+    [HttpGet("get")]
+    public async Task<IActionResult> GetRolePermissions([FromQuery] string role)
+    {
+        try
+        {
+            var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
+
+            return Ok(roleAccessLink);
         }
         catch (Exception ex)
         {

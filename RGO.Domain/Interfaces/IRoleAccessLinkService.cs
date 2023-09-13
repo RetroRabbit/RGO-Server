@@ -17,6 +17,13 @@ public interface IRoleAccessLinkService
     Task<Dictionary<string, List<string>>> GetByRole(string role);
 
     /// <summary>
+    /// Get Role Access Link By Permission
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
+    Task<Dictionary<string, List<string>>> GetByPermission(string permission);
+
+    /// <summary>
     /// Save Role Access Link
     /// </summary>
     /// <param name="roleAccessLinkDto"></param>
