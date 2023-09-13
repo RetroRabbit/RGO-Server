@@ -18,6 +18,13 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<EmployeeRoleDto> SaveEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
+        if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
+            throw new Exception("Employee or Role not found");
+
+        bool isEmployeeRoleExist = await CheckEmployeeRole(employeeRoleDto.Employee!.Email, employeeRoleDto.Role!.Description);
+
+        if (isEmployeeRoleExist)
+            throw new Exception("Employee Role already exist");
         EmployeeRoleDto newEmployeeRole = await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
         if (newEmployeeRole.Employee == null || newEmployeeRole.Role == null)
@@ -28,17 +35,16 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<EmployeeRoleDto> DeleteEmployeeRole(string email, string role)
     {
+        bool isEmployeeRoleExist = await CheckEmployeeRole(email, role);
+
+        if (!isEmployeeRoleExist) throw new Exception("Employee Role not found");
+
         var employeeRoles = await GetEmployeeRoles(email);
 
         EmployeeRoleDto? toDelete = employeeRoles
             .Where(employeeRole => employeeRole.Role.Description == role)
             .Select(employeeRole => employeeRole)
             .FirstOrDefault();
-
-        if (toDelete is null)
-        {
-            throw new Exception("Employee Role not found");
-        }
 
         EmployeeRoleDto deletedEmployeeRole = await _db.EmployeeRole
                 .Delete(toDelete.Id);

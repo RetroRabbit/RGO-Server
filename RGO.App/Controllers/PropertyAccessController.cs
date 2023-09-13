@@ -1,27 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RGO.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using RGO.Models.Update;
 using RGO.Services.Interfaces;
-using RGO.Services.Services;
-using System.Security.Claims;
-
 namespace RGO.App.Controllers;
 
 [Route("/access/")]
 public class PropertyAccessController : ControllerBase
 {
-    private readonly IPropertyAccessService _propertyService;
+    private readonly IPropertyAccessService _propertyAccessService;
 
-    public PropertyAccessController(IPropertyAccessService propertyAccess)
+    public PropertyAccessController(IPropertyAccessService propertyAccessService)
     {
-        _propertyService = propertyAccess;
+        _propertyAccessService = propertyAccessService;
     }
 
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetPropertyWithAccess([FromQuery] string email)
     {
         try
         {
-            var access = await _propertyService.GetPropertiesWithAccess(email);
+            var access = await _propertyAccessService.GetPropertiesWithAccess(email);
             return Ok(access);
         }
         catch (Exception ex)
@@ -30,12 +29,14 @@ public class PropertyAccessController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpPut("update")]
-    public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] EmployeeDto employee, [FromQuery] string email)
+    public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields, [FromQuery] string email)
     {
         try
         {
-            return NotFound("This section of the feature is still under Development");
+            await _propertyAccessService.UpdatePropertiesWithAccess( fields, email);
+            return Ok(); 
         }
         catch (Exception ex)
         {
