@@ -14,15 +14,17 @@ namespace RGO.UnitOfWork.Tests.Entities
 {
     public class FieldCodeUnitTests
     {
+        //TODO: Update
         private readonly Mock<IUnitOfWork> _dbMock;
         private readonly FieldCodeService _fieldCodeService;
+        private readonly FieldCodeOptionsService _fieldCodeOptionsService;
         private readonly FieldCodeDto _fieldCodeDto;
         private readonly FieldCodeDto _fieldCodeDto2;
 
         public FieldCodeUnitTests()
         {
             _dbMock = new Mock<IUnitOfWork>();
-            _fieldCodeService = new FieldCodeService(_dbMock.Object);
+            _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService);
             _fieldCodeDto = new FieldCodeDto(
                 Id: 0,
                 Code: "AAA000",
