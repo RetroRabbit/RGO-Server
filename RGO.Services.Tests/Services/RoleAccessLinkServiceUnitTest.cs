@@ -157,7 +157,45 @@ public class RoleAccessLinkServiceUnitTest
 
         var result = await _roleAccessLinkService.GetByRole(randLink.Role.Description);
 
-        Assert.Equal(1, result.Count);
+        Assert.Equal(2, result.First().Value.Count);
+        Assert.Equal(expect.Keys, result.Keys);
+        Assert.Equal(expect.Values, result.Values);
+        _dbMock.Verify(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetBypermission()
+    {
+        var roleAccessLinks = new List<RoleAccessLink>
+        {
+            new RoleAccessLink { Id = 1, Role = new Role { Id = 1, Description = "Employee" }, RoleAccess = new RoleAccess { Id = 1, Permission = "ViewEmployee" } },
+            new RoleAccessLink { Id = 2, Role = new Role { Id = 1, Description = "Employee" }, RoleAccess = new RoleAccess { Id = 2, Permission = "EditEmployee" } },
+            new RoleAccessLink { Id = 3, Role = new Role { Id = 2, Description = "Manager" }, RoleAccess = new RoleAccess { Id = 1, Permission = "ViewEmployee" } },
+            new RoleAccessLink { Id = 4, Role = new Role { Id = 2, Description = "Manager" }, RoleAccess = new RoleAccess { Id = 2, Permission = "EditEmployee" } },
+        }.AsQueryable().BuildMock();
+
+        var randLink = roleAccessLinks
+            .Where(r => r.Role.Id == 1)
+            .Select(r => r.ToDto())
+            .First();
+
+        Expression<Func<RoleAccessLink, bool>> criteria = r =>
+            r.RoleAccess.Permission == randLink.RoleAccess.Permission;
+
+        var expect = await roleAccessLinks
+            .Where(criteria)
+            .GroupBy(r => r.Role.Description)
+            .ToDictionaryAsync(
+                group => group.Key,
+                group => group.Select(r => r.RoleAccess.Permission).ToList());
+
+        _dbMock
+            .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
+            .Returns(roleAccessLinks.Where(criteria));
+
+        var result = await _roleAccessLinkService.GetByPermission(randLink.RoleAccess.Permission);
+
+        Assert.Equal(2, result.Count);
         Assert.Equal(expect.Keys, result.Keys);
         Assert.Equal(expect.Values, result.Values);
         _dbMock.Verify(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()), Times.Once);

@@ -17,9 +17,10 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> SaveRole(RoleDto roleDto)
     {
-        RoleDto newRole = await _db.Role.Add(new Role(roleDto));
+        bool isRoleExist = await CheckRole(roleDto.Description);
+        if (isRoleExist) return await GetRole(roleDto.Description);
 
-        return newRole;
+        return await _db.Role.Add(new Role(roleDto));
     }
 
     public async Task<RoleDto> DeleteRole(string name)
@@ -39,10 +40,12 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> GetRole(string name)
     {
-        RoleDto existingRole = await _db.Role
+        RoleDto? existingRole = await _db.Role
             .Get(role => role.Description == name)
             .Select(role => role.ToDto())
-            .FirstAsync();
+            .FirstOrDefaultAsync();
+
+        if (existingRole == null) throw new Exception($"Role not found({name})");
 
         return existingRole;
     }
