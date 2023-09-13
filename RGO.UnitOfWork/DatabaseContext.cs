@@ -30,6 +30,7 @@ namespace RGO.UnitOfWork
             modelBuilder.Entity<FieldCode>().HasData(ModelStateManage.FieldCodeSet());
             modelBuilder.Entity<FieldCodeOptions>().HasData(ModelStateManage.FieldCodeOptionSet());
             modelBuilder.Entity<PropertyAccess>().HasData(ModelStateManage.PropertyAccessSet());
+            modelBuilder.Entity<EmployeeData>().HasData(ModelStateManage.EmployeeDataSet());
         }
 
         public DbSet<Employee> employees { get; set; }
