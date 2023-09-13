@@ -1,4 +1,5 @@
-﻿using RGO.UnitOfWork.Entities;
+﻿using RGO.Models;
+using RGO.UnitOfWork.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,16 @@ namespace RGO.UnitOfWork.Tests.Entities
             Assert.IsType<Chart>(chart);
             Assert.NotNull(chart);
         }
-      
+
+
+        [Fact]
+        public async Task ChartTodtoTest()
+        {
+            var chart = new Chart(new ChartDto(1, "Genders", "Pie", new List<string> { "Male", "Female" }
+            , new List<int> { 1, 1 }));
+            Assert.IsType<ChartDto>(chart.ToDto());
+            Assert.NotNull(chart.ToDto());
+        }
+
     }
 }
