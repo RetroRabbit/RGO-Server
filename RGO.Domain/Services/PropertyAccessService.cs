@@ -145,38 +145,6 @@ namespace RGO.Services.Services
             }
         }
 
-        public static object FindRepository(IUnitOfWork unitOfWork, string table)
-        {
-            var repository = typeof(IUnitOfWork)
-            .GetProperties()
-            .Where(property => property.Name.Contains(table, StringComparison.OrdinalIgnoreCase))
-            .Select(property => property.GetValue(unitOfWork))
-            .FirstOrDefault();
-            if (repository == null)
-            {
-                throw new Exception("table not found");
-            }
-            return repository;
-        }
-
-        public static bool ShouldParse(string code)
-        {
-            string[] notAllowedStrings = {
-                "employeeNumber",
-                "taxNumber",
-                "idNumber",
-                "passportNumber",
-                "cellphoneNo",
-                "unitNumber",
-                "streetNumber",                
-                "postalCode",
-                "accountNo"
-            };
-
-            bool allowed = notAllowedStrings.Contains(code.Trim());
-            return allowed;
-        }
-
         public async Task<string> GetSqlValues(FieldCodeDto fieldCode, EmployeeDto employee)
         {
             var employeeFilterByColumn = fieldCode.InternalTable == "Employee" ? "id" : "employeeId";
