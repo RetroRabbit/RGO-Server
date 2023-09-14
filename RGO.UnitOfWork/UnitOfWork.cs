@@ -14,6 +14,7 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeDataRepository EmployeeData { get; }
     public IEmployeeDocumentRepository EmployeeDocument { get; }
     public IEmployeeProjectRepository EmployeeProject { get; }
+    public IEmployeeEvaluationRepository EmployeeEvaluation { get; }
     public IEmployeeRepository Employee { get; }
     public IEmployeeRoleRepository EmployeeRole { get; }
     public IEmployeeTypeRepository EmployeeType { get; }
@@ -38,6 +39,7 @@ public class UnitOfWork : IUnitOfWork
         EmployeeDocument = new EmployeeDocumentRepository(_db);
         EmployeeData = new EmployeeDataRepository(_db);
         EmployeeProject = new EmployeeProjectRepository(_db);
+        EmployeeEvaluation = new EmployeeEvaluationRepository(_db);
         Employee = new EmployeeRepository(_db);
         EmployeeRole = new EmployeeRoleRepository(_db);
         EmployeeType = new EmployeeTypeRepository(_db);
