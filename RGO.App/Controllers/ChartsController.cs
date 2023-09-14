@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using RGO.Services.Services;
 
 namespace RGO.App.Controllers
 {
@@ -72,5 +73,36 @@ namespace RGO.App.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateChartData(ChartDto chartDto)
+        {
+            try
+            {
+                var saveChart = await _chartService.UpdateChart(chartDto);
+                if (saveChart == null) throw new Exception("Chart data not updated");
+
+                return Ok(saveChart);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteChart([FromQuery] int Id)
+        {
+            try
+            {
+                var deletedChart = await _chartService.DeleteChart(Id);
+                return Ok(deletedChart);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
     }
 }
