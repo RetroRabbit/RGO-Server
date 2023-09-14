@@ -36,5 +36,19 @@ namespace RGO.Services.Interfaces
         /// <param name="dataType"></param>
         /// <returns></returns>
         Task<ChartDataDto> GetChartData(string dataType);
+
+        /// <summary>
+        /// Delete a Chart 
+        /// </summary>
+        /// <param name="chartId"></param>
+        /// <returns></returns>
+        Task<ChartDto> DeleteChart(int chartId);
+
+        /// <summary>
+        /// Update Chart
+        /// </summary>
+        /// <param name="chartDto"></param>
+        /// <returns></returns>
+        Task<ChartDto> UpdateChart(ChartDto chartDto);
     }
 }
