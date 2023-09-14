@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RGO.Models;
 using RGO.UnitOfWork.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Reflection.Emit;
-using System.Xml.Linq;
 
 namespace RGO.UnitOfWork.Entities
 {
@@ -36,16 +28,16 @@ namespace RGO.UnitOfWork.Entities
         public ChartRoleLink(ChartRoleLinkDto chartRoleLinkDto)
         {
             Id = chartRoleLinkDto.Id;
-            ChartId = chartRoleLinkDto.Chart.Id;
-            RoleId = chartRoleLinkDto.Role.Id;
+            ChartId = chartRoleLinkDto.Chart!.Id;
+            RoleId = chartRoleLinkDto.Role!.Id;
         }
 
         public ChartRoleLinkDto ToDto()
         {
             return new ChartRoleLinkDto(
                 Id,
-                Chart.ToDto(),
-                Role.ToDto()
+                Chart?.ToDto(),
+                Role?.ToDto()
           );
         }
 
