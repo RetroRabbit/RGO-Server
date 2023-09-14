@@ -21,7 +21,7 @@ namespace RGO.UnitOfWork.Tests.Entities
 
 
         [Fact]
-        public async Task ChartTodtoTest()
+        public async Task ChartToDtoTest()
         {
             var chart = new Chart(new ChartDto(1, "Genders", "Pie", new List<string> { "Male", "Female" }
             , new List<int> { 1, 1 }));
