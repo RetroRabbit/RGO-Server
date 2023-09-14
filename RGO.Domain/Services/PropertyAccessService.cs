@@ -67,13 +67,10 @@ namespace RGO.Services.Services
                 .Select(r => r.Role.Id)
                 .ToList();
 
-            bool canEdit = (await _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId))
-                .AsNoTracking()
-                .Include(access => access.Role)
-                .Include(access => access.FieldCode)
-                .Select(access => access.ToDto())
-                .ToListAsync())
-                .Where(access => access.Condition != 2).Any();
+            var get = _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId));
+
+            bool canEdit = (get)
+                .Where(access => access.Condition == 2).Any();
 
             if (!canEdit)
             {
@@ -146,38 +143,6 @@ namespace RGO.Services.Services
                     }
                 }
             }
-        }
-
-        public static object FindRepository(IUnitOfWork unitOfWork, string table)
-        {
-            var repository = typeof(IUnitOfWork)
-            .GetProperties()
-            .Where(property => property.Name.Contains(table, StringComparison.OrdinalIgnoreCase))
-            .Select(property => property.GetValue(unitOfWork))
-            .FirstOrDefault();
-            if (repository == null)
-            {
-                throw new Exception("table not found");
-            }
-            return repository;
-        }
-
-        public static bool ShouldParse(string code)
-        {
-            string[] notAllowedStrings = {
-                "employeeNumber",
-                "taxNumber",
-                "idNumber",
-                "passportNumber",
-                "cellphoneNo",
-                "unitNumber",
-                "streetNumber",                
-                "postalCode",
-                "accountNo"
-            };
-
-            bool allowed = notAllowedStrings.Contains(code.Trim());
-            return allowed;
         }
 
         public async Task<string> GetSqlValues(FieldCodeDto fieldCode, EmployeeDto employee)

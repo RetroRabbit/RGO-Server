@@ -275,9 +275,18 @@ public static class ModelStateManage
             new PropertyAccess{Id = id++, RoleId = 1, Condition = 0, FieldCodeId= 9},
             new PropertyAccess{Id = id++, RoleId = 1, Condition = 1, FieldCodeId= 1},
             new PropertyAccess{Id = id++, RoleId = 1, Condition = 1, FieldCodeId= 7},
-            new PropertyAccess{Id = id++, RoleId = 1, Condition = 1, FieldCodeId= 13},
+            new PropertyAccess{Id = id++, RoleId = 1, Condition = 2, FieldCodeId= 13},
             new PropertyAccess{Id = id++, RoleId = 1, Condition = 2, FieldCodeId= 15},
             new PropertyAccess{Id = id++, RoleId = 1, Condition = 2, FieldCodeId= 16},
+        };
+    }
+
+    public static EmployeeData[] EmployeeDataSet()
+    {
+        var id = 1;
+        return new EmployeeData[]
+        {
+            new EmployeeData{Id = id++, EmployeeId = 1, FieldCodeId = 13, Value = "James"},
         };
     }
 

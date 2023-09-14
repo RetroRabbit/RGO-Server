@@ -133,4 +133,23 @@ public class ChartService : IChartService
         return chartDataDto;
     }
 
+    public async Task<ChartDto> DeleteChart(int chartId)
+    {
+        return await _db.Chart.Delete(chartId);
+    }
+
+    public async Task<ChartDto> UpdateChart(ChartDto chartDto)
+    {
+
+        var charts = await _db.Chart.GetAll();
+        var chartData = charts
+            .Where(chartData => chartData.Id == chartDto.Id)
+            .Select(chartData => chartData)
+            .FirstOrDefault();
+
+        if (chartData == null) { throw new Exception("No chart data record found"); }
+        var updatedChart = await _db.Chart.Update(new Chart(chartDto));
+
+        return updatedChart;
+    }
 }
