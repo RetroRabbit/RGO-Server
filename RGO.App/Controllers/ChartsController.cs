@@ -104,5 +104,18 @@ namespace RGO.App.Controllers
             }
         }
 
+        [HttpGet("column")]
+        public async Task<IActionResult> GetColumns()
+        {
+            try
+            {
+                var columns = await _chartService.GetColumnsForTable();
+                return Ok(columns);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

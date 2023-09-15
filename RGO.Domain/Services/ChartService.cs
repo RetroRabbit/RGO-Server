@@ -152,4 +152,23 @@ public class ChartService : IChartService
 
         return updatedChart;
     }
+
+    public async Task<string[]> GetColumnsForTable()
+    {
+     
+        var entityType = typeof(Employee);
+
+        if (entityType != null)
+        {
+            var columnNames = entityType.GetProperties().Select(p => p.Name).ToArray();
+            if (columnNames == null || columnNames.Length == 0)
+            {
+                throw new Exception("No employee column names found");
+            }
+            return columnNames;
+        }
+
+        throw new Exception("Employee table not found");
+    }
+
 }
