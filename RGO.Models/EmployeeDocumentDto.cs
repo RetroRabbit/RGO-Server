@@ -4,7 +4,7 @@ namespace RGO.Models;
 
 public record EmployeeDocumentDto(
     int Id,
-    EmployeeDto Employee,
+    EmployeeDto? Employee,
     OnboardingDocumentDto? OnboardingDocument,
     string Reference,
     string FileName,

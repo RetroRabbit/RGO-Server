@@ -49,12 +49,12 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
     public EmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
     {
         Id = employeeCertificationDto.Id;
-        EmployeeId = employeeCertificationDto.Employee.Id;
-        EmployeeDocumentId = employeeCertificationDto.EmployeeDocument.Id;
+        EmployeeId = employeeCertificationDto.Employee!.Id;
+        EmployeeDocumentId = employeeCertificationDto.EmployeeDocument!.Id;
         Title = employeeCertificationDto.Title;
         Publisher = employeeCertificationDto.Publisher;
         Status = employeeCertificationDto.Status;
-        AuditBy = employeeCertificationDto.AuditBy?.Id;
+        AuditBy = employeeCertificationDto.AuditBy!.Id;
         AuditDate = employeeCertificationDto.AuditDate;
         AuditNote = employeeCertificationDto.AuditNote;
     }
@@ -63,8 +63,8 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
     {
         return new EmployeeCertificationDto(
             Id,
-            Employee.ToDto(),
-            EmployeeDocument.ToDto(),
+            Employee?.ToDto(),
+            EmployeeDocument?.ToDto(),
             Title,
             Publisher,
             Status,
