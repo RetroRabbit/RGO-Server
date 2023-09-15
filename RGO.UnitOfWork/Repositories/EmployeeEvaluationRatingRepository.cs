@@ -4,7 +4,7 @@ using RGO.UnitOfWork.Interfaces;
 
 namespace RGO.UnitOfWork.Repositories;
 
-public class EmployeeEvaluationRatingRepository : BaseRepository<EmployeeEvaluationRating, EmployeeEvaluationRatingsDto>, IEmployeeEvaluationRatingRepository
+public class EmployeeEvaluationRatingRepository : BaseRepository<EmployeeEvaluationRating, EmployeeEvaluationRatingDto>, IEmployeeEvaluationRatingRepository
 {
     public EmployeeEvaluationRatingRepository(DatabaseContext databaseContext) : base(databaseContext)
     {
