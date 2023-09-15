@@ -13,6 +13,9 @@ public interface IUnitOfWork
     IEmployeeDataRepository EmployeeData { get; }
     IEmployeeProjectRepository EmployeeProject { get; }
     IEmployeeEvaluationRepository EmployeeEvaluation { get; }
+    IEmployeeEvaluationRatingRepository EmployeeEvaluationRating { get; }
+    IEmployeeEvaluationTemplateRepository EmployeeEvaluationTemplate { get; }
+    IEmployeeEvaluationTemplateItemRepository EmployeeEvaluationTemplateItem { get; }
     IEmployeeRepository Employee { get; }
     IEmployeeRoleRepository EmployeeRole { get; }
     IEmployeeTypeRepository EmployeeType { get; }
@@ -21,10 +24,10 @@ public interface IUnitOfWork
     IRoleRepository Role { get; }
     IPropertyAccessRepository PropertyAccess { get; }
     IFieldCodeRepository FieldCode { get; }
+    IFieldCodeOptionsRepository FieldCodeOptions { get; }
     IRoleAccessLinkRepository RoleAccessLink { get; }
     IChartRepository Chart { get; }
     IChartRoleLinkRepositories ChartRoleLink { get; }
-    IFieldCodeOptionsRepository FieldCodeOptions { get; }
 
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
