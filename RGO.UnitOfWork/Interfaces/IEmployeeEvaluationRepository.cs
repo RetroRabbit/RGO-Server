@@ -2,6 +2,7 @@
 using RGO.UnitOfWork.Entities;
 
 namespace RGO.UnitOfWork.Interfaces;
-    public interface IEmployeeEvaluationRepository : IRepository<EmployeeEvaluation, EmployeeEvaluationDto>
-    {
-    }
+
+public interface IEmployeeEvaluationRepository : IRepository<EmployeeEvaluation, EmployeeEvaluationDto>
+{
+}
