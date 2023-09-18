@@ -22,7 +22,6 @@ public class PropertyAccessController : ControllerBase
         try
         {
             var access = await _propertyAccessService.GetPropertiesWithAccess(email);
-
             return Ok(access);
         }
         catch (Exception ex)
