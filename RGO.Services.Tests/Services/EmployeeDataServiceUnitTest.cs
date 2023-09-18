@@ -1,25 +1,20 @@
 ﻿using Moq;
 using RGO.Models;
-using RGO.Services.Interfaces;
 using RGO.Services.Services;
+using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities
+namespace RGO.Tests.Serices
 {
-    public class EmployeeDataUnitTest
+    public class EmployeeDataServiceUnitTest
     {
         private readonly Mock<IUnitOfWork> _dbMock;
         private readonly EmployeeDataService _employeeDataService;
         private readonly EmployeeDataDto _employeeDataDto;
         private readonly EmployeeDataDto _employeeDataDto2;
 
-        public EmployeeDataUnitTest() {
+        public EmployeeDataServiceUnitTest() {
 
             _dbMock = new Mock<IUnitOfWork>();
             _employeeDataService = new EmployeeDataService(_dbMock.Object);
@@ -33,14 +28,6 @@ namespace RGO.UnitOfWork.Tests.Entities
                 FieldCodeId: 1,
                 Value: "string"
                 );
-        }
-
-        [Fact]
-        public async Task EmployeeDataTest()
-        {
-            var employeeData = new EmployeeData();
-            Assert.IsType<EmployeeData>(employeeData);
-            Assert.NotNull(employeeData);
         }
 
         [Fact]
