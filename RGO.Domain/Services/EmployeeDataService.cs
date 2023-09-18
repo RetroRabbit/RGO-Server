@@ -1,17 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using System.Xml.Linq;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RGO.Services.Services
 {
     public class EmployeeDataService : IEmployeeDataService
     {
         private readonly IUnitOfWork _db;
-
         public EmployeeDataService(IUnitOfWork db)
         {
             _db = db;
@@ -27,7 +28,7 @@ namespace RGO.Services.Services
 
             if (employeeData != null) { throw new Exception("Existing employee data record found"); }
             var newEmployeeData = await _db.EmployeeData.Add(new EmployeeData(employeeDataDto));
-         
+
             return newEmployeeData;
         }
 
@@ -75,7 +76,7 @@ namespace RGO.Services.Services
                 .FirstOrDefault();
 
             if (employeeData == null) { throw new Exception("No employee data record found"); }
-            var deletedData =await _db.EmployeeData.Delete(new EmployeeData(employeeDataDto).Id);
+            var deletedData = await _db.EmployeeData.Delete(new EmployeeData(employeeDataDto).Id);
             return deletedData;
         }
     }

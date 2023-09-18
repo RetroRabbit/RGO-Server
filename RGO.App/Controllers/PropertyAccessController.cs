@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models.Update;
 using RGO.Services.Interfaces;
+
 namespace RGO.App.Controllers;
 
 [Route("/access/")]
@@ -28,15 +29,15 @@ public class PropertyAccessController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
+   
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpPut("update")]
     public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields, [FromQuery] string email)
     {
         try
         {
-            await _propertyAccessService.UpdatePropertiesWithAccess( fields, email);
-            return Ok(); 
+            await _propertyAccessService.UpdatePropertiesWithAccess(fields, email);
+            return Ok();
         }
         catch (Exception ex)
         {
