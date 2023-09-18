@@ -24,18 +24,27 @@ namespace RGO.Services.Services
 
         private string[] Scopes = { GmailService.Scope.GmailSend };
         private string ApplicationName = "Retro HR";
+
         public EmployeeDataConsumer(ConnectionFactory factory)
         {
-            _factory = factory;
-            _connection = _factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            try
+            {
+                _factory = factory;
+                _connection = _factory.CreateConnection();
+                _channel = _connection.CreateModel();
+                _channel.QueueDeclare(queue: QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-            _consumeTimer = new System.Timers.Timer(OneHourInterval);
-            _consumeTimer.Elapsed += OnTimedEvent;
-            _consumeTimer.AutoReset = true;
-            _consumeTimer.Enabled = true;
+                _consumeTimer = new System.Timers.Timer(OneHourInterval);
+                _consumeTimer.Elapsed += OnTimedEvent;
+                _consumeTimer.AutoReset = true;
+                _consumeTimer.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }    
         }
+
         private void SendEmail(Employee employee)
         { 
             if (!IsValidEmail(employee.Email))
@@ -65,7 +74,6 @@ namespace RGO.Services.Services
             var message = CreateMessage(employee);
             SendMessage(message, service);
         }
-
 
         private Google.Apis.Gmail.v1.Data.Message CreateMessage(Employee employee)
         {

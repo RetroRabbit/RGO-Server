@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
@@ -39,98 +40,70 @@ public class ChartService : IChartService
     {
         var employees = await _employeeService.GetAll();
 
-        Dictionary<string, int> dataDictionary = null;
+        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
 
-        switch (dataType)
+        if (propertyInfo == null)
         {
-            case "Gender":
-                dataDictionary = employees
-                    .GroupBy(x => x.Gender)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Race":
-                dataDictionary = employees
-                    .GroupBy(x => x.Race)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Nationality":
-                dataDictionary = employees
-                    .GroupBy(x => x.Nationality)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Level":
-                dataDictionary = employees
-                    .GroupBy(x => x.Level)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
+            throw new ArgumentException($"Invalid dataType: {dataType}");
         }
 
-        if (dataDictionary == null)
+        try
         {
-            return null;
+            var dataDictionary = employees
+                .GroupBy(x => propertyInfo.GetValue(x))
+                .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
+
+            var labels = dataDictionary.Keys.ToList();
+            var data = dataDictionary.Values.ToList();
+
+            var chart = new Chart
+            {
+                Name = chartName,
+                Type = chartType,
+                Labels = labels,
+                Data = data
+            };
+
+            return await _db.Chart.Add(chart);
         }
-
-        var labels = dataDictionary.Keys.ToList();
-        var data = dataDictionary.Values.ToList();
-
-        var chart = new Chart
+        catch (Exception ex)
         {
-            Name = chartName,
-            Type = chartType,
-            Labels = labels,
-            Data = data
-        };
-
-        return await _db.Chart.Add(chart);
+            throw new Exception("An error occurred while creating the chart.", ex);
+        }
     }
 
     public async Task<ChartDataDto> GetChartData(string dataType)
     {
         var employees = await _employeeService.GetAll();
 
-        Dictionary<string, int> chartData = null;
+        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
 
-        switch (dataType)
+        if (propertyInfo == null)
         {
-            case "Gender":
-                chartData = employees
-                    .GroupBy(x => x.Gender)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Race":
-                chartData = employees
-                    .GroupBy(x => x.Race)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Nationality":
-                chartData = employees
-                    .GroupBy(x => x.Nationality)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Level":
-                chartData = employees
-                    .GroupBy(x => x.Level)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            default:
-                return null;
+            throw new ArgumentException($"Invalid dataType: {dataType}");
         }
 
-        if (chartData == null)
+        try
         {
-            return null;
+            var chartData = employees
+                .GroupBy(x => propertyInfo.GetValue(x))
+                .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
+
+            var labels = chartData.Keys.ToList();
+            var data = chartData.Values.ToList();
+
+            var chartDataDto = new ChartDataDto
+            {
+                Labels = labels,
+                Data = data
+            };
+
+            return chartDataDto;
         }
-
-        var labels = chartData.Keys.ToList();
-        var data = chartData.Values.ToList();
-
-        var chartDataDto = new ChartDataDto
+        catch (Exception ex)
         {
-            Labels = labels,
-            Data = data
-        };
-
-        return chartDataDto;
+            throw new Exception("An error occurred while processing the data.", ex);
+        }
     }
 
     public async Task<ChartDto> DeleteChart(int chartId)
@@ -151,5 +124,32 @@ public class ChartService : IChartService
         var updatedChart = await _db.Chart.Update(new Chart(chartDto));
 
         return updatedChart;
+    }
+
+    public string[] GetColumnsFromTable()
+    {
+        var entityType = typeof(Employee);
+
+        if (entityType != null)
+        {
+            var quantifiableColumnNames = entityType.GetProperties()
+                .Where(p => IsQuantifiableType(p.PropertyType) && !p.Name.Equals("Id") && !p.Name.Equals("EmployeeTypeId"))
+                .Select(p => p.Name)
+                .ToArray();
+
+            if (quantifiableColumnNames == null || quantifiableColumnNames.Length == 0)
+            {
+                throw new Exception("No quantifiable column names found");
+            }
+
+            return quantifiableColumnNames;
+        }
+
+        throw new Exception("Employee table not found");
+    }
+
+    private bool IsQuantifiableType(Type type)
+    {
+        return typeof(IConvertible).IsAssignableFrom(type) && type != typeof(string);
     }
 }
