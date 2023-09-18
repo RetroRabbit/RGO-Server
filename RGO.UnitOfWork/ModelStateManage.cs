@@ -18,49 +18,6 @@ public static class ModelStateManage
         };
     }
 
-    /*public static Employee[] EmployeeSet()
-    {
-        var id = 1;
-        return new Employee[]
-        {
-            new Employee
-            {
-                Id = id,
-                EmployeeNumber = "8464",
-                TaxNumber = "8465468",
-                EngagementDate = DateOnly.FromDateTime(DateTime.Now),
-                TerminationDate = null,
-                ReportingLine = null,
-                Disability = false,
-                DisabilityNotes = "na",
-                Level = 4,
-                EmployeeTypeId = 2,
-                Notes = "asdsd asdsad sadsad",
-                LeaveInterval = 1,
-                SalaryDays = 1,
-                PayRate = 1,
-                Salary = 10,
-                Title = "Mr",
-                Initials = "KGM",
-                Name = "Kamogelo",
-                Surname = "Matsomela",
-                DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
-                CountryOfBirth = "SA",
-                Nationality = "South African",
-                IdNumber = "0231646",
-                PassportNumber = null,
-                PassportExpirationDate = null,
-                PassportCountryIssue = null,
-                Race = Race.Black,
-                Gender = Gender.Male,
-                Photo = "asfsadf/asdfsad",
-                Email = "kmatsomela@retrorabbit.co.za",
-                PersonalEmail = "asdasd@gmail.com",
-                CellphoneNo = "085456565656"
-            }
-        };
-    }*/
-
     public static Employee[] EmployeeSet()
     {
         var id = 1;
@@ -78,7 +35,7 @@ public static class ModelStateManage
                 DisabilityNotes = "na",
                 Level = 4,
                 EmployeeTypeId = 2,
-                Notes = "asdsd asdsad sadsad",
+                Notes = "Cannot English very good",
                 LeaveInterval = 1,
                 SalaryDays = 1,
                 PayRate = 1,
@@ -113,7 +70,7 @@ public static class ModelStateManage
                 DisabilityNotes = "na",
                 Level = 4,
                 EmployeeTypeId = 2,
-                Notes = "asdsd asdsad sadsad",
+                Notes = "Weirdly/Oddly/Strangely enjoys Unit Testing",
                 LeaveInterval = 1,
                 SalaryDays = 1,
                 PayRate = 1,
@@ -148,7 +105,7 @@ public static class ModelStateManage
                 DisabilityNotes = "na",
                 Level = 4,
                 EmployeeTypeId = 2,
-                Notes = "asdsd asdsad sadsad",
+                Notes = "Enjoys making fun of the above",
                 LeaveInterval = 1,
                 SalaryDays = 1,
                 PayRate = 1,
@@ -244,18 +201,6 @@ public static class ModelStateManage
         };
     }
 
-
-    /*public static EmployeeRole[] EmployeeRole()
-    {
-        var id = 1;
-        return new EmployeeRole[]
-        {
-            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =1},
-            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =2},
-            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =3},
-            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =4},
-        };
-    }*/
     public static EmployeeRole[] EmployeeRole()
     {
         var id = 1;
