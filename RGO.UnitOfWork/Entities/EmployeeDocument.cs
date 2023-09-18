@@ -46,7 +46,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     {
         Id = employeeDocumentsDto.Id;
         EmployeeId = employeeDocumentsDto.Employee!.Id;
-        OnboardingDocumentId = employeeDocumentsDto.OnboardingDocument?.Id;
+        OnboardingDocumentId = employeeDocumentsDto.OnboardingDocument!.Id;
         Reference = employeeDocumentsDto.Reference;
         FileName = employeeDocumentsDto.FileName;
         Blob = employeeDocumentsDto.Blob;

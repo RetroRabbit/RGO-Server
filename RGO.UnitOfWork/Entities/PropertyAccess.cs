@@ -24,9 +24,9 @@ public class PropertyAccess : IModel<PropertyAccessDto>
     [ForeignKey("FieldCode")]
     public int FieldCodeId { get; set; }
 
-    public virtual Role? Role { get; set; }
+    public virtual Role Role { get; set; }
 
-    public virtual FieldCode? FieldCode { get; set; }
+    public virtual FieldCode FieldCode { get; set; }
 
     public PropertyAccess()
     {
