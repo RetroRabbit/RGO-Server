@@ -24,7 +24,6 @@ namespace RGO.App
             _factory.Password = "guest";
             EmployeeDataConsumer emailer = new EmployeeDataConsumer(_factory);
             EmployeeService._employeeFactory = _factory;
-
             var builder = WebApplication.CreateBuilder(args);
             ConfigurationManager configuration = builder.Configuration;
             configuration.AddJsonFile("appsettings.json");
