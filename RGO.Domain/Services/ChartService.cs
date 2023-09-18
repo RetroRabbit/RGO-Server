@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
@@ -41,34 +42,16 @@ public class ChartService : IChartService
 
         Dictionary<string, int> dataDictionary = null;
 
-        switch (dataType)
-        {
-            case "Gender":
-                dataDictionary = employees
-                    .GroupBy(x => x.Gender)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Race":
-                dataDictionary = employees
-                    .GroupBy(x => x.Race)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Nationality":
-                dataDictionary = employees
-                    .GroupBy(x => x.Nationality)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Level":
-                dataDictionary = employees
-                    .GroupBy(x => x.Level)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-        }
+        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
 
-        if (dataDictionary == null)
+        if (propertyInfo == null)
         {
             return null;
         }
+
+        dataDictionary = employees
+            .GroupBy(x => propertyInfo.GetValue(x))
+            .ToDictionary(group => group.Key.ToString(), group => group.Count());
 
         var labels = dataDictionary.Keys.ToList();
         var data = dataDictionary.Values.ToList();
@@ -90,36 +73,16 @@ public class ChartService : IChartService
 
         Dictionary<string, int> chartData = null;
 
-        switch (dataType)
-        {
-            case "Gender":
-                chartData = employees
-                    .GroupBy(x => x.Gender)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Race":
-                chartData = employees
-                    .GroupBy(x => x.Race)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Nationality":
-                chartData = employees
-                    .GroupBy(x => x.Nationality)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            case "Level":
-                chartData = employees
-                    .GroupBy(x => x.Level)
-                    .ToDictionary(group => group.Key.ToString(), group => group.Count());
-                break;
-            default:
-                return null;
-        }
-
-        if (chartData == null)
+        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+      
+        if (propertyInfo == null)
         {
             return null;
         }
+
+        chartData = employees
+            .GroupBy(x => propertyInfo.GetValue(x))
+            .ToDictionary(group => group.Key.ToString(), group => group.Count());
 
         var labels = chartData.Keys.ToList();
         var data = chartData.Values.ToList();
@@ -153,7 +116,7 @@ public class ChartService : IChartService
         return updatedChart;
     }
 
-    public async Task<string[]> GetColumnsForTable()
+    public async Task<string[]> GetColumnsFromTable()
     {
      
         var entityType = typeof(Employee);

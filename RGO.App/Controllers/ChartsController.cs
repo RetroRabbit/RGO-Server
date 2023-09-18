@@ -109,7 +109,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var columns = await _chartService.GetColumnsForTable();
+                var columns = await _chartService.GetColumnsFromTable();
                 return Ok(columns);
             }
             catch (Exception ex)
