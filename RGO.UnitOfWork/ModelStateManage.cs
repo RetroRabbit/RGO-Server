@@ -18,7 +18,7 @@ public static class ModelStateManage
         };
     }
 
-    public static Employee[] EmployeeSet()
+    /*public static Employee[] EmployeeSet()
     {
         var id = 1;
         return new Employee[]
@@ -59,8 +59,121 @@ public static class ModelStateManage
                 CellphoneNo = "085456565656"
             }
         };
+    }*/
+
+    public static Employee[] EmployeeSet()
+    {
+        var id = 1;
+        return new Employee[]
+        {
+             new Employee
+            {
+                Id = id++,
+                EmployeeNumber = "8464",
+                TaxNumber = "8465468",
+                EngagementDate = DateOnly.FromDateTime(DateTime.Now),
+                TerminationDate = null,
+                ReportingLine = null,
+                Disability = false,
+                DisabilityNotes = "na",
+                Level = 4,
+                EmployeeTypeId = 2,
+                Notes = "asdsd asdsad sadsad",
+                LeaveInterval = 1,
+                SalaryDays = 1,
+                PayRate = 1,
+                Salary = 10,
+                Title = "Mr",
+                Initials = "WHC",
+                Name = "Carl",
+                Surname = "Wehl",
+                DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
+                CountryOfBirth = "SA",
+                Nationality = "South African",
+                IdNumber = "0231646",
+                PassportNumber = null,
+                PassportExpirationDate = null,
+                PassportCountryIssue = null,
+                Race = Race.Black,
+                Gender = Gender.Male,
+                Photo = "asfsadf/asdfsad",
+                Email = "cwehl@retrorabbit.co.za",
+                PersonalEmail = "carl@gmail.com",
+                CellphoneNo = "085456565656"
+            },
+            new Employee
+            {
+                Id = id++,
+                EmployeeNumber = "8464",
+                TaxNumber = "8465468",
+                EngagementDate = DateOnly.FromDateTime(DateTime.Now),
+                TerminationDate = null,
+                ReportingLine = null,
+                Disability = false,
+                DisabilityNotes = "na",
+                Level = 4,
+                EmployeeTypeId = 2,
+                Notes = "asdsd asdsad sadsad",
+                LeaveInterval = 1,
+                SalaryDays = 1,
+                PayRate = 1,
+                Salary = 10,
+                Title = "Mr",
+                Initials = "KGM",
+                Name = "Kamogelo",
+                Surname = "Matsomela",
+                DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
+                CountryOfBirth = "SA",
+                Nationality = "South African",
+                IdNumber = "0231646",
+                PassportNumber = null,
+                PassportExpirationDate = null,
+                PassportCountryIssue = null,
+                Race = Race.Black,
+                Gender = Gender.Male,
+                Photo = "asfsadf/asdfsad",
+                Email = "kmatsomela@retrorabbit.co.za",
+                PersonalEmail = "kamo@gmail.com",
+                CellphoneNo = "085456565656"
+            },
+             new Employee
+            {
+                Id = id++,
+                EmployeeNumber = "8464",
+                TaxNumber = "8465468",
+                EngagementDate = DateOnly.FromDateTime(DateTime.Now),
+                TerminationDate = null,
+                ReportingLine = null,
+                Disability = false,
+                DisabilityNotes = "na",
+                Level = 4,
+                EmployeeTypeId = 2,
+                Notes = "asdsd asdsad sadsad",
+                LeaveInterval = 1,
+                SalaryDays = 1,
+                PayRate = 1,
+                Salary = 10,
+                Title = "Mr",
+                Initials = "MA",
+                Name = "Matthew",
+                Surname = "Schoeman",
+                DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
+                CountryOfBirth = "SA",
+                Nationality = "South African",
+                IdNumber = "0231646",
+                PassportNumber = null,
+                PassportExpirationDate = null,
+                PassportCountryIssue = null,
+                Race = Race.Black,
+                Gender = Gender.Male,
+                Photo = "asfsadf/asdfsad",
+                Email = "mschoeman@retrorabbit.co.za",
+                PersonalEmail = "asdasd@gmail.com",
+                CellphoneNo = "085456565656"
+            }
+        };
     }
-    
+
     public static Role[] RoleSet()
     {
         var id = 1;
@@ -132,6 +245,17 @@ public static class ModelStateManage
     }
 
 
+    /*public static EmployeeRole[] EmployeeRole()
+    {
+        var id = 1;
+        return new EmployeeRole[]
+        {
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =1},
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =2},
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =3},
+            new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =4},
+        };
+    }*/
     public static EmployeeRole[] EmployeeRole()
     {
         var id = 1;
@@ -141,6 +265,16 @@ public static class ModelStateManage
             new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =2},
             new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =3},
             new EmployeeRole{Id = id++, EmployeeId = 1, RoleId =4},
+
+            new EmployeeRole{Id = id++, EmployeeId = 2, RoleId =1},
+            new EmployeeRole{Id = id++, EmployeeId = 2, RoleId =2},
+            new EmployeeRole{Id = id++, EmployeeId = 2, RoleId =3},
+            new EmployeeRole{Id = id++, EmployeeId = 2, RoleId =4},
+
+            new EmployeeRole{Id = id++, EmployeeId = 3, RoleId =1},
+            new EmployeeRole{Id = id++, EmployeeId = 3, RoleId =2},
+            new EmployeeRole{Id = id++, EmployeeId = 3, RoleId =3},
+            new EmployeeRole{Id = id++, EmployeeId = 3, RoleId =4},
         };
     }
 
