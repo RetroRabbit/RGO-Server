@@ -40,7 +40,9 @@ public class RoleAccessService : IRoleAccessService
         var roleAccess = await _db.RoleAccess
             .Get(r => r.Permission == permission)
             .Select(r => r.ToDto())
-            .FirstAsync();
+            .FirstOrDefaultAsync();
+
+        if (roleAccess == null) throw new Exception($"RoleAccess not found({permission})");
 
         return roleAccess;
     }

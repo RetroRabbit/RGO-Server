@@ -25,17 +25,10 @@ namespace RGO.App.Controllers
             try
             {
                 var getFieldCodes = await _fieldCodeService.GetAllFieldCodes();
-                var getFieldCodesOptions = await _fieldCodeOptionsService.GetAllFieldCodeOptions();
 
                 if (getFieldCodes == null) throw new Exception("No field codes found");
-                if (getFieldCodesOptions == null) throw new Exception("No field code options found");
 
-                FieldCodeData employeeData = new FieldCodeData
-                {
-                    NewFieldCode = getFieldCodes,
-                    FieldCodeOptions = getFieldCodesOptions
-                };
-                return Ok(employeeData);
+                return Ok(getFieldCodes);
             }
             catch (Exception ex)
             {
@@ -44,31 +37,12 @@ namespace RGO.App.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> SaveFieldCode([FromBody] FieldCodeData fieldCodeData)
+        public async Task<IActionResult> SaveFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
             {
-                if (fieldCodeData.NewFieldCode.Count > 0)
-                {
-                    foreach (var item in fieldCodeData.NewFieldCode)
-                    {
-                        await _fieldCodeService.SaveFieldCode(item);
-                }
-                }
-                var getFieldCode = await _fieldCodeService.GetFieldCode(fieldCodeData.NewFieldCode[0].Name);
-
-                if (fieldCodeData.FieldCodeOptions.Count > 0)
-                {
-                    foreach (var item in fieldCodeData.FieldCodeOptions)
-                    {
-                        var fieldCodeOptionsDto = new FieldCodeOptionsDto(
-                            Id: 0,
-                            FieldCodeId: getFieldCode.Id,
-                            Option: item.Option);
-                        await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
-                    }
-                }
-                return Ok();
+                var savedFieldCode = await _fieldCodeService.SaveFieldCode(fieldCodeDto);
+                return Ok(savedFieldCode);
             }
             catch (Exception ex)
             {
@@ -76,22 +50,17 @@ namespace RGO.App.Controllers
             }
         }
 
+        //TODO: Update this controller 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateFieldCode([FromBody] FieldCodeData fieldCodeData)
+        public async Task<IActionResult> UpdateFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
             {
-                if (fieldCodeData.NewFieldCode.Count > 0)
-                {
-                    foreach (var item in fieldCodeData.NewFieldCode)
-                    {
-                        await _fieldCodeService.UpdateFieldCode(item);
-                    }
-                }
+                await _fieldCodeService.UpdateFieldCode(fieldCodeDto);
 
-                if (fieldCodeData.FieldCodeOptions.Count > 0)
+                if (fieldCodeDto.Options.Count > 0)
                 {
-                    await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeData.FieldCodeOptions);
+                    await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
                 }
                 return Ok();
             }
@@ -102,18 +71,12 @@ namespace RGO.App.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteFieldCode([FromBody] FieldCodeData fieldCodeData)
+        public async Task<IActionResult> DeleteFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
             {
-                if (fieldCodeData.NewFieldCode.Count > 0)
-                {
-                    foreach (var item in fieldCodeData.NewFieldCode)
-                    {
-                        await _fieldCodeService.DeleteFieldCode(item);
-                    }
-                }
 
+                await _fieldCodeService.DeleteFieldCode(fieldCodeDto);
                 return Ok();
             }
             catch (Exception ex)

@@ -34,8 +34,8 @@ public class AuditLog : IModel<AuditLogDto>
     public AuditLog(AuditLogDto auditLogsDto)
     {
         Id = auditLogsDto.Id;
-        EditFor = auditLogsDto.EditFor.Id;
-        EditBy = auditLogsDto.EditBy.Id;
+        EditFor = auditLogsDto.EditFor!.Id;
+        EditBy = auditLogsDto.EditBy!.Id;
         EditDate = auditLogsDto.EditDate;
         Description = auditLogsDto.Description;
     }
@@ -44,8 +44,8 @@ public class AuditLog : IModel<AuditLogDto>
     {
         return new AuditLogDto(
             Id,
-            EmployeeEditFor.ToDto(),
-            EmployeeEditBy.ToDto(),
+            EmployeeEditFor?.ToDto(),
+            EmployeeEditBy?.ToDto(),
             EditDate,
             Description);
     }

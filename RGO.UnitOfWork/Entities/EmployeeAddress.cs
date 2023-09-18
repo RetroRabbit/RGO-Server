@@ -48,7 +48,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     public EmployeeAddress(EmployeeAddressDto employeeAddressDto)
     {
         Id = employeeAddressDto.Id;
-        EmployeeId = employeeAddressDto.Employee.Id;
+        EmployeeId = employeeAddressDto.Employee!.Id;
         AddressType = employeeAddressDto.AddressType;
         UnitNumber = employeeAddressDto.UnitNumber;
         ComplexName = employeeAddressDto.ComplexName;
@@ -63,7 +63,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     {
         return new EmployeeAddressDto(
             Id,
-            Employee.ToDto(),
+            Employee?.ToDto(),
             AddressType,
             UnitNumber,
             ComplexName,

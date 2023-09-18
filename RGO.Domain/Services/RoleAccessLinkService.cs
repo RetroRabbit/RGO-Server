@@ -73,10 +73,25 @@ public class RoleAccessLinkService : IRoleAccessLinkService
         return roleAccessLinks;
     }
 
+    public Task<Dictionary<string, List<string>>> GetByPermission(string permission)
+    {
+        var roleAccessLinks = _db.RoleAccessLink
+            .Get(r => r.RoleAccess.Permission == permission)
+            .AsNoTracking()
+            .Include(r => r.Role)
+            .Include(r => r.RoleAccess)
+            .GroupBy(r => r.Role.Description)
+            .ToDictionaryAsync(
+                group => group.Key,
+                group => group.Select(link => link.RoleAccess.Permission).ToList());
+
+        return roleAccessLinks;
+    }
+
     public async Task<Dictionary<string, List<string>>> GetRoleByEmployee(string email)
     {
          var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-            .Select(r => r.Role.Description)
+            .Select(r => r.Role!.Description)
             .ToList();
 
         List<Dictionary<string, List<string>>> accessRoles = new();
