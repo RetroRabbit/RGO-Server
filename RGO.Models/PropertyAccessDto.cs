@@ -2,7 +2,7 @@
 
 public record PropertyAccessDto(
     int Id,
-    RoleDto Role,
+    RoleDto? Role,
     int Condition,
     FieldCodeDto? FieldCode
     );
