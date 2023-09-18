@@ -1,39 +1,44 @@
 ﻿using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
+using RGO.UnitOfWork.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RGO.Services.Services
 {
     public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplateItemService
     {
         private readonly IUnitOfWork _db;
+
         public EmployeeEvaluationTemplateItemService(IUnitOfWork db)
         {
             _db = db;
         }
-        public Task<EmployeeEvaluationTemplateItemDto> DeleteEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+
+        public async Task<EmployeeEvaluationTemplateItemDto> SaveEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto evaluationTemplateItemDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplateItem.Add(new EmployeeEvaluationTemplateItem(evaluationTemplateItemDto));
         }
 
-        public Task<List<EmployeeEvaluationTemplateItemDto>> GetAllEmployeeEvaluationTemplateItems()
+        public async Task<EmployeeEvaluationTemplateItemDto> DeleteEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto evaluationTemplateItemDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplateItem.Delete(evaluationTemplateItemDto.Id);
         }
 
-        public Task<EmployeeEvaluationTemplateItemDto> GetEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+        public async Task<EmployeeEvaluationTemplateItemDto> GetEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto evaluationTemplateItemDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplateItem.GetById(evaluationTemplateItemDto.Id);
         }
 
-        public Task<EmployeeEvaluationTemplateItemDto> SaveEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+        public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAllEmployeeEvaluationTemplateItems()
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplateItem.GetAll();
         }
 
-        public Task<EmployeeEvaluationTemplateItemDto> UpdateEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+        public async Task<EmployeeEvaluationTemplateItemDto> UpdateEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto evaluationTemplateItemDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplateItem.Update(new EmployeeEvaluationTemplateItem(evaluationTemplateItemDto));
         }
     }
 }
