@@ -50,5 +50,12 @@ namespace RGO.Services.Interfaces
         /// <param name="chartDto"></param>
         /// <returns></returns>
         Task<ChartDto> UpdateChart(ChartDto chartDto);
+
+        /// <summary>
+        /// Returns column names as string from the employee table
+        /// </summary>
+        /// <returns></returns>
+        string[] GetColumnsFromTable();
+
     }
 }

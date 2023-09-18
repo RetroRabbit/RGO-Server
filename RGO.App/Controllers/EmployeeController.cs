@@ -29,6 +29,10 @@ public class EmployeeController : ControllerBase
         }
         catch (Exception ex)
         {
+            if (ex.Message.Contains("exists"))
+            {
+                return Problem("Unexceptable", "Unexceptable", 406, "User Exists");
+            }
             return NotFound(ex.Message);
         }
     }
