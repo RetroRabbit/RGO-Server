@@ -1,6 +1,7 @@
 ﻿using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
+using RGO.UnitOfWork.Entities;
 
 namespace RGO.Services.Services
 {
@@ -11,29 +12,29 @@ namespace RGO.Services.Services
         {
             _db = db;
         }
-        public Task<EmployeeEvaluationTemplateDto> DeleteEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
+        public async Task<EmployeeEvaluationTemplateDto> SaveEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto evaluationTemplateDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplate.Add(new EmployeeEvaluationTemplate(evaluationTemplateDto));
         }
 
-        public Task<List<EmployeeEvaluationTemplateDto>> GetAllEmployeeEvaluationTemplates()
+        public async Task<EmployeeEvaluationTemplateDto> DeleteEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto evaluationTemplateDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplate.Delete(evaluationTemplateDto.Id);
         }
 
-        public Task<EmployeeEvaluationTemplateDto> GetEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
+        public async Task<EmployeeEvaluationTemplateDto> GetEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto evaluationTemplateDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplate.GetById(evaluationTemplateDto.Id);
         }
 
-        public Task<EmployeeEvaluationTemplateDto> SaveEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
+        public async Task<List<EmployeeEvaluationTemplateDto>> GetAllEmployeeEvaluationTemplates()
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplate.GetAll();
         }
 
-        public Task<EmployeeEvaluationTemplateDto> UpdateEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
+        public async Task<EmployeeEvaluationTemplateDto> UpdateEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto evaluationTemplateDto)
         {
-            throw new NotImplementedException();
+            return await _db.EmployeeEvaluationTemplate.Update(new EmployeeEvaluationTemplate(evaluationTemplateDto));
         }
     }
 }
