@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Text;
 
 namespace RGO.Services.Services;
 
@@ -10,7 +13,8 @@ public class EmployeeService : IEmployeeService
 {
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IUnitOfWork _db;
-
+    private const string QueueName = "employee_data_queue";
+    public static ConnectionFactory _employeeFactory;
     public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db)
     {
         _employeeTypeService = employeeTypeService;
@@ -27,6 +31,7 @@ public class EmployeeService : IEmployeeService
                 .GetEmployeeType(employeeDto.EmployeeType.Name);
 
             employee = new Employee(employeeDto, ExistingEmployeeType);
+            PushToProducer(employee);
         }
         catch (Exception)
         {
@@ -89,5 +94,28 @@ public class EmployeeService : IEmployeeService
         employee.Email = email;
 
         return await _db.Employee.Update(employee);
+    }
+
+    private void PushToProducer(Employee employeeData)
+    {
+        try
+        {
+            using (IConnection connection = _employeeFactory.CreateConnection())
+            using (IModel channel = connection.CreateModel())
+            {
+                var messageBody = JsonConvert.SerializeObject(employeeData);
+                var body = Encoding.UTF8.GetBytes(messageBody);
+
+                var properties = channel.CreateBasicProperties();
+                properties.Persistent = true;
+
+                channel.QueueDeclare(QueueName, durable: true, exclusive: false, autoDelete: false, null);
+                channel.BasicPublish(string.Empty, QueueName, properties, body); 
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }

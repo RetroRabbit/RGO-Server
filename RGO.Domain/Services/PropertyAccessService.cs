@@ -14,7 +14,6 @@ namespace RGO.Services.Services
         private readonly IEmployeeRoleService _employeeRoleService;
         private readonly IEmployeeDataService _employeeDataService;
         private readonly IEmployeeService _employeeService;
-
         public PropertyAccessService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, IEmployeeDataService employeeDataService, IEmployeeService employeeService)
         {
             _db = db;
