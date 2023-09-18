@@ -20,7 +20,7 @@ namespace RGO.Services.Services
         private IModel _channel;
 
         private System.Timers.Timer _consumeTimer;
-        private const int OneHourInterval = 1 * 60 * 1000; // change to 60 * 60 * 1000 for one hour
+        private const int OneHourInterval = 1 * 60 * 1000; // change to 60 * 60 * 1000 for one hour.
 
         private string[] Scopes = { GmailService.Scope.GmailSend };
         private string ApplicationName = "Retro HR";
@@ -130,8 +130,6 @@ Once again, welcome to YourCompanyName. Here's to new beginnings and the start o
 
         public void ConsumeAndSendBatchEmails()
         {
-            Console.WriteLine("Starting batch consuming process...");
-
             List<Employee> newEmployee = new List<Employee>();
 
             while (true)
