@@ -131,9 +131,9 @@ public class ChartService : IChartService
         var entityType = typeof(Employee);
 
         if (entityType != null)
-        { 
+        {
             var quantifiableColumnNames = entityType.GetProperties()
-                .Where(p => IsQuantifiableType(p.PropertyType))
+                .Where(p => IsQuantifiableType(p.PropertyType) && !p.Name.Equals("Id") && !p.Name.Equals("EmployeeTypeId"))
                 .Select(p => p.Name)
                 .ToArray();
 
