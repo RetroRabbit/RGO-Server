@@ -105,11 +105,11 @@ namespace RGO.App.Controllers
         }
 
         [HttpGet("column")]
-        public async Task<IActionResult> GetColumns()
+        public IActionResult GetColumns()
         {
             try
             {
-                var columns = await _chartService.GetColumnsFromTable();
+                var columns = _chartService.GetColumnsFromTable();
                 return Ok(columns);
             }
             catch (Exception ex)

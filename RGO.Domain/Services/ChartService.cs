@@ -40,60 +40,70 @@ public class ChartService : IChartService
     {
         var employees = await _employeeService.GetAll();
 
-        Dictionary<string, int> dataDictionary = null;
-
         var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
 
         if (propertyInfo == null)
         {
-            return null;
+            throw new ArgumentException($"Invalid dataType: {dataType}");
         }
 
-        dataDictionary = employees
-            .GroupBy(x => propertyInfo.GetValue(x))
-            .ToDictionary(group => group.Key.ToString(), group => group.Count());
-
-        var labels = dataDictionary.Keys.ToList();
-        var data = dataDictionary.Values.ToList();
-
-        var chart = new Chart
+        try
         {
-            Name = chartName,
-            Type = chartType,
-            Labels = labels,
-            Data = data
-        };
+            var dataDictionary = employees
+                .GroupBy(x => propertyInfo.GetValue(x))
+                .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
 
-        return await _db.Chart.Add(chart);
+            var labels = dataDictionary.Keys.ToList();
+            var data = dataDictionary.Values.ToList();
+
+            var chart = new Chart
+            {
+                Name = chartName,
+                Type = chartType,
+                Labels = labels,
+                Data = data
+            };
+
+            return await _db.Chart.Add(chart);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while creating the chart.", ex);
+        }
     }
 
     public async Task<ChartDataDto> GetChartData(string dataType)
     {
         var employees = await _employeeService.GetAll();
 
-        Dictionary<string, int> chartData = null;
-
         var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
-      
+
         if (propertyInfo == null)
         {
-            return null;
+            throw new ArgumentException($"Invalid dataType: {dataType}");
         }
 
-        chartData = employees
-            .GroupBy(x => propertyInfo.GetValue(x))
-            .ToDictionary(group => group.Key.ToString(), group => group.Count());
-
-        var labels = chartData.Keys.ToList();
-        var data = chartData.Values.ToList();
-
-        var chartDataDto = new ChartDataDto
+        try
         {
-            Labels = labels,
-            Data = data
-        };
+            var chartData = employees
+                .GroupBy(x => propertyInfo.GetValue(x))
+                .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
 
-        return chartDataDto;
+            var labels = chartData.Keys.ToList();
+            var data = chartData.Values.ToList();
+
+            var chartDataDto = new ChartDataDto
+            {
+                Labels = labels,
+                Data = data
+            };
+
+            return chartDataDto;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while processing the data.", ex);
+        }
     }
 
     public async Task<ChartDto> DeleteChart(int chartId)
@@ -116,22 +126,30 @@ public class ChartService : IChartService
         return updatedChart;
     }
 
-    public async Task<string[]> GetColumnsFromTable()
+    public string[] GetColumnsFromTable()
     {
-     
         var entityType = typeof(Employee);
 
         if (entityType != null)
-        {
-            var columnNames = entityType.GetProperties().Select(p => p.Name).ToArray();
-            if (columnNames == null || columnNames.Length == 0)
+        { 
+            var quantifiableColumnNames = entityType.GetProperties()
+                .Where(p => IsQuantifiableType(p.PropertyType))
+                .Select(p => p.Name)
+                .ToArray();
+
+            if (quantifiableColumnNames == null || quantifiableColumnNames.Length == 0)
             {
-                throw new Exception("No employee column names found");
+                throw new Exception("No quantifiable column names found");
             }
-            return columnNames;
+
+            return quantifiableColumnNames;
         }
 
         throw new Exception("Employee table not found");
     }
 
+    private bool IsQuantifiableType(Type type)
+    {
+        return typeof(IConvertible).IsAssignableFrom(type) && type != typeof(string);
+    }
 }

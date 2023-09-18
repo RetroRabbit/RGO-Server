@@ -55,7 +55,7 @@ namespace RGO.Services.Interfaces
         /// Returns column names as string from the employee table
         /// </summary>
         /// <returns></returns>
-        Task<string[]> GetColumnsFromTable();
+        string[] GetColumnsFromTable();
 
     }
 }
