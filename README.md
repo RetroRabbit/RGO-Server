@@ -11,14 +11,25 @@ Runs on(.NET Web API):
 - http://localhost:5193
 ### Install Docker
 - If you don't use **WSL/Ubuntu** subsystem install Docker using the **Hyper-V** installation
+### Incorrect WSL version error
+```powershell
+wsl --install
+```
+### Change to the Dev branch
+Make sure to have Git installed to run any Git command lines.
+```powershell
+#cd RGO-client\Frontend\RGO-Frontend
+git checkout DEV
+```
+
 ### Setting up docker container
 ```powershell
 docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
 ```
 ### Run migration
-Pull up the nuget package manager console:
+Open Visual Studio 2022 and open the RGO-Server project file. Pull up the nuget package manager console:
 **_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
-Make sure the **Default project** is **_RGO.Repository_**.
+Make sure the **Default project** is **_RGO.UnitOfWork_**.
 ___
 ![Image of Package Manager Console](./Screenshot%202023-08-02%20173156.png)
 
