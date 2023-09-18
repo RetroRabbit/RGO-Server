@@ -12,7 +12,7 @@ namespace RGO.UnitOfWork.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("EmployeeEvaluationId")]
+        [Column("employeeEvaluationId")]
         [ForeignKey("EmployeeEvaluation")]
         public int EmployeeEvaluationId { get; set; }
 
