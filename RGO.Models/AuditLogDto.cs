@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace RGO.Models;
+﻿namespace RGO.Models;
 
 public record AuditLogDto(
     int Id,
-    EmployeeDto EditFor,
-    EmployeeDto EditBy,
+    EmployeeDto? EditFor,
+    EmployeeDto? EditBy,
     DateTime EditDate,
     string Description);
