@@ -3,38 +3,40 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 
-namespace RGO.Services.Services;
-
-public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
+namespace RGO.Services.Services
 {
-    private readonly IUnitOfWork _db;
-    public EmployeeEvaluationRatingService(IUnitOfWork db)
+    public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
     {
-        _db = db;
-    }
+        private readonly IUnitOfWork _db;
 
-    public Task<EmployeeEvaluationRatingDto> DeleteEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
-    {
-        throw new NotImplementedException();
-    }
+        public EmployeeEvaluationRatingService(IUnitOfWork db)
+        {
+            _db = db;
+        }
 
-    public Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatings()
-    {
-        throw new NotImplementedException();
-    }
+        public async Task<EmployeeEvaluationRatingDto> SaveEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
+        {
+            return await _db.EmployeeEvaluationRating.Add(new EmployeeEvaluationRating(employeeEvaluationRatingDto));
+        }
 
-    public Task<EmployeeEvaluationRatingDto> GetEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
-    {
-        throw new NotImplementedException();
-    }
+        public async Task<EmployeeEvaluationRatingDto> DeleteEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
+        {
+            return await _db.EmployeeEvaluationRating.Delete(employeeEvaluationRatingDto.Id);
+        }
 
-    public Task<EmployeeEvaluationRatingDto> SaveEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
-    {
-        throw new NotImplementedException();
-    }
+        public async Task<EmployeeEvaluationRatingDto> GetEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
+        {
+            return await _db.EmployeeEvaluationRating.GetById(employeeEvaluationRatingDto.Id);
+        }
 
-    public Task<EmployeeEvaluationRatingDto> UpdateEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
-    {
-        throw new NotImplementedException();
+        public async Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatings()
+        {
+            return await _db.EmployeeEvaluationRating.GetAll();
+        }
+
+        public async Task<EmployeeEvaluationRatingDto> UpdateEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
+        {
+            return await _db.EmployeeEvaluationRating.Update(new EmployeeEvaluationRating(employeeEvaluationRatingDto));
+        }
     }
 }
