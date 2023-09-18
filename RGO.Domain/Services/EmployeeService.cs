@@ -34,7 +34,15 @@ public class EmployeeService : IEmployeeService
                 .GetEmployeeType(employeeDto.EmployeeType.Name);
 
             employee = new Employee(employeeDto, ExistingEmployeeType);
-            PushToProducer(employee);
+
+            try
+            {
+                PushToProducer(employee);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
         catch (Exception)
         {
