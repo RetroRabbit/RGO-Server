@@ -23,6 +23,9 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
     {
+        if (await CheckUserExist(employeeDto.Email)) {
+            throw new Exception("User already exists");
+        }
         Employee employee;
 
         try
