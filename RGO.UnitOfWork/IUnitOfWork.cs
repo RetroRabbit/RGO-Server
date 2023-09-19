@@ -1,6 +1,5 @@
 using Npgsql;
 using RGO.UnitOfWork.Interfaces;
-using System.Net;
 
 namespace RGO.UnitOfWork;
 
@@ -13,6 +12,7 @@ public interface IUnitOfWork
     IEmployeeDataRepository EmployeeData { get; }
     IEmployeeProjectRepository EmployeeProject { get; }
     IEmployeeEvaluationRepository EmployeeEvaluation { get; }
+    IEmployeeEvaluationAudienceRepository EmployeeEvaluationAudience { get; }
     IEmployeeEvaluationRatingRepository EmployeeEvaluationRating { get; }
     IEmployeeEvaluationTemplateRepository EmployeeEvaluationTemplate { get; }
     IEmployeeEvaluationTemplateItemRepository EmployeeEvaluationTemplateItem { get; }

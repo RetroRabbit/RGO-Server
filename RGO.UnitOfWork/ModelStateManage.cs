@@ -23,7 +23,7 @@ public static class ModelStateManage
         var id = 1;
         return new Employee[]
         {
-             new Employee
+            new Employee
             {
                 Id = id++,
                 EmployeeNumber = "8464",
@@ -93,7 +93,7 @@ public static class ModelStateManage
                 PersonalEmail = "kamo@gmail.com",
                 CellphoneNo = "085456565656"
             },
-             new Employee
+            new Employee
             {
                 Id = id++,
                 EmployeeNumber = "8464",
@@ -378,12 +378,24 @@ public static class ModelStateManage
         };
     }
 
-    public static EmployeeEvaluation[] EmployeeEvaluationsSet()
+    public static EmployeeEvaluation[] EmployeeEvaluationSet()
     {
         var id = 1;
         return new EmployeeEvaluation[]
         {
-            new EmployeeEvaluation{Id = id++, EmployeeId = 1, TemplateId = 1, OwnerId = 1, Subject = "Peoples' Champion Checkin", StartDate = DateTime.Now},
+            new EmployeeEvaluation{Id = id++, EmployeeId = 1, TemplateId = 1, OwnerId = 1, Subject = "Peoples' Champion Checkin", StartDate = DateOnly.FromDateTime(DateTime.Now)},
+            new EmployeeEvaluation{Id = id++, EmployeeId = 2, TemplateId = 1, OwnerId = 1, Subject = "Peoples' Champion Checkin", StartDate = DateOnly.FromDateTime(DateTime.Now)}
+        };
+    }
+
+    public static EmployeeEvaluationAudience[] EmployeeEvaluationAudienceSet()
+    {
+        var id = 1;
+        return new EmployeeEvaluationAudience[]
+        {
+            new EmployeeEvaluationAudience{Id = id++, EmployeeId = 1, EmployeeEvaluationId = 1},
+            new EmployeeEvaluationAudience{Id = id++, EmployeeId = 2, EmployeeEvaluationId = 2},
+            new EmployeeEvaluationAudience{Id = id++, EmployeeId = 3, EmployeeEvaluationId = 1},
         };
     }
 
@@ -398,7 +410,7 @@ public static class ModelStateManage
         };
     }
 
-    public static EmployeeEvaluationRating[] EmployeeEvaluationRatingsSet()
+    public static EmployeeEvaluationRating[] EmployeeEvaluationRatingSet()
     {
         var id = 1;
         return new EmployeeEvaluationRating[]

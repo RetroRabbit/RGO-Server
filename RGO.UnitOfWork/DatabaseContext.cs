@@ -31,6 +31,11 @@ namespace RGO.UnitOfWork
             modelBuilder.Entity<FieldCodeOptions>().HasData(ModelStateManage.FieldCodeOptionSet());
             modelBuilder.Entity<PropertyAccess>().HasData(ModelStateManage.PropertyAccessSet());
             modelBuilder.Entity<EmployeeData>().HasData(ModelStateManage.EmployeeDataSet());
+            modelBuilder.Entity<EmployeeEvaluation>().HasData(ModelStateManage.EmployeeEvaluationSet());
+            modelBuilder.Entity<EmployeeEvaluationAudience>().HasData(ModelStateManage.EmployeeEvaluationAudienceSet());
+            modelBuilder.Entity<EmployeeEvaluationRating>().HasData(ModelStateManage.EmployeeEvaluationRatingSet());
+            modelBuilder.Entity<EmployeeEvaluationTemplate>().HasData(ModelStateManage.EmployeeEvaluationTemplateSet());
+            modelBuilder.Entity<EmployeeEvaluationTemplateItem>().HasData(ModelStateManage.EmployeeEvaluationTemplateItemSet());
         }
 
         public DbSet<Employee> employees { get; set; }
@@ -40,6 +45,10 @@ namespace RGO.UnitOfWork
         public DbSet<EmployeeDocument> employeeDocuments { get; set; }
         public DbSet<EmployeeProject> employeeProjects { get; set; }
         public DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }
+        public DbSet<EmployeeEvaluationAudience> employeeEvaluationAudiences { get; set; }
+        public DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
+        public DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
+        public DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
         public DbSet<Role> roles { get; set; }
         public DbSet<RoleAccess> roleAccess { get; set; }
         public DbSet<OnboardingDocument> onboarding { get; set; }

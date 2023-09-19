@@ -15,6 +15,7 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeDocumentRepository EmployeeDocument { get; }
     public IEmployeeProjectRepository EmployeeProject { get; }
     public IEmployeeEvaluationRepository EmployeeEvaluation { get; }
+    public IEmployeeEvaluationAudienceRepository EmployeeEvaluationAudience { get; }
     public IEmployeeEvaluationRatingRepository EmployeeEvaluationRating { get; }
     public IEmployeeEvaluationTemplateRepository EmployeeEvaluationTemplate { get; }
     public IEmployeeEvaluationTemplateItemRepository EmployeeEvaluationTemplateItem { get; }
@@ -43,6 +44,7 @@ public class UnitOfWork : IUnitOfWork
         EmployeeData = new EmployeeDataRepository(_db);
         EmployeeProject = new EmployeeProjectRepository(_db);
         EmployeeEvaluation = new EmployeeEvaluationRepository(_db);
+        EmployeeEvaluationAudience = new EmployeeEvaluationAudienceRepository(_db);
         EmployeeEvaluationRating = new EmployeeEvaluationRatingRepository(_db);
         EmployeeEvaluationTemplate = new EmployeeEvaluationTemplateRepository(_db);
         EmployeeEvaluationTemplateItem = new EmployeeEvaluationTemplateItemRepository(_db);
