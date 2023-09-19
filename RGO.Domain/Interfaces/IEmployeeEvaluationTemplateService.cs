@@ -1,4 +1,5 @@
 ﻿using RGO.Models;
+
 namespace RGO.Services.Interfaces;
 
 public interface IEmployeeEvaluationTemplateService
@@ -8,21 +9,21 @@ public interface IEmployeeEvaluationTemplateService
     /// </summary>
     /// <param name="employeeEvaluationTemplateDto"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationTemplateDto> SaveEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto);
+    Task<EmployeeEvaluationTemplateDto> SaveEmployeeEvaluationTemplate(string template);
 
     /// <summary>
     /// Delete Employee Evaluation Template
     /// </summary>
     /// <param name="employeeEvaluationTemplateDto"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationTemplateDto> DeleteEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto);
+    Task<EmployeeEvaluationTemplateDto> DeleteEmployeeEvaluationTemplate(string template);
 
     /// <summary>
     /// Get Employee Evaluation Template
     /// </summary>
     /// <param name="employeeEvaluationTemplateDto"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationTemplateDto> GetEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto);
+    Task<EmployeeEvaluationTemplateDto> GetEmployeeEvaluationTemplate(string template);
 
     /// <summary>
     /// Get All Employee Evaluation Templates
@@ -36,4 +37,11 @@ public interface IEmployeeEvaluationTemplateService
     /// <param name="employeeEvaluationTemplateDto"></param>
     /// <returns></returns>
     Task<EmployeeEvaluationTemplateDto> UpdateEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto);
+
+    /// <summary>
+    /// Check if Employee Evaluation Template exists
+    /// </summary>
+    /// <param name="template"></param>
+    /// <returns></returns>
+    Task<bool> CheckIfExists(string template);
 }
