@@ -2,6 +2,6 @@
 
 public record EmployeeEvaluationTemplateItemDto(
     int Id,
-    int TemplateId,
+    EmployeeEvaluationTemplateDto? Template,
     string Section,
     string Question);

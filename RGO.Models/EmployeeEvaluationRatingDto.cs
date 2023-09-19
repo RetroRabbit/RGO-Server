@@ -2,7 +2,7 @@
 
 public record EmployeeEvaluationRatingDto(
     int Id,
-    int EmployeeEvaluationId,
-    int EmployeeId,
+    EmployeeEvaluationDto? Evaluation,
+    EmployeeDto? Employee,
     float Score,
     string Comment);
