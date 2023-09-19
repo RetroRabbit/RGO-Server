@@ -67,7 +67,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                await _employeeEvaluationService.DeleteEmployeeEvaluation(employeeEvaluationDto);
+                await _employeeEvaluationService.DeleteEmployeeEvaluationById(employeeEvaluationDto.Id);
                 return Ok();
             }
             catch (Exception ex)
