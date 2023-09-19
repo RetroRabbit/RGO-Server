@@ -19,7 +19,7 @@ namespace RGO.App
         {
              ConnectionFactory _factory;
             _factory = new ConnectionFactory();
-            _factory.UserName = "my-rabbit";
+            _factory.HostName = "my-rabbit";
             _factory.UserName = "guest";
             _factory.Password = "guest";
             EmployeeDataConsumer emailer = new EmployeeDataConsumer(_factory);

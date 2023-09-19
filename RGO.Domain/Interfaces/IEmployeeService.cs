@@ -44,5 +44,5 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
-    Task<EmployeeDto> DeleteEmployee(string email);
+    Task<EmployeeDto> DeleteEmployee(string email)
 }
