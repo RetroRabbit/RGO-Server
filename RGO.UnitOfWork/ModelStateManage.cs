@@ -369,5 +369,43 @@ public static class ModelStateManage
         };
     }
 
+    public static EmployeeEvaluationTemplate[] EmployeeEvaluationTemplateSet()
+    {
+        var id = 1;
+        return new EmployeeEvaluationTemplate[]
+        {
+            new EmployeeEvaluationTemplate{Id = id++, Description = "L3 Level Up"}
+        };
+    }
 
+    public static EmployeeEvaluation[] EmployeeEvaluationsSet()
+    {
+        var id = 1;
+        return new EmployeeEvaluation[]
+        {
+            new EmployeeEvaluation{Id = id++, EmployeeId = 1, TemplateId = 1, OwnerId = 1, Subject = "Peoples' Champion Checkin", StartDate = DateTime.Now},
+        };
+    }
+
+    public static EmployeeEvaluationTemplateItem[] EmployeeEvaluationTemplateItemSet()
+    {
+        var id = 1;
+        return new EmployeeEvaluationTemplateItem[]
+        {
+            new EmployeeEvaluationTemplateItem{Id = id++, TemplateId = 1, Section = "Expectations", Question = "Did you meet expectations?"},
+            new EmployeeEvaluationTemplateItem{Id = id++, TemplateId = 1, Section = "Expectations", Question = "Was this a challanging experience?"},
+            new EmployeeEvaluationTemplateItem{Id = id++, TemplateId = 1, Section = "Goals", Question = "What is your plan?"},
+        };
+    }
+
+    public static EmployeeEvaluationRating[] EmployeeEvaluationRatingsSet()
+    {
+        var id = 1;
+        return new EmployeeEvaluationRating[]
+        {
+            new EmployeeEvaluationRating{Id = id++, EmployeeId = 1, EmployeeEvaluationId = 1, Score = 1, Comment = "No"},
+            new EmployeeEvaluationRating{Id = id++, EmployeeId = 1, EmployeeEvaluationId = 1, Score = 2, Comment = "Yes"},
+            new EmployeeEvaluationRating{Id = id++, EmployeeId = 1, EmployeeEvaluationId = 1, Score = 3, Comment = "Maybe"},
+        };
+    }
 }
