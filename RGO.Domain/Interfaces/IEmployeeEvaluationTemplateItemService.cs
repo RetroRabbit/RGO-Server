@@ -9,21 +9,21 @@ public interface IEmployeeEvaluationTemplateItemService
     /// </summary>
     /// <param name="employeeEvaluationTemplateItemDto"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationTemplateItemDto> SaveEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto);
+    Task<EmployeeEvaluationTemplateItemDto> SaveEmployeeEvaluationTemplateItem(string template, string section, string question);
 
     /// <summary>
     /// Delete Employee Evaluation Template Item
     /// </summary>
     /// <param name="employeeEvaluationTemplateItemDto"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationTemplateItemDto> DeleteEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto);
+    Task<EmployeeEvaluationTemplateItemDto> DeleteEmployeeEvaluationTemplateItem(string template, string section, string question);
 
     /// <summary>
     /// Get Employee Evaluation Template Item
     /// </summary>
     /// <param name="employeeEvaluationTemplateItemDto"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationTemplateItemDto> GetEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto);
+    Task<EmployeeEvaluationTemplateItemDto> GetEmployeeEvaluationTemplateItem(string template, string section, string question);
 
     /// <summary>
     /// Get All Employee Evaluation Template Items
@@ -57,6 +57,6 @@ public interface IEmployeeEvaluationTemplateItemService
     /// </summary>
     /// <param name="employeeEvaluationTemplateItemDto"></param>
     /// <returns></returns>
-    Task<bool> CheckIfExists(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto);
+    Task<bool> CheckIfExists(string template, string section, string question);
 }
 

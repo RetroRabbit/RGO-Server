@@ -32,12 +32,35 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpPost("save")]
-    public async Task<IActionResult> SaveEmployeeEvaluation([FromBody] EmployeeEvaluationDto employeeEvaluationDto)
+    [HttpGet("get")]
+    public async Task<IActionResult> GetEmployeeEvaluation(
+        [FromQuery] string employeeEmail,
+        [FromQuery] string ownerEmail,
+        [FromQuery] string template,
+        [FromQuery] string subject)
     {
         try
         {
-            var savedEmployeeEvaluation = await _employeeEvaluationService.SaveEmployeeEvaluation(employeeEvaluationDto);
+            var getEmployeeEvaluation = await _employeeEvaluationService.GetEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
+
+            return Ok(getEmployeeEvaluation);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpPost("save")]
+    public async Task<IActionResult> SaveEmployeeEvaluation(
+        [FromQuery] string employeeEmail,
+        [FromQuery] string ownerEmail,
+        [FromQuery] string template,
+        [FromQuery] string subject)
+    {
+        try
+        {
+            var savedEmployeeEvaluation = await _employeeEvaluationService.SaveEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
             return Ok(savedEmployeeEvaluation);
         }
         catch (Exception ex)
@@ -61,11 +84,15 @@ public class EmployeeEvaluationController : Controller
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteEmployeeEvaluation([FromBody] EmployeeEvaluationDto employeeEvaluationDto)
+    public async Task<IActionResult> DeleteEmployeeEvaluation(
+        [FromQuery] string employeeEmail,
+        [FromQuery] string ownerEmail,
+        [FromQuery] string template,
+        [FromQuery] string subject)
     {
         try
         {
-            await _employeeEvaluationService.DeleteEmployeeEvaluationById(employeeEvaluationDto.Id);
+            await _employeeEvaluationService.DeleteEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
             return Ok();
         }
         catch (Exception ex)

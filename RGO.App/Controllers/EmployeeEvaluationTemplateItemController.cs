@@ -15,23 +15,10 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         _employeeEvaluationTemplateItemService = employeeEvaluationTemplateItemService;
     }
 
-    [HttpGet("get")]
-    public async Task<IActionResult> GetEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
-    {
-        try
-        {
-            var getEmployeeEvaluationTemplateItem = await _employeeEvaluationTemplateItemService.GetEmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto);
-
-            return Ok(getEmployeeEvaluationTemplateItem);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
     [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItems([FromQuery] string? section, [FromQuery] string? template)
+    public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItems(
+        [FromQuery] string? section,
+        [FromQuery] string? template)
     {
         List<EmployeeEvaluationTemplateItemDto> getEmployeeEvaluationTemplateItems;
 
@@ -53,11 +40,16 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
     }
 
     [HttpPost("save")]
-    public async Task<IActionResult> SaveEmployeeEvaluationTemplateItem([FromBody] EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+    public async Task<IActionResult> SaveEmployeeEvaluationTemplateItem(
+        [FromQuery] string template,
+        [FromQuery] string section,
+        [FromQuery] string question)
     {
         try
         {
-            var savedEmployeeEvaluationTemplateItem = await _employeeEvaluationTemplateItemService.SaveEmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto);
+            EmployeeEvaluationTemplateItemDto savedEmployeeEvaluationTemplateItem =
+                await _employeeEvaluationTemplateItemService
+                .SaveEmployeeEvaluationTemplateItem(template, section, question);
 
             return Ok(savedEmployeeEvaluationTemplateItem);
         }
@@ -68,7 +60,8 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployeeEvaluationTemplateItem([FromBody] EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+    public async Task<IActionResult> UpdateEmployeeEvaluationTemplateItem(
+        [FromBody] EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
     {
         try
         {
@@ -83,11 +76,15 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteEmployeeEvaluationTemplateItem([FromBody] EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+    public async Task<IActionResult> DeleteEmployeeEvaluationTemplateItem(
+        [FromQuery] string template,
+        [FromQuery] string section,
+        [FromQuery] string question)
     {
         try
         {
-            await _employeeEvaluationTemplateItemService.DeleteEmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto);
+            await _employeeEvaluationTemplateItemService
+                .DeleteEmployeeEvaluationTemplateItem(template, section, question);
 
             return Ok();
         }

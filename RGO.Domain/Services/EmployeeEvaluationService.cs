@@ -28,6 +28,16 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return exists;
     }
 
+    public async Task<bool> CheckIfExists(string employeeEamil, string ownerEmail, string template, string subject)
+    {
+        bool exists = await _db.EmployeeEvaluation.Any(x => x.Employee.Email == employeeEamil
+            && x.Owner.Email == ownerEmail
+            && x.Template.Description == template
+            && x.Subject == subject);
+
+        return exists;
+    }
+
     public async Task<EmployeeEvaluationDto> DeleteEmployeeEvaluationById(int id)
     {
         bool exists = await CheckIfExists(id);
@@ -36,6 +46,20 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
             throw new Exception("Employee Evaluation not found");
 
         EmployeeEvaluationDto deletedEmployeeEvaluation = await _db.EmployeeEvaluation.Delete(id);
+
+        return deletedEmployeeEvaluation;
+    }
+
+    public async Task<EmployeeEvaluationDto> DeleteEmployeeEvaluation(string employeeEamil, string ownerEmail, string template, string subject)
+    {
+        bool exists = await CheckIfExists(employeeEamil, ownerEmail, template, subject);
+
+        if (!exists)
+            throw new Exception("Employee Evaluation not found");
+
+        EmployeeEvaluationDto evaluation = await GetEmployeeEvaluation(employeeEamil, ownerEmail, template, subject);
+
+        EmployeeEvaluationDto deletedEmployeeEvaluation = await _db.EmployeeEvaluation.Delete(evaluation.Id);
 
         return deletedEmployeeEvaluation;
     }
@@ -140,6 +164,28 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluation.ToDto();
     }
 
+    public async Task<EmployeeEvaluationDto> GetEmployeeEvaluation(string employeeEamil, string ownerEmail, string template, string subject)
+    {
+        bool exists = await CheckIfExists(employeeEamil, ownerEmail, template, subject);
+
+        if (!exists) throw new Exception("Employee Evaluation not found");
+
+        EmployeeEvaluation employeeEvaluation = await _db.EmployeeEvaluation
+            .Get(x => x.Employee.Email == employeeEamil
+                && x.Owner.Email == ownerEmail
+                && x.Template.Description == template
+                && x.Subject == subject)
+            .AsNoTracking()
+            .Include(x => x.Employee)
+            .Include(x => x.Employee.EmployeeType)
+            .Include(x => x.Template)
+            .Include(x => x.Owner)
+            .Include(x => x.Owner.EmployeeType)
+            .FirstAsync();
+
+        return employeeEvaluation.ToDto();
+    }
+
     public async Task<EmployeeEvaluationDto> SaveEmployeeEvaluation(EmployeeEvaluationDto employeeEvaluationDto)
     {
         bool exists = await CheckIfExists(employeeEvaluationDto.Id);
@@ -150,6 +196,24 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         EmployeeEvaluation employeeEvaluation = new EmployeeEvaluation(employeeEvaluationDto);
 
         EmployeeEvaluationDto savedEmployeeEvaluation = await _db.EmployeeEvaluation.Add(employeeEvaluation);
+
+        return savedEmployeeEvaluation;
+    }
+
+    public async Task<EmployeeEvaluationDto> SaveEmployeeEvaluation(string employeeEmail, string ownerEmail, string template, string subject)
+    {
+        bool exists = await CheckIfExists(employeeEmail, ownerEmail, template, subject);
+
+        if (exists)
+            throw new Exception("Employee Evaluation already exists");
+
+        EmployeeDto employeeDto = await _employeeService.GetEmployee(employeeEmail);
+        EmployeeDto ownerDto = await _employeeService.GetEmployee(ownerEmail);
+        EmployeeEvaluationTemplateDto templateDto = await _employeeEvaluationTemplateService.GetEmployeeEvaluationTemplate(template);
+
+        EmployeeEvaluationDto employeeEvaluationDto = new EmployeeEvaluationDto(0, employeeDto, templateDto, ownerDto, subject, DateOnly.FromDateTime(DateTime.Now), null);
+
+        EmployeeEvaluationDto savedEmployeeEvaluation = await _db.EmployeeEvaluation.Add(new EmployeeEvaluation(employeeEvaluationDto));
 
         return savedEmployeeEvaluation;
     }
