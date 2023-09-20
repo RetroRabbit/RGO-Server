@@ -18,7 +18,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
     public async Task<bool> CheckIfExists(string email, EmployeeEvaluationDto evaluation)
     {
         bool exists = await _db.EmployeeEvaluationRating
-            .Any(x => x.Employee.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase)
+            .Any(x => x.Employee.Email== email
                 && x.Evaluation.Id == evaluation.Id);
 
         return exists;
@@ -59,7 +59,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
     public async Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatingsByEmployee(string email)
     {
         List<EmployeeEvaluationRatingDto> employeeEvaluationRatings = await _db.EmployeeEvaluationRating
-            .Get(x => x.Employee.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase))
+            .Get(x => x.Employee.Email == email)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)
@@ -97,8 +97,8 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         if (!exists) throw new Exception($"Employee Evaluation Rating not found");
 
         EmployeeEvaluationRating employeeEvaluationRating = await _db.EmployeeEvaluationRating
-            .Get(x => x.Employee.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase)
-                               && x.Evaluation.Id == evaluation.Id)
+            .Get(x => x.Employee.Email == email
+                && x.Evaluation.Id == evaluation.Id)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)

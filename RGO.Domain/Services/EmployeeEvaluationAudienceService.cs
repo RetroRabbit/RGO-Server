@@ -18,7 +18,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     public async Task<bool> CheckIfExists(EmployeeEvaluationDto evaluation, string email)
     {
         bool exists = await _db.EmployeeEvaluationAudience
-            .Any(x => x.Employee.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase)
+            .Any(x => x.Employee.Email == email
                 && x.Evaluation.Id == evaluation.Id);
 
         return exists;
@@ -47,7 +47,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
             throw new Exception($"Employee Evaluation Audience not found");
 
         EmployeeEvaluationAudience employeeEvaluationAudience = await _db.EmployeeEvaluationAudience
-            .Get(x => x.Employee.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase)
+            .Get(x => x.Employee.Email == email
                            && x.Evaluation.Id == evaluation.Id)
             .AsNoTracking()
             .Include(x => x.Employee)
@@ -81,7 +81,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     public async Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEmployee(string email)
     {
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
-            .Get(x => x.Employee.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase))
+            .Get(x => x.Employee.Email == email)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)

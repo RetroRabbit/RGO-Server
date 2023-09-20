@@ -23,8 +23,8 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
     {
         bool exists = await _db.EmployeeEvaluationTemplateItem
             .Any(x => x.TemplateId == employeeEvaluationTemplateItemDto.Template!.Id
-                && x.Section.Equals(employeeEvaluationTemplateItemDto.Section, StringComparison.CurrentCultureIgnoreCase)
-                && x.Question.Equals(employeeEvaluationTemplateItemDto.Question, StringComparison.CurrentCultureIgnoreCase));
+                && x.Section == employeeEvaluationTemplateItemDto.Section
+                && x.Question == employeeEvaluationTemplateItemDto.Question);
 
         return exists;
     }
@@ -57,7 +57,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
     public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAllEmployeeEvaluationTemplateItemsBySection(string section)
     {
         List<EmployeeEvaluationTemplateItemDto> employeeEvaluationTemplateItems = await _db.EmployeeEvaluationTemplateItem
-            .Get(x => x.Section.Equals(section, StringComparison.CurrentCultureIgnoreCase))
+            .Get(x => x.Section == section)
             .AsNoTracking()
             .Include(x => x.Template)
             .Select(x => x.ToDto())
@@ -74,7 +74,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
             throw new Exception($"Employee Evaluation Template {template} not found");
 
         List<EmployeeEvaluationTemplateItemDto> employeeEvaluationTemplateItems = await _db.EmployeeEvaluationTemplateItem
-            .Get(x => x.Template.Description.Equals(template, StringComparison.CurrentCultureIgnoreCase))
+            .Get(x => x.Template.Description == template)
             .AsNoTracking()
             .Include(x => x.Template)
             .Select(x => x.ToDto())
@@ -92,8 +92,8 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
 
         EmployeeEvaluationTemplateItem employeeEvaluationTemplateItem = await _db.EmployeeEvaluationTemplateItem
             .Get(x => x.TemplateId == employeeEvaluationTemplateItemDto.Template!.Id
-                && x.Section.Equals(employeeEvaluationTemplateItemDto.Section, StringComparison.CurrentCultureIgnoreCase)
-                && x.Question.Equals(employeeEvaluationTemplateItemDto.Question, StringComparison.CurrentCultureIgnoreCase))
+                && x.Section == employeeEvaluationTemplateItemDto.Section
+                && x.Question == employeeEvaluationTemplateItemDto.Question)
             .AsNoTracking()
             .Include(x => x.Template)
             .FirstAsync();

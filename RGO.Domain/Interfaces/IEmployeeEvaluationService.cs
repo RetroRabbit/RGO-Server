@@ -50,7 +50,7 @@ public interface IEmployeeEvaluationService
     /// Get All Employee Evaluations
     /// </summary>
     /// <returns></returns>
-    Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluations();
+    Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluations(string email);
 
     /// <summary>
     /// Update Employee Evaluation

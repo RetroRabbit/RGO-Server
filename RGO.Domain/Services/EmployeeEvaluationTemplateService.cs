@@ -17,7 +17,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
     public async Task<bool> CheckIfExists(string template)
     {
         bool exists = await _db.EmployeeEvaluationTemplate
-            .Any(x => x.Description.Equals(template, StringComparison.CurrentCultureIgnoreCase));
+            .Any(x => x.Description == template);
 
         return exists;
     }
@@ -52,7 +52,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
             throw new Exception($"Employee Evaluation Template {template} not found");
 
         EmployeeEvaluationTemplate employeeEvaluationTemplate = await _db.EmployeeEvaluationTemplate
-            .Get(x => x.Description.Equals(template, StringComparison.CurrentCultureIgnoreCase))
+            .Get(x => x.Description == template)
             .AsNoTracking()
             .FirstAsync();
 

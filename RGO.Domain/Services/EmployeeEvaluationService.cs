@@ -48,7 +48,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
             throw new Exception($"Employee with {email} not found");
 
         List<EmployeeEvaluationDto> employeeEvaluations = await _db.EmployeeEvaluation
-            .Get(x => x.Employee.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase))
+            .Get(x => x.Employee.Email == email)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)
@@ -69,7 +69,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
             throw new Exception($"Employee with {email} not found");
 
         List<EmployeeEvaluationDto> employeeEvaluations = await _db.EmployeeEvaluation
-            .Get(x => x.Owner.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase))
+            .Get(x => x.Owner.Email == email)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)
@@ -103,10 +103,11 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluations;
     }
 
-    public async Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluations()
+    public async Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluations(string email)
     {
         List<EmployeeEvaluationDto> employeeEvaluations = await _db.EmployeeEvaluation
-            .Get()
+            .Get(x => x.Owner.Email == email
+                || x.Employee.Email == email)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)
