@@ -107,7 +107,7 @@ public class EmployeeService : IEmployeeService
         return await _db.Employee.Update(employee);
     }
 
-    private void PushToProducer(Employee employeeData)
+    public void PushToProducer(Employee employeeData)
     {
         try
         {

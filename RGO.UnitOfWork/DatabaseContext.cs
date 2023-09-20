@@ -21,16 +21,16 @@ namespace RGO.UnitOfWork
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<EmployeeType>().HasData(ModelStateManage.EmployeeTypeSet());
-            modelBuilder.Entity<Employee>().HasData(ModelStateManage.EmployeeSet());
-            modelBuilder.Entity<Role>().HasData(ModelStateManage.RoleSet());
-            modelBuilder.Entity<RoleAccess>().HasData(ModelStateManage.RoleAccessSet());
-            modelBuilder.Entity<RoleAccessLink>().HasData(ModelStateManage.RoleAccessLinkSet());
-            modelBuilder.Entity<EmployeeRole>().HasData(ModelStateManage.EmployeeRole());
-            modelBuilder.Entity<FieldCode>().HasData(ModelStateManage.FieldCodeSet());
-            modelBuilder.Entity<FieldCodeOptions>().HasData(ModelStateManage.FieldCodeOptionSet());
-            modelBuilder.Entity<PropertyAccess>().HasData(ModelStateManage.PropertyAccessSet());
-            modelBuilder.Entity<EmployeeData>().HasData(ModelStateManage.EmployeeDataSet());
+            modelBuilder.Entity<EmployeeType>().HasData(TestData.EmployeeTypeSet());
+            modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
+            modelBuilder.Entity<Role>().HasData(TestData.RoleSet());
+            modelBuilder.Entity<RoleAccess>().HasData(TestData.RoleAccessSet());
+            modelBuilder.Entity<RoleAccessLink>().HasData(TestData.RoleAccessLinkSet());
+            modelBuilder.Entity<EmployeeRole>().HasData(TestData.EmployeeRole());
+            modelBuilder.Entity<FieldCode>().HasData(TestData.FieldCodeSet());
+            modelBuilder.Entity<FieldCodeOptions>().HasData(TestData.FieldCodeOptionSet());
+            modelBuilder.Entity<PropertyAccess>().HasData(TestData.PropertyAccessSet());
+            modelBuilder.Entity<EmployeeData>().HasData(TestData.EmployeeDataSet());
         }
 
         public DbSet<Employee> employees { get; set; }
