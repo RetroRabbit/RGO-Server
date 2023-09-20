@@ -31,41 +31,18 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
     }
 
     [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItems()
+    public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItems([FromQuery] string? section, [FromQuery] string? template)
     {
+        List<EmployeeEvaluationTemplateItemDto> getEmployeeEvaluationTemplateItems;
+
         try
         {
-            var getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItems();
-
-            return Ok(getEmployeeEvaluationTemplateItems);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItemsBySection([FromQuery] string section)
-    {
-        try
-        {
-            var getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItemsBySection(section);
-
-            return Ok(getEmployeeEvaluationTemplateItems);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItemsByTemplate([FromQuery] string template)
-    {
-        try
-        {
-            var getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItemsByTemplate(template);
+            if (!string.IsNullOrEmpty(section))
+                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItemsBySection(section!);
+            else if (!string.IsNullOrEmpty(template))
+                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItemsByTemplate(template!);
+            else
+                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItems();
 
             return Ok(getEmployeeEvaluationTemplateItems);
         }

@@ -15,7 +15,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         _employeeEvaluationAudienceService = employeeEvaluationAudienceService;
     }
 
-    [HttpGet("get")]
+    [HttpPost("get")]
     public async Task<IActionResult> GetEmployeeEvaluationAudience([FromQuery] string email, [FromBody] EmployeeEvaluationDto evaluation)
     {
         try
@@ -30,42 +30,17 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationAudiences()
+    [HttpPost("getall")]
+    public async Task<IActionResult> GetAllEmployeeEvaluationAudiences([FromQuery] string? email, [FromBody] EmployeeEvaluationDto? evaluation)
     {
+        List<EmployeeEvaluationAudienceDto> getEmployeeEvaluationAudiences;
         try
         {
-            var getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAll();
-
-            return Ok(getEmployeeEvaluationAudiences);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationAudiencesByEmployee([FromQuery] string email)
-    {
-        try
-        {
-            var getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAllbyEmployee(email);
-
-            return Ok(getEmployeeEvaluationAudiences);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationAudienceByEvaluation([FromBody] EmployeeEvaluationDto evaluation)
-    {
-        try
-        {
-            var getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAllbyEvaluation(evaluation);
+            if (!string.IsNullOrEmpty(email))
+                getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAllbyEmployee(email!);
+            else if (evaluation != null)
+                getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAllbyEvaluation(evaluation!);
+            else getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAll();
 
             return Ok(getEmployeeEvaluationAudiences);
         }

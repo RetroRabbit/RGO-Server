@@ -30,42 +30,19 @@ public class EmployeeEvaluationRatingController : ControllerBase
         }
     }
 
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationRatings()
+    [HttpPost("getall")]
+    public async Task<IActionResult> GetAllEmployeeEvaluationRatings([FromQuery] string? email, [FromBody] EmployeeEvaluationDto? evaluation)
     {
+        List<EmployeeEvaluationRatingDto> getEmployeeEvaluationRatings;
+
         try
         {
-            var getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatings();
-
-            return Ok(getEmployeeEvaluationRatings);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationRatingsByEmployee([FromQuery] string email)
-    {
-        try
-        {
-            var getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEmployee(email);
-
-            return Ok(getEmployeeEvaluationRatings);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationRatingsByEvaluation([FromBody] EmployeeEvaluationDto evaluation)
-    {
-        try
-        {
-            var getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEvaluation(evaluation);
+            if (!string.IsNullOrEmpty(email))
+                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEmployee(email!);
+            else if (evaluation != null)
+                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEvaluation(evaluation!);
+            else
+                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatings();
 
             return Ok(getEmployeeEvaluationRatings);
         }
