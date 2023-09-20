@@ -4,12 +4,13 @@ using Xunit;
 
 namespace RGO.UnitOfWork.Tests.Entities;
 
-public class EmployeeEvaluationUnitTests
+public class EmployeeEvaluationAudienceUnitTests
 {
     private EmployeeDto _employee;
+    private EmployeeEvaluationDto _evaluation;
     private EmployeeEvaluationTemplateDto _template;
 
-    public EmployeeEvaluationUnitTests()
+    public EmployeeEvaluationAudienceUnitTests()
     {
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
 
@@ -20,28 +21,24 @@ public class EmployeeEvaluationUnitTests
             "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
 
         _template = new EmployeeEvaluationTemplateDto(1, "Template");
+
+        _evaluation = new EmployeeEvaluationDto(0, _employee, _template, _employee, "Subject", DateOnly.FromDateTime(DateTime.Now), null);
     }
 
-    private EmployeeEvaluationDto CreateEmployeeEvaluation(
-        EmployeeDto? employee = null,
-        EmployeeEvaluationTemplateDto? template = null,
-        EmployeeDto? owner = null)
+    private EmployeeEvaluationAudienceDto CreateEmployeeEvaluationAudience(
+        EmployeeEvaluationDto? evaluation = null,
+        EmployeeDto? employee = null)
     {
-        var entity = new EmployeeEvaluation
+        var entity = new EmployeeEvaluationAudience
         {
             Id = 0,
-            Subject = "Subject",
-            StartDate = DateOnly.FromDateTime(DateTime.Now)
         };
+
+        if (evaluation != null)
+            entity.Evaluation = new EmployeeEvaluation(evaluation);
 
         if (employee != null)
             entity.Employee = new Employee(employee, employee.EmployeeType);
-
-        if (template != null)
-            entity.Template = new EmployeeEvaluationTemplate(template);
-
-        if (owner != null)
-            entity.Owner = new Employee(owner, owner.EmployeeType);
 
         return entity.ToDto();
     }
@@ -49,19 +46,18 @@ public class EmployeeEvaluationUnitTests
     [Fact]
     public void InitialoizationTest()
     {
-        var employeeEvaluation = new EmployeeEvaluation();
-        Assert.NotNull(employeeEvaluation);
+        var employeeEvaluationAudience = new EmployeeEvaluationAudience();
+        Assert.NotNull(employeeEvaluationAudience);
     }
 
     [Fact]
     public void InitialoizationWithDtoTest()
     {
-        var employeeEvaluationDto = CreateEmployeeEvaluation(_employee, _template, _employee);
-        var employeeEvaluation = new EmployeeEvaluation(employeeEvaluationDto);
-        var dto = employeeEvaluation.ToDto();
+        var employeeEvaluationAudienceDto = CreateEmployeeEvaluationAudience(_evaluation, _employee);
+        var employeeEvaluationAudience = new EmployeeEvaluationAudience(employeeEvaluationAudienceDto);
+        var dto = employeeEvaluationAudience.ToDto();
 
+        Assert.Null(dto.Evaluation);
         Assert.Null(dto.Employee);
-        Assert.Null(dto.Template);
-        Assert.Null(dto.Owner);
     }
 }
