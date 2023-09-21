@@ -80,7 +80,11 @@ namespace RGO.Services.Services
         public async Task<FieldCodeDto> UpdateFieldCode(FieldCodeDto fieldCodeDto)
         {
             await _db.FieldCode.Update(new FieldCode(fieldCodeDto));
-            await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
+            if (fieldCodeDto.Options.Count > 0)
+            {
+                await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
+            }
+            
 
             var getUpdatedFieldCode = await GetFieldCode(fieldCodeDto.Name);
             return getUpdatedFieldCode;
