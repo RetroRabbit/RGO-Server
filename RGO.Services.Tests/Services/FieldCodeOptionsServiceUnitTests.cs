@@ -5,6 +5,7 @@ using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Linq.Expressions;
 using Xunit;
+using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace RGO.Tests.Services
 {
@@ -19,8 +20,8 @@ namespace RGO.Tests.Services
         {
             _dbMock = new Mock<IUnitOfWork>();
             _fieldCodeOptionsService = new FieldCodeOptionsService(_dbMock.Object);
-            _fieldCodeOptionsDto = new FieldCodeOptionsDto(Id:0, FieldCodeId:0  , Option: "string");
-            _fieldCodeOptionsDto2 = new FieldCodeOptionsDto(Id: 0, FieldCodeId: 0, Option: "string2");
+            _fieldCodeOptionsDto = new FieldCodeOptionsDto(Id: 1, FieldCodeId: 1  , Option: "string");
+            _fieldCodeOptionsDto2 = new FieldCodeOptionsDto(Id: 0, FieldCodeId: 1, Option: "string2");
         }
 
         [Fact]
@@ -55,11 +56,11 @@ namespace RGO.Tests.Services
             _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).Returns(Task.FromResult(fields));
 
             _dbMock.Setup(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()))
-                .Returns(Task.FromResult(_fieldCodeOptionsDto));
+                .Returns(Task.FromResult(_fieldCodeOptionsDto2));
 
             var result = await _fieldCodeOptionsService.SaveFieldCodeOptions(_fieldCodeOptionsDto2);
             Assert.NotNull(result);
-            Assert.Equal(_fieldCodeOptionsDto, result);
+            Assert.Equal(_fieldCodeOptionsDto2, result);
             _dbMock.Verify(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()), Times.Once);
         }
 
@@ -67,23 +68,26 @@ namespace RGO.Tests.Services
         [Fact]
         public async Task UpdateFieldCodeOptionsTest()
         {
-            List<FieldCodeOptionsDto> field = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto, _fieldCodeOptionsDto2 };
+            List<FieldCodeOptionsDto> fieldList = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto, _fieldCodeOptionsDto2 };
+            List<FieldCodeOptionsDto> field = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto};
+            List<FieldCodeOptionsDto> field2 = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto2 };
 
-            _dbMock.Setup(x => x.FieldCodeOptions.GetAll(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
-                   .ReturnsAsync(new List<FieldCodeOptionsDto>());
+            //_dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).Returns(Task.FromResult(field));
+            _dbMock.SetupSequence(x => x.FieldCodeOptions.GetAll(null))
+                .ReturnsAsync(field)
+                .ReturnsAsync(fieldList)
+                .ReturnsAsync(field2)
+                .ReturnsAsync(field2);
 
+
+            _dbMock.Setup(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>())).Returns(Task.FromResult(_fieldCodeOptionsDto2));
             _dbMock.Setup(x => x.FieldCodeOptions.Delete(It.IsAny<int>()))
                .Returns(Task.FromResult(_fieldCodeOptionsDto));
 
-            var result = await _fieldCodeOptionsService.UpdateFieldCodeOptions(field);
-            int expectedNumberOfDeletes = result.Count(option =>
-            {
-                return !field.Any(dto =>
-                    dto.FieldCodeId == option.FieldCodeId && dto.Option.ToLower() == option.Option.ToLower());
-            });
+            var result = await _fieldCodeOptionsService.UpdateFieldCodeOptions(field2);
 
-            _dbMock.Verify(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()), Times.Exactly(field.Count));
-            _dbMock.Verify(x => x.FieldCodeOptions.Delete(It.IsAny<int>()), Times.Exactly(expectedNumberOfDeletes));
+            _dbMock.Verify(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()), Times.Once);
+            _dbMock.Verify(x => x.FieldCodeOptions.Delete(It.IsAny<int>()), Times.Once);
         }
 
 

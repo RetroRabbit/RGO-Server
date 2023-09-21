@@ -53,7 +53,6 @@ namespace RGO.Services.Services
 
         public async Task<List<FieldCodeOptionsDto>> UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
         {
-            var deletedOptions = new List<FieldCodeOptionsDto>();
             foreach (var option in fieldCodeOptionsDto)
             {
                 var field = await GetAllFieldCodeOptions();
@@ -68,7 +67,12 @@ namespace RGO.Services.Services
                 }
             }
 
-            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+            //var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+            var fields = await GetAllFieldCodeOptions();
+            var existingFieldCodeOptions = fields
+                .Where(fieldCodeOption => fieldCodeOption.FieldCodeId == fieldCodeOptionsDto[0].FieldCodeId)
+                    .ToList();
+
             bool check = true;
             foreach (var option in existingFieldCodeOptions)
             {
@@ -84,10 +88,13 @@ namespace RGO.Services.Services
                 if (!check)
                 {
                     var deletedOption = await _db.FieldCodeOptions.Delete(option.Id);
-                    deletedOptions.Add(deletedOption);
                 }
             }
-            var updatedFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+            var finalFields = await GetAllFieldCodeOptions();
+            //var updatedFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+            var updatedFieldCodeOptions = finalFields.
+                Where(fieldCodeOption => fieldCodeOption.FieldCodeId == fieldCodeOptionsDto[0].FieldCodeId)
+                    .ToList();
             return updatedFieldCodeOptions;
         }
 

@@ -5,6 +5,7 @@
         Date, 
         String, 
         Int,
-        Float
+        Float,
+        Options
     }
 }
