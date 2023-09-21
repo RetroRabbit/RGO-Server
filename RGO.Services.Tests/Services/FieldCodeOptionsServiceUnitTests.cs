@@ -64,7 +64,6 @@ namespace RGO.Tests.Services
             _dbMock.Verify(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()), Times.Once);
         }
 
-
         [Fact]
         public async Task UpdateFieldCodeOptionsTest()
         {
@@ -88,7 +87,6 @@ namespace RGO.Tests.Services
             _dbMock.Verify(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()), Times.Once);
             _dbMock.Verify(x => x.FieldCodeOptions.Delete(It.IsAny<int>()), Times.Once);
         }
-
 
         [Fact]
         public async Task DeleteFieldCode()

@@ -12,7 +12,6 @@ namespace RGO.Tests.Services
 {
     public class FieldCodeServiceUnitTests
     {
-        //TODO: Update
         private readonly Mock<IUnitOfWork> _dbMock;
         private readonly Mock<IFieldCodeOptionsService> _fieldCodeOptionsService;
         private readonly FieldCodeService _fieldCodeService;
