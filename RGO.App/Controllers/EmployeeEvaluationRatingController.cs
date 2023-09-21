@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using RGO.Models;
 using RGO.Services.Interfaces;
 
@@ -16,11 +17,11 @@ public class EmployeeEvaluationRatingController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IActionResult> GetEmployeeEvaluationRating([FromQuery] string email, [FromBody] EmployeeEvaluationDto evaluation)
+    public async Task<IActionResult> GetEmployeeEvaluationRating([FromQuery] string email, [FromQuery] string employeeEamil, [FromQuery] string ownerEmail, [FromQuery] string template, [FromQuery] string subject)
     {
         try
         {
-            var getEmployeeEvaluationRating = await _employeeEvaluationRatingService.GetEmployeeEvaluationRating(email, evaluation);
+            var getEmployeeEvaluationRating = await _employeeEvaluationRatingService.GetEmployeeEvaluationRating(email, employeeEamil, ownerEmail, template, subject);
 
             return Ok(getEmployeeEvaluationRating);
         }
@@ -30,18 +31,20 @@ public class EmployeeEvaluationRatingController : ControllerBase
         }
     }
 
-    [HttpPost("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationRatings([FromQuery] string? email, [FromBody] EmployeeEvaluationDto? evaluation)
+    [HttpGet("getall")]
+    public async Task<IActionResult> GetAllEmployeeEvaluationRatings(
+        [FromQuery] string employeeEmail,
+        [FromQuery] string ownerEmail,
+        [FromQuery] string template,
+        [FromQuery] string subject)
     {
         List<EmployeeEvaluationRatingDto> getEmployeeEvaluationRatings;
 
         try
         {
-            if (!string.IsNullOrEmpty(email))
-                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEmployee(email!);
-            else if (evaluation != null)
-                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEvaluation(evaluation!);
-            else
+            getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEvaluation(employeeEmail, ownerEmail, template, subject);
+
+            if (getEmployeeEvaluationRatings.IsNullOrEmpty())
                 getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatings();
 
             return Ok(getEmployeeEvaluationRatings);
@@ -83,11 +86,11 @@ public class EmployeeEvaluationRatingController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteEmployeeEvaluationRating([FromQuery] string email, [FromBody] EmployeeEvaluationDto evaluation)
+    public async Task<IActionResult> DeleteEmployeeEvaluationRating([FromQuery] string email, [FromQuery] string employeeEamil, [FromQuery] string ownerEmail, [FromQuery] string template, [FromQuery] string subject)
     {
         try
         {
-            await _employeeEvaluationRatingService.DeleteEmployeeEvaluationRating(email, evaluation);
+            await _employeeEvaluationRatingService.DeleteEmployeeEvaluationRating(email, employeeEamil, ownerEmail, template, subject);
 
             return Ok();
         }
