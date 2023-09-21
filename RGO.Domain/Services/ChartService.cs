@@ -25,15 +25,8 @@ public class ChartService : IChartService
 
     public async Task<int> GetTotalEmployees()
     {
-        try
-        {
             var employees = await _employeeService.GetAll();
             return employees.Count;
-        }
-        catch (Exception)
-        {
-            return 0;
-        }
     }
 
     public async Task<ChartDto> CreateChart(string dataType, string chartName, string chartType)
@@ -47,8 +40,6 @@ public class ChartService : IChartService
             throw new ArgumentException($"Invalid dataType: {dataType}");
         }
 
-        try
-        {
             var dataDictionary = employees
                 .GroupBy(x => propertyInfo.GetValue(x))
                 .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
@@ -65,11 +56,6 @@ public class ChartService : IChartService
             };
 
             return await _db.Chart.Add(chart);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("An error occurred while creating the chart.", ex);
-        }
     }
 
     public async Task<ChartDataDto> GetChartData(string dataType)
@@ -83,8 +69,6 @@ public class ChartService : IChartService
             throw new ArgumentException($"Invalid dataType: {dataType}");
         }
 
-        try
-        {
             var chartData = employees
                 .GroupBy(x => propertyInfo.GetValue(x))
                 .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
@@ -98,12 +82,7 @@ public class ChartService : IChartService
                 Data = data
             };
 
-            return chartDataDto;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("An error occurred while processing the data.", ex);
-        }
+            return chartDataDto;   
     }
 
     public async Task<ChartDto> DeleteChart(int chartId)
@@ -113,7 +92,6 @@ public class ChartService : IChartService
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
     {
-
         var charts = await _db.Chart.GetAll();
         var chartData = charts
             .Where(chartData => chartData.Id == chartDto.Id)
@@ -130,22 +108,12 @@ public class ChartService : IChartService
     {
         var entityType = typeof(Employee);
 
-        if (entityType != null)
-        {
             var quantifiableColumnNames = entityType.GetProperties()
                 .Where(p => IsQuantifiableType(p.PropertyType) && !p.Name.Equals("Id") && !p.Name.Equals("EmployeeTypeId"))
                 .Select(p => p.Name)
                 .ToArray();
 
-            if (quantifiableColumnNames == null || quantifiableColumnNames.Length == 0)
-            {
-                throw new Exception("No quantifiable column names found");
-            }
-
-            return quantifiableColumnNames;
-        }
-
-        throw new Exception("Employee table not found");
+            return quantifiableColumnNames;     
     }
 
     private bool IsQuantifiableType(Type type)
