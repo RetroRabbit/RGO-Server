@@ -57,5 +57,11 @@ namespace RGO.Services.Interfaces
         /// <returns></returns>
         string[] GetColumnsFromTable();
 
+        /// <summary>
+        /// Returns a CSV file 
+        /// </summary>
+        /// <param name="dataType"></param>
+        /// <returns></returns>
+        Task<byte[]> ExportCsvAsync(string dataType);
     }
 }
