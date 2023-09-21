@@ -86,7 +86,6 @@ namespace RGO.Services.Services
             return getUpdatedFieldCode;
         }
 
-        //TODO: Update this method to incorporate the model change and instead of deleting, change status to archived
         public async Task<FieldCodeDto> DeleteFieldCode(FieldCodeDto fieldCodeDto)
         {
             var ifFieldCode = await GetFieldCode(fieldCodeDto.Name);

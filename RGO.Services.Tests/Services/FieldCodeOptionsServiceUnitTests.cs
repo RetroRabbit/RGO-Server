@@ -72,7 +72,6 @@ namespace RGO.Tests.Services
             List<FieldCodeOptionsDto> field = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto};
             List<FieldCodeOptionsDto> field2 = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto2 };
 
-            //_dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).Returns(Task.FromResult(field));
             _dbMock.SetupSequence(x => x.FieldCodeOptions.GetAll(null))
                 .ReturnsAsync(field)
                 .ReturnsAsync(fieldList)
