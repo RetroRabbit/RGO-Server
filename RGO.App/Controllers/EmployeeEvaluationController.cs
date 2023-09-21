@@ -86,7 +86,7 @@ public class EmployeeEvaluationController : Controller
 
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteEmployeeEvaluation(
-        [FromQuery] EmployeeEvaluationInput evaluationInput)
+        [FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
         {
