@@ -16,12 +16,14 @@ public class EmployeeEvaluationRatingController : ControllerBase
         _employeeEvaluationRatingService = employeeEvaluationRatingService;
     }
 
-    [HttpGet("get")]
-    public async Task<IActionResult> GetEmployeeEvaluationRating([FromQuery] string email, [FromQuery] string employeeEamil, [FromQuery] string ownerEmail, [FromQuery] string template, [FromQuery] string subject)
+    [HttpPost("get")]
+    public async Task<IActionResult> GetEmployeeEvaluationRating(
+        [FromQuery] string email,
+        [FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
         {
-            var getEmployeeEvaluationRating = await _employeeEvaluationRatingService.GetEmployeeEvaluationRating(email, employeeEamil, ownerEmail, template, subject);
+            var getEmployeeEvaluationRating = await _employeeEvaluationRatingService.GetEmployeeEvaluationRating(email, evaluationInput);
 
             return Ok(getEmployeeEvaluationRating);
         }
@@ -31,18 +33,15 @@ public class EmployeeEvaluationRatingController : ControllerBase
         }
     }
 
-    [HttpGet("getall")]
+    [HttpPost("getall")]
     public async Task<IActionResult> GetAllEmployeeEvaluationRatings(
-        [FromQuery] string employeeEmail,
-        [FromQuery] string ownerEmail,
-        [FromQuery] string template,
-        [FromQuery] string subject)
+        [FromBody] EmployeeEvaluationInput evaluationInput)
     {
         List<EmployeeEvaluationRatingDto> getEmployeeEvaluationRatings;
 
         try
         {
-            getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEvaluation(employeeEmail, ownerEmail, template, subject);
+            getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEvaluation(evaluationInput);
 
             if (getEmployeeEvaluationRatings.IsNullOrEmpty())
                 getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatings();
@@ -86,11 +85,13 @@ public class EmployeeEvaluationRatingController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteEmployeeEvaluationRating([FromQuery] string email, [FromQuery] string employeeEamil, [FromQuery] string ownerEmail, [FromQuery] string template, [FromQuery] string subject)
+    public async Task<IActionResult> DeleteEmployeeEvaluationRating(
+        [FromQuery] string email,
+        [FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
         {
-            await _employeeEvaluationRatingService.DeleteEmployeeEvaluationRating(email, employeeEamil, ownerEmail, template, subject);
+            await _employeeEvaluationRatingService.DeleteEmployeeEvaluationRating(email, evaluationInput);
 
             return Ok();
         }

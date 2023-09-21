@@ -16,7 +16,8 @@ public class EmployeeEvaluationController : Controller
     }
 
     [HttpGet("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluations([FromQuery] string email)
+    public async Task<IActionResult> GetAllEmployeeEvaluations(
+        [FromQuery] string email)
     {
         try
         {
@@ -53,14 +54,11 @@ public class EmployeeEvaluationController : Controller
 
     [HttpPost("save")]
     public async Task<IActionResult> SaveEmployeeEvaluation(
-        [FromQuery] string employeeEmail,
-        [FromQuery] string ownerEmail,
-        [FromQuery] string template,
-        [FromQuery] string subject)
+        [FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
         {
-            var savedEmployeeEvaluation = await _employeeEvaluationService.SaveEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
+            var savedEmployeeEvaluation = await _employeeEvaluationService.SaveEmployeeEvaluation(evaluationInput);
             return Ok(savedEmployeeEvaluation);
         }
         catch (Exception ex)
@@ -70,11 +68,14 @@ public class EmployeeEvaluationController : Controller
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployeeEvaluation([FromBody] EmployeeEvaluationDto employeeEvaluationDto)
+    public async Task<IActionResult> UpdateEmployeeEvaluation(
+        [FromBody] List<EmployeeEvaluationInput> evaluation)
     {
         try
         {
-            await _employeeEvaluationService.UpdateEmployeeEvaluation(employeeEvaluationDto);
+            if (evaluation.Count != 2) throw new Exception("Invalid input");
+
+            await _employeeEvaluationService.UpdateEmployeeEvaluation(evaluation[0], evaluation[1]);
             return Ok();
         }
         catch (Exception ex)
@@ -85,14 +86,11 @@ public class EmployeeEvaluationController : Controller
 
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteEmployeeEvaluation(
-        [FromQuery] string employeeEmail,
-        [FromQuery] string ownerEmail,
-        [FromQuery] string template,
-        [FromQuery] string subject)
+        [FromQuery] EmployeeEvaluationInput evaluationInput)
     {
         try
         {
-            await _employeeEvaluationService.DeleteEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
+            await _employeeEvaluationService.DeleteEmployeeEvaluation(evaluationInput);
             return Ok();
         }
         catch (Exception ex)

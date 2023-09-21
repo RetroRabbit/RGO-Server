@@ -1,12 +1,13 @@
-﻿using RGO.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using RGO.Models;
 
 namespace RGO.Services.Interfaces;
 
 public interface IEmployeeEvaluationService
 {
-    Task<EmployeeEvaluationDto> SaveEmployeeEvaluation(string employeeEmail, string ownerEmail, string template, string subject);
+    Task<EmployeeEvaluationDto> SaveEmployeeEvaluation(EmployeeEvaluationInput evaluationInput);
 
-    Task<EmployeeEvaluationDto> DeleteEmployeeEvaluation(string employeeEamil, string ownerEmail, string template, string subject);
+    Task<EmployeeEvaluationDto> DeleteEmployeeEvaluation(EmployeeEvaluationInput evaluationInput);
 
     Task<EmployeeEvaluationDto> GetEmployeeEvaluation(string employeeEamil, string ownerEmail, string template, string subject);
 
@@ -42,7 +43,7 @@ public interface IEmployeeEvaluationService
     /// </summary>
     /// <param name="employeeEvaluationDto"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationDto> UpdateEmployeeEvaluation(EmployeeEvaluationDto employeeEvaluationDto);
+    Task<EmployeeEvaluationDto> UpdateEmployeeEvaluation(EmployeeEvaluationInput oldEvaluation, EmployeeEvaluationInput newEvaluation);
 
-    Task<bool> CheckIfExists(string employeeEamil, string ownerEmail, string template, string subject);
+    Task<bool> CheckIfExists(EmployeeEvaluationInput evaluationInput);
 }

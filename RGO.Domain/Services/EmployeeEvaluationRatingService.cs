@@ -26,21 +26,27 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         return exists;
     }
 
-    public async Task<EmployeeEvaluationRatingDto> DeleteEmployeeEvaluationRating(string email, string employeeEamil, string ownerEmail, string template, string subject)
+    public async Task<EmployeeEvaluationRatingDto> DeleteEmployeeEvaluationRating(string email, EmployeeEvaluationInput evaluationInput)
     {
-        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(employeeEamil, ownerEmail, template, subject);
+        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluationInput);
 
         if (!evaluationExists)
             throw new Exception($"Employee Evaluation not found");
 
-        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.GetEmployeeEvaluation(employeeEamil, ownerEmail, template, subject);
+        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.GetEmployeeEvaluation(
+            evaluationInput.EmployeeEmail,
+            evaluationInput.OwnerEmail,
+            evaluationInput.Template,
+            evaluationInput.Subject);
 
         bool exists = await CheckIfExists(email, evaluation.Id);
 
         if (!exists)
             throw new Exception($"Employee Evaluation Rating not found");
 
-        EmployeeEvaluationRatingDto employeeEvaluationRating = await GetEmployeeEvaluationRating(email, employeeEamil, ownerEmail, template, subject);
+        EmployeeEvaluationRatingDto employeeEvaluationRating = await GetEmployeeEvaluationRating(
+            email,
+            evaluationInput);
 
         EmployeeEvaluationRatingDto deletedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
             .Delete(employeeEvaluationRating.Id);
@@ -82,14 +88,18 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         return employeeEvaluationRatings;
     }
 
-    public async Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatingsByEvaluation(string employeeEamil, string ownerEmail, string template, string subject)
+    public async Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatingsByEvaluation(EmployeeEvaluationInput evaluationInput)
     {
-        bool exists = await _employeeEvaluationService.CheckIfExists(employeeEamil, ownerEmail, template, subject);
+        bool exists = await _employeeEvaluationService.CheckIfExists(evaluationInput);
 
         if (!exists)
             throw new Exception($"Employee Evaluation not found");
 
-        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.GetEmployeeEvaluation(employeeEamil, ownerEmail, template, subject);
+        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.GetEmployeeEvaluation(
+            evaluationInput.EmployeeEmail,
+            evaluationInput.OwnerEmail,
+            evaluationInput.Template,
+            evaluationInput.Subject);
 
         List<EmployeeEvaluationRatingDto> employeeEvaluationRatings = await _db.EmployeeEvaluationRating
             .Get(x => x.Evaluation.Id == evaluation.Id)
@@ -106,14 +116,18 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         return employeeEvaluationRatings;
     }
 
-    public async Task<EmployeeEvaluationRatingDto> GetEmployeeEvaluationRating(string email, string employeeEamil, string ownerEmail, string template, string subject)
+    public async Task<EmployeeEvaluationRatingDto> GetEmployeeEvaluationRating(string email, EmployeeEvaluationInput evaluationInput)
     {
-        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(employeeEamil, ownerEmail, template, subject);
+        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluationInput);
 
         if (!evaluationExists)
             throw new Exception($"Employee Evaluation not found");
 
-        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.GetEmployeeEvaluation(employeeEamil, ownerEmail, template, subject);
+        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.GetEmployeeEvaluation(
+            evaluationInput.EmployeeEmail,
+            evaluationInput.OwnerEmail,
+            evaluationInput.Template,
+            evaluationInput.Subject);
 
         bool exists = await CheckIfExists(email, evaluation.Id);
 

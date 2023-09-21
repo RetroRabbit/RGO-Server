@@ -6,13 +6,13 @@ public interface IEmployeeEvaluationRatingService
 {
     Task<EmployeeEvaluationRatingDto> SaveEmployeeEvaluationRating(EmployeeEvaluationRatingDto employeeEvaluationRatingDto);
 
-    Task<EmployeeEvaluationRatingDto> DeleteEmployeeEvaluationRating(string email, string employeeEamil, string ownerEmail, string template, string subject);
+    Task<EmployeeEvaluationRatingDto> DeleteEmployeeEvaluationRating(string email, EmployeeEvaluationInput evaluationInput);
 
-    Task<EmployeeEvaluationRatingDto> GetEmployeeEvaluationRating(string email, string employeeEamil, string ownerEmail, string template, string subject);
+    Task<EmployeeEvaluationRatingDto> GetEmployeeEvaluationRating(string email, EmployeeEvaluationInput evaluationInput);
 
     Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatings();
 
-    Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatingsByEvaluation(string employeeEamil, string ownerEmail, string template, string subject);
+    Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatingsByEvaluation(EmployeeEvaluationInput evaluationInput);
 
     Task<List<EmployeeEvaluationRatingDto>> GetAllEmployeeEvaluationRatingsByEmployee(string email);
 
