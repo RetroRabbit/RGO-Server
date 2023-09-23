@@ -130,7 +130,11 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluations;
     }
 
-    public async Task<EmployeeEvaluationDto> GetEmployeeEvaluation(string employeeEamil, string ownerEmail, string template, string subject)
+    public async Task<EmployeeEvaluationDto> GetEmployeeEvaluation(
+        string employeeEamil,
+        string ownerEmail,
+        string template,
+        string subject)
     {
         EmployeeEvaluationInput evaluationInput = new EmployeeEvaluationInput(0, ownerEmail, employeeEamil, template, subject);
 

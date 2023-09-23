@@ -1,6 +1,5 @@
 ﻿using MockQueryable.Moq;
 using Moq;
-using Npgsql;
 using RGO.Models;
 using RGO.Models.Enums;
 using RGO.Models.Update;
@@ -12,7 +11,7 @@ using System.Data;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace RGO.Services.Tests.Services
+namespace RGO.Tests.Services
 {
     public class PropertyAccessServiceUnitTests
     {
@@ -92,7 +91,7 @@ namespace RGO.Services.Tests.Services
 
             _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>()))
                 .Returns(Task.FromResult(employee.ToDto()));
-            
+
             _dbMock
                 .Setup(r => r.PropertyAccess.GetForEmployee(It.IsAny<string>()))
                 .Returns(Task.FromResult(access.Select(x => x.ToDto()).ToList()));
@@ -108,7 +107,7 @@ namespace RGO.Services.Tests.Services
 
         }
 
-         [Fact]
+        [Fact]
         public async Task UpdatesInternalField()
         {
             var employee = new Employee
@@ -152,7 +151,7 @@ namespace RGO.Services.Tests.Services
                 new Role { Id = 1, Description = "SuperAdmin" },
                 new Role { Id = 2, Description = "Admin" },
                 new Role { Id = 3, Description = "Employee" },
-                new Role { Id = 4, Description = "Talent" } 
+                new Role { Id = 4, Description = "Talent" }
             };
 
             var employeeRoles = new List<EmployeeRoleDto>()
@@ -190,18 +189,16 @@ namespace RGO.Services.Tests.Services
                 new EmployeeData {Id =1 , EmployeeId = 1, FieldCodeId = 13, Value = "Mandy" }
             };
 
-            bool canEdit = true;
-
             var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object);
 
             _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto()));
-            
-            var employeeList = new List<Employee>{employee}.AsQueryable().BuildMock();
-                
+
+            var employeeList = new List<Employee> { employee }.AsQueryable().BuildMock();
+
             _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .Returns(employeeList);
 
-            var employeeRoleService =  new Mock<EmployeeRoleService>();
+            var employeeRoleService = new Mock<EmployeeRoleService>();
 
             _employeeRoleService.Setup(er => er.GetEmployeeRoles(It.IsAny<string>()))
                 .Returns(Task.FromResult(employeeRoles));
@@ -214,7 +211,7 @@ namespace RGO.Services.Tests.Services
             var employeeDataService = new Mock<EmployeeData>();
 
             _dbMock.SetupSequence(ed => ed.EmployeeData.Get(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
-                .Returns(new List<EmployeeData>(){ }.AsQueryable().BuildMock())
+                .Returns(new List<EmployeeData>() { }.AsQueryable().BuildMock())
                 .Returns(employeeData.AsQueryable().BuildMock());
 
             var fieldCodeService = new Mock<FieldCodeService>();
@@ -233,7 +230,7 @@ namespace RGO.Services.Tests.Services
                 .Setup(r => r.RawSql(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            await service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>() 
+            await service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>()
             {
                 new UpdateFieldValueDto(12, "0846 5132 5863 1588"),
                 new UpdateFieldValueDto(10, 0.25),
@@ -244,9 +241,9 @@ namespace RGO.Services.Tests.Services
                 new UpdateFieldValueDto(16, 2),
             }, "cwehl@retrorabbit.co.za");
         }
-    
 
-          [Fact]
+
+        [Fact]
         public async Task UpdatesInternalFieldNoEmmployee()
         {
             var employee = new Employee
@@ -258,7 +255,7 @@ namespace RGO.Services.Tests.Services
                 new Role { Id = 1, Description = "SuperAdmin" },
                 new Role { Id = 2, Description = "Admin" },
                 new Role { Id = 3, Description = "Employee" },
-                new Role { Id = 4, Description = "Talent" } 
+                new Role { Id = 4, Description = "Talent" }
             };
 
             var employeeRoles = new List<EmployeeRoleDto>()
@@ -290,18 +287,16 @@ namespace RGO.Services.Tests.Services
                 new EmployeeData {Id =1 , EmployeeId = 1, FieldCodeId = 13, Value = "Mandy" }
             };
 
-            bool canEdit = true;
-
             var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object);
 
             _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto()));
-            
-            var employeeList = new List<Employee>{}.AsQueryable().BuildMock();
-                
+
+            var employeeList = new List<Employee> { }.AsQueryable().BuildMock();
+
             _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .Returns(employeeList);
 
-            var employeeRoleService =  new Mock<EmployeeRoleService>();
+            var employeeRoleService = new Mock<EmployeeRoleService>();
 
             _employeeRoleService.Setup(er => er.GetEmployeeRoles(It.IsAny<string>()))
                 .Returns(Task.FromResult(employeeRoles));
@@ -314,7 +309,7 @@ namespace RGO.Services.Tests.Services
             var employeeDataService = new Mock<EmployeeData>();
 
             _dbMock.SetupSequence(ed => ed.EmployeeData.Get(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
-                .Returns(new List<EmployeeData>(){ }.AsQueryable().BuildMock())
+                .Returns(new List<EmployeeData>() { }.AsQueryable().BuildMock())
                 .Returns(employeeData.AsQueryable().BuildMock());
 
             var fieldCodeService = new Mock<FieldCodeService>();
@@ -388,7 +383,7 @@ namespace RGO.Services.Tests.Services
 
             var employeeRoles = new List<EmployeeRoleDto>()
             {
-                
+
             };
 
             var accessList = new List<PropertyAccess>
@@ -411,8 +406,6 @@ namespace RGO.Services.Tests.Services
             {
                 new EmployeeData {Id =1 , EmployeeId = 1, FieldCodeId = 13, Value = "Mandy" }
             };
-
-            bool canEdit = true;
 
             var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object);
 
@@ -540,8 +533,6 @@ namespace RGO.Services.Tests.Services
             {
                 new EmployeeData {Id =1 , EmployeeId = 1, FieldCodeId = 13, Value = "Mandy" }
             };
-
-            bool canEdit = true;
 
             var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object);
 

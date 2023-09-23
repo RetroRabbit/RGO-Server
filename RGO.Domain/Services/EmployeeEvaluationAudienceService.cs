@@ -9,10 +9,17 @@ namespace RGO.Services.Services;
 public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceService
 {
     private readonly IUnitOfWork _db;
+    private readonly IEmployeeService _employeeService;
+    private readonly IEmployeeEvaluationService _employeeEvaluationService;
 
-    public EmployeeEvaluationAudienceService(IUnitOfWork db)
+    public EmployeeEvaluationAudienceService(
+        IUnitOfWork db,
+        IEmployeeService employeeService,
+        IEmployeeEvaluationService employeeEvaluationService)
     {
         _db = db;
+        _employeeService = employeeService;
+        _employeeEvaluationService = employeeEvaluationService;
     }
 
     public async Task<bool> CheckIfExists(EmployeeEvaluationDto evaluation, string email)
@@ -80,6 +87,11 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
 
     public async Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEmployee(string email)
     {
+        bool employeeExists = await _employeeService.CheckUserExist(email);
+
+        if (!employeeExists)
+            throw new Exception($"Employee with {email} not found");
+
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
             .Get(x => x.Employee.Email == email)
             .AsNoTracking()
@@ -97,6 +109,17 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
 
     public async Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEvaluation(EmployeeEvaluationDto evaluation)
     {
+        EmployeeEvaluationInput employeeEvaluationInput = new EmployeeEvaluationInput(
+            0,
+            evaluation.Employee!.Email,
+            evaluation.Owner!.Email,
+            evaluation.Template!.Description,
+            evaluation.Subject!);
+        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(employeeEvaluationInput);
+
+        if (!evaluationExists)
+            throw new Exception($"Employee Evaluation not found");
+
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
             .Get(x => x.Evaluation.Id == evaluation.Id)
             .AsNoTracking()
@@ -116,7 +139,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     {
         bool exists = await CheckIfExists(employeeEvaluationAudienceDto.Evaluation!, employeeEvaluationAudienceDto.Employee!.Email);
 
-        if (!exists) throw new Exception($"Employee Evaluation Audience not found");
+        if (exists) throw new Exception($"Employee Evaluation Audience not found");
 
         EmployeeEvaluationAudience employeeEvaluationAudience = new EmployeeEvaluationAudience(employeeEvaluationAudienceDto);
 

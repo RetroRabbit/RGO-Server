@@ -152,7 +152,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
     {
         bool exists = await CheckIfExists(employeeEvaluationRatingDto.Employee!.Email, employeeEvaluationRatingDto.Evaluation!.Id);
 
-        if (!exists) throw new Exception("Employee Evaluation Rating already exists");
+        if (exists) throw new Exception("Employee Evaluation Rating already exists");
 
         EmployeeEvaluationRating employeeEvaluationRating = new(employeeEvaluationRatingDto);
 
