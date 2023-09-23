@@ -46,7 +46,6 @@ namespace RGO.Services.Services
             return fieldCode;
         }
 
-
         public async Task<List<FieldCodeOptionsDto>> GetAllFieldCodeOptions()
         {
             return await _db.FieldCodeOptions.GetAll();
@@ -54,7 +53,6 @@ namespace RGO.Services.Services
 
         public async Task<List<FieldCodeOptionsDto>> UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
         {
-            var deletedOptions = new List<FieldCodeOptionsDto>();
             foreach (var option in fieldCodeOptionsDto)
             {
                 var field = await GetAllFieldCodeOptions();
@@ -85,13 +83,12 @@ namespace RGO.Services.Services
                 if (!check)
                 {
                     var deletedOption = await _db.FieldCodeOptions.Delete(option.Id);
-                    deletedOptions.Add(deletedOption);
                 }
             }
-            return deletedOptions;
+
+            var updatedFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+            return updatedFieldCodeOptions;
         }
-
-
 
         public async Task<FieldCodeOptionsDto> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
         {
