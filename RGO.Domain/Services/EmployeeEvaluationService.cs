@@ -32,14 +32,14 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return exists;
     }
 
-    public async Task<EmployeeEvaluationDto> DeleteEmployeeEvaluation(EmployeeEvaluationInput evaluationInput)
+    public async Task<EmployeeEvaluationDto> Delete(EmployeeEvaluationInput evaluationInput)
     {
         bool exists = await CheckIfExists(evaluationInput);
 
         if (!exists)
             throw new Exception("Employee Evaluation not found");
 
-        EmployeeEvaluationDto evaluation = await GetEmployeeEvaluation(
+        EmployeeEvaluationDto evaluation = await Get(
             evaluationInput.EmployeeEmail,
             evaluationInput.OwnerEmail,
             evaluationInput.Template,
@@ -50,7 +50,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return deletedEmployeeEvaluation;
     }
 
-    public async Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluationByEmployee(string email)
+    public async Task<List<EmployeeEvaluationDto>> GetAllByEmployee(string email)
     {
         bool exists = await _employeeService.CheckUserExist(email);
 
@@ -71,7 +71,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluations;
     }
 
-    public async Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluationByOwner(string email)
+    public async Task<List<EmployeeEvaluationDto>> GetAllByOwner(string email)
     {
         bool exists = await _employeeService.CheckUserExist(email);
 
@@ -92,7 +92,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluations;
     }
 
-    public async Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluationByTemplate(string template)
+    public async Task<List<EmployeeEvaluationDto>> GetAllByTemplate(string template)
     {
         bool exists = await _employeeEvaluationTemplateService.CheckIfExists(template);
 
@@ -113,7 +113,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluations;
     }
 
-    public async Task<List<EmployeeEvaluationDto>> GetAllEmployeeEvaluations(string email)
+    public async Task<List<EmployeeEvaluationDto>> GetAllEvaluationsByEmail(string email)
     {
         List<EmployeeEvaluationDto> employeeEvaluations = await _db.EmployeeEvaluation
             .Get(x => x.Owner.Email == email
@@ -130,7 +130,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluations;
     }
 
-    public async Task<EmployeeEvaluationDto> GetEmployeeEvaluation(
+    public async Task<EmployeeEvaluationDto> Get(
         string employeeEamil,
         string ownerEmail,
         string template,
@@ -158,7 +158,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return employeeEvaluation.ToDto();
     }
 
-    public async Task<EmployeeEvaluationDto> SaveEmployeeEvaluation(EmployeeEvaluationInput evaluationInput)
+    public async Task<EmployeeEvaluationDto> Save(EmployeeEvaluationInput evaluationInput)
     {
         bool exists = await CheckIfExists(evaluationInput);
 
@@ -183,7 +183,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         return savedEmployeeEvaluation;
     }
 
-    public async Task<EmployeeEvaluationDto> UpdateEmployeeEvaluation(
+    public async Task<EmployeeEvaluationDto> Update(
         EmployeeEvaluationInput oldEvaluation,
         EmployeeEvaluationInput newEvaluation)
     {
@@ -192,7 +192,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         if (!oldExists)
             throw new Exception("Employee Evaluation not found");
 
-        EmployeeEvaluationDto employeeEvaluation = await GetEmployeeEvaluation(
+        EmployeeEvaluationDto employeeEvaluation = await Get(
             oldEvaluation.EmployeeEmail,
             oldEvaluation.OwnerEmail,
             oldEvaluation.Template,

@@ -21,7 +21,7 @@ public class EmployeeEvaluationController : Controller
     {
         try
         {
-            var getEmployeeEvaluations = await _employeeEvaluationService.GetAllEmployeeEvaluations(email);
+            var getEmployeeEvaluations = await _employeeEvaluationService.GetAllEvaluationsByEmail(email);
 
             if (getEmployeeEvaluations == null) throw new Exception("No Employee Evaluations found");
 
@@ -42,7 +42,7 @@ public class EmployeeEvaluationController : Controller
     {
         try
         {
-            var getEmployeeEvaluation = await _employeeEvaluationService.GetEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
+            var getEmployeeEvaluation = await _employeeEvaluationService.Get(employeeEmail, ownerEmail, template, subject);
 
             return Ok(getEmployeeEvaluation);
         }
@@ -58,7 +58,7 @@ public class EmployeeEvaluationController : Controller
     {
         try
         {
-            var savedEmployeeEvaluation = await _employeeEvaluationService.SaveEmployeeEvaluation(evaluationInput);
+            var savedEmployeeEvaluation = await _employeeEvaluationService.Save(evaluationInput);
             return Ok(savedEmployeeEvaluation);
         }
         catch (Exception ex)
@@ -75,7 +75,7 @@ public class EmployeeEvaluationController : Controller
         {
             if (evaluation.Count != 2) throw new Exception("Invalid input");
 
-            await _employeeEvaluationService.UpdateEmployeeEvaluation(evaluation[0], evaluation[1]);
+            await _employeeEvaluationService.Update(evaluation[0], evaluation[1]);
             return Ok();
         }
         catch (Exception ex)
@@ -90,7 +90,7 @@ public class EmployeeEvaluationController : Controller
     {
         try
         {
-            await _employeeEvaluationService.DeleteEmployeeEvaluation(evaluationInput);
+            await _employeeEvaluationService.Delete(evaluationInput);
             return Ok();
         }
         catch (Exception ex)
