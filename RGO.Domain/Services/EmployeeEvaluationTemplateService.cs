@@ -22,13 +22,13 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         return exists;
     }
 
-    public async Task<EmployeeEvaluationTemplateDto> DeleteEmployeeEvaluationTemplate(string template)
+    public async Task<EmployeeEvaluationTemplateDto> Delete(string template)
     {
         bool exists = await CheckIfExists(template);
 
         if (!exists) throw new Exception("Employee Evaluation Template not found");
 
-        EmployeeEvaluationTemplateDto employeeEvaluationTemplate = await GetEmployeeEvaluationTemplate(template);
+        EmployeeEvaluationTemplateDto employeeEvaluationTemplate = await Get(template);
 
         EmployeeEvaluationTemplateDto deletedEmployeeEvaluationTemplate = await _db.EmployeeEvaluationTemplate
             .Delete(employeeEvaluationTemplate.Id);
@@ -36,7 +36,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         return deletedEmployeeEvaluationTemplate;
     }
 
-    public async Task<List<EmployeeEvaluationTemplateDto>> GetAllEmployeeEvaluationTemplates()
+    public async Task<List<EmployeeEvaluationTemplateDto>> GetAll()
     {
         var employeeEvaluationTemplates = await _db.EmployeeEvaluationTemplate
             .GetAll();
@@ -44,7 +44,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         return employeeEvaluationTemplates;
     }
 
-    public async Task<EmployeeEvaluationTemplateDto> GetEmployeeEvaluationTemplate(string template)
+    public async Task<EmployeeEvaluationTemplateDto> Get(string template)
     {
         bool exists = await CheckIfExists(template);
 
@@ -59,7 +59,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         return employeeEvaluationTemplate.ToDto();
     }
 
-    public async Task<EmployeeEvaluationTemplateDto> SaveEmployeeEvaluationTemplate(string template)
+    public async Task<EmployeeEvaluationTemplateDto> Save(string template)
     {
         bool exists = await CheckIfExists(template);
 
@@ -77,7 +77,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         return savedEmployeeEvaluationTemplate;
     }
 
-    public async Task<EmployeeEvaluationTemplateDto> UpdateEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
+    public async Task<EmployeeEvaluationTemplateDto> Update(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
     {
         bool exists = await CheckIfExists(employeeEvaluationTemplateDto.Description);
 

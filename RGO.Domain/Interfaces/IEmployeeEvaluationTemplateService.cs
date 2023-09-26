@@ -8,40 +8,40 @@ public interface IEmployeeEvaluationTemplateService
     /// Save Employee Evaluation Template
     /// </summary>
     /// <param name="employeeEvaluationTemplateDto"></param>
-    /// <returns></returns>
-    Task<EmployeeEvaluationTemplateDto> SaveEmployeeEvaluationTemplate(string template);
+    /// <returns>Employee Evaluation Template</returns>
+    Task<EmployeeEvaluationTemplateDto> Save(string template);
 
     /// <summary>
     /// Delete Employee Evaluation Template
     /// </summary>
     /// <param name="employeeEvaluationTemplateDto"></param>
-    /// <returns></returns>
-    Task<EmployeeEvaluationTemplateDto> DeleteEmployeeEvaluationTemplate(string template);
+    /// <returns>Employee Evaluation Template</returns>
+    Task<EmployeeEvaluationTemplateDto> Delete(string template);
 
     /// <summary>
     /// Get Employee Evaluation Template
     /// </summary>
     /// <param name="employeeEvaluationTemplateDto"></param>
-    /// <returns></returns>
-    Task<EmployeeEvaluationTemplateDto> GetEmployeeEvaluationTemplate(string template);
+    /// <returns>Employee Evaluation Template</returns>
+    Task<EmployeeEvaluationTemplateDto> Get(string template);
 
     /// <summary>
     /// Get All Employee Evaluation Templates
     /// </summary>
-    /// <returns></returns>
-    Task<List<EmployeeEvaluationTemplateDto>> GetAllEmployeeEvaluationTemplates();
+    /// <returns>List of Employee Evaluation Templates</returns>
+    Task<List<EmployeeEvaluationTemplateDto>> GetAll();
 
     /// <summary>
     /// Update Employee Evaluation Template
     /// </summary>
     /// <param name="employeeEvaluationTemplateDto"></param>
-    /// <returns></returns>
-    Task<EmployeeEvaluationTemplateDto> UpdateEmployeeEvaluationTemplate(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto);
+    /// <returns>Employee Evaluation Template</returns>
+    Task<EmployeeEvaluationTemplateDto> Update(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto);
 
     /// <summary>
     /// Check if Employee Evaluation Template exists
     /// </summary>
     /// <param name="template"></param>
-    /// <returns></returns>
+    /// <returns>True or False</returns>
     Task<bool> CheckIfExists(string template);
 }

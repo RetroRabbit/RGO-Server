@@ -167,7 +167,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
 
         EmployeeDto employeeDto = await _employeeService.GetEmployee(evaluationInput.EmployeeEmail);
         EmployeeDto ownerDto = await _employeeService.GetEmployee(evaluationInput.OwnerEmail);
-        EmployeeEvaluationTemplateDto templateDto = await _employeeEvaluationTemplateService.GetEmployeeEvaluationTemplate(evaluationInput.Template);
+        EmployeeEvaluationTemplateDto templateDto = await _employeeEvaluationTemplateService.Get(evaluationInput.Template);
 
         EmployeeEvaluationDto employeeEvaluationDto = new EmployeeEvaluationDto(
             0,
@@ -200,7 +200,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
 
         EmployeeDto employeeDto = await _employeeService.GetEmployee(newEvaluation.EmployeeEmail);
         EmployeeDto ownerDto = await _employeeService.GetEmployee(newEvaluation.OwnerEmail);
-        EmployeeEvaluationTemplateDto templateDto = await _employeeEvaluationTemplateService.GetEmployeeEvaluationTemplate(newEvaluation.Template);
+        EmployeeEvaluationTemplateDto templateDto = await _employeeEvaluationTemplateService.Get(newEvaluation.Template);
 
         EmployeeEvaluationDto newEmployeeEvauation = new EmployeeEvaluationDto(
             employeeEvaluation.Id,

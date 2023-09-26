@@ -25,11 +25,11 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         try
         {
             if (!string.IsNullOrEmpty(section))
-                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItemsBySection(section!);
+                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllBySection(section!);
             else if (!string.IsNullOrEmpty(template))
-                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItemsByTemplate(template!);
+                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllByTemplate(template!);
             else
-                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAllEmployeeEvaluationTemplateItems();
+                getEmployeeEvaluationTemplateItems = await _employeeEvaluationTemplateItemService.GetAll();
 
             return Ok(getEmployeeEvaluationTemplateItems);
         }
@@ -49,7 +49,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         {
             EmployeeEvaluationTemplateItemDto savedEmployeeEvaluationTemplateItem =
                 await _employeeEvaluationTemplateItemService
-                .SaveEmployeeEvaluationTemplateItem(template, section, question);
+                .Save(template, section, question);
 
             return Ok(savedEmployeeEvaluationTemplateItem);
         }
@@ -65,7 +65,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
     {
         try
         {
-            await _employeeEvaluationTemplateItemService.UpdateEmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto);
+            await _employeeEvaluationTemplateItemService.Update(employeeEvaluationTemplateItemDto);
 
             return Ok();
         }
@@ -84,7 +84,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         try
         {
             await _employeeEvaluationTemplateItemService
-                .DeleteEmployeeEvaluationTemplateItem(template, section, question);
+                .Delete(template, section, question);
 
             return Ok();
         }

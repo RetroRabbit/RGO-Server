@@ -29,14 +29,14 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         return exists;
     }
 
-    public async Task<EmployeeEvaluationTemplateItemDto> DeleteEmployeeEvaluationTemplateItem(string template, string section, string question)
+    public async Task<EmployeeEvaluationTemplateItemDto> Delete(string template, string section, string question)
     {
         bool exists = await CheckIfExists(template, section, question);
 
         if (!exists)
             throw new Exception($"Employee Evaluation Template Item not found");
 
-        EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto = await GetEmployeeEvaluationTemplateItem(template, section, question);
+        EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto = await Get(template, section, question);
 
         EmployeeEvaluationTemplateItemDto deletedEmployeeEvaluationTemplateItem = await _db.EmployeeEvaluationTemplateItem
             .Delete(employeeEvaluationTemplateItemDto.Id);
@@ -44,7 +44,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         return deletedEmployeeEvaluationTemplateItem;
     }
 
-    public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAllEmployeeEvaluationTemplateItems()
+    public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAll()
     {
         List<EmployeeEvaluationTemplateItemDto> employeeEvaluationTemplateItems = await _db.EmployeeEvaluationTemplateItem
             .Get()
@@ -56,7 +56,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         return employeeEvaluationTemplateItems;
     }
 
-    public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAllEmployeeEvaluationTemplateItemsBySection(string section)
+    public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAllBySection(string section)
     {
         List<EmployeeEvaluationTemplateItemDto> employeeEvaluationTemplateItems = await _db.EmployeeEvaluationTemplateItem
             .Get(x => x.Section == section)
@@ -68,7 +68,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         return employeeEvaluationTemplateItems;
     }
 
-    public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAllEmployeeEvaluationTemplateItemsByTemplate(string template)
+    public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAllByTemplate(string template)
     {
         bool exists = await _employeeEvaluationTemplateService.CheckIfExists(template);
 
@@ -85,7 +85,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         return employeeEvaluationTemplateItems;
     }
 
-    public async Task<EmployeeEvaluationTemplateItemDto> GetEmployeeEvaluationTemplateItem(string template, string section, string question)
+    public async Task<EmployeeEvaluationTemplateItemDto> Get(string template, string section, string question)
     {
         bool exists = await CheckIfExists(template, section, question);
 
@@ -103,7 +103,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         return employeeEvaluationTemplateItem.ToDto();
     }
 
-    public async Task<EmployeeEvaluationTemplateItemDto> SaveEmployeeEvaluationTemplateItem(string template, string section, string question)
+    public async Task<EmployeeEvaluationTemplateItemDto> Save(string template, string section, string question)
     {
         bool exists = await CheckIfExists(template, section, question);
 
@@ -112,7 +112,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
 
         var employeeEvaluationTemplateItemDto = new EmployeeEvaluationTemplateItemDto(
             0,
-            await _employeeEvaluationTemplateService.GetEmployeeEvaluationTemplate(template),
+            await _employeeEvaluationTemplateService.Get(template),
             section,
             question);
 
@@ -122,7 +122,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         return savedEmployeeEvaluationTemplateItem;
     }
 
-    public async Task<EmployeeEvaluationTemplateItemDto> UpdateEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
+    public async Task<EmployeeEvaluationTemplateItemDto> Update(EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
     {
         bool exists = await CheckIfExists(
             employeeEvaluationTemplateItemDto.Template!.Description,

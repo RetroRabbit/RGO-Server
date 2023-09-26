@@ -40,7 +40,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Any(It.IsAny<Expression<Func<EmployeeEvaluationTemplate, bool>>>()))
             .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationTemplateService.GetEmployeeEvaluationTemplate("template"));
+        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationTemplateService.Get("template"));
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Get(It.IsAny<Expression<Func<EmployeeEvaluationTemplate, bool>>>()))
             .Returns(evaluationTemplates.Where(x => x.Description == evaluationTemplates.First().Description));
 
-        var result = await _employeeEvaluationTemplateService.GetEmployeeEvaluationTemplate("template");
+        var result = await _employeeEvaluationTemplateService.Get("template");
         
         Assert.Equal(evaluationTemplates.First().Description, result.Description);
     }
@@ -72,7 +72,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Any(It.IsAny<Expression<Func<EmployeeEvaluationTemplate, bool>>>()))
             .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationTemplateService.SaveEmployeeEvaluationTemplate("template"));
+        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationTemplateService.Save("template"));
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Add(It.IsAny<EmployeeEvaluationTemplate>()))
             .ReturnsAsync(evaluationTemplate.ToDto());
 
-        var result = await _employeeEvaluationTemplateService.SaveEmployeeEvaluationTemplate("template");
+        var result = await _employeeEvaluationTemplateService.Save("template");
 
         Assert.Equal(evaluationTemplate.Description, result.Description);
     }
@@ -108,7 +108,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
             .ReturnsAsync(false);
 
         await Assert.ThrowsAsync<Exception>(() =>
-            _employeeEvaluationTemplateService.UpdateEmployeeEvaluationTemplate(evaluationTemplate.ToDto()));
+            _employeeEvaluationTemplateService.Update(evaluationTemplate.ToDto()));
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Update(It.IsAny<EmployeeEvaluationTemplate>()))
             .ReturnsAsync(evaluationTemplate.ToDto());
 
-        var result = await _employeeEvaluationTemplateService.UpdateEmployeeEvaluationTemplate(evaluationTemplate.ToDto());
+        var result = await _employeeEvaluationTemplateService.Update(evaluationTemplate.ToDto());
 
         Assert.Equal(evaluationTemplate.Description, result.Description);
     }
@@ -137,7 +137,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Any(It.IsAny<Expression<Func<EmployeeEvaluationTemplate, bool>>>()))
             .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationTemplateService.DeleteEmployeeEvaluationTemplate("template"));
+        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationTemplateService.Delete("template"));
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Delete(It.IsAny<int>()))
             .ReturnsAsync(evaluationTemplates.First().ToDto());
 
-        var result = await _employeeEvaluationTemplateService.DeleteEmployeeEvaluationTemplate("template");
+        var result = await _employeeEvaluationTemplateService.Delete("template");
 
         Assert.Equal(evaluationTemplates.First().Description, result.Description);
     }
@@ -182,7 +182,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.GetAll(It.IsAny<Expression<Func<EmployeeEvaluationTemplate, bool>>>()))
             .ReturnsAsync(evaluationTemplates);
 
-        var result = await _employeeEvaluationTemplateService.GetAllEmployeeEvaluationTemplates();
+        var result = await _employeeEvaluationTemplateService.GetAll();
 
         Assert.Equal(evaluationTemplates.First().Description, result.First().Description);
     }

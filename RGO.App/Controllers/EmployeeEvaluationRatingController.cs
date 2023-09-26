@@ -23,7 +23,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
     {
         try
         {
-            var getEmployeeEvaluationRating = await _employeeEvaluationRatingService.GetEmployeeEvaluationRating(email, evaluationInput);
+            var getEmployeeEvaluationRating = await _employeeEvaluationRatingService.Get(email, evaluationInput);
 
             return Ok(getEmployeeEvaluationRating);
         }
@@ -41,10 +41,10 @@ public class EmployeeEvaluationRatingController : ControllerBase
 
         try
         {
-            getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatingsByEvaluation(evaluationInput);
+            getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllByEvaluation(evaluationInput);
 
             if (getEmployeeEvaluationRatings.IsNullOrEmpty())
-                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllEmployeeEvaluationRatings();
+                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAll();
 
             return Ok(getEmployeeEvaluationRatings);
         }
@@ -59,7 +59,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
     {
         try
         {
-            var savedEmployeeEvaluationRating = await _employeeEvaluationRatingService.SaveEmployeeEvaluationRating(employeeEvaluationRatingDto);
+            var savedEmployeeEvaluationRating = await _employeeEvaluationRatingService.Save(employeeEvaluationRatingDto);
 
             return Ok(savedEmployeeEvaluationRating);
         }
@@ -74,7 +74,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
     {
         try
         {
-            await _employeeEvaluationRatingService.UpdateEmployeeEvaluationRating(employeeEvaluationRatingDto);
+            await _employeeEvaluationRatingService.Update(employeeEvaluationRatingDto);
 
             return Ok();
         }
@@ -91,7 +91,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
     {
         try
         {
-            await _employeeEvaluationRatingService.DeleteEmployeeEvaluationRating(email, evaluationInput);
+            await _employeeEvaluationRatingService.Delete(email, evaluationInput);
 
             return Ok();
         }

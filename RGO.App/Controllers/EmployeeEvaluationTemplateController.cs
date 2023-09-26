@@ -20,7 +20,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
     {
         try
         {
-            var getEmployeeEvaluationTemplate = await _employeeEvaluationTemplateService.GetEmployeeEvaluationTemplate(template);
+            var getEmployeeEvaluationTemplate = await _employeeEvaluationTemplateService.Get(template);
 
             return Ok(getEmployeeEvaluationTemplate);
         }
@@ -35,7 +35,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
     {
         try
         {
-            var getEmployeeEvaluationTemplates = await _employeeEvaluationTemplateService.GetAllEmployeeEvaluationTemplates();
+            var getEmployeeEvaluationTemplates = await _employeeEvaluationTemplateService.GetAll();
 
             return Ok(getEmployeeEvaluationTemplates);
         }
@@ -50,7 +50,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
     {
         try
         {
-            var savedEmployeeEvaluationTemplate = await _employeeEvaluationTemplateService.SaveEmployeeEvaluationTemplate(template);
+            var savedEmployeeEvaluationTemplate = await _employeeEvaluationTemplateService.Save(template);
 
             return Ok(savedEmployeeEvaluationTemplate);
         }
@@ -65,7 +65,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
     {
         try
         {
-            await _employeeEvaluationTemplateService.UpdateEmployeeEvaluationTemplate(employeeEvaluationTemplateDto);
+            await _employeeEvaluationTemplateService.Update(employeeEvaluationTemplateDto);
 
             return Ok();
         }
@@ -80,7 +80,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
     {
         try
         {
-            await _employeeEvaluationTemplateService.DeleteEmployeeEvaluationTemplate(template);
+            await _employeeEvaluationTemplateService.Delete(template);
 
             return Ok();
         }
