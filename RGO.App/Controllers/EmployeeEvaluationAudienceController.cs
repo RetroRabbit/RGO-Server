@@ -4,7 +4,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/employeeevaluationaudience/")]
+[Route("/evaluationaudience/")]
 [ApiController]
 public class EmployeeEvaluationAudienceController : ControllerBase
 {
