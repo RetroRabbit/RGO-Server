@@ -9,38 +9,26 @@ namespace RGO.App.Controllers;
 public class EmployeeEvaluationAudienceController : ControllerBase
 {
     private readonly IEmployeeEvaluationAudienceService _employeeEvaluationAudienceService;
+    private readonly IEmployeeEvaluationService _employeeEvaluationService;
+    private readonly IEmployeeService _employeeService;
 
-    public EmployeeEvaluationAudienceController(IEmployeeEvaluationAudienceService employeeEvaluationAudienceService)
+    public EmployeeEvaluationAudienceController(
+        IEmployeeEvaluationAudienceService employeeEvaluationAudienceService,
+        IEmployeeEvaluationService employeeEvaluationService,
+        IEmployeeService employeeService)
     {
         _employeeEvaluationAudienceService = employeeEvaluationAudienceService;
-    }
-
-    [HttpPost("get")]
-    public async Task<IActionResult> GetEmployeeEvaluationAudience([FromQuery] string email, [FromBody] EmployeeEvaluationDto evaluation)
-    {
-        try
-        {
-            var getEmployeeEvaluationAudience = await _employeeEvaluationAudienceService.Get(evaluation, email);
-
-            return Ok(getEmployeeEvaluationAudience);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        _employeeEvaluationService = employeeEvaluationService;
+        _employeeService = employeeService;
     }
 
     [HttpPost("getall")]
-    public async Task<IActionResult> GetAllEmployeeEvaluationAudiences([FromQuery] string? email, [FromBody] EmployeeEvaluationDto? evaluation)
+    public async Task<IActionResult> GetAll([FromBody] EmployeeEvaluationInput evaluationInput)
     {
-        List<EmployeeEvaluationAudienceDto> getEmployeeEvaluationAudiences;
         try
         {
-            if (!string.IsNullOrEmpty(email))
-                getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAllbyEmployee(email!);
-            else if (evaluation != null)
-                getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAllbyEvaluation(evaluation!);
-            else getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService.GetAll();
+            List<EmployeeEvaluationAudienceDto> getEmployeeEvaluationAudiences = await _employeeEvaluationAudienceService
+                .GetAllbyEvaluation(evaluationInput);
 
             return Ok(getEmployeeEvaluationAudiences);
         }
@@ -51,11 +39,13 @@ public class EmployeeEvaluationAudienceController : ControllerBase
     }
 
     [HttpPost("save")]
-    public async Task<IActionResult> SaveEmployeeEvaluationAudience([FromBody] EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto)
+    public async Task<IActionResult> SaveEmployeeEvaluationAudience(
+        [FromQuery] string email,
+        [FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
         {
-            var savedEmployeeEvaluationAudience = await _employeeEvaluationAudienceService.Save(employeeEvaluationAudienceDto);
+            var savedEmployeeEvaluationAudience = await _employeeEvaluationAudienceService.Save(email, evaluationInput);
 
             return Ok(savedEmployeeEvaluationAudience);
         }
@@ -65,27 +55,14 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
-    [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployeeEvaluationAudience([FromBody] EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto)
-    {
-        try
-        {
-            await _employeeEvaluationAudienceService.Update(employeeEvaluationAudienceDto);
-
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteEmployeeEvaluationAudience([FromQuery] string email, [FromBody] EmployeeEvaluationDto evaluation)
+    public async Task<IActionResult> DeleteEmployeeEvaluationAudience(
+        [FromQuery] string email,
+        [FromBody] EmployeeEvaluationInput evaluation)
     {
         try
         {
-            await _employeeEvaluationAudienceService.Delete(evaluation, email);
+            await _employeeEvaluationAudienceService.Delete(email, evaluation);
 
             return Ok();
         }

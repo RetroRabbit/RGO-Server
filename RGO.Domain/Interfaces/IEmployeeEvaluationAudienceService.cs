@@ -23,9 +23,10 @@ public interface IEmployeeEvaluationAudienceService
     /// <summary>
     /// Save Employee Evaluation Audience
     /// </summary>
-    /// <param name="employeeEvaluationAudienceDto"></param>
+    /// <param name="email"></param>
+    /// <param name="evaluationInput"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationAudienceDto> Save(EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto);
+    Task<EmployeeEvaluationAudienceDto> Save(string email, EmployeeEvaluationInput evaluationInput);
 
     /// <summary>
     /// Delete Employee Evaluation Audience
@@ -33,7 +34,7 @@ public interface IEmployeeEvaluationAudienceService
     /// <param name="evaluation"></param>
     /// <param name="email"></param>
     /// <returns></returns>
-    Task<EmployeeEvaluationAudienceDto> Delete(EmployeeEvaluationDto evaluation, string email);
+    Task<EmployeeEvaluationAudienceDto> Delete(string email, EmployeeEvaluationInput evaluationInput);
 
     /// <summary>
     /// Update Employee Evaluation Audience
@@ -53,7 +54,7 @@ public interface IEmployeeEvaluationAudienceService
     /// </summary>
     /// <param name="evaluation"></param>
     /// <returns></returns>
-    Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEvaluation(EmployeeEvaluationDto evaluation);
+    Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEvaluation(EmployeeEvaluationInput evaluation);
 
     /// <summary>
     /// Get all Employee Evaluation Audiences by Employee

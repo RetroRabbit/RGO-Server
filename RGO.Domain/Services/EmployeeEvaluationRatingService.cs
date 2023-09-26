@@ -9,12 +9,14 @@ namespace RGO.Services.Services;
 public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 {
     private readonly IUnitOfWork _db;
+    private readonly IEmployeeService _employeeService;
     private readonly IEmployeeEvaluationService _employeeEvaluationService;
 
-    public EmployeeEvaluationRatingService(IUnitOfWork db, IEmployeeEvaluationService employeeEvaluationService)
+    public EmployeeEvaluationRatingService(IUnitOfWork db, IEmployeeEvaluationService employeeEvaluationService, IEmployeeService employeeService)
     {
         _db = db;
         _employeeEvaluationService = employeeEvaluationService;
+        _employeeService = employeeService;
     }
 
     public async Task<bool> CheckIfExists(string email, int evaluationId)
@@ -26,7 +28,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         return exists;
     }
 
-    public async Task<EmployeeEvaluationRatingDto> Delete(string email, EmployeeEvaluationInput evaluationInput)
+    public async Task<EmployeeEvaluationRatingDto> Get(string email, EmployeeEvaluationInput evaluationInput)
     {
         bool evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluationInput);
 
@@ -41,12 +43,92 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
         bool exists = await CheckIfExists(email, evaluation.Id);
 
+        if (!exists) throw new Exception($"Employee Evaluation Rating not found");
+
+        EmployeeEvaluationRating employeeEvaluationRating = await _db.EmployeeEvaluationRating
+            .Get(x => x.Employee.Email == email
+                && x.Evaluation.Id == evaluation.Id)
+            .AsNoTracking()
+            .Include(x => x.Employee)
+            .Include(x => x.Employee.EmployeeType)
+            .Include(x => x.Evaluation)
+            .Include(x => x.Evaluation.Employee)
+            .Include(x => x.Evaluation.Employee.EmployeeType)
+            .Include(x => x.Evaluation.Template)
+            .FirstAsync();
+
+        return employeeEvaluationRating.ToDto();
+    }
+
+    public async Task<EmployeeEvaluationRatingDto> Save(EvaluationRatingInput rating)
+    {
+        EmployeeDto employee = await _employeeService.GetEmployee(rating.EmployeeEmail);
+        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.Get(
+            rating.Evaluation.EmployeeEmail,
+            rating.Evaluation.OwnerEmail,
+            rating.Evaluation.Template,
+            rating.Evaluation.Subject);
+
+        bool exists = await CheckIfExists(employee!.Email, evaluation.Id);
+
+        if (exists) throw new Exception("Employee Evaluation Rating already exists");
+
+        EmployeeEvaluationRatingDto evaluationRating = new EmployeeEvaluationRatingDto(
+            0,
+            evaluation,
+            employee,
+            rating.Description,
+            rating.Score,
+            rating.Comment);
+
+        EmployeeEvaluationRatingDto savedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
+            .Add(new(evaluationRating));
+
+        return savedEmployeeEvaluationRating;
+    }
+
+    public async Task<EmployeeEvaluationRatingDto> Update(EvaluationRatingInput rating)
+    {
+        bool exists = await CheckIfExists(rating.EmployeeEmail, (int)rating.Evaluation.Id!);
+
+        if (!exists) throw new Exception("Employee Evaluation Rating not found");
+
+        var ratingDto = await Get(rating.EmployeeEmail, rating.Evaluation);
+        var ratingDtoToUpdate = new EmployeeEvaluationRatingDto(
+            ratingDto.Id,
+            ratingDto.Evaluation,
+            ratingDto.Employee,
+            rating.Description,
+            rating.Score,
+            rating.Comment);
+
+        EmployeeEvaluationRatingDto updatedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
+            .Update(new(ratingDtoToUpdate));
+
+        return updatedEmployeeEvaluationRating;
+    }
+
+    public async Task<EmployeeEvaluationRatingDto> Delete(EvaluationRatingInput rating)
+    {
+        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(rating.Evaluation);
+
+        if (!evaluationExists)
+            throw new Exception($"Employee Evaluation not found");
+
+        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.Get(
+            rating.Evaluation.EmployeeEmail,
+            rating.Evaluation.OwnerEmail,
+            rating.Evaluation.Template,
+            rating.Evaluation.Subject);
+
+        bool exists = await CheckIfExists(rating.EmployeeEmail, evaluation.Id);
+
         if (!exists)
             throw new Exception($"Employee Evaluation Rating not found");
 
         EmployeeEvaluationRatingDto employeeEvaluationRating = await Get(
-            email,
-            evaluationInput);
+            rating.EmployeeEmail,
+            rating.Evaluation);
 
         EmployeeEvaluationRatingDto deletedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
             .Delete(employeeEvaluationRating.Id);
@@ -114,65 +196,5 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
             .ToListAsync();
 
         return employeeEvaluationRatings;
-    }
-
-    public async Task<EmployeeEvaluationRatingDto> Get(string email, EmployeeEvaluationInput evaluationInput)
-    {
-        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluationInput);
-
-        if (!evaluationExists)
-            throw new Exception($"Employee Evaluation not found");
-
-        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.Get(
-            evaluationInput.EmployeeEmail,
-            evaluationInput.OwnerEmail,
-            evaluationInput.Template,
-            evaluationInput.Subject);
-
-        bool exists = await CheckIfExists(email, evaluation.Id);
-
-        if (!exists) throw new Exception($"Employee Evaluation Rating not found");
-
-        EmployeeEvaluationRating employeeEvaluationRating = await _db.EmployeeEvaluationRating
-            .Get(x => x.Employee.Email == email
-                && x.Evaluation.Id == evaluation.Id)
-            .AsNoTracking()
-            .Include(x => x.Employee)
-            .Include(x => x.Employee.EmployeeType)
-            .Include(x => x.Evaluation)
-            .Include(x => x.Evaluation.Employee)
-            .Include(x => x.Evaluation.Employee.EmployeeType)
-            .Include(x => x.Evaluation.Template)
-            .FirstAsync();
-
-        return employeeEvaluationRating.ToDto();
-    }
-    
-    public async Task<EmployeeEvaluationRatingDto> Save(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
-    {
-        bool exists = await CheckIfExists(employeeEvaluationRatingDto.Employee!.Email, employeeEvaluationRatingDto.Evaluation!.Id);
-
-        if (exists) throw new Exception("Employee Evaluation Rating already exists");
-
-        EmployeeEvaluationRating employeeEvaluationRating = new(employeeEvaluationRatingDto);
-
-        EmployeeEvaluationRatingDto savedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
-            .Add(employeeEvaluationRating);
-
-        return savedEmployeeEvaluationRating;
-    }
-
-    public async Task<EmployeeEvaluationRatingDto> Update(EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
-    {
-        bool exists = await CheckIfExists(employeeEvaluationRatingDto.Employee!.Email, employeeEvaluationRatingDto.Evaluation!.Id);
-
-        if (!exists) throw new Exception("Employee Evaluation Rating not found");
-
-        EmployeeEvaluationRating employeeEvaluationRating = new(employeeEvaluationRatingDto);
-
-        EmployeeEvaluationRatingDto updatedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
-            .Update(employeeEvaluationRating);
-
-        return updatedEmployeeEvaluationRating;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
@@ -31,14 +32,20 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         return exists;
     }
 
-    public async Task<EmployeeEvaluationAudienceDto> Delete(EmployeeEvaluationDto evaluation, string email)
+    public async Task<EmployeeEvaluationAudienceDto> Delete(string email, EmployeeEvaluationInput evaluationInput)
     {
-        bool exists = await CheckIfExists(evaluation, email);
+        var evaluationDto = await _employeeEvaluationService.Get(
+            evaluationInput.EmployeeEmail,
+            evaluationInput.OwnerEmail,
+            evaluationInput.Template,
+            evaluationInput.Subject);
+
+        bool exists = await CheckIfExists(evaluationDto, email);
 
         if (!exists)
             throw new Exception($"Employee Evaluation Audience not found");
 
-        EmployeeEvaluationAudienceDto employeeEvaluationAudience = await Get(evaluation, email);
+        EmployeeEvaluationAudienceDto employeeEvaluationAudience = await Get(evaluationDto, email);
 
         EmployeeEvaluationAudienceDto deletedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
             .Delete(employeeEvaluationAudience.Id);
@@ -107,21 +114,19 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         return employeeEvaluationAudiences;
     }
 
-    public async Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEvaluation(EmployeeEvaluationDto evaluation)
+    public async Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEvaluation(EmployeeEvaluationInput evaluation)
     {
-        EmployeeEvaluationInput employeeEvaluationInput = new EmployeeEvaluationInput(
-            0,
-            evaluation.Employee!.Email,
-            evaluation.Owner!.Email,
-            evaluation.Template!.Description,
-            evaluation.Subject!);
-        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(employeeEvaluationInput);
+        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluation);
 
         if (!evaluationExists)
             throw new Exception($"Employee Evaluation not found");
 
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
-            .Get(x => x.Evaluation.Id == evaluation.Id)
+            .Get(x =>
+                x.Evaluation.Owner.Email == evaluation.OwnerEmail
+                && x.Evaluation.Employee.Email == evaluation.EmployeeEmail
+                && x.Evaluation.Template.Description == evaluation.Template
+                && x.Evaluation.Subject == evaluation.Subject)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)
@@ -135,16 +140,23 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         return employeeEvaluationAudiences;
     }
 
-    public async Task<EmployeeEvaluationAudienceDto> Save(EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto)
+    public async Task<EmployeeEvaluationAudienceDto> Save(string email, EmployeeEvaluationInput evaluationInput)
     {
-        bool exists = await CheckIfExists(employeeEvaluationAudienceDto.Evaluation!, employeeEvaluationAudienceDto.Employee!.Email);
+        var evaluationDto = await _employeeEvaluationService.Get(
+            evaluationInput.EmployeeEmail,
+            evaluationInput.OwnerEmail,
+            evaluationInput.Template,
+            evaluationInput.Subject);
+
+        var employeeDto = await _employeeService.GetEmployee(email);
+
+        bool exists = await CheckIfExists(evaluationDto, email);
 
         if (exists) throw new Exception($"Employee Evaluation Audience not found");
 
-        EmployeeEvaluationAudience employeeEvaluationAudience = new EmployeeEvaluationAudience(employeeEvaluationAudienceDto);
-
+        var employeeEvaluationAudienceDto = new EmployeeEvaluationAudienceDto(0, evaluationDto, employeeDto);
         EmployeeEvaluationAudienceDto savedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
-            .Add(employeeEvaluationAudience);
+            .Add(new(employeeEvaluationAudienceDto));
 
         return savedEmployeeEvaluationAudience;
     }

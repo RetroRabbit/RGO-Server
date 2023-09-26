@@ -20,6 +20,9 @@ public class EmployeeEvaluationRating : IModel<EmployeeEvaluationRatingDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
+    [Column("description")]
+    public string Description { get; set; } = string.Empty;
+
     [Column("score")]
     public float Score { get; set; }
 
@@ -36,6 +39,7 @@ public class EmployeeEvaluationRating : IModel<EmployeeEvaluationRatingDto>
         Id = ratingsDto.Id;
         EmployeeEvaluationId = ratingsDto.Evaluation!.Id;
         EmployeeId = ratingsDto.Employee!.Id;
+        Description = ratingsDto.Description;
         Score = ratingsDto.Score;
         Comment = ratingsDto.Comment;
     }
@@ -46,6 +50,7 @@ public class EmployeeEvaluationRating : IModel<EmployeeEvaluationRatingDto>
             Id,
             Evaluation?.ToDto(),
             Employee?.ToDto(),
+            Description,
             Score,
             Comment);
     }

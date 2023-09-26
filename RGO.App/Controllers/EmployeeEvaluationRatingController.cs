@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using RGO.Models;
 using RGO.Services.Interfaces;
 
@@ -15,36 +14,14 @@ public class EmployeeEvaluationRatingController : ControllerBase
     {
         _employeeEvaluationRatingService = employeeEvaluationRatingService;
     }
-
-    [HttpPost("get")]
-    public async Task<IActionResult> GetEmployeeEvaluationRating(
-        [FromQuery] string email,
-        [FromBody] EmployeeEvaluationInput evaluationInput)
-    {
-        try
-        {
-            var getEmployeeEvaluationRating = await _employeeEvaluationRatingService.Get(email, evaluationInput);
-
-            return Ok(getEmployeeEvaluationRating);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
     [HttpPost("getall")]
     public async Task<IActionResult> GetAllEmployeeEvaluationRatings(
         [FromBody] EmployeeEvaluationInput evaluationInput)
     {
-        List<EmployeeEvaluationRatingDto> getEmployeeEvaluationRatings;
-
         try
         {
-            getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAllByEvaluation(evaluationInput);
-
-            if (getEmployeeEvaluationRatings.IsNullOrEmpty())
-                getEmployeeEvaluationRatings = await _employeeEvaluationRatingService.GetAll();
+            List<EmployeeEvaluationRatingDto> getEmployeeEvaluationRatings = await _employeeEvaluationRatingService
+                .GetAllByEvaluation(evaluationInput);
 
             return Ok(getEmployeeEvaluationRatings);
         }
@@ -55,11 +32,11 @@ public class EmployeeEvaluationRatingController : ControllerBase
     }
 
     [HttpPost("save")]
-    public async Task<IActionResult> SaveEmployeeEvaluationRating([FromBody] EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
+    public async Task<IActionResult> SaveEmployeeEvaluationRating([FromBody] EvaluationRatingInput rating)
     {
         try
         {
-            var savedEmployeeEvaluationRating = await _employeeEvaluationRatingService.Save(employeeEvaluationRatingDto);
+            var savedEmployeeEvaluationRating = await _employeeEvaluationRatingService.Save(rating);
 
             return Ok(savedEmployeeEvaluationRating);
         }
@@ -70,11 +47,11 @@ public class EmployeeEvaluationRatingController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployeeEvaluationRating([FromBody] EmployeeEvaluationRatingDto employeeEvaluationRatingDto)
+    public async Task<IActionResult> UpdateEmployeeEvaluationRating([FromBody] EvaluationRatingInput rating)
     {
         try
         {
-            await _employeeEvaluationRatingService.Update(employeeEvaluationRatingDto);
+            await _employeeEvaluationRatingService.Update(rating);
 
             return Ok();
         }
@@ -85,13 +62,11 @@ public class EmployeeEvaluationRatingController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteEmployeeEvaluationRating(
-        [FromQuery] string email,
-        [FromBody] EmployeeEvaluationInput evaluationInput)
+    public async Task<IActionResult> DeleteEmployeeEvaluationRating([FromBody] EvaluationRatingInput rating)
     {
         try
         {
-            await _employeeEvaluationRatingService.Delete(email, evaluationInput);
+            await _employeeEvaluationRatingService.Delete(rating);
 
             return Ok();
         }
