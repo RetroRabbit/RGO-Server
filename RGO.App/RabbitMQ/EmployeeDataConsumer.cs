@@ -20,7 +20,7 @@ namespace RGO.Services.Services
         private IModel _channel;
 
         private System.Timers.Timer _consumeTimer;
-        private const int OneHourInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
+        private const int TimeInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
 
         private string[] Scopes = { GmailService.Scope.GmailSend };
         private string ApplicationName = "Retro HR";
@@ -34,7 +34,7 @@ namespace RGO.Services.Services
                 _channel = _connection.CreateModel();
                 _channel.QueueDeclare(queue: QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-                _consumeTimer = new System.Timers.Timer(OneHourInterval);
+                _consumeTimer = new System.Timers.Timer(TimeInterval);
                 _consumeTimer.Elapsed += OnTimedEvent;
                 _consumeTimer.AutoReset = true;
                 _consumeTimer.Enabled = true;
