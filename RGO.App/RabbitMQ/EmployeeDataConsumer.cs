@@ -20,7 +20,7 @@ namespace RGO.Services.Services
         private IModel _channel;
 
         private System.Timers.Timer _consumeTimer;
-        private const int OneHourInterval = 1 * 60 * 1000; // change to 60 * 60 * 1000 for one hour.
+        private const int OneHourInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
 
         private string[] Scopes = { GmailService.Scope.GmailSend };
         private string ApplicationName = "Retro HR";
@@ -82,17 +82,18 @@ namespace RGO.Services.Services
             emailMessage.To.Add(new MailboxAddress(employee.Name, employee.Email));
             emailMessage.Subject = $"Welcome to Retro Rabbit, {employee.Name}!";
             string body = $@"
-Dear {employee.Name},
-
-We are thrilled to have you on board! Welcome to the Retro family. 
-
-From today, you embark on a new journey with us, filled with exciting opportunities, challenges, and growth. At Retro, we pride ourselves on fostering a culture of collaboration, innovation, and mutual respect. We believe that every individual brings a unique perspective and talent to the team, and we can't wait to see the wonderful contributions you'll make.
-
-Remember, it's okay to feel overwhelmed or have questions. We've all been there. Don't hesitate to ask or seek clarification on anything. Our doors (and inboxes) are always open.
-
-Once again, welcome to YourCompanyName. Here's to new beginnings and the start of a memorable journey together!";
-
-            emailMessage.Body = new TextPart("plain") { Text = body };
+            <html>
+            <body>
+                <p>Dear {employee.Name},</p>
+                <p>We are thrilled to have you on board! Welcome to the Retro family.</p>
+                <p>From today, you embark on a new journey with us, filled with exciting opportunities, challenges, and growth. At Retro, we pride ourselves on fostering a culture of collaboration, innovation, and mutual respect. We believe that every individual brings a unique perspective and talent to the team, and we can't wait to see the wonderful contributions you'll make.</p>
+                <p>Remember, it's okay to feel overwhelmed or have questions. We've all been there. Don't hesitate to ask or seek clarification on anything. Our doors (and inboxes) are always open.</p>
+                <p>Once again, welcome to Retro Rabbit. Here's to new beginnings and the start of a memorable journey together!</p>
+                <p>Click <a href='http://localhost:4200/'>here</a> to visit our employee portal</p>
+            </body>
+            </html>";
+            // Todo: Change link to the actual link when deployed. Currently set to localhost
+            emailMessage.Body = new TextPart("html") { Text = body };
 
             var rawMessage = Base64UrlEncode(emailMessage.ToString());
             var message = new Google.Apis.Gmail.v1.Data.Message
