@@ -1,33 +1,43 @@
 ﻿using RGO.Models;
 using RGO.UnitOfWork.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities
+namespace RGO.UnitOfWork.Tests.Entities;
+
+public class ChartUnitTests
 {
-    public class ChartUnitTests
+    [Fact]
+    public void chartTest()
     {
-        [Fact]
-        public async Task ChartTest()
-        {
-            var chart = new Chart();
-            Assert.IsType<Chart>(chart);
-            Assert.NotNull(chart);
-        }
+        var chart = new Chart();
+        Assert.IsType<Chart>(chart);
+        Assert.NotNull(chart);
+    }
 
+    public Chart CreateTestChartDto()
+    {
+        var chart = new ChartDto(
+            0,
+            "Name",
+            "Type",
+            new List<string> { "Label1", "Label2" },
+            new List<int> { 1, 2 });
 
-        [Fact]
-        public async Task ChartToDtoTest()
-        {
-            var chart = new Chart(new ChartDto(1, "Genders", "Pie", new List<string> { "Male", "Female" }
-            , new List<int> { 1, 1 }));
-            Assert.IsType<ChartDto>(chart.ToDto());
-            Assert.NotNull(chart.ToDto());
-        }
+        return new Chart(chart);
+    }
 
+    [Fact]
+    public void ChartToDtoTest()
+    {
+        var chartDto = new ChartDto(
+            0,
+            "Name",
+            "Type",
+            new List<string> { "Label1", "Label2" },
+            new List<int> { 1, 2 });
+
+        var chart = new Chart(chartDto);
+
+        Assert.Equal(chart.ToDto(), chartDto);
     }
 }

@@ -104,5 +104,18 @@ namespace RGO.App.Controllers
             }
         }
 
+        [HttpGet("column")]
+        public IActionResult GetColumns()
+        {
+            try
+            {
+                var columns = _chartService.GetColumnsFromTable();
+                return Ok(columns);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

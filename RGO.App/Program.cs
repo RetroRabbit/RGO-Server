@@ -8,13 +8,22 @@ using RGO.UnitOfWork;
 using System.Security.Claims;
 using System.Text;
 using RGO.Models;
+using RGO.Services.Services;
+using RabbitMQ.Client;
 
 namespace RGO.App
 {
     public class Program
     {
-        public static void Main(params string[] args)
+        public static async Task Main(params string[] args)
         {
+             ConnectionFactory _factory;
+            _factory = new ConnectionFactory();
+            _factory.UserName = "my-rabbit";
+            _factory.UserName = "guest";
+            _factory.Password = "guest";
+            EmployeeDataConsumer emailer = new EmployeeDataConsumer(_factory);
+            EmployeeService._employeeFactory = _factory;
             var builder = WebApplication.CreateBuilder(args);
             ConfigurationManager configuration = builder.Configuration;
             configuration.AddJsonFile("appsettings.json");
