@@ -129,7 +129,7 @@ namespace RGO.App.Controllers
                 if (csvData == null || csvData.Length == 0)
                     return NotFound("No data found to export.");
 
-                var fileName = $"Report_{DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture)}.csv";
+                var fileName = $"Report.csv";
 
                 return File(csvData, "text/csv", fileName);
             }

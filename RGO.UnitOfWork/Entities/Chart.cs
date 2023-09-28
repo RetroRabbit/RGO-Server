@@ -18,6 +18,9 @@ public class Chart : IModel<ChartDto>
     [Column("type")]
     public string Type { get; set; }
 
+    [Column("dataType")]
+    public string DataType { get; set; }
+
     [Column("labels")]
     public List<string> Labels { get; set; }
 
@@ -31,8 +34,10 @@ public class Chart : IModel<ChartDto>
         Id = chartDto.Id;
         Name = chartDto.Name;
         Type = chartDto.Type;
+        DataType = chartDto.DataType;
         Labels = chartDto.Labels;
         Data = chartDto.Data;
+
     }
 
     public ChartDto ToDto()
@@ -41,6 +46,7 @@ public class Chart : IModel<ChartDto>
             Id,
             Name,
             Type,
+            DataType,
             Labels,
             Data
         );

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RGO.Models;
 using RGO.Services.Interfaces;
@@ -54,6 +55,7 @@ public class ChartService : IChartService
             {
                 Name = chartName,
                 Type = chartType,
+                DataType= dataType,
                 Labels = labels,
                 Data = data
             };
@@ -136,7 +138,7 @@ public class ChartService : IChartService
         }
 
         var csvData = new StringBuilder();
-        csvData.AppendLine($"First Name  ,Last Name ,{dataType}  ");
+        csvData.AppendLine("First Name,Last Name," + dataType); 
 
         foreach (var employee in employees)
         {
@@ -150,6 +152,5 @@ public class ChartService : IChartService
 
         return csvContent;
     }
-
 
 }
