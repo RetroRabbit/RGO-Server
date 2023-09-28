@@ -17,7 +17,7 @@ public interface IEmployeeEvaluationRatingService
     /// </summary>
     /// <param name="email"></param>
     /// <param name="evaluationInput"></param>
-    /// <returns></returns>
+    /// <returns>Employee Evaluation Rating</returns>
     Task<EmployeeEvaluationRatingDto> Get(string email, EmployeeEvaluationInput evaluationInput);
 
     /// <summary>
