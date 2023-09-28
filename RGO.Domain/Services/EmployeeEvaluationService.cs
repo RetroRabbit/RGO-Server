@@ -24,44 +24,17 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
 
     public async Task<bool> CheckIfExists(EmployeeEvaluationInput evaluationInput)
     {
-        /*bool exists = await _db.EmployeeEvaluation.Any(x => x.Employee.Email == evaluationInput.EmployeeEmail
-            && x.Owner.Email == evaluationInput.OwnerEmail
-            && x.Template.Description == evaluationInput.Template
-            && x.Subject == evaluationInput.Subject);*/
-
-        var evaluations = from evaluation in _db.EmployeeEvaluation.Get()
-                          join employee in _db.Employee.Get() on evaluation.EmployeeId equals employee.Id
-                          join owner in _db.Employee.Get() on evaluation.OwnerId equals owner.Id
-                          join template in _db.EmployeeEvaluationTemplate.Get() on evaluation.TemplateId equals template.Id
-                          where employee.Email == evaluationInput.EmployeeEmail
-                              && owner.Email == evaluationInput.OwnerEmail
-                              && template.Description == evaluationInput.Template
-                              && evaluation.Subject == evaluationInput.Subject
-                          select evaluation;
-
-        bool exists = evaluations.Any();
-
-        /*var list = from evaluation in _db.EmployeeEvaluation.Get()
-                   join employee in _db.Employee.Get() on evaluation.EmployeeId equals employee.Id
-                   join owner in _db.Employee.Get() on evaluation.OwnerId equals owner.Id
-                   join template in _db.EmployeeEvaluationTemplate.Get() on evaluation.TemplateId equals template.Id
-                   select new
-                   {
-                       evaluation,
-                       employee,
-                       owner,
-                       template
-                   };*/
+        bool exists = await _db.EmployeeEvaluation
+            .Any(evaluation =>
+            evaluation.Employee.Email == evaluationInput.EmployeeEmail &&
+            evaluation.Owner.Email == evaluationInput.OwnerEmail &&
+            evaluation.Template.Description == evaluationInput.Template &&
+            evaluation.Subject == evaluationInput.Subject);
         return exists;
     }
 
     public async Task<EmployeeEvaluationDto> Delete(EmployeeEvaluationInput evaluationInput)
     {
-        bool exists = await CheckIfExists(evaluationInput);
-
-        if (!exists)
-            throw new Exception("Employee Evaluation not found");
-
         EmployeeEvaluationDto evaluation = await Get(
             evaluationInput.EmployeeEmail,
             evaluationInput.OwnerEmail,
@@ -154,59 +127,30 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
     }
 
     public async Task<EmployeeEvaluationDto> Get(
-        string employeeEamil,
+        string employeeEmail,
         string ownerEmail,
         string template,
         string subject)
     {
-        EmployeeEvaluationInput evaluationInput = new(0, ownerEmail, employeeEamil, template, subject);
+        EmployeeEvaluationInput evaluationInput = new(0, ownerEmail, employeeEmail, template, subject);
 
         bool exists = await CheckIfExists(evaluationInput);
 
         if (!exists) throw new Exception("Employee Evaluation not found");
 
-        /*EmployeeEvaluation employeeEvaluation = await _db.EmployeeEvaluation
-            .Get(x => x.Employee.Email == employeeEamil
-                && x.Owner.Email == ownerEmail
-                && x.Template.Description == template
-                && x.Subject == subject)
+        EmployeeEvaluation employeeEvaluation = await _db.EmployeeEvaluation
+            .Get(evaluation =>
+            evaluation.Employee.Email == employeeEmail &&
+            evaluation.Owner.Email == ownerEmail &&
+            evaluation.Template.Description == template &&
+            evaluation.Subject == subject)
             .AsNoTracking()
-            .Include(x => x.Employee)
-            .Include(x => x.Employee.EmployeeType)
-            .Include(x => x.Template)
-            .Include(x => x.Owner)
-            .Include(x => x.Owner.EmployeeType)
-            .FirstAsync();*/
-
-        var query = from evaluation in _db.EmployeeEvaluation.Get()
-                    join employee in _db.Employee.Get() on evaluation.EmployeeId equals employee.Id
-                    join employeeType in _db.EmployeeType.Get() on employee.EmployeeTypeId equals employeeType.Id
-                    join owner in _db.Employee.Get() on evaluation.OwnerId equals owner.Id
-                    join ownerType in _db.EmployeeType.Get() on owner.EmployeeTypeId equals ownerType.Id
-                    join template1 in _db.EmployeeEvaluationTemplate.Get() on evaluation.TemplateId equals template1.Id
-                    where employee.Email == employeeEamil
-                        && owner.Email == ownerEmail
-                        && template1.Description == template
-                        && evaluation.Subject == subject
-                    select new
-                    {
-                        Evaluation = evaluation,
-                        Employee = employee,
-                        EmployeeType = employeeType,
-                        Owner = owner,
-                        OwnerType = ownerType,
-                        Template = template1
-                    };
-
-        var result = await query.AsNoTracking().FirstAsync();
-
-        EmployeeEvaluation employeeEvaluation = result.Evaluation;
-
-        employeeEvaluation.Employee = result.Employee;
-        employeeEvaluation.Employee.EmployeeType = result.EmployeeType;
-        employeeEvaluation.Owner = result.Owner;
-        employeeEvaluation.Owner.EmployeeType = result.OwnerType;
-        employeeEvaluation.Template = result.Template;
+        .Include(evaluation => evaluation.Employee)
+        .ThenInclude(employee => employee.EmployeeType)
+        .Include(evaluation => evaluation.Owner)
+        .ThenInclude(owner => owner.EmployeeType)
+        .Include(evaluation => evaluation.Template)
+        .FirstAsync();
 
         return employeeEvaluation.ToDto();
     }
