@@ -5,7 +5,7 @@ using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using Xunit;
 
-namespace RGO.Tests.Serices
+namespace RGO.Tests.Services
 {
     public class EmployeeDataServiceUnitTest
     {

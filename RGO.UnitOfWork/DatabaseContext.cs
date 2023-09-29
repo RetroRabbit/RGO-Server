@@ -21,16 +21,21 @@ namespace RGO.UnitOfWork
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<EmployeeType>().HasData(ModelStateManage.EmployeeTypeSet());
-            modelBuilder.Entity<Employee>().HasData(ModelStateManage.EmployeeSet());
-            modelBuilder.Entity<Role>().HasData(ModelStateManage.RoleSet());
-            modelBuilder.Entity<RoleAccess>().HasData(ModelStateManage.RoleAccessSet());
-            modelBuilder.Entity<RoleAccessLink>().HasData(ModelStateManage.RoleAccessLinkSet());
-            modelBuilder.Entity<EmployeeRole>().HasData(ModelStateManage.EmployeeRole());
-            modelBuilder.Entity<FieldCode>().HasData(ModelStateManage.FieldCodeSet());
-            modelBuilder.Entity<FieldCodeOptions>().HasData(ModelStateManage.FieldCodeOptionSet());
-            modelBuilder.Entity<PropertyAccess>().HasData(ModelStateManage.PropertyAccessSet());
-            modelBuilder.Entity<EmployeeData>().HasData(ModelStateManage.EmployeeDataSet());
+            modelBuilder.Entity<EmployeeType>().HasData(TestData.EmployeeTypeSet());
+            modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
+            modelBuilder.Entity<Role>().HasData(TestData.RoleSet());
+            modelBuilder.Entity<RoleAccess>().HasData(TestData.RoleAccessSet());
+            modelBuilder.Entity<RoleAccessLink>().HasData(TestData.RoleAccessLinkSet());
+            modelBuilder.Entity<EmployeeRole>().HasData(TestData.EmployeeRole());
+            modelBuilder.Entity<FieldCode>().HasData(TestData.FieldCodeSet());
+            modelBuilder.Entity<FieldCodeOptions>().HasData(TestData.FieldCodeOptionSet());
+            modelBuilder.Entity<PropertyAccess>().HasData(TestData.PropertyAccessSet());
+            modelBuilder.Entity<EmployeeData>().HasData(TestData.EmployeeDataSet());
+            modelBuilder.Entity<EmployeeEvaluation>().HasData(TestData.EmployeeEvaluationSet());
+            modelBuilder.Entity<EmployeeEvaluationAudience>().HasData(TestData.EmployeeEvaluationAudienceSet());
+            modelBuilder.Entity<EmployeeEvaluationRating>().HasData(TestData.EmployeeEvaluationRatingSet());
+            modelBuilder.Entity<EmployeeEvaluationTemplate>().HasData(TestData.EmployeeEvaluationTemplateSet());
+            modelBuilder.Entity<EmployeeEvaluationTemplateItem>().HasData(TestData.EmployeeEvaluationTemplateItemSet());
         }
 
         public DbSet<Employee> employees { get; set; }
@@ -39,6 +44,11 @@ namespace RGO.UnitOfWork
         public DbSet<EmployeeBanking> employeeBankings { get; set; }
         public DbSet<EmployeeDocument> employeeDocuments { get; set; }
         public DbSet<EmployeeProject> employeeProjects { get; set; }
+        public DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }
+        public DbSet<EmployeeEvaluationAudience> employeeEvaluationAudiences { get; set; }
+        public DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
+        public DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
+        public DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
         public DbSet<Role> roles { get; set; }
         public DbSet<RoleAccess> roleAccess { get; set; }
         public DbSet<OnboardingDocument> onboarding { get; set; }
