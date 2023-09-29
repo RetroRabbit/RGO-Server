@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RGO.Models;
+using RGO.Models.Enums;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
@@ -41,12 +42,11 @@ namespace RGO.Services.Services
             return newFieldCode;
         }
 
-        //TODO: Update this method to only get all field codes with a status of "active"
         public async Task<FieldCodeDto?> GetFieldCode(string name)
         {
             var fieldCodes = await _db.FieldCode.GetAll(); ;
             var fieldCode = fieldCodes
-                .Where(fieldCode => fieldCode.Name == name)
+                .Where(fieldCode => fieldCode.Name == name && fieldCode.Status == ItemStatus.Active)
                 .Select(fieldCode => fieldCode)
                 .FirstOrDefault();
 
@@ -59,35 +59,55 @@ namespace RGO.Services.Services
             return fieldCode;
         }
 
-        //TODO: Update this method to only get all field codes with a status of "active"
         public async Task<List<FieldCodeDto>> GetAllFieldCodes() 
         {
             var fieldCodes = await _db.FieldCode.GetAll();
-            if(fieldCodes.Count != 0)
+            var fieldCode = fieldCodes
+                .Where(fieldCode => fieldCode.Status == ItemStatus.Active)
+                .Select(fieldCode => fieldCode)
+                .ToList();
+            if (fieldCode.Count != 0)
             {
-                foreach(var fieldCode in fieldCodes)
+                foreach(var item in fieldCode)
                 {
-                    var options = await _fieldCodeOptionsService.GetFieldCodeOptions(fieldCode.Id);
-                    fieldCode.Options = (options != null) ? options : null;
+                    var options = await _fieldCodeOptionsService.GetFieldCodeOptions(item.Id);
+                    item.Options = (options != null) ? options : null;
                 }
             }
-            return fieldCodes;
+            return fieldCode;
         }
 
-        //TODO: Update this method to incorporate the model change
         public async Task<FieldCodeDto> UpdateFieldCode(FieldCodeDto fieldCodeDto)
         {
-            var updatedFieldCode = await _db.FieldCode.Update(new FieldCode(fieldCodeDto));
-            return updatedFieldCode;
+            await _db.FieldCode.Update(new FieldCode(fieldCodeDto));
+            if (fieldCodeDto.Options.Count > 0)
+            {
+                await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
+            }
+            
+
+            var getUpdatedFieldCode = await GetFieldCode(fieldCodeDto.Name);
+            return getUpdatedFieldCode;
         }
 
-        //TODO: Update this method to incorporate the model change and instead of deleting, change status to archived
         public async Task<FieldCodeDto> DeleteFieldCode(FieldCodeDto fieldCodeDto)
         {
             var ifFieldCode = await GetFieldCode(fieldCodeDto.Name);
             if (ifFieldCode == null) { throw new Exception("No field with that name found"); }
+            var newFieldCodeDto = new FieldCodeDto(Id: ifFieldCode.Id,
+                Code: ifFieldCode.Code,
+                Name: ifFieldCode.Name,
+                Description: ifFieldCode.Description,
+                Regex: ifFieldCode.Regex,
+                Type: ifFieldCode.Type,
+                Status: ItemStatus.Archive,
+                Internal: ifFieldCode.Internal,
+                InternalTable: ifFieldCode.InternalTable
+                );
 
-            var fieldCode = await _db.FieldCode.Delete(new FieldCode(fieldCodeDto).Id);
+            var fieldCode = await _db.FieldCode.Update(new FieldCode(newFieldCodeDto));
+            var options = await _fieldCodeOptionsService.GetFieldCodeOptions(fieldCode.Id);
+            fieldCode.Options = options;
             return fieldCode;
         }
     }

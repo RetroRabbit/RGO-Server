@@ -29,8 +29,4 @@
     <ProjectReference Include="..\RGO.Models\RGO.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

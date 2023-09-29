@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RGO.UnitOfWork.Interfaces;
-using RGO.UnitOfWork.Repositories;
 
 namespace RGO.UnitOfWork;
 

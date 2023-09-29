@@ -11,12 +11,10 @@ namespace RGO.App.Controllers
     public class FieldCodeController : Controller
     {
         private readonly IFieldCodeService _fieldCodeService;
-        private readonly IFieldCodeOptionsService _fieldCodeOptionsService;
 
-        public FieldCodeController(IFieldCodeService fieldCodeService, IFieldCodeOptionsService fieldCodeOptionsService)
+        public FieldCodeController(IFieldCodeService fieldCodeService)
         {
             _fieldCodeService = fieldCodeService;
-            _fieldCodeOptionsService = fieldCodeOptionsService;
         }
 
         [HttpGet("get")]
@@ -50,19 +48,13 @@ namespace RGO.App.Controllers
             }
         }
 
-        //TODO: Update this controller 
         [HttpPut("update")]
         public async Task<IActionResult> UpdateFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
             {
-                await _fieldCodeService.UpdateFieldCode(fieldCodeDto);
-
-                if (fieldCodeDto.Options.Count > 0)
-                {
-                    await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
-                }
-                return Ok();
+               var updatedFieldCode = await _fieldCodeService.UpdateFieldCode(fieldCodeDto);
+               return Ok(updatedFieldCode);
             }
             catch (Exception ex)
             {
@@ -75,9 +67,8 @@ namespace RGO.App.Controllers
         {
             try
             {
-
-                await _fieldCodeService.DeleteFieldCode(fieldCodeDto);
-                return Ok();
+                var deletedFieldCode = await _fieldCodeService.DeleteFieldCode(fieldCodeDto);
+                return Ok(deletedFieldCode);
             }
             catch (Exception ex)
             {
