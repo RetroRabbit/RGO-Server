@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace RGO.Models.Enums;
 
-public enum Race
+public enum Race 
 {
     [Description("Black")] Black,
     [Description("White")] White,
