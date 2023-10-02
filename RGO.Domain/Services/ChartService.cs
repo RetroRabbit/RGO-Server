@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Text;
 
 namespace RGO.Services.Services;
 
@@ -51,6 +55,7 @@ public class ChartService : IChartService
             {
                 Name = chartName,
                 Type = chartType,
+                DataType= dataType,
                 Labels = labels,
                 Data = data
             };
@@ -120,4 +125,32 @@ public class ChartService : IChartService
     {
         return typeof(IConvertible).IsAssignableFrom(type) && type != typeof(string);
     }
+
+    public async Task<byte[]> ExportCsvAsync(string dataType)
+    {
+        var employees = await _db.Employee.GetAll();
+
+        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+
+        if (propertyInfo == null)
+        {
+            throw new ArgumentException("Invalid property name", nameof(dataType));
+        }
+
+        var csvData = new StringBuilder();
+        csvData.AppendLine("First Name,Last Name," + dataType); 
+
+        foreach (var employee in employees)
+        {
+            var propertyValue = propertyInfo.GetValue(employee);
+
+            var formattedData = $"{employee.Name},{employee.Surname},{propertyValue}";
+            csvData.AppendLine(formattedData);
+        }
+
+        var csvContent = Encoding.UTF8.GetBytes(csvData.ToString());
+
+        return csvContent;
+    }
+
 }

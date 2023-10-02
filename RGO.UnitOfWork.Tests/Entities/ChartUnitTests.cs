@@ -20,6 +20,7 @@ public class ChartUnitTests
             0,
             "Name",
             "Type",
+            "dataType",
             new List<string> { "Label1", "Label2" },
             new List<int> { 1, 2 });
 
@@ -33,6 +34,7 @@ public class ChartUnitTests
             0,
             "Name",
             "Type",
+            "dataType",
             new List<string> { "Label1", "Label2" },
             new List<int> { 1, 2 });
 

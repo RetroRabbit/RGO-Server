@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
+using System.Globalization;
 
 namespace RGO.App.Controllers
 {
@@ -116,6 +117,27 @@ namespace RGO.App.Controllers
             {
                 return NotFound(ex.Message);
             }
+        }
+
+        [HttpGet("report/export")]
+        public async Task<IActionResult> ExportCsv([FromQuery] string dataType)
+        {
+            try
+            {
+                var csvData = await _chartService.ExportCsvAsync(dataType);
+
+                if (csvData == null || csvData.Length == 0)
+                    return NotFound("No data found to export.");
+
+                var fileName = $"Report.csv";
+
+                return File(csvData, "text/csv", fileName);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+           
         }
     }
 }
