@@ -33,7 +33,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateChart([FromQuery] string dataType,string chartName,string chartType)
+        public async Task<IActionResult> CreateChart([FromQuery] List<string> dataType,string chartName,string chartType)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpGet("data")]
-        public async Task<IActionResult> GetChartData([FromQuery] string dataType)
+        public async Task<IActionResult> GetChartData([FromQuery] List<string> dataType)
         {
             try
             {
