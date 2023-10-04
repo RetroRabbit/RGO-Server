@@ -1,8 +1,13 @@
-﻿namespace RGO.Models.Enums;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.ComponentModel;
+using System.Reflection;
+
+namespace RGO.Models.Enums;
 
 public enum Gender
 {
-    PreferNotToSay,
-    Male,
-    Female,
+    [Description("Prefer Not To Say")] PreferNotToSay,
+    [Description("Male")] Male,
+    [Description("Female")] Female,
 }
