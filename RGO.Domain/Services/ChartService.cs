@@ -146,25 +146,45 @@ public class ChartService : IChartService
         return typeof(IConvertible).IsAssignableFrom(type) && type != typeof(string);
     }
 
-    public async Task<byte[]> ExportCsvAsync(string dataType)
+    public async Task<byte[]> ExportCsvAsync(List<string> dataTypes)
     {
         var employees = await _db.Employee.GetAll();
 
-        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
 
-        if (propertyInfo == null)
+        var propertyNames = new List<string>();
+
+        foreach (var typeName in dataTypeList)
         {
-            throw new ArgumentException("Invalid property name", nameof(dataType));
+            var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException($"Invalid property name: {typeName}", nameof(dataTypeList));
+            }
+
+            propertyNames.Add(typeName);
         }
 
         var csvData = new StringBuilder();
-        csvData.AppendLine("First Name,Last Name," + dataType); 
+        csvData.Append("First Name,Last Name");
+        foreach (var propertyName in propertyNames)
+        {
+            csvData.Append("," + propertyName);
+        }
+        csvData.AppendLine();
 
         foreach (var employee in employees)
         {
-            var propertyValue = propertyInfo.GetValue(employee);
+            var formattedData = $"{employee.Name},{employee.Surname}";
 
-            var formattedData = $"{employee.Name},{employee.Surname},{propertyValue}";
+            foreach (var propertyName in propertyNames)
+            {
+                var propertyInfo = typeof(EmployeeDto).GetProperty(propertyName);
+                var propertyValue = propertyInfo.GetValue(employee);
+
+                formattedData += $",{propertyValue}";
+            }
+
             csvData.AppendLine(formattedData);
         }
 

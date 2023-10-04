@@ -24,16 +24,16 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Create a chart
         /// </summary>
-        /// <param name="dataType"></param>
+        /// <param name="dataTypes"></param>
         /// <param name="chartName"></param>
         /// <param name="chartType"></param>
         /// <returns></returns>
         Task<ChartDto> CreateChart(List<string> dataTypes, string chartName, string chartType);
 
         /// <summary>
-        ///Gets data point selected by the user
+        ///Gets data points selected by the user
         /// </summary>
-        /// <param name="dataType"></param>
+        /// <param name="dataTypes"></param>
         /// <returns></returns>
         Task<ChartDataDto> GetChartData(List<string> dataTypes);
 
@@ -60,8 +60,8 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Returns a CSV file 
         /// </summary>
-        /// <param name="dataType"></param>
+        /// <param name="dataTypes"></param>
         /// <returns></returns>
-        Task<byte[]> ExportCsvAsync(string dataType);
+        Task<byte[]> ExportCsvAsync(List<string> dataTypes);
     }
 }
