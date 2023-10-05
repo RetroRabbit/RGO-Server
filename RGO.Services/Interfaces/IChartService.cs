@@ -24,24 +24,24 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Create a chart
         /// </summary>
-        /// <param name="dataType"></param>
+        /// <param name="dataTypes"></param>
         /// <param name="chartName"></param>
         /// <param name="chartType"></param>
-        /// <returns></returns>
-        Task<ChartDto> CreateChart(string dataType, string chartName, string chartType);
+        /// <returns>ChartDto</returns>
+        Task<ChartDto> CreateChart(List<string> dataTypes, string chartName, string chartType);
 
         /// <summary>
-        ///Gets data point selected by the user
+        ///Gets data points selected by the user
         /// </summary>
-        /// <param name="dataType"></param>
-        /// <returns></returns>
-        Task<ChartDataDto> GetChartData(string dataType);
+        /// <param name="dataTypes"></param>
+        /// <returns>ChartDataDto</returns>
+        Task<ChartDataDto> GetChartData(List<string> dataTypes);
 
         /// <summary>
         /// Delete a Chart 
         /// </summary>
         /// <param name="chartId"></param>
-        /// <returns></returns>
+        /// <returns>Chart Data</returns>
         Task<ChartDto> DeleteChart(int chartId);
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Returns a CSV file 
         /// </summary>
-        /// <param name="dataType"></param>
-        /// <returns></returns>
-        Task<byte[]> ExportCsvAsync(string dataType);
+        /// <param name="dataTypes"></param>
+        /// <returns>Report CSV File</returns>
+        Task<byte[]> ExportCsvAsync(List<string> dataTypes);
     }
 }

@@ -33,7 +33,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateChart([FromQuery] string dataType,string chartName,string chartType)
+        public async Task<IActionResult> CreateChart([FromQuery] List<string> dataType,string chartName,string chartType)
         {
             try
             {
@@ -62,11 +62,11 @@ namespace RGO.App.Controllers
         }
 
         [HttpGet("data")]
-        public async Task<IActionResult> GetChartData([FromQuery] string dataType)
+        public async Task<IActionResult> GetChartData([FromQuery] List<string> dataTypes)
         {
             try
             {
-                var chartData = await _chartService.GetChartData(dataType);
+                var chartData = await _chartService.GetChartData(dataTypes);
                 return Ok(chartData);
             }
             catch (Exception ex)
@@ -120,11 +120,11 @@ namespace RGO.App.Controllers
         }
 
         [HttpGet("report/export")]
-        public async Task<IActionResult> ExportCsv([FromQuery] string dataType)
+        public async Task<IActionResult> ExportCsv([FromQuery] List<string> dataTypes)
         {
             try
             {
-                var csvData = await _chartService.ExportCsvAsync(dataType);
+                var csvData = await _chartService.ExportCsvAsync(dataTypes);
 
                 if (csvData == null || csvData.Length == 0)
                     return NotFound("No data found to export.");

@@ -8,7 +8,9 @@ using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RGO.Services.Services;
 
@@ -33,61 +35,80 @@ public class ChartService : IChartService
             return employees.Count;
     }
 
-    public async Task<ChartDto> CreateChart(string dataType, string chartName, string chartType)
+    public async Task<ChartDto> CreateChart(List<string> dataTypes, string chartName, string chartType)
     {
         var employees = await _employeeService.GetAll();
 
-        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
 
-        if (propertyInfo == null)
-        {
-            throw new ArgumentException($"Invalid dataType: {dataType}");
-        }
-
-            var dataDictionary = employees
-                .GroupBy(x => propertyInfo.GetValue(x))
-                .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
-
-            var labels = dataDictionary.Keys.ToList();
-            var data = dataDictionary.Values.ToList();
-
-            var chart = new Chart
+        var dataDictionary = employees
+            .GroupBy(employee =>
             {
-                Name = chartName,
-                Type = chartType,
-                DataType= dataType,
-                Labels = labels,
-                Data = data
-            };
+                var keyBuilder = new StringBuilder();
+                foreach (var dataType in dataTypeList)
+                {
+                    var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                    if (propertyInfo == null)
+                    {
+                        throw new ArgumentException($"Invalid dataType: {dataType}");
+                    }
 
-            return await _db.Chart.Add(chart);
+                    keyBuilder.Append(propertyInfo.GetValue(employee));
+                }
+                return keyBuilder.ToString();
+            })
+            .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
+
+        var labels = dataDictionary.Keys.ToList();
+        var data = dataDictionary.Values.ToList();
+
+        var chart = new Chart
+        {
+            Name = chartName,
+            Type = chartType,
+            DataTypes = dataTypes,
+            Labels = labels,
+            Data = data
+        };
+
+        return await _db.Chart.Add(chart);
     }
 
-    public async Task<ChartDataDto> GetChartData(string dataType)
+    public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {
+
         var employees = await _employeeService.GetAll();
+      
+        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
+       
+        var dataDictionary = employees
+             .GroupBy(employee =>
+             {
+                 var keyBuilder = new StringBuilder();
+                 foreach (var dataType in dataTypeList)
+                 {
+                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                     if (propertyInfo == null)
+                     {
+                         throw new ArgumentException($"Invalid dataType: {dataType}");
+                     }
 
-        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                     keyBuilder.Append(propertyInfo.GetValue(employee));
+                 }
+                 return keyBuilder.ToString();
+             })
+             .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
 
-        if (propertyInfo == null)
+        var labels = dataDictionary.Keys.ToList();
+        var data = dataDictionary.Values.ToList();
+
+        var chartDataDto = new ChartDataDto
         {
-            throw new ArgumentException($"Invalid dataType: {dataType}");
-        }
+            Labels = labels,
+            Data = data
+        };
 
-            var chartData = employees
-                .GroupBy(x => propertyInfo.GetValue(x))
-                .ToDictionary(group => group.Key?.ToString() ?? "Unknown", group => group.Count());
-
-            var labels = chartData.Keys.ToList();
-            var data = chartData.Values.ToList();
-
-            var chartDataDto = new ChartDataDto
-            {
-                Labels = labels,
-                Data = data
-            };
-
-            return chartDataDto;   
+        return chartDataDto;
     }
 
     public async Task<ChartDto> DeleteChart(int chartId)
@@ -126,25 +147,45 @@ public class ChartService : IChartService
         return typeof(IConvertible).IsAssignableFrom(type) && type != typeof(string);
     }
 
-    public async Task<byte[]> ExportCsvAsync(string dataType)
+    public async Task<byte[]> ExportCsvAsync(List<string> dataTypes)
     {
         var employees = await _db.Employee.GetAll();
 
-        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
 
-        if (propertyInfo == null)
+        var propertyNames = new List<string>();
+
+        foreach (var typeName in dataTypeList)
         {
-            throw new ArgumentException("Invalid property name", nameof(dataType));
+            var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException($"Invalid property name: {typeName}", nameof(dataTypeList));
+            }
+
+            propertyNames.Add(typeName);
         }
 
         var csvData = new StringBuilder();
-        csvData.AppendLine("First Name,Last Name," + dataType); 
+        csvData.Append("First Name,Last Name");
+        foreach (var propertyName in propertyNames)
+        {
+            csvData.Append("," + propertyName);
+        }
+        csvData.AppendLine();
 
         foreach (var employee in employees)
         {
-            var propertyValue = propertyInfo.GetValue(employee);
+            var formattedData = $"{employee.Name},{employee.Surname}";
 
-            var formattedData = $"{employee.Name},{employee.Surname},{propertyValue}";
+            foreach (var propertyName in propertyNames)
+            {
+                var propertyInfo = typeof(EmployeeDto).GetProperty(propertyName);
+                var propertyValue = propertyInfo.GetValue(employee);
+
+                formattedData += $",{propertyValue}";
+            }
+
             csvData.AppendLine(formattedData);
         }
 
