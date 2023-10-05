@@ -76,10 +76,11 @@ public class ChartService : IChartService
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {
+
         var employees = await _employeeService.GetAll();
-
+      
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
-
+       
         var dataDictionary = employees
              .GroupBy(employee =>
              {
