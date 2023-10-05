@@ -10,7 +10,7 @@ public interface IEmployeeEvaluationRatingService
     /// <param name="email"></param>
     /// <param name="evaluationId"></param>
     /// <returns>True or False</returns>
-    Task<bool> CheckIfExists(string email, int evaluationId);
+    Task<bool> CheckIfExists(EvaluationRatingInput rating);
 
     /// <summary>
     /// Get Employee Evaluation Rating
@@ -18,7 +18,7 @@ public interface IEmployeeEvaluationRatingService
     /// <param name="email"></param>
     /// <param name="evaluationInput"></param>
     /// <returns>Employee Evaluation Rating</returns>
-    Task<EmployeeEvaluationRatingDto> Get(string email, EmployeeEvaluationInput evaluationInput);
+    Task<EmployeeEvaluationRatingDto> Get(EvaluationRatingInput rating);
 
     /// <summary>
     /// Save Employee Evaluation Rating
