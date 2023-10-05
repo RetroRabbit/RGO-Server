@@ -27,21 +27,21 @@ namespace RGO.Services.Interfaces
         /// <param name="dataTypes"></param>
         /// <param name="chartName"></param>
         /// <param name="chartType"></param>
-        /// <returns></returns>
+        /// <returns>ChartDto</returns>
         Task<ChartDto> CreateChart(List<string> dataTypes, string chartName, string chartType);
 
         /// <summary>
         ///Gets data points selected by the user
         /// </summary>
         /// <param name="dataTypes"></param>
-        /// <returns></returns>
+        /// <returns>ChartDataDto</returns>
         Task<ChartDataDto> GetChartData(List<string> dataTypes);
 
         /// <summary>
         /// Delete a Chart 
         /// </summary>
         /// <param name="chartId"></param>
-        /// <returns></returns>
+        /// <returns>Chart Data</returns>
         Task<ChartDto> DeleteChart(int chartId);
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace RGO.Services.Interfaces
         /// Returns a CSV file 
         /// </summary>
         /// <param name="dataTypes"></param>
-        /// <returns></returns>
+        /// <returns>Report CSV File</returns>
         Task<byte[]> ExportCsvAsync(List<string> dataTypes);
     }
 }
