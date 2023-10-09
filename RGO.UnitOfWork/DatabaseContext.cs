@@ -60,5 +60,6 @@ namespace RGO.UnitOfWork
         public DbSet<EmployeeData> employeeData { get; set; }
         public DbSet<PropertyAccess> propertyAccesses { get; set; }
         public DbSet<RoleAccessLink> roleAccessLinks { get; set; }
+        public DbSet<EmployeeBanking> employeeBanking { get; set;}
     }
 }
