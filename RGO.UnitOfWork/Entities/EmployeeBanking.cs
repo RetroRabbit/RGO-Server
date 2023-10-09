@@ -32,6 +32,9 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
     [Column("accountHolderName")]
     public string AccountHolderName { get; set; }
 
+    [Column("status")]
+    public BankApprovalStatus Status { get; set; }
+
     public virtual Employee Employee { get; set; }
 
     public EmployeeBanking() { }
@@ -44,6 +47,7 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
         AccountNo = employeeBankingDto.AccountNo;
         AccountType = employeeBankingDto.AccountType;
         AccountHolderName = employeeBankingDto.AccountHolderName;
+        Status = employeeBankingDto.Status;
     }
 
     public EmployeeBankingDto ToDto()
@@ -55,7 +59,8 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
             Branch,
             AccountNo,
             AccountType,
-            AccountHolderName
+            AccountHolderName,
+            Status
             );
     }
 }

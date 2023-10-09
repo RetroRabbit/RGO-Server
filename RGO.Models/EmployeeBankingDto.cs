@@ -9,5 +9,6 @@ public record EmployeeBankingDto(
     string Branch,
     string AccountNo,
     EmployeeBankingAccountType AccountType,
-    string AccountHolderName
+    string AccountHolderName,
+    BankApprovalStatus Status
     );
