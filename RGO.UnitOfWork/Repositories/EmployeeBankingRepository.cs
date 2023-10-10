@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RGO.Models;
+using RGO.UnitOfWork.Entities;
+using RGO.UnitOfWork.Interfaces;
 
-namespace RGO.UnitOfWork.Repositories
+namespace RGO.UnitOfWork.Repositories;
+
+public class EmployeeBankingRepository : BaseRepository<EmployeeBanking, EmployeeBankingDto>, IEmployeeBankingRepository
 {
-    internal class EmployeeBankingRepository
+    public EmployeeBankingRepository(DatabaseContext db) : base(db)
     {
+
     }
 }

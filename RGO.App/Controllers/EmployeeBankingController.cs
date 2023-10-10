@@ -4,11 +4,11 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-public class EmployeeBanking : ControllerBase
+public class EmployeeBankingController : ControllerBase
 {
     private readonly IEmployeeBankingService _employeeBankingService;
 
-    public EmployeeBanking(IEmployeeBankingService employeeBankingService)
+    public EmployeeBankingController(IEmployeeBankingService employeeBankingService)
     {
         _employeeBankingService = employeeBankingService;
     }
@@ -17,6 +17,7 @@ public class EmployeeBanking : ControllerBase
     [HttpGet("getPending")]
     public async Task<IActionResult> FetchPending()
     {
+        Console.WriteLine("Hello");
         try
         {
             var pendingEntries = await _employeeBankingService.GetPending();

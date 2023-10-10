@@ -3,6 +3,6 @@ using RGO.UnitOfWork.Entities;
 
 namespace RGO.UnitOfWork.Interfaces;
 
-public interface IEmployeeBanking : IRepository<EmployeeBanking, EmployeeBankingDto>
+public interface IEmployeeBankingRepository : IRepository<EmployeeBanking, EmployeeBankingDto>
 {
 }

@@ -31,7 +31,8 @@ public class UnitOfWork : IUnitOfWork
     public IChartRoleLinkRepositories ChartRoleLink { get; }
     public IFieldCodeRepository FieldCode { get; }
     public IFieldCodeOptionsRepository FieldCodeOptions { get; }
-    
+    public IEmployeeBankingRepository EmployeeBanking { get; }
+
     private readonly DatabaseContext _db;
 
     public UnitOfWork(DatabaseContext db)
@@ -51,6 +52,7 @@ public class UnitOfWork : IUnitOfWork
         Employee = new EmployeeRepository(_db);
         EmployeeRole = new EmployeeRoleRepository(_db);
         EmployeeType = new EmployeeTypeRepository(_db);
+        EmployeeBanking = new EmployeeBankingRepository(_db);
         OnboardingDocuments = new OnboardingDocumentsRepository(_db);
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
