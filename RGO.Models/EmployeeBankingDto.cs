@@ -4,11 +4,13 @@ namespace RGO.Models;
 
 public record EmployeeBankingDto(
     int Id,
-    EmployeeDto? Employee,
+    int EmployeeId,
     string BankName,
     string Branch,
     string AccountNo,
     EmployeeBankingAccountType AccountType,
     string AccountHolderName,
-    BankApprovalStatus Status
+    BankApprovalStatus Status,
+    string ?Reason,
+    string File
     );

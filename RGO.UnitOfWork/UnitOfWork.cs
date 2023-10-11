@@ -62,6 +62,8 @@ public class UnitOfWork : IUnitOfWork
         ChartRoleLink = new ChartRoleLinkRepository(_db);
         FieldCode = new FieldCodeRepository(_db);
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);
+        EmployeeBanking = new EmployeeBankingRepository(_db);//here matt
+
     }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)

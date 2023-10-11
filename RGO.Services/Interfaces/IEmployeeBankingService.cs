@@ -9,4 +9,12 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <returns>List of pending EmployeeBanking objects</returns>
     Task<List<EmployeeBankingDto>> GetPending();
+
+
+    /// <summary>
+    /// Updates a banking entry
+    /// </summary>
+    /// 
+    /// <returns></returns>
+    Task<EmployeeBankingDto> UpdatePending(EmployeeBankingDto newEntry);
 }

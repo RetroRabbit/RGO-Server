@@ -3,6 +3,8 @@
     public enum BankApprovalStatus
     {
         Approved,
-        Pending
+        PendingApproval,
+        Declined
     }
 }
+
