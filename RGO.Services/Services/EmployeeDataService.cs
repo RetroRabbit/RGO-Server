@@ -22,7 +22,7 @@ namespace RGO.Services.Services
         {
             var employeesData = await _db.EmployeeData.GetAll();
             var employeeData = employeesData
-                .Where(employeeData => employeeData.Id == employeeDataDto.EmployeeId && employeeData.FieldCodeId == employeeDataDto.FieldCodeId)
+                .Where(employeeData => employeeData.EmployeeId == employeeDataDto.EmployeeId && employeeData.FieldCodeId == employeeDataDto.FieldCodeId)
                 .Select(employeeData => employeeData)
                 .FirstOrDefault();
 
@@ -57,7 +57,7 @@ namespace RGO.Services.Services
         {
             var employeesData = await _db.EmployeeData.GetAll();
             var employeeData = employeesData
-                .Where(employeeData => employeeData.EmployeeId == employeeDataDto.EmployeeId)
+                .Where(employeeData => employeeData.Id == employeeDataDto.Id)
                 .Select(employeeData => employeeData)
                 .FirstOrDefault();
 
