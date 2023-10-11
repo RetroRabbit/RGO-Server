@@ -23,7 +23,7 @@ public class EmployeeDate : IModel<EmployeeDateDto>
     public string Note { get; set; }
 
     [Column("date")]
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public virtual Employee Employee { get; set; }
     public EmployeeDate() { }
@@ -33,6 +33,7 @@ public class EmployeeDate : IModel<EmployeeDateDto>
         Id = employeeDateDto.Id;
         EmployeeId = employeeDateDto.Employee!.Id;
         Subject = employeeDateDto.Subject;
+        Note = employeeDateDto.Note;
         Date = employeeDateDto.Date;
     }
 
