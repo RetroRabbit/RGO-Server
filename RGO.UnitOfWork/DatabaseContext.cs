@@ -41,7 +41,6 @@ namespace RGO.UnitOfWork
         public DbSet<Employee> employees { get; set; }
         public DbSet<EmployeeRole> employeeRoles { get; set; }
         public DbSet<EmployeeAddress> employeeAddresses { get; set; }
-        public DbSet<EmployeeBanking> employeeBankings { get; set; }
         public DbSet<EmployeeDocument> employeeDocuments { get; set; }
         public DbSet<EmployeeProject> employeeProjects { get; set; }
         public DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }

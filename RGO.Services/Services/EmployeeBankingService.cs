@@ -10,7 +10,6 @@ namespace RGO.Services.Services;
 public class EmployeeBankingService : IEmployeeBankingService
 {
     private readonly IUnitOfWork _db;
-
     public EmployeeBankingService(IUnitOfWork db)
     {
         _db = db;
@@ -38,16 +37,27 @@ public class EmployeeBankingService : IEmployeeBankingService
 
     public async Task<EmployeeBankingDto> UpdatePending(EmployeeBankingDto newEntry)
     {
-        EmployeeBanking entry = new EmployeeBanking(newEntry);
-        EmployeeDto employ = await _db.Employee.Get(x => x.Id == entry.EmployeeId).Select(x => x.ToDto()).FirstOrDefaultAsync();
-
-        if (employ == null)
+        //await _db.EmployeeBanking.Update(entry);
+        try
         {
-            throw new Exception();
+            EmployeeDto empDto = await _db.Employee
+            .Get(employee => employee.Id == newEntry.EmployeeId)
+            .AsNoTracking()
+            .Include(employee => employee.EmployeeType)
+            .Select(employee => employee.ToDto())
+            .FirstAsync();
+            Employee newEmployee = new Employee(empDto, empDto.EmployeeType);
+
+            EmployeeBanking entry = new EmployeeBanking(newEntry);
+
+            entry.Employee = newEmployee;
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
         }
-        entry.Employee = new Employee(employ, employ.EmployeeType);
-        await _db.EmployeeBanking.Update(entry);
-        
+
+
+        //Console.WriteLine(entry);
         return newEntry;
     }
 }

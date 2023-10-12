@@ -52,7 +52,6 @@ public class UnitOfWork : IUnitOfWork
         Employee = new EmployeeRepository(_db);
         EmployeeRole = new EmployeeRoleRepository(_db);
         EmployeeType = new EmployeeTypeRepository(_db);
-        EmployeeBanking = new EmployeeBankingRepository(_db);
         OnboardingDocuments = new OnboardingDocumentsRepository(_db);
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
@@ -62,7 +61,7 @@ public class UnitOfWork : IUnitOfWork
         ChartRoleLink = new ChartRoleLinkRepository(_db);
         FieldCode = new FieldCodeRepository(_db);
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);
-        EmployeeBanking = new EmployeeBankingRepository(_db);//here matt
+        EmployeeBanking = new EmployeeBankingRepository(_db);
 
     }
 
