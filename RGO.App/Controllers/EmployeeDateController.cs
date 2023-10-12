@@ -60,27 +60,18 @@ public class EmployeeDateController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployeeDate([FromBody] EmployeeDateInput employeeDateInput)
+    public async Task<IActionResult> UpdateEmployeeDate([FromBody] EmployeeDateDto employeeDate)
     {
         try
         {
             var employeeDateDto = new EmployeeDateDto(
-                0,
-                await _employeeService.GetEmployee(employeeDateInput.Email),
-                employeeDateInput.Subject,
-                employeeDateInput.Note,
-                employeeDateInput.Date);
+                employeeDate.Id,
+                await _employeeService.GetEmployee(employeeDate.Employee!.Email),
+                employeeDate.Subject,
+                employeeDate.Note,
+                employeeDate.Date);
 
-            var employeeDateToUpdate = await _employeeDateService.Get(employeeDateDto);
-
-            employeeDateToUpdate = new EmployeeDateDto(
-                employeeDateToUpdate.Id,
-                employeeDateToUpdate.Employee,
-                employeeDateInput.Subject,
-                employeeDateInput.Note,
-                employeeDateInput.Date);
-
-            await _employeeDateService.Update(employeeDateToUpdate);
+            await _employeeDateService.Update(employeeDateDto);
 
             return Ok();
         }

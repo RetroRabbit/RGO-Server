@@ -17,10 +17,8 @@ public class EmployeeDateService : IEmployeeDateService
     public async Task<bool> CheckIfExists(EmployeeDateDto employeeDate)
     {
         bool exists = await _db.EmployeeDate.Any(x =>
-            x.Employee.Email == employeeDate.Employee!.Email &&
-            x.Subject == employeeDate.Subject &&
-            x.Note == employeeDate.Note &&
-            x.Date == employeeDate.Date);
+            x.Id == employeeDate.Id &&
+            x.Employee.Email == employeeDate.Employee!.Email);
 
         return exists;
     }
