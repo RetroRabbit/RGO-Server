@@ -33,10 +33,10 @@ public class EmployeeBankingController : ControllerBase
     //[Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut("updatePending")]
     public async Task<IActionResult> UpdatePending([FromBody] EmployeeBankingDto updateEntry)
-    {
+     {
         try
         {
-            var employee = _employeeBankingService.UpdatePending(updateEntry);
+            var employee = await _employeeBankingService.UpdatePending(updateEntry);
             if(employee == null)
             {
                 return NotFound("Oi Vey");

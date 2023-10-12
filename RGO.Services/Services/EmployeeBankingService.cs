@@ -40,24 +40,24 @@ public class EmployeeBankingService : IEmployeeBankingService
         //await _db.EmployeeBanking.Update(entry);
         try
         {
-            EmployeeDto empDto = await _db.Employee
-            .Get(employee => employee.Id == newEntry.EmployeeId)
-            .AsNoTracking()
-            .Include(employee => employee.EmployeeType)
-            .Select(employee => employee.ToDto())
-            .FirstAsync();
+            var empDto = await _db.Employee
+                .Get(employee => employee.Id == newEntry.EmployeeId)
+                .AsNoTracking()
+                .Include(employee => employee.EmployeeType)
+                .Select(employee => employee.ToDto())
+                .FirstAsync();
+
             Employee newEmployee = new Employee(empDto, empDto.EmployeeType);
-
             EmployeeBanking entry = new EmployeeBanking(newEntry);
-
             entry.Employee = newEmployee;
-        }catch(Exception ex)
+
+            await _db.EmployeeBanking.Update(entry);
+        }
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
 
-
-        //Console.WriteLine(entry);
         return newEntry;
     }
 }
