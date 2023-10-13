@@ -14,49 +14,61 @@ public class EmployeeBankingService : IEmployeeBankingService
     {
         _db = db;
     }
-    public async Task<List<EmployeeBankingDto>> GetPending()
+    public async Task<List<PendingBankDto>> GetPending()
     {
         List<EmployeeBankingDto> pendingDtos = new List<EmployeeBankingDto>();
-        try
+
+        var pendingBankEntries = await _db.EmployeeBanking
+            .Get(entry => entry.Status == BankApprovalStatus.PendingApproval)
+            .AsNoTracking()
+            .Select(bankEntry => bankEntry.ToDto())
+            .ToListAsync();
+        List<PendingBankDto> pendingEntries = new List<PendingBankDto>();
+        foreach (var entry in pendingBankEntries)
         {
-            var pendingBankEntries = await _db.EmployeeBanking
-                .Get(entry => entry.Status == BankApprovalStatus.PendingApproval)
-                .AsNoTracking()
-                .Include(entry => entry.Employee)
-                .Include(entry => entry.Employee.EmployeeType)
-                .Select(bankEntry => bankEntry.ToDto())
-                .ToListAsync();
-            return pendingBankEntries;
+            var emp = await _db.Employee
+            .Get(employee => employee.Id == entry.EmployeeId)
+            .AsNoTracking()
+            .Include(employee => employee.EmployeeType)
+            .Select(employee => employee.ToDto())
+            .FirstOrDefaultAsync();
+
+            if (emp != null)
+            {
+                PendingBankDto newEntry = new PendingBankDto(
+                    entry.Id,
+                    entry.EmployeeId,
+                    entry.BankName,
+                    entry.Branch,
+                    entry.AccountNo,
+                    entry.AccountType,
+                    entry.AccountHolderName,
+                    entry.Status,
+                    entry.Reason,
+                    entry.File,
+                    emp);
+
+                pendingEntries.Add(newEntry);
+            }
         }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return pendingEntries;
     }
 
 
     public async Task<EmployeeBankingDto> UpdatePending(EmployeeBankingDto newEntry)
     {
-        //await _db.EmployeeBanking.Update(entry);
-        try
-        {
-            var empDto = await _db.Employee
-                .Get(employee => employee.Id == newEntry.EmployeeId)
-                .AsNoTracking()
-                .Include(employee => employee.EmployeeType)
-                .Select(employee => employee.ToDto())
-                .FirstAsync();
+        var empDto = await _db.Employee
+            .Get(employee => employee.Id == newEntry.EmployeeId)
+            .AsNoTracking()
+            .Include(employee => employee.EmployeeType)
+            .Select(employee => employee.ToDto())
+            .FirstAsync();
 
-            Employee newEmployee = new Employee(empDto, empDto.EmployeeType);
-            EmployeeBanking entry = new EmployeeBanking(newEntry);
-            entry.Employee = newEmployee;
+        Employee newEmployee = new Employee(empDto, empDto.EmployeeType);
+        EmployeeBanking entry = new EmployeeBanking(newEntry);
+        entry.Employee = newEmployee;
 
-            await _db.EmployeeBanking.Update(entry);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        await _db.EmployeeBanking.Update(entry);
 
         return newEntry;
     }

@@ -30,7 +30,7 @@ public class EmployeeBankingController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut("updatePending")]
     public async Task<IActionResult> UpdatePending([FromBody] EmployeeBankingDto updateEntry)
      {
@@ -39,9 +39,9 @@ public class EmployeeBankingController : ControllerBase
             var employee = await _employeeBankingService.UpdatePending(updateEntry);
             if(employee == null)
             {
-                return NotFound("Oi Vey");
+                return NotFound();
             }
-            return Ok("Success");
+            return Ok();
         }
         catch (Exception ex)
         {

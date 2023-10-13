@@ -8,7 +8,7 @@ public interface IEmployeeBankingService
     /// Fetches all pending banking entries
     /// </summary>
     /// <returns>List of pending EmployeeBanking objects</returns>
-    Task<List<EmployeeBankingDto>> GetPending();
+    Task<List<PendingBankDto>> GetPending();
 
 
     /// <summary>
