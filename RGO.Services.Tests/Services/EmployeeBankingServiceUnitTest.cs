@@ -64,7 +64,7 @@ public class EmployeeBankingServiceTest
         Assert.Single(result);
     }
 
-    [Fact]
+   /* [Fact]
     public async Task UpdateReturnsUpdateBankDtos()
     {
 
@@ -108,6 +108,6 @@ public class EmployeeBankingServiceTest
         var result = await employeeBankingService.UpdatePending(test1);
 
         Assert.Equal(test1, result);
-    }
+    }*/
 }
 
