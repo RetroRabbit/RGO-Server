@@ -57,6 +57,7 @@ namespace RGO.UnitOfWork
         public DbSet<FieldCode> fieldCodes { get; set; }
         public DbSet<FieldCodeOptions> fieldCodesOptions { get; set; }
         public DbSet<EmployeeData> employeeData { get; set; }
+        public DbSet<EmployeeDate> employeeDate { get; set; }
         public DbSet<PropertyAccess> propertyAccesses { get; set; }
         public DbSet<RoleAccessLink> roleAccessLinks { get; set; }
         public DbSet<EmployeeBanking> employeeBanking { get; set;}

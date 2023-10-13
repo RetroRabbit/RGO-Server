@@ -63,7 +63,6 @@ namespace RGO.Services.Services
         {
             var fieldCodes = await _db.FieldCode.GetAll();
             var fieldCode = fieldCodes
-                .Where(fieldCode => fieldCode.Status == ItemStatus.Active)
                 .Select(fieldCode => fieldCode)
                 .ToList();
             if (fieldCode.Count != 0)

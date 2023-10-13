@@ -16,7 +16,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<IActionResult> GetEmployeeData(int id)
+        public async Task<IActionResult> GetEmployeeData([FromQuery] int id)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> SaveEmployeeData(EmployeeDataDto employeeDataDto)
+        public async Task<IActionResult> SaveEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
+        public async Task<IActionResult> UpdateEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteEmployeeData(EmployeeDataDto employeeDataDto)
+        public async Task<IActionResult> DeleteEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
         {
             try
             {

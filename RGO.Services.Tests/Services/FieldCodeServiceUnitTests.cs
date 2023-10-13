@@ -79,7 +79,6 @@ namespace RGO.Tests.Services
         public async Task GetAllFieldCodesTest()
         {
             List<FieldCodeDto> fields = new List<FieldCodeDto>() { _fieldCodeDto, _fieldCodeDto2 };
-            List<FieldCodeDto> field = new List<FieldCodeDto>() { _fieldCodeDto };
             List<FieldCodeOptionsDto> options = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto };
 
             _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
@@ -89,8 +88,8 @@ namespace RGO.Tests.Services
             var result = await _fieldCodeService.GetAllFieldCodes();
 
             Assert.NotNull(result);
-            Assert.Equal(1, result.Count);
-            Assert.Equal(field, result);
+            Assert.Equal(2, result.Count);
+            Assert.Equal(fields, result);
         }
 
         [Fact]

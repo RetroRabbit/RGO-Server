@@ -19,6 +19,7 @@ public static class RegisterServicesExtension
         services.AddScoped<IEmployeeEvaluationTemplateItemService, EmployeeEvaluationTemplateItemService>();
         services.AddScoped<IEmployeeDocumentService, EmployeeDocumentService>();
         services.AddScoped<IEmployeeDataService, EmployeeDataService>();
+        services.AddScoped<IEmployeeDateService, EmployeeDateService>();
         services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
         services.AddScoped<IOnboardingDocumentService, OnboardingDocumentService>();
         services.AddScoped<IRoleAccessService, RoleAccessService>();
