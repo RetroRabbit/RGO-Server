@@ -60,11 +60,11 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string email)
+    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee)
     {
         try
         {
-            var updatedEmployee = await _employeeService.UpdateEmployee(employee, email);
+            var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);
 
             return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
         }
