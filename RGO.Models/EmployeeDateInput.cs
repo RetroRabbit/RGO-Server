@@ -1,8 +1,7 @@
 ﻿namespace RGO.Models;
 
-public record EmployeeDateDto(
-    int Id,
-    EmployeeDto? Employee,
+public record EmployeeDateInput(
+    string Email,
     string Subject,
     string Note,
     DateOnly Date);

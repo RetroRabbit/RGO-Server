@@ -10,6 +10,7 @@ public interface IUnitOfWork
     IEmployeeCertificationRepository EmployeeCertification { get; }
     IEmployeeDocumentRepository EmployeeDocument { get; }
     IEmployeeDataRepository EmployeeData { get; }
+    IEmployeeDateRepository EmployeeDate { get; }
     IEmployeeProjectRepository EmployeeProject { get; }
     IEmployeeEvaluationRepository EmployeeEvaluation { get; }
     IEmployeeEvaluationAudienceRepository EmployeeEvaluationAudience { get; }

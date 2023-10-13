@@ -12,7 +12,7 @@ public record EmployeeDto(
     bool Disability,
     string DisabilityNotes,
     int Level,
-    EmployeeTypeDto EmployeeType,
+    EmployeeTypeDto? EmployeeType,
     string Notes,
     float LeaveInterval,
     float SalaryDays, 
