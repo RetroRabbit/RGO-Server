@@ -30,5 +30,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IChartService, ChartService>();
         services.AddScoped<IFieldCodeService,FieldCodeService>();
         services.AddScoped<IFieldCodeOptionsService, FieldCodeOptionsService>();
+        services.AddScoped<IEmployeeBankingService, EmployeeBankingService>();
     }
 }

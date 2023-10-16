@@ -32,30 +32,45 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
     [Column("accountHolderName")]
     public string AccountHolderName { get; set; }
 
+    [Column("status")]
+    public BankApprovalStatus Status { get; set; }
+
+    [Column("reason")]
+    public string DeclineReason { get; set; }
+
+    [Column("file")]
+    public string File { get; set; }
+
     public virtual Employee Employee { get; set; }
 
     public EmployeeBanking() { }
     public EmployeeBanking(EmployeeBankingDto employeeBankingDto)
     {
         Id = employeeBankingDto.Id;
-        EmployeeId = employeeBankingDto.Employee!.Id;
+        EmployeeId = employeeBankingDto.EmployeeId;
         BankName = employeeBankingDto.BankName;
         Branch = employeeBankingDto.Branch;
         AccountNo = employeeBankingDto.AccountNo;
         AccountType = employeeBankingDto.AccountType;
         AccountHolderName = employeeBankingDto.AccountHolderName;
+        Status = employeeBankingDto.Status;
+        DeclineReason = employeeBankingDto.DeclineReason;
+        File = employeeBankingDto.File;
     }
 
     public EmployeeBankingDto ToDto()
     {
         return new EmployeeBankingDto(
             Id,
-            Employee?.ToDto(),
+            EmployeeId,
             BankName,
             Branch,
             AccountNo,
             AccountType,
-            AccountHolderName
+            AccountHolderName,
+            Status,
+            DeclineReason,
+            File
             );
     }
 }
