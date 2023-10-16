@@ -54,7 +54,7 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
         AccountType = employeeBankingDto.AccountType;
         AccountHolderName = employeeBankingDto.AccountHolderName;
         Status = employeeBankingDto.Status;
-        DeclineReason = employeeBankingDto.Reason;
+        DeclineReason = employeeBankingDto.DeclineReason;
         File = employeeBankingDto.File;
     }
 

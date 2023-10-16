@@ -11,6 +11,6 @@ public record EmployeeBankingDto(
     EmployeeBankingAccountType AccountType,
     string AccountHolderName,
     BankApprovalStatus Status,
-    string ?Reason,
+    string? DeclineReason,
     string File
     );

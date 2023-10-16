@@ -44,7 +44,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                     entry.AccountType,
                     entry.AccountHolderName,
                     entry.Status,
-                    entry.Reason,
+                    entry.DeclineReason,
                     entry.File,
                     emp);
 
