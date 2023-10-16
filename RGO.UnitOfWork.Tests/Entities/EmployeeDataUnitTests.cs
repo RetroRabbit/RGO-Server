@@ -17,7 +17,7 @@ public class EmployeeDataUnitTests
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
             "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
 
         _fieldCode = new FieldCodeDto(1, "email01", "Email", "desciption", "@(\\w+).co.za", Models.Enums.FieldCodeType.String, Models.Enums.ItemStatus.Active, true, "Employee");
     }

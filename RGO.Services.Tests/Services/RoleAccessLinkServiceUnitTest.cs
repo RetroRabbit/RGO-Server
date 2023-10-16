@@ -210,7 +210,7 @@ public class RoleAccessLinkServiceUnitTest
                         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Test", "TD",
                         "Dummy", new DateOnly(), "South Africa", "South African", "9708180344086", " ",
                         new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null,
-                        email, "tdummy@gmail.com", "0858748117");
+                        email, "tdummy@gmail.com", "0858748117", null, null);
 
         var employeeRoleDtos = new List<EmployeeRoleDto>
         {
