@@ -14,20 +14,53 @@ public class EmployeeBankingService : IEmployeeBankingService
     {
         _db = db;
     }
-    public async Task<List<EmployeeBanking>> GetPending()
+    public async Task<List<EmployeeBanking>> Get(int approvalStatus)
     {
-         var pendingBankEntries = await _db.EmployeeBanking
-                .Get(entry => entry.Status == BankApprovalStatus.PendingApproval)
-                .AsNoTracking()
-                .Include(entry => entry.Employee)
-                .Include(entry => entry.Employee.EmployeeType)
-                .Select(bankEntry => bankEntry)
-                .ToListAsync();
-            return pendingBankEntries;
+        var pendingBankEntries = new List<EmployeeBanking>();
+
+        switch (approvalStatus)
+        {
+            case 0:
+                {
+                    pendingBankEntries = await _db.EmployeeBanking
+                       .Get(entry => entry.Status == BankApprovalStatus.Approved)
+                       .AsNoTracking()
+                       .Include(entry => entry.Employee)
+                       .Include(entry => entry.Employee.EmployeeType)
+                       .Select(bankEntry => bankEntry)
+                       .ToListAsync();
+                    break;
+                }
+
+            case 1:
+                {
+
+                    pendingBankEntries = await _db.EmployeeBanking
+                        .Get(entry => entry.Status == BankApprovalStatus.PendingApproval)
+                        .AsNoTracking()
+                        .Include(entry => entry.Employee)
+                        .Include(entry => entry.Employee.EmployeeType)
+                        .Select(bankEntry => bankEntry)
+                        .ToListAsync();
+                    break;
+                }
+            case 2:
+                {
+                    pendingBankEntries = await _db.EmployeeBanking
+                        .Get(entry => entry.Status == BankApprovalStatus.Declined)
+                        .AsNoTracking()
+                        .Include(entry => entry.Employee)
+                        .Include(entry => entry.Employee.EmployeeType)
+                        .Select(bankEntry => bankEntry)
+                        .ToListAsync();
+                    break;
+                }
+        }
+        return pendingBankEntries;
     }
 
 
-    public async Task<EmployeeBankingDto> UpdatePending(EmployeeBankingDto newEntry)
+    public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry)
     {
         var empDto = await _db.Employee
             .Get(employee => employee.Id == newEntry.EmployeeId)

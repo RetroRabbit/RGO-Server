@@ -17,13 +17,13 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("pending")]
-    public async Task<IActionResult> FetchPending()
+    [HttpGet("get")]
+    public async Task<IActionResult> Get([FromQuery] int status)
     {
         try
-        {
-            var pendingEntries = await _employeeBankingService.GetPending();
-            return Ok(pendingEntries);
+        { 
+            var entries = await _employeeBankingService.Get(status);
+            return Ok(entries);
         }
         catch (Exception ex)
         {
@@ -32,8 +32,8 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPut("pending")]
-    public async Task<IActionResult> UpdatePending([FromBody] EmployeeBankingDto updateEntry)
+    [HttpPut("update")]
+    public async Task<IActionResult> Update([FromBody] EmployeeBankingDto updateEntry)
      {
         if(updateEntry.AccountHolderName.Length == 0)
         {
@@ -41,7 +41,7 @@ public class EmployeeBankingController : ControllerBase
         }
         try
         {
-            var employee = await _employeeBankingService.UpdatePending(updateEntry);
+            var employee = await _employeeBankingService.Update(updateEntry);
             return Ok();
         }
         catch (Exception ex)

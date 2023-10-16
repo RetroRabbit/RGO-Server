@@ -9,7 +9,7 @@ public interface IEmployeeBankingService
     /// Fetches all pending banking entries
     /// </summary>
     /// <returns>List of pending EmployeeBanking objects</returns>
-    Task<List<EmployeeBanking>> GetPending();
+    Task<List<EmployeeBanking>> Get(int approvalStatus);
 
 
     /// <summary>
@@ -17,5 +17,5 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <param name="newEntry"></param>
     /// <returns></returns>
-    Task<EmployeeBankingDto> UpdatePending(EmployeeBankingDto newEntry);
+    Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry);
 }
