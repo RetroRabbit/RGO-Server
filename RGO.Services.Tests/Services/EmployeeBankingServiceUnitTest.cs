@@ -35,12 +35,30 @@ public class EmployeeBankingServiceTest
 
         EmployeeBankingDto test1 = new EmployeeBankingDto(
             1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "", "asd");
+        EmployeeBankingDto test2 = new EmployeeBankingDto(
+            2, 2, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.Approved, "", "asd");
+        EmployeeBankingDto test3 = new EmployeeBankingDto(
+            3, 3, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.Declined, "", "asd");
+
 
         var pendingBankEntries = new List<EmployeeBankingDto> { test1 };
 
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
+        "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
+        new DateOnly(), null, Race.Black, Gender.Male, null,
+        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+
+        EmployeeDto testEmployee2 = new(2, "001", "34434434", new DateOnly(), new DateOnly(),
+        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
+        "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
+        new DateOnly(), null, Race.Black, Gender.Male, null,
+        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+
+        EmployeeDto testEmployee3 = new(3, "001", "34434434", new DateOnly(), new DateOnly(),
         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
         "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
         new DateOnly(), null, Race.Black, Gender.Male, null,
@@ -48,7 +66,7 @@ public class EmployeeBankingServiceTest
 
         var employees = new List<Employee>
         {
-            new Employee(testEmployee, employeeTypeDto)
+            new Employee(testEmployee1, employeeTypeDto)
         };
         var employeeBankings = new List<EmployeeBanking>
         {
@@ -62,7 +80,45 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>())).Returns(mockEmployeeBankings);
         
 
-        var result = await employeeBankingService.Get(1);
+        var result = await employeeBankingService.Get(0);
+
+        Assert.Single(result);
+
+        employees = new List<Employee>
+        {
+            new Employee(testEmployee2, employeeTypeDto)
+        };
+        
+        employeeBankings = new List<EmployeeBanking>
+        {
+            new EmployeeBanking(test2)
+        };
+
+        mockEmployees = employees.AsQueryable().BuildMock();
+        mockEmployeeBankings = employeeBankings.AsQueryable().BuildMock();
+
+        _mockUnitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(mockEmployees);
+        _mockUnitOfWork.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>())).Returns(mockEmployeeBankings);
+        result = await employeeBankingService.Get(1);
+
+        Assert.Single(result);
+
+        employees = new List<Employee>
+        {
+            new Employee(testEmployee3 , employeeTypeDto)
+        };
+
+        employeeBankings = new List<EmployeeBanking>
+        {
+            new EmployeeBanking(test3)
+        };
+
+        mockEmployees = employees.AsQueryable().BuildMock();
+        mockEmployeeBankings = employeeBankings.AsQueryable().BuildMock();
+
+        _mockUnitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(mockEmployees);
+        _mockUnitOfWork.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>())).Returns(mockEmployeeBankings);
+        result = await employeeBankingService.Get(2);
 
         Assert.Single(result);
     }
