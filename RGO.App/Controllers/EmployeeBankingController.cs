@@ -5,7 +5,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/employeeBanking/")]
+[Route("/employeebanking/")]
 [ApiController]
 public class EmployeeBankingController : ControllerBase
 {
