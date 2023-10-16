@@ -14,7 +14,7 @@ public interface IEmployeeBankingService
     /// <summary>
     /// Updates a banking entry
     /// </summary>
-    /// 
+/// <param name="newEntry"></param>
     /// <returns></returns>
     Task<EmployeeBankingDto> UpdatePending(EmployeeBankingDto newEntry);
 }
