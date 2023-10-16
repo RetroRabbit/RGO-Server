@@ -36,7 +36,7 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
     public BankApprovalStatus Status { get; set; }
 
     [Column("reason")]
-    public string Reason { get; set; }
+    public string DeclineReason { get; set; }
 
     [Column("file")]
     public string File { get; set; }
@@ -54,7 +54,7 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
         AccountType = employeeBankingDto.AccountType;
         AccountHolderName = employeeBankingDto.AccountHolderName;
         Status = employeeBankingDto.Status;
-        Reason = employeeBankingDto.Reason;
+        DeclineReason = employeeBankingDto.Reason;
         File = employeeBankingDto.File;
     }
 
@@ -69,7 +69,7 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
             AccountType,
             AccountHolderName,
             Status,
-            Reason,
+            DeclineReason,
             File
             );
     }
