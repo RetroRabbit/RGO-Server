@@ -62,7 +62,7 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>())).Returns(mockEmployeeBankings);
         
 
-        var result = await employeeBankingService.GetPending();
+        var result = await employeeBankingService.Get(1);
 
         Assert.Single(result);
     }
@@ -92,7 +92,7 @@ public class EmployeeBankingServiceTest
 
         _mockUnitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(mockEmployees.AsQueryable().BuildMock());
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Update(It.IsAny<EmployeeBanking>()));
-        var result = await employeeBankingService.UpdatePending(test1);
+        var result = await employeeBankingService.Update(test1);
 
         Assert.Equal(test1, result);
     }
