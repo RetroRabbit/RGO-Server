@@ -17,7 +17,7 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("getPending")]
+    [HttpGet("pending")]
     public async Task<IActionResult> FetchPending()
     {
         try
@@ -32,7 +32,7 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPut("updatePending")]
+    [HttpPut("pending")]
     public async Task<IActionResult> UpdatePending([FromBody] EmployeeBankingDto updateEntry)
      {
         if(updateEntry.AccountHolderName.Length == 0)
