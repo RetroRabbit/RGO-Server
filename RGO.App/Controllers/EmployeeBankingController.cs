@@ -24,7 +24,8 @@ public class EmployeeBankingController : ControllerBase
         {
             var pendingEntries = await _employeeBankingService.GetPending();
             return Ok(pendingEntries);
-        }catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return NotFound(ex.Message);
         }
