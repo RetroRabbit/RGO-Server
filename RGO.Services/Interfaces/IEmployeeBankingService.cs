@@ -8,6 +8,7 @@ public interface IEmployeeBankingService
     /// <summary>
     /// Fetches all banking entries by approval status
     /// </summary>
+   /// <param name="approvalStatus"></param>
     /// <returns>List of pending EmployeeBanking objects</returns>
     Task<List<EmployeeBanking>> Get(int approvalStatus);
 
