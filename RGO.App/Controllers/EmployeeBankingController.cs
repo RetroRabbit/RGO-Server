@@ -35,13 +35,13 @@ public class EmployeeBankingController : ControllerBase
     [HttpPut("updatePending")]
     public async Task<IActionResult> UpdatePending([FromBody] EmployeeBankingDto updateEntry)
      {
+        if(updateEntry.AccountHolderName.Length == 0)
+        {
+            return BadRequest("Invalid banking details");
+        }
         try
         {
             var employee = await _employeeBankingService.UpdatePending(updateEntry);
-            if(employee == null)
-            {
-                return NotFound();
-            }
             return Ok();
         }
         catch (Exception ex)
