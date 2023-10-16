@@ -14,44 +14,16 @@ public class EmployeeBankingService : IEmployeeBankingService
     {
         _db = db;
     }
-    public async Task<List<PendingBankDto>> GetPending()
+    public async Task<List<EmployeeBanking>> GetPending()
     {
-        List<EmployeeBankingDto> pendingDtos = new List<EmployeeBankingDto>();
-
-        var pendingBankEntries = await _db.EmployeeBanking
-            .Get(entry => entry.Status == BankApprovalStatus.PendingApproval)
-            .AsNoTracking()
-            .Select(bankEntry => bankEntry.ToDto())
-            .ToListAsync();
-        List<PendingBankDto> pendingEntries = new List<PendingBankDto>();
-        foreach (var entry in pendingBankEntries)
-        {
-            var emp = await _db.Employee
-            .Get(employee => employee.Id == entry.EmployeeId)
-            .AsNoTracking()
-            .Include(employee => employee.EmployeeType)
-            .Select(employee => employee.ToDto())
-            .FirstOrDefaultAsync();
-
-            if (emp != null)
-            {
-                PendingBankDto newEntry = new PendingBankDto(
-                    entry.Id,
-                    entry.EmployeeId,
-                    entry.BankName,
-                    entry.Branch,
-                    entry.AccountNo,
-                    entry.AccountType,
-                    entry.AccountHolderName,
-                    entry.Status,
-                    entry.DeclineReason,
-                    entry.File,
-                    emp);
-
-                pendingEntries.Add(newEntry);
-            }
-        }
-        return pendingEntries;
+         var pendingBankEntries = await _db.EmployeeBanking
+                .Get(entry => entry.Status == BankApprovalStatus.PendingApproval)
+                .AsNoTracking()
+                .Include(entry => entry.Employee)
+                .Include(entry => entry.Employee.EmployeeType)
+                .Select(bankEntry => bankEntry)
+                .ToListAsync();
+            return pendingBankEntries;
     }
 
 
