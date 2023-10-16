@@ -6,7 +6,7 @@ namespace RGO.Services.Interfaces;
 public interface IEmployeeBankingService
 {
     /// <summary>
-    /// Fetches all pending banking entries
+    /// Fetches all banking entries by approval status
     /// </summary>
     /// <returns>List of pending EmployeeBanking objects</returns>
     Task<List<EmployeeBanking>> Get(int approvalStatus);
