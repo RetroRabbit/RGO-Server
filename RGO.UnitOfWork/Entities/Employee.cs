@@ -109,7 +109,8 @@ public class Employee : IModel<EmployeeDto>
     public string CellphoneNo { get; set; }
 
     [Column("clientAllocated")]
-    public string? ClientAllocated { get; set; }
+    [ForeignKey("ClientAssigned")]
+    public int? ClientAllocated { get; set; }
 
     [Column("teamLead")]
     [ForeignKey("TeamLeadAssigned")]
@@ -118,6 +119,7 @@ public class Employee : IModel<EmployeeDto>
     public virtual EmployeeType EmployeeType { get; set; }
     public virtual Employee ReportingEmployee { get; set; }
     public virtual Employee TeamLeadAssigned { get; set; }
+    public virtual Client ClientAssigned { get; set; }
 
     public Employee() { }
 
@@ -155,7 +157,7 @@ public class Employee : IModel<EmployeeDto>
         Email = employeeDto.Email;
         PersonalEmail = employeeDto.PersonalEmail;
         CellphoneNo = employeeDto.CellphoneNo;
-        ClientAllocated = employeeDto.ClientAllocated;
+        ClientAllocated = employeeDto.ClientAllocated?.Id;
         TeamLead = employeeDto.TeamLead?.Id;
     }
 
@@ -194,7 +196,7 @@ public class Employee : IModel<EmployeeDto>
             Email,
             PersonalEmail,
             CellphoneNo,
-            ClientAllocated,
+            ClientAssigned?.ToDto(),
             TeamLeadAssigned?.ToDto());
     }
 }

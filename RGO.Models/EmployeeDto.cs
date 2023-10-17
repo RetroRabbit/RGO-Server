@@ -35,5 +35,5 @@ public record EmployeeDto(
     string Email,
     string PersonalEmail,
     string CellphoneNo,
-    string? ClientAllocated,
+    ClientDto? ClientAllocated,
     EmployeeDto? TeamLead);
