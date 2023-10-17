@@ -31,5 +31,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IFieldCodeService,FieldCodeService>();
         services.AddScoped<IFieldCodeOptionsService, FieldCodeOptionsService>();
         services.AddScoped<IEmployeeBankingService, EmployeeBankingService>();
+        services.AddScoped<IClientService, ClientService>();
     }
 }
