@@ -52,12 +52,10 @@ public class EmployeeBankingUnitTests
         var employeeBanking = CreateEmployeeBanking(employee: _employee);
         var dto = employeeBanking.ToDto();
 
-        Assert.NotNull(dto.Employee);
-        Assert.Equal(employeeBanking.EmployeeId, dto.Employee!.Id);
+        Assert.Equal(employeeBanking.EmployeeId, dto.EmployeeId);
 
         var initializedEmployeeBanking = new EmployeeBanking(dto);
 
         Assert.Null(initializedEmployeeBanking.Employee);
-        Assert.Null(initializedEmployeeBanking.ToDto().Employee);
     }
 }

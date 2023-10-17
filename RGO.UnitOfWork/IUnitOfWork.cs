@@ -29,6 +29,7 @@ public interface IUnitOfWork
     IRoleAccessLinkRepository RoleAccessLink { get; }
     IChartRepository Chart { get; }
     IChartRoleLinkRepositories ChartRoleLink { get; }
+    IEmployeeBankingRepository EmployeeBanking { get; }
 
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
