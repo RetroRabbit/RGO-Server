@@ -12,7 +12,7 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Get all clients
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of ClientDto
         Task<List<ClientDto>> GetAllClients();
     }
 }
