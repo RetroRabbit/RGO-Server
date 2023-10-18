@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto.Fpe;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork.Entities;
