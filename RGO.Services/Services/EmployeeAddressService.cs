@@ -27,13 +27,12 @@ namespace RGO.Services.Services
                 .AsNoTracking()
                 .Include(employeeAddress => employeeAddress.Employee)
                 .Select(employeeAddress => employeeAddress.ToDto())
-                .Take(1)
                 .FirstOrDefaultAsync();
 
             if (existingAddress != null) { throw new Exception("Existing employee address record found"); }
-            var newEmployeeAdress = await _db.EmployeeAddress.Add(employeeAddress);
+            var newEmployeeAddress = await _db.EmployeeAddress.Add(employeeAddress);
 
-            return newEmployeeAdress;
+            return newEmployeeAddress;
         }
 
         public async Task<EmployeeAddressDto> GetEmployeeAddress(int employeeId)
