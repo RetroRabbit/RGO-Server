@@ -8,7 +8,7 @@ public record EmployeeDto(
     string TaxNumber,
     DateOnly EngagementDate,
     DateOnly? TerminationDate,
-    EmployeeDto? ReportingLine,
+    int? PeopleChampion,
     bool Disability,
     string DisabilityNotes,
     int Level,
@@ -35,5 +35,5 @@ public record EmployeeDto(
     string Email,
     string PersonalEmail,
     string CellphoneNo,
-    ClientDto? ClientAllocated,
-    EmployeeDto? TeamLead);
+    int? ClientAllocated,
+    int? TeamLead);

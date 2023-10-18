@@ -52,4 +52,12 @@ public interface IEmployeeRoleService
     /// <param name="role"></param>
     /// <returns></returns>
     Task<bool> CheckEmployeeRole(string email, string role);
+
+    /// <summary>
+    /// Get All Employee on Roles
+    /// </summary>
+    /// <param name="roleId"></param>
+    /// <returns></returns>
+    Task<List<EmployeeRoleDto>> GetAllEmployeeOnRoles(int roleId);
+
 }

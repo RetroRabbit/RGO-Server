@@ -108,4 +108,19 @@ public class EmployeeRoleService : IEmployeeRoleService
         return await _db.EmployeeRole
             .Any(employeeRole => employeeRole.Employee.Email == email && employeeRole.Role.Description == role);
     }
+
+    public async Task<List<EmployeeRoleDto>> GetAllEmployeeOnRoles(int roleId)
+    {
+        List<EmployeeRoleDto> existingRmployeeRole = await _db.EmployeeRole
+            .Get(employeeRole => employeeRole.Role.Id == roleId)
+            .AsNoTracking()
+            .Include(employeeRole => employeeRole.Role)
+            .Include(employeeRole => employeeRole.Employee)
+            .Include(employeeRole => employeeRole.Employee.EmployeeType)
+            .Select(employeeRole => employeeRole.ToDto())
+            .ToListAsync();
+
+        return existingRmployeeRole;
+    }
+
 }

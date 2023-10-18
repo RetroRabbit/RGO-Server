@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Fpe;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using RGO.UnitOfWork.Entities;
 
 namespace RGO.App.Controllers;
 
@@ -101,6 +103,21 @@ public class EmployeeRoleManageController : ControllerBase
                 .ToList();
 
             return Ok(rolesDescriptions);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("get-role")]
+    public async Task<IActionResult> GetAllEmployeeOnRoles([FromQuery] int roleId)
+    {
+        try
+        {
+            var roles = await _employeeRoleService.GetAllEmployeeOnRoles(roleId);
+            return Ok(roles);
         }
         catch (Exception ex)
         {
