@@ -57,7 +57,7 @@ public interface IEmployeeRoleService
     /// Get All Employee on Roles
     /// </summary>
     /// <param name="roleId"></param>
-    /// <returns></returns>
+    /// <returns>List of EmployeeRoleDtos</returns>
     Task<List<EmployeeRoleDto>> GetAllEmployeeOnRoles(int roleId);
 
 }
