@@ -1,4 +1,5 @@
-﻿using MockQueryable.Moq;
+﻿using Microsoft.AspNetCore.Mvc;
+using MockQueryable.Moq;
 using Moq;
 using RGO.Models;
 using RGO.Services.Interfaces;
@@ -119,8 +120,6 @@ namespace RGO.Services.Tests.Services
             _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .Returns(employeeList.AsQueryable().BuildMock());
 
-            //employeeList[0].EmployeeType = new EmployeeTypeDto(1, "Developer");
-
             List<EmployeeAddress> employeeAddressList = new List<EmployeeAddress> { new EmployeeAddress(employeeAddressDto) };
 
             employeeAddressList[0].Employee = employeeList[0];
@@ -153,13 +152,38 @@ namespace RGO.Services.Tests.Services
         {
             var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
 
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+            var employeeDto = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
+            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
+            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
+            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+
+            var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
+            "Street Name", "Suburb", "City", "1620");
+
+            List<EmployeeType> employeeTypeList = new List<EmployeeType> { new EmployeeType(employeeTypeDto) };
+
+            List<Employee> employeeList = new List<Employee> { new Employee(employeeDto, employeeTypeDto) };
 
             _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(new List<Employee> { new(_employeeDto, employeeTypeDto) }.AsQueryable().BuildMock());
+                .Returns(employeeList.AsQueryable().BuildMock());
 
-            await _employeeAddressService.UpdateEmployeeAddress(new EmployeeAddressDto(1, _employeeDto,
-            RGO.Models.Enums.AddressType.City, "2", "Complex", "2", "Street Name", "Suburb", "City", "1620"));
+            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+
+            List<EmployeeAddress> employeeAddressList = new List<EmployeeAddress> { new EmployeeAddress(employeeAddressDto) };
+
+            employeeAddressList[0].Employee = employeeList[0];
+            employeeAddressList[0].Employee.EmployeeType = employeeTypeList[0];
+
+            _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
+            .Returns(employeeAddressList.AsQueryable().BuildMock());
+
+            _dbMock.Setup(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>())).Returns(Task.FromResult(employeeAddressDto));
+
+            var result = await _employeeAddressService.UpdateEmployeeAddress(employeeAddressDto);
+
+            Assert.NotNull(result);
+            Assert.Equal(employeeAddressDto, result);
 
             _dbMock.Verify(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>()), Times.Once);
         }
@@ -181,19 +205,38 @@ namespace RGO.Services.Tests.Services
         {
             var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
 
-            var employeeAddress = new EmployeeAddressDto(1, _employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
+            var employeeDto = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
+            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
+            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
+            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+
+            var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
             "Street Name", "Suburb", "City", "1620");
+
+            List<EmployeeType> employeeTypeList = new List<EmployeeType> { new EmployeeType(employeeTypeDto) };
+
+            List<Employee> employeeList = new List<Employee> { new Employee(employeeDto, employeeTypeDto) };
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
             _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(new List<Employee> { new(_employeeDto, employeeTypeDto) }.AsQueryable().BuildMock());
+                .Returns(employeeList.AsQueryable().BuildMock());
+
+            List<EmployeeAddress> employeeAddressList = new List<EmployeeAddress> { new EmployeeAddress(employeeAddressDto) };
+
+            employeeAddressList[0].Employee = employeeList[0];
+            employeeAddressList[0].Employee.EmployeeType = employeeTypeList[0];
 
             _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
-            .Returns(new List<EmployeeAddress> { new(employeeAddress) }.AsQueryable().BuildMock());
+            .Returns(employeeAddressList.AsQueryable().BuildMock());
 
-            await _employeeAddressService.DeleteEmployeeAddress(new EmployeeAddressDto(1, _employeeDto,
-            RGO.Models.Enums.AddressType.City, "2", "Complex", "2", "Street Name", "Suburb", "City", "1620"));
+            _dbMock.Setup(r => r.EmployeeAddress.Delete(employeeAddressDto.Id)).Returns(Task.FromResult(employeeAddressDto));
+
+            var result = await _employeeAddressService.DeleteEmployeeAddress(employeeAddressDto);
+
+            Assert.NotNull(result);
+            Assert.Equal(employeeAddressDto, result);
 
             _dbMock.Verify(x => x.EmployeeAddress.Delete(It.IsAny<int>()), Times.Once);
         }
