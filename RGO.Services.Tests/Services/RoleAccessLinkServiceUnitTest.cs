@@ -208,9 +208,9 @@ public class RoleAccessLinkServiceUnitTest
         var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         EmployeeDto testEmployee = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
                         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Test", "TD",
-                        "Dummy", new DateOnly(), "South Africa", "South African", "9708180344086", " ",
+                        "Dummy", new DateOnly(), "South Africa", "South African", "0000000000000", " ",
                         new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null,
-                        email, "tdummy@gmail.com", "0858748117");
+                        email, "tdummy@gmail.com", "0123456789", null, null);
 
         var employeeRoleDtos = new List<EmployeeRoleDto>
         {

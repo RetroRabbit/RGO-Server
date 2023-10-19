@@ -25,9 +25,9 @@ public class Employee : IModel<EmployeeDto>
     [Column("terminationDate")]
     public DateOnly? TerminationDate { get; set; }
 
-    [Column("reportingLine")]
-    [ForeignKey("ReportingEmployee")]
-    public int? ReportingLine { get; set; }
+    [Column("peopleChampion")]
+    [ForeignKey("ChampionEmployee")]
+    public int? PeopleChampion { get; set; }
 
     [Column("disability")]
     public bool Disability { get; set; }
@@ -108,8 +108,18 @@ public class Employee : IModel<EmployeeDto>
     [Column("cellphoneNo")]
     public string CellphoneNo { get; set; }
 
+    [Column("clientAllocated")]
+    [ForeignKey("ClientAssigned")]
+    public int? ClientAllocated { get; set; }
+
+    [Column("teamLead")]
+    [ForeignKey("TeamLeadAssigned")]
+    public int? TeamLead { get; set; }
+
     public virtual EmployeeType EmployeeType { get; set; }
-    public virtual Employee ReportingEmployee { get; set; }
+    public virtual Employee ChampionEmployee { get; set; }
+    public virtual Employee TeamLeadAssigned { get; set; }
+    public virtual Client ClientAssigned { get; set; }
 
     public Employee() { }
 
@@ -120,7 +130,7 @@ public class Employee : IModel<EmployeeDto>
         TaxNumber = employeeDto.TaxNumber;
         EngagementDate = employeeDto.EngagementDate;
         TerminationDate = employeeDto.TerminationDate;
-        ReportingLine = employeeDto.ReportingLine?.Id;
+        PeopleChampion = employeeDto.PeopleChampion;
         Disability = employeeDto.Disability;
         DisabilityNotes = employeeDto.DisabilityNotes;
         Level = employeeDto.Level;
@@ -147,6 +157,8 @@ public class Employee : IModel<EmployeeDto>
         Email = employeeDto.Email;
         PersonalEmail = employeeDto.PersonalEmail;
         CellphoneNo = employeeDto.CellphoneNo;
+        ClientAllocated = employeeDto.ClientAllocated;
+        TeamLead = employeeDto.TeamLead;
     }
 
     public EmployeeDto ToDto()
@@ -157,7 +169,7 @@ public class Employee : IModel<EmployeeDto>
             TaxNumber,
             EngagementDate,
             TerminationDate,
-            ReportingEmployee?.ToDto(),
+            PeopleChampion,
             Disability,
             DisabilityNotes,
             Level,
@@ -183,6 +195,8 @@ public class Employee : IModel<EmployeeDto>
             Photo,
             Email,
             PersonalEmail,
-            CellphoneNo);
+            CellphoneNo,
+            ClientAllocated,
+            TeamLead);
     }
 }

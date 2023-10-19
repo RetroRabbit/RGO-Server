@@ -34,6 +34,8 @@ public class UnitOfWork : IUnitOfWork
     public IFieldCodeOptionsRepository FieldCodeOptions { get; }
     public IEmployeeBankingRepository EmployeeBanking { get; }
 
+    public IClientRepository Client { get; }
+    
     private readonly DatabaseContext _db;
 
     public UnitOfWork(DatabaseContext db)
@@ -65,6 +67,7 @@ public class UnitOfWork : IUnitOfWork
         FieldCodeOptions = new FieldCodeOptionsRepository(_db);
         EmployeeBanking = new EmployeeBankingRepository(_db);
 
+        Client = new ClientRepository(_db);
     }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)

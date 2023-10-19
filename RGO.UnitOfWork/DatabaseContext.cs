@@ -36,6 +36,7 @@ namespace RGO.UnitOfWork
             modelBuilder.Entity<EmployeeEvaluationRating>().HasData(TestData.EmployeeEvaluationRatingSet());
             modelBuilder.Entity<EmployeeEvaluationTemplate>().HasData(TestData.EmployeeEvaluationTemplateSet());
             modelBuilder.Entity<EmployeeEvaluationTemplateItem>().HasData(TestData.EmployeeEvaluationTemplateItemSet());
+            modelBuilder.Entity<Client>().HasData(TestData.ClientList());
         }
 
         public DbSet<Employee> employees { get; set; }
@@ -61,5 +62,6 @@ namespace RGO.UnitOfWork
         public DbSet<PropertyAccess> propertyAccesses { get; set; }
         public DbSet<RoleAccessLink> roleAccessLinks { get; set; }
         public DbSet<EmployeeBanking> employeeBanking { get; set;}
+        public DbSet<Client> clients { get; set; }
     }
 }

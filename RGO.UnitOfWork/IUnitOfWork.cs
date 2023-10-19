@@ -30,6 +30,7 @@ public interface IUnitOfWork
     IChartRepository Chart { get; }
     IChartRoleLinkRepositories ChartRoleLink { get; }
     IEmployeeBankingRepository EmployeeBanking { get; }
+    IClientRepository Client { get; }
 
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);

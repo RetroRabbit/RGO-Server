@@ -32,7 +32,7 @@ namespace RGO.Services.Tests.Services
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
             "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
         }
 
 
@@ -60,7 +60,7 @@ namespace RGO.Services.Tests.Services
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
             "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
@@ -109,7 +109,7 @@ namespace RGO.Services.Tests.Services
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
             "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
 
             var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
             "Street Name", "Suburb", "City", "1620");
@@ -156,7 +156,7 @@ namespace RGO.Services.Tests.Services
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
             "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
 
             var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
             "Street Name", "Suburb", "City", "1620");
@@ -209,7 +209,7 @@ namespace RGO.Services.Tests.Services
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
             "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000");
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
 
             var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
             "Street Name", "Suburb", "City", "1620");
