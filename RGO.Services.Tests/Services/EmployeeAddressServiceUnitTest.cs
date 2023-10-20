@@ -35,211 +35,146 @@ namespace RGO.Services.Tests.Services
             "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
         }
 
-
-        [Fact]
-        public async Task SaveAddressFailTest()
+        private EmployeeAddressDto CreateAddress(EmployeeDto employeeDto, int id = 0)
         {
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
-
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(new List<Employee> { }.AsQueryable().BuildMock());
-
-            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.SaveEmployeeAddress(new EmployeeAddressDto(1, _employeeDto,
-            RGO.Models.Enums.AddressType.City, "2", "Complex", "2", "Street Name", "Suburb", "City", "1620")));
+            return new EmployeeAddressDto(
+                id,
+                employeeDto.Id,
+                "2",
+                "Complex",
+                "2",
+                "Suburb/District",
+                "Country",
+                "Province",
+                "1620");
         }
 
         [Fact]
-        public async Task SaveAddressPassTest()
+        public async Task CheckIfExistsFailTest()
         {
-            var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+            var address = CreateAddress(_employeeDto, 1);
 
-            var employeeAddressDto = new EmployeeAddressDto(1, _employeeDto,
-            RGO.Models.Enums.AddressType.City, "2", "Complex", "2", "Street Name", "Suburb", "City", "1620");
+            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
-            var employeeDto = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
-            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
-            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
+            bool result = await _employeeAddressService.CheckIfExitsts(address);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task CheckIfExistsPassTest()
+        {
+            var address = CreateAddress(_employeeDto, 1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
-            List<Employee> employeeList = new List<Employee> { new Employee(employeeDto, employeeTypeDto) };
+            bool result = await _employeeAddressService.CheckIfExitsts(address);
 
-            List<EmployeeAddress> employeeAddressList = new List<EmployeeAddress>
-            { new EmployeeAddress(employeeAddressDto)};
-
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(employeeList.AsQueryable().BuildMock());
-
-            _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
-                .Returns(new List<EmployeeAddress>().AsQueryable().BuildMock());
-
-            _dbMock.Setup(x => x.EmployeeAddress.Add(It.IsAny<EmployeeAddress>())).Returns(Task.FromResult(employeeAddressDto));
-
-            var result = await _employeeAddressService.SaveEmployeeAddress(employeeAddressDto);
-
-            _dbMock.Verify(x => x.EmployeeAddress.Add(It.IsAny<EmployeeAddress>()), Times.Once);
-
-            Assert.NotNull(result);
-            Assert.Equal(employeeAddressDto, result);
+            Assert.True(result);
         }
 
         [Fact]
-        public async Task GetAddressFailTest()
+        public async Task GetFailTest()
         {
-            var employeeAddress = new EmployeeAddressDto(1, _employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
-            "Street Name", "Suburb", "City", "1620");
+            var address = CreateAddress(_employeeDto, 1);
 
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(new List<Employee> { }.AsQueryable().BuildMock());
-
-            _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
-            .Returns(new List<EmployeeAddress> { }.AsQueryable().BuildMock());
-
-            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.GetEmployeeAddress(employeeAddress.Id));
-        }
-
-        [Fact]
-        public async Task GetAddressPassTest()
-        {
-            var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-
-            var employeeDto = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
-            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
-            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
-
-            var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
-            "Street Name", "Suburb", "City", "1620");
-
-            List<EmployeeType> employeeTypeList = new List<EmployeeType> {new EmployeeType(employeeTypeDto) };
-
-            List<Employee> employeeList = new List<Employee> { new Employee(employeeDto, employeeTypeDto)};
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(employeeList.AsQueryable().BuildMock());
-
-            List<EmployeeAddress> employeeAddressList = new List<EmployeeAddress> { new EmployeeAddress(employeeAddressDto) };
-
-            employeeAddressList[0].Employee = employeeList[0];
-            employeeAddressList[0].Employee.EmployeeType = employeeTypeList[0];
-
-            _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
-            .Returns(employeeAddressList.AsQueryable().BuildMock());
-
-            var result = await _employeeAddressService.GetEmployeeAddress(employeeAddressDto.Id);
-
-            Assert.NotNull(result);
-            Assert.Equal(employeeAddressDto, result);
-            _dbMock.Verify(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task UpdateAddressFailTest()
-        {
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(new List<Employee> { }.AsQueryable().BuildMock());
-
-            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.UpdateEmployeeAddress(new EmployeeAddressDto(1, _employeeDto,
-            RGO.Models.Enums.AddressType.City, "2", "Complex", "2", "Street Name", "Suburb", "City", "1620")));
+            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Get(address));
         }
 
         [Fact]
-        public async Task UpdateAddressPassTest()
+        public async Task GetPassTest()
         {
-            var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-
-            var employeeDto = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
-            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
-            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
-
-            var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
-            "Street Name", "Suburb", "City", "1620");
-
-            List<EmployeeType> employeeTypeList = new List<EmployeeType> { new EmployeeType(employeeTypeDto) };
-
-            List<Employee> employeeList = new List<Employee> { new Employee(employeeDto, employeeTypeDto) };
-
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(employeeList.AsQueryable().BuildMock());
+            var address = CreateAddress(_employeeDto, 1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
-            List<EmployeeAddress> employeeAddressList = new List<EmployeeAddress> { new EmployeeAddress(employeeAddressDto) };
-
-            employeeAddressList[0].Employee = employeeList[0];
-            employeeAddressList[0].Employee.EmployeeType = employeeTypeList[0];
-
             _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
-            .Returns(employeeAddressList.AsQueryable().BuildMock());
+                .Returns(new List<EmployeeAddress> { new EmployeeAddress(address) }.AsQueryable().BuildMock());
 
-            _dbMock.Setup(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>())).Returns(Task.FromResult(employeeAddressDto));
-
-            var result = await _employeeAddressService.UpdateEmployeeAddress(employeeAddressDto);
+            var result = await _employeeAddressService.Get(address);
 
             Assert.NotNull(result);
-            Assert.Equal(employeeAddressDto, result);
-
-            _dbMock.Verify(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>()), Times.Once);
+            Assert.Equal(address, result);
         }
 
         [Fact]
-        public async Task DeleteAddressFailTest()
+        public async Task DeleteFailTest()
         {
+            var address = CreateAddress(_employeeDto, 1);
+
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(new List<Employee> { }.AsQueryable().BuildMock());
-
-            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.DeleteEmployeeAddress(new EmployeeAddressDto(1, _employeeDto,
-            RGO.Models.Enums.AddressType.City, "2", "Complex", "2", "Street Name", "Suburb", "City", "1620")));
+            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Delete(address));
         }
 
         [Fact]
-        public async Task DeleteAddressPassTest()
+        public async Task DeletePassTest()
         {
-            var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-
-            var employeeDto = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
-            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
-            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
-
-            var employeeAddressDto = new EmployeeAddressDto(1, employeeDto, RGO.Models.Enums.AddressType.City, "2", "Complex", "2",
-            "Street Name", "Suburb", "City", "1620");
-
-            List<EmployeeType> employeeTypeList = new List<EmployeeType> { new EmployeeType(employeeTypeDto) };
-
-            List<Employee> employeeList = new List<Employee> { new Employee(employeeDto, employeeTypeDto) };
+            var address = CreateAddress(_employeeDto, 1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
-            _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(employeeList.AsQueryable().BuildMock());
-
-            List<EmployeeAddress> employeeAddressList = new List<EmployeeAddress> { new EmployeeAddress(employeeAddressDto) };
-
-            employeeAddressList[0].Employee = employeeList[0];
-            employeeAddressList[0].Employee.EmployeeType = employeeTypeList[0];
-
             _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
-            .Returns(employeeAddressList.AsQueryable().BuildMock());
+                .Returns(new List<EmployeeAddress> { new EmployeeAddress(address) }.AsQueryable().BuildMock());
 
-            _dbMock.Setup(r => r.EmployeeAddress.Delete(employeeAddressDto.Id)).Returns(Task.FromResult(employeeAddressDto));
+            _dbMock.Setup(x => x.EmployeeAddress.Delete(It.IsAny<int>())).Returns(Task.FromResult(address));
 
-            var result = await _employeeAddressService.DeleteEmployeeAddress(employeeAddressDto);
+            var result = await _employeeAddressService.Delete(address);
 
-            Assert.NotNull(result);
-            Assert.Equal(employeeAddressDto, result);
-
-            _dbMock.Verify(x => x.EmployeeAddress.Delete(It.IsAny<int>()), Times.Once);
+            Assert.Equal(address, result);
         }
 
+        [Fact]
+        public async Task SaveFailTest()
+        {
+            var address = CreateAddress(_employeeDto, 1);
+
+            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+
+            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Save(address));
+        }
+
+        [Fact]
+        public async Task SavePassTest()
+        {
+            var address = CreateAddress(_employeeDto, 1);
+
+            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
+
+            _dbMock.Setup(x => x.EmployeeAddress.Add(It.IsAny<EmployeeAddress>())).Returns(Task.FromResult(address));
+
+            var result = await _employeeAddressService.Save(address);
+
+            Assert.Equal(address, result);
+        }
+
+        [Fact]
+        public async Task UpdateFailTest()
+        {
+            var address = CreateAddress(_employeeDto, 1);
+
+            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
+
+            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Update(address));
+        }
+
+        [Fact]
+        public async Task UpdatePassTest()
+        {
+            var address = CreateAddress(_employeeDto, 1);
+
+            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+
+            _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
+                .Returns(new List<EmployeeAddress> { new EmployeeAddress(address) }.AsQueryable().BuildMock());
+
+            _dbMock.Setup(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>())).Returns(Task.FromResult(address));
+
+            var result = await _employeeAddressService.Update(address);
+
+            Assert.Equal(address, result);
+        }
     }
 }
