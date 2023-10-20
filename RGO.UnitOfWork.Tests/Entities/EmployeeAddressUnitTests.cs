@@ -25,15 +25,14 @@ public class EmployeeAddressUnitTests
         EmployeeAddress employeeAddress = new EmployeeAddress
         {
             Id = 1,
-            EmployeeId = 1,
-            AddressType = AddressType.Complex,
+            EmployeeId = employee != null ? employee.Id : 1,
             UnitNumber = "1",
             ComplexName = "Complex",
             StreetNumber = "1",
-            StreetName = "Street",
-            Suburb = "Suburb",
-            City = "City",
-            PostalCode = "PostalCode"
+            SuburbOrDistrict = "Suburb/District",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
         };
 
         if (employee != null)
@@ -53,23 +52,17 @@ public class EmployeeAddressUnitTests
     [Fact]
     public void EmployeeAddressToDTO()
     {
-        var employeeAdress = CreateEmployeeAddress(employee: _employee);
-        var dto = employeeAdress.ToDto();
+        var employeeAddress = CreateEmployeeAddress(_employee);
+        var employeeAddressDto = employeeAddress.ToDto();
 
-        Assert.NotNull(dto.Employee);
-        Assert.Equal(employeeAdress.EmployeeId, dto.Employee!.Id);
-
-
-        employeeAdress = CreateEmployeeAddress();
-        dto = employeeAdress.ToDto();
-
-        Assert.Null(dto.Employee);
-
-        employeeAdress = CreateEmployeeAddress(employee: _employee);
-        dto = employeeAdress.ToDto();
-
-        var conversion = new EmployeeAddress(dto);
-
-        Assert.Null(conversion.Employee);
+        Assert.Equal(employeeAddress.Id, employeeAddressDto.Id);
+        Assert.Equal(employeeAddress.EmployeeId, employeeAddressDto.EmployeeId);
+        Assert.Equal(employeeAddress.UnitNumber, employeeAddressDto.UnitNumber);
+        Assert.Equal(employeeAddress.ComplexName, employeeAddressDto.ComplexName);
+        Assert.Equal(employeeAddress.StreetNumber, employeeAddressDto.StreetNumber);
+        Assert.Equal(employeeAddress.SuburbOrDistrict, employeeAddressDto.SuburbOrDistrict);
+        Assert.Equal(employeeAddress.Country, employeeAddressDto.Country);
+        Assert.Equal(employeeAddress.Province, employeeAddressDto.Province);
+        Assert.Equal(employeeAddress.PostalCode, employeeAddressDto.PostalCode);
     }
 }
