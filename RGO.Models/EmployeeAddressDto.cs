@@ -4,12 +4,11 @@ namespace RGO.Models;
 
 public record EmployeeAddressDto(
     int Id,
-    EmployeeDto? Employee,
-    AddressType AddressType,
+    int EmployeeId,
     string UnitNumber,
     string ComplexName,
     string StreetNumber,
-    string StreetName,
-    string Suburb,
-    string City,
+    string SuburbOrDistrict,
+    string Country,
+    string Province,
     string PostalCode);
