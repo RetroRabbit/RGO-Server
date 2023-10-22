@@ -40,7 +40,5 @@ namespace RGO.Services.Interfaces
         Task<EmployeeAddressDto> Delete(EmployeeAddressDto employeeAddressDto);
 
         Task<List<EmployeeAddressDto>> GetAll();
-
-        Task<List<EmployeeAddressDto>> GetAllByEmployee(string email);
     }
 }

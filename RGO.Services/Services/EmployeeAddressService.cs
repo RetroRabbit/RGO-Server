@@ -18,7 +18,6 @@ public class EmployeeAddressService : IEmployeeAddressService
     public async Task<bool> CheckIfExitsts(EmployeeAddressDto employeeAddressDto)
     {
         bool exists = await _db.EmployeeAddress.Any(x =>
-            x.EmployeeId == employeeAddressDto.EmployeeId &&
             x.UnitNumber == employeeAddressDto.UnitNumber &&
             x.ComplexName == employeeAddressDto.ComplexName &&
             x.StreetNumber == employeeAddressDto.StreetNumber &&
@@ -47,8 +46,7 @@ public class EmployeeAddressService : IEmployeeAddressService
             throw new Exception("Employee Address does not exist");
 
         var addresses = from address in _db.EmployeeAddress.Get()
-                        where address.EmployeeId == employeeAddressDto.EmployeeId &&
-                        address.UnitNumber == employeeAddressDto.UnitNumber &&
+                        where address.UnitNumber == employeeAddressDto.UnitNumber &&
                         address.ComplexName == employeeAddressDto.ComplexName &&
                         address.StreetNumber == employeeAddressDto.StreetNumber &&
                         address.SuburbOrDistrict == employeeAddressDto.SuburbOrDistrict &&
@@ -67,7 +65,6 @@ public class EmployeeAddressService : IEmployeeAddressService
         var addresses = from address in _db.EmployeeAddress.Get()
                         select new EmployeeAddressDto(
                             address.Id,
-                            address.EmployeeId,
                             address.UnitNumber,
                             address.ComplexName,
                             address.StreetNumber,
@@ -76,25 +73,6 @@ public class EmployeeAddressService : IEmployeeAddressService
                             address.Province,
                             address.PostalCode);
         
-        return await addresses.ToListAsync();
-    }
-
-    public async Task<List<EmployeeAddressDto>> GetAllByEmployee(string email)
-    {
-        var addresses = from address in _db.EmployeeAddress.Get()
-                        join employee in _db.Employee.Get() on address.EmployeeId equals employee.Id
-                        where employee.Email == email
-                        select new EmployeeAddressDto(
-                            address.Id,
-                            address.EmployeeId,
-                            address.UnitNumber,
-                            address.ComplexName,
-                            address.StreetNumber,
-                            address.SuburbOrDistrict,
-                            address.Country,
-                            address.Province,
-                            address.PostalCode);
-
         return await addresses.ToListAsync();
     }
 
@@ -119,7 +97,6 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         var addressToUpdate = new EmployeeAddressDto(
             existingAddress.Id,
-            existingAddress.EmployeeId,
             employeeAddressDto.UnitNumber,
             employeeAddressDto.ComplexName,
             employeeAddressDto.StreetNumber,

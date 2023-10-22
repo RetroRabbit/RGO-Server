@@ -11,14 +11,16 @@ namespace RGO.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
+    private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IUnitOfWork _db;
     private const string QueueName = "employee_data_queue";
     public static ConnectionFactory _employeeFactory;
-    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db)
+    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db, IEmployeeAddressService employeeAddressService)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
+        _employeeAddressService = employeeAddressService;
     }
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
@@ -31,7 +33,7 @@ public class EmployeeService : IEmployeeService
         try
         {
             var ExistingEmployeeType = await _employeeTypeService
-                .GetEmployeeType(employeeDto.EmployeeType.Name);
+                .GetEmployeeType(employeeDto.EmployeeType!.Name);
 
             employee = new Employee(employeeDto, ExistingEmployeeType);
 
@@ -47,9 +49,39 @@ public class EmployeeService : IEmployeeService
         catch (Exception)
         {
             EmployeeTypeDto newEmployeeType = await _employeeTypeService
-                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType.Name));
+                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType!.Name));
 
             employee = new Employee(employeeDto, newEmployeeType);
+        }
+
+        bool physicalAddressExist = await _employeeAddressService
+            .CheckIfExitsts(employeeDto.PhysicalAddress!);
+
+        EmployeeAddressDto physicalAddress;
+
+        if (!physicalAddressExist)
+        {
+            physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
+            employee.PhysicalAddressId = physicalAddress.Id;
+        } else
+        {
+            physicalAddress = await _employeeAddressService
+                .Get(employeeDto.PhysicalAddress!);
+            employee.PhysicalAddressId = physicalAddress.Id;
+        }
+
+        bool postalAddressExist = await _employeeAddressService
+            .CheckIfExitsts(employeeDto.PostalAddress!);
+
+        if (!postalAddressExist)
+        {
+            EmployeeAddressDto postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
+            employee.PostalAddressId = postalAddress.Id;
+        } else
+        {
+            EmployeeAddressDto postalAddress = await _employeeAddressService
+                .Get(employeeDto.PostalAddress!);
+            employee.PostalAddressId = postalAddress.Id;
         }
 
         EmployeeDto newEmployee = await _db.Employee.Add(employee);
@@ -76,6 +108,8 @@ public class EmployeeService : IEmployeeService
             .Get(employee => true)
             .AsNoTracking()
             .Include(employee => employee.EmployeeType)
+            .Include(employee => employee.PhysicalAddress)
+            .Include(employee => employee.PostalAddress)
             .Select(employee => employee.ToDto())
             .ToListAsync();
     }
@@ -86,6 +120,8 @@ public class EmployeeService : IEmployeeService
             .Get(employee => employee.Email == email)
             .AsNoTracking()
             .Include(employee => employee.EmployeeType)
+            .Include(employee => employee.PhysicalAddress)
+            .Include(employee => employee.PostalAddress)
             .Select(employee => employee.ToDto())
             .Take(1)
             .FirstOrDefaultAsync();

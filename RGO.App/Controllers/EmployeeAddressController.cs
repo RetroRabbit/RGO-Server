@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers
 {
-    [Route("/emploayeeaddress/")]
+    [Route("/employeeaddress/")]
     [ApiController]
     public class EmployeeAddressController : ControllerBase
     {
@@ -17,14 +16,15 @@ namespace RGO.App.Controllers
         }
 
         [HttpGet("getall")]
-        public async Task<IActionResult> GetAll([FromQuery] string? email = null)
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                var addresses = email != null ? await _employeeAddressService.GetAllByEmployee(email) :  await _employeeAddressService.GetAll();
+                var addresses = await _employeeAddressService.GetAll();
 
                 return Ok(addresses);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return NotFound(ex.Message);
             }
@@ -35,9 +35,9 @@ namespace RGO.App.Controllers
         {
             try
             {
-                await _employeeAddressService.Save(address);
+                var savedAddress = await _employeeAddressService.Save(address);
 
-                return Ok();
+                return Ok(savedAddress);
             }
             catch (Exception ex)
             {
@@ -50,9 +50,9 @@ namespace RGO.App.Controllers
         {
             try
             {
-                await _employeeAddressService.Update(address);
+                var updatedAddress = await _employeeAddressService.Update(address);
 
-                return Ok();
+                return Ok(updatedAddress);
             }
             catch (Exception ex)
             {
@@ -65,9 +65,9 @@ namespace RGO.App.Controllers
         {
             try
             {
-                await _employeeAddressService.Delete(address);
+                var deletedAddress = await _employeeAddressService.Delete(address);
 
-                return Ok();
+                return Ok(deletedAddress);
             }
             catch (Exception ex)
             {
