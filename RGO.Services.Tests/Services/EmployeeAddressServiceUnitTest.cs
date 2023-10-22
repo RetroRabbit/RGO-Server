@@ -26,20 +26,12 @@ namespace RGO.Services.Tests.Services
         {
             _dbMock = new Mock<IUnitOfWork>();
             _employeeAddressService = new EmployeeAddressService(_dbMock.Object);
-            EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-
-            _employeeDto = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
-            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", null,
-            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, "",
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
         }
 
-        private EmployeeAddressDto CreateAddress(EmployeeDto employeeDto, int id = 0)
+        private EmployeeAddressDto CreateAddress( int id = 0)
         {
             return new EmployeeAddressDto(
                 id,
-                employeeDto.Id,
                 "2",
                 "Complex",
                 "2",
@@ -52,7 +44,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task CheckIfExistsFailTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
@@ -64,7 +56,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task CheckIfExistsPassTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
@@ -76,7 +68,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task GetFailTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
@@ -86,7 +78,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task GetPassTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
@@ -102,7 +94,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task DeleteFailTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
@@ -112,7 +104,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task DeletePassTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
@@ -129,7 +121,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task SaveFailTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
@@ -139,7 +131,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task SavePassTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
@@ -153,7 +145,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task UpdateFailTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
@@ -163,7 +155,7 @@ namespace RGO.Services.Tests.Services
         [Fact]
         public async Task UpdatePassTest()
         {
-            var address = CreateAddress(_employeeDto, 1);
+            var address = CreateAddress(1);
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
@@ -175,6 +167,19 @@ namespace RGO.Services.Tests.Services
             var result = await _employeeAddressService.Update(address);
 
             Assert.Equal(address, result);
+        }
+
+        [Fact]
+        public async Task GetAllTest()
+        {
+            var address = CreateAddress(1);
+
+            _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).Returns(new List<EmployeeAddress> { new EmployeeAddress(address) }.AsQueryable().BuildMock());
+
+            var result = await _employeeAddressService.GetAll();
+
+            Assert.NotNull(result);
+            Assert.Equal(address, result.First());
         }
     }
 }
