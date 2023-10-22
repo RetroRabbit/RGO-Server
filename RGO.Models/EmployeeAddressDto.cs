@@ -4,7 +4,6 @@ namespace RGO.Models;
 
 public record EmployeeAddressDto(
     int Id,
-    int EmployeeId,
     string UnitNumber,
     string ComplexName,
     string StreetNumber,

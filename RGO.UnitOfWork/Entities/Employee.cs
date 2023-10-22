@@ -116,10 +116,20 @@ public class Employee : IModel<EmployeeDto>
     [ForeignKey("TeamLeadAssigned")]
     public int? TeamLead { get; set; }
 
+    [Column("physicalAddress")]
+    [ForeignKey("PhysicalAddress")]
+    public int? PhysicalAddressId { get; set; }
+
+    [Column("postalAddress")]
+    [ForeignKey("PostalAddress")]
+    public int? PostalAddressId { get; set; }
+
     public virtual EmployeeType EmployeeType { get; set; }
     public virtual Employee ChampionEmployee { get; set; }
     public virtual Employee TeamLeadAssigned { get; set; }
     public virtual Client ClientAssigned { get; set; }
+    public virtual EmployeeAddress PhysicalAddress { get; set; }
+    public virtual EmployeeAddress PostalAddress { get; set; }
 
     public Employee() { }
 
@@ -159,6 +169,8 @@ public class Employee : IModel<EmployeeDto>
         CellphoneNo = employeeDto.CellphoneNo;
         ClientAllocated = employeeDto.ClientAllocated;
         TeamLead = employeeDto.TeamLead;
+        PhysicalAddressId = employeeDto.PhysicalAddress!.Id;
+        PostalAddressId = employeeDto.PostalAddress!.Id;
     }
 
     public EmployeeDto ToDto()
@@ -197,6 +209,8 @@ public class Employee : IModel<EmployeeDto>
             PersonalEmail,
             CellphoneNo,
             ClientAllocated,
-            TeamLead);
+            TeamLead,
+            PhysicalAddress?.ToDto(),
+            PostalAddress?.ToDto());
     }
 }

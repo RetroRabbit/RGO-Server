@@ -36,4 +36,6 @@ public record EmployeeDto(
     string PersonalEmail,
     string CellphoneNo,
     int? ClientAllocated,
-    int? TeamLead);
+    int? TeamLead,
+    EmployeeAddressDto? PhysicalAddress,
+    EmployeeAddressDto? PostalAddress);

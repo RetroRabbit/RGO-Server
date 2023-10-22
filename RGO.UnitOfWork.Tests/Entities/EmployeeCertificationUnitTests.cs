@@ -15,12 +15,13 @@ public class EmployeeCertificationUnitTests
     public EmployeeCertificationUnitTests()
     {
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "Country", "Province", "1620");
 
         _employee = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
             "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null);
+            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto);
 
         _onboardingDocument = new OnboardingDocumentDto(0, "Title", "Description", "FileName", new byte[] { 0 }, Models.Enums.ItemStatus.Active);
 

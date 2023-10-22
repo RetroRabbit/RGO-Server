@@ -6,9 +6,6 @@ namespace RGO.UnitOfWork.Tests.Entities
 {
     public class EmployeeUnitTests
     {
-
-        
-
         [Fact]
         public async Task EmployeeTest()
         {

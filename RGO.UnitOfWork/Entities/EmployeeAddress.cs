@@ -12,10 +12,6 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("employeeId")]
-    [ForeignKey("Employee")]
-    public int EmployeeId { get; set; }
-
     [Column("unitNumber")]
     public string UnitNumber { get; set; }
 
@@ -37,14 +33,11 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     [Column("postalCode")]
     public string PostalCode { get; set; }
 
-    public virtual Employee Employee { get; set; }
-
     public EmployeeAddress() { }
 
     public EmployeeAddress(EmployeeAddressDto dto)
     {
         Id = dto.Id;
-        EmployeeId = dto.EmployeeId;
         UnitNumber = dto.UnitNumber;
         ComplexName = dto.ComplexName;
         StreetNumber = dto.StreetNumber;
@@ -58,7 +51,6 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     {
         return new EmployeeAddressDto(
             Id,
-            EmployeeId,
             UnitNumber,
             ComplexName,
             StreetNumber,
