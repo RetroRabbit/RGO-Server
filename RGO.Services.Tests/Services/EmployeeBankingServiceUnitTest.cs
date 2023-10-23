@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 using RGO.Services.Interfaces;
 using MockQueryable.Moq;
 
-
+namespace RGO.Services.Tests;
 public class EmployeeBankingServiceTest
 {
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
@@ -144,8 +144,12 @@ public class EmployeeBankingServiceTest
 
         Employee employee = new Employee(testEmployee, testEmployee.EmployeeType);
         employee.EmployeeType = employeeType;
-        List<Employee> employees = new List<Employee>();
-        employees.Add(employee);
+        employee.PhysicalAddress = new EmployeeAddress(employeeAddressDto);
+        employee.PostalAddress = new EmployeeAddress(employeeAddressDto);
+        List<Employee> employees = new List<Employee>
+        {
+            employee
+        };
         var mockEmployees = employees;
 
         _mockUnitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(mockEmployees.AsQueryable().BuildMock());
