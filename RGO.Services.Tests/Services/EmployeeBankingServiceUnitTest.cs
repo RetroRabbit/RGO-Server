@@ -45,7 +45,7 @@ public class EmployeeBankingServiceTest
 
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "Country", "Province", "1620");
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
@@ -134,7 +134,7 @@ public class EmployeeBankingServiceTest
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
 
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "Country", "Province", "1620");
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",

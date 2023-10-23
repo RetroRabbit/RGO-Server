@@ -206,7 +206,7 @@ public class RoleAccessLinkServiceUnitTest
     {
         string email = "test@retrorabbit.co.za";
         var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "Country", "Province", "1620");
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         EmployeeDto testEmployee = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
                         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Test", "TD",
                         "Dummy", new DateOnly(), "South Africa", "South African", "0000000000000", " ",

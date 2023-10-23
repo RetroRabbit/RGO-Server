@@ -24,6 +24,9 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     [Column("suburbOrDistrict")]
     public string SuburbOrDistrict { get; set; }
 
+    [Column("city")]
+    public string City { get; set; }
+
     [Column("country")]
     public string Country { get; set; }
 
@@ -42,6 +45,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
         ComplexName = dto.ComplexName;
         StreetNumber = dto.StreetNumber;
         SuburbOrDistrict = dto.SuburbOrDistrict;
+        City = dto.City;
         Country = dto.Country;
         Province = dto.Province;
         PostalCode = dto.PostalCode;
@@ -55,6 +59,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
             ComplexName,
             StreetNumber,
             SuburbOrDistrict,
+            City,
             Country,
             Province,
             PostalCode);

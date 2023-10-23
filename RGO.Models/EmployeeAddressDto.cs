@@ -8,6 +8,7 @@ public record EmployeeAddressDto(
     string ComplexName,
     string StreetNumber,
     string SuburbOrDistrict,
+    string City,
     string Country,
     string Province,
     string PostalCode);

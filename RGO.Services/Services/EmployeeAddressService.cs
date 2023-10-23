@@ -50,6 +50,7 @@ public class EmployeeAddressService : IEmployeeAddressService
                         address.ComplexName == employeeAddressDto.ComplexName &&
                         address.StreetNumber == employeeAddressDto.StreetNumber &&
                         address.SuburbOrDistrict == employeeAddressDto.SuburbOrDistrict &&
+                        address.City == employeeAddressDto.City &&
                         address.Country == employeeAddressDto.Country &&
                         address.Province == employeeAddressDto.Province &&
                         address.PostalCode == employeeAddressDto.PostalCode
@@ -69,6 +70,7 @@ public class EmployeeAddressService : IEmployeeAddressService
                             address.ComplexName,
                             address.StreetNumber,
                             address.SuburbOrDistrict,
+                            address.City,
                             address.Country,
                             address.Province,
                             address.PostalCode);
@@ -101,6 +103,7 @@ public class EmployeeAddressService : IEmployeeAddressService
             employeeAddressDto.ComplexName,
             employeeAddressDto.StreetNumber,
             employeeAddressDto.SuburbOrDistrict,
+            employeeAddressDto.City,
             employeeAddressDto.Country,
             employeeAddressDto.Province,
             employeeAddressDto.PostalCode);

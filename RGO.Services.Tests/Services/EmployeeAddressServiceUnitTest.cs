@@ -36,6 +36,7 @@ namespace RGO.Services.Tests.Services
                 "Complex",
                 "2",
                 "Suburb/District",
+                "City",
                 "Country",
                 "Province",
                 "1620");

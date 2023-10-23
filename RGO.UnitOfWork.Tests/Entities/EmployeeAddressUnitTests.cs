@@ -12,7 +12,7 @@ public class EmployeeAddressUnitTests
     public EmployeeAddressUnitTests()
     {
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "Country", "Province", "1620");
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         _employee = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Dorothy", "D",
