@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
 
@@ -15,6 +16,7 @@ namespace RGO.App.Controllers
             _employeeAddressService = employeeAddressService;
         }
 
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {
@@ -30,6 +32,7 @@ namespace RGO.App.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         [HttpPost("save")]
         public async Task<IActionResult> SaveEmployeeAddress([FromBody] EmployeeAddressDto address)
         {
@@ -45,6 +48,7 @@ namespace RGO.App.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateEmployeeAddress([FromBody] EmployeeAddressDto address)
         {
@@ -60,6 +64,7 @@ namespace RGO.App.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteEmployeeAddress([FromBody] EmployeeAddressDto address)
         {
