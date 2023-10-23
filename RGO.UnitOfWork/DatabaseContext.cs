@@ -37,6 +37,7 @@ namespace RGO.UnitOfWork
             modelBuilder.Entity<EmployeeEvaluationTemplate>().HasData(TestData.EmployeeEvaluationTemplateSet());
             modelBuilder.Entity<EmployeeEvaluationTemplateItem>().HasData(TestData.EmployeeEvaluationTemplateItemSet());
             modelBuilder.Entity<Client>().HasData(TestData.ClientList());
+            modelBuilder.Entity<EmployeeAddress>().HasData(TestData.EmployeeAddressSet());
         }
 
         public DbSet<Employee> employees { get; set; }

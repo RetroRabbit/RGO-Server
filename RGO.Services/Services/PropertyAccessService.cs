@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using RGO.Models;
 using RGO.Models.Update;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using System.Data;
-using Npgsql;
 
 namespace RGO.Services.Services
 {
@@ -31,8 +31,8 @@ namespace RGO.Services.Services
 
             foreach (var access in properties.Where(a => a.Condition != 0))
             {
-                string value = await GetSqlValues(access.FieldCode,  employee);
-                  
+                string value = await GetSqlValues(access.FieldCode, employee);
+
                 var dto = new EmployeeAccessDto(
                     access.FieldCode.Id,
                     access.Condition,
@@ -68,7 +68,7 @@ namespace RGO.Services.Services
 
             var get = _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId));
 
-            bool canEdit = (get)
+            bool canEdit = get
                 .Where(access => access.Condition == 2).Any();
 
             if (!canEdit)
@@ -116,8 +116,10 @@ namespace RGO.Services.Services
                 else
                 {
                     var data = await _db.EmployeeData.Get(ed => ed.EmployeeId == employee.Id && ed.FieldCodeId == fieldValue.fieldId)
-                                        .Select(ed => ed.ToDto())
-                                        .FirstOrDefaultAsync();
+                        .AsNoTracking()
+                        .Include(ed => ed.FieldCode)
+                        .Select(ed => ed.ToDto())
+                        .FirstOrDefaultAsync();
 
                     if (data != null)
                     {

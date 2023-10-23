@@ -1,5 +1,4 @@
 ﻿using RGO.Models;
-using RGO.Models.Enums;
 using RGO.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,13 +12,6 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("employeeId")]
-    [ForeignKey("Employee")]
-    public int EmployeeId { get; set; }
-
-    [Column("addressType")]
-    public AddressType AddressType { get; set; }
-
     [Column("unitNumber")]
     public string UnitNumber { get; set; }
 
@@ -29,48 +21,47 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     [Column("streetNumber")]
     public string StreetNumber { get; set; }
 
-    [Column("streetName")]
-    public string StreetName { get; set; }
-
-    [Column("suburb")]
-    public string Suburb { get; set; }
+    [Column("suburbOrDistrict")]
+    public string SuburbOrDistrict { get; set; }
 
     [Column("city")]
     public string City { get; set; }
 
+    [Column("country")]
+    public string Country { get; set; }
+
+    [Column("province")]
+    public string Province { get; set; }
+
     [Column("postalCode")]
     public string PostalCode { get; set; }
 
-    public virtual Employee Employee { get; set; }
-
     public EmployeeAddress() { }
 
-    public EmployeeAddress(EmployeeAddressDto employeeAddressDto)
+    public EmployeeAddress(EmployeeAddressDto dto)
     {
-        Id = employeeAddressDto.Id;
-        EmployeeId = employeeAddressDto.Employee!.Id;
-        AddressType = employeeAddressDto.AddressType;
-        UnitNumber = employeeAddressDto.UnitNumber;
-        ComplexName = employeeAddressDto.ComplexName;
-        StreetNumber = employeeAddressDto.StreetNumber;
-        StreetName = employeeAddressDto.StreetName;
-        Suburb = employeeAddressDto.Suburb;
-        City = employeeAddressDto.City;
-        PostalCode = employeeAddressDto.PostalCode;
+        Id = dto.Id;
+        UnitNumber = dto.UnitNumber;
+        ComplexName = dto.ComplexName;
+        StreetNumber = dto.StreetNumber;
+        SuburbOrDistrict = dto.SuburbOrDistrict;
+        City = dto.City;
+        Country = dto.Country;
+        Province = dto.Province;
+        PostalCode = dto.PostalCode;
     }
 
     public EmployeeAddressDto ToDto()
     {
         return new EmployeeAddressDto(
             Id,
-            Employee?.ToDto(),
-            AddressType,
             UnitNumber,
             ComplexName,
             StreetNumber,
-            StreetName,
-            Suburb,
+            SuburbOrDistrict,
             City,
+            Country,
+            Province,
             PostalCode);
     }
 }
