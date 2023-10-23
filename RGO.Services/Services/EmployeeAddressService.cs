@@ -45,7 +45,7 @@ public class EmployeeAddressService : IEmployeeAddressService
         if (!exists)
             throw new Exception("Employee Address does not exist");
 
-        var addresses = from address in _db.EmployeeAddress.Get()
+        var addresses = from address in _db.EmployeeAddress.Get().AsNoTracking()
                         where address.UnitNumber == employeeAddressDto.UnitNumber &&
                         address.ComplexName == employeeAddressDto.ComplexName &&
                         address.StreetNumber == employeeAddressDto.StreetNumber &&

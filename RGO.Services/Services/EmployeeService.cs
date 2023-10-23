@@ -25,7 +25,8 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
     {
-        if (await CheckUserExist(employeeDto.Email)) {
+        bool exists = await CheckUserExist(employeeDto.Email);
+        if (exists) {
             throw new Exception("User already exists");
         }
         Employee employee;
@@ -62,25 +63,32 @@ public class EmployeeService : IEmployeeService
         if (!physicalAddressExist)
         {
             physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
-            employee.PhysicalAddressId = physicalAddress.Id;
         } else
         {
-            physicalAddress = await _employeeAddressService
-                .Get(employeeDto.PhysicalAddress!);
-            employee.PhysicalAddressId = physicalAddress.Id;
+            physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
         }
 
-        bool postalAddressExist = await _employeeAddressService
-            .CheckIfExitsts(employeeDto.PostalAddress!);
+        employee.PhysicalAddressId = physicalAddress.Id;
 
-        if (!postalAddressExist)
+        if (employeeDto.PhysicalAddress == employeeDto.PostalAddress)
         {
-            EmployeeAddressDto postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
-            employee.PostalAddressId = postalAddress.Id;
+            employee.PostalAddressId = physicalAddress.Id;
         } else
         {
-            EmployeeAddressDto postalAddress = await _employeeAddressService
-                .Get(employeeDto.PostalAddress!);
+            bool postalAddressExist = await _employeeAddressService
+            .CheckIfExitsts(employeeDto.PostalAddress!);
+
+            EmployeeAddressDto postalAddress;
+
+            if (!postalAddressExist)
+            {
+                postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
+            }
+            else
+            {
+                postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
+            }
+
             employee.PostalAddressId = postalAddress.Id;
         }
 
