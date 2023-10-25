@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 using MockQueryable.Moq;
 using Moq;
 using RGO.Models;
@@ -16,7 +16,7 @@ using Xunit;
 
 namespace RGO.Services.Tests.Services
 {
-    /*public class EmployeeAddressServiceUnitTest
+    public class EmployeeAddressServiceUnitTest
     {
         private readonly Mock<IUnitOfWork> _dbMock;
         private readonly EmployeeAddressService _employeeAddressService;
@@ -181,6 +181,7 @@ namespace RGO.Services.Tests.Services
 
             Assert.NotNull(result);
             Assert.Equal(address, result.First());
-        }*/
+        }
     }
 }
+*/
