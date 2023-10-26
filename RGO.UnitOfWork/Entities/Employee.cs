@@ -14,10 +14,10 @@ public class Employee : IModel<EmployeeDto>
     public int Id { get; set; }
 
     [Column("employeeNumber")]
-    public string EmployeeNumber { get; set; }
+    public string? EmployeeNumber { get; set; }
 
     [Column("taxNumber")]
-    public string TaxNumber { get; set; }
+    public string? TaxNumber { get; set; }
 
     [Column("engagementDate")]
     public DateOnly EngagementDate { get; set; }
@@ -36,26 +36,26 @@ public class Employee : IModel<EmployeeDto>
     public string DisabilityNotes { get; set; }
 
     [Column("level")]
-    public int Level { get; set; }
+    public int? Level { get; set; }
 
     [Column("employeeTypeId")]
     [ForeignKey("EmployeeType")]
     public int EmployeeTypeId { get; set; }
 
     [Column("notes")]
-    public string Notes { get; set; }
+    public string? Notes { get; set; }
 
     [Column("leaveInterval")]
-    public float LeaveInterval { get; set; }
+    public float? LeaveInterval { get; set; }
 
     [Column("salaryDays")]
-    public float SalaryDays { get; set; }
+    public float? SalaryDays { get; set; }
 
     [Column("payRate")]
-    public float PayRate { get; set; }
+    public float? PayRate { get; set; }
 
     [Column("salary")]
-    public int Salary{ get; set; }
+    public int? Salary{ get; set; }
 
     [Column("title")]
     public string Title { get; set; }
@@ -73,13 +73,13 @@ public class Employee : IModel<EmployeeDto>
     public DateOnly DateOfBirth { get; set; }
 
     [Column("countryOfBirth")]
-    public string CountryOfBirth { get; set; }
+    public string? CountryOfBirth { get; set; }
 
     [Column("nationality")]
-    public string Nationality { get; set; }
+    public string? Nationality { get; set; }
 
     [Column("idNumber")]
-    public string? IdNumber { get; set; }
+    public string IdNumber { get; set; }
 
     [Column("passportNumber")]
     public string? PassportNumber { get; set; }
@@ -91,13 +91,13 @@ public class Employee : IModel<EmployeeDto>
     public string? PassportCountryIssue { get; set; }
 
     [Column("race")]
-    public Race Race { get; set; }
+    public Race? Race { get; set; }
 
     [Column("gender")]
-    public Gender Gender { get; set; }
+    public Gender? Gender { get; set; }
 
     [Column("photo")]
-    public string Photo { get; set; }
+    public string? Photo { get; set; }
 
     [Column("email")]
     public string Email { get; set; }
@@ -123,6 +123,15 @@ public class Employee : IModel<EmployeeDto>
     [Column("postalAddress")]
     [ForeignKey("PostalAddress")]
     public int? PostalAddressId { get; set; }
+
+    [Column("houseNo")]
+    public string? HouseNo { get; set; }
+
+    [Column("emergencyContactName")]
+    public string? EmergencyContactName { get; set; }
+
+    [Column("emergencyContactNo")]
+    public string? EmergencyContactNo { get; set; }
 
     public virtual EmployeeType EmployeeType { get; set; }
     public virtual Employee ChampionEmployee { get; set; }
@@ -169,8 +178,11 @@ public class Employee : IModel<EmployeeDto>
         CellphoneNo = employeeDto.CellphoneNo;
         ClientAllocated = employeeDto.ClientAllocated;
         TeamLead = employeeDto.TeamLead;
-        PhysicalAddressId = employeeDto.PhysicalAddress!.Id;
-        PostalAddressId = employeeDto.PostalAddress!.Id;
+        PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
+        PostalAddressId = employeeDto.PostalAddress?.Id;
+        HouseNo = employeeDto.HouseNo;
+        EmergencyContactName = employeeDto.EmergencyContactName;
+        EmergencyContactNo = employeeDto.EmergencyContactNo;
     }
 
     public EmployeeDto ToDto()
@@ -211,6 +223,9 @@ public class Employee : IModel<EmployeeDto>
             ClientAllocated,
             TeamLead,
             PhysicalAddress?.ToDto(),
-            PostalAddress?.ToDto());
+            PostalAddress?.ToDto(),
+            HouseNo,
+            EmergencyContactName,
+            EmergencyContactNo);
     }
 }
