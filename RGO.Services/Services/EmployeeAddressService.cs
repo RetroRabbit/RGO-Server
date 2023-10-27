@@ -17,16 +17,8 @@ public class EmployeeAddressService : IEmployeeAddressService
 
     public async Task<bool> CheckIfExitsts(EmployeeAddressDto employeeAddressDto)
     {
-        bool exists = await _db.EmployeeAddress.Any(x =>
-            x.UnitNumber == employeeAddressDto.UnitNumber &&
-            x.ComplexName == employeeAddressDto.ComplexName &&
-            x.StreetNumber == employeeAddressDto.StreetNumber &&
-            x.SuburbOrDistrict == employeeAddressDto.SuburbOrDistrict &&
-            x.Country == employeeAddressDto.Country &&
-            x.Province == employeeAddressDto.Province &&
-            x.PostalCode == employeeAddressDto.PostalCode);
-
-        return exists;
+        var exists = await _db.EmployeeAddress.GetById(employeeAddressDto.Id);
+        return exists != null;
     }
 
     public async Task<EmployeeAddressDto> Delete(EmployeeAddressDto employeeAddressDto)
@@ -95,7 +87,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         if (!exists) throw new Exception("Employee Address does not exist");
 
-        var existingAddress = await Get(employeeAddressDto);
+        var existingAddress = await _db.EmployeeAddress.GetById(employeeAddressDto.Id);
 
         var addressToUpdate = new EmployeeAddressDto(
             existingAddress.Id,
