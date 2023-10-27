@@ -51,19 +51,19 @@ public class EmployeeBankingServiceTest
         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
         "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
         new DateOnly(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto);
+        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         EmployeeDto testEmployee2 = new(2, "001", "34434434", new DateOnly(), new DateOnly(),
         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
         "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
         new DateOnly(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto);
+        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         EmployeeDto testEmployee3 = new(3, "001", "34434434", new DateOnly(), new DateOnly(),
         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
         "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
         new DateOnly(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto);
+        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         var employees = new List<Employee>
         {
@@ -140,7 +140,7 @@ public class EmployeeBankingServiceTest
         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Mr", "Matt", "MT",
         "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
         new DateOnly(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto);
+        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         Employee employee = new Employee(testEmployee, testEmployee.EmployeeType);
         employee.EmployeeType = employeeType;
