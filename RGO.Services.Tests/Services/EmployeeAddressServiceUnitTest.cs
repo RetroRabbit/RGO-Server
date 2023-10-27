@@ -1,4 +1,4 @@
-﻿/*using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MockQueryable.Moq;
 using Moq;
 using RGO.Models;
@@ -28,13 +28,13 @@ namespace RGO.Services.Tests.Services
             _employeeAddressService = new EmployeeAddressService(_dbMock.Object);
         }
 
-        private EmployeeAddressDto CreateAddress( int id = 0)
+        private EmployeeAddressDto CreateAddress(int id = 0)
         {
             return new EmployeeAddressDto(
                 id,
-                "2",
+                "1",
                 "Complex",
-                "2",
+                "1",
                 "Suburb/District",
                 "City",
                 "Country",
@@ -59,7 +59,7 @@ namespace RGO.Services.Tests.Services
         {
             var address = CreateAddress(1);
 
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+            _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
 
             bool result = await _employeeAddressService.CheckIfExitsts(address);
 
@@ -81,7 +81,7 @@ namespace RGO.Services.Tests.Services
         {
             var address = CreateAddress(1);
 
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+            _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
 
             _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                 .Returns(new List<EmployeeAddress> { new EmployeeAddress(address) }.AsQueryable().BuildMock());
@@ -107,7 +107,7 @@ namespace RGO.Services.Tests.Services
         {
             var address = CreateAddress(1);
 
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+            _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
 
             _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                 .Returns(new List<EmployeeAddress> { new EmployeeAddress(address) }.AsQueryable().BuildMock());
@@ -124,7 +124,7 @@ namespace RGO.Services.Tests.Services
         {
             var address = CreateAddress(1);
 
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
+            _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
 
             await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Save(address));
         }
@@ -133,8 +133,6 @@ namespace RGO.Services.Tests.Services
         public async Task SavePassTest()
         {
             var address = CreateAddress(1);
-
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
             _dbMock.Setup(x => x.EmployeeAddress.Add(It.IsAny<EmployeeAddress>())).Returns(Task.FromResult(address));
 
@@ -148,7 +146,7 @@ namespace RGO.Services.Tests.Services
         {
             var address = CreateAddress(1);
 
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
+            _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto)null);
 
             await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Update(address));
         }
@@ -158,10 +156,7 @@ namespace RGO.Services.Tests.Services
         {
             var address = CreateAddress(1);
 
-            _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
-
-            _dbMock.Setup(x => x.EmployeeAddress.Get(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
-                .Returns(new List<EmployeeAddress> { new EmployeeAddress(address) }.AsQueryable().BuildMock());
+            _dbMock.SetupSequence(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address).ReturnsAsync(address);
 
             _dbMock.Setup(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>())).Returns(Task.FromResult(address));
 
@@ -184,4 +179,3 @@ namespace RGO.Services.Tests.Services
         }
     }
 }
-*/
