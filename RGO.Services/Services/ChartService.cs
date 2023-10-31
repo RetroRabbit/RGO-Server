@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Primitives;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
@@ -59,7 +60,7 @@ public class ChartService : IChartService
                         /*var dob = DateOnly.FromDateTime((DateTime)dobPropertyInfo.GetValue(employee));*/
                         /*var dob = DateOnly.FromDateTime((DateTime)dobPropertyInfo.GetValue(employee.DateOfBirth));*/
                         var age = CalculateAge(dob);
-                        keyBuilder.Append(age);
+                        keyBuilder.Append(+age+", ");
                         continue;
                     }
 
@@ -69,7 +70,7 @@ public class ChartService : IChartService
                         throw new ArgumentException($"Invalid dataType: {dataType}");
                     }
 
-                    keyBuilder.Append(propertyInfo.GetValue(employee));
+                    keyBuilder.Append(propertyInfo.GetValue(employee)+", ");
                 }
                 return keyBuilder.ToString();
             })
