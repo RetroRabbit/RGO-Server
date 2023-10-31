@@ -47,6 +47,22 @@ public class ChartService : IChartService
                 var keyBuilder = new StringBuilder();
                 foreach (var dataType in dataTypeList)
                 {
+                    if (dataType == "Age")
+                    {
+                        var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
+                        if (dobPropertyInfo == null)
+                        {
+                            throw new ArgumentException($"EmployeeDto does not have a DateOfBirth property.");
+                        }
+
+                        var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
+                        /*var dob = DateOnly.FromDateTime((DateTime)dobPropertyInfo.GetValue(employee));*/
+                        /*var dob = DateOnly.FromDateTime((DateTime)dobPropertyInfo.GetValue(employee.DateOfBirth));*/
+                        var age = CalculateAge(dob);
+                        keyBuilder.Append(age);
+                        continue;
+                    }
+
                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
                     if (propertyInfo == null)
                     {
@@ -72,6 +88,18 @@ public class ChartService : IChartService
         };
 
         return await _db.Chart.Add(chart);
+    }
+
+    private int CalculateAge(DateOnly dob)
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var age = today.Year - dob.Year;
+
+        // Check if birthday has occurred this year; if not, subtract one from age
+        if (today.DayOfYear < dob.DayOfYear)
+            age--;
+
+        return age;
     }
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
@@ -134,12 +162,18 @@ public class ChartService : IChartService
     {
         var entityType = typeof(Employee);
 
-            var quantifiableColumnNames = entityType.GetProperties()
-                .Where(p => IsQuantifiableType(p.PropertyType) && !p.Name.Equals("Id") && !p.Name.Equals("EmployeeTypeId"))
-                .Select(p => p.Name)
-                .ToArray();
+        var quantifiableColumnNames = entityType.GetProperties()
+            .Where(p => IsQuantifiableType(p.PropertyType) &&
+                       !p.Name.Equals("Id") &&
+                       !p.Name.Equals("EmployeeTypeId") &&
+                       !p.Name.Equals("PhysicalAddressId") &&
+                       !p.Name.Equals("PostalAddressId"))
+            .Select(p => p.Name)
+            .ToArray();
 
-            return quantifiableColumnNames;     
+        quantifiableColumnNames = quantifiableColumnNames.Concat(new string[] { "Age" }).ToArray();
+
+        return quantifiableColumnNames;
     }
 
     private bool IsQuantifiableType(Type type)
