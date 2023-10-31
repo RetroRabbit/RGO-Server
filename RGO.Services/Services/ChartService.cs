@@ -144,7 +144,11 @@ public class ChartService : IChartService
 
     private bool IsQuantifiableType(Type type)
     {
-        return typeof(IConvertible).IsAssignableFrom(type) && type != typeof(string);
+        Type actualType = Nullable.GetUnderlyingType(type) ?? type;
+
+        bool isQuantifiable = typeof(IConvertible).IsAssignableFrom(actualType) && actualType != typeof(string);
+
+        return isQuantifiable;
     }
 
     public async Task<byte[]> ExportCsvAsync(List<string> dataTypes)
