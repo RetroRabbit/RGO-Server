@@ -72,12 +72,11 @@ public class ChartService : IChartService
          }
          if (keyBuilder.Length > 2)
          {
-             keyBuilder.Length -= 2; // Remove the trailing ", "
+             keyBuilder.Length -= 2; 
          }
          return keyBuilder.ToString();
      })
      .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
-
 
         var labels = dataDictionary.Keys.ToList();
         var data = dataDictionary.Values.ToList();
