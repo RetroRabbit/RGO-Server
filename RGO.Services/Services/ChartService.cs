@@ -57,8 +57,6 @@ public class ChartService : IChartService
                         }
 
                         var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
-                        /*var dob = DateOnly.FromDateTime((DateTime)dobPropertyInfo.GetValue(employee));*/
-                        /*var dob = DateOnly.FromDateTime((DateTime)dobPropertyInfo.GetValue(employee.DateOfBirth));*/
                         var age = CalculateAge(dob);
                         keyBuilder.Append(+age+", ");
                         continue;
@@ -96,7 +94,6 @@ public class ChartService : IChartService
         var today = DateOnly.FromDateTime(DateTime.Today);
         var age = today.Year - dob.Year;
 
-        // Check if birthday has occurred this year; if not, subtract one from age
         if (today.DayOfYear < dob.DayOfYear)
             age--;
 
