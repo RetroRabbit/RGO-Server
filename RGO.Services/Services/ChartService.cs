@@ -1,17 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.EntityFrameworkCore;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Reflection;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RGO.Services.Services;
 
@@ -55,7 +47,6 @@ public class ChartService : IChartService
                      {
                          throw new ArgumentException($"EmployeeDto does not have a DateOfBirth property.");
                      }
-
                      var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
                      var age = CalculateAge(dob);
                      keyBuilder.Append(age.ToString() + ", ");
@@ -106,11 +97,8 @@ public class ChartService : IChartService
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {
-
         var employees = await _employeeService.GetAll();
-      
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
-       
         var dataDictionary = employees
              .GroupBy(employee =>
              {
@@ -131,13 +119,11 @@ public class ChartService : IChartService
 
         var labels = dataDictionary.Keys.ToList();
         var data = dataDictionary.Values.ToList();
-
         var chartDataDto = new ChartDataDto
         {
             Labels = labels,
             Data = data
         };
-
         return chartDataDto;
     }
 
@@ -153,7 +139,6 @@ public class ChartService : IChartService
             .Where(chartData => chartData.Id == chartDto.Id)
             .Select(chartData => chartData)
             .FirstOrDefault();
-
         if (chartData == null) { throw new Exception("No chart data record found"); }
         var updatedChart = await _db.Chart.Update(new Chart(chartDto));
 
@@ -163,7 +148,6 @@ public class ChartService : IChartService
     public string[] GetColumnsFromTable()
     {
         var entityType = typeof(Employee);
-
         var quantifiableColumnNames = entityType.GetProperties()
             .Where(p => IsQuantifiableType(p.PropertyType) &&
                        !p.Name.Equals("Id") &&
@@ -172,29 +156,22 @@ public class ChartService : IChartService
                        !p.Name.Equals("PostalAddressId"))
             .Select(p => p.Name)
             .ToArray();
-
         quantifiableColumnNames = quantifiableColumnNames.Concat(new string[] { "Age" }).ToArray();
-
         return quantifiableColumnNames;
     }
 
     private bool IsQuantifiableType(Type type)
     {
         Type actualType = Nullable.GetUnderlyingType(type) ?? type;
-
         bool isQuantifiable = typeof(IConvertible).IsAssignableFrom(actualType) && actualType != typeof(string);
-
         return isQuantifiable;
     }
 
     public async Task<byte[]> ExportCsvAsync(List<string> dataTypes)
     {
         var employees = await _db.Employee.GetAll();
-
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
-
         var propertyNames = new List<string>();
-
         foreach (var typeName in dataTypeList)
         {
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
@@ -202,10 +179,8 @@ public class ChartService : IChartService
             {
                 throw new ArgumentException($"Invalid property name: {typeName}", nameof(dataTypeList));
             }
-
             propertyNames.Add(typeName);
         }
-
         var csvData = new StringBuilder();
         csvData.Append("First Name,Last Name");
         foreach (var propertyName in propertyNames)
@@ -213,24 +188,18 @@ public class ChartService : IChartService
             csvData.Append("," + propertyName);
         }
         csvData.AppendLine();
-
         foreach (var employee in employees)
         {
             var formattedData = $"{employee.Name},{employee.Surname}";
-
             foreach (var propertyName in propertyNames)
             {
                 var propertyInfo = typeof(EmployeeDto).GetProperty(propertyName);
                 var propertyValue = propertyInfo.GetValue(employee);
-
                 formattedData += $",{propertyValue}";
             }
-
             csvData.AppendLine(formattedData);
         }
-
         var csvContent = Encoding.UTF8.GetBytes(csvData.ToString());
-
         return csvContent;
     }
 
