@@ -29,6 +29,10 @@ public class EmployeeService : IEmployeeService
         if (exists) {
             throw new Exception("User already exists");
         }
+        if(employeeDto.EmployeeType == null)
+        {
+            throw new Exception("Employee type missing");
+        }
         Employee employee;
 
         try
