@@ -43,39 +43,39 @@ public class ChartService : IChartService
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
 
         var dataDictionary = employees
-     .GroupBy(employee =>
-     {
-         var keyBuilder = new StringBuilder();
-         foreach (var dataType in dataTypeList)
+         .GroupBy(employee =>
          {
-             if (dataType == "Age")
+             var keyBuilder = new StringBuilder();
+             foreach (var dataType in dataTypeList)
              {
-                 var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
-                 if (dobPropertyInfo == null)
+                 if (dataType == "Age")
                  {
-                     throw new ArgumentException($"EmployeeDto does not have a DateOfBirth property.");
-                 }
+                     var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
+                     if (dobPropertyInfo == null)
+                     {
+                         throw new ArgumentException($"EmployeeDto does not have a DateOfBirth property.");
+                     }
 
-                 var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
-                 var age = CalculateAge(dob);
-                 keyBuilder.Append(age.ToString() + ", ");
-             }
-             else
-             {
-                 var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
-                 if (propertyInfo == null)
-                 {
-                     throw new ArgumentException($"Invalid dataType: {dataType}");
+                     var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
+                     var age = CalculateAge(dob);
+                     keyBuilder.Append(age.ToString() + ", ");
                  }
-                 keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + ", ");
+                 else
+                 {
+                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                     if (propertyInfo == null)
+                     {
+                         throw new ArgumentException($"Invalid dataType: {dataType}");
+                     }
+                     keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + ", ");
+                 }
              }
-         }
-         if (keyBuilder.Length > 2)
-         {
-             keyBuilder.Length -= 2; 
-         }
-         return keyBuilder.ToString();
-     })
+             if (keyBuilder.Length > 2)
+             {
+                 keyBuilder.Length -= 2; 
+             }
+             return keyBuilder.ToString();
+         })
      .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
 
         var labels = dataDictionary.Keys.ToList();
