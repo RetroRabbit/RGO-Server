@@ -116,4 +116,18 @@ public class RoleAccessLinkService : IRoleAccessLinkService
         var roleAccessLink = _db.RoleAccessLink.Update(new RoleAccessLink(roleAccessLinkDto));
         return roleAccessLink;
     }
+
+    public async Task<List<RoleAccessLinkDto>> GetAllRoleAccessLink()
+    {
+        List<RoleAccessLinkDto> roleAccessLinks = await _db.RoleAccessLink
+            .Get()
+            .AsNoTracking()
+            .Include(r => r.Role)
+            .Include(r => r.RoleAccess)
+            .Select(x => x.ToDto())
+            .ToListAsync();
+
+        return roleAccessLinks;
+    }
+
 }

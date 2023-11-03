@@ -108,4 +108,52 @@ public class RoleManageController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getallroleaccesslinks")]
+    public async Task<IActionResult> GetAllRoleAccessLinks()
+    {
+        try
+        {
+            var roleAccessLink = await _roleAccessLinkService.GetAllRoleAccessLink();
+
+            return Ok(roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getallroleaccesses")]
+    public async Task<IActionResult> GetAllRoleAccesses()
+    {
+        try
+        {
+            var roleAccesses= await _roleAccessService.GetAllRoleAccess();
+
+            return Ok(roleAccesses);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getallroles")]
+    public async Task<IActionResult> GetAllRoles()
+    {
+        try
+        {
+            var roles = await _roleService.GetAll();
+
+            return Ok(roles);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }

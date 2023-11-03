@@ -64,4 +64,9 @@ public class RoleService : IRoleService
     {
         return _db.Role.Any(role => role.Description == name);
     }
+
+    public async Task<List<RoleDto>> GetAllRoles()
+    {
+        return await _db.Role.GetAll();
+    }
 }
