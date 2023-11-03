@@ -9,17 +9,17 @@ using Xunit;
 
 namespace RGO.Tests.Controllers;
 
-public class EmployeeControllerTests
+public class EmployeeControllerUnitTests
 {
     private readonly Mock<IEmployeeService> _employeeMockService;
     private readonly EmployeeController _controller;
     private readonly EmployeeDto _employee;
 
-    public EmployeeControllerTests()
+    public EmployeeControllerUnitTests()
     {
         _employeeMockService = new Mock<IEmployeeService>();
         _controller = new EmployeeController(_employeeMockService.Object);
-        _controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext()
+        _controller.ControllerContext = new ControllerContext()
         {
             HttpContext = new DefaultHttpContext { User = CreateClaimsPrincipal() }
         };
