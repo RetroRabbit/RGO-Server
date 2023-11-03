@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.App.Controllers;
 using RGO.Models;
 using RGO.Services.Interfaces;
-using System.Security.Claims;
 using Xunit;
 
-namespace RGO.Tests.Controllers;
+namespace RGO.App.Tests.Controllers;
 
 public class EmployeeControllerUnitTests
 {
@@ -19,29 +17,14 @@ public class EmployeeControllerUnitTests
     {
         _employeeMockService = new Mock<IEmployeeService>();
         _controller = new EmployeeController(_employeeMockService.Object);
-        _controller.ControllerContext = new ControllerContext()
-        {
-            HttpContext = new DefaultHttpContext { User = CreateClaimsPrincipal() }
-        };
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        EmployeeAddressDto employeeAddressDto = new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employee = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
                 null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Kamo", "K.G.",
                 "Smith", new DateOnly(), "South Africa", "South African", "1234457899", " ",
                 new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null!,
                 "ksmith@retrorabbit.co.za", "kmaosmith@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-    }
-
-    private ClaimsPrincipal CreateClaimsPrincipal()
-    {
-        Claim[] claims = new Claim[]
-        {
-            new Claim(ClaimTypes.Email, "test@example.com")
-        };
-
-        ClaimsIdentity identity = new ClaimsIdentity(claims, "TestAuthType");
-        return new ClaimsPrincipal(identity);
     }
 
     [Fact]
