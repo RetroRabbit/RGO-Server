@@ -22,6 +22,7 @@ namespace RGO.UnitOfWork
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<EmployeeType>().HasData(TestData.EmployeeTypeSet());
+            modelBuilder.Entity<Client>().HasData(TestData.ClientList());
             modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
             modelBuilder.Entity<Role>().HasData(TestData.RoleSet());
             modelBuilder.Entity<RoleAccess>().HasData(TestData.RoleAccessSet());
@@ -36,7 +37,6 @@ namespace RGO.UnitOfWork
             modelBuilder.Entity<EmployeeEvaluationRating>().HasData(TestData.EmployeeEvaluationRatingSet());
             modelBuilder.Entity<EmployeeEvaluationTemplate>().HasData(TestData.EmployeeEvaluationTemplateSet());
             modelBuilder.Entity<EmployeeEvaluationTemplateItem>().HasData(TestData.EmployeeEvaluationTemplateItemSet());
-            modelBuilder.Entity<Client>().HasData(TestData.ClientList());
             modelBuilder.Entity<EmployeeAddress>().HasData(TestData.EmployeeAddressSet());
         }
 
