@@ -17,8 +17,8 @@ public class EmployeeAddressService : IEmployeeAddressService
 
     public async Task<bool> CheckIfExitsts(EmployeeAddressDto employeeAddressDto)
     {
-        var exists = await _db.EmployeeAddress.GetById(employeeAddressDto.Id);
-        return exists != null;
+        var exists = await _db.EmployeeAddress.Any(employeeAddress => employeeAddress.Id == employeeAddressDto.Id);
+        return exists;
     }
 
     public async Task<EmployeeAddressDto> Delete(EmployeeAddressDto employeeAddressDto)
