@@ -19,4 +19,11 @@ public interface IEmployeeBankingService
     /// <param name="newEntry"></param>
     /// <returns></returns>
     Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry);
+
+    /// <summary>
+    /// Fetch banking of Employee
+    /// </summary>
+    /// <param id="employeeId"></param>
+    /// <returns>EmployeeBankingDto</returns>
+    Task<EmployeeBankingDto> GetBanking(int id);
 }

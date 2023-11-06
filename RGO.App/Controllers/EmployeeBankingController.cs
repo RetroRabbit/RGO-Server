@@ -49,4 +49,20 @@ public class EmployeeBankingController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getDetails")]
+    public async Task<IActionResult> GetBankingDetails([FromQuery] int id)
+    {
+        try
+        {
+            var employeeBanking = await _employeeBankingService.GetBanking(id);
+            return Ok(employeeBanking);
+        }
+
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }
