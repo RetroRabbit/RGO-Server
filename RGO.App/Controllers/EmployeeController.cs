@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using RGO.Models;
 using RGO.Services.Interfaces;
-using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
@@ -39,16 +37,11 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("get")]
-    public async Task<IActionResult> GetEmployee([FromQuery] string? email)
+    public async Task<IActionResult> GetEmployee([FromQuery] string email)
     {
         try
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-
-            string emailToUse = email ??
-                claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
-
-            var employee = await _employeeService.GetEmployee(emailToUse);
+            var employee = await _employeeService.GetEmployee(email);
 
             return Ok(employee);
         }
@@ -74,7 +67,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")] 
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("employees")]
     public async Task<IActionResult> GetAllEmployees()
     {
