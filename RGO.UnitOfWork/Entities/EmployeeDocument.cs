@@ -22,23 +22,23 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     public int? OnboardingDocumentId { get; set; }
 
     [Column("reference")]
-    public string Reference { get; set; }
+    public string? Reference { get; set; }
 
     [Column("fileName")]
     public string FileName { get; set; }
 
     [Column("blob")]
-    public byte[] Blob { get; set; }
+    public string Blob { get; set; }
 
     [Column("status")]
-    public ItemStatus Status { get; set; }
+    public ItemStatus? Status { get; set; }
 
     [Column("uploadDate")]
     public DateTime UploadDate { get; set; }
 
     public virtual Employee Employee { get; set; }
 
-    public virtual OnboardingDocument OnboardingDocument { get; set; }
+    public virtual OnboardingDocument? OnboardingDocument { get; set; }
 
     public EmployeeDocument() { }
 
@@ -46,7 +46,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     {
         Id = employeeDocumentsDto.Id;
         EmployeeId = employeeDocumentsDto.Employee!.Id;
-        OnboardingDocumentId = employeeDocumentsDto.OnboardingDocument!.Id;
+        OnboardingDocumentId = employeeDocumentsDto.OnboardingDocument?.Id;
         Reference = employeeDocumentsDto.Reference;
         FileName = employeeDocumentsDto.FileName;
         Blob = employeeDocumentsDto.Blob;

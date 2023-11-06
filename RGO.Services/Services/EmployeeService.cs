@@ -26,10 +26,11 @@ public class EmployeeService : IEmployeeService
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
     {
         bool exists = await CheckUserExist(employeeDto.Email);
-        if (exists) {
+        if (exists)
+        {
             throw new Exception("User already exists");
         }
-        if(employeeDto.EmployeeType == null)
+        if (employeeDto.EmployeeType == null)
         {
             throw new Exception("Employee type missing");
         }
@@ -67,7 +68,8 @@ public class EmployeeService : IEmployeeService
         if (!physicalAddressExist)
         {
             physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
-        } else
+        }
+        else
         {
             physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
         }
@@ -77,7 +79,8 @@ public class EmployeeService : IEmployeeService
         if (employeeDto.PhysicalAddress == employeeDto.PostalAddress)
         {
             employee.PostalAddressId = physicalAddress.Id;
-        } else
+        }
+        else
         {
             bool postalAddressExist = await _employeeAddressService
             .CheckIfExitsts(employeeDto.PostalAddress!);
@@ -169,12 +172,19 @@ public class EmployeeService : IEmployeeService
                 properties.Persistent = true;
 
                 channel.QueueDeclare(QueueName, durable: true, exclusive: false, autoDelete: false, null);
-                channel.BasicPublish(string.Empty, QueueName, properties, body); 
+                channel.BasicPublish(string.Empty, QueueName, properties, body);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
+    }
+
+    public async Task<EmployeeDto?> GetById(int employeeId)
+    {
+        var employee = await _db.Employee.GetById(employeeId);
+
+        return employee;
     }
 }

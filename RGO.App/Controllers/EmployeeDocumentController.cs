@@ -29,8 +29,9 @@ namespace RGO.App.Controllers
                 return StatusCode(500, "An error occurred while fetching employee documents.");
             }
         }
+
         [HttpPost("save")]
-        public async Task<IActionResult> Save([FromBody] EmployeeDocumentDto employeeDocumentDto)
+        public async Task<IActionResult> Save([FromBody] EmployeeDocDto employeeDocumentDto)
         {
             try
             {
@@ -42,6 +43,7 @@ namespace RGO.App.Controllers
                 return StatusCode(500, "An error occurred while saving the employee document.");
             }
         }
+
         [HttpGet("get/{employeeId}/{filename}")]
         public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename)
         {
