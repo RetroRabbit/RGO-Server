@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.App.Controllers;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using System.Security.Claims;
 using Xunit;
 
 namespace RGO.App.Tests.Controllers;
@@ -25,6 +27,25 @@ public class EmployeeControllerUnitTests
                 "Smith", new DateOnly(), "South Africa", "South African", "1234457899", " ",
                 new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null!,
                 "ksmith@retrorabbit.co.za", "kmaosmith@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+    }
+
+    private ClaimsPrincipal SetupClaimsProncipal(string email)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, email)
+        };
+
+        var identity = new ClaimsIdentity(claims, "Test");
+        var claimsPrincipal = new ClaimsPrincipal(identity);
+
+        return claimsPrincipal;
+    }
+
+    private void SetupControllerContext(EmployeeController controller, ClaimsPrincipal principal)
+    {
+        var context = new DefaultHttpContext { User = principal };
+        controller.ControllerContext = new ControllerContext { HttpContext = context };
     }
 
     [Fact]
@@ -66,8 +87,26 @@ public class EmployeeControllerUnitTests
     }
 
     [Fact]
+    public async Task GetEmployeeWithClaimTest()
+    {
+        var principal = SetupClaimsProncipal(_employee.Email);
+        SetupControllerContext(_controller, principal);
+
+        _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
+            .ReturnsAsync(_employee);
+
+        var result = await _controller.GetEmployee(null);
+
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okObjectResult.StatusCode);
+    }
+
+    [Fact]
     public async Task GetEmployeeSuccessTest()
     {
+        var principal = SetupClaimsProncipal(_employee.Email);
+        SetupControllerContext(_controller, principal);
+
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
             .ReturnsAsync(_employee);
 
@@ -81,6 +120,9 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetEmployeeFailTest()
     {
+        var principal = SetupClaimsProncipal(_employee.Email);
+        SetupControllerContext(_controller, principal);
+
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
             .ThrowsAsync(new Exception("Not found"));
 
