@@ -20,7 +20,7 @@ public class RoleAccessServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _roleAccessService = new RoleAccessService(_dbMock.Object);
-        _roleAccessDto = new RoleAccessDto(1, "ViewEmplopyee");
+        _roleAccessDto = new RoleAccessDto(1, "ViewEmplopyee", "Employee Data");
     }
 
     [Fact]
