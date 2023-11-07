@@ -46,6 +46,8 @@ public interface IEmployeeService
     /// <returns></returns>
     Task<EmployeeDto> DeleteEmployee(string email);
 
+    Task<List<EmployeeDto>> GetEmployeesByType(string type);
+
     /// <summary>
     /// Get employee by the id
     /// </summary>

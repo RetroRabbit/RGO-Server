@@ -104,4 +104,23 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("employees/filterbytype")]
+    public async Task<IActionResult> FilterByType(string type)
+    {
+        try
+        {
+            var employees= await _employeeService.GetEmployeesByType(type);
+
+            return Ok(employees);
+            
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+            
+        }
+    }
+
 }
