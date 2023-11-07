@@ -9,29 +9,35 @@ namespace RGO.Services.Services
     public class EmployeeDocumentService : IEmployeeDocumentService
     {
         private readonly IUnitOfWork _db;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeeDocumentService(IUnitOfWork db)
+        public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService)
         {
             _db = db;
+            _employeeService = employeeService;
         }
 
-        public async Task<EmployeeDocumentDto> SaveEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
+        public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto)
         {
-            var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);
 
-            if (!ifEmployee) { throw new Exception("Employee not found"); }
+            var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
 
-            EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
-            var existingDocument = await _db.EmployeeDocument
-                .Get(employeeDocument => employeeDocument.EmployeeId == employeeDocumentDto.Employee.Id)
-                .AsNoTracking()
-                .Include(employeeDocument => employeeDocument.Employee)
-                .Select(employeeDocument => employeeDocument.ToDto())
-                .Take(1)
-                .FirstOrDefaultAsync();
+            if (employee == null)
+            {
+                throw new Exception("employee not found");
+            }
 
-            if (existingDocument != null) { throw new Exception("Existing employee certification record found"); }
-            var newRmployeeDocument = await _db.EmployeeDocument.Add(employeeDocument);
+            EmployeeDocumentDto employeeDocument = new EmployeeDocumentDto(
+               employeeDocDto.Id,
+               employee,
+               null,
+               null,
+               employeeDocDto.FileName,
+               employeeDocDto.File,
+               null,
+               DateTime.Now) ;
+
+            var newRmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
             return newRmployeeDocument;
         }

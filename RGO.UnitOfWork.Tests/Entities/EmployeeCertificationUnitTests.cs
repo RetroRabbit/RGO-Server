@@ -25,7 +25,7 @@ public class EmployeeCertificationUnitTests
 
         _onboardingDocument = new OnboardingDocumentDto(0, "Title", "Description", "FileName", new byte[] { 0 }, Models.Enums.ItemStatus.Active);
 
-        _employeeDocument = new EmployeeDocumentDto(1, _employee, _onboardingDocument, "CVE256", "Holysee", Encoding.UTF8.GetBytes("Picture"), ItemStatus.Active, DateTime.Now);
+        _employeeDocument = new EmployeeDocumentDto(1, _employee, _onboardingDocument, "CVE256", "Holysee", "Picture", ItemStatus.Active, DateTime.Now);
     }
 
     public EmployeeCertification CreateEmployeeCertification(EmployeeDto? employee = null, EmployeeDocumentDto? employeeDocument = null, EmployeeDto? auditBy = null)

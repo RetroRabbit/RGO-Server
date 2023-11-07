@@ -6,8 +6,8 @@ public record EmployeeDocumentDto(
     int Id,
     EmployeeDto? Employee,
     OnboardingDocumentDto? OnboardingDocument,
-    string Reference,
+    string? Reference,
     string FileName,
-    byte[] Blob,
-    ItemStatus Status,
+    string Blob,
+    ItemStatus? Status,
     DateTime UploadDate);
