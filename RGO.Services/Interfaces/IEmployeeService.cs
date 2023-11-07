@@ -46,5 +46,10 @@ public interface IEmployeeService
     /// <returns></returns>
     Task<EmployeeDto> DeleteEmployee(string email);
 
+    /// <summary>
+    /// Get employee by the id
+    /// </summary>
+    /// <param name="employeeId"></param>
+    /// <returns></returns>
     Task<EmployeeDto> GetById(int employeeId);
 }
