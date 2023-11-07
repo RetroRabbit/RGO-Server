@@ -19,7 +19,6 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDocumentDto> SaveEmployeeDocument(EmployeeDocDto employeeDocDto)
         {
-            /* var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);*/
 
             var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
 
@@ -38,10 +37,6 @@ namespace RGO.Services.Services
                null,
                DateTime.Now) ;
 
-//            bool existingDocument = await _db.EmployeeDocument
-//                .Any(employeeDocument => employeeDocument.EmployeeId == employee.Id);
-
-//            if (existingDocument) { throw new Exception("Existing employee certification record found"); }
             var newRmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
             return newRmployeeDocument;
