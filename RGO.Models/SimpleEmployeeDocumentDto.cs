@@ -8,7 +8,7 @@ using RGO.Models.Enums;
 
 namespace RGO.Models;
 
-public record EmployeeDocDto(
+public record SimpleEmployeeDocumentDto(
     int Id,
     int EmployeeId,
     string FileName,

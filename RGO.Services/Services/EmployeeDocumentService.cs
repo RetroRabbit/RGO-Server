@@ -17,7 +17,7 @@ namespace RGO.Services.Services
             _employeeService = employeeService;
         }
 
-        public async Task<EmployeeDocumentDto> SaveEmployeeDocument(EmployeeDocDto employeeDocDto)
+        public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto)
         {
 
             var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);

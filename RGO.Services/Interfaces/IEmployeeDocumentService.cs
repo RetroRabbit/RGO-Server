@@ -14,7 +14,7 @@ namespace RGO.Services.Interfaces
         /// </summary>
         /// <param name="employeeDocumentDto"></param>
         /// <returns>Employee Document</returns>
-        Task<EmployeeDocumentDto> SaveEmployeeDocument(EmployeeDocDto employeeDocumentDto);
+        Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocumentDto);
 
         /// <summary>
         /// Get Employee Document

@@ -31,7 +31,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> Save([FromBody] EmployeeDocDto employeeDocumentDto)
+        public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
         {
             try
             {
