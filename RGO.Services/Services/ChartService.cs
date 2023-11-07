@@ -51,6 +51,20 @@ public class ChartService : IChartService
                      var age = CalculateAge(dob);
                      keyBuilder.Append(age.ToString() + ", ");
                  }
+                 else if (dataType == "PeopleChampion")
+                 {
+                     var peopleChampionIdProperty = typeof(EmployeeDto).GetProperty("PeopleChampion");
+                     if (peopleChampionIdProperty == null)
+                     {
+                         throw new ArgumentException($"EmployeeDto does not have a PeopleChampionId property.");
+                     }
+
+                     var peopleChampionId = (int)peopleChampionIdProperty.GetValue(employee);
+                     var peopleChampionTask = _employeeService.GetById(peopleChampionId);
+                     var peopleChampion = peopleChampionTask.GetAwaiter().GetResult();
+                     var peopleChampionName = peopleChampion.Name;
+                     keyBuilder.Append(peopleChampionName +' '+ peopleChampion.Surname + ", ");
+                 }
                  else
                  {
                      var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
@@ -153,7 +167,10 @@ public class ChartService : IChartService
                        !p.Name.Equals("Id") &&
                        !p.Name.Equals("EmployeeTypeId") &&
                        !p.Name.Equals("PhysicalAddressId") &&
-                       !p.Name.Equals("PostalAddressId"))
+                       !p.Name.Equals("PostalAddressId") &&
+                       !p.Name.Equals("ClientAllocated") &&
+                       !p.Name.Equals("TeamLead")) 
+
             .Select(p => p.Name)
             .ToArray();
         quantifiableColumnNames = quantifiableColumnNames.Concat(new string[] { "Age" }).ToArray();
