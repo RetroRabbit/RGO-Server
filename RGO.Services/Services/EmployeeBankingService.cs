@@ -90,4 +90,15 @@ public class EmployeeBankingService : IEmployeeBankingService
         if (employeeBanking == null) { throw new Exception("Employee certification record not found"); }
         return employeeBanking;
     }
+
+    public async Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry)
+    { 
+        EmployeeBanking bankingDetails;
+
+        bankingDetails = new EmployeeBanking(newEntry);
+
+        EmployeeBankingDto newEntryDto = await _db.EmployeeBanking.Add(bankingDetails);
+
+        return newEntryDto;
+    }
 }

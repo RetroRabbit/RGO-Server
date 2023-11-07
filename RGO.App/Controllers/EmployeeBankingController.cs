@@ -17,6 +17,25 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpPost("add")]
+    public async Task<IActionResult> AddBankingInfo([FromBody] EmployeeBankingDto newEntry)
+    {
+        try
+        {
+            var employee = await _employeeBankingService.Save(newEntry);
+            return Ok(newEntry);
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("exists"))
+            {
+                return Problem("Unexceptable", "Unexceptable", 406, "Details Already Exist");
+            }
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> Get([FromQuery] int status)
     {
