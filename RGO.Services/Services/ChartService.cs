@@ -172,8 +172,19 @@ public class ChartService : IChartService
         var employees = await _db.Employee.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
         var propertyNames = new List<string>();
+
+        if (dataTypeList.Contains("Age"))
+        {
+            propertyNames.Add("Age");
+        }
+
         foreach (var typeName in dataTypeList)
         {
+            if (typeName == "Age")
+            {
+                continue;
+            }
+
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
             if (propertyInfo == null)
             {
@@ -181,6 +192,7 @@ public class ChartService : IChartService
             }
             propertyNames.Add(typeName);
         }
+
         var csvData = new StringBuilder();
         csvData.Append("First Name,Last Name");
         foreach (var propertyName in propertyNames)
@@ -193,14 +205,28 @@ public class ChartService : IChartService
             var formattedData = $"{employee.Name},{employee.Surname}";
             foreach (var propertyName in propertyNames)
             {
-                var propertyInfo = typeof(EmployeeDto).GetProperty(propertyName);
-                var propertyValue = propertyInfo.GetValue(employee);
-                formattedData += $",{propertyValue}";
+                if (propertyName == "Age")
+                {
+                    var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
+                    if (dobPropertyInfo == null)
+                    {
+                        throw new ArgumentException($"EmployeeDto does not have a DateOfBirth property.");
+                    }
+                    var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
+                    var age = CalculateAge(dob);
+                    formattedData += $",{age}";
+                }
+                else
+                {
+                    var propertyInfo = typeof(EmployeeDto).GetProperty(propertyName);
+                    var propertyValue = propertyInfo.GetValue(employee);
+                    formattedData += $",{propertyValue}";
+                }
             }
             csvData.AppendLine(formattedData);
         }
+
         var csvContent = Encoding.UTF8.GetBytes(csvData.ToString());
         return csvContent;
     }
-
 }

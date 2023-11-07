@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RGO.Models;
@@ -176,5 +177,14 @@ public class EmployeeService : IEmployeeService
         {
             Console.WriteLine(ex.Message);
         }
+    }
+    public async Task<List<EmployeeDto>> GetEmployeesByType(string type)
+    {
+        var employees = await _db.Employee.Get(employee => employee.EmployeeType.Name == type).AsNoTracking()
+            .Include(employee => employee.EmployeeType)
+            .Include(employee => employee.PhysicalAddress)
+            .Include(employee => employee.PostalAddress).Select(employee=>employee.ToDto()).ToListAsync();
+
+        return employees;
     }
 }
