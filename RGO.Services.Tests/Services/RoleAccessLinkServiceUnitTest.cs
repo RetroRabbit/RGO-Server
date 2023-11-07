@@ -1,13 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Linq.Expressions;
+using System.Security.AccessControl;
+using System.Text.RegularExpressions;
 using Xunit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Xunit.Abstractions;
 
 namespace RGO.Tests.Services;
 
@@ -301,4 +307,30 @@ public class RoleAccessLinkServiceUnitTest
         Assert.Equal(_roleAccessLinkDto, result);
         _dbMock.Verify(r => r.RoleAccessLink.Update(It.IsAny<RoleAccessLink>()), Times.Once);
     }
+
+    [Fact]
+    public async Task GetAllRoleAccessLink_ReturnsRoleAccessLinks()
+    {
+     
+        var roleAccessLinkData = new List<RoleAccessLink>
+        {
+
+            new RoleAccessLink { Id = 1, Role = new Role { Id = 1, Description = "Employee" }, RoleAccess = new RoleAccess { Id = 1, Permission = "ViewEmployee" } },
+            new RoleAccessLink { Id = 2, Role = new Role { Id = 1, Description = "Employee" }, RoleAccess = new RoleAccess { Id = 2, Permission = "EditEmployee" } }
+        }.AsQueryable().BuildMock();
+
+        _dbMock
+            .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
+            .Returns(roleAccessLinkData);
+
+        List<RoleAccessLinkDto> employeeEvaluationTemplateItems = await _roleAccessLinkService.GetAllRoleAccessLink();
+
+        Assert.Equal("Employee", employeeEvaluationTemplateItems[0].Role.Description);
+        Assert.Equal("ViewEmployee", employeeEvaluationTemplateItems[0].RoleAccess.Permission);
+
+       
+        Assert.Equal("Employee", employeeEvaluationTemplateItems[1].Role.Description);
+        Assert.Equal("EditEmployee", employeeEvaluationTemplateItems[1].RoleAccess.Permission);
+    }
 }
+
