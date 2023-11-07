@@ -38,10 +38,10 @@ namespace RGO.Services.Services
                null,
                DateTime.Now) ;
 
-            bool existingDocument = await _db.EmployeeDocument
-                .Any(employeeDocument => employeeDocument.EmployeeId == employee.Id);
+//            bool existingDocument = await _db.EmployeeDocument
+//                .Any(employeeDocument => employeeDocument.EmployeeId == employee.Id);
 
-            if (existingDocument) { throw new Exception("Existing employee certification record found"); }
+//            if (existingDocument) { throw new Exception("Existing employee certification record found"); }
             var newRmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
             return newRmployeeDocument;
