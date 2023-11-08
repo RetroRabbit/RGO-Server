@@ -51,4 +51,10 @@ public interface IRoleAccessLinkService
     /// <param name="email"></param>
     /// <returns></returns>
     Task<Dictionary<string, List<string>>> GetRoleByEmployee(string email);
+
+    /// <summary>
+    /// Get All RoleAccess Links
+    /// </summary>
+    /// <returns>RoleAccessLinkDto</returns>
+    Task<List<RoleAccessLinkDto>> GetAllRoleAccessLink();
 }

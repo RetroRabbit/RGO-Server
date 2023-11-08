@@ -15,18 +15,23 @@ public class RoleAccess : IModel<RoleAccessDto>
     [Column("permission")]
     public string Permission { get; set; }
 
+    [Column("grouping")]
+    public string Grouping { get; set; }
+
     public RoleAccess() { }
 
     public RoleAccess(RoleAccessDto roleAccessDto)
     {
         Id = roleAccessDto.Id;
         Permission = roleAccessDto.Permission;
+        Grouping = roleAccessDto.Grouping;
     }
 
     public RoleAccessDto ToDto()
     {
         return new RoleAccessDto(
             Id,
-            Permission);
+            Permission,
+            Grouping);
     }
 }

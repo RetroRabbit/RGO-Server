@@ -18,7 +18,7 @@ public class RoleAccessLinkUnitTests
     public async Task roleAccessLinkToDtoTest()
     {
         RoleDto roleDto = new RoleDto(1, "Employee");
-        RoleAccessDto roleAccessDto = new RoleAccessDto(1, "ViewEmployee");
+        RoleAccessDto roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
         
         RoleAccessLinkDto roleAccessLinkDto = new RoleAccessLinkDto(
             1,
@@ -37,7 +37,7 @@ public class RoleAccessLinkUnitTests
     public async Task roleAccessLinkToDtoNullTest()
     {
         RoleDto roleDto = new RoleDto(1, "Employee");
-        RoleAccessDto roleAccessDto = new RoleAccessDto(1, "ViewEmployee");
+        RoleAccessDto roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
 
         RoleAccessLinkDto roleAccessLinkDto = new RoleAccessLinkDto(
             1,

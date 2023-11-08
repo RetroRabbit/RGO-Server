@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork.Entities;
+using System.Linq;
 using System.Security;
 
 namespace RGO.App.Controllers;
@@ -27,7 +28,7 @@ public class RoleManageController : ControllerBase
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost("add")]
-    public async Task<IActionResult> AddPermission([FromQuery] string role, [FromQuery] string permission)
+    public async Task<IActionResult> AddPermission([FromQuery] string role, [FromQuery] string permission, [FromQuery] string grouping)
     {
         try
         {
@@ -37,7 +38,7 @@ public class RoleManageController : ControllerBase
 
             var roleAccess = await _roleAccessService.CheckRoleAccess(permission) ?
                 await _roleAccessService.GetRoleAccess(permission) :
-                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission));
+                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission, grouping));
 
             var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto(0, foundRole, roleAccess));
 
@@ -53,7 +54,7 @@ public class RoleManageController : ControllerBase
     [ProducesResponseType(typeof(RoleAccessLinkDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
     [HttpDelete("remove")]
-    public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission)
+    public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission , string grouping)
     {
         try
         {
@@ -63,7 +64,7 @@ public class RoleManageController : ControllerBase
 
             var roleAccess = await _roleAccessService.CheckRoleAccess(permission) ?
                 await _roleAccessService.GetRoleAccess(permission) :
-                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission));
+                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission, grouping));
 
             var roleAccessLink = await _roleAccessLinkService.Delete(role, permission);
 
@@ -102,6 +103,54 @@ public class RoleManageController : ControllerBase
             var roleAccessLink = await _roleAccessLinkService.GetAll();
 
             return Ok(roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getallroleaccesslinks")]
+    public async Task<IActionResult> GetAllRoleAccessLinks()
+    {
+        try
+        {
+            var roleAccessLink = await _roleAccessLinkService.GetAllRoleAccessLink();
+
+            return Ok(roleAccessLink);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getallroleaccesses")]
+    public async Task<IActionResult> GetAllRoleAccesses()
+    {
+        try
+        {
+            var roleAccesses= await _roleAccessService.GetAllRoleAccess();
+
+            return Ok(roleAccesses);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("getallroles")]
+    public async Task<IActionResult> GetAllRoles()
+    {
+        try
+        {
+            var roles = await _roleService.GetAll();
+
+            return Ok(roles);
         }
         catch (Exception ex)
         {
