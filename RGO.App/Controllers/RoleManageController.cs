@@ -38,7 +38,7 @@ public class RoleManageController : ControllerBase
 
             var roleAccess = await _roleAccessService.CheckRoleAccess(permission) ?
                 await _roleAccessService.GetRoleAccess(permission) :
-                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission,grouping));
+                await _roleAccessService.SaveRoleAccess(new RoleAccessDto(0, permission, grouping));
 
             var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto(0, foundRole, roleAccess));
 
