@@ -2,4 +2,5 @@
 
 public record RoleAccessDto(
     int Id,
-    string Permission);
+    string Permission,
+    string Grouping);

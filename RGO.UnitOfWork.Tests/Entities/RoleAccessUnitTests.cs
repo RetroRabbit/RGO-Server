@@ -17,7 +17,7 @@ public class RoleAccessUnitTests
     [Fact]
     public async Task roleAccessTodtoTest()
     {
-        var roleAccess = new RoleAccess(new RoleAccessDto(1, "ViewEmployee"));
+        var roleAccess = new RoleAccess(new RoleAccessDto(1, "ViewEmployee", "Employee Data"));
         Assert.IsType<RoleAccessDto>(roleAccess.ToDto());
         Assert.NotNull(roleAccess.ToDto());
     }
