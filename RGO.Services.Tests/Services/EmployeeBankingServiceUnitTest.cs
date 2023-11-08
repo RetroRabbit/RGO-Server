@@ -15,7 +15,7 @@ using MockQueryable.Moq;
 namespace RGO.Services.Tests;
 public class EmployeeBankingServiceTest
 {
-    /*private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Mock<IEmployeeBankingService> _employeeBankingService;
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private EmployeeBankingService employeeBankingService;
@@ -157,6 +157,6 @@ public class EmployeeBankingServiceTest
         var result = await employeeBankingService.Update(test1);
 
         Assert.Equal(test1, result);
-    }*/
+    }
 }
 
