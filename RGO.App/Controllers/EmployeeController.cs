@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using System.Security.Claims;
@@ -74,7 +73,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")] 
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("employees")]
     public async Task<IActionResult> GetAllEmployees()
     {
@@ -105,4 +104,23 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("employees/filterbytype")]
+    public async Task<IActionResult> FilterByType(string type)
+    {
+        try
+        {
+            var employees= await _employeeService.GetEmployeesByType(type);
+
+            return Ok(employees);
+            
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+            
+        }
+    }
+
 }
