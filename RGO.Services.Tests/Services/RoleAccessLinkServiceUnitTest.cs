@@ -32,7 +32,7 @@ public class RoleAccessLinkServiceUnitTest
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object);
         _roleDto = new RoleDto(1, "Employee");
-        _roleAccessDto = new RoleAccessDto(1, "ViewEmployee","Employee Data");
+        _roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
         _roleAccessLinkDto = new RoleAccessLinkDto(1, _roleDto, _roleAccessDto);
     }
 
