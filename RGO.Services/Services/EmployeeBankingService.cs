@@ -77,4 +77,28 @@ public class EmployeeBankingService : IEmployeeBankingService
 
         return newEntry;
     }
+
+    public async Task<EmployeeBankingDto> GetBanking(int employeeId)
+    {
+        var employeeBanking = await _db.EmployeeBanking
+            .Get(employeeBanking => employeeBanking.EmployeeId == employeeId)
+            .AsNoTracking()
+            .Include(employeeBanking => employeeBanking.Employee)
+            .Select(employeeBanking => employeeBanking.ToDto())
+            .FirstOrDefaultAsync();
+
+        if (employeeBanking == null) { throw new Exception("Employee certification record not found"); }
+        return employeeBanking;
+    }
+
+    public async Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry)
+    { 
+        EmployeeBanking bankingDetails;
+
+        bankingDetails = new EmployeeBanking(newEntry);
+
+        EmployeeBankingDto newEntryDto = await _db.EmployeeBanking.Add(bankingDetails);
+
+        return newEntryDto;
+    }
 }
