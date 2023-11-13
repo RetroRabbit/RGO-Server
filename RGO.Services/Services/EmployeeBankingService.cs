@@ -93,7 +93,7 @@ public class EmployeeBankingService : IEmployeeBankingService
         }
         catch (Exception ex)
         {
-            throw new Exception("Employee certification record not found");
+            throw new Exception("Employee banking details not found");
         }
     }
 
