@@ -228,7 +228,6 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
                        .Returns((IQueryable<EmployeeBanking>)null);
 
-        // Act and Assert
         await Assert.ThrowsAsync<Exception>(async () => await employeeBankingService.GetBanking(employeeId));
     }
 
