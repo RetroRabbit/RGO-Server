@@ -23,7 +23,7 @@ public class EmployeeControllerUnitTests
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
         EmployeeAddressDto employeeAddressDto = new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employee = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Ms", "Kamo", "K.G.",
+                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Kamo", "K.G.",
                 "Smith", new DateOnly(), "South Africa", "South African", "1234457899", " ",
                 new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null!,
                 "ksmith@retrorabbit.co.za", "kmaosmith@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
