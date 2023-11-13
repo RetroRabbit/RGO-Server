@@ -217,7 +217,6 @@ public class EmployeeBankingServiceTest
     [Fact]
     public async Task GetBankingFail()
     {
-        // Arrange
         int employeeId = 2;
 
         var expectedBankingDto = new EmployeeBankingDto(
