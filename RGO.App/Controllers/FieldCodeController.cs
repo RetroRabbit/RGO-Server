@@ -77,12 +77,12 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("getCategory")]
-        public async Task<IActionResult> GetByCategory([FromQuery] int index)
+        [HttpGet("category")]
+        public async Task<IActionResult> GetByCategory([FromQuery] int category)
         {
             try
             {
-                var categoryCodes = await _fieldCodeService.GetByCategory(index);
+                var categoryCodes = await _fieldCodeService.GetByCategory(category);
                 return Ok(categoryCodes);
             }
             catch (Exception ex)
