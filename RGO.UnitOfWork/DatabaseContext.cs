@@ -23,7 +23,6 @@ namespace RGO.UnitOfWork
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<EmployeeType>().HasData(TestData.EmployeeTypeSet());
             modelBuilder.Entity<Client>().HasData(TestData.ClientList());
-            modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
             modelBuilder.Entity<Role>().HasData(TestData.RoleSet());
             modelBuilder.Entity<RoleAccess>().HasData(TestData.RoleAccessSet());
             modelBuilder.Entity<RoleAccessLink>().HasData(TestData.RoleAccessLinkSet());
@@ -31,13 +30,14 @@ namespace RGO.UnitOfWork
             modelBuilder.Entity<FieldCode>().HasData(TestData.FieldCodeSet());
             modelBuilder.Entity<FieldCodeOptions>().HasData(TestData.FieldCodeOptionSet());
             modelBuilder.Entity<PropertyAccess>().HasData(TestData.PropertyAccessSet());
-            modelBuilder.Entity<EmployeeData>().HasData(TestData.EmployeeDataSet());
             modelBuilder.Entity<EmployeeEvaluation>().HasData(TestData.EmployeeEvaluationSet());
             modelBuilder.Entity<EmployeeEvaluationAudience>().HasData(TestData.EmployeeEvaluationAudienceSet());
             modelBuilder.Entity<EmployeeEvaluationRating>().HasData(TestData.EmployeeEvaluationRatingSet());
             modelBuilder.Entity<EmployeeEvaluationTemplate>().HasData(TestData.EmployeeEvaluationTemplateSet());
             modelBuilder.Entity<EmployeeEvaluationTemplateItem>().HasData(TestData.EmployeeEvaluationTemplateItemSet());
             modelBuilder.Entity<EmployeeAddress>().HasData(TestData.EmployeeAddressSet());
+            modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
+            modelBuilder.Entity<EmployeeData>().HasData(TestData.EmployeeDataSet());
         }
 
         public DbSet<Employee> employees { get; set; }
