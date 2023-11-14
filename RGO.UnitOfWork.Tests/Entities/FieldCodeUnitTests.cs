@@ -30,5 +30,6 @@ public class FieldCodeUnitTests
         Assert.Equal(dto.Status, fieldCode.Status);
         Assert.Equal(dto.Internal, fieldCode.Internal);
         Assert.Equal(dto.InternalTable, fieldCode.InternalTable);
+        Assert.Equal(dto.Category, fieldCode.Category);
     }
 }
