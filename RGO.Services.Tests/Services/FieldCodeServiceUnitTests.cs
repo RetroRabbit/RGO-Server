@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MockQueryable.Moq;
 using Moq;
 using RGO.Models;
 using RGO.Models.Enums;
@@ -6,7 +7,9 @@ using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Linq.Expressions;
 using Xunit;
+using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace RGO.Tests.Services
 {
@@ -35,7 +38,8 @@ namespace RGO.Tests.Services
                 Type: FieldCodeType.String,
                 Status: ItemStatus.Active,
                 Internal: false,
-                InternalTable: ""
+                InternalTable:"",
+                Category: FieldCodeCategory.Profile
                 );
             _fieldCodeDto2 = new FieldCodeDto(
                Id: 2,
@@ -46,7 +50,8 @@ namespace RGO.Tests.Services
                Type: FieldCodeType.String,
                Status: ItemStatus.Archive,
                Internal: false,
-               InternalTable: ""
+               InternalTable:"", 
+               Category: FieldCodeCategory.Profile
                );
             _fieldCodeDto3 = new FieldCodeDto(
                Id: 0,
@@ -57,7 +62,8 @@ namespace RGO.Tests.Services
                Type: FieldCodeType.String,
                Status: ItemStatus.Active,
                Internal: false,
-               InternalTable: ""
+               InternalTable:"", 
+               Category: FieldCodeCategory.Banking
                );
             _fieldCodeDto4 = new FieldCodeDto(
                 Id: 1,
@@ -68,7 +74,8 @@ namespace RGO.Tests.Services
                 Type: FieldCodeType.String,
                 Status: ItemStatus.Archive,
                 Internal: false,
-                InternalTable: ""
+                InternalTable:"", 
+                Category: FieldCodeCategory.Documents
                 );
             _fieldCodeOptionsDto = new FieldCodeOptionsDto(Id: 1, FieldCodeId: 1, Option: "string");
             _fieldCodeOptionsDto2 = new FieldCodeOptionsDto(Id: 2, FieldCodeId: 1, Option: "string");
@@ -142,7 +149,7 @@ namespace RGO.Tests.Services
         {
             List<FieldCodeDto> fields = new List<FieldCodeDto>() { _fieldCodeDto };
             _dbMock.Setup(x => x.FieldCode.GetAll(null)).Returns(Task.FromResult(fields));
-            
+
             _dbMock.Setup(x => x.FieldCode.Update(It.IsAny<FieldCode>()))
                 .Returns(Task.FromResult(_fieldCodeDto4));
 
@@ -152,6 +159,64 @@ namespace RGO.Tests.Services
             _dbMock.Verify(r => r.FieldCode.Update(It.IsAny<FieldCode>()), Times.Once);
         }
 
+        [Fact]
+        public async Task GetByCategoryPass()
+        {
+            var fieldCodes = new List<FieldCode>
+            {
+                    new FieldCode(_fieldCodeDto),
+                    new FieldCode(_fieldCodeDto2)
+            };
 
+            _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
+           .Returns(fieldCodes.AsQueryable().BuildMock());
+
+            int category = 0;
+
+            var result = await _fieldCodeService.GetByCategory(category);
+
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+
+            fieldCodes = new List<FieldCode>
+            {
+                    new FieldCode(_fieldCodeDto3)
+            };
+
+            _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
+           .Returns(fieldCodes.AsQueryable().BuildMock());
+
+            category = 1;
+
+            result = await _fieldCodeService.GetByCategory(category);
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Count);
+
+            fieldCodes = new List<FieldCode>
+            {
+                    new FieldCode(_fieldCodeDto4)
+            };
+
+            _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
+           .Returns(fieldCodes.AsQueryable().BuildMock());
+
+            category = 2;
+
+            result = await _fieldCodeService.GetByCategory(category);
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Count);
+        }
+
+        [Fact]
+        public async Task GetByCategoryFail()
+        {
+            int invalid = 3;
+            await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.GetByCategory(invalid));
+
+            invalid = -1;
+            await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.GetByCategory(invalid));
+        }
     }
 }

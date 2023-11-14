@@ -1,4 +1,5 @@
 ﻿using RGO.Models;
+using RGO.Models.Enums;
 using RGO.UnitOfWork.Entities;
 
 namespace RGO.Services.Interfaces
@@ -38,5 +39,12 @@ namespace RGO.Services.Interfaces
         /// <param name="fieldCodeDto"></param>
         /// <returns></returns>
         Task<FieldCodeDto> DeleteFieldCode(FieldCodeDto fieldCodeDto);
+
+        /// <summary>
+        /// Get a list of field codes based on category
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <returns>List of fieldCodes based on category</returns>
+        Task<List<FieldCodeDto>> GetByCategory(int categoryIndex);
     }
 }

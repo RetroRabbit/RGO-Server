@@ -12,7 +12,7 @@ public class PropertyAccessUnitTests
     public PropertyAccessUnitTests()
     {
         _role = new RoleDto(0, "Role");
-        _fieldCode = new FieldCodeDto(0, "email01", "Email", "desciption", "@(\\w+).co.za", Models.Enums.FieldCodeType.String, Models.Enums.ItemStatus.Active, true, "Employee");
+        _fieldCode = new FieldCodeDto(0, "email01", "Email", "desciption", "@(\\w+).co.za", Models.Enums.FieldCodeType.String, Models.Enums.ItemStatus.Active, true, "Employee", 0);
     }
 
     public PropertyAccess CreatePropertyAccess(RoleDto? role = null, FieldCodeDto? fieldCode = null)

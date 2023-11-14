@@ -16,7 +16,8 @@ namespace RGO.Models
         FieldCodeType Type,
         ItemStatus Status,
         bool Internal,
-        string? InternalTable)
+        string? InternalTable,
+        FieldCodeCategory Category)
     {
         public List<FieldCodeOptionsDto> Options { get; set; }
     }
