@@ -18,7 +18,6 @@ public record EmployeeDto(
     float? SalaryDays, 
     float? PayRate,
     int? Salary, 
-    string Title,
     string Name,
     string Initials,
     string Surname,

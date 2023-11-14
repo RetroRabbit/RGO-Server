@@ -57,9 +57,6 @@ public class Employee : IModel<EmployeeDto>
     [Column("salary")]
     public int? Salary{ get; set; }
 
-    [Column("title")]
-    public string Title { get; set; }
-
     [Column("name")]
     public string Name { get; set; }
 
@@ -159,7 +156,6 @@ public class Employee : IModel<EmployeeDto>
         SalaryDays = employeeDto.SalaryDays;
         PayRate = employeeDto.PayRate;
         Salary = employeeDto.Salary;
-        Title = employeeDto.Title;
         Initials = employeeDto.Initials;
         Name = employeeDto.Name;
         Surname = employeeDto.Surname;
@@ -203,7 +199,6 @@ public class Employee : IModel<EmployeeDto>
             SalaryDays,
             PayRate,
             Salary,
-            Title,
             Name,
             Initials,
             Surname,
