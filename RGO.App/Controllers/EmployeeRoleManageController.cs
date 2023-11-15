@@ -62,7 +62,7 @@ public class EmployeeRoleManageController : ControllerBase
 
             var employeeRoleSaved = await _employeeRoleService.UpdateEmployeeRole(employeeRole);
 
-            return CreatedAtAction(nameof(AddRole), employeeRoleSaved);
+            return CreatedAtAction(nameof(UpdateRole), employeeRoleSaved);
         }
         catch (Exception ex)
         {
