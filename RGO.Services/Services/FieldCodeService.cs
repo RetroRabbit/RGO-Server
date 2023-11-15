@@ -4,7 +4,6 @@ using RGO.Models.Enums;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
-using System.Xml.Linq;
 
 namespace RGO.Services.Services
 {
@@ -28,7 +27,7 @@ namespace RGO.Services.Services
             var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
             if (newFieldCode != null && fieldCodeDto.Options.Count > 0)
             {
-                foreach(var option in fieldCodeDto.Options)
+                foreach (var option in fieldCodeDto.Options)
                 {
                     var fieldCodeOptionsDto = new FieldCodeOptionsDto(
                             Id: 0,
@@ -50,7 +49,7 @@ namespace RGO.Services.Services
                 .Select(fieldCode => fieldCode)
                 .FirstOrDefault();
 
-            if(fieldCode != null)
+            if (fieldCode != null)
             {
                 var options = await _fieldCodeOptionsService.GetFieldCodeOptions(fieldCode.Id);
                 fieldCode.Options = options;
@@ -59,7 +58,7 @@ namespace RGO.Services.Services
             return fieldCode;
         }
 
-        public async Task<List<FieldCodeDto>> GetAllFieldCodes() 
+        public async Task<List<FieldCodeDto>> GetAllFieldCodes()
         {
             var fieldCodes = await _db.FieldCode.GetAll();
             var fieldCode = fieldCodes
@@ -67,7 +66,7 @@ namespace RGO.Services.Services
                 .ToList();
             if (fieldCode.Count != 0)
             {
-                foreach(var item in fieldCode)
+                foreach (var item in fieldCode)
                 {
                     var options = await _fieldCodeOptionsService.GetFieldCodeOptions(item.Id);
                     item.Options = (options != null) ? options : null;
@@ -83,7 +82,7 @@ namespace RGO.Services.Services
             {
                 await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
             }
-            
+
 
             var getUpdatedFieldCode = await GetFieldCode(fieldCodeDto.Name);
             return getUpdatedFieldCode;
@@ -101,7 +100,8 @@ namespace RGO.Services.Services
                 Type: ifFieldCode.Type,
                 Status: ItemStatus.Archive,
                 Internal: ifFieldCode.Internal,
-                InternalTable: ifFieldCode.InternalTable
+                InternalTable: ifFieldCode.InternalTable,
+                Category: ifFieldCode.Category
                 );
 
             var fieldCode = await _db.FieldCode.Update(new FieldCode(newFieldCodeDto));
@@ -109,5 +109,26 @@ namespace RGO.Services.Services
             fieldCode.Options = options;
             return fieldCode;
         }
+
+        public async Task<List<FieldCodeDto>> GetByCategory(int categoryIndex)
+        {
+            if (categoryIndex < 0 || categoryIndex > 2)
+                throw new Exception("Invalid Index");
+
+            var type = FieldCodeCategory.Profile;
+            switch (categoryIndex)
+            {
+                case 0: type = FieldCodeCategory.Profile; break;
+                case 1: type = FieldCodeCategory.Banking; break;
+                case 2: type = FieldCodeCategory.Documents; break;
+            }
+            List<FieldCodeDto> fields = await _db.FieldCode
+                .Get(field => field.Category == type)
+                .Select(field => field.ToDto())
+                .ToListAsync();
+
+            return fields;
+        }
     }
+
 }
