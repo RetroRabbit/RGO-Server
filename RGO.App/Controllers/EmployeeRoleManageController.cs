@@ -46,6 +46,31 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpPost("update")]
+    public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
+    {
+        try
+        {
+            var employee = await _employeeService.GetEmployee(email);
+
+            var currRole = await _roleService.CheckRole(role) ?
+                await _roleService.GetRole(role) :
+                await _roleService.SaveRole(new RoleDto(0, role));
+
+            var currEmployeeRole =  await _employeeRoleService.GetEmployeeRole(email);
+            var employeeRole = new EmployeeRoleDto(currEmployeeRole.Id, employee, currRole);
+
+            var employeeRoleSaved = await _employeeRoleService.UpdateEmployeeRole(employeeRole);
+
+            return CreatedAtAction(nameof(AddRole), employeeRoleSaved);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(EmployeeRoleDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
     [HttpDelete("remove")]
@@ -57,7 +82,7 @@ public class EmployeeRoleManageController : ControllerBase
 
             var roleToRemove = await _roleService.GetRole(role);
 
-            var employeeRole = await _employeeRoleService.GetEmployeeRole(email, role);
+            var employeeRole = await _employeeRoleService.GetEmployeeRole(email);
 
             var employeeRoleRemoved = await _employeeRoleService.DeleteEmployeeRole(email, role);
 
@@ -75,13 +100,10 @@ public class EmployeeRoleManageController : ControllerBase
     {
         try
         {
-            var employeeRoles = await _employeeRoleService.GetEmployeeRoles(email);
+            var employeeRoles = await _employeeRoleService.GetEmployeeRole(email);
+            string[] role = { employeeRoles.Role.Description };
 
-            var roles = employeeRoles
-                .Select(employeeRole => employeeRole.Role!.Description)
-                .ToList();
-
-            return Ok(roles);
+            return Ok(role);
         }
         catch (Exception ex)
         {
