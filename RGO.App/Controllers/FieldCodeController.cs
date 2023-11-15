@@ -3,6 +3,7 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 using RGO.UnitOfWork.Entities;
+using System.Linq.Expressions;
 
 namespace RGO.App.Controllers
 {
@@ -69,6 +70,20 @@ namespace RGO.App.Controllers
             {
                 var deletedFieldCode = await _fieldCodeService.DeleteFieldCode(fieldCodeDto);
                 return Ok(deletedFieldCode);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("category")]
+        public async Task<IActionResult> GetByCategory([FromQuery] int category)
+        {
+            try
+            {
+                var categoryCodes = await _fieldCodeService.GetByCategory(category);
+                return Ok(categoryCodes);
             }
             catch (Exception ex)
             {
