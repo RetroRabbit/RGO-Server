@@ -21,7 +21,8 @@ public class EmployeeRoleService : IEmployeeRoleService
         if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
             throw new Exception("Employee or Role not found");
 
-        bool isEmployeeRoleExist = await CheckEmployeeRole(employeeRoleDto.Employee!.Email, employeeRoleDto.Role!.Description);
+        bool isEmployeeRoleExist = await _db.EmployeeRole
+            .Any(employeeRole => employeeRole.Employee.Email == employeeRoleDto.Employee.Email);
 
         if (isEmployeeRoleExist)
             throw new Exception("Employee Role already exist");
@@ -74,7 +75,8 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<EmployeeRoleDto> UpdateEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
-        bool exists = await CheckEmployeeRole(employeeRoleDto.Employee.Email, employeeRoleDto.Role.Description);
+        bool exists = await _db.EmployeeRole
+            .Any(employeeRole => employeeRole.Employee.Email == employeeRoleDto.Employee.Email);
 
         if (!exists)
         {
@@ -87,11 +89,10 @@ public class EmployeeRoleService : IEmployeeRoleService
         return updatedEmployeeRole;
     }
 
-    public async Task<EmployeeRoleDto> GetEmployeeRole(string email, string role)
+    public async Task<EmployeeRoleDto> GetEmployeeRole(string email)
     {
         EmployeeRoleDto existingEmployeeRole = await _db.EmployeeRole
             .Get(employeeRole =>
-                employeeRole.Role.Description == role &&
                 employeeRole.Employee.Email == email)
             .AsNoTracking()
             .Include(employeeRole => employeeRole.Employee)
