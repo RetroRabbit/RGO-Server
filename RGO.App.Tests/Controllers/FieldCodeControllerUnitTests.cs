@@ -21,7 +21,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetAllFieldCodes_ReturnsOkResult_WithListOfFieldCodes()
+        public async Task GetAllFieldCodesReturnsOkResultWithListOfFieldCodes()
         {
             var fieldCodes = new List<FieldCodeDto>
             {
@@ -39,7 +39,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetAllFieldCodes_ReturnsNotFoundResult_WhenNoFieldCodesFound()
+        public async Task GetAllFieldCodesReturnsNotFoundResultWhenNoFieldCodesFound()
         {
 
             _fieldCodeServiceMock.Setup(s => s.GetAllFieldCodes()).ReturnsAsync((List<FieldCodeDto>?)null);
@@ -51,7 +51,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task SaveFieldCode_ReturnsOkResult_WithSavedFieldCode()
+        public async Task SaveFieldCodeReturnsOkResultWithSavedFieldCode()
         {
             var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
             var savedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0);
@@ -65,7 +65,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task SaveFieldCode_ReturnsNotFoundResult_WhenExceptionThrown()
+        public async Task SaveFieldCodeReturnsNotFoundResultWhenExceptionThrown()
         {
             var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
             var exceptionMessage = "An error occurred";
@@ -78,7 +78,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task UpdateFieldCode_ReturnsOkResult_WithUpdatedFieldCode()
+        public async Task UpdateFieldCodeReturnsOkResultWithUpdatedFieldCode()
         {
             var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
             var updatedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0);
@@ -92,7 +92,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task UpdateFieldCode_ReturnsNotFoundResult_WhenExceptionThrown()
+        public async Task UpdateFieldCodeReturnsNotFoundResultWhenExceptionThrown()
         {
             var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
             var exceptionMessage = "An error occurred";
@@ -105,7 +105,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task DeleteFieldCode_ReturnsOkResult_WithDeletedFieldCode()
+        public async Task DeleteFieldCodeReturnsOkResultWithDeletedFieldCode()
         {
             var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
             var deletedFieldCode = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
@@ -119,7 +119,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task DeleteFieldCode_ReturnsNotFoundResult_WhenExceptionThrown()
+        public async Task DeleteFieldCodeReturnsNotFoundResultWhenExceptionThrown()
         {
             var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
             var exceptionMessage = "An error occurred";
@@ -132,7 +132,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetByCategory_ValidCategory_ReturnsOkResultWithCategoryCodes()
+        public async Task GetByCategoryValidCategoryReturnsOkResultWithCategoryCodes()
         {
             var validCategory = 1;
             var expectedCategoryCodes = new List<FieldCodeDto>
@@ -154,7 +154,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetByCategory_InvalidCategory_ReturnsNotFoundResult()
+        public async Task GetByCategoryInvalidCategoryReturnsNotFoundResult()
         {
             var invalidCategory = -1;
 
