@@ -40,8 +40,6 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
 
     public virtual Employee Employee { get; set; }
 
-    public virtual OnboardingDocument? OnboardingDocument { get; set; }
-
     public EmployeeDocument() { }
 
     public EmployeeDocument(EmployeeDocumentDto employeeDocumentsDto)
