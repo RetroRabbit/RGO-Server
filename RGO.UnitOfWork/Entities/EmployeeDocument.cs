@@ -38,15 +38,12 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
 
     public virtual Employee Employee { get; set; }
 
-    public virtual OnboardingDocument? OnboardingDocument { get; set; }
-
     public EmployeeDocument() { }
 
     public EmployeeDocument(EmployeeDocumentDto employeeDocumentsDto)
     {
         Id = employeeDocumentsDto.Id;
         EmployeeId = employeeDocumentsDto.Employee!.Id;
-        OnboardingDocumentId = employeeDocumentsDto.OnboardingDocument?.Id;
         Reference = employeeDocumentsDto.Reference;
         FileName = employeeDocumentsDto.FileName;
         Blob = employeeDocumentsDto.Blob;
@@ -59,7 +56,6 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
         return new EmployeeDocumentDto(
             Id,
             Employee?.ToDto(),
-            OnboardingDocument?.ToDto(),
             Reference,
             FileName,
             Blob,

@@ -31,7 +31,6 @@ namespace RGO.Services.Services
                employeeDocDto.Id,
                employee,
                null,
-               null,
                employeeDocDto.FileName,
                employeeDocDto.File,
                null,
