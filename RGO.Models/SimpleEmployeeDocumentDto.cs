@@ -12,6 +12,6 @@ public record SimpleEmployeeDocumentDto(
     int Id,
     int EmployeeId,
     string FileName,
-    string FileCategory,
+    FileCategory FileCategory,
     string File,
     DateTime UploadDate);

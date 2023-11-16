@@ -7,7 +7,7 @@ public record EmployeeDocumentDto(
     EmployeeDto? Employee,
     string? Reference,
     string FileName,
-    string FileCategory,
+    FileCategory FileCategory,
     string Blob,
     DocumentStatus? Status,
     DateTime UploadDate,

@@ -24,7 +24,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     public string FileName { get; set; }
 
     [Column("fileCategory")]
-    public string FileCategory { get; set; }
+    public FileCategory FileCategory { get; set; }
 
     [Column("blob")]
     public string Blob { get; set; }
