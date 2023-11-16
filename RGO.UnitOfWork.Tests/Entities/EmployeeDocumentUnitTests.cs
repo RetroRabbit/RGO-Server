@@ -29,8 +29,7 @@ public class EmployeeDocumentUnitTests
         {
             Id = 1,
             EmployeeId = 1,
-            OnboardingDocumentId = 1,
-            Status = Models.Enums.ItemStatus.Active
+            Status = Models.Enums.DocumentStatus.Approved
         };
 
         if (employee != null)
@@ -59,7 +58,6 @@ public class EmployeeDocumentUnitTests
         var dto = employeeDocument.ToDto();
 
         Assert.Equal(dto.Employee!.Id, employeeDocument.Employee.Id);
-        Assert.Equal(dto.OnboardingDocument!.Id, employeeDocument.OnboardingDocument.Id);
 
         var initializedEmployeeDocument = new EmployeeDocument(dto);
 
@@ -69,6 +67,5 @@ public class EmployeeDocumentUnitTests
         dto = initializedEmployeeDocument.ToDto();
 
         Assert.Null(dto.Employee);
-        Assert.Null(dto.OnboardingDocument);
     }
 }
