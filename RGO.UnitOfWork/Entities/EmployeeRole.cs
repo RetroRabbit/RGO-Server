@@ -27,6 +27,8 @@ public class EmployeeRole : IModel<EmployeeRoleDto>
     {
     }
 
+
+
     public EmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
         Id = employeeRoleDto.Id;

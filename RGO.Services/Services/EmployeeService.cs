@@ -7,6 +7,7 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Text;
+using System.Xml.Linq;
 
 namespace RGO.Services.Services;
 
@@ -14,14 +15,16 @@ public class EmployeeService : IEmployeeService
 {
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
+    private readonly IRoleService _roleService;
     private readonly IUnitOfWork _db;
     private const string QueueName = "employee_data_queue";
     public static ConnectionFactory _employeeFactory;
-    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db, IEmployeeAddressService employeeAddressService)
+    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db, IEmployeeAddressService employeeAddressService, IRoleService roleService)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
         _employeeAddressService = employeeAddressService;
+        _roleService = roleService;
     }
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
@@ -100,7 +103,12 @@ public class EmployeeService : IEmployeeService
             employee.PostalAddressId = postalAddress.Id;
         }
 
+
+        RoleDto roleDto = await _roleService.GetRole("Employee");
         EmployeeDto newEmployee = await _db.Employee.Add(employee);
+
+        EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto(0, newEmployee, roleDto);
+        await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
         return newEmployee;
     }
