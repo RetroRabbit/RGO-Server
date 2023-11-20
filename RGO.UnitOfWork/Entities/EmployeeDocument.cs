@@ -17,28 +17,28 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("onboardingDocumentId")]
-    [ForeignKey("OnboardingDocument")]
-    public int? OnboardingDocumentId { get; set; }
-
     [Column("reference")]
     public string? Reference { get; set; }
 
     [Column("fileName")]
     public string FileName { get; set; }
 
+    [Column("fileCategory")]
+    public FileCategory FileCategory { get; set; }
+
     [Column("blob")]
     public string Blob { get; set; }
 
     [Column("status")]
-    public ItemStatus? Status { get; set; }
+    public DocumentStatus? Status { get; set; }
 
     [Column("uploadDate")]
     public DateTime UploadDate { get; set; }
 
-    public virtual Employee Employee { get; set; }
+    [Column("reason")]
+    public string? Reason { get; set; }
 
-    public virtual OnboardingDocument? OnboardingDocument { get; set; }
+    public virtual Employee Employee { get; set; }
 
     public EmployeeDocument() { }
 
@@ -46,12 +46,13 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     {
         Id = employeeDocumentsDto.Id;
         EmployeeId = employeeDocumentsDto.Employee!.Id;
-        OnboardingDocumentId = employeeDocumentsDto.OnboardingDocument?.Id;
         Reference = employeeDocumentsDto.Reference;
         FileName = employeeDocumentsDto.FileName;
+        FileCategory = employeeDocumentsDto.FileCategory;
         Blob = employeeDocumentsDto.Blob;
         Status = employeeDocumentsDto.Status;
         UploadDate = employeeDocumentsDto.UploadDate;
+        Reason = employeeDocumentsDto.Reason;
     }
 
     public EmployeeDocumentDto ToDto()
@@ -59,12 +60,13 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
         return new EmployeeDocumentDto(
             Id,
             Employee?.ToDto(),
-            OnboardingDocument?.ToDto(),
             Reference,
             FileName,
+            FileCategory,
             Blob,
             Status,
-            UploadDate);
+            UploadDate,
+            Reason);
     }
 
 }

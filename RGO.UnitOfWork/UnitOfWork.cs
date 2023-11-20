@@ -23,7 +23,6 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeRepository Employee { get; }
     public IEmployeeRoleRepository EmployeeRole { get; }
     public IEmployeeTypeRepository EmployeeType { get; }
-    public IOnboardingDocumentsRepository OnboardingDocuments { get; }
     public IRoleAccessRepository RoleAccess { get; }
     public IRoleRepository Role { get; }
     public IPropertyAccessRepository PropertyAccess { get; }
@@ -56,7 +55,6 @@ public class UnitOfWork : IUnitOfWork
         Employee = new EmployeeRepository(_db);
         EmployeeRole = new EmployeeRoleRepository(_db);
         EmployeeType = new EmployeeTypeRepository(_db);
-        OnboardingDocuments = new OnboardingDocumentsRepository(_db);
         RoleAccess = new RoleAccessRepository(_db);
         Role = new RoleRepository(_db);
         PropertyAccess = new PropertyAccessRepository(_db);
