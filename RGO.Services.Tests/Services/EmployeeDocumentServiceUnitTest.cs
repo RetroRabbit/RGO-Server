@@ -246,7 +246,7 @@ public class EmployeeDocumentServiceUnitTest
               new DateOnly(), null, Race.Black, Gender.Male, null,
               "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
-        var mockEmployee = new Employee { /* Initialize from testEmployee1 */ };
+        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
         var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMockDbSet();
         mockUnitOfWork.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet.Object);
