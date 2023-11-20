@@ -104,7 +104,7 @@ namespace RGO.Services.Services
             return deletedEmployeeDocument;
         }
 
-        private async Task<bool> CheckEmployee(int employeeId)
+        public async Task<bool> CheckEmployee(int employeeId)
         {
             var employee = await _db.Employee
             .Get(employee => employee.Id == employeeId)
