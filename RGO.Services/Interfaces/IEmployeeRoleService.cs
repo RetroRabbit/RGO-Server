@@ -21,9 +21,9 @@ public interface IEmployeeRoleService
     /// <summary>
     /// Get Employee Role
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
-    Task<EmployeeRoleDto> GetEmployeeRole(string email, string role);
+    Task<EmployeeRoleDto> GetEmployeeRole(string email);
 
     /// <summary>
     /// Get All Employee Roles
