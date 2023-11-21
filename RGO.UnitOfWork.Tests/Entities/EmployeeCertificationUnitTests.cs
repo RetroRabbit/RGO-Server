@@ -9,7 +9,6 @@ namespace RGO.UnitOfWork.Tests.Entities;
 public class EmployeeCertificationUnitTests
 {
     private EmployeeDto _employee;
-    private OnboardingDocumentDto _onboardingDocument;
     private EmployeeDocumentDto _employeeDocument;
 
     public EmployeeCertificationUnitTests()
@@ -23,9 +22,8 @@ public class EmployeeCertificationUnitTests
             new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
             "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
-        _onboardingDocument = new OnboardingDocumentDto(0, "Title", "Description", "FileName", new byte[] { 0 }, Models.Enums.ItemStatus.Active);
 
-        _employeeDocument = new EmployeeDocumentDto(1, _employee, _onboardingDocument, "CVE256", "Holysee", "Picture", ItemStatus.Active, DateTime.Now);
+        _employeeDocument = new EmployeeDocumentDto(1, _employee, "", "CVE256", FileCategory.Medical, "Picture", DocumentStatus.Approved, DateTime.Now, null);
     }
 
     public EmployeeCertification CreateEmployeeCertification(EmployeeDto? employee = null, EmployeeDocumentDto? employeeDocument = null, EmployeeDto? auditBy = null)
