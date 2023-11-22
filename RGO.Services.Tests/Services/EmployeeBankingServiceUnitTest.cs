@@ -1,12 +1,9 @@
 ﻿using Xunit;
 using Moq;
-using Microsoft.EntityFrameworkCore;
 using RGO.Models;
 using RGO.Models.Enums;
 using RGO.UnitOfWork;
 using RGO.Services.Services;
-using System.Collections.Generic;
-using System.Linq;
 using RGO.UnitOfWork.Entities;
 using System.Linq.Expressions;
 using RGO.Services.Interfaces;

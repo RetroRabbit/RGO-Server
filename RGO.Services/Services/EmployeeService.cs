@@ -134,6 +134,7 @@ public class EmployeeService : IEmployeeService
             .Include(employee => employee.EmployeeType)
             .Include(employee => employee.PhysicalAddress)
             .Include(employee => employee.PostalAddress)
+            .OrderBy(employee => employee.Name)
             .Select(employee => employee.ToDto())
             .ToListAsync();
     }

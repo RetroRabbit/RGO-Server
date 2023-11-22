@@ -3,6 +3,7 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using RGO.Models.Enums;
 
 namespace RGO.Services.Services
 {
@@ -31,11 +32,12 @@ namespace RGO.Services.Services
                employeeDocDto.Id,
                employee,
                null,
-               null,
                employeeDocDto.FileName,
+               employeeDocDto.FileCategory,
                employeeDocDto.File,
-               null,
-               DateTime.Now) ;
+               DocumentStatus.PendingApproval,
+               DateTime.Now,
+               null) ;
 
             var newRmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
@@ -102,7 +104,7 @@ namespace RGO.Services.Services
             return deletedEmployeeDocument;
         }
 
-        private async Task<bool> CheckEmployee(int employeeId)
+        public async Task<bool> CheckEmployee(int employeeId)
         {
             var employee = await _db.Employee
             .Get(employee => employee.Id == employeeId)
