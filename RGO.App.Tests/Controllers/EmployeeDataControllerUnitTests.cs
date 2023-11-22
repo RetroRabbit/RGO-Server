@@ -78,7 +78,7 @@ namespace RGO.App.Tests.Controllers
             var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
             var mockEmployeeDataService = new Mock<IEmployeeDataService>();
             mockEmployeeDataService.Setup(service => service.SaveEmployeeData(employeeDataDto))
-                .ThrowsAsync(new Exception("Some error message"));
+                .ThrowsAsync(new Exception("Error saving employee data."));
 
             var controller = new EmployeeDataController(mockEmployeeDataService.Object);
 
@@ -87,7 +87,7 @@ namespace RGO.App.Tests.Controllers
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var errorMessage = Assert.IsType<string>(notFoundResult.Value);
 
-            Assert.Equal("Some error message", errorMessage);
+            Assert.Equal("Error saving employee data.", errorMessage);
 
             mockEmployeeDataService.Verify(service => service.SaveEmployeeData(employeeDataDto), Times.Once);
         }
@@ -116,7 +116,7 @@ namespace RGO.App.Tests.Controllers
             var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
             var mockEmployeeDataService = new Mock<IEmployeeDataService>();
             mockEmployeeDataService.Setup(service => service.UpdateEmployeeData(employeeDataDto))
-                .ThrowsAsync(new Exception("Some error message"));
+                .ThrowsAsync(new Exception("Error updating employee data."));
 
             var controller = new EmployeeDataController(mockEmployeeDataService.Object);
 
@@ -125,7 +125,7 @@ namespace RGO.App.Tests.Controllers
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var errorMessage = Assert.IsType<string>(notFoundResult.Value);
 
-            Assert.Equal("Some error message", errorMessage);
+            Assert.Equal("Error saving employee data.", errorMessage);
 
             mockEmployeeDataService.Verify(service => service.UpdateEmployeeData(employeeDataDto), Times.Once);
         }
@@ -155,7 +155,7 @@ namespace RGO.App.Tests.Controllers
             var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
             var mockEmployeeDataService = new Mock<IEmployeeDataService>();
             mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto))
-                .ThrowsAsync(new Exception("Some error message"));
+                .ThrowsAsync(new Exception("Error deleting employee data."));
 
             var controller = new EmployeeDataController(mockEmployeeDataService.Object);
 
@@ -164,7 +164,7 @@ namespace RGO.App.Tests.Controllers
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var errorMessage = Assert.IsType<string>(notFoundResult.Value);
 
-            Assert.Equal("Some error message", errorMessage);
+            Assert.Equal("Error deleting employee data.", errorMessage);
 
             mockEmployeeDataService.Verify(service => service.DeleteEmployeeData(employeeDataDto), Times.Once);
         }
