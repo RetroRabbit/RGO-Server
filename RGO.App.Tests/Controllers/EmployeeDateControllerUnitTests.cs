@@ -178,7 +178,7 @@ public class EmployeeDateControllerUnitTests
             new DateOnly(2023, 1, 1)
         );
 
-        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("Exception messageAn error occurred while deleting employee date information."));
+        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("An error occurred while deleting employee date information."));
 
         var result = await controller.DeleteEmployeeDate(employeeDateInput);
 
