@@ -84,6 +84,32 @@ public class EmployeeBankingControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEntry = Assert.IsAssignableFrom<EmployeeBankingDto>(okResult.Value);
         Assert.Equal(expectedId, actualEntry.Id);
-    
+    }
+
+    [Fact]
+    public async Task AddBankingInfoExceptionReturnsProblemDetails()
+    {
+        var newEntry = new EmployeeBankingDto
+            (
+            1,
+            1001,
+            "Bank 1",
+            "Branch 1",
+            "Account Number 1",
+            EmployeeBankingAccountType.Cheque,
+            "Account Holder Name 1",
+            BankApprovalStatus.Approved,
+            " ",
+            "Document.pdf");
+
+        var mockEmployeeBankingService = new Mock<IEmployeeBankingService>();
+        mockEmployeeBankingService.Setup(s => s.Save(newEntry)).ThrowsAsync(new Exception("Details Already Exist."));
+
+        var controller = new EmployeeBankingController(mockEmployeeBankingService.Object);
+
+        var result = await controller.AddBankingInfo(newEntry);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("Details Already Exist.", notFoundResult.Value);
     }
 }
