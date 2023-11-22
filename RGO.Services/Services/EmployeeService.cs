@@ -77,16 +77,9 @@ public class EmployeeService : IEmployeeService
         {
             physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
         }
-
         employee.PhysicalAddressId = physicalAddress.Id;
 
-        //if (employeeDto.PhysicalAddress == employeeDto.PostalAddress)
-        //{
-        //    employee.PostalAddressId = physicalAddress.Id;
-        //}
-        //else
-        //{
-            bool postalAddressExist = await _employeeAddressService
+        bool postalAddressExist = await _employeeAddressService
             .CheckIfExitsts(employeeDto.PostalAddress!);
 
             EmployeeAddressDto postalAddress;
@@ -101,8 +94,6 @@ public class EmployeeService : IEmployeeService
             }
 
             employee.PostalAddressId = postalAddress.Id;
-        //}
-
 
         RoleDto roleDto = await _roleService.GetRole("Employee");
         EmployeeDto newEmployee = await _db.Employee.Add(employee);
