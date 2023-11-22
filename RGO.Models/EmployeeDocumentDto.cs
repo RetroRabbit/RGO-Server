@@ -5,9 +5,10 @@ namespace RGO.Models;
 public record EmployeeDocumentDto(
     int Id,
     EmployeeDto? Employee,
-    OnboardingDocumentDto? OnboardingDocument,
     string? Reference,
     string FileName,
+    FileCategory FileCategory,
     string Blob,
-    ItemStatus? Status,
-    DateTime UploadDate);
+    DocumentStatus? Status,
+    DateTime UploadDate,
+    string? Reason);

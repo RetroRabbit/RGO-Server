@@ -49,7 +49,7 @@ public class ChartService : IChartService
                      }
                      var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
                      var age = CalculateAge(dob);
-                     keyBuilder.Append(age.ToString() + ", ");
+                     keyBuilder.Append("Age" + " " + age.ToString() + ", ");
                  }
                  else if (dataType == "PeopleChampion")
                  {
@@ -72,7 +72,14 @@ public class ChartService : IChartService
                      {
                          throw new ArgumentException($"Invalid dataType: {dataType}");
                      }
-                     keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + ", ");
+                     if (dataType == "Level") keyBuilder.Append("Level" + " " + propertyInfo.GetValue(employee).ToString() + ", ");
+                     else if (dataType == "Salary" || dataType == "PayRate") keyBuilder.Append("R" + " " + propertyInfo.GetValue(employee).ToString() + ", ");
+                     else if (dataType == "LeaveInterval")
+                     {
+                         if (propertyInfo.GetValue(employee).ToString() != "1") keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + " " + "Days" + ", ");
+                         else keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + " " + "Day" + ", ");
+                     }
+                     else keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + ", ");
                  }
              }
              if (keyBuilder.Length > 2)
@@ -169,8 +176,8 @@ public class ChartService : IChartService
                        !p.Name.Equals("PhysicalAddressId") &&
                        !p.Name.Equals("PostalAddressId") &&
                        !p.Name.Equals("ClientAllocated") &&
-                       !p.Name.Equals("TeamLead")) 
-
+                       !p.Name.Equals("TeamLead") &&
+                       !p.Name.Equals("SalaryDays"))
             .Select(p => p.Name)
             .ToArray();
         quantifiableColumnNames = quantifiableColumnNames.Concat(new string[] { "Age" }).ToArray();

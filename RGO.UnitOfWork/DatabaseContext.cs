@@ -52,7 +52,6 @@ namespace RGO.UnitOfWork
         public DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
         public DbSet<Role> roles { get; set; }
         public DbSet<RoleAccess> roleAccess { get; set; }
-        public DbSet<OnboardingDocument> onboarding { get; set; }
         public DbSet<AuditLog> auditLogs { get; set; }
         public DbSet<Chart> Chart { get; set; }
         public DbSet<ChartRoleLink> ChartRoleLink { get; set; }

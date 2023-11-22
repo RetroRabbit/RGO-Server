@@ -20,7 +20,6 @@ public interface IUnitOfWork
     IEmployeeRepository Employee { get; }
     IEmployeeRoleRepository EmployeeRole { get; }
     IEmployeeTypeRepository EmployeeType { get; }
-    IOnboardingDocumentsRepository OnboardingDocuments { get; }
     IRoleAccessRepository RoleAccess { get; }
     IRoleRepository Role { get; }
     IPropertyAccessRepository PropertyAccess { get; }
