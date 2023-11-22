@@ -34,7 +34,7 @@ namespace RGO.App.Tests.Controllers
             var email = "test@retrorabbit.co.za";
             var mockPropertyAccessService = new Mock<IPropertyAccessService>();
             mockPropertyAccessService.Setup(service => service.GetPropertiesWithAccess(email))
-                .ThrowsAsync(new Exception("Some error message"));
+                .ThrowsAsync(new Exception("Error retrieving properties with access for the specified user."));
 
             var controller = new PropertyAccessController(mockPropertyAccessService.Object);
 
@@ -42,7 +42,7 @@ namespace RGO.App.Tests.Controllers
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-            Assert.Equal("Some error message", errorMessage);
+            Assert.Equal("Error retrieving properties with access for the specified user.", errorMessage);
 
             mockPropertyAccessService.Verify(service => service.GetPropertiesWithAccess(email), Times.Once);
         }
@@ -72,7 +72,7 @@ namespace RGO.App.Tests.Controllers
             var fields = new List<UpdateFieldValueDto>();
             var mockPropertyAccessService = new Mock<IPropertyAccessService>();
             mockPropertyAccessService.Setup(service => service.UpdatePropertiesWithAccess(fields, email))
-                .ThrowsAsync(new Exception("Some error message"));
+                .ThrowsAsync(new Exception("Error updating properties with access for the specified user."));
 
             var controller = new PropertyAccessController(mockPropertyAccessService.Object);
 
@@ -80,7 +80,7 @@ namespace RGO.App.Tests.Controllers
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-            Assert.Equal("Some error message", errorMessage);
+            Assert.Equal("Error updating properties with access for the specified user.", errorMessage);
 
             mockPropertyAccessService.Verify(service => service.UpdatePropertiesWithAccess(fields, email), Times.Once);
         }
