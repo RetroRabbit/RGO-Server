@@ -20,7 +20,7 @@ public class EmployeeDateControllerUnitTests
 
         var employeeDateInput = new EmployeeDateInput
         (
-            "test@example.com",
+            "test@retrorabbit.co.za",
             "Test Subject",
             "Test Note",
             new DateOnly(2023, 1, 1)
@@ -29,16 +29,16 @@ public class EmployeeDateControllerUnitTests
         employeeServiceMock.Setup(x => x.GetEmployee(employeeDateInput.Email)).ReturnsAsync(new EmployeeDto
         (
             1,
-            "EmployeeNumber Test",
-            "TaxNumber Test",
-            new DateOnly(2023, 11, 20),
-            new DateOnly(2023, 12, 23),
+            "1001",
+            "1000000001",
+            new DateOnly(1985, 5, 15),
+            new DateOnly(2023, 12, 31),
             1,
             false,
-            "Disabilities false",
+            "No disabilities",
             3,
-            new EmployeeTypeDto(1, "Type"),
-            "Your notes here",
+            new EmployeeTypeDto(1, "Developer"),
+            "Experienced software engineer with a focus on web development.",
             1.5f,
             20.5f,
             15.0f,
@@ -46,25 +46,25 @@ public class EmployeeDateControllerUnitTests
             "John",
             "J",
             "Doe",
-            new DateOnly(1990, 1, 1),
-            "Country",
-            "Nationality",
+            new DateOnly(1980, 8, 10),
+            "South Africa",
+            "South African",
             "ID123456",
-            "AB123456",
-            new DateOnly(2025, 12, 31),
+            "ZA123456",
+            new DateOnly(2025, 6, 30),
             "PassportCountry",
             Race.White,
             Gender.Male,
             "path/to/photo.jpg",
-            "test@example.com",
+            "test@retrorabbit.co.za",
             "john.personal@example.com",
             "123456789",
             1,
             2,
-            new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-            new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+            new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+            new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
             "123",
-            "Emergency Name",
+            "Emergency Contact",
             "987654321"));
 
         employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>()))
@@ -84,18 +84,18 @@ public class EmployeeDateControllerUnitTests
 
         var employeeDateInput = new EmployeeDateInput
         (
-            "test@example.com",
+            "test@retrorabbit.co.za",
             "Test Subject",
             "Test Note",
             new DateOnly(2023, 1, 1)
         );
 
-        employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("Exception message"));
+        employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("An error occurred while saving employee date information."));
 
         var result = await controller.SaveEmployeeDate(employeeDateInput);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Exception message", notFoundResult.Value);
+        Assert.Equal("An error occurred while saving employee date information.", notFoundResult.Value);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class EmployeeDateControllerUnitTests
 
         var employeeDateInput = new EmployeeDateInput
         (
-            "test@example.com",
+            "test@retrorabbit.co.za",
             "Test Subject",
             "Test Note",
             new DateOnly(2023, 1, 1)
@@ -118,16 +118,16 @@ public class EmployeeDateControllerUnitTests
         .ReturnsAsync((new EmployeeDto
         (
             1,
-            "EmployeeNumber Test",
-            "TaxNumber Test",
-            new DateOnly(2023, 11, 20),
-            new DateOnly(2023, 12, 23),
+            "1001",
+            "1000000001",
+            new DateOnly(1985, 5, 15),
+            new DateOnly(2023, 12, 31),
             1,
             false,
-            "Disabilities false",
+            "No disabilities",
             3,
-            new EmployeeTypeDto(1, "Type"),
-            "Your notes here",
+            new EmployeeTypeDto(1, "Developer"),
+            "Experienced software engineer with a focus on web development.",
             1.5f,
             20.5f,
             15.0f,
@@ -135,25 +135,25 @@ public class EmployeeDateControllerUnitTests
             "John",
             "J",
             "Doe",
-            new DateOnly(1990, 1, 1),
-            "Country",
-            "Nationality",
+            new DateOnly(1980, 8, 10),
+            "South Africa",
+            "South African",
             "ID123456",
-            "AB123456",
-            new DateOnly(2025, 12, 31),
+            "ZA123456",
+            new DateOnly(2025, 6, 30),
             "PassportCountry",
             Race.White,
             Gender.Male,
             "path/to/photo.jpg",
-            "test@example.com",
+            "test@retrorabbit.co.za",
             "john.personal@example.com",
             "123456789",
             1,
             2,
-            new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-            new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+            new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+            new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
             "123",
-            "Emergency Name",
+            "Emergency Contact",
             "987654321")));
 
         employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>())).Returns(Task.CompletedTask);
@@ -172,18 +172,18 @@ public class EmployeeDateControllerUnitTests
 
         var employeeDateInput = new EmployeeDateInput
         (
-            "test@example.com",
+            "test@retrorabbit.co.za",
             "Test Subject",
             "Test Note",
             new DateOnly(2023, 1, 1)
         );
 
-        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("Exception message"));
+        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("Exception messageAn error occurred while deleting employee date information."));
 
         var result = await controller.DeleteEmployeeDate(employeeDateInput);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Exception message", notFoundResult.Value);
+        Assert.Equal("An error occurred while deleting employee date information.", notFoundResult.Value);
     }
 
     [Fact]
@@ -200,16 +200,16 @@ public class EmployeeDateControllerUnitTests
             new EmployeeDto
             (
                 1,
-                "EmployeeNumber Test",
-                "TaxNumber Test",
-                new DateOnly(2023, 11, 20),
-                new DateOnly(2023, 12, 23),
+                "1001",
+                "1000000001",
+                new DateOnly(1985, 5, 15),
+                new DateOnly(2023, 12, 31),
                 1,
                 false,
-                "Disabilities false",
+                "No disabilities",
                 3,
-                new EmployeeTypeDto(1, "Type"),
-                "Your notes here",
+                new EmployeeTypeDto(1, "Developer"),
+                "Experienced software engineer with a focus on web development.",
                 1.5f,
                 20.5f,
                 15.0f,
@@ -217,27 +217,26 @@ public class EmployeeDateControllerUnitTests
                 "John",
                 "J",
                 "Doe",
-                new DateOnly(1990, 1, 1),
-                "Country",
-                "Nationality",
+                new DateOnly(1980, 8, 10),
+                "South Africa",
+                "South African",
                 "ID123456",
-                "AB123456",
-                new DateOnly(2025, 12, 31),
+                "ZA123456",
+                new DateOnly(2025, 6, 30),
                 "PassportCountry",
                 Race.White,
                 Gender.Male,
                 "path/to/photo.jpg",
-                "test@example.com",
+                "test@retrorabbit.co.za",
                 "john.personal@example.com",
                 "123456789",
                 1,
                 2,
-                new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+                new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+                new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
                 "123",
-                "Emergency Name",
-                "987654321"
-            ),
+                "Emergency Contact",
+                "987654321"),
             "Test Subject",
             "Test Note",
             new DateOnly(2023, 1, 1)
@@ -266,16 +265,16 @@ public class EmployeeDateControllerUnitTests
             new EmployeeDto
             (
                 1,
-                "EmployeeNumber Test",
-                "TaxNumber Test",
-                new DateOnly(2023, 11, 20),
-                new DateOnly(2023, 12, 23),
+                "1001",
+                "1000000001",
+                new DateOnly(1985, 5, 15),
+                new DateOnly(2023, 12, 31),
                 1,
                 false,
-                "Disabilities false",
+                "No disabilities",
                 3,
-                new EmployeeTypeDto(1, "Type"),
-                "Your notes here",
+                new EmployeeTypeDto(1, "Developer"),
+                "Experienced software engineer with a focus on web development.",
                 1.5f,
                 20.5f,
                 15.0f,
@@ -283,38 +282,37 @@ public class EmployeeDateControllerUnitTests
                 "John",
                 "J",
                 "Doe",
-                new DateOnly(1990, 1, 1),
-                "Country",
-                "Nationality",
+                new DateOnly(1980, 8, 10),
+                "South Africa",
+                "South African",
                 "ID123456",
-                "AB123456",
-                new DateOnly(2025, 12, 31),
+                "ZA123456",
+                new DateOnly(2025, 6, 30),
                 "PassportCountry",
                 Race.White,
                 Gender.Male,
                 "path/to/photo.jpg",
-                "test@example.com",
+                "test@retrorabbit.co.za",
                 "john.personal@example.com",
                 "123456789",
                 1,
                 2,
-                new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+                new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+                new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
                 "123",
-                "Emergency Name",
-                "987654321"
-            ),
+                "Emergency Contact",
+                "987654321"),
             "Test Subject",
             "Test Note",
             new DateOnly(2023, 1, 1)
         );
 
-        employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("Exception message"));
+        employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("An error occurred while updating employee date information."));
 
         var result = await controller.UpdateEmployeeDate(employeeDateDto);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Exception message", notFoundResult.Value);
+        Assert.Equal("An error occurred while updating employee date information.", notFoundResult.Value);
     }
 
     [Fact]
@@ -334,16 +332,16 @@ public class EmployeeDateControllerUnitTests
                 new EmployeeDto
                 (
                     1,
-                    "EmployeeNumber Test",
-                    "TaxNumber Test",
-                    new DateOnly(2023, 11, 20),
-                    new DateOnly(2023, 12, 23),
+                    "1001",
+                    "1000000001",
+                    new DateOnly(1985, 5, 15),
+                    new DateOnly(2023, 12, 31),
                     1,
                     false,
-                    "Disabilities false",
+                    "No disabilities",
                     3,
-                    new EmployeeTypeDto(1, "Type"),
-                    "Your notes here",
+                    new EmployeeTypeDto(1, "Developer"),
+                    "Experienced software engineer with a focus on web development.",
                     1.5f,
                     20.5f,
                     15.0f,
@@ -351,25 +349,25 @@ public class EmployeeDateControllerUnitTests
                     "John",
                     "J",
                     "Doe",
-                    new DateOnly(1990, 1, 1),
-                    "Country",
-                    "Nationality",
+                    new DateOnly(1980,8, 10),
+                    "South Africa",
+                    "South African",
                     "ID123456",
-                    "AB123456",
-                    new DateOnly(2025, 12, 31),
+                    "ZA123456",
+                    new DateOnly(2025, 6, 30),
                     "PassportCountry",
                     Race.White,
                     Gender.Male,
                     "path/to/photo.jpg",
-                    "test@example.com",
+                    "test@retrorabbit.co.za",
                     "john.personal@example.com",
                     "123456789",
                     1,
                     2,
-                    new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                    new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+                    new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+                    new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
                     "123",
-                    "Emergency Name",
+                    "Emergency Contact",
                     "987654321"),
                 "Test Subject",
                 "Test Note",
@@ -381,16 +379,16 @@ public class EmployeeDateControllerUnitTests
                 new EmployeeDto
                 (
                     1,
-                    "EmployeeNumber Test",
-                    "TaxNumber Test",
-                    new DateOnly(2023, 11, 20),
-                    new DateOnly(2023, 12, 23),
+                    "1001",
+                    "1000000001",
+                    new DateOnly(1985, 5, 15),
+                    new DateOnly(2023, 12, 31),
                     1,
                     false,
-                    "Disabilities false",
+                    "No disabilities",
                     3,
-                    new EmployeeTypeDto(1, "Type"),
-                    "Your notes here",
+                    new EmployeeTypeDto(1, "Developer"),
+                    "Experienced software engineer with a focus on web development.",
                     1.5f,
                     20.5f,
                     15.0f,
@@ -398,25 +396,25 @@ public class EmployeeDateControllerUnitTests
                     "John",
                     "J",
                     "Doe",
-                    new DateOnly(1990, 1, 1),
-                    "Country",
-                    "Nationality",
+                    new DateOnly(1980,8, 10),
+                    "South Africa",
+                    "South African",
                     "ID123456",
-                    "AB123456",
-                    new DateOnly(2025, 12, 31),
+                    "ZA123456",
+                    new DateOnly(2025, 6, 30),
                     "PassportCountry",
                     Race.White,
                     Gender.Male,
                     "path/to/photo.jpg",
-                    "test@example.com",
+                    "test@retrorabbit.co.za",
                     "john.personal@example.com",
                     "123456789",
                     1,
                     2,
-                    new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                    new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+                    new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+                    new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
                     "123",
-                    "Emergency Name",
+                    "Emergency Contact",
                     "987654321"),
                 "Test Subject",
                 "Test Note",
@@ -424,7 +422,6 @@ public class EmployeeDateControllerUnitTests
         };
 
         employeeDateServiceMock.Setup(x => x.GetAllByDate(date)).Returns(expectedEmployeeDates);
-
 
         var result = await controller.GetAllEmployeeDate(date: date);
 
@@ -441,7 +438,7 @@ public class EmployeeDateControllerUnitTests
 
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
-        var email = "test@example.com";
+        var email = "test@retrorabbit.co.za";
         var expectedEmployeeDates = new List<EmployeeDateDto>
         {
             new EmployeeDateDto
@@ -450,16 +447,16 @@ public class EmployeeDateControllerUnitTests
                 new EmployeeDto
                 (
                     1,
-                    "EmployeeNumber Test",
-                    "TaxNumber Test",
-                    new DateOnly(2023, 11, 20),
-                    new DateOnly(2023, 12, 23),
+                    "1001",
+                    "1000000001",
+                    new DateOnly(1985, 5, 15),
+                    new DateOnly(2023, 12, 31),
                     1,
                     false,
-                    "Disabilities false",
+                    "No disabilities",
                     3,
-                    new EmployeeTypeDto(1, "Type"),
-                    "Your notes here",
+                    new EmployeeTypeDto(1, "Developer"),
+                    "Experienced software engineer with a focus on web development.",
                     1.5f,
                     20.5f,
                     15.0f,
@@ -467,25 +464,25 @@ public class EmployeeDateControllerUnitTests
                     "John",
                     "J",
                     "Doe",
-                    new DateOnly(1990, 1, 1),
-                    "Country",
-                    "Nationality",
+                    new DateOnly(1980,8, 10),
+                    "South Africa",
+                    "South African",
                     "ID123456",
-                    "AB123456",
-                    new DateOnly(2025, 12, 31),
+                    "ZA123456",
+                    new DateOnly(2025, 6, 30),
                     "PassportCountry",
                     Race.White,
                     Gender.Male,
                     "path/to/photo.jpg",
-                    "test@example.com",
+                    "test@retrorabbit.co.za",
                     "john.personal@example.com",
                     "123456789",
                     1,
                     2,
-                    new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                    new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+                    new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+                    new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
                     "123",
-                    "Emergency Name",
+                    "Emergency Contact",
                     "987654321"),
                 "Test Subject",
                 "Test Note",
@@ -520,16 +517,16 @@ public class EmployeeDateControllerUnitTests
                 new EmployeeDto
                 (
                     1,
-                    "EmployeeNumber Test",
-                    "TaxNumber Test",
-                    new DateOnly(2023, 11, 20),
-                    new DateOnly(2023, 12, 23),
+                    "1001",
+                    "1000000001",
+                    new DateOnly(1985, 5, 15),
+                    new DateOnly(2023, 12, 31),
                     1,
                     false,
-                    "Disabilities false",
+                    "No disabilities",
                     3,
-                    new EmployeeTypeDto(1, "Type"),
-                    "Your notes here",
+                    new EmployeeTypeDto(1, "Developer"),
+                    "Experienced software engineer with a focus on web development.",
                     1.5f,
                     20.5f,
                     15.0f,
@@ -537,25 +534,25 @@ public class EmployeeDateControllerUnitTests
                     "John",
                     "J",
                     "Doe",
-                    new DateOnly(1990, 1, 1),
-                    "Country",
-                    "Nationality",
+                    new DateOnly(1980,8, 10),
+                    "South Africa",
+                    "South African",
                     "ID123456",
-                    "AB123456",
-                    new DateOnly(2025, 12, 31),
+                    "ZA123456",
+                    new DateOnly(2025, 6, 30),
                     "PassportCountry",
                     Race.White,
                     Gender.Male,
                     "path/to/photo.jpg",
-                    "test@example.com",
+                    "test@retrorabbit.co.za",
                     "john.personal@example.com",
                     "123456789",
                     1,
                     2,
-                    new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                    new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
+                    new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+                    new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
                     "123",
-                    "Emergency Name",
+                    "Emergency Contact",
                     "987654321"),
                 subject,
                 "Test Note",
@@ -588,43 +585,43 @@ public class EmployeeDateControllerUnitTests
                 new EmployeeDto
                 (
                     1,
-                    "EmployeeNumber Test",
-                    "TaxNumber Test",
-                    new DateOnly(2023, 11, 20),
-                    new DateOnly(2023, 12, 23),
-                    1,
-                    false,
-                    "Disabilities false",
-                    3,
-                    new EmployeeTypeDto(1, "Type"),
-                    "Your notes here",
-                    1.5f,
-                    20.5f,
-                    15.0f,
-                    50000,
-                    "John",
-                    "J",
-                    "Doe",
-                    new DateOnly(1990, 1, 1),
-                    "Country",
-                    "Nationality",
-                    "ID123456",
-                    "AB123456",
-                    new DateOnly(2025, 12, 31),
-                    "PassportCountry",
-                    Race.White,
-                    Gender.Male,
-                    "path/to/photo.jpg",
-                    "test@example.com",
-                    "john.personal@example.com",
-                    "123456789",
-                    1,
-                    2,
-                    new EmployeeAddressDto(1, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                    new EmployeeAddressDto(2, "UnitNumber Test", "ComplexName Test", "StreetNumber Test", "SuburbOrDistrict Test", "City Test", "Country Test", "Province Test", "PostalCode Test"),
-                    "123",
-                    "Emergency Name",
-                    "987654321"),
+            "1001",
+            "1000000001",
+            new DateOnly(1985, 5, 15),
+            new DateOnly(2023, 12, 31),
+            1,
+            false,
+            "No disabilities",
+            3,
+            new EmployeeTypeDto(1, "Developer"),
+            "Experienced software engineer with a focus on web development.",
+            1.5f,
+            20.5f,
+            15.0f,
+            50000,
+            "John",
+            "J",
+            "Doe",
+            new DateOnly(1980,8, 10),
+            "South Africa",
+            "South African",
+            "ID123456",
+            "ZA123456",
+            new DateOnly(2025, 6, 30),
+            "PassportCountry",
+            Race.White,
+            Gender.Male,
+            "path/to/photo.jpg",
+            "test@retrorabbit.co.za",
+            "john.personal@example.com",
+            "123456789",
+            1,
+            2,
+            new EmployeeAddressDto(1, "Apt 102", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T12345"),
+            new EmployeeAddressDto(2, "PO Box 567", "Tech Towers", "123 Tech Street", "Tech City", "Tech District", "Techland", "Tech Province", "T54321"),
+            "123",
+            "Emergency Contact",
+            "987654321"),
                 "Test Subject",
                 "Test Note",
                 new DateOnly(2023, 1, 1)
@@ -648,11 +645,11 @@ public class EmployeeDateControllerUnitTests
         var employeeServiceMock = new Mock<IEmployeeService>();
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
-        employeeDateServiceMock.Setup(x => x.GetAll()).Throws(new Exception("Exception message"));
+        employeeDateServiceMock.Setup(x => x.GetAll()).Throws(new Exception("An error occurred while retrieving employee dates."));
 
         var result = await controller.GetAllEmployeeDate();
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Exception message", notFoundResult.Value);
+        Assert.Equal("An error occurred while retrieving employee dates.", notFoundResult.Value);
     }
 }
