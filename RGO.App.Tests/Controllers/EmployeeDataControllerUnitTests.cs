@@ -125,7 +125,7 @@ namespace RGO.App.Tests.Controllers
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var errorMessage = Assert.IsType<string>(notFoundResult.Value);
 
-            Assert.Equal("Error saving employee data.", errorMessage);
+            Assert.Equal("Error updating employee data.", errorMessage);
 
             mockEmployeeDataService.Verify(service => service.UpdateEmployeeData(employeeDataDto), Times.Once);
         }
