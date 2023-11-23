@@ -18,12 +18,27 @@ public class EmployeeBankingController : ControllerBase
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost("add")]
-    public async Task<IActionResult> AddBankingInfo([FromBody] EmployeeBankingDto newEntry)
+    public async Task<IActionResult> AddBankingInfo([FromBody] SimpleEmployeeBankingDto newEntry)
     {
         try
         {
-            var employee = await _employeeBankingService.Save(newEntry);
-            return Ok(newEntry);
+            EmployeeBankingDto Bankingdto = new EmployeeBankingDto
+                (
+                newEntry.Id,
+                newEntry.EmployeeId,
+                newEntry.BankName,
+                newEntry.Branch,
+                newEntry.AccountNo,
+                newEntry.AccountType,
+                newEntry.AccountHolderName,
+                newEntry.Status,
+                newEntry.DeclineReason,
+                newEntry.File,
+                DateOnly.FromDateTime(DateTime.Now),
+                DateOnly.FromDateTime(DateTime.Now)
+                );
+            var employee = await _employeeBankingService.Save(Bankingdto);
+            return Ok(Bankingdto);
         }
         catch (Exception ex)
         {
@@ -52,7 +67,7 @@ public class EmployeeBankingController : ControllerBase
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut("update")]
-    public async Task<IActionResult> Update([FromBody] EmployeeBankingDto updateEntry)
+    public async Task<IActionResult> Update([FromBody] SimpleEmployeeBankingDto updateEntry)
      {
         if(updateEntry.AccountHolderName.Length == 0)
         {
@@ -60,7 +75,22 @@ public class EmployeeBankingController : ControllerBase
         }
         try
         {
-            var employee = await _employeeBankingService.Update(updateEntry);
+            EmployeeBankingDto Bankingdto = new EmployeeBankingDto
+               (
+               updateEntry.Id,
+               updateEntry.EmployeeId,
+               updateEntry.BankName,
+               updateEntry.Branch,
+               updateEntry.AccountNo,
+               updateEntry.AccountType,
+               updateEntry.AccountHolderName,
+               updateEntry.Status,
+               updateEntry.DeclineReason,
+               updateEntry.File,
+               DateOnly.FromDateTime(DateTime.Now),
+               DateOnly.FromDateTime(DateTime.Now)
+               );
+            var employee = await _employeeBankingService.Update(Bankingdto);
             return Ok();
         }
         catch (Exception ex)
