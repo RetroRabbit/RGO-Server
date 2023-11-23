@@ -1,9 +1,10 @@
-﻿using RGO.Models.Enums;
+﻿using System;
+using RGO.Models.Enums;
 
 namespace RGO.Models;
 
-public record EmployeeBankingDto(
-    int Id,
+public record SimpleEmployeeBankingDto
+(    int Id,
     int EmployeeId,
     string BankName,
     string Branch,
@@ -12,7 +13,5 @@ public record EmployeeBankingDto(
     string AccountHolderName,
     BankApprovalStatus Status,
     string? DeclineReason,
-    string File,
-    DateOnly LastUpdateDate,
-    DateOnly PendingUpdateDate
+    string File
     );
