@@ -41,6 +41,11 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
     [Column("file")]
     public string File { get; set; }
 
+    [Column("lastUpdateDate")]
+    public DateOnly LastUpdateDate { get; set; }
+
+    [Column("pendingUpdateDate")]
+    public DateOnly PendingUpdateDate { get; set; }
     public virtual Employee Employee { get; set; }
 
     public EmployeeBanking() { }
@@ -56,6 +61,8 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
         Status = employeeBankingDto.Status;
         DeclineReason = employeeBankingDto.DeclineReason;
         File = employeeBankingDto.File;
+        LastUpdateDate = employeeBankingDto.LastUpdateDate;
+        PendingUpdateDate = employeeBankingDto.PendingUpdateDate;
     }
 
     public EmployeeBankingDto ToDto()
@@ -70,7 +77,9 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
             AccountHolderName,
             Status,
             DeclineReason,
-            File
+            File,
+            LastUpdateDate,
+            PendingUpdateDate
             );
     }
 }
