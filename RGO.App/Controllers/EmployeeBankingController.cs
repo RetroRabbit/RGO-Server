@@ -44,7 +44,7 @@ public class EmployeeBankingController : ControllerBase
         {
             if (ex.Message.Contains("exists"))
             {
-                return Problem("Unexceptable", "Unexceptable", 406, "Details Already Exist");
+                return Problem("Unexceptable", "Unexceptable", 406, "Details already exists");
             }
             return NotFound(ex.Message);
         }

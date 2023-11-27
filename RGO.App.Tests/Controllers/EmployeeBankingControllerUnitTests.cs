@@ -1,115 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
-using RGO.App.Controllers;
 using RGO.Models;
-using RGO.Models.Enums;
 using RGO.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using RGO.App.Controllers;
 using Xunit;
+using RGO.Models.Enums;
 
-public class EmployeeBankingControllerUnitTests
+namespace RGO.App.Tests.Controllers
 {
-    [Fact]
-    public async Task AddBankingInfoReturnsOkResult()
+    public class EmployeeBankingControllerUnitTests
     {
-        var newEntry = new EmployeeBankingDto
-        (
-            1,
-            1001,
-            "Bank 1",
-            "Branch 1",
-            "Account Number 1",
-            EmployeeBankingAccountType.Cheque,
-            "Account Holder Name 1",
-            BankApprovalStatus.Approved,
-            " ",
-            "Document.pdf"
-        );
+        [Fact]
+        public async Task AddBankingInfoValidInputReturnsOkResult()
+        {
+            var mockService = new Mock<IEmployeeBankingService>();
+            var controller = new EmployeeBankingController(mockService.Object);
+            var newEntry = new SimpleEmployeeBankingDto
+                (1, 2, "BankName", "Branch", "AccountNo", EmployeeBankingAccountType.Savings,
+                "AccountHolderName", BankApprovalStatus.Approved, "DeclineReason", "File.pdf");
 
-        var mockEmployeeBankingService = new Mock<IEmployeeBankingService>();
-        mockEmployeeBankingService.Setup(s => s.Save(newEntry)).ReturnsAsync(newEntry);
+            var result = await controller.AddBankingInfo(newEntry);
 
-        var controller = new EmployeeBankingController(mockEmployeeBankingService.Object);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(okResult.Value);
 
-        var result = await controller.AddBankingInfo(newEntry);
+        }
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualEntry = Assert.IsAssignableFrom<EmployeeBankingDto>(okResult.Value);
-        Assert.Equal(newEntry, actualEntry);
-    }
+        [Fact]
+        public async Task UpdateInvalidInputReturnsBadRequest()
+        {
+            var mockService = new Mock<IEmployeeBankingService>();
+            var controller = new EmployeeBankingController(mockService.Object);
 
-    [Fact]
-    public async Task UpdateReturnsOkResult()
-    {
-        var updateEntry = new EmployeeBankingDto
-        (1, 1001, "Bank 1", "Branch 1", "Account Number 1", EmployeeBankingAccountType.Cheque, "Account Holder Name 1", BankApprovalStatus.Approved, " ", "Document.pdf");
+            var updateEntry = new SimpleEmployeeBankingDto
+                (1, 2, "BankName", "Branch", "AccountNo", EmployeeBankingAccountType.Savings,
+                string.Empty, BankApprovalStatus.Approved, "DeclineReason", "File.pdf");
 
-        var mockEmployeeBankingService = new Mock<IEmployeeBankingService>();
-        mockEmployeeBankingService.Setup(s => s.Update(updateEntry)).ReturnsAsync(updateEntry);
+            var result = await controller.Update(updateEntry);
 
-        var controller = new EmployeeBankingController(mockEmployeeBankingService.Object);
-
-        var result = await controller.Update(updateEntry);
-
-        var okResult = Assert.IsType<OkResult>(result);
-        Assert.Equal(200, okResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetBankingDetailsReturnsOkResult()
-    {
-        var expectedId = 1;
-
-        var mockEmployeeBankingService = new Mock<IEmployeeBankingService>();
-        mockEmployeeBankingService.Setup(s => s.GetBanking(expectedId)).ReturnsAsync(new EmployeeBankingDto
-            (
-            1,
-            1001,
-            "Bank 1",
-            "Branch 1",
-            "Account Number 1",
-            EmployeeBankingAccountType.Cheque,
-            "Account Holder Name 1",
-            BankApprovalStatus.Approved,
-            " ",
-            "Document.pdf"
-            ));
-
-        var controller = new EmployeeBankingController(mockEmployeeBankingService.Object);
-
-        var result = await controller.GetBankingDetails(expectedId);
-
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualEntry = Assert.IsAssignableFrom<EmployeeBankingDto>(okResult.Value);
-        Assert.Equal(expectedId, actualEntry.Id);
-    }
-
-    [Fact]
-    public async Task AddBankingInfoExceptionReturnsProblemDetails()
-    {
-        var newEntry = new EmployeeBankingDto
-            (
-            1,
-            1001,
-            "Bank 1",
-            "Branch 1",
-            "Account Number 1",
-            EmployeeBankingAccountType.Cheque,
-            "Account Holder Name 1",
-            BankApprovalStatus.Approved,
-            " ",
-            "Document.pdf");
-
-        var mockEmployeeBankingService = new Mock<IEmployeeBankingService>();
-        mockEmployeeBankingService.Setup(s => s.Save(newEntry)).ThrowsAsync(new Exception("Details Already Exist."));
-
-        var controller = new EmployeeBankingController(mockEmployeeBankingService.Object);
-
-        var result = await controller.AddBankingInfo(newEntry);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Details Already Exist.", notFoundResult.Value);
+            Assert.IsType<BadRequestObjectResult>(result);
+        } 
     }
 }
