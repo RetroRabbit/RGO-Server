@@ -3,6 +3,7 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Reflection;
 using System.Text;
 
 namespace RGO.Services.Services;
@@ -11,10 +12,13 @@ public class ChartService : IChartService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService) 
+    private readonly IServiceProvider _services;
+
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services) 
     {
         _db = db;
         _employeeService = employeeService;
+        _services = services;
     }
 
     public  async Task<List<ChartDto>> GetAllCharts() 
@@ -40,46 +44,24 @@ public class ChartService : IChartService
              var keyBuilder = new StringBuilder();
              foreach (var dataType in dataTypeList)
              {
-                 if (dataType == "Age")
+                 if (BaseDataType.HasCustom(dataType))
                  {
-                     var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
-                     if (dobPropertyInfo == null)
-                     {
-                         throw new ArgumentException($"EmployeeDto does not have a DateOfBirth property.");
-                     }
-                     var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
-                     var age = CalculateAge(dob);
-                     keyBuilder.Append("Age" + " " + age.ToString() + ", ");
-                 }
-                 else if (dataType == "PeopleChampion")
-                 {
-                     var peopleChampionIdProperty = typeof(EmployeeDto).GetProperty("PeopleChampion");
-                     if (peopleChampionIdProperty == null)
-                     {
-                         throw new ArgumentException($"EmployeeDto does not have a PeopleChampionId property.");
-                     }
-
-                     var peopleChampionId = (int)peopleChampionIdProperty.GetValue(employee);
-                     var peopleChampionTask = _employeeService.GetById(peopleChampionId);
-                     var peopleChampion = peopleChampionTask.GetAwaiter().GetResult();
-                     var peopleChampionName = peopleChampion.Name;
-                     keyBuilder.Append(peopleChampionName +' '+ peopleChampion.Surname + ", ");
+                     var obj = BaseDataType.GetCustom(dataType);
+                     var val = obj.GenerateData(employee, _services);
+                     if (val == null)
+                         continue;
+                     keyBuilder.Append(val);
                  }
                  else
                  {
                      var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
                      if (propertyInfo == null)
-                     {
-                         throw new ArgumentException($"Invalid dataType: {dataType}");
-                     }
-                     if (dataType == "Level") keyBuilder.Append("Level" + " " + propertyInfo.GetValue(employee).ToString() + ", ");
-                     else if (dataType == "Salary" || dataType == "PayRate") keyBuilder.Append("R" + " " + propertyInfo.GetValue(employee).ToString() + ", ");
-                     else if (dataType == "LeaveInterval")
-                     {
-                         if (propertyInfo.GetValue(employee).ToString() != "1") keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + " " + "Days" + ", ");
-                         else keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + " " + "Day" + ", ");
-                     }
-                     else keyBuilder.Append(propertyInfo.GetValue(employee).ToString() + ", ");
+                         continue;
+                     var val = propertyInfo.GetValue(employee);
+                     if (val == null)
+                         continue;
+
+                     keyBuilder.Append(val + ", ");
                  }
              }
              if (keyBuilder.Length > 2)
@@ -88,7 +70,8 @@ public class ChartService : IChartService
              }
              return keyBuilder.ToString();
          })
-     .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
+         .Where(x => string.IsNullOrWhiteSpace(x.Key) == false)
+        .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
 
         var labels = dataDictionary.Keys.ToList();
         var data = dataDictionary.Values.ToList();
@@ -105,16 +88,7 @@ public class ChartService : IChartService
         return await _db.Chart.Add(chart);
     }
 
-    private int CalculateAge(DateOnly dob)
-    {
-        var today = DateOnly.FromDateTime(DateTime.Today);
-        var age = today.Year - dob.Year;
-
-        if (today.DayOfYear < dob.DayOfYear)
-            age--;
-
-        return age;
-    }
+    
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {
@@ -128,14 +102,18 @@ public class ChartService : IChartService
                  {
                      var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
                      if (propertyInfo == null)
-                     {
-                         throw new ArgumentException($"Invalid dataType: {dataType}");
-                     }
+                         continue;
+
+                     var value = propertyInfo.GetValue(employee);
+
+                     if(value == null )
+                         continue;
 
                      keyBuilder.Append(propertyInfo.GetValue(employee));
                  }
                  return keyBuilder.ToString();
              })
+            .Where(x => string.IsNullOrWhiteSpace(x.Key) == false)
              .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
 
         var labels = dataDictionary.Keys.ToList();
@@ -227,24 +205,25 @@ public class ChartService : IChartService
         foreach (var employee in employees)
         {
             var formattedData = $"{employee.Name},{employee.Surname}";
-            foreach (var propertyName in propertyNames)
+            foreach (var dataType in propertyNames)
             {
-                if (propertyName == "Age")
-                {
-                    var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
-                    if (dobPropertyInfo == null)
-                    {
-                        throw new ArgumentException($"EmployeeDto does not have a DateOfBirth property.");
-                    }
-                    var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
-                    var age = CalculateAge(dob);
-                    formattedData += $",{age}";
+                if (BaseDataType.HasCustom(dataType))
+                 {
+                     var obj = BaseDataType.GetCustom(dataType);
+                     var val = obj.GenerateData(employee, _services);
+                     if (val == null)
+                         continue;
+                    formattedData += $",{val.Replace(",", "").Trim()}";
                 }
-                else
-                {
-                    var propertyInfo = typeof(EmployeeDto).GetProperty(propertyName);
-                    var propertyValue = propertyInfo.GetValue(employee);
-                    formattedData += $",{propertyValue}";
+                 else
+                 {
+                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                     if (propertyInfo == null)
+                         continue;
+                     var val = propertyInfo.GetValue(employee);
+                     if (val == null)
+                         continue;
+                    formattedData += $",{val.ToString().Replace(",", "").Trim()}";
                 }
             }
             csvData.AppendLine(formattedData);
