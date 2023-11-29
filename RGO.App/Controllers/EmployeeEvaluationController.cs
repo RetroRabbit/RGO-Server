@@ -2,7 +2,7 @@
 using RGO.Models;
 using RGO.Services.Interfaces;
 
-namespace RGO.App.Controllersp;
+namespace RGO.App.Controllers;
 
 [Route("/evaluation/")]
 [ApiController]
