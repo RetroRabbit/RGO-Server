@@ -6,6 +6,7 @@ using RGO.App.Controllers;
 using Xunit;
 using RGO.Models.Enums;
 using Microsoft.AspNetCore.Http;
+using RGO.UnitOfWork.Entities;
 
 namespace RGO.App.Tests.Controllers;
 
@@ -91,10 +92,65 @@ public class EmployeeBankingControllerUnitTests
         var notFoundResult = (NotFoundObjectResult)result;
 
         Assert.NotNull(notFoundResult.Value);
-        Assert.IsType<string>(notFoundResult.Value); // Adjust this line based on the actual type returned
+        Assert.IsType<string>(notFoundResult.Value);
 
         var errorMessage = (string)notFoundResult.Value;
 
         Assert.Equal("Some error message containing NotFound", errorMessage);
+    }
+
+    [Fact]
+    public async Task Get_ValidStatus_ReturnsOkResultWithEntries()
+    {
+        var mockService = new Mock<IEmployeeBankingService>();
+        var controller = new EmployeeBankingController(mockService.Object);
+        var status = 1;
+
+        var expectedEntries = new List<EmployeeBanking>
+        {
+            new EmployeeBanking
+            {
+                Id = 1,
+                EmployeeId = 123,
+                BankName = "Test Bank",
+                Branch = "Test Branch",
+                AccountNo = "123456789",
+                AccountType = EmployeeBankingAccountType.Savings,
+                AccountHolderName = "John Doe",
+                Status = BankApprovalStatus.Approved,
+                DeclineReason = null,
+                File = "file.pdf",
+                LastUpdateDate = new DateOnly(2023, 11, 28),
+                PendingUpdateDate = new DateOnly(2023, 11, 29)
+            }
+        };
+
+        mockService.Setup(x => x.Get(status))
+            .ReturnsAsync(expectedEntries);
+
+        var result = await controller.Get(status);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var actualEntries = Assert.IsType<List<EmployeeBanking>>(okResult.Value);
+
+        Assert.Equal(expectedEntries.Count, actualEntries.Count);
+    }
+
+    [Fact]
+    public async Task Get_ExceptionThrown_ReturnsNotFoundResultWithErrorMessage()
+    {
+        var mockService = new Mock<IEmployeeBankingService>();
+        var controller = new EmployeeBankingController(mockService.Object);
+        var status = 1;
+        var errorMessage = "Unable to retrieve employee banking entries";
+
+        mockService.Setup(x => x.Get(status)).ThrowsAsync(new Exception(errorMessage));
+
+        var result = await controller.Get(status);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+
+        Assert.Equal(errorMessage, actualErrorMessage);
     }
 }
