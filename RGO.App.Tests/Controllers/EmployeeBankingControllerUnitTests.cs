@@ -84,7 +84,7 @@ public class EmployeeBankingControllerUnitTests
         "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
 
         mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>()))
-            .ThrowsAsync(new Exception("Some error message containing NotFound"));
+            .ThrowsAsync(new Exception("Banking information Not Found"));
 
         var result = await controller.AddBankingInfo(newEntry);
 
@@ -98,7 +98,7 @@ public class EmployeeBankingControllerUnitTests
 
         var errorMessage = (string)notFoundResult.Value;
 
-        Assert.Equal("Some error message containing NotFound", errorMessage);
+        Assert.Equal("Banking information Not Found", errorMessage);
     }
 
     [Fact]
