@@ -159,14 +159,26 @@ namespace RGO.App.Tests.Controllers
             Assert.Equal(expectedEvaluation.Employee.EmployeeNumber, actualEvaluation.Employee.EmployeeNumber);
         }
 
+        [Fact]
+        public async Task GetEmployeeEvaluationInvalidParametersReturnsNotFoundResultWithErrorMessage()
+        {
+            var employeeEmail = "test.employee@retrorabbit.co.za";
+            var ownerEmail = "test.owner@retrorabbit.co.za";
+            var template = "Employee Evaluation Teamplte";
+            var subject = "Employee Evaluation Subject";
+            var errorMessage = "Error retrieving employee evaluation";
 
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            mockService.Setup(x => x.Get(employeeEmail, ownerEmail, template, subject))
+               .ThrowsAsync(new Exception(errorMessage));
 
+            var controller = new EmployeeEvaluationController(mockService.Object);
 
-        //[Fact]
-        //public async Task GetEmployeeEvaluationInvalidParametersReturnsNotFoundResultWithErrorMessage()
-        //{
+            var result = await controller.GetEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
 
-        //}
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+        }
 
         //[Fact]
         //public async Task SaveEmployeeEvaluationValidInputReturnsOkResultWithSavedEvaluation()
