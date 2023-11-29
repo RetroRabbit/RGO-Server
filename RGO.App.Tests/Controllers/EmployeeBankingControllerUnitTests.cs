@@ -50,7 +50,7 @@ public class EmployeeBankingControllerUnitTests
         var controller = new EmployeeBankingController(mockService.Object);
 
         var newEntry = new SimpleEmployeeBankingDto
-        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings, 
+        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings,
         "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
 
         mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>()))
@@ -80,7 +80,7 @@ public class EmployeeBankingControllerUnitTests
         var controller = new EmployeeBankingController(mockService.Object);
 
         var newEntry = new SimpleEmployeeBankingDto
-        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings, 
+        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings,
         "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
 
         mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>()))
@@ -111,11 +111,11 @@ public class EmployeeBankingControllerUnitTests
         var expectedEntries = new List<EmployeeBanking>
         {
             new EmployeeBanking
-            {   
-                Id = 1, EmployeeId = 123, BankName = "Test Bank", Branch = "Test Branch", 
-                AccountNo = "123456789", AccountType = EmployeeBankingAccountType.Savings, 
-                AccountHolderName = "John Doe", Status = BankApprovalStatus.Approved, 
-                DeclineReason = null, File = "file.pdf", 
+            {
+                Id = 1, EmployeeId = 123, BankName = "Test Bank", Branch = "Test Branch",
+                AccountNo = "123456789", AccountType = EmployeeBankingAccountType.Savings,
+                AccountHolderName = "John Doe", Status = BankApprovalStatus.Approved,
+                DeclineReason = null, File = "file.pdf",
                 LastUpdateDate = new DateOnly(2023, 11, 28), PendingUpdateDate = new DateOnly(2023, 11, 29)
             }
         };
@@ -156,7 +156,7 @@ public class EmployeeBankingControllerUnitTests
         var controller = new EmployeeBankingController(mockService.Object);
 
         var updateEntry = new SimpleEmployeeBankingDto
-        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings, 
+        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
         "John Doe", BankApprovalStatus.Approved, null, "file.pdf");
 
         mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>()))
@@ -168,5 +168,66 @@ public class EmployeeBankingControllerUnitTests
 
         var okResult = Assert.IsType<OkResult>(result);
         Assert.Equal(200, okResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateExceptionThrownReturnsNotFoundResultWithErrorMessage()
+    {
+        var mockService = new Mock<IEmployeeBankingService>();
+        var controller = new EmployeeBankingController(mockService.Object);
+
+        var updateEntry = new SimpleEmployeeBankingDto
+        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
+        "John Doe", BankApprovalStatus.Approved, null, "file.pdf");
+
+        var errorMessage = "Some error message";
+        mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>())).ThrowsAsync(new Exception(errorMessage));
+
+        var result = await controller.Update(updateEntry);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+
+        Assert.Equal(errorMessage, actualErrorMessage);
+        Assert.Equal(404, notFoundResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
+    {
+        var mockService = new Mock<IEmployeeBankingService>();
+        var controller = new EmployeeBankingController(mockService.Object);
+        var id = 123;
+
+        var expectedDetails = new EmployeeBankingDto
+        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
+            "John Doe", BankApprovalStatus.Approved, null, "file.pdf", new DateOnly(), new DateOnly());
+
+        mockService.Setup(x => x.GetBanking(id)).ReturnsAsync(expectedDetails);
+
+        var result = await controller.GetBankingDetails(id);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var actualDetails = Assert.IsType<EmployeeBankingDto>(okResult.Value);
+
+        Assert.Equal(expectedDetails, actualDetails);
+    }
+
+    [Fact]
+    public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()
+    {
+        var mockService = new Mock<IEmployeeBankingService>();
+        var controller = new EmployeeBankingController(mockService.Object);
+        var id = 456;
+        var errorMessage = "Employee banking details not found";
+
+        mockService.Setup(x => x.GetBanking(id)).ThrowsAsync(new Exception(errorMessage));
+
+        var result = await controller.GetBankingDetails(id);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+
+        Assert.Equal(errorMessage, actualErrorMessage);
     }
 }
