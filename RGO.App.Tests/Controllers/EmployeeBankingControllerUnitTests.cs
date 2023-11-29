@@ -50,7 +50,8 @@ public class EmployeeBankingControllerUnitTests
         var controller = new EmployeeBankingController(mockService.Object);
 
         var newEntry = new SimpleEmployeeBankingDto
-        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings, "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
+        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings, 
+        "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
 
         mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>()))
             .ThrowsAsync(new Exception("Details already exists"));
@@ -79,7 +80,8 @@ public class EmployeeBankingControllerUnitTests
         var controller = new EmployeeBankingController(mockService.Object);
 
         var newEntry = new SimpleEmployeeBankingDto
-        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings, "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
+        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings, 
+        "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
 
         mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>()))
             .ThrowsAsync(new Exception("Some error message containing NotFound"));
@@ -100,7 +102,7 @@ public class EmployeeBankingControllerUnitTests
     }
 
     [Fact]
-    public async Task Get_ValidStatus_ReturnsOkResultWithEntries()
+    public async Task GetValidStatusReturnsOkResultWithEntries()
     {
         var mockService = new Mock<IEmployeeBankingService>();
         var controller = new EmployeeBankingController(mockService.Object);
@@ -109,19 +111,12 @@ public class EmployeeBankingControllerUnitTests
         var expectedEntries = new List<EmployeeBanking>
         {
             new EmployeeBanking
-            {
-                Id = 1,
-                EmployeeId = 123,
-                BankName = "Test Bank",
-                Branch = "Test Branch",
-                AccountNo = "123456789",
-                AccountType = EmployeeBankingAccountType.Savings,
-                AccountHolderName = "John Doe",
-                Status = BankApprovalStatus.Approved,
-                DeclineReason = null,
-                File = "file.pdf",
-                LastUpdateDate = new DateOnly(2023, 11, 28),
-                PendingUpdateDate = new DateOnly(2023, 11, 29)
+            {   
+                Id = 1, EmployeeId = 123, BankName = "Test Bank", Branch = "Test Branch", 
+                AccountNo = "123456789", AccountType = EmployeeBankingAccountType.Savings, 
+                AccountHolderName = "John Doe", Status = BankApprovalStatus.Approved, 
+                DeclineReason = null, File = "file.pdf", 
+                LastUpdateDate = new DateOnly(2023, 11, 28), PendingUpdateDate = new DateOnly(2023, 11, 29)
             }
         };
 
@@ -137,7 +132,7 @@ public class EmployeeBankingControllerUnitTests
     }
 
     [Fact]
-    public async Task Get_ExceptionThrown_ReturnsNotFoundResultWithErrorMessage()
+    public async Task GetExceptionThrownReturnsNotFoundResultWithErrorMessage()
     {
         var mockService = new Mock<IEmployeeBankingService>();
         var controller = new EmployeeBankingController(mockService.Object);
@@ -152,5 +147,26 @@ public class EmployeeBankingControllerUnitTests
         var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
 
         Assert.Equal(errorMessage, actualErrorMessage);
+    }
+
+    [Fact]
+    public async Task UpdateValidDataReturnsOkResult()
+    {
+        var mockService = new Mock<IEmployeeBankingService>();
+        var controller = new EmployeeBankingController(mockService.Object);
+
+        var updateEntry = new SimpleEmployeeBankingDto
+        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings, 
+        "John Doe", BankApprovalStatus.Approved, null, "file.pdf");
+
+        mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>()))
+            .ReturnsAsync(new EmployeeBankingDto
+            (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
+            "John Doe", BankApprovalStatus.Approved, null, "file.pdf", new DateOnly(), new DateOnly()));
+
+        var result = await controller.Update(updateEntry);
+
+        var okResult = Assert.IsType<OkResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
     }
 }
