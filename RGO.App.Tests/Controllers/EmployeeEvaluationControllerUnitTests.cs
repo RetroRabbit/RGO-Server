@@ -19,9 +19,6 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task GetAllEmployeeEvaluationsValidEmailReturnsOkResultWithEvaluations()
         {
-            var mockService = new Mock<IEmployeeEvaluationService>();
-            var controller = new EmployeeEvaluationController(mockService.Object);
-
             var email = "test@retrorabbit.co.za";
             var expectedEvaluations = new List<EmployeeEvaluationDto>
             {
@@ -32,7 +29,7 @@ namespace RGO.App.Tests.Controllers
                     (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
                         new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
                         "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
                         new EmployeeAddressDto
@@ -41,9 +38,9 @@ namespace RGO.App.Tests.Controllers
                         "Emergency Contact",
                         "987654321"
                     ),
-                    new EmployeeEvaluationTemplateDto(1, "Template 1"),
+                    new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
                     new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
                         new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
                         "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
@@ -55,13 +52,16 @@ namespace RGO.App.Tests.Controllers
                         "Emergency Contact",
                         "987654321"
                         ),
-                    "Evaluation Subject",
+                    "Employee Evaluation Subject",
                     new DateOnly(2022, 1, 1),
                     new DateOnly(2022, 2, 1)
-                    )
+                ),
             };
 
+            var mockService = new Mock<IEmployeeEvaluationService>();
             mockService.Setup(x => x.GetAllEvaluationsByEmail(email)).ReturnsAsync(expectedEvaluations);
+
+            var controller = new EmployeeEvaluationController(mockService.Object);
 
             var result = await controller.GetAllEmployeeEvaluations(email);
 
@@ -90,11 +90,77 @@ namespace RGO.App.Tests.Controllers
             Assert.Equal(errorMessage, actualErrorMessage);
         }
 
-        //[Fact]
-        //public async Task GetEmployeeEvaluationValidParametersReturnsOkResultWithEvaluation()
-        //{
+        [Fact]
+        public async Task GetEmployeeEvaluation_ValidParameters_ReturnsOkResultWithEvaluation()
+        {
+            var employeeEmail = "test.employee@example.com";
+            var ownerEmail = "test.owner@example.com";
+            var template = "SampleTemplate";
+            var subject = "SampleSubject";
 
-        //}
+            var expectedEvaluation = new EmployeeEvaluationDto
+            (
+                1,
+                new EmployeeDto
+                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                    ),
+                new EmployeeEvaluationTemplateDto
+                (
+                    1,
+                    "Sample Description"
+                ),
+                new EmployeeDto
+                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                        ),
+                "Employee Evaluation Subject",
+                new DateOnly(2022, 1, 1),
+                new DateOnly(2022, 2, 1)
+            );
+
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            mockService.Setup(x => x.Get(employeeEmail, ownerEmail, template, subject)).ReturnsAsync(expectedEvaluation);
+
+            var controller = new EmployeeEvaluationController(mockService.Object);
+
+            var result = await controller.GetEmployeeEvaluation(employeeEmail, ownerEmail, template, subject);
+
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var actualEvaluation = Assert.IsType<EmployeeEvaluationDto>(okResult.Value);
+
+
+            Assert.Equal(expectedEvaluation.Id, actualEvaluation.Id);
+            Assert.Equal(expectedEvaluation.Subject, actualEvaluation.Subject);
+            Assert.Equal(expectedEvaluation.StartDate, actualEvaluation.StartDate);
+            Assert.Equal(expectedEvaluation.EndDate, actualEvaluation.EndDate);
+
+
+            Assert.Equal(expectedEvaluation.Employee.Id, actualEvaluation.Employee.Id);
+            Assert.Equal(expectedEvaluation.Employee.EmployeeNumber, actualEvaluation.Employee.EmployeeNumber);
+        }
+
+
+
 
         //[Fact]
         //public async Task GetEmployeeEvaluationInvalidParametersReturnsNotFoundResultWithErrorMessage()
