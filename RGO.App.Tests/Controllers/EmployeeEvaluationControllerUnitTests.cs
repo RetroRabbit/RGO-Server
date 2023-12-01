@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.App.Controllers;
 using RGO.Models;
@@ -155,8 +152,8 @@ namespace RGO.App.Tests.Controllers
             Assert.Equal(expectedEvaluation.EndDate, actualEvaluation.EndDate);
 
 
-            Assert.Equal(expectedEvaluation.Employee.Id, actualEvaluation.Employee.Id);
-            Assert.Equal(expectedEvaluation.Employee.EmployeeNumber, actualEvaluation.Employee.EmployeeNumber);
+            Assert.Equal(expectedEvaluation.Employee?.Id, actualEvaluation.Employee?.Id);
+            Assert.Equal(expectedEvaluation.Employee?.EmployeeNumber, actualEvaluation.Employee?.EmployeeNumber);
         }
 
         [Fact]
@@ -164,7 +161,7 @@ namespace RGO.App.Tests.Controllers
         {
             var employeeEmail = "test.employee@retrorabbit.co.za";
             var ownerEmail = "test.owner@retrorabbit.co.za";
-            var template = "Employee Evaluation Teamplte";
+            var template = "Employee Evaluation Template";
             var subject = "Employee Evaluation Subject";
             var errorMessage = "Error retrieving employee evaluation";
 
@@ -180,40 +177,268 @@ namespace RGO.App.Tests.Controllers
             var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
         }
 
-        //[Fact]
-        //public async Task SaveEmployeeEvaluationValidInputReturnsOkResultWithSavedEvaluation()
-        //{
+        [Fact]
+        public async Task SaveEmployeeEvaluationValidInputReturnsOkResultWithSavedEvaluation()
+        {
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            var controller = new EmployeeEvaluationController(mockService.Object);
 
-        //}
+            var input = new EmployeeEvaluationInput
+            (1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Template 1", "Subject 1");
 
-        //[Fact]
-        //public async Task SaveEmployeeEvaluationInvalidInputReturnsNotFoundResultWithErrorMessage()
-        //{
+            var expectedSavedEvaluation = new EmployeeEvaluationDto
+            (
+                1,
+                new EmployeeDto
+                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                    ),
+                new EmployeeEvaluationTemplateDto
+                (
+                    1,
+                    "Sample Description"
+                ),
+                new EmployeeDto
+                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                        ),
+                "Subject 1",
+                new DateOnly(2022, 1, 1),
+                new DateOnly(2022, 2, 1)
+            );
 
-        //}
+            mockService.Setup(x => x.Save(It.IsAny<EmployeeEvaluationInput>())).ReturnsAsync(expectedSavedEvaluation);
 
-        //[Fact]
-        //public async Task UpdateEmployeeEvaluationValidInputReturnsOkResult()
-        //{
+            var result = await controller.SaveEmployeeEvaluation(input);
 
-        //}
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var actualSavedEvaluation = Assert.IsType<EmployeeEvaluationDto>(okResult.Value);
 
-        //[Fact]
-        //public async Task UpdateEmployeeEvaluationInvalidInputReturnsNotFoundResultWithErrorMessage()
-        //{
+            Assert.Equal(expectedSavedEvaluation.Id, actualSavedEvaluation.Id);
+            Assert.Equal(expectedSavedEvaluation.Subject, actualSavedEvaluation.Subject);
+            Assert.Equal(expectedSavedEvaluation.StartDate, actualSavedEvaluation.StartDate);
+            Assert.Equal(expectedSavedEvaluation.EndDate, actualSavedEvaluation.EndDate);
 
-        //}
+            Assert.Equal(expectedSavedEvaluation.Employee?.Id, actualSavedEvaluation.Employee?.Id);
+            Assert.Equal(expectedSavedEvaluation.Employee?.EmployeeNumber, actualSavedEvaluation.Employee?.EmployeeNumber);
 
-        //[Fact]
-        //public async Task DeleteEmployeeEvaluationValidInputReturnsOkResult()
-        //{
+            Assert.Equal(expectedSavedEvaluation.Template?.Id, actualSavedEvaluation.Template?.Id);
+            Assert.Equal(expectedSavedEvaluation.Template?.Description, actualSavedEvaluation.Template?.Description);
 
-        //}
+            Assert.Equal(expectedSavedEvaluation.Owner?.Id, actualSavedEvaluation.Owner?.Id);
+            Assert.Equal(expectedSavedEvaluation.Owner?.EmployeeNumber, actualSavedEvaluation.Owner?.EmployeeNumber);
+        }
 
-        //[Fact]
-        //public async Task DeleteEmployeeEvaluationInvalidInputReturnsNotFoundResultWithErrorMessage()
-        //{
+        [Fact]
+        public async Task SaveEmployeeEvaluationInvalidInputReturnsNotFoundResultWithErrorMessage()
+        {
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            var controller = new EmployeeEvaluationController(mockService.Object);
 
-        //}
+            var invalidInput = new EmployeeEvaluationInput
+            (1, null, "employee@retrorabbit.co.za", "", "Evaluation Subject 1");
+
+            mockService.Setup(x => x.Save(invalidInput))
+                .ThrowsAsync(new Exception("Invalid input error message"));
+
+            var result = await controller.SaveEmployeeEvaluation(invalidInput);
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+
+            Assert.Equal("Invalid input error message", actualErrorMessage);
+        }
+
+
+        [Fact]
+        public async Task UpdateEmployeeEvaluationValidInputReturnsOkResult()
+        {
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            var controller = new EmployeeEvaluationController(mockService.Object);
+
+            var evaluationInputList = new List<EmployeeEvaluationInput>
+            {
+                new EmployeeEvaluationInput
+            (
+                1,
+                "owner@retrorabbit.co.za",
+                "employee@retrorabbit.co.za",
+                "Template 1",
+                "Subject 1"
+            ),
+                new EmployeeEvaluationInput
+            (
+                2,
+                "owner@retrorabbit.co.za",
+                "employee@retrorabbit.co.za",
+                "Template 2",
+                "Subject 2"
+            )
+            };
+
+            mockService.Setup(x => x.Update(It.IsAny<EmployeeEvaluationInput>(), It.IsAny<EmployeeEvaluationInput>()))
+                .ReturnsAsync(new EmployeeEvaluationDto
+            (
+                1,
+                new EmployeeDto
+                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                    ),
+                new EmployeeEvaluationTemplateDto
+                (
+                    1,
+                    "Sample Description"
+                ),
+                new EmployeeDto
+                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                        ),
+                "Subject 1",
+                new DateOnly(2022, 1, 1),
+                new DateOnly(2022, 2, 1)
+            ));
+
+            var result = await controller.UpdateEmployeeEvaluation(evaluationInputList);
+
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async Task UpdateEmployeeEvaluationInvalidInputReturnsNotFoundResultWithErrorMessage()
+        {
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            var controller = new EmployeeEvaluationController(mockService.Object);
+
+            var invalidInputList = new List<EmployeeEvaluationInput>
+            {
+                new EmployeeEvaluationInput
+                (0, null, "invalidemail", "", null),
+                new EmployeeEvaluationInput
+                (-1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Template 1", "Subject 1")
+            };
+
+            var errorMessage = "Invalid input error message";
+            mockService.Setup(x => x.Update(It.IsAny<EmployeeEvaluationInput>(), It.IsAny<EmployeeEvaluationInput>()))
+                .ThrowsAsync(new Exception(errorMessage));
+
+            var result = await controller.UpdateEmployeeEvaluation(invalidInputList);
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+
+            Assert.Equal(errorMessage, actualErrorMessage);
+
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeEvaluationValidInputReturnsOkResult()
+        {
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            var controller = new EmployeeEvaluationController(mockService.Object);
+
+            var evaluationInput = new EmployeeEvaluationInput
+            (1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Template 1", "Subject 1");
+
+            mockService.Setup(x => x.Delete(evaluationInput))
+                .ReturnsAsync(new EmployeeEvaluationDto
+            (
+                1,
+                new EmployeeDto
+                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                    ),
+                new EmployeeEvaluationTemplateDto
+                (
+                    1,
+                    "Sample Description"
+                ),
+                new EmployeeDto
+                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
+                        new EmployeeAddressDto
+                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                        new EmployeeAddressDto
+                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                        "12",
+                        "Emergency Contact",
+                        "987654321"
+                        ),
+                "Subject 1",
+                new DateOnly(2022, 1, 1),
+                new DateOnly(2022, 2, 1)
+            ));
+
+            var result = await controller.DeleteEmployeeEvaluation(evaluationInput);
+
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeEvaluationInvalidInputReturnsNotFoundResultWithErrorMessage()
+        {
+            var mockService = new Mock<IEmployeeEvaluationService>();
+            var controller = new EmployeeEvaluationController(mockService.Object);
+
+            var invalidEvaluationInput = new EmployeeEvaluationInput
+            (0, null, "invalidemail", "", null);
+
+            var errorMessage = "Invalid input error message";
+            mockService.Setup(x => x.Delete(invalidEvaluationInput))
+                .ThrowsAsync(new Exception(errorMessage));
+
+            var result = await controller.DeleteEmployeeEvaluation(invalidEvaluationInput);
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+
+            Assert.Equal(errorMessage, actualErrorMessage);
+        }
     }
 }
