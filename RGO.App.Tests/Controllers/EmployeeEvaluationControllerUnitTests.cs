@@ -23,9 +23,9 @@ namespace RGO.App.Tests.Controllers
                 (
                     1,
                     new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -37,9 +37,9 @@ namespace RGO.App.Tests.Controllers
                     ),
                     new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
                     new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -99,9 +99,9 @@ namespace RGO.App.Tests.Controllers
             (
                 1,
                 new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -117,9 +117,9 @@ namespace RGO.App.Tests.Controllers
                     "Sample Description"
                 ),
                 new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -190,9 +190,9 @@ namespace RGO.App.Tests.Controllers
             (
                 1,
                 new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -208,9 +208,9 @@ namespace RGO.App.Tests.Controllers
                     "Sample Description"
                 ),
                 new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -299,9 +299,9 @@ namespace RGO.App.Tests.Controllers
             (
                 1,
                 new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -317,9 +317,9 @@ namespace RGO.App.Tests.Controllers
                     "Sample Description"
                 ),
                 new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -380,9 +380,9 @@ namespace RGO.App.Tests.Controllers
             (
                 1,
                 new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
@@ -398,9 +398,9 @@ namespace RGO.App.Tests.Controllers
                     "Sample Description"
                 ),
                 new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateOnly(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateOnly(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateOnly(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
                         "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
                         new EmployeeAddressDto
                         (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
