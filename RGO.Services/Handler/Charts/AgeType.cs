@@ -14,7 +14,8 @@ public class AgeType : BaseDataType
         if (dobPropertyInfo == null)
             return null;
 
-        var dob = (DateOnly)dobPropertyInfo.GetValue(employee);
+        var employee_dob = (DateTime)dobPropertyInfo.GetValue(employee);
+        var dob = new DateOnly(employee_dob.Year, employee_dob.Month, employee_dob.Day);
         var age = CalculateAge(dob);
         return $"Age {age}, ";
     }
