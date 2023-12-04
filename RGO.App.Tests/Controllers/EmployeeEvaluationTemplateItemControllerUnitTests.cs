@@ -172,7 +172,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task DeleteEmployeeEvaluationTemplateItem_ValidParameters_ReturnsOkResult()
+        public async Task DeleteEmployeeEvaluationTemplateItemValidParametersReturnsOkResult()
         {
             var template = "Example Test Template";
             var section = "Example Section";
@@ -191,7 +191,7 @@ namespace RGO.App.Tests.Controllers
         }
 
         [Fact]
-        public async Task DeleteEmployeeEvaluationTemplateItem_ExceptionThrown_ReturnsNotFoundResult()
+        public async Task DeleteEmployeeEvaluationTemplateItemExceptionThrownReturnsNotFoundResult()
         {
             var template = "Example Test Template";
             var section = "Example Section";
