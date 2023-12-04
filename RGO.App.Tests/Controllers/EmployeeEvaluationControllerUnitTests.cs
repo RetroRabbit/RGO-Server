@@ -159,8 +159,8 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task GetEmployeeEvaluationInvalidParametersReturnsNotFoundResultWithErrorMessage()
         {
-            var employeeEmail = "test.employee@retrorabbit.co.za";
-            var ownerEmail = "test.owner@retrorabbit.co.za";
+            var employeeEmail = "employee@retrorabbit.co.za";
+            var ownerEmail = "owner@retrorabbit.co.za";
             var template = "Employee Evaluation Template";
             var subject = "Employee Evaluation Subject";
             var errorMessage = "Error retrieving employee evaluation";
