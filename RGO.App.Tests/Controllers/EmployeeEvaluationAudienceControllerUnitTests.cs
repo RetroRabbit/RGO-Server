@@ -161,7 +161,6 @@ namespace RGO.App.Tests.Controllers
             Assert.Equal(savedAudience, actualSavedAudience);
         }
 
-
         [Fact]
         public async Task SaveEmployeeEvaluationAudienceExceptionThrownReturnsNotFoundResult()
         {
