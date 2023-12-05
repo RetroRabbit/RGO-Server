@@ -3,6 +3,8 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -32,9 +34,33 @@ public class ChartService : IChartService
             return employees.Count;
     }
 
-    public async Task<ChartDto> CreateChart(List<string> dataTypes, string chartName, string chartType)
+    public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)
     {
-        var employees = await _employeeService.GetAll();
+        List<EmployeeDto> employees;
+
+        if (roles[0] == null)
+        {
+            employees = await _employeeService.GetAll();
+        }
+        else
+        {
+            //foreach (var item in roles)
+            //{
+            //    employees = await _db.Employee
+            //    .Get(employee => roles.Contains(employee.EmployeeType.Name))
+            //    .Include(employee => employee.EmployeeType)
+            //    .Select(employee => employee.ToDto())
+            //    .AsNoTracking()
+            //    .ToListAsync();
+            //}
+
+            employees = await _db.Employee
+                .Get(employee => roles.Any(x => roles.Contains(employee.EmployeeType.Name)))
+                .Include(employee => employee.EmployeeType)
+                .Select(employee => employee.ToDto())
+                .AsNoTracking()
+                .ToListAsync();
+        }
 
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
 
@@ -87,8 +113,6 @@ public class ChartService : IChartService
 
         return await _db.Chart.Add(chart);
     }
-
-    
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {

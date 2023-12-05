@@ -28,7 +28,7 @@ namespace RGO.Services.Interfaces
         /// <param name="chartName"></param>
         /// <param name="chartType"></param>
         /// <returns>ChartDto</returns>
-        Task<ChartDto> CreateChart(List<string> dataTypes, string chartName, string chartType);
+        Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType);
 
         /// <summary>
         ///Gets data points selected by the user
