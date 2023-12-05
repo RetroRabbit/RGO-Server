@@ -69,28 +69,28 @@ Update-Database
 
 ### Checking new user added to the DB you made
 
--Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
--https://www.pgadmin.org/download/pgadmin-4-windows/
+- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
+- https://www.pgadmin.org/download/pgadmin-4-windows/
 
 ---
 
--Register new RGO server
+- Register new RGO server
 
 ![Register service](./Screenshot%202023-08-02%20173735.png)
 
 ---
 
--Update Information and save
+- Update Information and save
 
 ![Register service - connection](./Screenshot%202023-08-02%20173613.png)
 
 ---
 
--Navigate to Employee table
+- Navigate to Employee table
 
 ![PgAdmin Employee Table Navigation](./EmployeeTable-Example.png)
 
-Check if your new user is added
+- Check if your new user is added
 
 ![PgAdmin new user check](./EmployeeTableCheckUpdate-Example.png)
 
