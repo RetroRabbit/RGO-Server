@@ -35,10 +35,10 @@ public class EmployeeDocumentServiceUnitTest
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto employeeMock = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        EmployeeDto employeeMock = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
-            new DateOnly(), null, Race.Black, Gender.Male, null,
+            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+            new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         var employeeDocDto = new SimpleEmployeeDocumentDto(
@@ -80,10 +80,10 @@ public class EmployeeDocumentServiceUnitTest
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-        EmployeeDto employeeMock = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        EmployeeDto employeeMock = new(1, "001", "34434434", new DateTime(), new DateTime(),
            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-           "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
-           new DateOnly(), null, Race.Black, Gender.Male, null,
+           "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+           new DateTime(), null, Race.Black, Gender.Male, null,
            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
@@ -117,10 +117,10 @@ public class EmployeeDocumentServiceUnitTest
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
-            new DateOnly(), null, Race.Black, Gender.Male, null,
+            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+            new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
@@ -154,10 +154,10 @@ public class EmployeeDocumentServiceUnitTest
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
-            new DateOnly(), null, Race.Black, Gender.Male, null,
+            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+            new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
@@ -195,10 +195,10 @@ public class EmployeeDocumentServiceUnitTest
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
               null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-              "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
-              new DateOnly(), null, Race.Black, Gender.Male, null,
+              "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+              new DateTime(), null, Race.Black, Gender.Male, null,
               "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
@@ -240,10 +240,10 @@ public class EmployeeDocumentServiceUnitTest
         EmployeeType employeeType = new EmployeeType(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
               null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-              "Schoeman", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
-              new DateOnly(), null, Race.Black, Gender.Male, null,
+              "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+              new DateTime(), null, Race.Black, Gender.Male, null,
               "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         var mockEmployee = new Employee(testEmployee1, employeeTypeDto);

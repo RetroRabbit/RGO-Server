@@ -14,10 +14,10 @@ public class EmployeeDataUnitTests
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        _employee = new EmployeeDto(1, "001", "34434434", new DateOnly(), new DateOnly(),
+        _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000,  "Dorothy", "D",
-            "Mahoko", new DateOnly(), "South Africa", "South African", "0000080000000", " ",
-            new DateOnly(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
+            "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+            new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
             "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         _fieldCode = new FieldCodeDto(1, "email01", "Email", "desciption", "@(\\w+).co.za", Models.Enums.FieldCodeType.String, Models.Enums.ItemStatus.Active, true, "Employee", 0);
