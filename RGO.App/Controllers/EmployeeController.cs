@@ -37,6 +37,23 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [HttpGet("id")]
+    public async Task<IActionResult> GetEmployeeById([FromQuery] int id)
+    {
+        try
+        {
+            var employee = await _employeeService.GetEmployeeById(id);
+
+            return Ok(employee);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetEmployee([FromQuery] string? email)
     {
@@ -56,6 +73,7 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpPut("update")]

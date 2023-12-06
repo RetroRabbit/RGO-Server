@@ -142,7 +142,23 @@ public class EmployeeService : IEmployeeService
             .Take(1)
             .FirstOrDefaultAsync();
 
-        if (employee == null) { throw new Exception("User not found"); }
+        if (employee == null) { throw new Exception("Employee not found"); }
+
+        return employee;
+    }
+
+    public async Task<EmployeeDto> GetEmployeeById(int id)
+    {
+        var employee = await _db.Employee
+            .Get(employee => employee.Id == id)
+            .AsNoTracking()
+            .Include(employee => employee.EmployeeType)
+            .Include(employee => employee.PhysicalAddress)
+            .Include(employee => employee.PostalAddress)
+            .Select(employee => employee.ToDto())
+            .FirstOrDefaultAsync();
+
+        if (employee == null) { throw new Exception("Employee not found"); }
 
         return employee;
     }
