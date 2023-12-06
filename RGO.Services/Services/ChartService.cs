@@ -4,8 +4,6 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Data;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace RGO.Services.Services;
@@ -38,24 +36,16 @@ public class ChartService : IChartService
     {
         List<EmployeeDto> employees;
 
-        if (roles[0] == null)
+        var roleList = roles.SelectMany(item => item.Split(',')).ToList();
+
+        if ( roleList[0] == "All")
         {
             employees = await _employeeService.GetAll();
         }
         else
         {
-            //foreach (var item in roles)
-            //{
-            //    employees = await _db.Employee
-            //    .Get(employee => roles.Contains(employee.EmployeeType.Name))
-            //    .Include(employee => employee.EmployeeType)
-            //    .Select(employee => employee.ToDto())
-            //    .AsNoTracking()
-            //    .ToListAsync();
-            //}
-
-            employees = await _db.Employee
-                .Get(employee => roles.Any(x => roles.Contains(employee.EmployeeType.Name)))
+                employees = await _db.Employee
+                .Get(employee => roleList.Contains(employee.EmployeeType.Name))
                 .Include(employee => employee.EmployeeType)
                 .Select(employee => employee.ToDto())
                 .AsNoTracking()

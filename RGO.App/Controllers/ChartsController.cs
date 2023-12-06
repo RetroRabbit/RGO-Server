@@ -37,7 +37,7 @@ namespace RGO.App.Controllers
         {
             try
             {
-                await _chartService.CreateChart(dataType,roles,chartName,chartType);
+                await _chartService.CreateChart(dataType, roles, chartName,chartType);
 
                 return Ok();
             }
