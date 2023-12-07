@@ -192,7 +192,7 @@ namespace RGO.App.Tests.Controllers
         }
 
 
-            [Fact]
+[Fact]
         public async Task GetUserRolesReturnsNotFoundResult()
         {
             var authServiceMock = new Mock<IAuthService>();
