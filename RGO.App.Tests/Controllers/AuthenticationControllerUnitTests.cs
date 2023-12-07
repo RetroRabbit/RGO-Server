@@ -24,10 +24,8 @@ namespace RGO.App.Tests.Controllers
             authServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(true);
             authServiceMock.Setup(x => x.Login(email)).ReturnsAsync(expectedToken);
 
-            // Act
             var result = await controller.LoginUser(email);
 
-            // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var actualToken = Assert.IsType<string>(okResult.Value);
 
