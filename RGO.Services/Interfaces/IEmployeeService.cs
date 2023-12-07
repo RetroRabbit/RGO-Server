@@ -25,6 +25,13 @@ public interface IEmployeeService
     Task<EmployeeDto> GetEmployee(string email);
 
     /// <summary>
+    /// Get employee by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>An employee dto including type and addresses</returns>
+    Task<EmployeeDto> GetEmployeeById(int id);
+
+    /// <summary>
     /// Save employee
     /// </summary>
     /// <param name="employeeDto"></param>
