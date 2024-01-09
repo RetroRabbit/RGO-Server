@@ -1,5 +1,7 @@
 # Introduction
 
+### NB!!! Make sure you're checked out on the develop branch
+
 This system is an employee management system for Retro Rabbit Specificaly this is the back end for said system and works in conjuncture with the Front End repo
 
 # Getting Started
@@ -15,6 +17,15 @@ Runs on(.NET Web API):
 - https://localhost:7026
 - http://localhost:5193
 
+# pgAdmin
+
+### Setup PgAdmin and Create Database
+
+Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
+Password should be postgrespw. Set the host to localhost. You should be able to connect to the
+RGO database after adding migrations and updating the DB in package manager console in
+Visual Studios.
+
 ## Docker
 
 ### Install Docker
@@ -26,6 +37,7 @@ Runs on(.NET Web API):
 ### Incorrect WSL version error
 
 - If you get a WSL wrong version error run the following command
+
 ```powershell
 wsl --install
 ```
@@ -56,6 +68,7 @@ Make sure the **Default project** is **_RGO.UnitOfWork_**.
 ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
 
 ### Add new user
+
 - To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
 - Add new Migration for your user
 
@@ -93,8 +106,6 @@ Update-Database
 - Check if your new user is added
 
 ![PgAdmin new user check](./EmployeeTableCheckUpdate-Example.png)
-
-
 
 ### Unit Test Coverage
 
