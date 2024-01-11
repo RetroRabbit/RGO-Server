@@ -26,7 +26,7 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task SaveEmployeeTypeTestFail()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Llewellyn");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>())).Returns(Task.FromResult(false));
@@ -47,11 +47,10 @@ public class EmployeeTypesServiceUnitTest
         Assert.Equal(employeeTypeDto.Name, result.Name);
     }
 
-
     [Fact]
     public async Task SaveEmployeeTypeTestSuccessSave()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Test");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         _employeeTypeServiceMock.Setup(x => x.SaveEmployeeType(employeeTypeDto)).ReturnsAsync(employeeTypeDto);
@@ -72,18 +71,18 @@ public class EmployeeTypesServiceUnitTest
     public async Task GetAllEmployeeTypesTestSuccess()
     {
         var employeeTypesDtos = new List<EmployeeTypeDto>
-    {
-        new EmployeeTypeDto(1, "Test1"),
-        new EmployeeTypeDto(2, "Test2"),
-        new EmployeeTypeDto(3, "Test3")
-    };
+        {
+            new EmployeeTypeDto(1, "CAM"),
+            new EmployeeTypeDto(2, "Designer"),
+            new EmployeeTypeDto(3, "Developer")
+        };
 
         var employeeTypes = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypesDtos[0]),
-        new EmployeeType(employeeTypesDtos[1]),
-        new EmployeeType(employeeTypesDtos[2])
-    };
+        {
+            new EmployeeType(employeeTypesDtos[0]),
+            new EmployeeType(employeeTypesDtos[1]),
+            new EmployeeType(employeeTypesDtos[2])
+        };
 
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>())).ReturnsAsync(employeeTypesDtos);
 
@@ -99,18 +98,18 @@ public class EmployeeTypesServiceUnitTest
     public async Task GetAllEmployeeTypesTestFail()
     {
         var employeeTypesDtos = new List<EmployeeTypeDto>
-    {
-        new EmployeeTypeDto(1, "Test1"),
-        new EmployeeTypeDto(2, "Test2"),
-        new EmployeeTypeDto(3, "Test3")
-    };
+        {
+            new EmployeeTypeDto(1, "CAM"),
+            new EmployeeTypeDto(2, "Designer"),
+            new EmployeeTypeDto(3, "Developer")
+        };
 
         var employeeTypes = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypesDtos[0]),
-        new EmployeeType(employeeTypesDtos[1]),
-        new EmployeeType(employeeTypesDtos[2])
-    };
+        {
+            new EmployeeType(employeeTypesDtos[0]),
+            new EmployeeType(employeeTypesDtos[1]),
+            new EmployeeType(employeeTypesDtos[2])
+        };
 
         _employeeTypeServiceMock.Setup(r => r.GetAllEmployeeType()).Throws(new Exception());
 
@@ -128,13 +127,13 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task DeleteEmployeeTypeTestSuccess()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Llewellyn");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypeDto)
-    };
+        {
+            new EmployeeType(employeeTypeDto)
+        };
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
 
@@ -151,13 +150,13 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task DeleteEmployeeTypeTestFail()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Llewellyn");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypeDto)
-    };
+        {
+            new EmployeeType(employeeTypeDto)
+        };
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name)).Throws(new Exception());
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
@@ -176,13 +175,13 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task GetEmployeeTypeTestSuccess()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Llewellyn");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypeDto)
-    };
+        {
+            new EmployeeType(employeeTypeDto)
+        };
 
         _dbMock.Setup(e => e.EmployeeType.Get(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                  .Returns(employeeTypeList.AsQueryable().BuildMock());
@@ -198,13 +197,13 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task GetEmployeeTypeTestFail()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Llewellyn");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypeDto)
-    };
+        {
+            new EmployeeType(employeeTypeDto)
+        };
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name)).Throws(new Exception());
 
@@ -224,18 +223,18 @@ public class EmployeeTypesServiceUnitTest
     public async Task GetAllEmployeeTypesTestSuccess2()
     {
         var employeeTypesDtos = new List<EmployeeTypeDto>
-    {
-        new EmployeeTypeDto(1, "Test1"),
-        new EmployeeTypeDto(2, "Test2"),
-        new EmployeeTypeDto(3, "Test3")
-    };
+        {
+            new EmployeeTypeDto(1, "CAM"),
+            new EmployeeTypeDto(2, "Designer"),
+            new EmployeeTypeDto(3, "Developer")
+        };
 
         var employeeTypes = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypesDtos[0]),
-        new EmployeeType(employeeTypesDtos[1]),
-        new EmployeeType(employeeTypesDtos[2])
-    };
+        {
+            new EmployeeType(employeeTypesDtos[0]),
+            new EmployeeType(employeeTypesDtos[1]),
+            new EmployeeType(employeeTypesDtos[2])
+        };
 
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>())).ReturnsAsync(employeeTypesDtos);
 
@@ -251,18 +250,18 @@ public class EmployeeTypesServiceUnitTest
     public async Task GetAllEmployeeTypesTestFail2()
     {
         var employeeTypesDtos = new List<EmployeeTypeDto>
-    {
-        new EmployeeTypeDto(1, "Test1"),
-        new EmployeeTypeDto(2, "Test2"),
-        new EmployeeTypeDto(3, "Test3")
-    };
+        {
+            new EmployeeTypeDto(1, "CAM"),
+            new EmployeeTypeDto(2, "Designer"),
+            new EmployeeTypeDto(3, "Developer")
+        };
 
         var employeeTypes = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypesDtos[0]),
-        new EmployeeType(employeeTypesDtos[1]),
-        new EmployeeType(employeeTypesDtos[2])
-    };
+        {
+            new EmployeeType(employeeTypesDtos[0]),
+            new EmployeeType(employeeTypesDtos[1]),
+            new EmployeeType(employeeTypesDtos[2])
+        };
 
         _employeeTypeServiceMock.Setup(r => r.GetAllEmployeeType()).Throws(new Exception());
 
@@ -280,13 +279,13 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task UpdateEmployeeTypeTestSuccess()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Llewellyn");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypeDto)
-    };
+        {
+            new EmployeeType(employeeTypeDto)
+        };
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
 
@@ -303,13 +302,13 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task UpdateEmployeeTypeTestFail()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Llewellyn");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
-    {
-        new EmployeeType(employeeTypeDto)
-    };
+        {
+            new EmployeeType(employeeTypeDto)
+        };
 
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name)).Throws(new Exception());
