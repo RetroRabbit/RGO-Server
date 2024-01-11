@@ -35,7 +35,6 @@ public class EmployeeTypesServiceUnitTest
         _employeeTypeServiceMock.Setup(x => x.SaveEmployeeType(employeeTypeDto)).ReturnsAsync(employeeTypeDto);
         _employeeTypeServiceMock.Setup(x => x.GetEmployeeType(employeeType.Name)).ReturnsAsync(employeeTypeDto);
 
-
         _dbMock.Setup(r => r.EmployeeType.Add(It.IsAny<EmployeeType>())).Returns(Task.FromResult(employeeTypeDto));
         _dbMock.Setup(x => x.EmployeeType.Add(employeeType)).ReturnsAsync(employeeTypeDto);
 
@@ -77,13 +76,6 @@ public class EmployeeTypesServiceUnitTest
             new EmployeeTypeDto(3, "Developer")
         };
 
-        var employeeTypes = new List<EmployeeType>
-        {
-            new EmployeeType(employeeTypesDtos[0]),
-            new EmployeeType(employeeTypesDtos[1]),
-            new EmployeeType(employeeTypesDtos[2])
-        };
-
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>())).ReturnsAsync(employeeTypesDtos);
 
         var result = await employeeTypeService.GetEmployeeTypes();
@@ -102,13 +94,6 @@ public class EmployeeTypesServiceUnitTest
             new EmployeeTypeDto(1, "CAM"),
             new EmployeeTypeDto(2, "Designer"),
             new EmployeeTypeDto(3, "Developer")
-        };
-
-        var employeeTypes = new List<EmployeeType>
-        {
-            new EmployeeType(employeeTypesDtos[0]),
-            new EmployeeType(employeeTypesDtos[1]),
-            new EmployeeType(employeeTypesDtos[2])
         };
 
         _employeeTypeServiceMock.Setup(r => r.GetAllEmployeeType()).Throws(new Exception());
@@ -176,7 +161,6 @@ public class EmployeeTypesServiceUnitTest
     public async Task GetEmployeeTypeTestSuccess()
     {
         var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
         {
@@ -198,7 +182,6 @@ public class EmployeeTypesServiceUnitTest
     public async Task GetEmployeeTypeTestFail()
     {
         var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        var employeeType = new EmployeeType(employeeTypeDto);
 
         var employeeTypeList = new List<EmployeeType>
         {
@@ -229,13 +212,6 @@ public class EmployeeTypesServiceUnitTest
             new EmployeeTypeDto(3, "Developer")
         };
 
-        var employeeTypes = new List<EmployeeType>
-        {
-            new EmployeeType(employeeTypesDtos[0]),
-            new EmployeeType(employeeTypesDtos[1]),
-            new EmployeeType(employeeTypesDtos[2])
-        };
-
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>())).ReturnsAsync(employeeTypesDtos);
 
         var result = await employeeTypeService.GetAllEmployeeType();
@@ -254,13 +230,6 @@ public class EmployeeTypesServiceUnitTest
             new EmployeeTypeDto(1, "CAM"),
             new EmployeeTypeDto(2, "Designer"),
             new EmployeeTypeDto(3, "Developer")
-        };
-
-        var employeeTypes = new List<EmployeeType>
-        {
-            new EmployeeType(employeeTypesDtos[0]),
-            new EmployeeType(employeeTypesDtos[1]),
-            new EmployeeType(employeeTypesDtos[2])
         };
 
         _employeeTypeServiceMock.Setup(r => r.GetAllEmployeeType()).Throws(new Exception());
@@ -309,7 +278,6 @@ public class EmployeeTypesServiceUnitTest
         {
             new EmployeeType(employeeTypeDto)
         };
-
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name)).Throws(new Exception());
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
