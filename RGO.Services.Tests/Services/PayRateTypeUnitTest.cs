@@ -33,14 +33,19 @@ public class PayRateTypeUnitTest
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
-    [Fact]
-    public async Task PayRateTypeNullTestSuccess()
+    private EmployeeDto CreateEmployee(float? payRateType)
     {
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, null, 100000, "Matt", "MT",
+        return new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
+            null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, payRateType, 100000, "Matt", "MT",
             "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
             new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+    }
+
+    [Fact]
+    public async Task PayRateTypeNullTestSuccess()
+    {
+        var employeeDto = CreateEmployee(null);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -63,13 +68,9 @@ public class PayRateTypeUnitTest
     [Fact]
     public async Task PayRateTypeNullFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("Failed to get employee type of employee"));
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, null, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = CreateEmployee(null);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -81,6 +82,7 @@ public class PayRateTypeUnitTest
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>())).Returns(Task.FromResult(false));
+        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(false));
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(employeeList.AsQueryable().BuildMock());
 
@@ -93,11 +95,7 @@ public class PayRateTypeUnitTest
     [Fact]
     public async Task PayRateTypeValueTestSuccess()
     {
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = CreateEmployee(128);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -120,13 +118,9 @@ public class PayRateTypeUnitTest
     [Fact]
     public async Task PayRateTypeValueTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("Failed to get employee type of employee"));
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = CreateEmployee(128);
 
         var employeeDtoList = new List<EmployeeDto>
         {
