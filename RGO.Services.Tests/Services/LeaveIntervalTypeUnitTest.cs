@@ -16,21 +16,23 @@ public class LeaveIntervalTypeUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private LeaveIntervalType leaveIntervalType;
+    EmployeeTypeDto employeeTypeDto;
+    EmployeeType employeeType;
+    RoleDto roleDto;
 
     public LeaveIntervalTypeUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         leaveIntervalType = new LeaveIntervalType();
+        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        employeeType = new EmployeeType(employeeTypeDto);
+        roleDto = new RoleDto(3, "Employee");
     }
 
     [Fact]
     public async Task GenerateDataNullTestSuccess()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        RoleDto roleDto = new RoleDto(3, "Employee");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -62,10 +64,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataOneDayTestSuccess()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        RoleDto roleDto = new RoleDto(3, "Employee");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -97,10 +95,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataMoreDaysTestSuccess()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        RoleDto roleDto = new RoleDto(3, "Employee");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -132,10 +126,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataNullTestFail()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        RoleDto roleDto = new RoleDto(3, "Employee");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -171,10 +161,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataOneDayTestFail()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        RoleDto roleDto = new RoleDto(3, "Employee");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -210,10 +196,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataMoreDaysTestFail()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        RoleDto roleDto = new RoleDto(3, "Employee");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
