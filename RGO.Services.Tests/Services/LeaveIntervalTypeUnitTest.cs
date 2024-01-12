@@ -19,6 +19,7 @@ public class LeaveIntervalTypeUnitTest
     EmployeeTypeDto employeeTypeDto;
     EmployeeType employeeType;
     RoleDto roleDto;
+    EmployeeAddressDto employeeAddressDto;
 
     public LeaveIntervalTypeUnitTest()
     {
@@ -28,14 +29,13 @@ public class LeaveIntervalTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto(3, "Employee");
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
     [Fact]
     public async Task GenerateDataNullTestSuccess()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", null, 28, 128, 100000, "Matt", "MT",
             "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
@@ -64,9 +64,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataOneDayTestSuccess()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
             "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
@@ -95,9 +92,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataMoreDaysTestSuccess()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
         EmployeeDto employeeDto = new(2, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", 5, 28, 128, 100000, "Llewellyn", "LA",
             "Anthony", new DateTime(), "South Africa", "South African", "0000080000000", " ",
@@ -126,9 +120,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataNullTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -161,9 +152,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataOneDayTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -196,9 +184,6 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataMoreDaysTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
 
         EmployeeDto employeeDto = new(2, "001", "34434434", new DateTime(), new DateTime(),
