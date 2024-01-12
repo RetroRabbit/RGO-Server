@@ -33,14 +33,19 @@ public class LeaveIntervalTypeUnitTest
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
+    private EmployeeDto GetEmployee(float? leaveInterval)
+    {
+        return new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
+           null, false, "None", 4, employeeTypeDto, "Notes", leaveInterval, 28, 128, 100000, "Matt", "MT",
+           "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+           new DateTime(), null, Race.Black, Gender.Male, null,
+           "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+    }
+
     [Fact]
     public async Task GenerateDataNullTestSuccess()
     {
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", null, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = GetEmployee(null);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -64,11 +69,7 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataOneDayTestSuccess()
     {
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = GetEmployee(1);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -92,11 +93,7 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataMoreDaysTestSuccess()
     {
-        EmployeeDto employeeDto = new(2, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 5, 28, 128, 100000, "Llewellyn", "LA",
-            "Anthony", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.White, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = GetEmployee(5);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -120,13 +117,9 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataNullTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("There was a problem fetching the employee type of the employee"));
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", null, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = GetEmployee(null);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -152,13 +145,9 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataOneDayTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("There was a problem fetching the employee type of the employee"));
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = GetEmployee(1);
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -184,13 +173,9 @@ public class LeaveIntervalTypeUnitTest
     [Fact]
     public async Task GenerateDataMoreDaysTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("There was a problem fetching the employee type of the employee"));
 
-        EmployeeDto employeeDto = new(2, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 5, 28, 128, 100000, "Llewellyn", "LA",
-            "Anthony", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.White, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = GetEmployee(5);
 
         var employeeDtoList = new List<EmployeeDto>
         {
