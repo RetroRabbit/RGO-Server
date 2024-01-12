@@ -19,6 +19,7 @@ public class LevelTypeUnitTest
     EmployeeTypeDto employeeTypeDto;
     EmployeeType employeeType;
     RoleDto roleDto;
+    EmployeeAddressDto employeeAddressDto;
 
     public LevelTypeUnitTest()
     {
@@ -28,14 +29,13 @@ public class LevelTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto(3, "Employee");
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
     [Fact]
     public async Task LevelTypeNullTestSuccess()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", null, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
             "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
@@ -63,8 +63,6 @@ public class LevelTypeUnitTest
     [Fact]
     public async Task LevelTypeNullFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -83,6 +81,7 @@ public class LevelTypeUnitTest
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>())).Returns(Task.FromResult(false));
+        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(false));
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(employeeList.AsQueryable().BuildMock());
 
@@ -95,10 +94,6 @@ public class LevelTypeUnitTest
     [Fact]
     public async Task LevelTypeValueTestSuccess()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
-
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
             "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
@@ -129,8 +124,6 @@ public class LevelTypeUnitTest
     public async Task LevelTypeValueTestFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception());
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
             null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
