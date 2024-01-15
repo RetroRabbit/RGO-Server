@@ -22,10 +22,10 @@ namespace RGO.Services.Interfaces
         Task<int> GetTotalEmployees();
 
         /// <summary>
-        /// Returns DevsAndDesignersCOuntDto
+        /// Returns Dev and Designer count 
         /// </summary>
-        /// <returns></returns>
-        Task<DevsAndDesignersCountDto> GetTotalNumberOfDevsAndDesigners();
+        /// <returns>DevsAndDesignersCountDto</returns>
+        Task<DevsAndDesignersCountDto> GetDevsAndDesignersCount();
 
         /// <summary>
         /// Create a chart

@@ -32,7 +32,7 @@ public class ChartService : IChartService
             return employees.Count;
     }
 
-    public async Task<DevsAndDesignersCountDto> GetTotalNumberOfDevsAndDesigners()
+    public async Task<DevsAndDesignersCountDto> GetDevsAndDesignersCount()
     {
         var totalnumberOfDevs = await _db.Employee
             .Get()
@@ -44,10 +44,24 @@ public class ChartService : IChartService
           .Where(e => e.EmployeeTypeId == 3)
           .ToListAsync();
 
+        var totalnumberOfDevsOnBench = await _db.Employee
+           .Get()
+           .Where(e => e.EmployeeTypeId == 2)
+           .Where(c => c.ClientAllocated == 7)
+           .ToListAsync();
+
+        var totalnumberOfDesignersOnBench = await _db.Employee
+         .Get()
+         .Where(e => e.EmployeeTypeId == 3)
+         .Where(c => c.ClientAllocated == 7)
+         .ToListAsync();
+
         return new DevsAndDesignersCountDto
         {
             DevsCount = totalnumberOfDevs.Count,
-            DesignersCount = totalnumberOfDesigners.Count
+            DesignersCount = totalnumberOfDesigners.Count,
+            DevsOnBenchCount= totalnumberOfDevsOnBench.Count,
+            DesignersOnBenchCount = totalnumberOfDesignersOnBench.Count
         };
     }
 
