@@ -321,8 +321,6 @@ namespace RGO.App.Tests.Controllers
             var email = "test@retrorabbit.co.za";
             var role = "TestRole";
 
-            //EmployeeRoleDto
-
             var employeeServiceMock = new Mock<IEmployeeService>();
             var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
             var roleServiceMock = new Mock<IRoleService>();
@@ -381,6 +379,151 @@ namespace RGO.App.Tests.Controllers
             roleServiceMock.Verify(x => x.GetRole(role), Times.Never);
             employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Never);
             employeeRoleServiceMock.Verify(x => x.DeleteEmployeeRole(email, role), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetEmployeeRoleValidInputReturnsOk()
+        {
+            var email = "test@retrorabbit.co.za";
+            var expectedRoleDescription = "TestRoleDescription";
+
+            var employeeServiceMock = new Mock<IEmployeeService>();
+            var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+            var roleServiceMock = new Mock<IRoleService>();
+
+            var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object, roleServiceMock.Object);
+            employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(new EmployeeRoleDto
+            (1, new EmployeeDto(1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
+                new EmployeeAddressDto
+                (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
+                new EmployeeAddressDto
+                (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+                "12",
+                "Emergency Contact",
+                "987654321"), new RoleDto(2, expectedRoleDescription)));
+
+            var result = await controller.GetEmployeeRole(email);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnedRole = Assert.IsType<string[]>(okResult.Value);
+
+            Assert.Single(returnedRole);
+            Assert.Equal(expectedRoleDescription, returnedRole[0]);
+
+            employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetEmployeeRoleRoleNotFoundReturnsNotFound()
+        {
+            var email = "test@retrorabbit.co.za";
+
+            var employeeServiceMock = new Mock<IEmployeeService>();
+            var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+            var roleServiceMock = new Mock<IRoleService>();
+
+            var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object, roleServiceMock.Object);
+
+            employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null!);
+
+            var result = await controller.GetEmployeeRole(email);
+
+            if (result is NotFoundObjectResult notFoundResult)
+            {
+                Assert.Equal("Employee not found", notFoundResult.Value?.ToString());
+            }
+            else
+            {
+                Assert.IsType<NotFoundObjectResult>(result);
+            }
+            employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAllRolesReturnsOk()
+        {
+            var roleServiceMock = new Mock<IRoleService>();
+            var controller = new EmployeeRoleManageController(null, null, roleServiceMock.Object);
+
+            var roles = new List<RoleDto>
+        {
+            new RoleDto(1, "Role1"),
+            new RoleDto(2, "Role2")
+        };
+
+            roleServiceMock.Setup(x => x.GetAll()).ReturnsAsync(roles);
+
+            var result = await controller.GetAllRoles();
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnedRoles = Assert.IsType<List<string>>(okResult.Value);
+
+            Assert.Equal(roles.Count, returnedRoles.Count);
+            Assert.All(returnedRoles, roleDescription => Assert.Contains(roleDescription, roles.Select(role => role.Description)));
+
+            roleServiceMock.Verify(x => x.GetAll(), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAllRolesReturnsNotFoundOnError()
+        {
+            var roleServiceMock = new Mock<IRoleService>();
+            var controller = new EmployeeRoleManageController(null, null, roleServiceMock.Object);
+
+            roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("Simulated error"));
+
+            var result = await controller.GetAllRoles();
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Simulated error", notFoundResult.Value?.ToString());
+
+            roleServiceMock.Verify(x => x.GetAll(), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAllEmployeeOnRolesReturnsOk()
+        {
+            var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+            var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
+
+            var roleId = 1;
+            var employeeRoles = new List<EmployeeRoleDto>
+        {
+            new EmployeeRoleDto(1, null, new RoleDto(roleId, "Role1")),
+            new EmployeeRoleDto(2, null, new RoleDto(roleId, "Role1"))
+        };
+
+            employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId)).ReturnsAsync(employeeRoles);
+
+            var result = await controller.GetAllEmployeeOnRoles(roleId);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnedEmployeeRoles = Assert.IsType<List<EmployeeRoleDto>>(okResult.Value);
+
+            Assert.Equal(employeeRoles.Count, returnedEmployeeRoles.Count);
+
+            employeeRoleServiceMock.Verify(x => x.GetAllEmployeeOnRoles(roleId), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAllEmployeeOnRolesReturnsNotFoundOnError()
+        {
+            var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+            var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
+
+            var roleId = 1;
+
+            employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId)).ThrowsAsync(new Exception("Simulated error"));
+
+            var result = await controller.GetAllEmployeeOnRoles(roleId);
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Simulated error", notFoundResult.Value?.ToString());
+
+            employeeRoleServiceMock.Verify(x => x.GetAllEmployeeOnRoles(roleId), Times.Once);
         }
     }
 }
