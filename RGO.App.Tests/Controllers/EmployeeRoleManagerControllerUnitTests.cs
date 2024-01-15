@@ -492,7 +492,7 @@ namespace RGO.App.Tests.Controllers
             var result = await controller.GetAllEmployeeOnRoles(roleId);
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("Error", notFoundResult.Value?.ToString());
+            Assert.Equal("An error occured, not found", notFoundResult.Value?.ToString());
 
             employeeRoleServiceMock.Verify(x => x.GetAllEmployeeOnRoles(roleId), Times.Once);
         }
