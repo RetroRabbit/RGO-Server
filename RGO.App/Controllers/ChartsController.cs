@@ -61,6 +61,20 @@ namespace RGO.App.Controllers
             }
         }
 
+        [HttpGet("employees/dev/desinger/total")]
+        public async Task<IActionResult> GetDevsAndDesignerCount()
+        {
+            try
+            {
+                var devAndDesinersCount = await _chartService.GetTotalNumberOfDevsAndDesigners();
+                return Ok(devAndDesinersCount);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpGet("data")]
         public async Task<IActionResult> GetChartData([FromQuery] List<string> dataTypes)
         {

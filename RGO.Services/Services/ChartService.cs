@@ -32,6 +32,29 @@ public class ChartService : IChartService
             return employees.Count;
     }
 
+    public async Task<DevsAndDesignersCountDto> GetTotalNumberOfDevsAndDesigners()
+    {
+        var totalnumberOfDevs = await _db.Employee
+            .Get()
+            .Where(e => e.EmployeeTypeId == 2)
+            .ToListAsync();
+
+        var totalnumberOfDesigners = await _db.Employee
+          .Get()
+          .Where(e => e.EmployeeTypeId == 3)
+          .ToListAsync();
+
+        return new DevsAndDesignersCountDto
+        {
+            DevsCount = totalnumberOfDevs.Count,
+            DesignersCount = totalnumberOfDesigners.Count
+        };
+    }
+
+  
+   
+
+   
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)
     {
         List<EmployeeDto> employees;
