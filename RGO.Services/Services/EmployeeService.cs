@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Xml.Linq;
 
 namespace RGO.Services.Services;
 
@@ -82,18 +81,18 @@ public class EmployeeService : IEmployeeService
         bool postalAddressExist = await _employeeAddressService
             .CheckIfExitsts(employeeDto.PostalAddress!);
 
-            EmployeeAddressDto postalAddress;
+        EmployeeAddressDto postalAddress;
 
-            if (!postalAddressExist)
-            {
-                postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
-            }
-            else
-            {
-                postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
-            }
+        if (!postalAddressExist)
+        {
+            postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
+        }
+        else
+        {
+            postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
+        }
 
-            employee.PostalAddressId = postalAddress.Id;
+        employee.PostalAddressId = postalAddress.Id;
 
         RoleDto roleDto = await _roleService.GetRole("Employee");
         EmployeeDto newEmployee = await _db.Employee.Add(employee);
@@ -207,11 +206,58 @@ public class EmployeeService : IEmployeeService
         return employees;
     }
 
-        public async Task<EmployeeDto?> GetById(int employeeId)
-        {
-            var employee = await _db.Employee.GetById(employeeId);
+    public async Task<EmployeeDto?> GetById(int employeeId)
+    {
+        var employee = await _db.Employee.GetById(employeeId);
 
-            return employee;
-        }
+        return employee;
     }
+
+    public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail) { 
+        EmployeeDto employeeDto = await GetEmployee(employeeEmail);
+        EmployeeDto teamLeadDto = await GetEmployeeById((int)employeeDto.TeamLead);
+        EmployeeDto peopleChampionDto = await GetEmployeeById((int)employeeDto.PeopleChampion);
+        SimpleEmployeeProfileDto simpleProfile = new SimpleEmployeeProfileDto(
+            employeeDto.Id,
+            employeeDto.EmployeeNumber,
+            employeeDto.TaxNumber,
+            employeeDto.EngagementDate,
+            employeeDto.TerminationDate,
+            peopleChampionDto.Name + " " + peopleChampionDto.Surname,
+            employeeDto.Disability,
+            employeeDto.DisabilityNotes,
+            employeeDto.Level,
+            employeeDto.EmployeeType,
+            employeeDto.Notes,
+            employeeDto.LeaveInterval,
+            employeeDto.SalaryDays,
+            employeeDto.PayRate,
+            employeeDto.Salary,
+            employeeDto.Name,
+            employeeDto.Initials,
+            employeeDto.Surname,
+            employeeDto.DateOfBirth,
+            employeeDto.CountryOfBirth,
+            employeeDto.Nationality,
+            employeeDto.IdNumber,
+            employeeDto.PassportNumber,
+            employeeDto.PassportExpirationDate,
+            employeeDto.PassportCountryIssue,
+            employeeDto.Race,
+            employeeDto.Gender,
+            employeeDto.Photo,
+            employeeDto.Email,
+            employeeDto.PersonalEmail,
+            employeeDto.CellphoneNo,
+            employeeDto.ClientAllocated,
+            teamLeadDto.Name + " " + teamLeadDto.Surname,
+            employeeDto.PhysicalAddress,
+            employeeDto.PostalAddress,
+            employeeDto.HouseNo,
+            employeeDto.EmergencyContactName,
+            employeeDto.EmergencyContactNo);
+
+        return simpleProfile;
+    }
+}
 

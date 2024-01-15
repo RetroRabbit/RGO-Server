@@ -141,4 +141,18 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [HttpGet("getSimple")]
+    public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
+    {
+        try
+        {
+            var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+
+            return Ok(simpleProfile);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }

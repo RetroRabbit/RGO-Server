@@ -59,6 +59,13 @@ public interface IEmployeeService
     /// Get employee by the id
     /// </summary>
     /// <param name="employeeId"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> GetById(int employeeId);
+
+
+    /// <summary>
+    /// Get simple employee profile for non admin users
+    /// </summary>
+    /// <returns>SimpeEmployeeProfileDto</returns>
+    Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
 }
