@@ -10,6 +10,28 @@ namespace RGO.App.Tests.Controllers
 {
     public class EmployeeRoleManagerControllerUnitTests
     {
+        private static EmployeeDto CreateEmployee(string email)
+        {
+            return new EmployeeDto
+            (
+                1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
+                new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
+                "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
+                email, "john.doe.personal@example.com", "1234567890", 1, 1,
+                new EmployeeAddressDto
+                (
+                    1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"
+                ),
+                new EmployeeAddressDto
+                (
+                    2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"
+                ),
+                "12",
+                "Emergency Contact",
+                "987654321"
+            );
+        }
+
         [Fact]
         public async Task AddRoleValidInputReturnsCreatedAtAction()
         {
@@ -22,19 +44,8 @@ namespace RGO.App.Tests.Controllers
             var email = "test@retrorabbit.co.za";
             var role = "TestRole";
 
-            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                        "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                        new EmployeeAddressDto
-                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                        new EmployeeAddressDto
-                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                        "12",
-                        "Emergency Contact",
-                        "987654321"
-                    ));
+            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
+
             roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
             roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto(1, "Role Description"));
 
@@ -82,19 +93,8 @@ namespace RGO.App.Tests.Controllers
             var email = "test@retrorabbit.co.za";
             var role = "ExistingRole";
 
-            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                            new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                            "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                            "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                            new EmployeeAddressDto
-                            (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                            new EmployeeAddressDto
-                            (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                            "12",
-                            "Emergency Contact",
-                            "987654321"
-                        ));
+            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
+
             roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
             roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto(1, "Role Description"));
 
@@ -142,19 +142,8 @@ namespace RGO.App.Tests.Controllers
             var email = "test@retrorabbit.co.za";
             var role = "UnknownRole";
 
-            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                            new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                            "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                            "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                            new EmployeeAddressDto
-                            (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                            new EmployeeAddressDto
-                            (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                            "12",
-                            "Emergency Contact",
-                            "987654321"
-                        ));
+            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
+
             roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(false);
             employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
                         new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
@@ -244,18 +233,7 @@ namespace RGO.App.Tests.Controllers
             var email = "test@retrorabbit.co.za";
             var role = "TestRole";
 
-            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto
-                (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                new EmployeeAddressDto
-                (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                new EmployeeAddressDto
-                (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                "12",
-                "Emergency Contact",
-                "987654321"));
+            employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
 
             roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
             roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto(1, "Role Description"));
@@ -449,7 +427,7 @@ namespace RGO.App.Tests.Controllers
             var result = await controller.GetAllRoles();
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("An error occurred getting roles", notFoundResult.Value?.ToString());
+            Assert.Equal("An error occurred getting all roles.", notFoundResult.Value?.ToString());
 
             roleServiceMock.Verify(x => x.GetAll(), Times.Once);
         }
@@ -492,7 +470,7 @@ namespace RGO.App.Tests.Controllers
             var result = await controller.GetAllEmployeeOnRoles(roleId);
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("An error occured, not found", notFoundResult.Value?.ToString());
+            Assert.Equal("An error occurred getting role.", notFoundResult.Value?.ToString());
 
             employeeRoleServiceMock.Verify(x => x.GetAllEmployeeOnRoles(roleId), Times.Once);
         }
@@ -500,25 +478,20 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task GetEmployeeRoleExceptionReturnsNotFound()
         {
-           
             var email = "test@retrorabbit.co.za";
             var expectedErrorMessage = "An error occurred while processing the request.";
 
             var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
             var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
 
-            
             employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ThrowsAsync(new Exception(expectedErrorMessage));
 
-           
             var result = await controller.GetEmployeeRole(email);
 
-            
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.NotNull(notFoundResult);
             Assert.Equal(expectedErrorMessage, notFoundResult.Value as string);
 
-            
             employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
         }
     }
