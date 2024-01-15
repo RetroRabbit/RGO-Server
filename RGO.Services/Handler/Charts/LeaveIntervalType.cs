@@ -14,7 +14,7 @@ public class LeaveIntervalType : BaseDataType
     public override string GenerateData(EmployeeDto employee, IServiceProvider services)
     {
         var prop = typeof(EmployeeDto).GetProperty("LeaveInterval");
-        if (prop == null)
+        if (prop.GetValue(employee) == null)
             return null;
 
         if (prop.GetValue(employee).ToString() != "1")
