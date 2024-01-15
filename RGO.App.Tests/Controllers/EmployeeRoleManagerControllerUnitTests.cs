@@ -367,12 +367,12 @@ namespace RGO.App.Tests.Controllers
             var email = "test@retrorabbit.co.za";
             var role = "TestRole";
 
-            employeeServiceMock.Setup(x => x.GetEmployee(email)).ThrowsAsync(new Exception("Simulated exception"));
+            employeeServiceMock.Setup(x => x.GetEmployee(email)).ThrowsAsync(new Exception("An error occurred getting roles"));
 
             var result = await controller.RemoveRole(email, role);
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Simulated exception", badRequestResult.Value);
+            Assert.Equal("An error occurred getting roles", badRequestResult.Value);
 
             employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
             roleServiceMock.Verify(x => x.GetRole(role), Times.Never);
@@ -444,12 +444,12 @@ namespace RGO.App.Tests.Controllers
             var roleServiceMock = new Mock<IRoleService>();
             var controller = new EmployeeRoleManageController(null, null, roleServiceMock.Object);
 
-            roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("Error"));
+            roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("An error occurred getting all roles."));
 
             var result = await controller.GetAllRoles();
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("Error", notFoundResult.Value?.ToString());
+            Assert.Equal("An error occurred getting roles", notFoundResult.Value?.ToString());
 
             roleServiceMock.Verify(x => x.GetAll(), Times.Once);
         }
@@ -487,7 +487,7 @@ namespace RGO.App.Tests.Controllers
 
             var roleId = 1;
 
-            employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId)).ThrowsAsync(new Exception("Error"));
+            employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId)).ThrowsAsync(new Exception("An error occurred getting role."));
 
             var result = await controller.GetAllEmployeeOnRoles(roleId);
 
