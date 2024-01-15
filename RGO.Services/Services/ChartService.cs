@@ -34,41 +34,24 @@ public class ChartService : IChartService
 
     public async Task<DevsAndDesignersCountDto> GetDevsAndDesignersCount()
     {
-        var totalnumberOfDevs = await _db.Employee
-            .Get()
-            .Where(e => e.EmployeeTypeId == 2)
-            .ToListAsync();
+        var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
+        var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
 
-        var totalnumberOfDesigners = await _db.Employee
-          .Get()
-          .Where(e => e.EmployeeTypeId == 3)
-          .ToListAsync();
+        var totalnumberOfDevs = await devsQuery.ToListAsync();
+        var totalnumberOfDesigners = await designersQuery.ToListAsync();
 
-        var totalnumberOfDevsOnBench = await _db.Employee
-           .Get()
-           .Where(e => e.EmployeeTypeId == 2)
-           .Where(c => c.ClientAllocated == 7)
-           .ToListAsync();
-
-        var totalnumberOfDesignersOnBench = await _db.Employee
-         .Get()
-         .Where(e => e.EmployeeTypeId == 3)
-         .Where(c => c.ClientAllocated == 7)
-         .ToListAsync();
+        var totalnumberOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
+        var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
 
         return new DevsAndDesignersCountDto
         {
             DevsCount = totalnumberOfDevs.Count,
             DesignersCount = totalnumberOfDesigners.Count,
-            DevsOnBenchCount= totalnumberOfDevsOnBench.Count,
+            DevsOnBenchCount = totalnumberOfDevsOnBench.Count,
             DesignersOnBenchCount = totalnumberOfDesignersOnBench.Count
         };
     }
 
-  
-   
-
-   
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)
     {
         List<EmployeeDto> employees;
