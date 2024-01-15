@@ -500,25 +500,25 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task GetEmployeeRoleExceptionReturnsNotFound()
         {
-            // Arrange
+           
             var email = "test@retrorabbit.co.za";
             var expectedErrorMessage = "An error occurred while processing the request.";
 
             var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
             var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
 
-            // Setup for a scenario where an exception is thrown
+            
             employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ThrowsAsync(new Exception(expectedErrorMessage));
 
-            // Act
+           
             var result = await controller.GetEmployeeRole(email);
 
-            // Assert
+            
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.NotNull(notFoundResult);
             Assert.Equal(expectedErrorMessage, notFoundResult.Value as string);
 
-            // Verify mock invocations
+            
             employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
         }
     }
