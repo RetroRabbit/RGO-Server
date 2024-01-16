@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using MockQueryable.Moq;
 using RGO.Models.Enums;
 
-namespace RGO.Services.Tests.Services;
+namespace RGO.Services.Tests.Handler.Charts;
 
 public class PayRateTypeUnitTest
 {
