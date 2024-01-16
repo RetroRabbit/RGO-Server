@@ -19,7 +19,8 @@ namespace RGO.App.Tests.Controllers
         {
             return new RoleDto(1, "Super Admin");
         }
-        public static RoleAccessDto CreateRoleAccessDto()
+    
+public static RoleAccessDto CreateRoleAccessDto()   
         {
             return new RoleAccessDto(1, "Permission 1", "Group 1");
         }
