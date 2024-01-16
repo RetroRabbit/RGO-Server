@@ -8,6 +8,8 @@ using RGO.UnitOfWork.Entities;
 using System.Linq.Expressions;
 using MockQueryable.Moq;
 using RGO.Models.Enums;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace RGO.Services.Tests.Services;
 
@@ -15,52 +17,59 @@ public class PeopleChampionTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
+    private readonly Mock<IEmployeeService> _employeeServiceMock;
     private PeopleChampionType peopleChampionType;
-    EmployeeTypeDto employeeTypeDto;
-    EmployeeType employeeType;
-    RoleDto roleDto;
+    EmployeeTypeDto employeeTypeDto1, employeeTypeDto2;
+    EmployeeType employeeType1, employeeType2;
     EmployeeAddressDto employeeAddressDto;
 
     public PeopleChampionTypeUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
+        _employeeServiceMock = new Mock<IEmployeeService>();
         peopleChampionType = new PeopleChampionType();
-        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        employeeType = new EmployeeType(employeeTypeDto);
-        roleDto = new RoleDto(3, "Employee");
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
+        employeeTypeDto1 = new EmployeeTypeDto(3, "Developer");
+        employeeTypeDto2 = new EmployeeTypeDto(7, "People Champion");
+        employeeType1 = new EmployeeType(employeeTypeDto1);
+        employeeType2 = new EmployeeType(employeeTypeDto2);
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name)).Returns(Task.FromResult(employeeTypeDto1));
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name)).Returns(Task.FromResult(employeeTypeDto2));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
-    private EmployeeDto CreateEmployee(int? peopleChampionType)
+    private EmployeeDto CreateEmployee(int id, int? peopleChampionType, string? employeeName, string? employeeSurname, EmployeeTypeDto employeeType)
     {
-        return new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-            peopleChampionType, false, "None", 3, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+        return new EmployeeDto(id, "001", "34434434", new DateTime(), new DateTime(),
+            peopleChampionType, false, "None", 3, employeeType, "Notes", 1, 28, 128, 100000, employeeName, "MT",
+            employeeSurname, new DateTime(), "South Africa", "South African", "0000080000000", " ",
             new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+            $"test{id}@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
     }
 
     [Fact]
     public async Task PeopleChampionTypeNullTestSuccess()
     {
-        var employeeDto = CreateEmployee(null);
+        var employeeDto1 = CreateEmployee(1, null,"Matt","Schoeman",employeeTypeDto1);
+        var employeeDto2 = CreateEmployee(4, null, "Dorothy", "Mahoko", employeeTypeDto2);
 
         var employeeDtoList = new List<EmployeeDto>
         {
-            employeeDto
+            employeeDto1,
+            employeeDto2,
         };
+
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType)
+            new Employee(employeeDto1,employeeDto1.EmployeeType),
+            new Employee(employeeDto2,employeeDto2.EmployeeType),
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = peopleChampionType.GenerateData(employeeDto, realServiceProvider);
+        var result = peopleChampionType.GenerateData(employeeDto1, realServiceProvider);
 
         Assert.Null(result);
     }
@@ -68,17 +77,21 @@ public class PeopleChampionTypeUnitTest
     [Fact]
     public async Task PeopleChampionTypeNullFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("Failed to get employee type of employee"));
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto1.Name)).Throws(new Exception("Failed to get employee type of employee"));
 
-        var employeeDto = CreateEmployee(null);
+        var employeeDto1 = CreateEmployee(1, null, "Matt", "Schoeman", employeeTypeDto1);
+        var employeeDto2 = CreateEmployee(4, null, "Dorothy", "Mahoko", employeeTypeDto2);
 
         var employeeDtoList = new List<EmployeeDto>
         {
-            employeeDto
+            employeeDto1,
+            employeeDto2,
         };
+
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType)
+            new Employee(employeeDto1,employeeDto1.EmployeeType),
+            new Employee(employeeDto2,employeeDto2.EmployeeType),
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>())).Returns(Task.FromResult(false));
@@ -87,7 +100,7 @@ public class PeopleChampionTypeUnitTest
             .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = peopleChampionType.GenerateData(employeeDto, realServiceProvider);
+        var result = peopleChampionType.GenerateData(employeeDto1, realServiceProvider);
 
         Assert.Null(result);
     }
@@ -95,50 +108,74 @@ public class PeopleChampionTypeUnitTest
     [Fact]
     public async Task PeopleChampionTypeValueTestSuccess()
     {
-        var employeeDto = CreateEmployee(5);
+        var regularEmployee = CreateEmployee(1, 2, "Matt", "Schoeman", employeeTypeDto1);
+        var peopleChampion = CreateEmployee(2, 3, "Dorothy", "Mahoko", employeeTypeDto2);
 
         var employeeDtoList = new List<EmployeeDto>
         {
-            employeeDto
+            regularEmployee,
+            peopleChampion,
         };
+
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType)
+            new Employee(regularEmployee,regularEmployee.EmployeeType),
+            new Employee(peopleChampion,peopleChampion.EmployeeType),
         };
 
+        var employeeServiceMock = new Mock<IEmployeeService>();
+        employeeServiceMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(peopleChampion);
+
+        var employeeServiceProvider = employeeServiceMock.Object;
+
+        _dbMock.Setup(e => e.Employee.GetById(peopleChampion.Id)).Returns(Task.FromResult(peopleChampion));
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(employeeList.AsQueryable().BuildMock());
+        var emp = await employeeServiceProvider.GetById(peopleChampion.Id);
+        Task<EmployeeDto> task;
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = peopleChampionType.GenerateData(employeeDto, realServiceProvider);
+        var result = peopleChampionType.GenerateData2(emp, employeeServiceProvider.GetById(peopleChampion.Id));
 
-        Assert.Equal("Gerhard Esterhuyse, ", result);
+        Assert.Equal("Dorothy Mahoko, ", result);
     }
 
     [Fact]
     public async Task PeopleChampionTypeValueTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("Failed to get employee type of employee"));
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto1.Name)).Throws(new Exception("Failed to get employee type of employee"));
 
-        var employeeDto = CreateEmployee(5);
+        var regularEmployee = CreateEmployee(1, 2, "Matt", "Schoeman", employeeTypeDto1);
+        var peopleChampion = CreateEmployee(2, 3, "Dorothy", "Mahoko", employeeTypeDto2);
 
         var employeeDtoList = new List<EmployeeDto>
         {
-            employeeDto
+            regularEmployee,
+            peopleChampion,
         };
+
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType)
+            new Employee(regularEmployee,regularEmployee.EmployeeType),
+            new Employee(peopleChampion,peopleChampion.EmployeeType),
         };
+
+        var employeeServiceMock = new Mock<IEmployeeService>();
+        employeeServiceMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(peopleChampion);
+
+        var employeeServiceProvider = employeeServiceMock.Object;
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>())).Returns(Task.FromResult(false));
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(false));
+        _dbMock.Setup(e => e.Employee.GetById(peopleChampion.Id)).Returns(Task.FromResult(peopleChampion));
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(employeeList.AsQueryable().BuildMock());
+        var emp = await employeeServiceProvider.GetById(peopleChampion.Id);
+        Task<EmployeeDto> task;
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = peopleChampionType.GenerateData(employeeDto, realServiceProvider);
+        var result = peopleChampionType.GenerateData2(emp, employeeServiceProvider.GetById(peopleChampion.Id));
 
-        Assert.Equal("Gerhard Esterhuyse, ", result);
+        Assert.Equal("Dorothy Mahoko, ", result);
     }
 }
