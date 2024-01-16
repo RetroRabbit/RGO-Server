@@ -20,7 +20,7 @@ public class PeopleChampionType : BaseDataType
         return champion.Name + ' ' + champion.Surname + ", ";
     }
 
-    public string GenerateData2(EmployeeDto employee, Task<EmployeeDto> task)
+   /* public string GenerateData2(EmployeeDto employee, Task<EmployeeDto> task)
     {
         var prop = typeof(EmployeeDto).GetProperty("PeopleChampion");
         if (prop == null || employee.PeopleChampion == null)
@@ -29,5 +29,5 @@ public class PeopleChampionType : BaseDataType
         var id = (int)prop.GetValue(employee);
         var champion = task.GetAwaiter().GetResult();
         return champion.Name + ' ' + champion.Surname + ", ";
-    }
+    }*/
 }
