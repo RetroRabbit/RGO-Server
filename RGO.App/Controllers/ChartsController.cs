@@ -66,8 +66,8 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var devAndDesinersScrumsCount = await _chartService.GetDevsAndDesignersCount();
-                return Ok(devAndDesinersScrumsCount);
+                var devsDesignersAndScrumsCount = await _chartService.GetDevsAndDesignersCount();
+                return Ok(devsDesignersAndScrumsCount);
             }
             catch (Exception ex)
             {
