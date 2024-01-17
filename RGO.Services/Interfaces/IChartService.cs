@@ -37,6 +37,18 @@ namespace RGO.Services.Interfaces
         Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType);
 
         /// <summary>
+        /// Get the total number of employees for the current month 
+        /// </summary>
+        /// <returns>MonthlyEmployeedata</returns>
+        Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal();
+
+        /// <summary>
+        /// Calculates employee chrunRate over a month
+        /// </summary>
+        /// <returns>ChurnRateDto</returns>
+        Task<ChurnRateDto> CalculateChurnRate();
+
+        /// <summary>
         ///Gets data points selected by the user
         /// </summary>
         /// <param name="dataTypes"></param>

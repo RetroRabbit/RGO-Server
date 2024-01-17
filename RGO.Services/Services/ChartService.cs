@@ -36,20 +36,95 @@ public class ChartService : IChartService
     {
         var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
         var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
+        var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
+
 
         var totalnumberOfDevs = await devsQuery.ToListAsync();
         var totalnumberOfDesigners = await designersQuery.ToListAsync();
+        var totalnumbersOfScrumMasters = await scrumMastersQuery.ToListAsync();
 
         var totalnumberOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
         var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
+        var totalnumbersOfScrumMastersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
 
         return new DevsAndDesignersCountDto
         {
             DevsCount = totalnumberOfDevs.Count,
             DesignersCount = totalnumberOfDesigners.Count,
             DevsOnBenchCount = totalnumberOfDevsOnBench.Count,
-            DesignersOnBenchCount = totalnumberOfDesignersOnBench.Count
+            ScrumMastersOnBenchCount = totalnumbersOfScrumMastersOnBench.Count
         };
+    }
+
+    public async Task<ChurnRateDto> CalculateChurnRate()
+    {
+        var currentMonthTotal = await GetCurrentMonthTotal();
+        var previousMonthTotal = await GetPreviousMonthTotal();
+
+        if (previousMonthTotal != null && previousMonthTotal.EmployeeTotal > 0)
+        {
+            var churnRate = ((double)(currentMonthTotal.EmployeeTotal - previousMonthTotal.EmployeeTotal) / previousMonthTotal.EmployeeTotal) * 100;
+
+            return new ChurnRateDto
+            {
+                ChurnRate = Math.Round(churnRate,0),
+                Month = previousMonthTotal.Month,
+                Year = previousMonthTotal.Year,
+            };
+        }
+        else
+        {
+            
+            return new ChurnRateDto
+            {
+                ChurnRate = 0,  
+                Month = "N/A",  
+                Year = 0,      
+            };
+        }
+    }
+
+
+    public async Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal()
+    {
+        var currentMonth = DateTime.Now.ToString("MMMM");
+
+        var currentYear = DateTime.Now.Year;
+
+        var currentEmployeeTotal = _db.MonthlyEmployeeTotal
+            .Get()
+            .Where(e => e.Month == currentMonth && e.Year == currentYear)
+            .FirstOrDefault();
+
+        if (currentEmployeeTotal == null)
+        {
+            var employeeTotalCount = await _db.Employee.GetAll();
+
+            MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto(0, employeeTotalCount.Count, currentMonth, currentYear);
+
+            var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
+
+           return await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
+        }
+
+        return currentEmployeeTotal.ToDto();
+    }
+
+    private async Task<MonthlyEmployeeTotalDto> GetPreviousMonthTotal()
+    {
+        var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
+
+        var previousEmployeeTotal =  _db.MonthlyEmployeeTotal
+            .Get()
+            .Where(e => e.Month == previousMonth)
+            .FirstOrDefault();
+
+        if (previousEmployeeTotal == null)
+        {
+            return await GetCurrentMonthTotal();
+        }
+
+        return previousEmployeeTotal.ToDto();
     }
 
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)

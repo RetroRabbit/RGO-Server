@@ -66,8 +66,22 @@ namespace RGO.App.Controllers
         {
             try
             {
-                var devAndDesinersCount = await _chartService.GetDevsAndDesignersCount();
-                return Ok(devAndDesinersCount);
+                var devAndDesinersScrumsCount = await _chartService.GetDevsAndDesignersCount();
+                return Ok(devAndDesinersScrumsCount);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("employees/churnrate")]
+        public async Task<IActionResult> GetChurnRate()
+        {
+            try
+            {
+                var churnRate = await _chartService.CalculateChurnRate();
+                return Ok(churnRate);
             }
             catch (Exception ex)
             {
