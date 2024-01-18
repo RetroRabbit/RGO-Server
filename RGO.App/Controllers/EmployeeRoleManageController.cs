@@ -25,6 +25,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpPost("add")]
     public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employee = await _employeeService.GetEmployee(email);

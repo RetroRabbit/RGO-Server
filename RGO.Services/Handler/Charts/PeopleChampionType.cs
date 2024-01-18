@@ -11,10 +11,7 @@ public class PeopleChampionType : BaseDataType
     public override string GenerateData(EmployeeDto employee, IServiceProvider services)
     {
         var prop = typeof(EmployeeDto).GetProperty("PeopleChampion");
-        if (prop == null)
-            return null;
-
-        if (employee.PeopleChampion == null)
+        if (prop == null || employee.PeopleChampion == null)
             return null;
 
         var id = (int)prop.GetValue(employee);
@@ -22,5 +19,4 @@ public class PeopleChampionType : BaseDataType
         var champion = task.GetAwaiter().GetResult();
         return champion.Name + ' ' + champion.Surname + ", ";
     }
-
 }
