@@ -37,7 +37,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("id")]
     public async Task<IActionResult> GetEmployeeById([FromQuery] int id)
     {
@@ -54,7 +54,7 @@ public class EmployeeController : ControllerBase
     }
 
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetEmployee([FromQuery] string? email)
     {
@@ -96,7 +96,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("employees")]
     public async Task<IActionResult> GetAllEmployees()
     {
@@ -128,7 +128,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("employees/filterbytype")]
     public async Task<IActionResult> FilterByType(string type)
     {
