@@ -16,7 +16,7 @@ public class EmployeeBankingController : ControllerBase
         _employeeBankingService = employeeBankingService;
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddBankingInfo([FromBody] SimpleEmployeeBankingDto newEntry)
     {
@@ -65,7 +65,7 @@ public class EmployeeBankingController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut("update")]
     public async Task<IActionResult> Update([FromBody] SimpleEmployeeBankingDto updateEntry)
      {
@@ -99,7 +99,7 @@ public class EmployeeBankingController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("getDetails")]
     public async Task<IActionResult> GetBankingDetails([FromQuery] int id)
     {

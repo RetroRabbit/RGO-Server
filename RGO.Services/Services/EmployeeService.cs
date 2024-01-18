@@ -162,15 +162,41 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
-    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email)
+    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
-        EmployeeTypeDto employeeTypeDto = await _employeeTypeService
-            .GetEmployeeType(employeeDto.EmployeeType.Name);
+        /*  EmployeeTypeDto employeeTypeDto = await _employeeTypeService
+              .GetEmployeeType(employeeDto.EmployeeType.Name);
 
-        Employee employee = new Employee(employeeDto, employeeTypeDto);
+          Employee employee = new Employee(employeeDto, employeeTypeDto);
 
-        employee.Email = email;
+          employee.Email = email;*/
+        EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
+                .GetEmployeeType(employeeDto.EmployeeType.Name);
+        Employee employee = null;
+        //int teamLeadId = await GetTeamLead(employeeDto.Id);
+        if (employeeDto.Email == userEmail)
+        {
+            employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
+        }
+        else
+        {
+            if (await CheckUserExist(userEmail))
+            {
+                if (await IsAdmin(userEmail))
+                {
+                    employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
+                }
+                else
+                {
+                    throw new Exception("Unauthorized action");
+                }
+            }
+            else
+            {
+                throw new Exception("Unauthorized action");
+            }
 
+        }
         return await _db.Employee.Update(employee);
     }
 
@@ -213,17 +239,48 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
-    public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail) { 
+    public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
+    {
         EmployeeDto employeeDto = await GetEmployee(employeeEmail);
-        EmployeeDto teamLeadDto = await GetEmployeeById((int)employeeDto.TeamLead);
-        EmployeeDto peopleChampionDto = await GetEmployeeById((int)employeeDto.PeopleChampion);
+        string teamLeadName = "";
+        string peopleChampionName = "";
+        int teamLeadId = 0;
+        int peopleChampionId = 0;
+        int clientAllocatedId = 0;
+        string clientAllocatedName = "";
+
+        if (employeeDto.TeamLead != null)
+        {
+            EmployeeDto teamLeadDto = await GetEmployeeById((int)employeeDto.TeamLead);
+            teamLeadName = teamLeadDto.Name + " " + teamLeadDto.Surname;
+            teamLeadId = teamLeadDto.Id;
+        }
+        if (employeeDto.PeopleChampion != null)
+        {
+            EmployeeDto peopleChampionDto = await GetEmployeeById((int)employeeDto.PeopleChampion);
+            peopleChampionName = peopleChampionDto.Name + " " + peopleChampionDto.Surname;
+            peopleChampionId = peopleChampionDto.Id;
+        }
+        if(employeeDto.ClientAllocated != null)
+        {
+            ClientDto clientDto = await _db.Client
+                .Get(client => client.Id == employeeDto.ClientAllocated)
+                .AsNoTracking()
+                .Select(client => client.ToDto())
+                .FirstAsync();
+            
+            clientAllocatedId = clientDto.Id;
+            clientAllocatedName = clientDto.Name;
+        }
+            
         SimpleEmployeeProfileDto simpleProfile = new SimpleEmployeeProfileDto(
             employeeDto.Id,
             employeeDto.EmployeeNumber,
             employeeDto.TaxNumber,
             employeeDto.EngagementDate,
             employeeDto.TerminationDate,
-            peopleChampionDto.Name + " " + peopleChampionDto.Surname,
+            peopleChampionName,
+            peopleChampionId == 0 ? null : peopleChampionId,
             employeeDto.Disability,
             employeeDto.DisabilityNotes,
             employeeDto.Level,
@@ -249,8 +306,10 @@ public class EmployeeService : IEmployeeService
             employeeDto.Email,
             employeeDto.PersonalEmail,
             employeeDto.CellphoneNo,
-            employeeDto.ClientAllocated,
-            teamLeadDto.Name + " " + teamLeadDto.Surname,
+            clientAllocatedName,
+            clientAllocatedId,
+            teamLeadName,
+            teamLeadId,
             employeeDto.PhysicalAddress,
             employeeDto.PostalAddress,
             employeeDto.HouseNo,
@@ -258,6 +317,36 @@ public class EmployeeService : IEmployeeService
             employeeDto.EmergencyContactNo);
 
         return simpleProfile;
+    }
+
+    private async Task<bool> IsAdmin(string userEmail)
+    {
+        EmployeeDto employeeDto = await GetEmployee(userEmail);
+
+        EmployeeRole empRole = await _db.EmployeeRole
+            .Get(role => role.EmployeeId == employeeDto.Id)
+            .FirstOrDefaultAsync();
+
+        Role role = await _db.Role
+            .Get(role => role.Id == empRole.RoleId)
+            .FirstOrDefaultAsync();
+
+        return role.Description is "Admin" or "SuperAdmin";
+        /*
+            Pattern matching is a technique where you test an expression to determine if it has certain characteristics 
+            In my case it replaces my boolean check which looked like this:
+                return role.Description == "Admin" || role.Description == "SuperAdmin"
+            For more information: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/pattern-matching
+        */
+    }
+
+    private async Task<Employee> CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
+    {
+        Employee employee = new Employee();
+        string tempEmail = employeeDto.Email;
+        employee = new Employee(employeeDto, employeeTypeDto);
+        employee.Email = tempEmail;
+        return employee;
     }
 }
 

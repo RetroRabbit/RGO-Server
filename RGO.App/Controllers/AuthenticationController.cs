@@ -57,7 +57,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("roles")]
     public async Task<IActionResult> GetUserRoles([FromQuery] string? email)
     {

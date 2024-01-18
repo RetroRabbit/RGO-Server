@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
@@ -75,18 +76,22 @@ public class EmployeeController : ControllerBase
     }
 
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee)
+    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string userEmail)
     {
         try
         {
-            var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);
-
+            /*var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);*/
+            var updatedEmployee = await _employeeService.UpdateEmployee(employee, userEmail);
             return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
         }
         catch (Exception ex)
         {
+            if(ex.Message.Contains("Unauthorized action"))
+            {
+                return StatusCode(403, $"Forbidden: {ex.Message}");
+            }
             return NotFound(ex.Message);
         }
     }

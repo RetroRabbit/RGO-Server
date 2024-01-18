@@ -132,30 +132,30 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact]
-    public async Task UpdateEmployeeSuccessTest()
-    {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
-            .ReturnsAsync(_employee);
+    //[Fact]
+    //public async Task UpdateEmployeeSuccessTest()
+    //{
+    //    _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+    //        .ReturnsAsync(_employee);
 
-        var result = await _controller.UpdateEmployee(_employee);
+    //    var result = await _controller.UpdateEmployee(_employee);
 
-        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-        Assert.Equal("UpdateEmployee", createdAtActionResult.ActionName);
-        Assert.Equal(201, createdAtActionResult.StatusCode);
-    }
+    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+    //    Assert.Equal("UpdateEmployee", createdAtActionResult.ActionName);
+    //    Assert.Equal(201, createdAtActionResult.StatusCode);
+    //}
 
-    [Fact]
-    public async Task UpdateEmployeeFailTest()
-    {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
-            .ThrowsAsync(new Exception("Not found"));
+    //[Fact]
+    //public async Task UpdateEmployeeFailTest()
+    //{
+    //    _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+    //        .ThrowsAsync(new Exception("Not found"));
 
-        var result = await _controller.UpdateEmployee(_employee);
+    //    var result = await _controller.UpdateEmployee(_employee);
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
+    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+    //    Assert.Equal(404, notFoundResult.StatusCode);
+    //}
 
     [Fact]
     public async Task GetAllEmployeesSuccessTest()

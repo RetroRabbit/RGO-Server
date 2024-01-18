@@ -8,7 +8,7 @@ namespace RGO.App.Controllers
 {
     [Route("employeedocument")]
     [ApiController]
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    //[Authorize(Policy = "AdminOrSuperAdminPolicy")]
     public class EmployeeDocumentController : ControllerBase
     {
         private readonly IEmployeeDocumentService _employeeDocumentService;
@@ -16,6 +16,8 @@ namespace RGO.App.Controllers
         {
             _employeeDocumentService = employeeDocumentService;
         }
+
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
@@ -30,6 +32,7 @@ namespace RGO.App.Controllers
             }
         }
 
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpPost("save")]
         public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
         {
@@ -57,6 +60,8 @@ namespace RGO.App.Controllers
                 return StatusCode(500, "An error occurred while fetching the employee document.");
             }
         }
+
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
@@ -70,6 +75,8 @@ namespace RGO.App.Controllers
                 return StatusCode(500, "An error occurred while updating the employee document.");
             }
         }
+
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
