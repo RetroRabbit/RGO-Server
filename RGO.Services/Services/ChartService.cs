@@ -49,7 +49,7 @@ public class ChartService : IChartService
 
         var totalnumberOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
         var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
-        var totalnumbersOfScrumMastersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
+        var totalnumbersOfScrumMastersOnBench = await scrumMastersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
 
         var totalnumberOfEmployeesOnBench = totalnumberOfDevsOnBench.Count +
            totalnumberOfDesignersOnBench.Count +
@@ -62,7 +62,9 @@ public class ChartService : IChartService
 
 
         var totalNumberOfEmployeesDevsScrumsAndDevs = totalnumberOfEmployeesOnBench + totalNumberOfDevsDesignersAndScrumsOnClients.Count;
-        var billableEmployees = (double)totalNumberOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100;
+        var billableEmployees = totalNumberOfEmployeesDevsScrumsAndDevs > 0
+               ? (double)totalNumberOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100
+               : 0;
 
         return new DevsAndDesignersCountDto
         {
