@@ -37,11 +37,13 @@ public class ChartService : IChartService
         var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
         var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
         var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
+        var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5);
 
 
         var totalnumberOfDevs = await devsQuery.ToListAsync();
         var totalnumberOfDesigners = await designersQuery.ToListAsync();
         var totalnumbersOfScrumMasters = await scrumMastersQuery.ToListAsync();
+        var totalnumberOfBusinessSupport = await businessSupportQuery.ToListAsync();
 
         var totalnumberOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
         var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
@@ -51,7 +53,10 @@ public class ChartService : IChartService
         {
             DevsCount = totalnumberOfDevs.Count,
             DesignersCount = totalnumberOfDesigners.Count,
+            ScrumMastersCount = totalnumbersOfScrumMasters.Count,
+            BusinessSupportCount = totalnumberOfBusinessSupport.Count,
             DevsOnBenchCount = totalnumberOfDevsOnBench.Count,
+            DesignersOnBenchCount = totalnumberOfDesignersOnBench.Count,
             ScrumMastersOnBenchCount = totalnumbersOfScrumMastersOnBench.Count
         };
     }
