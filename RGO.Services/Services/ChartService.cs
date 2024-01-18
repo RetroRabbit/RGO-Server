@@ -85,13 +85,23 @@ public class ChartService : IChartService
         var currentMonthTotal = await GetCurrentMonthTotal();
         var previousMonthTotal = await GetPreviousMonthTotal();
 
-        if (previousMonthTotal != null && previousMonthTotal.EmployeeTotal > 0)
+        if (previousMonthTotal != null && previousMonthTotal.EmployeeTotal > 0 && previousMonthTotal.DeveloperTotal > 0 && previousMonthTotal.DesignerTotal > 0 && previousMonthTotal.ScrumMasterTotal > 0  && previousMonthTotal.ScrumMasterTotal > 0 &&
+            previousMonthTotal.BusinessSupportTotal > 0)
         {
             var churnRate = ((double)(currentMonthTotal.EmployeeTotal - previousMonthTotal.EmployeeTotal) / previousMonthTotal.EmployeeTotal) * 100;
 
+            var devChurnRate = ((double)(currentMonthTotal.DeveloperTotal - previousMonthTotal.DeveloperTotal) / previousMonthTotal.DeveloperTotal) * 100;
+            var designerChurnRate = ((double)(currentMonthTotal.DesignerTotal - previousMonthTotal.DesignerTotal) / previousMonthTotal.DesignerTotal) * 100;
+            var scrumMasterChurnRate = ((double)(currentMonthTotal.ScrumMasterTotal - previousMonthTotal.ScrumMasterTotal) / previousMonthTotal.ScrumMasterTotal) * 100;
+            var businessSupportChurnRate = ((double)(currentMonthTotal.BusinessSupportTotal - previousMonthTotal.BusinessSupportTotal) / previousMonthTotal.BusinessSupportTotal) * 100;
+
             return new ChurnRateDto
             {
-                ChurnRate = Math.Round(churnRate,0),
+                ChurnRate = Math.Round(churnRate, 0),
+                DeveloperChurnRate = Math.Round(devChurnRate, 0),
+                DesignerChurnRate = Math.Round(designerChurnRate, 0),
+                ScrumMasterChurnRate = Math.Round(scrumMasterChurnRate, 0),
+                BusinessSupportChurnRate = Math.Round(businessSupportChurnRate, 0),
                 Month = previousMonthTotal.Month,
                 Year = previousMonthTotal.Year,
             };
@@ -124,7 +134,19 @@ public class ChartService : IChartService
         {
             var employeeTotalCount = await _db.Employee.GetAll();
 
-            MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto(0, employeeTotalCount.Count, currentMonth, currentYear);
+            var devsQuery= _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
+            var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
+            var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
+            var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5);
+
+            var devsTotal = await devsQuery.ToListAsync();
+            var designersTotal = await designersQuery.ToListAsync();
+            var scrumMastersTotal = await scrumMastersQuery.ToListAsync();
+            var businessSupportTotal = await businessSupportQuery.ToListAsync();
+
+
+            MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+                (0, employeeTotalCount.Count, devsTotal.Count, designersTotal.Count, scrumMastersTotal.Count, businessSupportTotal.Count, currentMonth, currentYear);
 
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 

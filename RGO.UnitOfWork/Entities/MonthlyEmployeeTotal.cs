@@ -21,12 +21,23 @@ namespace RGO.UnitOfWork.Entities
         [Column("employeeTotal")]
         public int EmployeeTotal { get; set; }
 
+        [Column("developerTotal")]
+        public int DeveloperTotal { get; set; }
+
+        [Column("designerTotal")]
+        public int DesignerTotal { get; set; }
+
+        [Column("scrumMasterTotal")]
+        public int ScrumMasterTotal { get; set; }
+
+        [Column("businessSupportTotal")]
+        public int BusinessSupportTotal { get; set; }
+
         [Column("month")]
         public string Month { get; set; }
 
         [Column("year")]
         public int Year { get; set; }
-
 
         public MonthlyEmployeeTotal() { }
 
@@ -34,6 +45,10 @@ namespace RGO.UnitOfWork.Entities
         {
             Id = monthlyEmployeeTotalDto.Id;
             EmployeeTotal = monthlyEmployeeTotalDto.EmployeeTotal;
+            DeveloperTotal= monthlyEmployeeTotalDto.DeveloperTotal;
+            DesignerTotal= monthlyEmployeeTotalDto.DesignerTotal;
+            ScrumMasterTotal = monthlyEmployeeTotalDto.ScrumMasterTotal;
+            BusinessSupportTotal = monthlyEmployeeTotalDto.BusinessSupportTotal;
             Month = monthlyEmployeeTotalDto.Month;
             Year = monthlyEmployeeTotalDto.Year;
         }
@@ -43,6 +58,10 @@ namespace RGO.UnitOfWork.Entities
             return new MonthlyEmployeeTotalDto(
             Id,
             EmployeeTotal,
+            DeveloperTotal,
+            DesignerTotal,
+            ScrumMasterTotal,
+            BusinessSupportTotal,
             Month,
             Year
             );
