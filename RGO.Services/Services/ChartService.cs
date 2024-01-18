@@ -4,6 +4,7 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Data;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace RGO.Services.Services;
@@ -34,6 +35,7 @@ public class ChartService : IChartService
 
     public async Task<DevsAndDesignersCountDto> GetDevsAndDesignersCount()
     {
+        var employees = await _employeeService.GetAll();
         var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
         var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
         var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
@@ -49,6 +51,19 @@ public class ChartService : IChartService
         var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
         var totalnumbersOfScrumMastersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
 
+        var totalnumberOfEmployeesOnBench = totalnumberOfDevsOnBench.Count +
+           totalnumberOfDesignersOnBench.Count +
+           totalnumbersOfScrumMastersOnBench.Count;
+
+        var totalNumberOfDevsDesignersAndScrumsOnClients = await _db.Employee
+           .Get()
+           .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 7)
+           .ToListAsync();
+
+
+        var totalNumberOfEmployeesDevsScrumsAndDevs = totalnumberOfEmployeesOnBench + totalNumberOfDevsDesignersAndScrumsOnClients.Count;
+        var billableEmployees = (double)totalNumberOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100;
+
         return new DevsAndDesignersCountDto
         {
             DevsCount = totalnumberOfDevs.Count,
@@ -57,8 +72,10 @@ public class ChartService : IChartService
             BusinessSupportCount = totalnumberOfBusinessSupport.Count,
             DevsOnBenchCount = totalnumberOfDevsOnBench.Count,
             DesignersOnBenchCount = totalnumberOfDesignersOnBench.Count,
-            ScrumMastersOnBenchCount = totalnumbersOfScrumMastersOnBench.Count
-        };
+            ScrumMastersOnBenchCount = totalnumbersOfScrumMastersOnBench.Count,
+            TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench,
+            BillableEmployeesPercentage = Math.Round(billableEmployees,0),
+        }; 
     }
 
     public async Task<ChurnRateDto> CalculateChurnRate()
