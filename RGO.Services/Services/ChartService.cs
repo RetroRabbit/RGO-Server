@@ -66,6 +66,12 @@ public class ChartService : IChartService
                ? (double)totalNumberOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100
                : 0;
 
+        var currentMonthTotal = await GetCurrentMonthTotal();
+        var previousMonthTotal = await GetPreviousMonthTotal();
+
+        var employeeTotalDifference = previousMonthTotal.EmployeeTotal - currentMonthTotal.EmployeeTotal;
+        var isIncrease = employeeTotalDifference > 0;
+
         return new DevsAndDesignersCountDto
         {
             DevsCount = totalnumberOfDevs.Count,
@@ -77,6 +83,8 @@ public class ChartService : IChartService
             ScrumMastersOnBenchCount = totalnumbersOfScrumMastersOnBench.Count,
             TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench,
             BillableEmployeesPercentage = Math.Round(billableEmployees,0),
+            EmployeeTotalDifference = employeeTotalDifference,
+            isIncrease= isIncrease,
         }; 
     }
 
@@ -117,7 +125,6 @@ public class ChartService : IChartService
             };
         }
     }
-
 
     public async Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal()
     {
