@@ -105,20 +105,21 @@ namespace RGO.Services.Services
             return deletedEmployeeDocument;
         }
 
-        public async Task<List<EmployeeDocumentDto>> GetStatusEmployeeDocument(int employeeId, DocumentStatus status)
+        public async Task<List<EmployeeDocumentDto>> GetEmployeeDocumentByStatus(int employeeId, DocumentStatus status)
         {
             var ifEmployeeExists = await CheckEmployee(employeeId);
 
-            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }           
-                var employeeDocuments = await _db.EmployeeDocument
-                 .Get(employeeDocument => employeeDocument.EmployeeId == employeeId &&
-                     employeeDocument.Status.Equals(status))
-                 .AsNoTracking()
-                 .Include(employeeDocument => employeeDocument.Employee)
-                 .Select(employeeDocument => employeeDocument.ToDto())
-                 .ToListAsync();
+            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+            
+            var employeeDocuments = await _db.EmployeeDocument
+                .Get(employeeDocument => employeeDocument.EmployeeId == employeeId &&
+                    employeeDocument.Status.Equals(status))
+                .AsNoTracking()
+                .Include(employeeDocument => employeeDocument.Employee)
+                .Select(employeeDocument => employeeDocument.ToDto())
+                .ToListAsync();
 
-                return employeeDocuments;
+            return employeeDocuments;
         }
 
         public async Task<bool> CheckEmployee(int employeeId)
