@@ -37,7 +37,8 @@ namespace RGO.Services.Services
                employeeDocDto.File,
                DocumentStatus.PendingApproval,
                DateTime.Now,
-               null) ;
+               null,
+               false) ;
 
             var newRmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
@@ -46,9 +47,9 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename)
         {
-            var ifEmployee = await CheckEmployee(employeeId);
+            var ifEmployeeExists = await CheckEmployee(employeeId);
 
-            if (!ifEmployee) { throw new Exception("Employee not found"); }
+            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
 
             var employeeDocument = await _db.EmployeeDocument
                 .Get(employeeDocument =>
@@ -66,9 +67,9 @@ namespace RGO.Services.Services
 
         public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId)
         {
-            var ifEmployee = await CheckEmployee(employeeId);
+            var ifEmployeeExists = await CheckEmployee(employeeId);
 
-            if (!ifEmployee) { throw new Exception("Employee not found"); }
+            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
 
             var employeeDocuments = await _db.EmployeeDocument
                 .Get(employeeDocument => employeeDocument.EmployeeId == employeeId)
@@ -82,9 +83,9 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
         {
-            var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);
+            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.Employee.Id);
 
-            if (!ifEmployee) { throw new Exception("Employee not found"); }
+            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
 
             EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
             var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
@@ -94,14 +95,30 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
         {
-            var ifEmployee = await CheckEmployee(employeeDocumentDto.Employee.Id);
+            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.Employee.Id);
 
-            if (!ifEmployee) { throw new Exception("Employee not found"); }
+            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
 
             EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
             var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(employeeDocument.Id);
 
             return deletedEmployeeDocument;
+        }
+
+        public async Task<List<EmployeeDocumentDto>> GetStatusEmployeeDocument(int employeeId, DocumentStatus status)
+        {
+            var ifEmployeeExists = await CheckEmployee(employeeId);
+
+            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }           
+                var employeeDocuments = await _db.EmployeeDocument
+                 .Get(employeeDocument => employeeDocument.EmployeeId == employeeId &&
+                     employeeDocument.Status.Equals(status))
+                 .AsNoTracking()
+                 .Include(employeeDocument => employeeDocument.Employee)
+                 .Select(employeeDocument => employeeDocument.ToDto())
+                 .ToListAsync();
+
+                return employeeDocuments;
         }
 
         public async Task<bool> CheckEmployee(int employeeId)

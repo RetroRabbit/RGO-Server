@@ -63,7 +63,8 @@ public class EmployeeDocumentServiceUnitTest
                 Blob: "TestFileContent",
                 Status: DocumentStatus.PendingApproval,
                 UploadDate: DateTime.Now,
-                Reason: null
+                Reason: null,
+                CounterSign: false
             ));
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(employeeDocDto);
@@ -215,7 +216,8 @@ public class EmployeeDocumentServiceUnitTest
             Blob: "sadfasdf",
             Status: null,
             UploadDate: DateTime.Now,
-            Reason: null
+            Reason: null,
+            CounterSign: false
         );
 
         var employeeDocument = new EmployeeDocument(employeeDocumentDto);
@@ -260,7 +262,8 @@ public class EmployeeDocumentServiceUnitTest
             Blob: "sadfasdf",
             Status: null,
             UploadDate: DateTime.Now,
-            Reason: null
+            Reason: null,
+            CounterSign: false
         );
 
         var employeeDocument = new EmployeeDocument(employeeDocumentDto);

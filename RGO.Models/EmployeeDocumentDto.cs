@@ -11,4 +11,5 @@ public record EmployeeDocumentDto(
     string Blob,
     DocumentStatus? Status,
     DateTime UploadDate,
-    string? Reason);
+    string? Reason,
+    bool CounterSign);

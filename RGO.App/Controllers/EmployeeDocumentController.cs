@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
+using RGO.Models.Enums;
 using RGO.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace RGO.App.Controllers
         {
             _employeeDocumentService = employeeDocumentService;
         }
-        [HttpGet("all")]
+        [HttpGet("{employeeid}")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
             try
@@ -44,7 +45,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("get/{employeeId}/{filename}")]
+        [HttpGet("{employeeId}/{filename}")]
         public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename)
         {
             try
@@ -81,6 +82,19 @@ namespace RGO.App.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "An error occurred while deleting the employee document.");
+            }
+        }
+        [HttpGet("{employeeId}/{status}")]
+        public async Task<IActionResult> GetStatusEmployeeDocument(int employeeId, DocumentStatus status)
+        {
+            try
+            {
+                var employeeDocuments = await _employeeDocumentService.GetStatusEmployeeDocument(employeeId, status);
+                return Ok(employeeDocuments);
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, "An error occurred while fetching the employee documents.");
             }
         }
     }
