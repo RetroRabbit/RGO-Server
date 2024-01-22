@@ -89,7 +89,7 @@ namespace RGO.App.Controllers
         }
 
         [HttpGet("{employeeId}/{status}")]
-        public async Task<IActionResult> GetEmployeeDocumentStatus(int employeeId, DocumentStatus status)
+        public async Task<IActionResult> GetEmployeeDocumentByStatus(int employeeId, DocumentStatus status)
         {
             try
             {
