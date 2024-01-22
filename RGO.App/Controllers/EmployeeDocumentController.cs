@@ -17,6 +17,7 @@ namespace RGO.App.Controllers
         {
             _employeeDocumentService = employeeDocumentService;
         }
+
         [HttpGet("{employeeid}")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
@@ -58,6 +59,7 @@ namespace RGO.App.Controllers
                 return StatusCode(500, "An error occurred while fetching the employee document.");
             }
         }
+
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
@@ -71,6 +73,7 @@ namespace RGO.App.Controllers
                 return StatusCode(500, "An error occurred while updating the employee document.");
             }
         }
+
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
@@ -84,6 +87,7 @@ namespace RGO.App.Controllers
                 return StatusCode(500, "An error occurred while deleting the employee document.");
             }
         }
+
         [HttpGet("{employeeId}/{status}")]
         public async Task<IActionResult> GetStatusEmployeeDocument(int employeeId, DocumentStatus status)
         {
