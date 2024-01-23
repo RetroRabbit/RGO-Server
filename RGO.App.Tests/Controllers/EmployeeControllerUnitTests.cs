@@ -1,4 +1,4 @@
-﻿/*using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.App.Controllers;
@@ -14,6 +14,9 @@ public class EmployeeControllerUnitTests
     private readonly Mock<IEmployeeService> _employeeMockService;
     private readonly EmployeeController _controller;
     private readonly EmployeeDto _employee;
+    List<Claim> claims;
+    ClaimsPrincipal claimsPrincipal;
+    ClaimsIdentity identity;
 
     public EmployeeControllerUnitTests()
     {
@@ -27,6 +30,17 @@ public class EmployeeControllerUnitTests
                 "Smith", new DateTime(), "South Africa", "South African", "1234457899", " ",
                 new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null!,
                 "ksmith@retrorabbit.co.za", "kmaosmith@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+        claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, "ksmith@retrorabbit.co.za"),
+        };
+        identity = new ClaimsIdentity(claims, "TestAuthType");
+        claimsPrincipal = new ClaimsPrincipal(identity);
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+        };
     }
 
     private ClaimsPrincipal SetupClaimsProncipal(string email)
@@ -132,35 +146,35 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    //[Fact]
-    //public async Task UpdateEmployeeSuccessTest()
-    //{
-    //    _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
-    //        .ReturnsAsync(_employee);
+    [Fact]
+    public async Task UpdateEmployeeSuccessTest()
+    {
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+            .ReturnsAsync(_employee);
 
-    //    var result = await _controller.UpdateEmployee(_employee);
+        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
 
-    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-    //    Assert.Equal("UpdateEmployee", createdAtActionResult.ActionName);
-    //    Assert.Equal(201, createdAtActionResult.StatusCode);
-    //}
+        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+        Assert.Equal("UpdateEmployee", createdAtActionResult.ActionName);
+        Assert.Equal(201, createdAtActionResult.StatusCode);
+    }
 
-    //[Fact]
-    //public async Task UpdateEmployeeFailTest()
-    //{
-    //    _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
-    //        .ThrowsAsync(new Exception("Not found"));
+    [Fact]
+    public async Task UpdateEmployeeFailTest()
+    {
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+            .ThrowsAsync(new Exception("Not found"));
 
-    //    var result = await _controller.UpdateEmployee(_employee);
+        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
 
-    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-    //    Assert.Equal(404, notFoundResult.StatusCode);
-    //}
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(404, notFoundResult.StatusCode);
+    }
 
     [Fact]
     public async Task GetAllEmployeesSuccessTest()
     {
-        _employeeMockService.Setup(service => service.GetAll())
+        _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
             .ReturnsAsync(new List<EmployeeDto> { _employee });
 
         var result = await _controller.GetAllEmployees();
@@ -173,7 +187,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetAllEmployeesFailTest()
     {
-        _employeeMockService.Setup(service => service.GetAll())
+        _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
             .ThrowsAsync(new Exception("Not found"));
 
         var result = await _controller.GetAllEmployees();
@@ -185,7 +199,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task CountAllEmployeesSuccessTest()
     {
-        _employeeMockService.Setup(service => service.GetAll())
+        _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
             .ReturnsAsync(new List<EmployeeDto> { _employee });
 
         var result = await _controller.CountAllEmployees();
@@ -198,7 +212,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task CountAllEmployeesFailTest()
     {
-        _employeeMockService.Setup(service => service.GetAll())
+        _employeeMockService.Setup(service => service.GetAll(""))
             .ThrowsAsync(new Exception("Not found"));
 
         var result = await _controller.CountAllEmployees();
@@ -207,4 +221,3 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 }
-*/
