@@ -93,18 +93,15 @@ public class ChartService : IChartService
         var currentMonthTotal = await GetCurrentMonthTotal();
         var previousMonthTotal = await GetPreviousMonthTotal();
 
-        if (previousMonthTotal != null && previousMonthTotal.EmployeeTotal > 0 && previousMonthTotal.DeveloperTotal > 0 && previousMonthTotal.DesignerTotal > 0 && previousMonthTotal.ScrumMasterTotal > 0  && previousMonthTotal.ScrumMasterTotal > 0 &&
-            previousMonthTotal.BusinessSupportTotal > 0)
+        var churnRate = ((double)(currentMonthTotal.EmployeeTotal - previousMonthTotal.EmployeeTotal) / previousMonthTotal.EmployeeTotal) * 100;
+
+        var devChurnRate = ((double)(currentMonthTotal.DeveloperTotal - previousMonthTotal.DeveloperTotal) / previousMonthTotal.DeveloperTotal) * 100;
+        var designerChurnRate = ((double)(currentMonthTotal.DesignerTotal - previousMonthTotal.DesignerTotal) / previousMonthTotal.DesignerTotal) * 100;
+        var scrumMasterChurnRate = ((double)(currentMonthTotal.ScrumMasterTotal - previousMonthTotal.ScrumMasterTotal) / previousMonthTotal.ScrumMasterTotal) * 100;
+        var businessSupportChurnRate = ((double)(currentMonthTotal.BusinessSupportTotal - previousMonthTotal.BusinessSupportTotal) / previousMonthTotal.BusinessSupportTotal) * 100;
+
+        return new ChurnRateDto 
         {
-            var churnRate = ((double)(currentMonthTotal.EmployeeTotal - previousMonthTotal.EmployeeTotal) / previousMonthTotal.EmployeeTotal) * 100;
-
-            var devChurnRate = ((double)(currentMonthTotal.DeveloperTotal - previousMonthTotal.DeveloperTotal) / previousMonthTotal.DeveloperTotal) * 100;
-            var designerChurnRate = ((double)(currentMonthTotal.DesignerTotal - previousMonthTotal.DesignerTotal) / previousMonthTotal.DesignerTotal) * 100;
-            var scrumMasterChurnRate = ((double)(currentMonthTotal.ScrumMasterTotal - previousMonthTotal.ScrumMasterTotal) / previousMonthTotal.ScrumMasterTotal) * 100;
-            var businessSupportChurnRate = ((double)(currentMonthTotal.BusinessSupportTotal - previousMonthTotal.BusinessSupportTotal) / previousMonthTotal.BusinessSupportTotal) * 100;
-
-            return new ChurnRateDto
-            {
                 ChurnRate = Math.Round(churnRate, 0),
                 DeveloperChurnRate = Math.Round(devChurnRate, 0),
                 DesignerChurnRate = Math.Round(designerChurnRate, 0),
@@ -112,18 +109,7 @@ public class ChartService : IChartService
                 BusinessSupportChurnRate = Math.Round(businessSupportChurnRate, 0),
                 Month = previousMonthTotal.Month,
                 Year = previousMonthTotal.Year,
-            };
-        }
-        else
-        {
-            
-            return new ChurnRateDto
-            {
-                ChurnRate = 0,  
-                Month = "N/A",  
-                Year = 0,      
-            };
-        }
+        };
     }
 
     public async Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal()
@@ -141,7 +127,7 @@ public class ChartService : IChartService
         {
             var employeeTotalCount = await _db.Employee.GetAll();
 
-            var devsQuery= _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
+            var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
             var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
             var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
             var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5);
@@ -153,7 +139,8 @@ public class ChartService : IChartService
 
 
             MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
-                (0, employeeTotalCount.Count, devsTotal.Count, designersTotal.Count, scrumMastersTotal.Count, businessSupportTotal.Count, currentMonth, currentYear);
+                (0, employeeTotalCount.Count, devsTotal.Count, designersTotal.Count, scrumMastersTotal.Count, 
+                businessSupportTotal.Count, currentMonth, currentYear);
 
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
@@ -163,7 +150,7 @@ public class ChartService : IChartService
         return currentEmployeeTotal.ToDto();
     }
 
-    private async Task<MonthlyEmployeeTotalDto> GetPreviousMonthTotal()
+    public async Task<MonthlyEmployeeTotalDto> GetPreviousMonthTotal()
     {
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
