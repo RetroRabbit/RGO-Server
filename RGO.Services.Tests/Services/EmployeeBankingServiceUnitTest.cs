@@ -17,6 +17,25 @@ public class EmployeeBankingServiceTest
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private EmployeeBankingService employeeBankingService;
 
+    EmployeeBankingDto test1 = new EmployeeBankingDto(1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "", "asd", new DateOnly(), new DateOnly());
+    EmployeeBankingDto test2 = new EmployeeBankingDto(2, 2, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.Approved, "", "asd", new DateOnly(), new DateOnly());
+    EmployeeBankingDto test3 = new EmployeeBankingDto(3, 3, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.Declined, "", "asd", new DateOnly(), new DateOnly());
+
+    static EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+    static EmployeeType employeeType = new EmployeeType(employeeTypeDto);
+    static EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+    EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(), null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+    "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ", new DateTime(), null, Race.Black, Gender.Male, null,
+    "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+    EmployeeDto testEmployee2 = new(2, "001", "34434434", new DateTime(), new DateTime(), null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+    "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ", new DateTime(), null, Race.Black, Gender.Male, null,
+    "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+    EmployeeDto testEmployee3 = new(3, "001", "34434434", new DateTime(), new DateTime(), null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+    "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ", new DateTime(), null, Race.Black, Gender.Male, null,
+    "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
     public EmployeeBankingServiceTest()
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -28,40 +47,7 @@ public class EmployeeBankingServiceTest
     [Fact]
     public async Task GetPendingReturnsPendingBankDtosPass()
     {
-
-
-        EmployeeBankingDto test1 = new EmployeeBankingDto(
-        1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "", "asd", new DateOnly(), new DateOnly());
-        EmployeeBankingDto test2 = new EmployeeBankingDto(
-        2, 2, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.Approved, "", "asd", new DateOnly(), new DateOnly());
-        EmployeeBankingDto test3 = new EmployeeBankingDto(
-        3, 3, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.Declined, "", "asd", new DateOnly(), new DateOnly());
-
-
         var pendingBankEntries = new List<EmployeeBankingDto> { test1 };
-
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
-        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-        "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-        new DateTime(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        EmployeeDto testEmployee2 = new(2, "001", "34434434", new DateTime(), new DateTime(),
-        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-        "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-        new DateTime(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        EmployeeDto testEmployee3 = new(3, "001", "34434434", new DateTime(), new DateTime(),
-        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-        "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-        new DateTime(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
         var employees = new List<Employee>
     {
     new Employee(testEmployee1, employeeTypeDto)
@@ -124,22 +110,10 @@ public class EmployeeBankingServiceTest
     [Fact]
     public async Task UpdateReturnsUpdateBankDtos()
     {
-        EmployeeBankingDto test1 = new EmployeeBankingDto(
-        1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "", "asd", new DateOnly(), new DateOnly());
-
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-        "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-        new DateTime(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        Employee employee = new Employee(testEmployee, testEmployee.EmployeeType);
+        Employee employee = new Employee(testEmployee1, testEmployee1.EmployeeType);
         employee.EmployeeType = employeeType;
         employee.PhysicalAddress = new EmployeeAddress(employeeAddressDto);
         employee.PostalAddress = new EmployeeAddress(employeeAddressDto);
@@ -165,22 +139,10 @@ public class EmployeeBankingServiceTest
     [Fact]
     public async Task SavePass()
     {
-        EmployeeBankingDto test1 = new EmployeeBankingDto(
-         1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "file", "asd", new DateOnly(), new DateOnly());
-
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-        "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-        new DateTime(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        Employee employee = new Employee(testEmployee, testEmployee.EmployeeType);
+        Employee employee = new Employee(testEmployee1, testEmployee1.EmployeeType);
         employee.EmployeeType = employeeType;
         employee.PhysicalAddress = new EmployeeAddress(employeeAddressDto);
         employee.PostalAddress = new EmployeeAddress(employeeAddressDto);
@@ -197,14 +159,11 @@ public class EmployeeBankingServiceTest
         Assert.Equal(test1, result);
     }
 
-
     [Fact]
     public async Task GetBankingPass()
     {
         int employeeId = 1;
-        var expectedBankingDto = new EmployeeBankingDto(
-         1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "file", "asd", new DateOnly(), new DateOnly());
-        var banking = new EmployeeBanking(expectedBankingDto);
+        var banking = new EmployeeBanking(test1);
 
         var bankingQueryableMock = new List<EmployeeBanking> { banking }.AsQueryable().BuildMock();
 
@@ -214,17 +173,14 @@ public class EmployeeBankingServiceTest
         var result = await employeeBankingService.GetBanking(employeeId);
 
         Assert.NotNull(result);
-        Assert.Equal(expectedBankingDto, result);
+        Assert.Equal(test1, result);
     }
 
     [Fact]
     public async Task GetBankingFail()
     {
         int employeeId = 2;
-
-        var expectedBankingDto = new EmployeeBankingDto(
-        1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "file", "asd", new DateOnly(), new DateOnly());
-        var banking = new EmployeeBanking(expectedBankingDto);
+        var banking = new EmployeeBanking(test2);
 
         var bankingQueryableMock = new List<EmployeeBanking> { banking }.AsQueryable().BuildMock();
 
@@ -237,22 +193,9 @@ public class EmployeeBankingServiceTest
     [Fact]
     public async Task SaveFail()
     {
-        EmployeeBankingDto test1 = new EmployeeBankingDto(
-         1, 1, "FNB", "Not Sure", "120", EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "file", "asd", new DateOnly(), new DateOnly());
-
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-        "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-        new DateTime(), null, Race.Black, Gender.Male, null,
-        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        Employee employee = new Employee(testEmployee, testEmployee.EmployeeType);
+        Employee employee = new Employee(testEmployee1, testEmployee1.EmployeeType);
         employee.EmployeeType = employeeType;
         employee.PhysicalAddress = new EmployeeAddress(employeeAddressDto);
         employee.PostalAddress = new EmployeeAddress(employeeAddressDto);
