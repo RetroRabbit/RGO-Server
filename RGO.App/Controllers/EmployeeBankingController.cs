@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
@@ -37,7 +38,8 @@ public class EmployeeBankingController : ControllerBase
                 DateOnly.FromDateTime(DateTime.Now),
                 DateOnly.FromDateTime(DateTime.Now)
                 );
-            var employee = await _employeeBankingService.Save(Bankingdto);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employee = await _employeeBankingService.Save(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
             return Ok(Bankingdto);
         }
         catch (Exception ex)
@@ -45,6 +47,10 @@ public class EmployeeBankingController : ControllerBase
             if (ex.Message.Contains("exists"))
             {
                 return Problem("Unexceptable", "Unexceptable", 406, "Details already exists");
+            }
+            else if(ex.Message.Contains("Unauthorized access"))
+            {
+                return StatusCode(403, $"Forbidden: {ex.Message}");
             }
             return NotFound(ex.Message);
         }
@@ -90,7 +96,8 @@ public class EmployeeBankingController : ControllerBase
                DateOnly.FromDateTime(DateTime.Now),
                DateOnly.FromDateTime(DateTime.Now)
                );
-            var employee = await _employeeBankingService.Update(Bankingdto);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employee = await _employeeBankingService.Update(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
             return Ok();
         }
         catch (Exception ex)

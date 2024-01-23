@@ -157,7 +157,7 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>())).Returns(bankingS.AsQueryable().BuildMock());
 
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Update(It.IsAny<EmployeeBanking>()));
-        var result = await employeeBankingService.Update(test1);
+        var result = await employeeBankingService.Update(test1, "test@retrorabbit.co.za");
 
         Assert.Equal(test1, result);
     }
@@ -192,7 +192,7 @@ public class EmployeeBankingServiceTest
         var mockEmployees = employees;
         _mockUnitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(mockEmployees.AsQueryable().BuildMock());
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Add(It.IsAny<EmployeeBanking>())).Returns(Task.FromResult(test1));
-        var result = await employeeBankingService.Save(test1);
+        var result = await employeeBankingService.Save(test1, "test@retrorabbit.co.za");
 
         Assert.Equal(test1, result);
     }
@@ -264,7 +264,7 @@ public class EmployeeBankingServiceTest
         var mockEmployees = employees;
         _mockUnitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(mockEmployees.AsQueryable().BuildMock());
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Add(It.IsAny<EmployeeBanking>())).Returns(Task.FromResult(test1));
-        var result = await employeeBankingService.Save(test1);
+        var result = await employeeBankingService.Save(test1, "test@retrorabbit.co.za");
 
         Assert.Equal(test1, result);
     }

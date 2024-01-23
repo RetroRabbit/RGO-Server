@@ -18,7 +18,7 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
@@ -82,8 +82,8 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            /*var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);*/
-            var updatedEmployee = await _employeeService.UpdateEmployee(employee, userEmail);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
             return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
         }
         catch (Exception ex)
@@ -102,7 +102,8 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var employees = await _employeeService.GetAll();
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employees = await _employeeService.GetAll(claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
 
             return Ok(employees);
         }
@@ -118,7 +119,8 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var employees = await _employeeService.GetAll();
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employees = await _employeeService.GetAll(claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
 
             return Ok(employees.Count);
         }

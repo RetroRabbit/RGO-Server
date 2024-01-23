@@ -15,7 +15,7 @@ public interface IEmployeeService
     /// Get all employees
     /// </summary>
     /// <returns></returns>
-    Task<List<EmployeeDto>> GetAll();
+    Task<List<EmployeeDto>> GetAll(string userEmail = "");
 
     /// <summary>
     /// Get employee by email

@@ -116,8 +116,23 @@ public class EmployeeService : IEmployeeService
         return await _db.Employee.Delete(existingEmployee.Id);
     }
 
-    public async Task<List<EmployeeDto>> GetAll()
+    public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
     {
+
+        if(userEmail != "" && await IsJounrey(userEmail))
+        {
+            EmployeeDto peopleChampion = await GetEmployee(userEmail);
+
+            return await _db.Employee
+                .Get(employee => employee.PeopleChampion == peopleChampion.Id)
+                .Include(employee => employee.EmployeeType)
+                .Include(employee => employee.PhysicalAddress)
+                .Include(employee => employee.PostalAddress)
+                .OrderBy(employee => employee.Name)
+                .Select(employee => employee.ToDto())
+                .ToListAsync();
+        }
+
         return await _db.Employee
             .Get(employee => true)
             .AsNoTracking()
@@ -173,7 +188,6 @@ public class EmployeeService : IEmployeeService
         EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
                 .GetEmployeeType(employeeDto.EmployeeType.Name);
         Employee employee = null;
-        //int teamLeadId = await GetTeamLead(employeeDto.Id);
         if (employeeDto.Email == userEmail)
         {
             employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
@@ -338,6 +352,20 @@ public class EmployeeService : IEmployeeService
                 return role.Description == "Admin" || role.Description == "SuperAdmin"
             For more information: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/pattern-matching
         */
+    }
+
+    private async Task<bool> IsJounrey(string userEmail)
+    {
+        EmployeeDto employeeDto = await GetEmployee(userEmail);
+        EmployeeRole empRole = await _db.EmployeeRole
+            .Get(role => role.EmployeeId == employeeDto.Id)
+            .FirstOrDefaultAsync();
+
+        Role role = await _db.Role
+            .Get(role => role.Id == empRole.RoleId)
+            .FirstOrDefaultAsync();
+
+        return role.Description is "Journey";
     }
 
     private async Task<Employee> CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
