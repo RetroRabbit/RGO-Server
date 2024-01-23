@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RGO.Models
 {
-    public class DevsAndDesignersCountDto
+    public class EmployeeCountDto
     {
         public int DevsCount { get; set; }
         public int DesignersCount { get; set; }

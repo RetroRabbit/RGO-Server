@@ -61,13 +61,13 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("employees/dev/designer/total")]
-        public async Task<IActionResult> GetDevsAndDesignerCount()
+        [HttpGet("employees/count")]
+        public async Task<IActionResult> GetEmployeesCount()
         {
             try
             {
-                var devsDesignersAndScrumsCount = await _chartService.GetDevsAndDesignersCount();
-                return Ok(devsDesignersAndScrumsCount);
+                var employeesCount = await _chartService.GetEmployeesCount();
+                return Ok(employeesCount);
             }
             catch (Exception ex)
             {

@@ -22,10 +22,10 @@ namespace RGO.Services.Interfaces
         Task<int> GetTotalEmployees();
 
         /// <summary>
-        /// Returns Dev and Designer count 
+        /// Returns Employees  count 
         /// </summary>
-        /// <returns>DevsAndDesignersCountDto</returns>
-        Task<DevsAndDesignersCountDto> GetDevsAndDesignersCount();
+        /// <returns>EmployeeCountDto</returns>
+        Task<EmployeeCountDto> GetEmployeesCount();
 
         /// <summary>
         /// Create a chart
@@ -39,7 +39,7 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Get the total number of employees for the current month 
         /// </summary>
-        /// <returns>MonthlyEmployeedata</returns>
+        /// <returns>MonthlyEmployeeTotalDto</returns>
         Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal();
 
         /// <summary>

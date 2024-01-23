@@ -33,7 +33,7 @@ public class ChartService : IChartService
             return employees.Count;
     }
 
-    public async Task<DevsAndDesignersCountDto> GetDevsAndDesignersCount()
+    public async Task<EmployeeCountDto> GetEmployeesCount()
     {
         var employees = await _employeeService.GetAll();
         var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
@@ -47,9 +47,9 @@ public class ChartService : IChartService
         var totalnumbersOfScrumMasters = await scrumMastersQuery.ToListAsync();
         var totalnumberOfBusinessSupport = await businessSupportQuery.ToListAsync();
 
-        var totalnumberOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
-        var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
-        var totalnumbersOfScrumMastersOnBench = await scrumMastersQuery.Where(c => c.ClientAllocated == 7).ToListAsync();
+        var totalnumberOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
+        var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
+        var totalnumbersOfScrumMastersOnBench = await scrumMastersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
 
         var totalnumberOfEmployeesOnBench = totalnumberOfDevsOnBench.Count +
            totalnumberOfDesignersOnBench.Count +
@@ -57,7 +57,7 @@ public class ChartService : IChartService
 
         var totalNumberOfDevsDesignersAndScrumsOnClients = await _db.Employee
            .Get()
-           .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 7)
+           .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
            .ToListAsync();
 
 
@@ -72,7 +72,7 @@ public class ChartService : IChartService
         var employeeTotalDifference = previousMonthTotal.EmployeeTotal - currentMonthTotal.EmployeeTotal;
         var isIncrease = employeeTotalDifference > 0;
 
-        return new DevsAndDesignersCountDto
+        return new EmployeeCountDto
         {
             DevsCount = totalnumberOfDevs.Count,
             DesignersCount = totalnumberOfDesigners.Count,
