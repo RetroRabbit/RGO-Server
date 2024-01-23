@@ -61,7 +61,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("employees/dev/desinger/total")]
+        [HttpGet("employees/dev/designer/total")]
         public async Task<IActionResult> GetDevsAndDesignerCount()
         {
             try
