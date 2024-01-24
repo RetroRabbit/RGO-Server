@@ -35,24 +35,23 @@ public class ChartService : IChartService
 
     public async Task<EmployeeCountDto> GetEmployeesCount()
     {
-        var employees = await _employeeService.GetAll();
-        var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
-        var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
-        var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
-        var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5);
+        var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2).ToList();
+        var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3).ToList();
+        var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4).ToList();
+        var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList();
 
-        var listOfDevs = await devsQuery.ToListAsync();
-        var listOfDesigners = await designersQuery.ToListAsync();
-        var listOfScrumMasters = await scrumMastersQuery.ToListAsync();
-        var listOfBusinessSupport = await businessSupportQuery.ToListAsync();
+        var totalNumberOfDevs = devsQuery.Count;
+        var totalNumberOfDesigners = designersQuery.Count;
+        var totalNumberOfScrumMasters = scrumMastersQuery.Count;
+        var totalNumberOfBusinessSupport = businessSupportQuery.Count;
 
-        var listOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
-        var listOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
-        var listOfScrumMastersOnBench = await scrumMastersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
+        var totalNumberOfDevsOnBench = devsQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
+        var totalNumberOfDesignersOnBench = designersQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
+        var totalNumberOfScrumMastersOnBench = scrumMastersQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
 
-        var totalnumberOfEmployeesOnBench = listOfDevsOnBench.Count +
-           listOfDesignersOnBench.Count +
-           listOfScrumMastersOnBench.Count;
+        var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
+           totalNumberOfDesignersOnBench +
+           totalNumberOfScrumMastersOnBench;
 
         var listOfDevsDesignersAndScrumsOnClients = await _db.Employee
            .Get()
@@ -73,18 +72,18 @@ public class ChartService : IChartService
 
         return new EmployeeCountDto
         {
-            DevsCount = listOfDevs.Count,
-            DesignersCount = listOfDesigners.Count,
-            ScrumMastersCount = listOfScrumMasters.Count,
-            BusinessSupportCount = listOfBusinessSupport.Count,
-            DevsOnBenchCount = listOfDevsOnBench.Count,
-            DesignersOnBenchCount = listOfDesignersOnBench.Count,
-            ScrumMastersOnBenchCount = listOfScrumMastersOnBench.Count,
+            DevsCount = totalNumberOfDevs,
+            DesignersCount = totalNumberOfDesigners,
+            ScrumMastersCount = totalNumberOfScrumMasters,
+            BusinessSupportCount = totalNumberOfBusinessSupport,
+            DevsOnBenchCount = totalNumberOfDevsOnBench,
+            DesignersOnBenchCount = totalNumberOfDesignersOnBench,
+            ScrumMastersOnBenchCount = totalNumberOfScrumMastersOnBench,
             TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench,
-            BillableEmployeesPercentage = Math.Round(billableEmployees,0),
+            BillableEmployeesPercentage = Math.Round(billableEmployees, 0),
             EmployeeTotalDifference = employeeTotalDifference,
-            isIncrease= isIncrease,
-        }; 
+            isIncrease = isIncrease,
+        };
     }
 
     public async Task<ChurnRateDto> CalculateChurnRate()
@@ -112,10 +111,10 @@ public class ChartService : IChartService
                 Month = previousMonthTotal.Month,
                 Year = previousMonthTotal.Year,
             };
-         }
+        }
         else
         {
-            return new ChurnRateDto 
+            return new ChurnRateDto
             {
                 ChurnRate = 0,
                 DeveloperChurnRate = 0,
@@ -124,7 +123,7 @@ public class ChartService : IChartService
                 BusinessSupportChurnRate = 0,
                 Month = DateTime.Now.AddMonths(-1).ToString("MMMM"),
                 Year = DateTime.Now.Year,
-            };  
+            };
         }
     }
 
@@ -143,24 +142,19 @@ public class ChartService : IChartService
         {
             var employeeTotalCount = await _db.Employee.GetAll();
 
-            var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2);
-            var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3);
-            var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
-            var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5);
-
-            var devsTotal = await devsQuery.ToListAsync();
-            var designersTotal = await designersQuery.ToListAsync();
-            var scrumMastersTotal = await scrumMastersQuery.ToListAsync();
-            var businessSupportTotal = await businessSupportQuery.ToListAsync();
+            var devsTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2).ToList().Count;
+            var designersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3).ToList().Count;
+            var scrumMastersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4).ToList().Count;
+            var businessSupportTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList().Count;
 
 
             MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
-                (0, employeeTotalCount.Count, devsTotal.Count, designersTotal.Count, scrumMastersTotal.Count, 
-                businessSupportTotal.Count, currentMonth, currentYear);
+                (0, employeeTotalCount.Count, devsTotal, designersTotal, scrumMastersTotal,
+                businessSupportTotal, currentMonth, currentYear);
 
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
-           return await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
+            return await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
         }
 
         return currentEmployeeTotal.ToDto();
@@ -170,7 +164,7 @@ public class ChartService : IChartService
     {
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
-        var previousEmployeeTotal =  _db.MonthlyEmployeeTotal
+        var previousEmployeeTotal = _db.MonthlyEmployeeTotal
             .Get()
             .Where(e => e.Month == previousMonth)
             .FirstOrDefault();
@@ -182,7 +176,6 @@ public class ChartService : IChartService
 
         return previousEmployeeTotal.ToDto();
     }
-
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)
     {
         List<EmployeeDto> employees;

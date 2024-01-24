@@ -61,34 +61,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("employees/count")]
-        public async Task<IActionResult> GetEmployeesCount()
-        {
-            try
-            {
-                var employeesCount = await _chartService.GetEmployeesCount();
-                return Ok(employeesCount);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpGet("employees/churnrate")]
-        public async Task<IActionResult> GetChurnRate()
-        {
-            try
-            {
-                var churnRate = await _chartService.CalculateChurnRate();
-                return Ok(churnRate);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
+     
         [HttpGet("data")]
         public async Task<IActionResult> GetChartData([FromQuery] List<string> dataTypes)
         {
