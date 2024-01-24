@@ -41,18 +41,18 @@ public class ChartService : IChartService
         var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4);
         var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5);
 
-        var totalnumberOfDevs = await devsQuery.ToListAsync();
-        var totalnumberOfDesigners = await designersQuery.ToListAsync();
-        var totalnumbersOfScrumMasters = await scrumMastersQuery.ToListAsync();
-        var totalnumberOfBusinessSupport = await businessSupportQuery.ToListAsync();
+        var listOfDevs = await devsQuery.ToListAsync();
+        var listOfDesigners = await designersQuery.ToListAsync();
+        var listOfScrumMasters = await scrumMastersQuery.ToListAsync();
+        var listOfBusinessSupport = await businessSupportQuery.ToListAsync();
 
-        var totalnumberOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
-        var totalnumberOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
-        var totalnumbersOfScrumMastersOnBench = await scrumMastersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
+        var listOfDevsOnBench = await devsQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
+        var listOfDesignersOnBench = await designersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
+        var listOfScrumMastersOnBench = await scrumMastersQuery.Where(c => c.ClientAllocated == 1).ToListAsync();
 
-        var totalnumberOfEmployeesOnBench = totalnumberOfDevsOnBench.Count +
-           totalnumberOfDesignersOnBench.Count +
-           totalnumbersOfScrumMastersOnBench.Count;
+        var totalnumberOfEmployeesOnBench = listOfDevsOnBench.Count +
+           listOfDesignersOnBench.Count +
+           listOfScrumMastersOnBench.Count;
 
         var listOfDevsDesignersAndScrumsOnClients = await _db.Employee
            .Get()
@@ -73,13 +73,13 @@ public class ChartService : IChartService
 
         return new EmployeeCountDto
         {
-            DevsCount = totalnumberOfDevs.Count,
-            DesignersCount = totalnumberOfDesigners.Count,
-            ScrumMastersCount = totalnumbersOfScrumMasters.Count,
-            BusinessSupportCount = totalnumberOfBusinessSupport.Count,
-            DevsOnBenchCount = totalnumberOfDevsOnBench.Count,
-            DesignersOnBenchCount = totalnumberOfDesignersOnBench.Count,
-            ScrumMastersOnBenchCount = totalnumbersOfScrumMastersOnBench.Count,
+            DevsCount = listOfDevs.Count,
+            DesignersCount = listOfDesigners.Count,
+            ScrumMastersCount = listOfScrumMasters.Count,
+            BusinessSupportCount = listOfBusinessSupport.Count,
+            DevsOnBenchCount = listOfDevsOnBench.Count,
+            DesignersOnBenchCount = listOfDesignersOnBench.Count,
+            ScrumMastersOnBenchCount = listOfScrumMastersOnBench.Count,
             TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench,
             BillableEmployeesPercentage = Math.Round(billableEmployees,0),
             EmployeeTotalDifference = employeeTotalDifference,
