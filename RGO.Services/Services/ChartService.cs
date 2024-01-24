@@ -60,7 +60,7 @@ public class ChartService : IChartService
 
 
         var totalNumberOfEmployeesDevsScrumsAndDevs = totalnumberOfEmployeesOnBench + listOfDevsDesignersAndScrumsOnClients.Count;
-        var billableEmployees = totalNumberOfEmployeesDevsScrumsAndDevs > 0
+        var billableEmployeesPercentage = totalNumberOfEmployeesDevsScrumsAndDevs > 0
                ? (double)listOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100
                : 0;
 
@@ -80,7 +80,7 @@ public class ChartService : IChartService
             DesignersOnBenchCount = totalNumberOfDesignersOnBench,
             ScrumMastersOnBenchCount = totalNumberOfScrumMastersOnBench,
             TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench,
-            BillableEmployeesPercentage = Math.Round(billableEmployees, 0),
+            BillableEmployeesPercentage = Math.Round(billableEmployeesPercentage, 0),
             EmployeeTotalDifference = employeeTotalDifference,
             isIncrease = isIncrease,
         };
