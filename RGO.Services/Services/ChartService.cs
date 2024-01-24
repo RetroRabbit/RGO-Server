@@ -54,15 +54,15 @@ public class ChartService : IChartService
            totalnumberOfDesignersOnBench.Count +
            totalnumbersOfScrumMastersOnBench.Count;
 
-        var totalNumberOfDevsDesignersAndScrumsOnClients = await _db.Employee
+        var listOfDevsDesignersAndScrumsOnClients = await _db.Employee
            .Get()
            .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
            .ToListAsync();
 
 
-        var totalNumberOfEmployeesDevsScrumsAndDevs = totalnumberOfEmployeesOnBench + totalNumberOfDevsDesignersAndScrumsOnClients.Count;
+        var totalNumberOfEmployeesDevsScrumsAndDevs = totalnumberOfEmployeesOnBench + listOfDevsDesignersAndScrumsOnClients.Count;
         var billableEmployees = totalNumberOfEmployeesDevsScrumsAndDevs > 0
-               ? (double)totalNumberOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100
+               ? (double)listOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100
                : 0;
 
         var currentMonthTotal = await GetCurrentMonthTotal();
