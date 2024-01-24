@@ -12,13 +12,15 @@ namespace RGO.App.Tests.Controllers;
 public class EmployeeControllerUnitTests
 {
     private readonly Mock<IEmployeeService> _employeeMockService;
+    private readonly Mock<IChartService> _chartMockService;
     private readonly EmployeeController _controller;
     private readonly EmployeeDto _employee;
 
     public EmployeeControllerUnitTests()
     {
         _employeeMockService = new Mock<IEmployeeService>();
-        _controller = new EmployeeController(_employeeMockService.Object);
+        _chartMockService = new Mock<IChartService>();
+        _controller = new EmployeeController(_employeeMockService.Object,_chartMockService.Object);
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
         EmployeeAddressDto employeeAddressDto = new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
