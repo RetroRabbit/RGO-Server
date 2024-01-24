@@ -61,7 +61,6 @@ namespace RGO.App.Controllers
             }
         }
 
-     
         [HttpGet("data")]
         public async Task<IActionResult> GetChartData([FromQuery] List<string> dataTypes)
         {
@@ -137,8 +136,7 @@ namespace RGO.App.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message);
-            }
-           
+            }  
         }
     }
 }
