@@ -61,4 +61,22 @@ public interface IEmployeeService
     /// <param name="employeeId"></param>
     /// <returns></returns>
     Task<EmployeeDto> GetById(int employeeId);
+
+    /// <summary>
+    /// Returns Employees data count 
+    /// </summary>
+    /// <returns>EmployeeCountDto</returns>
+    Task<EmployeeCountDto> GetEmployeesCount();
+
+    /// <summary>
+    /// Get the total number of employees for the current month 
+    /// </summary>
+    /// <returns>MonthlyEmployeeTotalDto</returns>
+    Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal();
+
+    /// <summary>
+    /// Calculates employee chrunRate over a month
+    /// </summary>
+    /// <returns>ChurnRateDto</returns>
+    Task<ChurnRateDto> CalculateChurnRate();
 }

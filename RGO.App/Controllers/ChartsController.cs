@@ -47,20 +47,6 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("employees/total")]
-        public async Task<IActionResult> GetNumberOfEmployees()
-        {
-            try
-            {
-                var numOfEmployees = await _chartService.GetTotalEmployees();
-                return Ok(numOfEmployees);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
         [HttpGet("data")]
         public async Task<IActionResult> GetChartData([FromQuery] List<string> dataTypes)
         {

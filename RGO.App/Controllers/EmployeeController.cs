@@ -148,7 +148,7 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var employeesCount = await _chartService.GetEmployeesCount();
+            var employeesCount = await _employeeService.GetEmployeesCount();
             return Ok(employeesCount);
         }
         catch (Exception ex)
@@ -162,7 +162,7 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var churnRate = await _chartService.CalculateChurnRate();
+            var churnRate = await _employeeService.CalculateChurnRate();
             return Ok(churnRate);
         }
         catch (Exception ex)
