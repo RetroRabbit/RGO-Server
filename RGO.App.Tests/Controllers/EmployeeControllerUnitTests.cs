@@ -6,6 +6,7 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using System.Security.Claims;
 using Xunit;
+using Xunit.Sdk;
 
 namespace RGO.App.Tests.Controllers;
 
@@ -17,14 +18,14 @@ public class EmployeeControllerUnitTests
     List<Claim> claims;
     ClaimsPrincipal claimsPrincipal;
     ClaimsIdentity identity;
+    private readonly EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+    private readonly EmployeeAddressDto employeeAddressDto = new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
     public EmployeeControllerUnitTests()
     {
         _employeeMockService = new Mock<IEmployeeService>();
         _controller = new EmployeeController(_employeeMockService.Object);
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                 null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Kamo", "K.G.",
                 "Smith", new DateTime(), "South Africa", "South African", "1234457899", " ",
@@ -172,6 +173,16 @@ public class EmployeeControllerUnitTests
     }
 
     [Fact]
+    public async Task UpdateEmployeeUnauthorized()
+    {
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+            .ThrowsAsync(new Exception("Unauthorized action"));
+        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
+        var statusCodeResult = (ObjectResult)result;
+        Assert.Equal(403, statusCodeResult.StatusCode);
+    }
+
+    [Fact]
     public async Task GetAllEmployeesSuccessTest()
     {
         _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
@@ -219,5 +230,69 @@ public class EmployeeControllerUnitTests
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(404, notFoundResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetEmployeeByIdSuccess()
+    {
+        _employeeMockService.Setup(service => service.GetEmployeeById(It.IsAny<int>()))
+            .ReturnsAsync(_employee);
+
+        var result = await _controller.GetEmployeeById(_employee.Id);
+
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okObjectResult.StatusCode);
+        Assert.Equal(_employee, (EmployeeDto)okObjectResult.Value!);
+    }
+
+    [Fact]
+    public async Task GetEmployeeByIdFail()
+    {
+        var principal = SetupClaimsProncipal(_employee.Email);
+        SetupControllerContext(_controller, principal);
+
+        _employeeMockService.Setup(service => service.GetEmployeeById(It.IsAny<int>()))
+            .ThrowsAsync(new Exception("Not found"));
+
+        var result = await _controller.GetEmployeeById(2);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(404, notFoundResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task FilterByTypeSuccess()
+    {
+        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto(1, "1", "123123",
+            new DateTime(), null, null, null, false, "", 3, employeeTypeDto, "", null,
+            null, null, null, "John", "J", "Doe", new DateTime(), null, null, "123", "123", null,
+            null, Models.Enums.Race.Coloured, Models.Enums.Gender.Male, null, "ksmith@retrorabbit.co.za",
+            "ba@gmail.com", "123", null, null, null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+        _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(employee);
+
+        var result = await _controller.GetSimpleEmployee(employee.Email);
+
+        var simpleEmployee = (ObjectResult)result;
+
+        Assert.Equal(employee, simpleEmployee.Value);
+    }
+
+    [Fact]
+    public async Task FilterByTypeFail()
+    {
+        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto(1, "1", "123123",
+            new DateTime(), null, null, null, false, "", 3, employeeTypeDto, "", null,
+            null, null, null, "John", "J", "Doe", new DateTime(), null, null, "123", "123", null,
+            null, Models.Enums.Race.Coloured, Models.Enums.Gender.Male, null, "ksmith@retrorabbit.co.za",
+            "ba@gmail.com", "123", null, null, null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+        _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ThrowsAsync(new Exception("Not Found"));
+
+        var result = await _controller.GetSimpleEmployee(employee.Email);
+
+        var simpleEmployee = (NotFoundObjectResult)result;
+
+        Assert.Equal("Not Found", simpleEmployee.Value);
     }
 }

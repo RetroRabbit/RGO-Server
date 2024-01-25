@@ -53,7 +53,6 @@ public class EmployeeController : ControllerBase
         }
     }
 
-
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetEmployee([FromQuery] string? email)
@@ -92,7 +91,10 @@ public class EmployeeController : ControllerBase
             {
                 return StatusCode(403, $"Forbidden: {ex.Message}");
             }
-            return NotFound(ex.Message);
+            else
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 

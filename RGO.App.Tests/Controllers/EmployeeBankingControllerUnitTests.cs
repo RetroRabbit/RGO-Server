@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.App.Controllers;
@@ -106,6 +107,17 @@ public class EmployeeBankingControllerUnitTests
         var errorMessage = (string)notFoundResult.Value;
 
         Assert.Equal("Banking information Not Found", errorMessage);
+    }
+
+    [Fact]
+    public async Task AddBankingInfoUnauthorizedAccess()
+    {
+        mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
+            .ThrowsAsync(new Exception("Unauthorized access"));
+        var result = await controller.AddBankingInfo(newEntry);
+        Assert.NotNull(result);
+        var unauthorized = (ObjectResult)result;
+        Assert.Equal("Forbidden: Unauthorized access", unauthorized.Value);
     }
 
     [Fact]
