@@ -18,7 +18,7 @@ namespace RGO.App.Controllers
             _employeeDocumentService = employeeDocumentService;
         }
 
-        [HttpGet("{employeeid}")]
+        [HttpGet("{employeeId}/getAll")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
             try
@@ -46,7 +46,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("{employeeId}/{filename}")]
+        [HttpGet("{employeeId}/{filename}/getByFilename")]
         public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename)
         {
             try
@@ -88,7 +88,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("{employeeId}/{status}")]
+        [HttpGet("{employeeId}/{status}/getByStatus")]
         public async Task<IActionResult> GetEmployeeDocumentByStatus(int employeeId, DocumentStatus status)
         {
             try

@@ -277,5 +277,132 @@ public class EmployeeDocumentServiceUnitTest
 
         Assert.NotNull(result);
     }
+
+    [Fact]
+    public async Task GetEmployeeDocumentByStatus_PendingSuccess()
+    {
+        int employeeId = 1;
+
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
+            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+            new DateTime(), null, Race.Black, Gender.Male, null,
+            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
+        var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployeeDbSet);
+
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, testEmployee1, null, "TestFile.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.PendingApproval, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, testEmployee1, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.PendingApproval, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        var employeeDocuments = new List<EmployeeDocument>
+        {
+            new EmployeeDocument(testDocument),
+            new EmployeeDocument(testDocumentTwo)
+        };
+
+        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                      .Returns(mockEmployeeDocumentDbSet);
+
+        var result = await _employeeDocumentService.GetEmployeeDocumentByStatus(employeeId, DocumentStatus.PendingApproval);
+
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task GetEmployeeDocumentByStatus_ApprovedSuccess()
+    {
+        int employeeId = 1;
+
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
+            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+            new DateTime(), null, Race.Black, Gender.Male, null,
+            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
+        var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployeeDbSet);
+
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, testEmployee1, null, "TestFile.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Approved, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, testEmployee1, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Approved, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        var employeeDocuments = new List<EmployeeDocument>
+        {
+            new EmployeeDocument(testDocument),
+            new EmployeeDocument(testDocumentTwo)
+        };
+
+        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                      .Returns(mockEmployeeDocumentDbSet);
+
+        var result = await _employeeDocumentService.GetEmployeeDocumentByStatus(employeeId, DocumentStatus.Approved);
+
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task GetEmployeeDocumentByStatus_RejectedSuccess()
+    {
+        int employeeId = 1;
+
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
+            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+            new DateTime(), null, Race.Black, Gender.Male, null,
+            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
+        var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployeeDbSet);
+
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, testEmployee1, null, "TestFile.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Rejected, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, testEmployee1, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Rejected, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        var employeeDocuments = new List<EmployeeDocument>
+        {
+            new EmployeeDocument(testDocument),
+            new EmployeeDocument(testDocumentTwo)
+        };
+
+        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                      .Returns(mockEmployeeDocumentDbSet);
+
+        var result = await _employeeDocumentService.GetEmployeeDocumentByStatus(employeeId, DocumentStatus.Rejected);
+
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+    }
+
 }
 

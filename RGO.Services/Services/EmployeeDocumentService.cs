@@ -40,9 +40,9 @@ namespace RGO.Services.Services
                null,
                false) ;
 
-            var newRmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
+            var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
-            return newRmployeeDocument;
+            return newEmployeeDocument;
         }
 
         public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename)

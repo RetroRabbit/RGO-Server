@@ -49,6 +49,7 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Get Employee Document
         /// </summary>
+        /// <param name="employeeId"></param>
         /// <param name="status"></param>
         /// <returns>Employee Document</returns>
         Task<List<EmployeeDocumentDto>> GetEmployeeDocumentByStatus(int employeeId, DocumentStatus status);
