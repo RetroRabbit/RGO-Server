@@ -220,12 +220,11 @@ public class EmployeeService : IEmployeeService
         var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2).ToList();
         var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3).ToList();
         var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4).ToList();
-        var businessSupportQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList();
-
+      
         var totalNumberOfDevs = devsQuery.Count;
         var totalNumberOfDesigners = designersQuery.Count;
         var totalNumberOfScrumMasters = scrumMastersQuery.Count;
-        var totalNumberOfBusinessSupport = businessSupportQuery.Count;
+        var totalNumberOfBusinessSupport = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList().Count;
 
         var totalNumberOfDevsOnBench = devsQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
         var totalNumberOfDesignersOnBench = designersQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
