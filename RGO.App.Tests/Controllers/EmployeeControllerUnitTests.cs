@@ -261,7 +261,7 @@ public class EmployeeControllerUnitTests
     }
 
     [Fact]
-    public async Task FilterByTypeSuccess()
+    public async Task GetSimpleEmployeeSuccess()
     {
         SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto(1, "1", "123123",
             new DateTime(), null, null, null, false, "", 3, employeeTypeDto, "", null,
@@ -279,7 +279,7 @@ public class EmployeeControllerUnitTests
     }
 
     [Fact]
-    public async Task FilterByTypeFail()
+    public async Task GetSimpleEmployeeFail()
     {
         SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto(1, "1", "123123",
             new DateTime(), null, null, null, false, "", 3, employeeTypeDto, "", null,
@@ -294,5 +294,31 @@ public class EmployeeControllerUnitTests
         var simpleEmployee = (NotFoundObjectResult)result;
 
         Assert.Equal("Not Found", simpleEmployee.Value);
+    }
+
+    [Fact]
+    public async Task FilterByTypeSuccess()
+    {
+        List<EmployeeDto> employeesDtos = new List<EmployeeDto>
+        {
+            _employee
+        };
+        _employeeMockService.Setup(service => service.GetEmployeesByType("Developer")).ReturnsAsync(employeesDtos);
+
+        var result = await _controller.FilterByType("Developer");
+
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okObjectResult.StatusCode);
+        Assert.Equal(employeesDtos, okObjectResult.Value!);
+    }
+
+    [Fact]
+    public async Task FilterByTypeFail()
+    { 
+        _employeeMockService.Setup(service => service.GetEmployeesByType("HR"))
+            .ThrowsAsync(new Exception());
+        var result = await _controller.FilterByType("HR");
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(400, badRequestResult.StatusCode);
     }
 }
