@@ -279,7 +279,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetEmployeeDocumentByStatus_PendingSuccess()
+    public async Task GetEmployeeDocumentsByStatus_PendingSuccess()
     {
         int employeeId = 1;
 
@@ -314,14 +314,14 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet);
 
-        var result = await _employeeDocumentService.GetEmployeeDocumentByStatus(employeeId, DocumentStatus.PendingApproval);
+        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.PendingApproval);
 
         Assert.NotNull(result);
         Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public async Task GetEmployeeDocumentByStatus_ApprovedSuccess()
+    public async Task GetEmployeeDocumentsByStatus_ApprovedSuccess()
     {
         int employeeId = 1;
 
@@ -356,14 +356,14 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet);
 
-        var result = await _employeeDocumentService.GetEmployeeDocumentByStatus(employeeId, DocumentStatus.Approved);
+        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.Approved);
 
         Assert.NotNull(result);
         Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public async Task GetEmployeeDocumentByStatus_RejectedSuccess()
+    public async Task GetEmployeeDocumentsByStatus_RejectedSuccess()
     {
         int employeeId = 1;
 
@@ -398,7 +398,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet);
 
-        var result = await _employeeDocumentService.GetEmployeeDocumentByStatus(employeeId, DocumentStatus.Rejected);
+        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.Rejected);
 
         Assert.NotNull(result);
         Assert.Equal(2, result.Count);

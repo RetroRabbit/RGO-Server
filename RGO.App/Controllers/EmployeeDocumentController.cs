@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 namespace RGO.App.Controllers
 {
-    [Route("employeedocument")]
+    [Route("employeedocuments")]
     [ApiController]
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     public class EmployeeDocumentController : ControllerBase
@@ -18,7 +18,8 @@ namespace RGO.App.Controllers
             _employeeDocumentService = employeeDocumentService;
         }
 
-        [HttpGet("{employeeId}/getAll")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        [HttpGet("{employeeId}/all-employee-documents")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
             try
@@ -32,6 +33,7 @@ namespace RGO.App.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         [HttpPost("save")]
         public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
         {
@@ -46,7 +48,8 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("{employeeId}/{filename}/getByFilename")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        [HttpGet("{employeeId}/{filename}/employee-document")]
         public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename)
         {
             try
@@ -60,6 +63,7 @@ namespace RGO.App.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
@@ -74,6 +78,7 @@ namespace RGO.App.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminOrSuperAdminPolicy")]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
@@ -88,12 +93,13 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("{employeeId}/{status}/getByStatus")]
-        public async Task<IActionResult> GetEmployeeDocumentByStatus(int employeeId, DocumentStatus status)
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        [HttpGet("{employeeId}/{status}/employee-docuemnts")]
+        public async Task<IActionResult> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status)
         {
             try
             {
-                var employeeDocuments = await _employeeDocumentService.GetEmployeeDocumentByStatus(employeeId, status);
+                var employeeDocuments = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, status);
                 return Ok(employeeDocuments);
             }
             catch (Exception ex) 

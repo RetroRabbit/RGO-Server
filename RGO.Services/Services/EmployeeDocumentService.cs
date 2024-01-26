@@ -105,7 +105,7 @@ namespace RGO.Services.Services
             return deletedEmployeeDocument;
         }
 
-        public async Task<List<EmployeeDocumentDto>> GetEmployeeDocumentByStatus(int employeeId, DocumentStatus status)
+        public async Task<List<EmployeeDocumentDto>> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status)
         {
             var ifEmployeeExists = await CheckEmployee(employeeId);
 
