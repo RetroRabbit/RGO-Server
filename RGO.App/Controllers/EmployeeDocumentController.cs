@@ -34,7 +34,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpPost("save")]
+        [HttpPost]
         public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
         {
             try
@@ -64,7 +64,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpPut("update")]
+        [HttpPut("{employeeId}")]
         public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
             try
@@ -79,7 +79,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-        [HttpDelete("delete")]
+        [HttpDelete]
         public async Task<IActionResult> Delete([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
             try
