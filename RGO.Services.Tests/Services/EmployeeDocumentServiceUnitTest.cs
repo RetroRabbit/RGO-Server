@@ -28,7 +28,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveEmployeeDocument_ShouldSaveDocument_WhenEmployeeExists()
+    public async Task SaveEmployeeDocumentPass()
     {
         var employeeId = 1;
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
@@ -75,7 +75,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveEmployeeDocument_ShouldThrowException_WhenEmployeeDoesNotExist()
+    public async Task SaveEmployeeDocumentFail()
     {
         var employeeId = 1;
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
@@ -106,7 +106,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetEmployeeDocument_ReturnsCorrectDocument_WhenEmployeeExists()
+    public async Task GetEmployeeDocumentPass()
     {
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var mockEmployeeService = new Mock<IEmployeeService>();
@@ -144,7 +144,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetAllEmployeeDocuments_ReturnsDocuments_WhenEmployeeExists()
+    public async Task GetAllEmployeeDocumentsPass()
     {
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var mockEmployeeService = new Mock<IEmployeeService>();
@@ -186,7 +186,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task UpdateEmployeeDocument_UpdatesDocumentSuccessfully_WhenEmployeeExists()
+    public async Task UpdateEmployeeDocumentPass()
     {
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var mockEmployeeService = new Mock<IEmployeeService>();
@@ -232,7 +232,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task DeleteEmployeeDocument_DeletesDocumentSuccessfully_WhenEmployeeExists()
+    public async Task DeleteEmployeeDocumentPass()
     {
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var mockEmployeeService = new Mock<IEmployeeService>();
@@ -279,7 +279,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetEmployeeDocumentsByStatus_PendingSuccess()
+    public async Task GetEmployeeDocumentsByStatusPendingPass()
     {
         int employeeId = 1;
 
@@ -321,7 +321,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetEmployeeDocumentsByStatus_ApprovedSuccess()
+    public async Task GetEmployeeDocumentsByStatusApprovedPass()
     {
         int employeeId = 1;
 
@@ -363,7 +363,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetEmployeeDocumentsByStatus_RejectedSuccess()
+    public async Task GetEmployeeDocumentsByStatusRejectedPass()
     {
         int employeeId = 1;
 
