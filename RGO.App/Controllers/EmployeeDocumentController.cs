@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 namespace RGO.App.Controllers
 {
-    [Route("employeedocuments")]
+    [Route("employee-documents")]
     [ApiController]
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     public class EmployeeDocumentController : ControllerBase
@@ -19,7 +19,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpGet("{employeeId}/all-employee-documents")]
+        [HttpGet("{employeeId}")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
             try
@@ -49,7 +49,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpGet("{employeeId}/{filename}/employee-document")]
+        [HttpGet("{employeeId}/{filename}")]
         public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename)
         {
             try
@@ -94,7 +94,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpGet("{employeeId}/{status}/employee-docuemnts")]
+        [HttpGet("{employeeId}/{status}")]
         public async Task<IActionResult> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status)
         {
             try
