@@ -47,7 +47,7 @@ namespace RGO.Services.Interfaces
         Task<EmployeeDocumentDto> DeleteEmployeeDocument(EmployeeDocumentDto employeeDocumentDto);
 
         /// <summary>
-        /// Get Employee Document
+        /// Get List of Employee Document
         /// </summary>
         /// <param name="employeeId"></param>
         /// <param name="status"></param>
