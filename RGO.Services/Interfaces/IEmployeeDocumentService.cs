@@ -1,4 +1,5 @@
 ﻿using RGO.Models;
+using RGO.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,5 +45,13 @@ namespace RGO.Services.Interfaces
         /// <param name="employeeDocumentDto"></param>
         /// <returns>Employee Document</returns>
         Task<EmployeeDocumentDto> DeleteEmployeeDocument(EmployeeDocumentDto employeeDocumentDto);
+
+        /// <summary>
+        /// Get List of Employee Document
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="status"></param>
+        /// <returns>Employee Document</returns>
+        Task<List<EmployeeDocumentDto>> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status);
     }
 }
