@@ -179,12 +179,6 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
-        /*  EmployeeTypeDto employeeTypeDto = await _employeeTypeService
-              .GetEmployeeType(employeeDto.EmployeeType.Name);
-
-          Employee employee = new Employee(employeeDto, employeeTypeDto);
-
-          employee.Email = email;*/
         EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
                 .GetEmployeeType(employeeDto.EmployeeType.Name);
         Employee employee = null;
@@ -265,13 +259,13 @@ public class EmployeeService : IEmployeeService
 
         if (employeeDto.TeamLead != null)
         {
-            EmployeeDto teamLeadDto = await GetEmployeeById((int)employeeDto.TeamLead);
+            EmployeeDto teamLeadDto = await GetById((int)employeeDto.TeamLead);
             teamLeadName = teamLeadDto.Name + " " + teamLeadDto.Surname;
             teamLeadId = teamLeadDto.Id;
         }
         if (employeeDto.PeopleChampion != null)
         {
-            EmployeeDto peopleChampionDto = await GetEmployeeById((int)employeeDto.PeopleChampion);
+            EmployeeDto peopleChampionDto = await GetById((int)employeeDto.PeopleChampion);
             peopleChampionName = peopleChampionDto.Name + " " + peopleChampionDto.Surname;
             peopleChampionId = peopleChampionDto.Id;
         }

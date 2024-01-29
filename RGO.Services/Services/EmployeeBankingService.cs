@@ -91,23 +91,6 @@ public class EmployeeBankingService : IEmployeeBankingService
             }
         }
 
-
-       /* EmployeeBankingDto Bankingdto = new EmployeeBankingDto
-        (
-               newEntry.Id,
-               newEntry.EmployeeId,
-               newEntry.BankName,
-               newEntry.Branch,
-               newEntry.AccountNo,
-               newEntry.AccountType,
-               newEntry.AccountHolderName,
-               newEntry.Status,
-               newEntry.DeclineReason,
-               newEntry.File,
-               empBankingDto.LastUpdateDate,
-               newEntry.PendingUpdateDate
-               );*/
-
         Employee newEmployee = new Employee(empDto, empDto.EmployeeType);
         EmployeeBanking entry = new EmployeeBanking(bankingDto);
         entry.Employee = newEmployee;

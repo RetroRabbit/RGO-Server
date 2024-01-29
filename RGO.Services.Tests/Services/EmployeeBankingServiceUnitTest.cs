@@ -31,11 +31,11 @@ public class EmployeeBankingServiceTest
 
     EmployeeDto testEmployee2 = new(2, "001", "34434434", new DateTime(), new DateTime(), null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
     "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ", new DateTime(), null, Race.Black, Gender.Male, null,
-    "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+    "test2@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
     EmployeeDto testEmployee3 = new(3, "001", "34434434", new DateTime(), new DateTime(), null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
     "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ", new DateTime(), null, Race.Black, Gender.Male, null,
-    "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+    "test3@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
     public EmployeeBankingServiceTest()
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -137,6 +137,84 @@ public class EmployeeBankingServiceTest
     }
 
     [Fact]
+    public async Task UpdatebyAdminPass()
+    {
+        Employee emp = new Employee(testEmployee1, employeeTypeDto);
+        emp.EmployeeType = employeeType;
+        List<Employee> employees = new List<Employee> { emp };
+        RoleDto roleDto = new RoleDto(2, "Admin");
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto(1, testEmployee1, roleDto);
+        EmployeeRole empRole = new EmployeeRole(empRoleDto);
+        List<EmployeeRole> empRoles = new List<EmployeeRole> { empRole };
+        List<Role> roles = new List<Role> { new Role(roleDto) };
+        EmployeeBanking bankingObj = new EmployeeBanking(test1);
+        List<EmployeeBanking> bankingList = new List<EmployeeBanking>
+        {
+            bankingObj
+        };
+        var mockEmployees = employees;
+        var authorizedEmail = "admin.email@example.com";
+
+        _mockUnitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployees.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+                       .Returns(empRoles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+                       .Returns(roles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
+            .Returns(bankingList.AsQueryable().BuildMock());
+        _mockUnitOfWork.Setup(x => x.EmployeeBanking.Update(It.IsAny<EmployeeBanking>()))
+                       .ReturnsAsync(test2);
+
+        var validDtoObj = await employeeBankingService.Update(test2, authorizedEmail);
+
+        Assert.Equal(test2, validDtoObj);
+    }
+
+    [Fact]
+    public async Task UpdateUnauthorized()
+    {
+        Employee emp = new Employee(testEmployee1, employeeTypeDto);
+        emp.EmployeeType = employeeType;
+        List<Employee> employees = new List<Employee> { emp };
+        RoleDto roleDto = new RoleDto(3, "Employee");
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto(1, testEmployee1, roleDto);
+        EmployeeRole empRole = new EmployeeRole(empRoleDto);
+        List<EmployeeRole> empRoles = new List<EmployeeRole> { empRole };
+        List<Role> roles = new List<Role> { new Role(roleDto) };
+        EmployeeBanking bankingObj = new EmployeeBanking(test1);
+        List<EmployeeBanking> bankingList = new List<EmployeeBanking>
+        {
+            bankingObj
+        };
+        var mockEmployees = employees;
+        var unauthorizedEmail = "admin.email@example.com";
+
+        _mockUnitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployees.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+                       .Returns(empRoles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+                       .Returns(roles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
+            .Returns(bankingList.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeBanking.Update(It.IsAny<EmployeeBanking>()))
+                       .ReturnsAsync(test2);
+
+        var exception = await Assert.ThrowsAsync<Exception>(
+            async () => await employeeBankingService.Update(test2, unauthorizedEmail));
+
+        Assert.Equal("Unauthorized access", exception.Message);
+    }
+
+    [Fact]
     public async Task SavePass()
     {
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
@@ -148,15 +226,76 @@ public class EmployeeBankingServiceTest
         employee.PostalAddress = new EmployeeAddress(employeeAddressDto);
 
         List<Employee> employees = new List<Employee>
-    {
-    employee
-    };
+        {
+        employee
+        };
         var mockEmployees = employees;
         _mockUnitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(mockEmployees.AsQueryable().BuildMock());
         _mockUnitOfWork.Setup(u => u.EmployeeBanking.Add(It.IsAny<EmployeeBanking>())).Returns(Task.FromResult(test1));
         var result = await employeeBankingService.Save(test1, "test@retrorabbit.co.za");
 
         Assert.Equal(test1, result);
+    }
+
+    [Fact]
+    public async Task SaveByAdminPass()
+    {
+        Employee emp = new Employee(testEmployee1, employeeTypeDto);
+        List<Employee> employees = new List<Employee> { emp };
+        RoleDto roleDto = new RoleDto(2, "Admin");
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto(1, testEmployee1, roleDto);
+        EmployeeRole empRole = new EmployeeRole(empRoleDto);
+        List<EmployeeRole> empRoles = new List<EmployeeRole> { empRole };
+        List<Role> roles = new List<Role> { new Role(roleDto) };
+        var mockEmployees = employees;
+        var authorizedEmail = "admin.email@example.com";
+
+        _mockUnitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                       .Returns(mockEmployees.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+                       .Returns(empRoles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+                       .Returns(roles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeBanking.Add(It.IsAny<EmployeeBanking>()))
+                       .ReturnsAsync(test1);
+
+        var validDtoObj = await employeeBankingService.Save(test1, authorizedEmail);
+
+        Assert.Equal(test1, validDtoObj);
+    }
+
+    [Fact]
+    public async Task SaveUnauthorizedFail()
+    {
+        Employee emp = new Employee(testEmployee1, employeeTypeDto);
+        List<Employee> employees = new List<Employee>{ emp };
+        RoleDto roleDto = new RoleDto(3, "Employee");
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto(1, testEmployee1, roleDto);
+        EmployeeRole empRole = new EmployeeRole(empRoleDto);
+        List<EmployeeRole> empRoles = new List<EmployeeRole> { empRole };
+        List<Role> roles = new List<Role>{ new Role(roleDto) };
+        var mockEmployees = employees;
+        var unauthorizedUserEmail = "unauthorized@example.com";
+
+        _mockUnitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                       .Returns(mockEmployees.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+                       .Returns(empRoles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+                       .Returns(roles.AsQueryable().BuildMock());
+
+        _mockUnitOfWork.Setup(x => x.EmployeeBanking.Add(It.IsAny<EmployeeBanking>()))
+                       .ReturnsAsync(test1);
+
+        var exception = await Assert.ThrowsAsync<Exception>(
+            async () => await employeeBankingService.Save(test1, unauthorizedUserEmail));
+
+        Assert.Equal("Unauthorized access", exception.Message);
     }
 
     [Fact]
