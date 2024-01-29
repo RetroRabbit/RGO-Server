@@ -166,6 +166,7 @@ public class EmployeeBankingServiceTest
 
         _mockUnitOfWork.Setup(x => x.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(bankingList.AsQueryable().BuildMock());
+
         _mockUnitOfWork.Setup(x => x.EmployeeBanking.Update(It.IsAny<EmployeeBanking>()))
                        .ReturnsAsync(test2);
 
@@ -191,7 +192,7 @@ public class EmployeeBankingServiceTest
             bankingObj
         };
         var mockEmployees = employees;
-        var unauthorizedEmail = "admin.email@example.com";
+        var unauthorizedEmail = "unauthorized.email@example.com";
 
         _mockUnitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployees.AsQueryable().BuildMock());
