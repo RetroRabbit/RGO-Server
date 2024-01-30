@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
+using RGO.Models.Enums;
 using RGO.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
 namespace RGO.App.Controllers
 {
-    [Route("employeedocument")]
+    [Route("employee-documents")]
     [ApiController]
     //[Authorize(Policy = "AdminOrSuperAdminPolicy")]
     public class EmployeeDocumentController : ControllerBase
@@ -18,7 +19,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
-        [HttpGet("all")]
+        [HttpGet("{employeeId}")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
             try
@@ -47,7 +48,8 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpGet("get/{employeeId}/{filename}")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        [HttpGet("{employeeId}/{filename}")]
         public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename)
         {
             try
@@ -62,7 +64,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
-        [HttpPut("update")]
+        [HttpPut("{employeeId}")]
         public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
             try
@@ -77,7 +79,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
-        [HttpDelete("delete")]
+        [HttpDelete]
         public async Task<IActionResult> Delete([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
             try
@@ -88,6 +90,21 @@ namespace RGO.App.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "An error occurred while deleting the employee document.");
+            }
+        }
+
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        [HttpGet("{employeeId}/{status}")]
+        public async Task<IActionResult> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status)
+        {
+            try
+            {
+                var employeeDocuments = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, status);
+                return Ok(employeeDocuments);
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, "An error occurred while fetching the employee documents.");
             }
         }
     }
