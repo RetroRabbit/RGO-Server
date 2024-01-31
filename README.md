@@ -1,20 +1,130 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Introduction
+
+### NB!!! Make sure you're checked out on the develop branch
+
+This system is an employee management system for Retro Rabbit Specificaly this is the back end for said system and works in conjuncture with the Front End repo
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+### Cloning the [repository](https://retro-rabbit@dev.azure.com/retro-rabbit/RetroGradOnboard/_git/RGO-Server)
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+```powershell
+git clone 'https://retro-rabbit@dev.azure.com/retro-rabbit/RetroGradOnboard/_git/RGO-Server'
+```
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+Runs on(.NET Web API):
+
+- https://localhost:7026
+- http://localhost:5193
+
+# pgAdmin
+
+### Setup PgAdmin and Create Database
+
+Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
+Password should be postgrespw. Set the host to localhost. You should be able to connect to the
+RGO database after adding migrations and updating the DB in package manager console in
+Visual Studios.
+
+## Docker
+
+### Install Docker
+
+- https://www.docker.com/products/docker-desktop/
+- If you don't use **WSL/Ubuntu** subsystem install Docker using the **Hyper-V** installation
+- If new installation follow default settings for install
+
+### Incorrect WSL version error
+
+- If you get a WSL wrong version error run the following command
+
+```powershell
+wsl --install
+```
+
+### Change to the Dev branch
+
+Make sure to have Git installed to run any Git command lines.
+
+```powershell
+#cd RGO-Server\RGO Backend
+git checkout develop
+```
+
+### Setting up docker container
+
+```powershell
+docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
+```
+
+### Run migration
+
+Open Visual Studio 2022 and open the RGO-Server project file. Pull up the nuget package manager console:
+**_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
+Make sure the **Default project** is **_RGO.UnitOfWork_**.
+
+---
+
+![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
+
+### Add new user
+
+- To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
+- Add new Migration for your user
+
+```powershell
+add-migration newMigrationYouCanChooseName
+```
+
+```powershell
+Update-Database
+```
+
+### Checking new user added to the DB you made
+
+- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
+- https://www.pgadmin.org/download/pgadmin-4-windows/
+
+---
+
+- Register new RGO server
+
+![Register service](./Screenshot%202023-08-02%20173735.png)
+
+---
+
+- Update Information and save
+
+![Register service - connection](./Screenshot%202023-08-02%20173613.png)
+
+---
+
+- Navigate to Employee table
+
+![PgAdmin Employee Table Navigation](./EmployeeTable-Example.png)
+
+- Check if your new user is added
+
+![PgAdmin new user check](./EmployeeTableCheckUpdate-Example.png)
+
+### Unit Test Coverage
+
+With every pull request, there is a requirement to prove coverage of your code. Attached a screen shot of your code coverage to your PR description
+
+```
+Install the dotnet coverage tool
+    dotnet tool install -g dotnet-coverage
+
+Install the dotnet report generator tool
+    dotnet tool install -g dotnet-reportgenerator-globaltool
+
+Run the command to check coverage on your project
+    dotnet-coverage collect -f xml -o coverage.xml dotnet test <solution/project>
+    (<solution/project> can be omitted to test the entire project)
+
+Generate report
+    reportgenerator -reports:coverage.xml -targetdir:coverage/report
+
+Navigate to the %temp% / report folder and open index.html using your prefered browser found at
+    /RGO-Server/coverage/report/index.html
+```
