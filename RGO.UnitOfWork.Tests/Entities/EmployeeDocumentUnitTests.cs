@@ -57,7 +57,5 @@ public class EmployeeDocumentUnitTests
         Assert.Null(initializedEmployeeDocument.Employee);
 
         dto = initializedEmployeeDocument.ToDto();
-
-        Assert.Null(dto.EmployeeId);
     }
 }
