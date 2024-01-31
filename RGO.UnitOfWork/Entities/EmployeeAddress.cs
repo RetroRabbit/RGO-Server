@@ -53,15 +53,17 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
 
     public EmployeeAddressDto ToDto()
     {
-        return new EmployeeAddressDto(
-            Id,
-            UnitNumber,
-            ComplexName,
-            StreetNumber,
-            SuburbOrDistrict,
-            City,
-            Country,
-            Province,
-            PostalCode);
+        return new EmployeeAddressDto
+        {
+            Id = Id,
+            UnitNumber = UnitNumber,
+            ComplexName = ComplexName,
+            StreetNumber = StreetNumber,
+            SuburbOrDistrict = SuburbOrDistrict,
+            City = City,
+            Country = Country,
+            Province = Province,
+            PostalCode = PostalCode,
+        };
     }
 }

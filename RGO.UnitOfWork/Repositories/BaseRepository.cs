@@ -6,8 +6,8 @@ namespace RGO.UnitOfWork.Repositories;
 
 public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel<T>
 {
-    private readonly DatabaseContext _db;
-    private readonly DbSet<TK> _entity;
+    protected readonly DatabaseContext _db;
+    protected readonly DbSet<TK> _entity;
 
     public BaseRepository(DatabaseContext db)
     {
@@ -34,6 +34,14 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
             : await _entity.Where(criteria).ToListAsync())
             .Select(x => x.ToDto())
             .ToList();
+    }
+
+    public async Task<T> FirstOrDefault(Expression<Func<TK, bool>> criteria)
+    {
+        return (criteria == null
+                ? await _entity.FirstOrDefaultAsync()
+                : await _entity.Where(criteria).FirstOrDefaultAsync())
+            .ToDto();
     }
 
     public async Task<bool> Any(Expression<Func<TK, bool>> criteria)
