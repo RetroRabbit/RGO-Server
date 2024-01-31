@@ -50,7 +50,7 @@ public class EmployeeDocumentUnitTests
             employee: _employee);
         var dto = employeeDocument.ToDto();
 
-        Assert.Equal(dto.Employee!.Id, employeeDocument.Employee.Id);
+        Assert.Equal(dto.EmployeeId!, employeeDocument.Employee.Id);
 
         var initializedEmployeeDocument = new EmployeeDocument(dto);
 
@@ -58,6 +58,6 @@ public class EmployeeDocumentUnitTests
 
         dto = initializedEmployeeDocument.ToDto();
 
-        Assert.Null(dto.Employee);
+        Assert.Null(dto.EmployeeId);
     }
 }
