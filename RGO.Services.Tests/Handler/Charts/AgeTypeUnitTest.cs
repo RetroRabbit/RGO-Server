@@ -20,6 +20,7 @@ public class AgeTypeUnitTest
     EmployeeType employeeType;
     RoleDto roleDto;
     EmployeeAddressDto employeeAddressDto;
+
     public AgeTypeUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
@@ -40,7 +41,8 @@ public class AgeTypeUnitTest
             new DateTime(), null, Race.Black, Gender.Male, null,
            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
     }
-        //cannot test for dob being null as parameter in EmployeeDTo cannot be null
+        
+    //cannot test for dob being null as parameter in EmployeeDTo cannot be null
     [Fact]
     public async Task GenerateDataDobTestSuccess()
     {
