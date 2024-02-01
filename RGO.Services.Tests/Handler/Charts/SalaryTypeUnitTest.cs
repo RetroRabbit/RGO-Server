@@ -74,6 +74,7 @@ public class SalaryTypeUnitTest
         {
             employeeDto
         };
+
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
