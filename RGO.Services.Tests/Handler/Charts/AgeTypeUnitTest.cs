@@ -48,11 +48,6 @@ public class AgeTypeUnitTest
         string testDate = "05/05/2005";
         var employeeDto = CreateEmployee(Convert.ToDateTime(testDate));
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
-
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
