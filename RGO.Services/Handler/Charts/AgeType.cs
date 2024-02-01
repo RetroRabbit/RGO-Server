@@ -10,10 +10,7 @@ public class AgeType : BaseDataType
 
     public override string GenerateData(EmployeeDto employee, IServiceProvider services)
     {
-        var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
-        if (dobPropertyInfo == null)
-            return null;
-
+        var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");      
         var employee_dob = (DateTime)dobPropertyInfo.GetValue(employee);
         var dob = new DateOnly(employee_dob.Year, employee_dob.Month, employee_dob.Day);
         var age = CalculateAge(dob);
