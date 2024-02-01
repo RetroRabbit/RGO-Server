@@ -46,10 +46,6 @@ public class SalaryTypeUnitTest
     {
         var employeeDto = CreateEmployee(null);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
@@ -68,10 +64,6 @@ public class SalaryTypeUnitTest
     {
         var employeeDto = CreateEmployee(3);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
