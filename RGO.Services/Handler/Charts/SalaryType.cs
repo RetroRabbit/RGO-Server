@@ -10,11 +10,12 @@ public class SalaryType : BaseDataType
 
     public override string GenerateData(EmployeeDto employee, IServiceProvider services)
     {
-        var prop = typeof(EmployeeDto).GetProperty("Salary");
-        if (prop == null)
+        if (employee == null)
+            return null;
+        if (employee.Salary == null)
             return null;
 
-        return $"Salary {prop.GetValue(employee)}, ";
+        return $"Salary {employee.Salary}, ";
     }
 
 }
