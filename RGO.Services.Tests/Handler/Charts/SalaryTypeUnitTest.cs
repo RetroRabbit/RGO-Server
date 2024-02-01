@@ -10,6 +10,7 @@ using MockQueryable.Moq;
 using RGO.Models.Enums;
 
 namespace RGO.Services.Tests.Handler.Charts;
+
 public class SalaryTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
