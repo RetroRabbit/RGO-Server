@@ -49,7 +49,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     public EmployeeDocument(EmployeeDocumentDto employeeDocumentsDto)
     {
         Id = employeeDocumentsDto.Id;
-        EmployeeId = employeeDocumentsDto.Employee!.Id;
+        EmployeeId = employeeDocumentsDto.EmployeeId!;
         Reference = employeeDocumentsDto.Reference;
         FileName = employeeDocumentsDto.FileName;
         FileCategory = employeeDocumentsDto.FileCategory;
@@ -64,7 +64,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     {
         return new EmployeeDocumentDto(
             Id,
-            Employee?.ToDto(),
+            EmployeeId,
             Reference,
             FileName,
             FileCategory,
