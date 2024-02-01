@@ -9,7 +9,7 @@ namespace RGO.Services.Interfaces
         /// </summary>
         /// <param name="employeeAddressDto"></param>
         /// <returns>True or False</returns>
-        Task<bool> CheckIfExitsts(EmployeeAddressDto employeeAddressDto);
+        Task<bool> CheckIfExists(EmployeeAddressDto employeeAddressDto);
 
         /// <summary>
         /// Save Employee Address
