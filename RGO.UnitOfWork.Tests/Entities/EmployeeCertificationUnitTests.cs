@@ -23,7 +23,7 @@ public class EmployeeCertificationUnitTests
             "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
 
-        _employeeDocument = new EmployeeDocumentDto(1, _employee, "", "CVE256", FileCategory.Medical, "Picture", DocumentStatus.Approved, DateTime.Now, null, false);
+        _employeeDocument = new EmployeeDocumentDto(1, 1, "", "CVE256", FileCategory.Medical, "Picture", DocumentStatus.Approved, DateTime.Now, null, false);
     }
 
     public EmployeeCertification CreateEmployeeCertification(EmployeeDto? employee = null, EmployeeDocumentDto? employeeDocument = null, EmployeeDto? auditBy = null)
