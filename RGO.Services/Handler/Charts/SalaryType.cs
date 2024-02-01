@@ -16,6 +16,14 @@ public class SalaryType : BaseDataType
             return null;
 
         return $"Salary {employee.Salary}, ";
+    
+        if (employee == null)
+            return null;
+
+        if (employee.Salary == null)
+            return null;
+
+        return $"Salary {employee.Salary}, ";
     }
 
 }
