@@ -42,7 +42,6 @@ public class AgeTypeUnitTest
            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
     }
         
-    //cannot test for dob being null as parameter in EmployeeDTo cannot be null
     [Fact]
     public async Task GenerateDataDobTestSuccess()
     {
