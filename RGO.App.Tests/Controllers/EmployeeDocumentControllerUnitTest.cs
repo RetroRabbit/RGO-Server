@@ -19,6 +19,7 @@ namespace RGO.App.Tests.Controllers
         private readonly EmployeeDocumentController _controller;
 
         EmployeeDocumentDto employeeDocumentDto;
+        EmployeeDocumentDto updateEmployeeDocumentDto;
         static EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         static EmployeeType employeeType = new EmployeeType(employeeTypeDto);
         static EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
@@ -28,6 +29,14 @@ namespace RGO.App.Tests.Controllers
             "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
             new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
+
+        static EmployeeDto UpdateemployeeMock = new EmployeeDto(1, "008", "123456789", new DateTime(), new DateTime(),
+            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+            "Schoeman", new DateTime(), "South America", "South African", "0000055000000", " ",
+            new DateTime(), null, Race.Black, Gender.Male, null,
+            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+
 
         static Employee testEmployee = new Employee(employeeMock, employeeTypeDto);
        
@@ -48,6 +57,27 @@ namespace RGO.App.Tests.Controllers
             UploadDate: DateTime.Now,
             Reason: null,
             CounterSign: false
+
+
+
+
+        );
+
+            updateEmployeeDocumentDto = new EmployeeDocumentDto(
+            Id: 1,
+            Employee: UpdateemployeeMock,
+            Reference: null,
+            FileName: "new.pdf",
+            FileCategory: FileCategory.Medical,
+            Blob: "newBlob",
+            Status: null,
+            UploadDate: DateTime.Now,
+            Reason: null,
+            CounterSign: false
+
+
+
+
         );
         }
 
@@ -136,39 +166,64 @@ namespace RGO.App.Tests.Controllers
             var mockService = new Mock<IEmployeeDocumentService>();
             var controller = new EmployeeDocumentController(mockService.Object);
 
-           // var updateDocument = new Si
+            var updateEntry = employeeDocumentDto;
+
+
+            mockService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>()))
+                .ReturnsAsync(updateEmployeeDocumentDto);
+
+            var result = await controller.Update(updateEntry);
+            var okresult = Assert.IsType<OkObjectResult>(result);
+
+            Assert.Equal(200, okresult.StatusCode);
+
+
         }
         [Fact]
         public async Task UpdateEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
         {
+            var mockService = new Mock<IEmployeeDocumentService>();
+            var controller = new EmployeeDocumentController(mockService.Object);
+
+            var updateEntry = employeeDocumentDto;
+
+            var errorMessage = "An error occurred while updating the employee document.";
+
+            mockService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>())).ThrowsAsync(new Exception(errorMessage));
+           
+
+            var result = await controller.Update(updateEntry);
+
+            var notFoundResult = Assert.IsType<ObjectResult>(result);
+            var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+
+            Assert.Equal(errorMessage, actualErrorMessage);
+            Assert.Equal(500, notFoundResult.StatusCode);
 
         }
         [Fact]
-        public async Task DeleteEmployeeDocumentsReturnsOkResult() { 
-        //{
-        //    var serviceMock = new Mock<IEmployeeDocumentService>();
+        public async Task DeleteEmployeeDocumentsReturnsOkResult() {
 
-        //    var Input = new EmployeeDocument(employeeDocumentDto);
-        //    var controller = new EmployeeDocumentController(serviceMock.Object);
-
-        //    serviceMock.Setup(x => x.DeleteEmployeeDocument(employeeDocumentDto))
-        //        .ReturnsAsync(new EmployeeDocumentDto(employeeDocumentDto));
+      
         }
+
         [Fact]
-        public async Task DeleteEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
-        {
+         public async Task DeleteEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
+         {
 
-        }
+            }
         [Fact]
         public async Task DeleteEmployeeDocumentByStatusReturnsOkResult()
-        {
+         {
 
-        }
+         }
 
-        [Fact]
-        public async Task DeleteEmployeeDocumentByStatusReturnsNotFoundResultWhenExceptionThrown()
-        {
+         [Fact]
+          public async Task DeleteEmployeeDocumentByStatusReturnsNotFoundResultWhenExceptionThrown()
+            {
 
-        }
-    }
+
+            }
+     }
+    
 }
