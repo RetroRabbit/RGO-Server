@@ -5,6 +5,7 @@ using RGO.Models;
 using RGO.Models.Enums;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork.Entities;
+using System.Diagnostics.Tracing;
 using System.Reflection.Metadata;
 using Xunit;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -204,26 +205,99 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task DeleteEmployeeDocumentsReturnsOkResult() {
 
+            var employeeDocomentDelete = employeeDocumentDto;
+            var employeeDocomentDeleted = updateEmployeeDocumentDto;
+
+            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
+            mockEmployeeDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocomentDelete)).ReturnsAsync(employeeDocomentDeleted);
+
+            var controller =  new EmployeeDocumentController(mockEmployeeDocumentService.Object);
+
+            var result = await controller.Delete(employeeDocomentDelete);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
+            Assert.Equal(employeeDocomentDeleted, actualemployeeDocument);
       
         }
 
         [Fact]
          public async Task DeleteEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
          {
+            var employeeDocumentToDelete = employeeDocumentDto;
+            var exceptionMessage = "An error occurred while deleting the employee document.";
 
-            }
-        [Fact]
-        public async Task DeleteEmployeeDocumentByStatusReturnsOkResult()
-         {
+            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
+            mockEmployeeDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocumentToDelete)).ThrowsAsync(new Exception(exceptionMessage));
 
+            var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
+
+            var result = await controller.Delete(employeeDocumentToDelete);
+
+            var notFoundResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(exceptionMessage, notFoundResult.Value);
          }
+        [Fact]
+        public async Task GetEmployeeDocumentByStatusReturnsOkResult()
+        {
+
+            var mockService = new Mock<IEmployeeDocumentService>();
+            var controller = new EmployeeDocumentController(mockService.Object);
+
+
+            var id = employeeDocumentDto.Id;
+            var status = DocumentStatus.Rejected;
+
+            var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
+            {
+                employeeDocumentDto
+            };
+
+
+            mockService.Setup(x => x.GetEmployeeDocumentsByStatus(id,status)).ReturnsAsync(listOfEmployeeDocumentsDto);
+
+            var result = await controller.GetEmployeeDocumentsByStatus(id,status);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);
+
+            Assert.NotNull(result);
+            Assert.Equal(listOfEmployeeDocumentsDto, actualDetails);
+
+
+        }
 
          [Fact]
-          public async Task DeleteEmployeeDocumentByStatusReturnsNotFoundResultWhenExceptionThrown()
+         public async Task GetEmployeeDocumentByStatusReturnsNotFoundResultWhenExceptionThrown()
+          {
+         
+          var id = 15;
+          var statusValue = "NONE";
+
+    
+
+            var result = Enum.IsDefined(typeof(DocumentStatus), statusValue);
+
+            var exceptionMessage = "An error occurred while fetching employee documents.";
+
+            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
+      
+
+            var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
+
+            if( result == false)
             {
+              
+                var noFoundResult = Assert.IsType<ObjectResult>(result);
+                var actualExceptionMessage = Assert.IsType<string>(noFoundResult.Value);
+                Assert.Equal(exceptionMessage, actualExceptionMessage);
 
 
             }
+
+
+
+        }
      }
     
 }
