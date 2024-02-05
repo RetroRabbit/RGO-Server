@@ -38,13 +38,6 @@ namespace RGO.App.Tests.Controllers
             new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
-        static Employee testEmployee = new Employee(employeeMock, employeeTypeDto);
-
-        public enum InvalidDocumentStatus
-        {
-            Invalid1,
-            Invalid2
-        }
         public EmployeeDocumentControllerUnitTest()
         {
             _employeeMockDocumentService = new Mock<IEmployeeDocumentService>();
@@ -80,14 +73,12 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task GetEmployeeDocumentReturnsOkfoundResult()
         {
-            var mockService = new Mock<IEmployeeDocumentService>();
-            var controller = new EmployeeDocumentController(mockService.Object);
             var id = employeeDocumentDto.Id;
             var fileName = employeeDocumentDto.FileName;
 
-            mockService.Setup(x => x.GetEmployeeDocument(id, fileName)).ReturnsAsync(employeeDocumentDto);
+            _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, fileName)).ReturnsAsync(employeeDocumentDto);
 
-            var result = await controller.GetEmployeeDocument(employeeDocumentDto.Id, employeeDocumentDto.FileName);
+            var result = await _controller.GetEmployeeDocument(employeeDocumentDto.Id, employeeDocumentDto.FileName);
 
             Assert.NotNull(result);
 
@@ -102,15 +93,12 @@ namespace RGO.App.Tests.Controllers
         {
             var id = 15;
             var filename = "";
-
-            var mockService = new Mock<IEmployeeDocumentService>();
-            var controller = new EmployeeDocumentController(mockService.Object);
-
+ 
             var err = "An error occurred while fetching the employee document.";
 
-            mockService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
+            _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
 
-            var result = await controller.GetEmployeeDocument(id, filename);
+            var result = await _controller.GetEmployeeDocument(id, filename);
             var notfoundResult = Assert.IsType<ObjectResult>(result);
             var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
@@ -120,8 +108,6 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task GetAllEmployeeDocumentReturnsOkResult()
         {
-            var mockService = new Mock<IEmployeeDocumentService>();
-            var controller = new EmployeeDocumentController(mockService.Object);
             var id = employeeDocumentDto.Id;
 
             var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
@@ -134,9 +120,9 @@ namespace RGO.App.Tests.Controllers
                 new EmployeeDocument(employeeDocumentDto)
             };
 
-            mockService.Setup(x => x.GetAllEmployeeDocuments(id)).ReturnsAsync(listOfEmployeeDocumentsDto);
+            _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(id)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
-            var result = await controller.GetAllEmployeeDocuments(employeeDocumentDto.Id);
+            var result = await _controller.GetAllEmployeeDocuments(employeeDocumentDto.Id);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);
 
@@ -150,11 +136,9 @@ namespace RGO.App.Tests.Controllers
             var id = 15;
             var exceptionMessage = "An error occurred while fetching employee documents.";
 
-            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
-            mockEmployeeDocumentService.Setup(x => x.GetAllEmployeeDocuments(id)).ThrowsAsync(new Exception(exceptionMessage));
+            _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(id)).ThrowsAsync(new Exception(exceptionMessage));
 
-            var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
-            var result = await controller.GetAllEmployeeDocuments(id);
+            var result = await _controller.GetAllEmployeeDocuments(id);
 
             var noFoundResult = Assert.IsType<ObjectResult>(result);
             var actualExceptionMessage = Assert.IsType<string>(noFoundResult.Value);
@@ -165,12 +149,9 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task SaveEmployeeDocumentReturnsOkResult()
         {
-            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
-
-            mockEmployeeDocumentService.Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument)).ReturnsAsync(employeeDocumentDto);
-
-            var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
-            var result = await controller.Save(_simpleEmployeeDocument);
+            _employeeMockDocumentService.Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument)).ReturnsAsync(employeeDocumentDto);
+           
+            var result = await _controller.Save(_simpleEmployeeDocument);
             var okresult = Assert.IsType<OkObjectResult>(result);
             var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
 
@@ -180,12 +161,9 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task SaveEmployeeDocumentThrowsExceptionReturnsNotFoundResult()
         {
-            var serviceMock = new Mock<IEmployeeDocumentService>();
+            _employeeMockDocumentService.Setup(x => x.SaveEmployeeDocument(It.IsAny<SimpleEmployeeDocumentDto>())).Throws(new Exception("An error occurred while saving the employee document."));
 
-            serviceMock.Setup(x => x.SaveEmployeeDocument(It.IsAny<SimpleEmployeeDocumentDto>())).Throws(new Exception("An error occurred while saving the employee document."));
-
-            var controller = new EmployeeDocumentController(serviceMock.Object);
-            var result = await controller.Save(_simpleEmployeeDocument);
+            var result = await _controller.Save(_simpleEmployeeDocument);
             var notfoundResult = Assert.IsType<ObjectResult>(result);
             var exceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
@@ -196,13 +174,13 @@ namespace RGO.App.Tests.Controllers
         public async Task UpdateEmployeeDocumentReturnsOkResult()
         {
             var mockService = new Mock<IEmployeeDocumentService>();
-            var controller = new EmployeeDocumentController(mockService.Object);
+            
             var updateEntry = employeeDocumentDto;
 
             mockService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>()))
                 .ReturnsAsync(updateEmployeeDocumentDto);
 
-            var result = await controller.Update(updateEntry);
+            var result = await _controller.Update(updateEntry);
             var okresult = Assert.IsType<OkObjectResult>(result);
 
             Assert.Equal(200, okresult.StatusCode);
@@ -211,14 +189,12 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task UpdateEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
         {
-            var mockService = new Mock<IEmployeeDocumentService>();
-            var controller = new EmployeeDocumentController(mockService.Object);
             var updateEntry = employeeDocumentDto;
             var errorMessage = "An error occurred while updating the employee document.";
 
-            mockService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>())).ThrowsAsync(new Exception(errorMessage));
+            _employeeMockDocumentService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>())).ThrowsAsync(new Exception(errorMessage));
 
-            var result = await controller.Update(updateEntry);
+            var result = await _controller.Update(updateEntry);
             var notFoundResult = Assert.IsType<ObjectResult>(result);
             var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
 
@@ -232,12 +208,10 @@ namespace RGO.App.Tests.Controllers
         {
             var employeeDocomentDelete = employeeDocumentDto;
             var employeeDocomentDeleted = updateEmployeeDocumentDto;
-            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
 
-            mockEmployeeDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocomentDelete)).ReturnsAsync(employeeDocomentDeleted);
-
-            var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
-            var result = await controller.Delete(employeeDocomentDelete);
+            _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocomentDelete)).ReturnsAsync(employeeDocomentDeleted);
+         
+            var result = await _controller.Delete(employeeDocomentDelete);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
@@ -249,12 +223,11 @@ namespace RGO.App.Tests.Controllers
         {
             var employeeDocumentToDelete = employeeDocumentDto;
             var exceptionMessage = "An error occurred while deleting the employee document.";
-            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
 
-            mockEmployeeDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocumentToDelete)).ThrowsAsync(new Exception(exceptionMessage));
 
-            var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
-            var result = await controller.Delete(employeeDocumentToDelete);
+            _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocumentToDelete)).ThrowsAsync(new Exception(exceptionMessage));
+
+            var result = await _controller.Delete(employeeDocumentToDelete);
             var notFoundResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal(exceptionMessage, notFoundResult.Value);
@@ -262,9 +235,7 @@ namespace RGO.App.Tests.Controllers
 
         [Fact]
         public async Task GetEmployeeDocumentByStatusReturnsOkResult()
-        {
-            var mockService = new Mock<IEmployeeDocumentService>();
-            var controller = new EmployeeDocumentController(mockService.Object);
+        {  
             var id = employeeDocumentDto.Id;
             var status = DocumentStatus.Rejected;
 
@@ -273,9 +244,9 @@ namespace RGO.App.Tests.Controllers
                 employeeDocumentDto
             };
 
-            mockService.Setup(x => x.GetEmployeeDocumentsByStatus(id, status)).ReturnsAsync(listOfEmployeeDocumentsDto);
+            _employeeMockDocumentService.Setup(x => x.GetEmployeeDocumentsByStatus(id, status)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
-            var result = await controller.GetEmployeeDocumentsByStatus(id, status);
+            var result = await _controller.GetEmployeeDocumentsByStatus(id, status);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);
 
@@ -289,14 +260,13 @@ namespace RGO.App.Tests.Controllers
             var id = 15;
             var documentStatus = (DocumentStatus)(-1);
             var exceptionMessage = "An error occurred while fetching the employee documents.";
-            var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
 
-            mockEmployeeDocumentService.Setup(x => x.GetEmployeeDocumentsByStatus(id, documentStatus))
+
+            _employeeMockDocumentService.Setup(x => x.GetEmployeeDocumentsByStatus(id, documentStatus))
                 .ThrowsAsync(new Exception(exceptionMessage));
 
 
-            var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
-            var result = await controller.GetEmployeeDocumentsByStatus(id, documentStatus);
+            var result = await _controller.GetEmployeeDocumentsByStatus(id, documentStatus);
             var notfoundResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal("An error occurred while fetching the employee documents.", notfoundResult.Value);
