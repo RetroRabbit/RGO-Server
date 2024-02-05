@@ -103,6 +103,7 @@ namespace RGO.App.Tests.Controllers
             var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
             Assert.Equal("An error occurred while fetching the employee document.", actualExceptionMessage);
+
         }
 
         [Fact]
@@ -128,6 +129,7 @@ namespace RGO.App.Tests.Controllers
 
             Assert.NotNull(result);
             Assert.Equal(listOfEmployeeDocumentsDto, actualDetails);
+
         }
 
         [Fact]
@@ -144,6 +146,7 @@ namespace RGO.App.Tests.Controllers
             var actualExceptionMessage = Assert.IsType<string>(noFoundResult.Value);
 
             Assert.Equal(exceptionMessage, actualExceptionMessage);
+
         }
 
         [Fact]
@@ -156,6 +159,7 @@ namespace RGO.App.Tests.Controllers
             var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
 
             Assert.Equal(employeeDocumentDto, actualSavedEmployeeDocument);
+
         }
 
         [Fact]
@@ -168,6 +172,7 @@ namespace RGO.App.Tests.Controllers
             var exceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
             Assert.Equal("An error occurred while saving the employee document.", exceptionMessage);
+
         }
 
         [Fact]
@@ -184,6 +189,7 @@ namespace RGO.App.Tests.Controllers
             var okresult = Assert.IsType<OkObjectResult>(result);
 
             Assert.Equal(200, okresult.StatusCode);
+
         }
 
         [Fact]
@@ -216,6 +222,7 @@ namespace RGO.App.Tests.Controllers
             var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
             Assert.Equal(employeeDocomentDeleted, actualemployeeDocument);
+
         }
 
         [Fact]
@@ -231,6 +238,7 @@ namespace RGO.App.Tests.Controllers
             var notFoundResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal(exceptionMessage, notFoundResult.Value);
+
         }
 
         [Fact]
@@ -252,6 +260,7 @@ namespace RGO.App.Tests.Controllers
 
             Assert.NotNull(result);
             Assert.Equal(listOfEmployeeDocumentsDto, actualDetails);
+
         }
 
         [Fact]
@@ -270,6 +279,7 @@ namespace RGO.App.Tests.Controllers
             var notfoundResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal("An error occurred while fetching the employee documents.", notfoundResult.Value);
+
         }
     }
 }
