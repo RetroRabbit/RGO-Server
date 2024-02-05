@@ -27,7 +27,7 @@ public class ChartUnitTests
         return new Chart(chart);
     }
 
-    [Fact(Skip = "TODO : FIX TEST")]
+    [Fact] /*(Skip = "TODO : FIX TEST")*/
     public void ChartToDtoTest()
     {
         var chartDto = new ChartDto(
@@ -40,6 +40,6 @@ public class ChartUnitTests
 
         var chart = new Chart(chartDto);
 
-        Assert.Equal(chart.ToDto(), chartDto);
+        Assert.Equivalent(chart.ToDto(), chartDto);
     }
 }
