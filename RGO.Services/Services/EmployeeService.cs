@@ -64,7 +64,7 @@ public class EmployeeService : IEmployeeService
         }
 
         bool physicalAddressExist = await _employeeAddressService
-            .CheckIfExitsts(employeeDto.PhysicalAddress!);
+            .CheckIfExists(employeeDto.PhysicalAddress!);
 
         EmployeeAddressDto physicalAddress;
 
@@ -79,7 +79,7 @@ public class EmployeeService : IEmployeeService
         employee.PhysicalAddressId = physicalAddress.Id;
 
         bool postalAddressExist = await _employeeAddressService
-            .CheckIfExitsts(employeeDto.PostalAddress!);
+            .CheckIfExists(employeeDto.PostalAddress!);
 
         EmployeeAddressDto postalAddress;
 

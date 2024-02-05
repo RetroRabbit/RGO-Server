@@ -30,7 +30,7 @@ namespace RGO.Services.Services
 
             EmployeeDocumentDto employeeDocument = new EmployeeDocumentDto(
                employeeDocDto.Id,
-               employee,
+               employee.Id,
                null,
                employeeDocDto.FileName,
                employeeDocDto.FileCategory,
@@ -83,7 +83,7 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
         {
-            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.Employee.Id);
+            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
             if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
 
@@ -95,7 +95,7 @@ namespace RGO.Services.Services
 
         public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
         {
-            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.Employee.Id);
+            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
             if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
 
