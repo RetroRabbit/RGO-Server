@@ -93,7 +93,6 @@ namespace RGO.App.Tests.Controllers
         {
             var id = 15;
             var filename = "";
- 
             var err = "An error occurred while fetching the employee document.";
 
             _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
@@ -179,7 +178,6 @@ namespace RGO.App.Tests.Controllers
         public async Task UpdateEmployeeDocumentReturnsOkResult()
         {
             var mockService = new Mock<IEmployeeDocumentService>();
-            
             var updateEntry = employeeDocumentDto;
 
             mockService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>()))
