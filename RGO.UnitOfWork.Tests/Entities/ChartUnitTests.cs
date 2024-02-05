@@ -27,7 +27,7 @@ public class ChartUnitTests
         return new Chart(chart);
     }
 
-    [Fact] /*(Skip = "TODO : FIX TEST")*/
+    [Fact] 
     public void ChartToDtoTest()
     {
         var chartDto = new ChartDto(
