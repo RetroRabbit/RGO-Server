@@ -1,6 +1,4 @@
-﻿using RGO.Models.Enums;
-
-namespace RGO.Models;
+﻿namespace RGO.Models;
 
 public class EmployeeAddressDto
 {

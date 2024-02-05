@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace RGO.Models;
 
-namespace RGO.Models
+public class ClientDto
 {
-    public record ClientDto(
-        int Id, 
-        string Name
-        );
+    // TODO : Remove this Constructor + Update UNIT TESTS
+    public ClientDto(int Id, 
+        string Name)
+    {
+        this.Id = Id;
+        this.Name = Name;
+    }
+
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

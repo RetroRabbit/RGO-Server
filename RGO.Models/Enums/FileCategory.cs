@@ -1,10 +1,9 @@
-﻿namespace RGO.Models.Enums
+﻿namespace RGO.Models.Enums;
+
+public enum FileCategory
 {
-    public enum FileCategory
-    {
-        FixedTerm,
-        Retirement,
-        Medical,
-        MIE,
-    }
+    FixedTerm,
+    Retirement,
+    Medical,
+    MIE,
 }
