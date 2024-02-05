@@ -178,7 +178,6 @@ namespace RGO.App.Tests.Controllers
         public async Task UpdateEmployeeDocumentReturnsOkResult()
         {
             var mockService = new Mock<IEmployeeDocumentService>();
-            
             var updateEntry = employeeDocumentDto;
 
             mockService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>()))
