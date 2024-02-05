@@ -1,11 +1,10 @@
-﻿namespace RGO.Models.Enums
+﻿namespace RGO.Models.Enums;
+
+public enum FieldCodeType
 {
-    public enum FieldCodeType
-    {
-        Date, 
-        String, 
-        Int,
-        Float,
-        Options
-    }
+    Date, 
+    String, 
+    Int,
+    Float,
+    Options
 }

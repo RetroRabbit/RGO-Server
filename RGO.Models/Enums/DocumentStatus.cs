@@ -1,9 +1,8 @@
-﻿namespace RGO.Models.Enums
+﻿namespace RGO.Models.Enums;
+
+public enum DocumentStatus
 {
-    public enum DocumentStatus
-    {
-        Approved,
-        PendingApproval,
-        Rejected
-    }
+    Approved,
+    PendingApproval,
+    Rejected
 }
