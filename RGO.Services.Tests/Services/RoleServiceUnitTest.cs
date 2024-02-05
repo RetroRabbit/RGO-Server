@@ -50,7 +50,7 @@ public class RoleServiceUnitTest
         _dbMock.Verify(r => r.Role.Add(It.IsAny<Role>()), Times.Once);
     }
 
-    [Fact(Skip = "TODO : FIX TEST")]
+    [Fact]
     public async Task DeleteRoleTest()
     {
         var roleQueryable = new List<Role>
@@ -60,7 +60,7 @@ public class RoleServiceUnitTest
         }.AsQueryable().BuildMock();
 
         Expression<Func<Role, bool>> criteria = r => r.Description == "Admin";
-        var expect = await roleQueryable.Where(criteria).FirstAsync();
+        var expect = await roleQueryable.Where(criteria).Select(r => r.ToDto()).FirstAsync();
 
         _dbMock
             .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
@@ -68,13 +68,13 @@ public class RoleServiceUnitTest
 
         _dbMock
             .Setup(r => r.Role.Delete(It.IsAny<int>()))
-            .Returns(Task.FromResult(expect.ToDto()));
+            .Returns(Task.FromResult(expect));
 
         var result = await _roleService.DeleteRole("Admin");
 
         Assert.NotNull(result);
-        Assert.Equal(expect.ToDto(), result);
-        _dbMock.Verify(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()), Times.Once);
+        Assert.Equivalent(expect, result);
+        _dbMock.Verify(r => r.Role.Delete(It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
