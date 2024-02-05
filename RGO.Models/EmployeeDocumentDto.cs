@@ -4,11 +4,12 @@ namespace RGO.Models;
 
 public record EmployeeDocumentDto(
     int Id,
-    EmployeeDto? Employee,
+    int EmployeeId,
     string? Reference,
     string FileName,
     FileCategory FileCategory,
     string Blob,
     DocumentStatus? Status,
     DateTime UploadDate,
-    string? Reason);
+    string? Reason,
+    bool CounterSign);

@@ -1,4 +1,5 @@
-﻿using RGO.Models;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using RGO.Models;
 using RGO.Models.Enums;
 using RGO.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
@@ -38,6 +39,9 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     [Column("reason")]
     public string? Reason { get; set; }
 
+    [Column("counterSign")]
+    public bool CounterSign { get; set; }
+
     public virtual Employee Employee { get; set; }
 
     public EmployeeDocument() { }
@@ -45,7 +49,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     public EmployeeDocument(EmployeeDocumentDto employeeDocumentsDto)
     {
         Id = employeeDocumentsDto.Id;
-        EmployeeId = employeeDocumentsDto.Employee!.Id;
+        EmployeeId = employeeDocumentsDto.EmployeeId!;
         Reference = employeeDocumentsDto.Reference;
         FileName = employeeDocumentsDto.FileName;
         FileCategory = employeeDocumentsDto.FileCategory;
@@ -53,20 +57,22 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
         Status = employeeDocumentsDto.Status;
         UploadDate = employeeDocumentsDto.UploadDate;
         Reason = employeeDocumentsDto.Reason;
+        CounterSign = employeeDocumentsDto.CounterSign;
     }
 
     public EmployeeDocumentDto ToDto()
     {
         return new EmployeeDocumentDto(
             Id,
-            Employee?.ToDto(),
+            EmployeeId,
             Reference,
             FileName,
             FileCategory,
             Blob,
             Status,
             UploadDate,
-            Reason);
+            Reason,
+            CounterSign);
     }
 
 }

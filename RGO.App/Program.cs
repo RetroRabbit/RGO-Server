@@ -36,7 +36,7 @@ namespace RGO.App
             /// </summary>
             builder.Services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Grad Onboarding Platform API", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "HRIS API", Version = "v1" });
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -59,7 +59,8 @@ namespace RGO.App
                 });
             });
 
-            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["ConnectionStrings:Default"]));
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultDevConnection");
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(connectionString));
             builder.Services.RegisterRepository();
             builder.Services.RegisterServices();
 

@@ -27,20 +27,21 @@ public class EmployeeDocumentServiceUnitTest
         _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
     }
 
+    int employeeId = 1;
+    static EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+    static EmployeeType employeeType = new EmployeeType(employeeTypeDto);
+    static EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+    static EmployeeDto employeeMock = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
+        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
+        "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+        new DateTime(), null, Race.Black, Gender.Male, null,
+        "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+    static Employee testEmployee = new Employee(employeeMock, employeeTypeDto);
+
     [Fact]
-    public async Task SaveEmployeeDocument_ShouldSaveDocument_WhenEmployeeExists()
+    public async Task SaveEmployeeDocumentPass()
     {
-        var employeeId = 1;
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
-        EmployeeDto employeeMock = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
         var employeeDocDto = new SimpleEmployeeDocumentDto(
             Id: 1,
             EmployeeId: employeeId,
@@ -56,14 +57,15 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
             .ReturnsAsync(new EmployeeDocumentDto(
                 Id: 1,
-                Employee: employeeMock,
+                EmployeeId: employeeId,
                 Reference: null,
                 FileName: "TestFile.pdf",
                 FileCategory: FileCategory.FixedTerm,
                 Blob: "TestFileContent",
                 Status: DocumentStatus.PendingApproval,
                 UploadDate: DateTime.Now,
-                Reason: null
+                Reason: null,
+                CounterSign: false
             ));
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(employeeDocDto);
@@ -74,18 +76,8 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveEmployeeDocument_ShouldThrowException_WhenEmployeeDoesNotExist()
+    public async Task SaveEmployeeDocumentFail()
     {
-        var employeeId = 1;
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-        EmployeeDto employeeMock = new(1, "001", "34434434", new DateTime(), new DateTime(),
-           null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-           "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-           new DateTime(), null, Race.Black, Gender.Male, null,
-           "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
             .ReturnsAsync((EmployeeDto)null);
 
@@ -105,36 +97,20 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetEmployeeDocument_ReturnsCorrectDocument_WhenEmployeeExists()
+    public async Task GetEmployeeDocumentPass()
     {
-        var mockUnitOfWork = new Mock<IUnitOfWork>();
-        var mockEmployeeService = new Mock<IEmployeeService>();
-
-        int employeeId = 1;
         string fileName = "TestFile.pdf";
 
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
-
-        var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMockDbSet();
-        mockUnitOfWork.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet.Object);
 
         var employeeDocument = new EmployeeDocument { EmployeeId = employeeId, FileName = fileName };
         var mockEmployeeDocumentDbSet = new List<EmployeeDocument> { employeeDocument }.AsQueryable().BuildMockDbSet();
-        mockUnitOfWork.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet.Object);
 
-        var service = new EmployeeDocumentService(mockUnitOfWork.Object, mockEmployeeService.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.GetEmployeeDocument(employeeId, fileName);
 
@@ -143,26 +119,10 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task GetAllEmployeeDocuments_ReturnsDocuments_WhenEmployeeExists()
+    public async Task GetAllEmployeeDocumentsPass()
     {
-        var mockUnitOfWork = new Mock<IUnitOfWork>();
-        var mockEmployeeService = new Mock<IEmployeeService>();
-
-        int employeeId = 1;
-
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-            "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Race.Black, Gender.Male, null,
-            "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
-        var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMockDbSet();
-        mockUnitOfWork.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet.Object);
 
         var employeeDocuments = new List<EmployeeDocument>
@@ -170,11 +130,12 @@ public class EmployeeDocumentServiceUnitTest
             new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile1.pdf" },
             new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile2.pdf" }
         };
+
         var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMockDbSet();
-        mockUnitOfWork.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet.Object);
 
-        var service = new EmployeeDocumentService(mockUnitOfWork.Object, mockEmployeeService.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.GetAllEmployeeDocuments(employeeId);
 
@@ -185,44 +146,30 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task UpdateEmployeeDocument_UpdatesDocumentSuccessfully_WhenEmployeeExists()
+    public async Task UpdateEmployeeDocumentPass()
     {
-        var mockUnitOfWork = new Mock<IUnitOfWork>();
-        var mockEmployeeService = new Mock<IEmployeeService>();
-
-        int employeeId = 1;
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
-              null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-              "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-              new DateTime(), null, Race.Black, Gender.Male, null,
-              "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
-        var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMockDbSet();
-        mockUnitOfWork.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+            _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet.Object);
 
         var employeeDocumentDto = new EmployeeDocumentDto(
             Id: 1,
-            Employee: testEmployee1,
+            EmployeeId: employeeId,
             Reference: null,
             FileName: "e2.pdf",
             FileCategory: FileCategory.Medical,
             Blob: "sadfasdf",
             Status: null,
             UploadDate: DateTime.Now,
-            Reason: null
+            Reason: null,
+            CounterSign: false
         );
 
         var employeeDocument = new EmployeeDocument(employeeDocumentDto);
 
-        mockUnitOfWork.Setup(m => m.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()))
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()))
                       .ReturnsAsync(employeeDocumentDto);
-        var service = new EmployeeDocumentService(mockUnitOfWork.Object, mockEmployeeService.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.UpdateEmployeeDocument(employeeDocumentDto);
 
@@ -230,49 +177,123 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task DeleteEmployeeDocument_DeletesDocumentSuccessfully_WhenEmployeeExists()
+    public async Task DeleteEmployeeDocumentPass()
     {
-        var mockUnitOfWork = new Mock<IUnitOfWork>();
-        var mockEmployeeService = new Mock<IEmployeeService>();
-
-        int employeeId = 1;
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeType employeeType = new EmployeeType(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
-        EmployeeDto testEmployee1 = new(1, "001", "34434434", new DateTime(), new DateTime(),
-              null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
-              "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-              new DateTime(), null, Race.Black, Gender.Male, null,
-              "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-        var mockEmployee = new Employee(testEmployee1, employeeTypeDto);
-        var mockEmployeeDbSet = new List<Employee> { mockEmployee }.AsQueryable().BuildMockDbSet();
-        mockUnitOfWork.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet.Object);
 
         var employeeDocumentDto = new EmployeeDocumentDto(
             Id: 1,
-            Employee: testEmployee1,
+            EmployeeId: employeeId,
             Reference: null,
             FileName: "e2.pdf",
             FileCategory: FileCategory.Medical,
             Blob: "sadfasdf",
             Status: null,
             UploadDate: DateTime.Now,
-            Reason: null
+            Reason: null,
+            CounterSign: false
         );
 
         var employeeDocument = new EmployeeDocument(employeeDocumentDto);
 
-        mockUnitOfWork.Setup(m => m.EmployeeDocument.Delete(It.IsAny<int>()))
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Delete(It.IsAny<int>()))
                       .Returns(Task.FromResult(employeeDocumentDto));
 
-        var service = new EmployeeDocumentService(mockUnitOfWork.Object, mockEmployeeService.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.DeleteEmployeeDocument(employeeDocumentDto);
 
         Assert.NotNull(result);
     }
+
+    [Fact]
+    public async Task GetEmployeeDocumentsByStatusPendingPass()
+    {
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployeeDbSet);
+
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeId, null, "TestFile.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.PendingApproval, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeId, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.PendingApproval, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        var employeeDocuments = new List<EmployeeDocument>
+        {
+            new EmployeeDocument(testDocument),
+            new EmployeeDocument(testDocumentTwo)
+        };
+
+        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                      .Returns(mockEmployeeDocumentDbSet);
+
+        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.PendingApproval);
+
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task GetEmployeeDocumentsByStatusApprovedPass()
+    {
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployeeDbSet);
+
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeId, null, "TestFile.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Approved, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeId, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Approved, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        var employeeDocuments = new List<EmployeeDocument>
+        {
+            new EmployeeDocument(testDocument),
+            new EmployeeDocument(testDocumentTwo)
+        };
+
+        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                      .Returns(mockEmployeeDocumentDbSet);
+
+        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.Approved);
+
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task GetEmployeeDocumentsByStatusRejectedPass()
+    {
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployeeDbSet);
+
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeId, null, "TestFile.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Rejected, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeId, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        "TestFileContent", Status: DocumentStatus.Rejected, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
+
+        var employeeDocuments = new List<EmployeeDocument>
+        {
+            new EmployeeDocument(testDocument),
+            new EmployeeDocument(testDocumentTwo)
+        };
+
+        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                      .Returns(mockEmployeeDocumentDbSet);
+
+        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.Rejected);
+
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+    }
+
 }
 

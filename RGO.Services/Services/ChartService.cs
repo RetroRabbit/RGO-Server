@@ -187,7 +187,7 @@ public class ChartService : IChartService
         if (dataTypeList.Contains("Age"))
         {
             propertyNames.Add("Age");
-        }
+        } 
 
         foreach (var typeName in dataTypeList)
         {
@@ -199,7 +199,7 @@ public class ChartService : IChartService
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
             if (propertyInfo == null)
             {
-                throw new ArgumentException($"Invalid property name: {typeName}", nameof(dataTypeList));
+                throw new Exception($"Invalid property name: {typeName}");
             }
             propertyNames.Add(typeName);
         }
@@ -220,19 +220,19 @@ public class ChartService : IChartService
                  {
                      var obj = BaseDataType.GetCustom(dataType);
                      var val = obj.GenerateData(employee, _services);
-                     if (val == null)
-                         continue;
-                    formattedData += $",{val.Replace(",", "").Trim()}";
+                     if (val != null)   
+                        formattedData += $",{val.Replace(",", "").Trim()}";
                 }
-                 else
-                 {
-                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
-                     if (propertyInfo == null)
-                         continue;
-                     var val = propertyInfo.GetValue(employee);
-                     if (val == null)
-                         continue;
-                    formattedData += $",{val.ToString().Replace(",", "").Trim()}";
+                else
+                {
+                    var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                    if (propertyInfo != null)
+                    {
+                        var val = propertyInfo.GetValue(employee);
+
+                        if (val != null)
+                            formattedData += $",{val.ToString().Replace(",", "").Trim()}";
+                    }
                 }
             }
             csvData.AppendLine(formattedData);

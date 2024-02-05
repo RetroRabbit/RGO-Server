@@ -42,11 +42,13 @@ public class AuditLog : IModel<AuditLogDto>
 
     public AuditLogDto ToDto()
     {
-        return new AuditLogDto(
-            Id,
-            EmployeeEditFor?.ToDto(),
-            EmployeeEditBy?.ToDto(),
-            EditDate,
-            Description);
+        return new AuditLogDto
+        {
+            Id = Id,
+            EditFor = EmployeeEditFor?.ToDto(),
+            EditBy = EmployeeEditBy?.ToDto(),
+            EditDate = EditDate,
+            Description = Description,
+        };
     }
 }

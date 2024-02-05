@@ -17,9 +17,8 @@ namespace RGO.Services.Services
 
         public async Task<AuditLogDto> SaveAuditLog(AuditLogDto auditLogDto)
         {
-            AuditLog auditLog = new AuditLog(auditLogDto);
+            var auditLog = new AuditLog(auditLogDto);
             var newAuditLog = await _db.AuditLog.Add(auditLog);
-
             return newAuditLog;
         }
 
@@ -43,7 +42,7 @@ namespace RGO.Services.Services
             var ifAuditLog = await CheckAuditLog(auditLogDto.Id);
             if (!ifAuditLog) { throw new Exception("Audit Log not found"); }
 
-            AuditLog auditLog = new AuditLog(auditLogDto);
+            var auditLog = new AuditLog(auditLogDto);
             var updatedAuditLog = await _db.AuditLog.Update(auditLog);
 
             return updatedAuditLog;
@@ -54,7 +53,7 @@ namespace RGO.Services.Services
             var ifAuditLog = await CheckAuditLog(auditLogDto.Id);
             if (!ifAuditLog) { throw new Exception("Audit Log not found"); }
 
-            AuditLog auditLog = new AuditLog(auditLogDto);
+            var auditLog = new AuditLog(auditLogDto);
             var deletedAuditLog = await _db.AuditLog.Delete(auditLog.Id);
 
             return deletedAuditLog;
@@ -62,12 +61,8 @@ namespace RGO.Services.Services
 
         private async Task<bool> CheckAuditLog(int auditLogId)
         {
-            var auditLog = await _db.AuditLog
-            .Get(auditLog => auditLog.Id == auditLogId)
-            .FirstOrDefaultAsync();
-
-            if (auditLog == null) { return false; }
-            else { return true; }
+            var auditLog = await _db.AuditLog.GetById(auditLogId);
+            return auditLog != null;
         }
     }
 }
