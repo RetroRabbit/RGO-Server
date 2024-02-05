@@ -1,8 +1,7 @@
-﻿namespace RGO.Models.Enums
+﻿namespace RGO.Models.Enums;
+
+public enum ItemStatus
 {
-    public enum ItemStatus
-    {
-        Active,
-        Archive
-    }
+    Active,
+    Archive
 }
