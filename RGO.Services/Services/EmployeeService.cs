@@ -340,12 +340,6 @@ public class EmployeeService : IEmployeeService
             .FirstOrDefaultAsync();
 
         return role.Description is "Admin" or "SuperAdmin";
-        /*
-            Pattern matching is a technique where you test an expression to determine if it has certain characteristics 
-            In my case it replaces my boolean check which looked like this:
-                return role.Description == "Admin" || role.Description == "SuperAdmin"
-            For more information: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/pattern-matching
-        */
     }
 
     private async Task<bool> IsJounrey(string userEmail)
