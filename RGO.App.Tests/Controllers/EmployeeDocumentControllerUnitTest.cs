@@ -270,7 +270,6 @@ namespace RGO.App.Tests.Controllers
             var documentStatus = (DocumentStatus)(-1);
             var exceptionMessage = "An error occurred while fetching the employee documents.";
 
-
             _employeeMockDocumentService.Setup(x => x.GetEmployeeDocumentsByStatus(id, documentStatus))
                 .ThrowsAsync(new Exception(exceptionMessage));
 
