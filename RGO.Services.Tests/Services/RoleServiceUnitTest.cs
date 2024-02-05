@@ -109,7 +109,7 @@ public class RoleServiceUnitTest
         _dbMock.Verify(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()), Times.Once);
     }
 
-    [Fact(Skip = "TODO : FIX TEST")]
+    [Fact]
     public async Task UpdateRoleTest()
     {
         var roleQueryable = new List<Role>
@@ -132,7 +132,7 @@ public class RoleServiceUnitTest
         var result = await _roleService.UpdateRole("Admin");
 
         Assert.NotNull(result);
-        Assert.Equal(expect.ToDto(), result);
+        Assert.Equivalent(expect.ToDto(), result);
         _dbMock.Verify(r => r.Role.Update(It.IsAny<Role>()), Times.Once);
     }
 }
