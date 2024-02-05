@@ -229,7 +229,6 @@ namespace RGO.App.Tests.Controllers
             var employeeDocumentToDelete = employeeDocumentDto;
             var exceptionMessage = "An error occurred while deleting the employee document.";
 
-
             _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocumentToDelete)).ThrowsAsync(new Exception(exceptionMessage));
 
             var result = await _controller.Delete(employeeDocumentToDelete);
@@ -268,10 +267,8 @@ namespace RGO.App.Tests.Controllers
             var documentStatus = (DocumentStatus)(-1);
             var exceptionMessage = "An error occurred while fetching the employee documents.";
 
-
             _employeeMockDocumentService.Setup(x => x.GetEmployeeDocumentsByStatus(id, documentStatus))
                 .ThrowsAsync(new Exception(exceptionMessage));
-
 
             var result = await _controller.GetEmployeeDocumentsByStatus(id, documentStatus);
             var notfoundResult = Assert.IsType<ObjectResult>(result);
