@@ -45,7 +45,7 @@ namespace RGO.App.Tests.Controllers
 
             employeeDocumentDto = new EmployeeDocumentDto(
                 Id: 1,
-                Employee: employeeMock,
+                EmployeeId: 2,
                 Reference: null,
                 FileName: "e2.pdf",
                 FileCategory: FileCategory.Medical,
@@ -58,7 +58,7 @@ namespace RGO.App.Tests.Controllers
 
             updateEmployeeDocumentDto = new EmployeeDocumentDto(
                 Id: 1,
-                Employee: UpdateemployeeMock,
+                EmployeeId: 2,
                 Reference: null,
                 FileName: "new.pdf",
                 FileCategory: FileCategory.Medical,
