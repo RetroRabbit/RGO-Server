@@ -32,13 +32,11 @@ namespace RGO.App.Tests.Controllers
             new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
-
         static EmployeeDto UpdateemployeeMock = new EmployeeDto(1, "008", "123456789", new DateTime(), new DateTime(),
             null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Matt", "MT",
             "Schoeman", new DateTime(), "South America", "South African", "0000055000000", " ",
             new DateTime(), null, Race.Black, Gender.Male, null,
             "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
 
         static Employee testEmployee = new Employee(employeeMock, employeeTypeDto);
 
@@ -53,38 +51,30 @@ namespace RGO.App.Tests.Controllers
             _controller = new EmployeeDocumentController(_employeeMockDocumentService.Object);
 
             employeeDocumentDto = new EmployeeDocumentDto(
-            Id: 1,
-            Employee: employeeMock,
-            Reference: null,
-            FileName: "e2.pdf",
-            FileCategory: FileCategory.Medical,
-            Blob: "sadfasdf",
-            Status: null,
-            UploadDate: DateTime.Now,
-            Reason: null,
-            CounterSign: false
-
-
-
-
-        );
+                Id: 1,
+                Employee: employeeMock,
+                Reference: null,
+                FileName: "e2.pdf",
+                FileCategory: FileCategory.Medical,
+                Blob: "sadfasdf",
+                Status: null,
+                UploadDate: DateTime.Now,
+                Reason: null,
+                CounterSign: false
+            );
 
             updateEmployeeDocumentDto = new EmployeeDocumentDto(
-            Id: 1,
-            Employee: UpdateemployeeMock,
-            Reference: null,
-            FileName: "new.pdf",
-            FileCategory: FileCategory.Medical,
-            Blob: "newBlob",
-            Status: null,
-            UploadDate: DateTime.Now,
-            Reason: null,
-            CounterSign: false
-
-
-
-
-        );
+                Id: 1,
+                Employee: UpdateemployeeMock,
+                Reference: null,
+                FileName: "new.pdf",
+                FileCategory: FileCategory.Medical,
+                Blob: "newBlob",
+                Status: null,
+                UploadDate: DateTime.Now,
+                Reason: null,
+                CounterSign: false
+            );
         }
 
         [Fact]
@@ -106,6 +96,7 @@ namespace RGO.App.Tests.Controllers
 
             Assert.Equal(employeeDocumentDto, actualDetails);
         }
+
         [Fact]
         public async Task GetEmployeeDocumentReturnsExceptionNotfoundResult()
         {
@@ -118,7 +109,6 @@ namespace RGO.App.Tests.Controllers
             var err = "An error occurred while fetching the employee document.";
 
             mockService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
-
 
             var result = await controller.GetEmployeeDocument(id, filename);
             var notfoundResult = Assert.IsType<ObjectResult>(result);
@@ -143,7 +133,6 @@ namespace RGO.App.Tests.Controllers
             {
                 new EmployeeDocument(employeeDocumentDto)
             };
-
 
             mockService.Setup(x => x.GetAllEmployeeDocuments(id)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
@@ -187,6 +176,7 @@ namespace RGO.App.Tests.Controllers
 
             Assert.Equal(employeeDocumentDto, actualSavedEmployeeDocument);
         }
+
         [Fact]
         public async Task SaveEmployeeDocumentThrowsExceptionReturnsNotFoundResult()
         {
@@ -201,6 +191,7 @@ namespace RGO.App.Tests.Controllers
 
             Assert.Equal("An error occurred while saving the employee document.", exceptionMessage);
         }
+
         [Fact]
         public async Task UpdateEmployeeDocumentReturnsOkResult()
         {
@@ -216,6 +207,7 @@ namespace RGO.App.Tests.Controllers
 
             Assert.Equal(200, okresult.StatusCode);
         }
+
         [Fact]
         public async Task UpdateEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
         {
@@ -234,10 +226,10 @@ namespace RGO.App.Tests.Controllers
             Assert.Equal(500, notFoundResult.StatusCode);
 
         }
+
         [Fact]
         public async Task DeleteEmployeeDocumentsReturnsOkResult()
         {
-
             var employeeDocomentDelete = employeeDocumentDto;
             var employeeDocomentDeleted = updateEmployeeDocumentDto;
             var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
@@ -250,7 +242,6 @@ namespace RGO.App.Tests.Controllers
             var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
             Assert.Equal(employeeDocomentDeleted, actualemployeeDocument);
-
         }
 
         [Fact]
@@ -282,7 +273,6 @@ namespace RGO.App.Tests.Controllers
                 employeeDocumentDto
             };
 
-
             mockService.Setup(x => x.GetEmployeeDocumentsByStatus(id, status)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
             var result = await controller.GetEmployeeDocumentsByStatus(id, status);
@@ -312,5 +302,4 @@ namespace RGO.App.Tests.Controllers
             Assert.Equal("An error occurred while fetching the employee documents.", notfoundResult.Value);
         }
     }
-
 }
