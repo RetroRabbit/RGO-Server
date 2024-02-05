@@ -93,7 +93,7 @@ public class RoleServiceUnitTest
         _dbMock.Verify(r => r.Role.GetAll(null), Times.Once);
     }
 
-    [Fact(Skip = "TODO : FIX TEST")]
+    [Fact]
     public async Task GetRoleTest()
     {
         var roleQueryable = new List<Role> { new Role(_roleDto) }.AsQueryable().BuildMock();
@@ -105,7 +105,7 @@ public class RoleServiceUnitTest
         var result = await _roleService.GetRole(_roleDto.Description);
 
         Assert.NotNull(result);
-        Assert.Equal(_roleDto, result);
+        Assert.Equivalent(_roleDto, result);
         _dbMock.Verify(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()), Times.Once);
     }
 
