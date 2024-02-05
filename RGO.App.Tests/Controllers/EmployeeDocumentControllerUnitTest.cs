@@ -231,7 +231,6 @@ namespace RGO.App.Tests.Controllers
             var employeeDocumentToDelete = employeeDocumentDto;
             var exceptionMessage = "An error occurred while deleting the employee document.";
 
-
             _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocumentToDelete)).ThrowsAsync(new Exception(exceptionMessage));
 
             var result = await _controller.Delete(employeeDocumentToDelete);
