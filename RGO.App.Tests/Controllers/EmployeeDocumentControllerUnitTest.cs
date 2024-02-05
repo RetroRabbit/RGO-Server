@@ -274,7 +274,6 @@ namespace RGO.App.Tests.Controllers
             _employeeMockDocumentService.Setup(x => x.GetEmployeeDocumentsByStatus(id, documentStatus))
                 .ThrowsAsync(new Exception(exceptionMessage));
 
-
             var result = await _controller.GetEmployeeDocumentsByStatus(id, documentStatus);
             var notfoundResult = Assert.IsType<ObjectResult>(result);
 
