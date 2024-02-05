@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.App.Controllers;
 using RGO.Models;
@@ -40,8 +41,12 @@ namespace RGO.App.Tests.Controllers
 
 
         static Employee testEmployee = new Employee(employeeMock, employeeTypeDto);
-       
 
+        public enum InvalidDocumentStatus
+        {
+            Invalid1,
+            Invalid2
+        }
         public EmployeeDocumentControllerUnitTest()
         {
             _employeeMockDocumentService = new Mock<IEmployeeDocumentService>();
@@ -81,6 +86,65 @@ namespace RGO.App.Tests.Controllers
 
         );
         }
+
+        [Fact]
+        public async Task GetEmployeeDocumentReturnsOkfoundResult()
+        {
+            var mockService = new Mock<IEmployeeDocumentService>();
+            var controller = new EmployeeDocumentController(mockService.Object);
+
+            var id = employeeDocumentDto.Id;
+            var fileName = employeeDocumentDto.FileName;
+
+          
+
+
+            //mockService.Setup(x => x.GetEmployeeDocument(id, fileName)).ReturnsAsync(listOfEmployeeDocumentsDto);
+            mockService.Setup(x => x.GetEmployeeDocument(id, fileName)).ReturnsAsync(employeeDocumentDto);
+
+            var result = await controller.GetEmployeeDocument(employeeDocumentDto.Id, employeeDocumentDto.FileName);
+
+          //  var okResult = Assert.IsType<OkObjectResult>(result);
+           // var actualDetails = Assert.IsType<List<EmployeeDocumentDto>>(okResult.Value);
+
+            Assert.NotNull(result);
+
+           var okResult = Assert.IsType<OkObjectResult>(result);
+            // var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);
+
+           
+            var actualDetails = Assert.IsType<EmployeeDocumentDto>(okResult.Value);
+            //var actualExceptionMessage = Assert.IsType<string>(okResult.Value);
+            Assert.Equal(employeeDocumentDto, actualDetails);
+
+
+       
+
+
+        }
+        [Fact]
+        public async Task GetEmployeeDocumentReturnsExceptionNotfoundResult()
+        {
+            var id = 15;
+            var filename = "";
+
+            var mockService = new Mock<IEmployeeDocumentService>();
+            var controller = new EmployeeDocumentController(mockService.Object);
+
+            var err = "An error occurred while fetching the employee document.";
+
+            mockService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
+
+
+            var result = await controller.GetEmployeeDocument(id, filename);
+
+            var notfoundResult = Assert.IsType<ObjectResult>(result);
+            var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
+            Assert.Equal("An error occurred while fetching the employee document.", actualExceptionMessage);
+
+        }
+
+
 
         [Fact]
         public async Task GetAllEmployeeDocumentReturnsOkResult()
@@ -269,32 +333,28 @@ namespace RGO.App.Tests.Controllers
 
          [Fact]
          public async Task GetEmployeeDocumentByStatusReturnsNotFoundResultWhenExceptionThrown()
-          {
+         {
          
-          var id = 15;
-          var statusValue = "NONE";
+             var id = 15;
+          
+            var documentStatus = (DocumentStatus)(-1);
 
-    
-
-            var result = Enum.IsDefined(typeof(DocumentStatus), statusValue);
-
-            var exceptionMessage = "An error occurred while fetching employee documents.";
+            var exceptionMessage = "An error occurred while fetching the employee documents.";
 
             var mockEmployeeDocumentService = new Mock<IEmployeeDocumentService>();
-      
 
+            mockEmployeeDocumentService.Setup(x => x.GetEmployeeDocumentsByStatus(id, documentStatus))
+                .ThrowsAsync(new Exception(exceptionMessage));
+
+        
             var controller = new EmployeeDocumentController(mockEmployeeDocumentService.Object);
 
-            if( result == false)
-            {
-              
-                var noFoundResult = Assert.IsType<ObjectResult>(result);
-                var actualExceptionMessage = Assert.IsType<string>(noFoundResult.Value);
-                Assert.Equal(exceptionMessage, actualExceptionMessage);
+            var result = await controller.GetEmployeeDocumentsByStatus(id,documentStatus);
+            var notfoundResult = Assert.IsType<ObjectResult>(result);
 
-
-            }
-
+            Assert.Equal("An error occurred while fetching the employee documents.", notfoundResult.Value);
+            
+          
 
 
         }
