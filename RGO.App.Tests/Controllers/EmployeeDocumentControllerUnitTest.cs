@@ -93,7 +93,6 @@ namespace RGO.App.Tests.Controllers
         {
             var id = 15;
             var filename = "";
- 
             var err = "An error occurred while fetching the employee document.";
 
             _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
