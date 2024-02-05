@@ -59,8 +59,7 @@ namespace RGO.App
                 });
             });
 
-            var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultDevConnection");
-            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(connectionString));
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["ConnectionStrings:Default"]));
             builder.Services.RegisterRepository();
             builder.Services.RegisterServices();
 
