@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RGO.Models
 {
-    public class EmployeeCountByRoleDto
+    public class EmployeeCountByRoleDataCard
     {
         public int DevsCount { get; set; }
         public int DesignersCount { get; set; }

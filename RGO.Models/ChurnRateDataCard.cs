@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RGO.Models
 {
-    public class ChurnRateDto
+    public class ChurnRateDataCard
     {
         public double ChurnRate { get; set; }
 

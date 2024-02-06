@@ -9,6 +9,7 @@ using RGO.UnitOfWork.Entities;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RGO.Services.Services;
 
@@ -212,77 +213,86 @@ public class EmployeeService : IEmployeeService
     public async Task<EmployeeDto?> GetById(int employeeId)
     {
      var employee = await _db.Employee.GetById(employeeId);
-
-     return employee;
+        return employee;
     }
 
-    public async Task<EmployeeCountDto> GetEmployeesCount()
+    public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
     {
-        var employeeCountTotalsByRole = GetEmployeeCountByRole();
+        var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
 
-        var employeesOnBench = GetTotalNumberOfEmployeesOnBench();
+        var totalNumberOfEmployeesOnBench = GetTotalNumberOfEmployeesOnBench();
 
         var totalNumberOfEmployeesOnClients  = GetTotalNumberOfEmployeesOnClients();
         
-        var totalNumberOfEmployeesDevsScrumsAndDesigners = employeesOnBench.TotalNumberOfEmployeesOnBench + totalNumberOfEmployeesOnClients;
+        var totalNumberOfEmployeesDevsScrumsAndDesigners = totalNumberOfEmployeesOnBench.TotalNumberOfEmployeesOnBench
+            + totalNumberOfEmployeesOnClients;
 
         var billableEmployeesPercentage = totalNumberOfEmployeesDevsScrumsAndDesigners > 0
                ? (double)totalNumberOfEmployeesOnClients / totalNumberOfEmployeesDevsScrumsAndDesigners * 100
                : 0;
 
-        var currentMonthTotal = await GetCurrentMonthTotal();
+        var currentMonthTotal = await GetEmployeeCurrentMonthTotal();
 
-        var previousMonthTotal = await GetPreviousMonthTotal();
+        var previousMonthTotal = await GetEmployeePreviousMonthTotal();
 
         var employeeTotalDifference = previousMonthTotal.EmployeeTotal - currentMonthTotal.EmployeeTotal;
         var isIncrease = employeeTotalDifference > 0;
 
-        return new EmployeeCountDto
+        return new EmployeeCountDataCard
         {
             DevsCount = employeeCountTotalsByRole.DevsCount,
             DesignersCount = employeeCountTotalsByRole.DesignersCount,
             ScrumMastersCount = employeeCountTotalsByRole.ScrumMastersCount,
             BusinessSupportCount = employeeCountTotalsByRole.BusinessSupportCount,
-            DevsOnBenchCount = employeesOnBench.DevsOnBenchCount,
-            DesignersOnBenchCount = employeesOnBench.DesignersOnBenchCount,
-            ScrumMastersOnBenchCount = employeesOnBench.ScrumMastersOnBenchCount,
-            TotalNumberOfEmployeesOnBench = employeesOnBench.TotalNumberOfEmployeesOnBench,
+            DevsOnBenchCount = totalNumberOfEmployeesOnBench.DevsOnBenchCount,
+            DesignersOnBenchCount = totalNumberOfEmployeesOnBench.DesignersOnBenchCount,
+            ScrumMastersOnBenchCount = totalNumberOfEmployeesOnBench.ScrumMastersOnBenchCount,
+            TotalNumberOfEmployeesOnBench = totalNumberOfEmployeesOnBench.TotalNumberOfEmployeesOnBench,
             BillableEmployeesPercentage = Math.Round(billableEmployeesPercentage, 0),
             EmployeeTotalDifference = employeeTotalDifference,
             isIncrease = isIncrease,
         };
     }
 
-    public async Task<ChurnRateDto> CalculateChurnRate()
+    public async Task<ChurnRateDataCard> CalculateEmployeeChurnRate()
     {
-        var currentMonthTotal = await GetCurrentMonthTotal();
+        var employeeCurrentMonthTotal = await GetEmployeeCurrentMonthTotal();
 
-        var previousMonthTotal = await GetPreviousMonthTotal();
+        var employeePreviousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-        if (previousMonthTotal != null && previousMonthTotal.EmployeeTotal > 0 && previousMonthTotal.DeveloperTotal > 0 && previousMonthTotal.DesignerTotal > 0 &&
-            previousMonthTotal.ScrumMasterTotal > 0 && previousMonthTotal.BusinessSupportTotal > 0)
+        if (employeePreviousMonthTotal != null && employeePreviousMonthTotal.EmployeeTotal > 0 && employeePreviousMonthTotal.DeveloperTotal > 0
+            && employeePreviousMonthTotal.DesignerTotal > 0 && employeePreviousMonthTotal.ScrumMasterTotal > 0
+            && employeePreviousMonthTotal.BusinessSupportTotal > 0)
         {
-            var churnRate = ((double)(currentMonthTotal.EmployeeTotal - previousMonthTotal.EmployeeTotal) / previousMonthTotal.EmployeeTotal) * 100;
+            var churnRate = (double)(employeeCurrentMonthTotal.EmployeeTotal - employeePreviousMonthTotal.EmployeeTotal) 
+                / employeePreviousMonthTotal.EmployeeTotal * 100;
 
-            var devChurnRate = ((double)(currentMonthTotal.DeveloperTotal - previousMonthTotal.DeveloperTotal) / previousMonthTotal.DeveloperTotal) * 100;
-            var designerChurnRate = ((double)(currentMonthTotal.DesignerTotal - previousMonthTotal.DesignerTotal) / previousMonthTotal.DesignerTotal) * 100;
-            var scrumMasterChurnRate = ((double)(currentMonthTotal.ScrumMasterTotal - previousMonthTotal.ScrumMasterTotal) / previousMonthTotal.ScrumMasterTotal) * 100;
-            var businessSupportChurnRate = ((double)(currentMonthTotal.BusinessSupportTotal - previousMonthTotal.BusinessSupportTotal) / previousMonthTotal.BusinessSupportTotal) * 100;
+            var devChurnRate = (double)(employeeCurrentMonthTotal.DeveloperTotal - employeePreviousMonthTotal.DeveloperTotal)
+                / employeePreviousMonthTotal.DeveloperTotal * 100;
 
-            return new ChurnRateDto
+            var designerChurnRate = (double)(employeeCurrentMonthTotal.DesignerTotal - employeePreviousMonthTotal.DesignerTotal)
+                / employeePreviousMonthTotal.DesignerTotal * 100;
+
+            var scrumMasterChurnRate = (double)(employeeCurrentMonthTotal.ScrumMasterTotal - employeePreviousMonthTotal.ScrumMasterTotal)
+                / employeePreviousMonthTotal.ScrumMasterTotal * 100;
+
+            var businessSupportChurnRate = (double)(employeeCurrentMonthTotal.BusinessSupportTotal - employeePreviousMonthTotal.BusinessSupportTotal)
+                / employeePreviousMonthTotal.BusinessSupportTotal * 100;
+
+            return new ChurnRateDataCard
             {
                 ChurnRate = Math.Round(churnRate, 0),
                 DeveloperChurnRate = Math.Round(devChurnRate, 0),
                 DesignerChurnRate = Math.Round(designerChurnRate, 0),
                 ScrumMasterChurnRate = Math.Round(scrumMasterChurnRate, 0),
                 BusinessSupportChurnRate = Math.Round(businessSupportChurnRate, 0),
-                Month = previousMonthTotal.Month,
-                Year = previousMonthTotal.Year,
+                Month = employeePreviousMonthTotal.Month,
+                Year = employeePreviousMonthTotal.Year,
             };
         }
         else
         {
-            return new ChurnRateDto
+            return new ChurnRateDataCard
             {
                 ChurnRate = 0,
                 DeveloperChurnRate = 0,
@@ -295,7 +305,7 @@ public class EmployeeService : IEmployeeService
         }
     }
 
-    public async Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal()
+    public async Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal()
     {
         var currentMonth = DateTime.Now.ToString("MMMM");
 
@@ -310,11 +320,11 @@ public class EmployeeService : IEmployeeService
         {
             var employeeTotalCount = await _db.Employee.GetAll();
 
-            var employeeCountTotalsByRole =  GetEmployeeCountByRole();
+            var employeeCountTotalsByRole =  GetEmployeeCountTotalByRole();
 
             MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
-                (0, employeeTotalCount.Count, employeeCountTotalsByRole.DevsCount, employeeCountTotalsByRole.DesignersCount, employeeCountTotalsByRole.ScrumMastersCount,
-                employeeCountTotalsByRole.BusinessSupportCount, currentMonth, currentYear);
+                (0, employeeTotalCount.Count, employeeCountTotalsByRole.DevsCount, employeeCountTotalsByRole.DesignersCount,
+               employeeCountTotalsByRole.ScrumMastersCount,employeeCountTotalsByRole.BusinessSupportCount, currentMonth, currentYear);
 
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
@@ -324,7 +334,7 @@ public class EmployeeService : IEmployeeService
         return currentEmployeeTotal.ToDto();
     }
 
-    public async Task<MonthlyEmployeeTotalDto> GetPreviousMonthTotal()
+    public async Task<MonthlyEmployeeTotalDto> GetEmployeePreviousMonthTotal()
     {
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
@@ -335,23 +345,31 @@ public class EmployeeService : IEmployeeService
 
         if (previousEmployeeTotal == null)
         {
-            return await GetCurrentMonthTotal();
+            return await GetEmployeeCurrentMonthTotal();
         }
 
         return previousEmployeeTotal.ToDto();
     }
 
-    public EmployeeOnBenchDto GetTotalNumberOfEmployeesOnBench()
+    public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
     {
-        var totalNumberOfDevsOnBench = _db.Employee.Get().Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 2).ToList().Count;
-        var totalNumberOfDesignersOnBench = _db.Employee.Get().Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 3).ToList().Count;
-        var totalNumberOfScrumMastersOnBench = _db.Employee.Get().Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 4).ToList().Count;
+        var totalNumberOfDevsOnBench = _db.Employee.Get()
+            .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 2)
+            .ToList().Count;
+
+        var totalNumberOfDesignersOnBench = _db.Employee.Get()
+            .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 3)
+            .ToList().Count;
+
+        var totalNumberOfScrumMastersOnBench = _db.Employee.Get()
+            .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 4)
+            .ToList().Count;
 
         var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
            totalNumberOfDesignersOnBench +
            totalNumberOfScrumMastersOnBench;
 
-        return new EmployeeOnBenchDto
+        return new EmployeeOnBenchDataCard
         {
             DevsOnBenchCount = totalNumberOfDevsOnBench,
             DesignersOnBenchCount = totalNumberOfDesignersOnBench,
@@ -371,14 +389,25 @@ public class EmployeeService : IEmployeeService
         return totalOfDevsDesignersAndScrumsOnClients;
     }
 
-    public EmployeeCountByRoleDto GetEmployeeCountByRole()
+    public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
     {
-        var devsTotal =  _db.Employee.Get().Where(e => e.EmployeeTypeId == 2).ToList().Count;
-        var designersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3).ToList().Count;
-        var scrumMastersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4).ToList().Count;
-        var businessSupportTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList().Count;
+        var devsTotal =  _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 2)
+            .ToList().Count;
 
-        return new EmployeeCountByRoleDto
+        var designersTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 3)
+            .ToList().Count;
+
+        var scrumMastersTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 4)
+            .ToList().Count;
+
+        var businessSupportTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 5)
+            .ToList().Count;
+
+        return new EmployeeCountByRoleDataCard
         { 
             DevsCount = devsTotal,
             DesignersCount = designersTotal,

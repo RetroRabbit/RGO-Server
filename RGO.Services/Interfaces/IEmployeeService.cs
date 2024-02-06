@@ -65,18 +65,18 @@ public interface IEmployeeService
     /// <summary>
     /// Returns Employees data count 
     /// </summary>
-    /// <returns>EmployeeCountDto</returns>
-    Task<EmployeeCountDto> GetEmployeesCount();
+    /// <returns>EmployeeDataCard</returns>
+    Task<EmployeeCountDataCard> GenerateDataCardInformation();
 
     /// <summary>
     /// Get the total number of employees for the current month 
     /// </summary>
     /// <returns>MonthlyEmployeeTotalDto</returns>
-    Task<MonthlyEmployeeTotalDto> GetCurrentMonthTotal();
+    Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal();
 
     /// <summary>
     /// Calculates employee chrunRate over a month
     /// </summary>
-    /// <returns>ChurnRateDto</returns>
-    Task<ChurnRateDto> CalculateChurnRate();
+    /// <returns>ChurnRateDataCard</returns>
+    Task<ChurnRateDataCard> CalculateEmployeeChurnRate();
 }
