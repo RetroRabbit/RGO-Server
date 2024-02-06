@@ -340,14 +340,14 @@ public class EmployeeBankingServiceTest
     [Fact]
     public async Task GetBankingPass()
     {
-        _mockUnitOfWork
-            .Setup(u => u.EmployeeBanking.FirstOrDefault(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
-            .ReturnsAsync(EmployeeBankingTd.EmployeeBankingDto);
+       _mockUnitOfWork
+            .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
+            .Returns(new List<EmployeeBanking> { new EmployeeBanking(EmployeeBankingTd.EmployeeBankingDto) }.AsQueryable().BuildMock());
 
         var result = await _employeeBankingService.GetBanking(1);
 
         Assert.NotNull(result);
-        Assert.Equal(EmployeeBankingTd.EmployeeBankingDto, result);
+        Assert.Equivalent(EmployeeBankingTd.EmployeeBankingDto, result);
     }
 
     [Fact]

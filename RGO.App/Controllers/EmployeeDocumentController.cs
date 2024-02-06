@@ -9,7 +9,6 @@ namespace RGO.App.Controllers
 {
     [Route("employee-documents")]
     [ApiController]
-    //[Authorize(Policy = "AdminOrSuperAdminPolicy")]
     public class EmployeeDocumentController : ControllerBase
     {
         private readonly IEmployeeDocumentService _employeeDocumentService;
