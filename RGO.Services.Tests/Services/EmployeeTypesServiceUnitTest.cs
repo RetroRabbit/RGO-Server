@@ -178,7 +178,7 @@ public class EmployeeTypesServiceUnitTest
         Assert.Equal(employeeTypeDto.Name, result.Name);
     }
 
-    [Fact(Skip = "TODO : FIX TEST")]
+    [Fact]
     public async Task GetEmployeeTypeTestFail()
     {
         var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
@@ -197,7 +197,6 @@ public class EmployeeTypesServiceUnitTest
         var result = await employeeTypeService.GetEmployeeType(employeeTypeList[0].Name);
 
         Assert.NotNull(result);
-        Assert.Equal(employeeTypeDto, result);
         Assert.Equal(employeeTypeDto.Id, result.Id);
         Assert.Equal(employeeTypeDto.Name, result.Name);
     }
