@@ -174,8 +174,8 @@ public class EmployeeTypesServiceUnitTest
 
         Assert.NotNull(result);
         Assert.Equivalent(employeeTypeDto, result);
-        Assert.Equivalent(employeeTypeDto.Id, result.Id);
-        Assert.Equivalent(employeeTypeDto.Name, result.Name);
+        Assert.Equal(employeeTypeDto.Id, result.Id);
+        Assert.Equal(employeeTypeDto.Name, result.Name);
     }
 
     [Fact]
