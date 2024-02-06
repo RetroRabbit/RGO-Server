@@ -104,7 +104,15 @@ public class EmployeeBankingService : IEmployeeBankingService
     {
         try
         {
-            return await _db.EmployeeBanking.FirstOrDefault(employeeBanking => employeeBanking.EmployeeId == employeeId);
+            //return await _db.EmployeeBanking.FirstOrDefault(employeeBanking => employeeBanking.EmployeeId == employeeId);
+             var employeeBanking = await _db.EmployeeBanking
+            .Get(employeeBanking => employeeBanking.EmployeeId == employeeId)
+            .AsNoTracking()
+            .Include(employeeBanking => employeeBanking.Employee)
+            .Select(employeeBanking => employeeBanking.ToDto())
+            .FirstOrDefaultAsync();
+
+            return employeeBanking;
         }
         catch (Exception ex)
         {
