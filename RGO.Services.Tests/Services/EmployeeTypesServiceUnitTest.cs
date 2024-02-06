@@ -157,7 +157,7 @@ public class EmployeeTypesServiceUnitTest
         Assert.Equal(employeeTypeDto, result);
     }
 
-    [Fact(Skip = "TODO : FIX TEST")]
+    [Fact]
     public async Task GetEmployeeTypeTestSuccess()
     {
         var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
@@ -170,12 +170,12 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(e => e.EmployeeType.Get(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                  .Returns(employeeTypeList.AsQueryable().BuildMock());
 
-        var result = await employeeTypeService.GetEmployeeType(employeeTypeList[0].Name);
+        var result = await employeeTypeService.GetEmployeeType(employeeTypeDto.Name);
 
         Assert.NotNull(result);
-        Assert.Equal(employeeTypeDto, result);
-        Assert.Equal(employeeTypeDto.Id, result.Id);
-        Assert.Equal(employeeTypeDto.Name, result.Name);
+        Assert.Equivalent(employeeTypeDto, result);
+        Assert.Equivalent(employeeTypeDto.Id, result.Id);
+        Assert.Equivalent(employeeTypeDto.Name, result.Name);
     }
 
     [Fact]
