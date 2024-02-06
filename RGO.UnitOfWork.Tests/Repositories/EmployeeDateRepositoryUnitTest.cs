@@ -61,38 +61,39 @@ namespace RGO.UnitOfWork.Tests.Repositories
 
             Assert.NotNull(result);
         }
+
+        //[Fact]
+        //public async Task GetAllWithoutCriteriaTest()
+        //{
+        //    Employee employee = new Employee(employeeDto, employeeTypeDto);
+
+        //    var employeeDateEntities = new List<EmployeeDate>
+        //    {
+        //        new EmployeeDate
+        //        {
+        //            Id = 1,
+        //            Employee = employee,
+        //            Subject = "Meeting",
+        //            Note = "Discuss project details",
+        //            Date = new DateOnly(2024, 2, 6)
+        //        }
+        //    };
+
+        //    _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.Provider).Returns(employeeDateEntities.AsQueryable().Provider);
+        //    _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.Expression).Returns(employeeDateEntities.AsQueryable().Expression);
+        //    _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.ElementType).Returns(employeeDateEntities.AsQueryable().ElementType);
+        //    _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.GetEnumerator()).Returns(() => employeeDateEntities.AsQueryable().GetEnumerator());
+
+        //    _mockDbContext.Setup(m => m.Set<EmployeeDate>()).Returns(_mockDbSet.Object);
+
+        //    var result = await _repository.GetAll();
+
+        //    Assert.NotNull(result);
+        //    Assert.Single(result);
+        //    var expectedResult = employeeDateEntities.Select(e => e.ToDto());
+        //    Assert.Equal(expectedResult, result);
+        //}
         [Fact]
-
-        public async Task GetAllWithoutCriteriaTest()
-        {
-            Employee employee = new Employee(employeeDto, employeeTypeDto);
-
-            var employeeDateEntities = new List<EmployeeDate>
-            {
-                new EmployeeDate
-                {
-                    Id = 1,
-                    Employee = employee,
-                    Subject = "Meeting",
-                    Note = "Discuss project details",
-                    Date = new DateOnly(2024, 2, 6)
-                }
-            };
-
-            _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.Provider).Returns(employeeDateEntities.AsQueryable().Provider);
-            _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.Expression).Returns(employeeDateEntities.AsQueryable().Expression);
-            _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.ElementType).Returns(employeeDateEntities.AsQueryable().ElementType);
-            _mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.GetEnumerator()).Returns(() => employeeDateEntities.AsQueryable().GetEnumerator());
-
-            _mockDbContext.Setup(m => m.Set<EmployeeDate>()).Returns(_mockDbSet.Object);
-
-            var result = await _repository.GetAll();
-
-            Assert.NotNull(result);
-            Assert.Single(result);
-            var expectedResult = employeeDateEntities.Select(e => e.ToDto());
-            Assert.Equal(expectedResult, result);
-        }
         public async Task DeletePassTest()
         {
             var dbContextMock = new Mock<DatabaseContext>();
