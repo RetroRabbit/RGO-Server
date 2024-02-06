@@ -6,6 +6,7 @@ using RGO.Models;
 using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
 
@@ -208,44 +209,29 @@ public class EmployeeService : IEmployeeService
         return employees;
     }
 
-        public async Task<EmployeeDto?> GetById(int employeeId)
-        {
-            var employee = await _db.Employee.GetById(employeeId);
+    public async Task<EmployeeDto?> GetById(int employeeId)
+    {
+     var employee = await _db.Employee.GetById(employeeId);
 
-            return employee;
-        }
+     return employee;
+    }
 
     public async Task<EmployeeCountDto> GetEmployeesCount()
     {
-        var devsQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2).ToList();
-        var designersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3).ToList();
-        var scrumMastersQuery = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4).ToList();
-      
-        var totalNumberOfDevs = devsQuery.Count;
-        var totalNumberOfDesigners = designersQuery.Count;
-        var totalNumberOfScrumMasters = scrumMastersQuery.Count;
-        var totalNumberOfBusinessSupport = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList().Count;
+        var employeeCountTotalsByRole = GetEmployeeCountByRole();
 
-        var totalNumberOfDevsOnBench = devsQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
-        var totalNumberOfDesignersOnBench = designersQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
-        var totalNumberOfScrumMastersOnBench = scrumMastersQuery.Where(c => c.ClientAllocated == 1).ToList().Count;
+        var employeesOnBench = GetTotalNumberOfEmployeesOnBench();
 
-        var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
-           totalNumberOfDesignersOnBench +
-           totalNumberOfScrumMastersOnBench;
+        var totalNumberOfEmployeesOnClients  = GetTotalNumberOfEmployeesOnClients();
+        
+        var totalNumberOfEmployeesDevsScrumsAndDesigners = employeesOnBench.TotalNumberOfEmployeesOnBench + totalNumberOfEmployeesOnClients;
 
-        var listOfDevsDesignersAndScrumsOnClients = await _db.Employee
-           .Get()
-           .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
-           .ToListAsync();
-
-
-        var totalNumberOfEmployeesDevsScrumsAndDevs = totalnumberOfEmployeesOnBench + listOfDevsDesignersAndScrumsOnClients.Count;
-        var billableEmployeesPercentage = totalNumberOfEmployeesDevsScrumsAndDevs > 0
-               ? (double)listOfDevsDesignersAndScrumsOnClients.Count / totalNumberOfEmployeesDevsScrumsAndDevs * 100
+        var billableEmployeesPercentage = totalNumberOfEmployeesDevsScrumsAndDesigners > 0
+               ? (double)totalNumberOfEmployeesOnClients / totalNumberOfEmployeesDevsScrumsAndDesigners * 100
                : 0;
 
         var currentMonthTotal = await GetCurrentMonthTotal();
+
         var previousMonthTotal = await GetPreviousMonthTotal();
 
         var employeeTotalDifference = previousMonthTotal.EmployeeTotal - currentMonthTotal.EmployeeTotal;
@@ -253,14 +239,14 @@ public class EmployeeService : IEmployeeService
 
         return new EmployeeCountDto
         {
-            DevsCount = totalNumberOfDevs,
-            DesignersCount = totalNumberOfDesigners,
-            ScrumMastersCount = totalNumberOfScrumMasters,
-            BusinessSupportCount = totalNumberOfBusinessSupport,
-            DevsOnBenchCount = totalNumberOfDevsOnBench,
-            DesignersOnBenchCount = totalNumberOfDesignersOnBench,
-            ScrumMastersOnBenchCount = totalNumberOfScrumMastersOnBench,
-            TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench,
+            DevsCount = employeeCountTotalsByRole.DevsCount,
+            DesignersCount = employeeCountTotalsByRole.DesignersCount,
+            ScrumMastersCount = employeeCountTotalsByRole.ScrumMastersCount,
+            BusinessSupportCount = employeeCountTotalsByRole.BusinessSupportCount,
+            DevsOnBenchCount = employeesOnBench.DevsOnBenchCount,
+            DesignersOnBenchCount = employeesOnBench.DesignersOnBenchCount,
+            ScrumMastersOnBenchCount = employeesOnBench.ScrumMastersOnBenchCount,
+            TotalNumberOfEmployeesOnBench = employeesOnBench.TotalNumberOfEmployeesOnBench,
             BillableEmployeesPercentage = Math.Round(billableEmployeesPercentage, 0),
             EmployeeTotalDifference = employeeTotalDifference,
             isIncrease = isIncrease,
@@ -270,6 +256,7 @@ public class EmployeeService : IEmployeeService
     public async Task<ChurnRateDto> CalculateChurnRate()
     {
         var currentMonthTotal = await GetCurrentMonthTotal();
+
         var previousMonthTotal = await GetPreviousMonthTotal();
 
         if (previousMonthTotal != null && previousMonthTotal.EmployeeTotal > 0 && previousMonthTotal.DeveloperTotal > 0 && previousMonthTotal.DesignerTotal > 0 &&
@@ -323,14 +310,11 @@ public class EmployeeService : IEmployeeService
         {
             var employeeTotalCount = await _db.Employee.GetAll();
 
-            var devsTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 2).ToList().Count;
-            var designersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3).ToList().Count;
-            var scrumMastersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4).ToList().Count;
-            var businessSupportTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList().Count;
+            var employeeCountTotalsByRole =  GetEmployeeCountByRole();
 
             MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
-                (0, employeeTotalCount.Count, devsTotal, designersTotal, scrumMastersTotal,
-                businessSupportTotal, currentMonth, currentYear);
+                (0, employeeTotalCount.Count, employeeCountTotalsByRole.DevsCount, employeeCountTotalsByRole.DesignersCount, employeeCountTotalsByRole.ScrumMastersCount,
+                employeeCountTotalsByRole.BusinessSupportCount, currentMonth, currentYear);
 
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
@@ -355,6 +339,52 @@ public class EmployeeService : IEmployeeService
         }
 
         return previousEmployeeTotal.ToDto();
+    }
+
+    public EmployeeOnBenchDto GetTotalNumberOfEmployeesOnBench()
+    {
+        var totalNumberOfDevsOnBench = _db.Employee.Get().Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 2).ToList().Count;
+        var totalNumberOfDesignersOnBench = _db.Employee.Get().Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 3).ToList().Count;
+        var totalNumberOfScrumMastersOnBench = _db.Employee.Get().Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 4).ToList().Count;
+
+        var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
+           totalNumberOfDesignersOnBench +
+           totalNumberOfScrumMastersOnBench;
+
+        return new EmployeeOnBenchDto
+        {
+            DevsOnBenchCount = totalNumberOfDevsOnBench,
+            DesignersOnBenchCount = totalNumberOfDesignersOnBench,
+            ScrumMastersOnBenchCount = totalNumberOfScrumMastersOnBench,
+            TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench
+        };
+    }
+
+    public int GetTotalNumberOfEmployeesOnClients()
+    {
+        var totalOfDevsDesignersAndScrumsOnClients = _db.Employee
+          .Get()
+          .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
+          .ToList()
+          .Count;
+
+        return totalOfDevsDesignersAndScrumsOnClients;
+    }
+
+    public EmployeeCountByRoleDto GetEmployeeCountByRole()
+    {
+        var devsTotal =  _db.Employee.Get().Where(e => e.EmployeeTypeId == 2).ToList().Count;
+        var designersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 3).ToList().Count;
+        var scrumMastersTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 4).ToList().Count;
+        var businessSupportTotal = _db.Employee.Get().Where(e => e.EmployeeTypeId == 5).ToList().Count;
+
+        return new EmployeeCountByRoleDto
+        { 
+            DevsCount = devsTotal,
+            DesignersCount = designersTotal,
+            ScrumMastersCount= scrumMastersTotal,
+            BusinessSupportCount = businessSupportTotal
+        };
     }
 }
 
