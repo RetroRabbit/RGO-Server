@@ -146,7 +146,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [HttpGet("getSimple")]
+    [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
     {
         try
