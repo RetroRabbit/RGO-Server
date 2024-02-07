@@ -30,9 +30,8 @@ public class EmployeeController : ControllerBase
         catch (Exception ex)
         {
             if (ex.Message.Contains("exists"))
-            {
                 return Problem("Unexceptable", "Unexceptable", 406, "User Exists");
-            }
+            
             return NotFound(ex.Message);
         }
     }
@@ -83,18 +82,15 @@ public class EmployeeController : ControllerBase
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
+
             return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
         }
         catch (Exception ex)
         {
             if(ex.Message.Contains("Unauthorized action"))
-            {
                 return StatusCode(403, $"Forbidden: {ex.Message}");
-            }
             else
-            {
                 return NotFound(ex.Message);
-            }
         }
     }
 

@@ -19,6 +19,7 @@ public class EmployeeBankingController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost("add")]
+
     public async Task<IActionResult> AddBankingInfo([FromBody] SimpleEmployeeBankingDto newEntry)
     {
         try
@@ -76,9 +77,8 @@ public class EmployeeBankingController : ControllerBase
     public async Task<IActionResult> Update([FromBody] SimpleEmployeeBankingDto updateEntry)
      {
         if(updateEntry.AccountHolderName.Length == 0)
-        {
             return BadRequest("Invalid banking details");
-        }
+
         try
         {
             EmployeeBankingDto Bankingdto = new EmployeeBankingDto
@@ -96,8 +96,10 @@ public class EmployeeBankingController : ControllerBase
                DateOnly.FromDateTime(DateTime.Now),
                DateOnly.FromDateTime(DateTime.Now)
                );
+
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var employee = await _employeeBankingService.Update(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
+
             return Ok();
         }
         catch (Exception ex)

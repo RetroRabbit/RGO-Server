@@ -23,6 +23,7 @@ public class EmployeeBankingService : IEmployeeBankingService
             .Include(entry => entry.Employee.EmployeeType)
             .Select(bankEntry => bankEntry)
             .ToListAsync();
+
         return pendingBankEntries;
     }
 
