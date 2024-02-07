@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -173,6 +174,32 @@ namespace RGO.UnitOfWork.Tests.Repositories
             dbSetMock.Verify(x => x.Remove(It.IsAny<EmployeeDate>()), Times.Never);
             dbContextMock.Verify(x => x.SaveChangesAsync(default), Times.Never);
         }
+
+        //[Fact]
+        //public async Task AddTest()
+        //{
+        //    var mockEntity = new EmployeeDate
+        //    {
+        //        Id = 1,
+        //        Employee = employee,
+        //        Subject = "Meeting",
+        //        Note = "Discuss project details",
+        //        Date = new DateOnly(2024, 2, 6),
+        //    };
+
+        //    var dbSetMock = new Mock<DbSet<EmployeeDate>>();
+        //    var mockDbContext = new Mock<DatabaseContext>();
+
+        //    mockDbContext.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
+        //    var repository = new EmployeeDateRepository(mockDbContext.Object);
+
+        //    var result = await repository.Add(mockEntity);
+
+        //    dbSetMock.Verify(x => x.AddAsync(It.IsAny<EmployeeDate>(), default), Times.Once);
+        //    mockDbContext.Verify(x => x.SaveChangesAsync(default), Times.Once);
+        //    Assert.NotNull(result);
+        //}
+
 
         [Fact]
         public async Task AddRangeTest()
