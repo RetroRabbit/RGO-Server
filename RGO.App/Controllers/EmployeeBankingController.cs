@@ -19,7 +19,6 @@ public class EmployeeBankingController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost("add")]
-
     public async Task<IActionResult> AddBankingInfo([FromBody] SimpleEmployeeBankingDto newEntry)
     {
         try

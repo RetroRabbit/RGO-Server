@@ -147,7 +147,8 @@ public class EmployeeService : IEmployeeService
             .Take(1)
             .FirstOrDefaultAsync();
 
-        if (employee == null) { throw new Exception("Employee not found"); }
+        if (employee == null)
+            throw new Exception("Employee not found"); 
 
         return employee;
     }
@@ -163,7 +164,8 @@ public class EmployeeService : IEmployeeService
             .Select(employee => employee.ToDto())
             .FirstOrDefaultAsync();
 
-        if (employee == null) { throw new Exception("Employee not found"); }
+        if (employee == null)
+            throw new Exception("Employee not found");
 
         return employee;
     }
@@ -343,10 +345,9 @@ public class EmployeeService : IEmployeeService
     private async Task<Employee> CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
     {
         Employee employee = new Employee();
-        string tempEmail = employeeDto.Email;
 
         employee = new Employee(employeeDto, employeeTypeDto);
-        employee.Email = tempEmail;
+        employee.Email = employeeDto.Email;
 
         return employee;
     }
