@@ -110,7 +110,7 @@ public class EmployeeService : IEmployeeService
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
     {
 
-        if(userEmail != "" && await IsJounrey(userEmail))
+        if(userEmail != "" && await IsJourney(userEmail))
         {
             EmployeeDto peopleChampion = await GetEmployee(userEmail);
 
@@ -328,7 +328,7 @@ public class EmployeeService : IEmployeeService
         return role.Description is "Admin" or "SuperAdmin";
     }
 
-    private async Task<bool> IsJounrey(string userEmail)
+    private async Task<bool> IsJourney(string userEmail)
     {
         EmployeeDto employeeDto = await GetEmployee(userEmail);
         EmployeeRole empRole = await _db.EmployeeRole
