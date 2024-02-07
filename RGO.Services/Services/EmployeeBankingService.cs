@@ -43,10 +43,9 @@ public class EmployeeBankingService : IEmployeeBankingService
             .AsNoTracking()
             .Select(employee => employee.ToDto())
             .FirstAsync();
+
         if(empDto.Email ==  userEmail)
-        {
             bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
-        }
         else
         {
             if(await IsAdmin(userEmail))           
@@ -98,9 +97,7 @@ public class EmployeeBankingService : IEmployeeBankingService
         EmployeeBankingDto newEntryDto = null;
 
         if (employee.Email == userEmail)
-        {
             newEntryDto = await _db.EmployeeBanking.Add(bankingDetails);
-        }
         else
         {
             if (await IsAdmin(userEmail))
@@ -135,7 +132,7 @@ public class EmployeeBankingService : IEmployeeBankingService
     private async Task<EmployeeBankingDto> CreateEmployeeBankingDto(EmployeeBankingDto newEntry, EmployeeBankingDto empBankingDto)
     {
         EmployeeBankingDto Bankingdto = new EmployeeBankingDto
-       (
+        (
               newEntry.Id,
               newEntry.EmployeeId,
               newEntry.BankName,

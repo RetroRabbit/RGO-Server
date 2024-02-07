@@ -30,13 +30,11 @@ public class EmployeeService : IEmployeeService
     {
         bool exists = await CheckUserExist(employeeDto.Email);
         if (exists)
-        {
             throw new Exception("User already exists");
-        }
+
         if (employeeDto.EmployeeType == null)
-        {
             throw new Exception("Employee type missing");
-        }
+
         Employee employee;
 
         try
@@ -69,13 +67,10 @@ public class EmployeeService : IEmployeeService
         EmployeeAddressDto physicalAddress;
 
         if (!physicalAddressExist)
-        {
             physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
-        }
         else
-        {
             physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
-        }
+
         employee.PhysicalAddressId = physicalAddress.Id;
 
         bool postalAddressExist = await _employeeAddressService
@@ -84,13 +79,9 @@ public class EmployeeService : IEmployeeService
         EmployeeAddressDto postalAddress;
 
         if (!postalAddressExist)
-        {
             postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
-        }
         else
-        {
             postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
-        }
 
         employee.PostalAddressId = postalAddress.Id;
 
@@ -183,27 +174,18 @@ public class EmployeeService : IEmployeeService
                 .GetEmployeeType(employeeDto.EmployeeType.Name);
         Employee employee = null;
         if (employeeDto.Email == userEmail)
-        {
             employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
-        }
         else
         {
             if (await CheckUserExist(userEmail))
             {
                 if (await IsAdmin(userEmail))
-                {
                     employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
-                }
                 else
-                {
                     throw new Exception("Unauthorized action");
-                }
             }
             else
-            {
                 throw new Exception("Unauthorized action");
-            }
-
         }
         return await _db.Employee.Update(employee);
     }
@@ -362,8 +344,10 @@ public class EmployeeService : IEmployeeService
     {
         Employee employee = new Employee();
         string tempEmail = employeeDto.Email;
+
         employee = new Employee(employeeDto, employeeTypeDto);
         employee.Email = tempEmail;
+
         return employee;
     }
 }
