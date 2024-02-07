@@ -202,7 +202,11 @@ public class EmployeeBankingServiceTest
                 new EmployeeRoleDto(1, EmployeeTd.EmployeeDto, new RoleDto(3, "Employee"))
             )};
 
-        List<Role> roles = new List<Role> { new Role( new RoleDto(3, "Employee") ) };
+        List<Role> roles = new List<Role> { 
+            new Role( 
+                new RoleDto(3, "Employee") 
+            ) 
+        };
 
         _mockUnitOfWork
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
@@ -322,7 +326,11 @@ public class EmployeeBankingServiceTest
                 new EmployeeRoleDto(1, EmployeeTd.EmployeeDto, new RoleDto(3, "Employee"))
             )};
 
-        List<Role> roles = new List<Role> { new Role(new RoleDto(3, "Employee")) };
+        List<Role> roles = new List<Role> { 
+            new Role(
+                new RoleDto(3, "Employee")
+            ) 
+        };
 
         _mockUnitOfWork
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
