@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using RGO.Services.Services;
 using System.Security.Claims;
 
 namespace RGO.App.Controllers;
@@ -12,10 +13,12 @@ namespace RGO.App.Controllers;
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;
+    private readonly IChartService _chartService;
 
-    public EmployeeController(IEmployeeService employeeService)
+    public EmployeeController(IEmployeeService employeeService, IChartService chartService)
     {
         _employeeService = employeeService;
+        _chartService = chartService;
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -111,7 +114,6 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("employees/count")]
     public async Task<IActionResult> CountAllEmployees()
     {
@@ -143,6 +145,34 @@ public class EmployeeController : ControllerBase
         {
             return BadRequest(ex.Message);
             
+        }
+    }
+
+    [HttpGet("employees/data/count")]
+    public async Task<IActionResult> GetEmployeesCount()
+    {
+        try
+        {
+            var employeesCount = await _employeeService.GenerateDataCardInformation();
+            return Ok(employeesCount);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpGet("employees/churnrate")]
+    public async Task<IActionResult> GetChurnRate()
+    {
+        try
+        {
+            var churnRate = await _employeeService.CalculateEmployeeChurnRate();
+            return Ok(churnRate);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
         }
     }
 
