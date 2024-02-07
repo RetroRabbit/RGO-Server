@@ -216,7 +216,6 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetEmployeeByIdSuccessTest()
     {
-
         var expectedDetails = _employee;
         _employeeMockService.Setup(x => x.GetEmployeeById(_employee.Id)).ReturnsAsync(expectedDetails);
 
@@ -226,14 +225,12 @@ public class EmployeeControllerUnitTests
         var actualDetails = Assert.IsType<EmployeeDto>(okResult.Value);
 
         Assert.Equal(expectedDetails, actualDetails);
-
     }
 
     [Fact]
     public async Task GetEmployeeByIdFailTest()
     {
         var expectedDetails = _employee;
-
         _employeeMockService.Setup(s => s.GetEmployeeById(_employee.Id))
              .ThrowsAsync(new Exception("Not found"));
 
@@ -243,52 +240,30 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-  //  [Fact]
-   // public async Task FilterByTypeSuccessTest()
-    //{
-    //    var expectedDetails = _employee;
+    [Fact]
+    public async Task FilterByTypeSuccessTest()
+    {
+        var expectedDetails = _employee;
+        _employeeMockService.Setup(service => service.GetEmployeesByType("Developer"))
+                   .ReturnsAsync(new List<EmployeeDto> { _employee });
 
-    //    //var employeeTypesDtos = new List<EmployeeTypeDto>
-    //    //{
-    //    //    new EmployeeTypeDto(1, "CAM"),
-    //    //    new EmployeeTypeDto(2, "Designer"),
-    //    //    new EmployeeTypeDto(3, "Developer")
-    //    //};
+        var result = await _controller.FilterByType("Developer");
 
-    //    var employeeDtos = new List<EmployeeDto>
-    //    {
-    //        _employee
-    //    };
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
 
-    //   // EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-
-    //   // _dbMock.Setup(r => r.getem(It.IsAny<Expression<Func<EmployeeType, bool>>>())).ReturnsAsync(employeeTypesDtos);
-
-    //    _employeeMockService.Setup(x => x.GetEmployeesByType().Returns(Task.FromResult(employeeDtos));
-
-    //    var result = await _controller.FilterByType("Developer");
-
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var actualDetails = Assert.IsType<EmployeeDto>(okResult.Value);
-
-    //    Assert.Equal(expectedDetails, actualDetails);
-
-   // }
+        Assert.Equal(200, okObjectResult.StatusCode);
+        Assert.Equal(new List<EmployeeDto> { _employee }, (List<EmployeeDto>)okObjectResult.Value!);
+    }
 
     [Fact]
     public async Task FilterByTypeFailTest()
     {
-        var type = "wrong type";
-
-        _employeeMockService.Setup(s => s.GetEmployeesByType(type))
+        _employeeMockService.Setup(s => s.GetEmployeesByType("Wrong EmployeeType"))
              .ThrowsAsync(new Exception("An error occurred while filtering type"));
 
-        var result = await _controller.FilterByType(type);
-      
+        var result = await _controller.FilterByType("Wrong EmployeeType");
 
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("An error occurred while filtering type", badRequestResult.Value);
-
-
     }
 }
