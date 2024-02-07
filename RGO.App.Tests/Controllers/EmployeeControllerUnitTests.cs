@@ -15,11 +15,12 @@ public class EmployeeControllerUnitTests
     private readonly Mock<IEmployeeService> _employeeMockService;
     private readonly EmployeeController _controller;
     private readonly EmployeeDto _employee;
-    List<Claim> claims;
-    ClaimsPrincipal claimsPrincipal;
-    ClaimsIdentity identity;
     private readonly EmployeeTypeDto employeeTypeDto = new(1, "Developer");
     private readonly EmployeeAddressDto employeeAddressDto = new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+    List<Claim> claims;
+    ClaimsPrincipal claimsPrincipal;
+    ClaimsIdentity identity;  
 
     public EmployeeControllerUnitTests()
     {
@@ -36,8 +37,10 @@ public class EmployeeControllerUnitTests
         {
             new Claim(ClaimTypes.Email, "ksmith@retrorabbit.co.za"),
         };
+
         identity = new ClaimsIdentity(claims, "TestAuthType");
         claimsPrincipal = new ClaimsPrincipal(identity);
+
         _controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext { User = claimsPrincipal }
@@ -177,8 +180,10 @@ public class EmployeeControllerUnitTests
     {
         _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
             .ThrowsAsync(new Exception("Unauthorized action"));
+
         var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
         var statusCodeResult = (ObjectResult)result;
+
         Assert.Equal(403, statusCodeResult.StatusCode);
     }
 
@@ -317,6 +322,7 @@ public class EmployeeControllerUnitTests
     { 
         _employeeMockService.Setup(service => service.GetEmployeesByType("HR"))
             .ThrowsAsync(new Exception());
+
         var result = await _controller.FilterByType("HR");
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal(400, badRequestResult.StatusCode);

@@ -27,16 +27,20 @@ public class EmployeeBankingControllerUnitTests
     List<Claim> claims;
     ClaimsPrincipal claimsPrincipal;
     ClaimsIdentity identity;
+
     public EmployeeBankingControllerUnitTests()
     {
         mockService = new Mock<IEmployeeBankingService>();
         controller = new EmployeeBankingController(mockService.Object);
+
         claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email, "test@example.com"),
         };
+
         identity = new ClaimsIdentity(claims, "TestAuthType");
         claimsPrincipal = new ClaimsPrincipal(identity);
+
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext { User = claimsPrincipal }
@@ -114,8 +118,10 @@ public class EmployeeBankingControllerUnitTests
     {
         mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
             .ThrowsAsync(new Exception("Unauthorized access"));
+
         var result = await controller.AddBankingInfo(newEntry);
         Assert.NotNull(result);
+
         var unauthorized = (ObjectResult)result;
         Assert.Equal("Forbidden: Unauthorized access", unauthorized.Value);
     }

@@ -263,12 +263,14 @@ public class EmployeeService : IEmployeeService
             teamLeadName = teamLeadDto.Name + " " + teamLeadDto.Surname;
             teamLeadId = teamLeadDto.Id;
         }
+
         if (employeeDto.PeopleChampion != null)
         {
             EmployeeDto peopleChampionDto = await GetById((int)employeeDto.PeopleChampion);
             peopleChampionName = peopleChampionDto.Name + " " + peopleChampionDto.Surname;
             peopleChampionId = peopleChampionDto.Id;
         }
+
         if(employeeDto.ClientAllocated != null)
         {
             ClientDto clientDto = await _db.Client
