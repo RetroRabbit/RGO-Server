@@ -25,8 +25,8 @@ namespace RGO.App.Tests.Controllers
         {
             var fieldCodes = new List<FieldCodeDto>
             {
-                new FieldCodeDto(1,"Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0),
-                new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0)
+                new FieldCodeDto(1,"Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false),
+                new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0, false)
             };
 
             _fieldCodeServiceMock.Setup(s => s.GetAllFieldCodes()).ReturnsAsync(fieldCodes);
@@ -53,8 +53,8 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task SaveFieldCodeReturnsOkResultWithSavedFieldCode()
         {
-            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
-            var savedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0);
+            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false);
+            var savedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0, false);
             _fieldCodeServiceMock.Setup(s => s.SaveFieldCode(fieldCodeDto)).ReturnsAsync(savedFieldCode);
 
             var result = await _controller.SaveFieldCode(fieldCodeDto);
@@ -67,7 +67,7 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task SaveFieldCodeReturnsNotFoundResultWhenExceptionThrown()
         {
-            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
+            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false);
             var exceptionMessage = "An error occurred";
             _fieldCodeServiceMock.Setup(s => s.SaveFieldCode(fieldCodeDto)).ThrowsAsync(new Exception(exceptionMessage));
 
@@ -80,8 +80,8 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task UpdateFieldCodeReturnsOkResultWithUpdatedFieldCode()
         {
-            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
-            var updatedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0);
+            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false);
+            var updatedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true, "InternalTable2", 0, false);
             _fieldCodeServiceMock.Setup(s => s.UpdateFieldCode(fieldCodeDto)).ReturnsAsync(updatedFieldCode);
 
             var result = await _controller.UpdateFieldCode(fieldCodeDto);
@@ -94,7 +94,7 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task UpdateFieldCodeReturnsNotFoundResultWhenExceptionThrown()
         {
-            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
+            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false);
             var exceptionMessage = "An error occurred";
             _fieldCodeServiceMock.Setup(s => s.UpdateFieldCode(fieldCodeDto)).ThrowsAsync(new Exception(exceptionMessage));
 
@@ -107,8 +107,8 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task DeleteFieldCodeReturnsOkResultWithDeletedFieldCode()
         {
-            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
-            var deletedFieldCode = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
+            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false);
+            var deletedFieldCode = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false);
             _fieldCodeServiceMock.Setup(s => s.DeleteFieldCode(fieldCodeDto)).ReturnsAsync(deletedFieldCode);
 
             var result = await _controller.DeleteFieldCode(fieldCodeDto);
@@ -121,7 +121,7 @@ namespace RGO.App.Tests.Controllers
         [Fact]
         public async Task DeleteFieldCodeReturnsNotFoundResultWhenExceptionThrown()
         {
-            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0);
+            var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", 0, false);
             var exceptionMessage = "An error occurred";
             _fieldCodeServiceMock.Setup(s => s.DeleteFieldCode(fieldCodeDto)).ThrowsAsync(new Exception(exceptionMessage));
 
@@ -137,7 +137,7 @@ namespace RGO.App.Tests.Controllers
             var validCategory = 1;
             var expectedCategoryCodes = new List<FieldCodeDto>
             {
-                new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", FieldCodeCategory.Banking)
+                new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true, "InternalTable1", FieldCodeCategory.Banking, false)
             };
 
             var mockFieldCodeService = new Mock<IFieldCodeService>();

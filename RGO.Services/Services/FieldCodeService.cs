@@ -101,7 +101,8 @@ namespace RGO.Services.Services
                 Status: ItemStatus.Archive,
                 Internal: ifFieldCode.Internal,
                 InternalTable: ifFieldCode.InternalTable,
-                Category: ifFieldCode.Category
+                Category: ifFieldCode.Category,
+                Required: ifFieldCode.Required
                 );
 
             var fieldCode = await _db.FieldCode.Update(new FieldCode(newFieldCodeDto));

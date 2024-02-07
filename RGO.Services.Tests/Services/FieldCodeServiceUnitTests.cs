@@ -39,7 +39,8 @@ namespace RGO.Tests.Services
                 Status: ItemStatus.Active,
                 Internal: false,
                 InternalTable:"",
-                Category: FieldCodeCategory.Profile
+                Category: FieldCodeCategory.Profile,
+                Required: false
                 );
             _fieldCodeDto2 = new FieldCodeDto(
                Id: 2,
@@ -51,8 +52,8 @@ namespace RGO.Tests.Services
                Status: ItemStatus.Archive,
                Internal: false,
                InternalTable:"", 
-               Category: FieldCodeCategory.Profile
-               );
+               Category: FieldCodeCategory.Profile,
+               Required: false);
             _fieldCodeDto3 = new FieldCodeDto(
                Id: 0,
                Code: "CCC222",
@@ -63,7 +64,8 @@ namespace RGO.Tests.Services
                Status: ItemStatus.Active,
                Internal: false,
                InternalTable:"", 
-               Category: FieldCodeCategory.Banking
+               Category: FieldCodeCategory.Banking,
+               Required: false
                );
             _fieldCodeDto4 = new FieldCodeDto(
                 Id: 1,
@@ -75,7 +77,8 @@ namespace RGO.Tests.Services
                 Status: ItemStatus.Archive,
                 Internal: false,
                 InternalTable:"", 
-                Category: FieldCodeCategory.Documents
+                Category: FieldCodeCategory.Documents,
+                Required: false
                 );
             _fieldCodeOptionsDto = new FieldCodeOptionsDto(Id: 1, FieldCodeId: 1, Option: "string");
             _fieldCodeOptionsDto2 = new FieldCodeOptionsDto(Id: 2, FieldCodeId: 1, Option: "string");
