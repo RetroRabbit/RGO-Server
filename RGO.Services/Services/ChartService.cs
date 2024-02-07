@@ -4,6 +4,7 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Data;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace RGO.Services.Services;
@@ -24,12 +25,6 @@ public class ChartService : IChartService
     public  async Task<List<ChartDto>> GetAllCharts() 
     {
         return await _db.Chart.GetAll();
-    }
-
-    public async Task<int> GetTotalEmployees()
-    {
-            var employees = await _employeeService.GetAll();
-            return employees.Count;
     }
 
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)
