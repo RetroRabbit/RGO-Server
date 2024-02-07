@@ -48,14 +48,10 @@ public class EmployeeBankingService : IEmployeeBankingService
         }
         else
         {
-            if(await IsAdmin(userEmail))
-            {
-                bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
-            }
-            else
-            {
-                throw new Exception("Unauthorized access");
-            }
+            if(await IsAdmin(userEmail))           
+                bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);          
+            else       
+                throw new Exception("Unauthorized access");           
         }
 
         Employee newEmployee = new Employee(empDto, empDto.EmployeeType);
@@ -107,13 +103,9 @@ public class EmployeeBankingService : IEmployeeBankingService
         else
         {
             if (await IsAdmin(userEmail))
-            {
                 newEntryDto = await _db.EmployeeBanking.Add(bankingDetails);
-            }
             else
-            {
-                throw new Exception("Unauthorized access");
-            }
+                throw new Exception("Unauthorized access");        
         }
 
         bankingDetails.Employee = employee;

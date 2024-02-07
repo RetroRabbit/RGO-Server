@@ -88,13 +88,9 @@ public class EmployeeController : ControllerBase
         catch (Exception ex)
         {
             if(ex.Message.Contains("Unauthorized action"))
-            {
                 return StatusCode(403, $"Forbidden: {ex.Message}");
-            }
             else
-            {
                 return NotFound(ex.Message);
-            }
         }
     }
 
