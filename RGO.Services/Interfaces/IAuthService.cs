@@ -34,7 +34,7 @@ public interface IAuthService
     Task<string> RegisterEmployee(EmployeeDto employeeDto);
 
     /// <summary>
-    /// 
+    /// Generate a bearer token
     /// </summary>
     /// <param name="employee"></param>
     /// <returns>JWT as a string</returns>
