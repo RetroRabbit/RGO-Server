@@ -21,7 +21,7 @@ public class EmployeeController : ControllerBase
         _chartService = chartService;
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
