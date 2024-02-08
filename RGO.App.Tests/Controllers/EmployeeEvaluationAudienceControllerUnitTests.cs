@@ -14,7 +14,7 @@ namespace RGO.App.Tests.Controllers
         public async Task GetAllEmployeeEvaluationAudiencesValidInputReturnsOkResult()
         {
             var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object, null, null);
+            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
             var expectedAudiences = new List<EmployeeEvaluationAudienceDto>
             {
@@ -83,7 +83,7 @@ namespace RGO.App.Tests.Controllers
         public async Task GetAllEmployeeEvaluationAudiencesExceptionThrownReturnsNotFoundResult()
         {
             var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object, null, null);
+            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
             serviceMock.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>())).ThrowsAsync(new Exception("Error retrieving employee evaluation audiences."));
 
@@ -100,7 +100,7 @@ namespace RGO.App.Tests.Controllers
         public async Task SaveEmployeeEvaluationAudienceValidInputReturnsOkResult()
         {
             var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object, null, null);
+            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
             var savedAudience = new EmployeeEvaluationAudienceDto
                 (1, new EmployeeEvaluationDto(1, new EmployeeDto
@@ -167,7 +167,7 @@ namespace RGO.App.Tests.Controllers
             var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
             serviceMock.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
                 .ThrowsAsync(new Exception("Exception occurred while saving employee evaluation audience."));
-            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object, null, null);
+            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
             var result = await controller.SaveEmployeeEvaluationAudience("test@retrorabbit.co.za", 
                 new EmployeeEvaluationInput(1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Test Template", "Test Subject"));
@@ -182,7 +182,7 @@ namespace RGO.App.Tests.Controllers
         {
             var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
             serviceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()));
-            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object, null, null);
+            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
             var result = await controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za", 
                 new EmployeeEvaluationInput(1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Test Template", "Test Subject"));
@@ -196,7 +196,7 @@ namespace RGO.App.Tests.Controllers
             var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
             serviceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
                 .ThrowsAsync(new Exception("Exception occurred while deleting employee evaluation audience."));
-            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object, null, null);
+            var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
             var result = await controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za", 
                 new EmployeeEvaluationInput(1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Test Template", "Test Subject"));
