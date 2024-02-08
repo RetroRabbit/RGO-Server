@@ -47,5 +47,28 @@ namespace RGO.UnitOfWork.Tests.Repositories
                 return new AsyncEnumeratorWrapper<T>(_enumerable.GetEnumerator());
             }
         }
+
+        public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+        {
+            private readonly IEnumerator<T> _innerEnumerator;
+
+            public TestAsyncEnumerator(IEnumerator<T> innerEnumerator)
+            {
+                _innerEnumerator = innerEnumerator;
+            }
+
+            public ValueTask<bool> MoveNextAsync()
+            {
+                return new ValueTask<bool>(_innerEnumerator.MoveNext());
+            }
+
+            public T Current => _innerEnumerator.Current;
+
+            public ValueTask DisposeAsync()
+            {
+                _innerEnumerator.Dispose();
+                return new ValueTask();
+            }
+        }
     }
 }
