@@ -18,7 +18,6 @@ public class LeaveIntervalTypeUnitTest
     private LeaveIntervalType leaveIntervalType;
     EmployeeTypeDto employeeTypeDto;
     EmployeeType employeeType;
-    RoleDto roleDto;
     EmployeeAddressDto employeeAddressDto;
 
     public LeaveIntervalTypeUnitTest()
@@ -28,7 +27,6 @@ public class LeaveIntervalTypeUnitTest
         leaveIntervalType = new LeaveIntervalType();
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
-        roleDto = new RoleDto(3, "Employee");
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
@@ -46,11 +44,6 @@ public class LeaveIntervalTypeUnitTest
     public async Task GenerateDataNullTestSuccess()
     {
         var employeeDto = CreateEmployee(null);
-
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
 
         var employeeList = new List<Employee>
         {
@@ -71,11 +64,6 @@ public class LeaveIntervalTypeUnitTest
     {
         var employeeDto = CreateEmployee(1);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
-
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
@@ -94,11 +82,6 @@ public class LeaveIntervalTypeUnitTest
     public async Task GenerateDataMoreDaysTestSuccess()
     {
         var employeeDto = CreateEmployee(5);
-
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
 
         var employeeList = new List<Employee>
         {
@@ -120,11 +103,6 @@ public class LeaveIntervalTypeUnitTest
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("There was a problem fetching the employee type of the employee"));
 
         var employeeDto = CreateEmployee(null);
-
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
 
         var employeeList = new List<Employee>
         {
@@ -149,11 +127,6 @@ public class LeaveIntervalTypeUnitTest
 
         var employeeDto = CreateEmployee(1);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
-
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
@@ -176,11 +149,6 @@ public class LeaveIntervalTypeUnitTest
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name)).Throws(new Exception("There was a problem fetching the employee type of the employee"));
 
         var employeeDto = CreateEmployee(5);
-
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
 
         var employeeList = new List<Employee>
         {

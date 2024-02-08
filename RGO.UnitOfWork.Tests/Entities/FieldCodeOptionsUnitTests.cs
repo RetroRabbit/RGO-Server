@@ -21,6 +21,7 @@ public class FieldCodeOptionsUnitTests
         var fieldCodeOptions = new FieldCodeOptions(fieldCodeOptionsDto);
         fieldCodeOptions.FieldCode = new FieldCode();
         var dto = fieldCodeOptions.ToDto();
+
         Assert.NotNull(fieldCodeOptions.FieldCode);
         Assert.Equal(dto.Id, fieldCodeOptions.Id);
         Assert.Equal(dto.FieldCodeId, fieldCodeOptions.FieldCodeId);

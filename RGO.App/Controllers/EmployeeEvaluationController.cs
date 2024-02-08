@@ -15,7 +15,7 @@ public class EmployeeEvaluationController : Controller
         _employeeEvaluationService = employeeEvaluationService;
     }
 
-    [HttpGet("getall")]
+    [HttpGet("")]
     public async Task<IActionResult> GetAllEmployeeEvaluations(
         [FromQuery] string email)
     {
@@ -33,7 +33,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpGet("get")]
+    [HttpGet("")]
     public async Task<IActionResult> GetEmployeeEvaluation(
         [FromQuery] string employeeEmail,
         [FromQuery] string ownerEmail,
@@ -52,7 +52,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpPost("save")]
+    [HttpPost("")]
     public async Task<IActionResult> SaveEmployeeEvaluation(
         [FromBody] EmployeeEvaluationInput evaluationInput)
     {
@@ -67,7 +67,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpPut("update")]
+    [HttpPut("")]
     public async Task<IActionResult> UpdateEmployeeEvaluation(
         [FromBody] List<EmployeeEvaluationInput> evaluation)
     {
@@ -84,7 +84,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpDelete("delete")]
+    [HttpDelete("")]
     public async Task<IActionResult> DeleteEmployeeEvaluation(
         [FromBody] EmployeeEvaluationInput evaluationInput)
     {

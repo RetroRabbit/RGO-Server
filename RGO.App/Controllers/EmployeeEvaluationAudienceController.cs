@@ -4,25 +4,20 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/evaluationaudience/")]
+[Route("evaluation-audience")]
 [ApiController]
 public class EmployeeEvaluationAudienceController : ControllerBase
 {
     private readonly IEmployeeEvaluationAudienceService _employeeEvaluationAudienceService;
-    private readonly IEmployeeEvaluationService _employeeEvaluationService;
-    private readonly IEmployeeService _employeeService;
+
 
     public EmployeeEvaluationAudienceController(
-        IEmployeeEvaluationAudienceService employeeEvaluationAudienceService,
-        IEmployeeEvaluationService employeeEvaluationService,
-        IEmployeeService employeeService)
+        IEmployeeEvaluationAudienceService employeeEvaluationAudienceService)
     {
         _employeeEvaluationAudienceService = employeeEvaluationAudienceService;
-        _employeeEvaluationService = employeeEvaluationService;
-        _employeeService = employeeService;
     }
 
-    [HttpPost("getall")]
+    [HttpPost("")]
     public async Task<IActionResult> GetAll([FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
@@ -38,7 +33,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
-    [HttpPost("save")]
+    [HttpPost("")]
     public async Task<IActionResult> SaveEmployeeEvaluationAudience(
         [FromQuery] string email,
         [FromBody] EmployeeEvaluationInput evaluationInput)
@@ -55,7 +50,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
-    [HttpDelete("delete")]
+    [HttpDelete("")]
     public async Task<IActionResult> DeleteEmployeeEvaluationAudience(
         [FromQuery] string email,
         [FromBody] EmployeeEvaluationInput evaluation)

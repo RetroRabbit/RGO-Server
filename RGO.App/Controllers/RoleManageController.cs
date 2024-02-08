@@ -8,7 +8,7 @@ using System.Security;
 
 namespace RGO.App.Controllers;
 
-[Route("/rolemanage/")]
+[Route("rolemanager")]
 [ApiController]
 public class RoleManageController : ControllerBase
 {
@@ -27,7 +27,7 @@ public class RoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("add")]
+    [HttpPost("")]
     public async Task<IActionResult> AddPermission([FromQuery] string role, [FromQuery] string permission, [FromQuery] string grouping)
     {
         try
@@ -53,7 +53,7 @@ public class RoleManageController : ControllerBase
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(RoleAccessLinkDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
-    [HttpDelete("remove")]
+    [HttpDelete("")]
     public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission , string grouping)
     {
         try
@@ -79,7 +79,7 @@ public class RoleManageController : ControllerBase
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [ProducesResponseType(typeof(List<string>), 200)]
     [ProducesErrorResponseType(typeof(string))]
-    [HttpGet("get")]
+    [HttpGet("")]
     public async Task<IActionResult> GetRolePermissions([FromQuery] string role)
     {
         try
@@ -95,7 +95,7 @@ public class RoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("getall")]
+    [HttpGet("")]
     public async Task<IActionResult> GetAllRoleAccessLink()
     {
         try
@@ -111,7 +111,7 @@ public class RoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("getallroleaccesslinks")]
+    [HttpGet("role-access-links")]
     public async Task<IActionResult> GetAllRoleAccessLinks()
     {
         try
@@ -127,7 +127,7 @@ public class RoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("getallroleaccesses")]
+    [HttpGet("role-accesses")]
     public async Task<IActionResult> GetAllRoleAccesses()
     {
         try
@@ -143,7 +143,7 @@ public class RoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("getallroles")]
+    [HttpGet("roles")]
     public async Task<IActionResult> GetAllRoles()
     {
         try

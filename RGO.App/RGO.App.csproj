@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>RGO.App</RootNamespace>
+    <UserSecretsId>8f4f3dcc-f842-4b31-b94b-679f228c683e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

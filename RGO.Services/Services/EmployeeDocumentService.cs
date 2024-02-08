@@ -93,14 +93,9 @@ namespace RGO.Services.Services
             return updatedEmployeeDocument;
         }
 
-        public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
-        {
-            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.Employee.Id);
-
-            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
-
-            EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
-            var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(employeeDocument.Id);
+        public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(int documentId)
+        {  
+            var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(documentId);
 
             return deletedEmployeeDocument;
         }

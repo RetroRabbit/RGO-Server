@@ -62,14 +62,14 @@ public class EmployeeBankingService : IEmployeeBankingService
 
     public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry)
     {
-        var empDto = await _db.Employee
+        var employeeDto = await _db.Employee
             .Get(employee => employee.Id == newEntry.EmployeeId)
             .AsNoTracking()
             .Include(employee => employee.EmployeeType)
             .Select(employee => employee.ToDto())
             .FirstAsync();
 
-        var empBankingDto = await _db.EmployeeBanking
+        var employeeBankingDto = await _db.EmployeeBanking
             .Get(employee => employee.Id == newEntry.Id)
             .AsNoTracking()
             .Select(employee => employee.ToDto())
@@ -87,11 +87,11 @@ public class EmployeeBankingService : IEmployeeBankingService
                newEntry.Status,
                newEntry.DeclineReason,
                newEntry.File,
-               empBankingDto.LastUpdateDate,
+               employeeBankingDto.LastUpdateDate,
                newEntry.PendingUpdateDate
                );
 
-        Employee newEmployee = new Employee(empDto, empDto.EmployeeType);
+        Employee newEmployee = new Employee(employeeDto, employeeDto.EmployeeType);
         EmployeeBanking entry = new EmployeeBanking(Bankingdto);
         entry.Employee = newEmployee;
 

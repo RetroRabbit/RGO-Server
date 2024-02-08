@@ -82,7 +82,7 @@ namespace RGO.Services.Services
                 }
                 if (!check)
                 {
-                    var deletedOption = await _db.FieldCodeOptions.Delete(option.Id);
+                    _ = await _db.FieldCodeOptions.Delete(option.Id);
                 }
             }
 

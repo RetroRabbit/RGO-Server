@@ -103,13 +103,6 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
     public async Task<EmployeeEvaluationRatingDto> Update(EvaluationRatingInput rating)
     {
-        EmployeeEvaluationInput evaluationInput = new(
-            rating.Evaluation.Id,
-            rating.Evaluation.OwnerEmail,
-            rating.Evaluation.EmployeeEmail,
-            rating.Evaluation.Template,
-            rating.Evaluation.Subject);
-
         bool exists = await CheckIfExists(rating);
 
         if (!exists) throw new Exception("Employee Evaluation Rating not found");
@@ -135,12 +128,6 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
         if (!evaluationExists)
             throw new Exception($"Employee Evaluation not found");
-
-        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.Get(
-            rating.Evaluation.EmployeeEmail,
-            rating.Evaluation.OwnerEmail,
-            rating.Evaluation.Template,
-            rating.Evaluation.Subject);
 
         bool exists = await CheckIfExists(rating);
 

@@ -80,11 +80,11 @@ namespace RGO.App.Controllers
 
         [Authorize(Policy = "AdminOrSuperAdminPolicy")]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] EmployeeDocumentDto employeeDocumentDto)
+        public async Task<IActionResult> Delete(int documentId)
         {
             try
             {
-                var deletedEmployeeDocument = await _employeeDocumentService.DeleteEmployeeDocument(employeeDocumentDto);
+                var deletedEmployeeDocument = await _employeeDocumentService.DeleteEmployeeDocument(documentId);
                 return Ok(deletedEmployeeDocument);
             }
             catch (Exception ex)

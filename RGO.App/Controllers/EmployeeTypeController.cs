@@ -6,7 +6,7 @@ using RGO.Services.Services;
 
 namespace RGO.App.Controllers
 {
-    [Route("/employeetype/")]
+    [Route("employee-types")]
     [ApiController]
     public class EmployeeTypeController : ControllerBase
     {
@@ -18,7 +18,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-        [HttpGet("types")]
+        [HttpGet("")]
         public async Task<IActionResult> GetAllEmployeeTypes()
         {
             try

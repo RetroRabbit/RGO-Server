@@ -26,12 +26,6 @@ public class ChartService : IChartService
         return await _db.Chart.GetAll();
     }
 
-    public async Task<int> GetTotalEmployees()
-    {
-            var employees = await _employeeService.GetAll();
-            return employees.Count;
-    }
-
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)
     {
         List<EmployeeDto> employees;

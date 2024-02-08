@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace RGO.App.Controllers
 {
-    [Route("/chart/")]
+    [Route("charts")]
     [ApiController]
     public class ChartsController : ControllerBase
     {
@@ -18,7 +18,7 @@ namespace RGO.App.Controllers
             _chartService = chartService;
         }
 
-        [HttpGet("get")]
+        [HttpGet()]
         public async Task<IActionResult> GetAllCharts()
         {
             try
@@ -32,7 +32,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost()]
         public async Task<IActionResult> CreateChart([FromQuery] List<string> dataType, [FromQuery] List<string> roles, string chartName,string chartType)
         {
             try
@@ -40,20 +40,6 @@ namespace RGO.App.Controllers
                 await _chartService.CreateChart(dataType, roles, chartName,chartType);
 
                 return Ok();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpGet("employees/total")]
-        public async Task<IActionResult> GetNumberOfEmployees()
-        {
-            try
-            {
-                var numOfEmployees = await _chartService.GetTotalEmployees();
-                return Ok(numOfEmployees);
             }
             catch (Exception ex)
             {
@@ -75,7 +61,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPut("update")]
+        [HttpPut()]
         public async Task<IActionResult> UpdateChartData(ChartDto chartDto)
         {
             try
@@ -91,12 +77,12 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteChart([FromQuery] int Id)
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteChart([FromQuery] int chartId)
         {
             try
             {
-                var deletedChart = await _chartService.DeleteChart(Id);
+                var deletedChart = await _chartService.DeleteChart(chartId);
                 return Ok(deletedChart);
             }
             catch (Exception ex)

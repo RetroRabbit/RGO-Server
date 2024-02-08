@@ -4,7 +4,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers
 {
-    [Route("/employeedata/")]
+    [Route("employee-data")]
     [ApiController]
     public class EmployeeDataController : Controller
     {
@@ -15,7 +15,7 @@ namespace RGO.App.Controllers
             _employeeDataService = employeeDataService;
         }
 
-        [HttpGet("get")]
+        [HttpGet()]
         public async Task<IActionResult> GetEmployeeData([FromQuery] int id)
         {
             try
@@ -31,7 +31,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPost("save")]
+        [HttpPost()]
         public async Task<IActionResult> SaveEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
         {
             try
@@ -47,7 +47,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPut("update")]
+        [HttpPut()]
         public async Task<IActionResult> UpdateEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
         {
             try

@@ -86,31 +86,6 @@ public class ChartControllerUnitTests
     }
 
     [Fact]
-    public async Task GetNumberOfEmployees_ReturnsOk_WithNumber()
-    {
-        int mockNumberOfEmployees = 10;
-        _chartServiceMock.Setup(service => service.GetTotalEmployees())
-                         .ReturnsAsync(mockNumberOfEmployees);
-
-        var result = await _chartsController.GetNumberOfEmployees();
-
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(mockNumberOfEmployees, okResult.Value);
-    }
-
-    [Fact]
-    public async Task GetNumberOfEmployees_ReturnsNotFound_OnException()
-    {
-        _chartServiceMock.Setup(service => service.GetTotalEmployees())
-                         .ThrowsAsync(new Exception("Error message"));
-
-        var result = await _chartsController.GetNumberOfEmployees();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Error message", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task GetChartData_ReturnsOk_WithData()
     {
         var labels = new List<string> { "Label1", "Label2", "Label3" };

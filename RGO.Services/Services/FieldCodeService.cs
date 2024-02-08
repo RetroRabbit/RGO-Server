@@ -43,7 +43,7 @@ namespace RGO.Services.Services
 
         public async Task<FieldCodeDto?> GetFieldCode(string name)
         {
-            var fieldCodes = await _db.FieldCode.GetAll(); ;
+            var fieldCodes = await _db.FieldCode.GetAll();
             var fieldCode = fieldCodes
                 .Where(fieldCode => fieldCode.Name == name && fieldCode.Status == ItemStatus.Active)
                 .Select(fieldCode => fieldCode)

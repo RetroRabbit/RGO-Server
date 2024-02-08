@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
-[Route("/auth/")]
+[Route("auth")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {

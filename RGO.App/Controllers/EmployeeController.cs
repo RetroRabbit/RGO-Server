@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
-[Route("/employee/")]
+[Route("employees")]
 [ApiController]
 public class EmployeeController : ControllerBase
 {
@@ -18,7 +18,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("add")]
+    [HttpPost()]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
         try
@@ -37,7 +37,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("id")]
+    [HttpGet()]
     public async Task<IActionResult> GetEmployeeById([FromQuery] int id)
     {
         try
@@ -54,8 +54,8 @@ public class EmployeeController : ControllerBase
 
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("get")]
-    public async Task<IActionResult> GetEmployee([FromQuery] string? email)
+    [HttpGet()]
+    public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
     {
         try
         {
@@ -76,7 +76,7 @@ public class EmployeeController : ControllerBase
 
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpPut("update")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee)
     {
         try
@@ -92,7 +92,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("employees")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllEmployees()
     {
         try
@@ -108,7 +108,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("employees/count")]
+    [HttpGet("count")]
     public async Task<IActionResult> CountAllEmployees()
     {
         try
@@ -124,7 +124,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("employees/filterbytype")]
+    [HttpGet("filter-by-type")]
     public async Task<IActionResult> FilterByType(string type)
     {
         try

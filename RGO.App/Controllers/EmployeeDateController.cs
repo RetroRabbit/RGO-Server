@@ -4,7 +4,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/employeedate/")]
+[Route("employeedate")]
 [ApiController]
 public class EmployeeDateController : ControllerBase
 {
@@ -17,7 +17,7 @@ public class EmployeeDateController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [HttpPost("save")]
+    [HttpPost("")]
     public async Task<IActionResult> SaveEmployeeDate([FromBody] EmployeeDateInput employeeDateInput)
     {
         try
@@ -38,7 +38,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
-    [HttpDelete("delete")]
+    [HttpDelete("")]
     public async Task<IActionResult> DeleteEmployeeDate([FromBody] EmployeeDateInput employeeDateInput)
     {
         try
@@ -59,7 +59,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
-    [HttpPut("update")]
+    [HttpPut("")]
     public async Task<IActionResult> UpdateEmployeeDate([FromBody] EmployeeDateDto employeeDate)
     {
         try
@@ -81,7 +81,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
-    [HttpGet("getall")]
+    [HttpGet("")]
     public async Task<IActionResult> GetAllEmployeeDate(
         [FromQuery] DateOnly? date = null,
         [FromQuery] string? email = null,
