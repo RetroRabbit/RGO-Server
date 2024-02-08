@@ -233,6 +233,44 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
+    public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
+    {
+        var devsTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 2)
+            .ToList().Count;
+
+        var designersTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 3)
+            .ToList().Count;
+
+        var scrumMastersTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 4)
+            .ToList().Count;
+
+        var businessSupportTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 5)
+            .ToList().Count;
+
+        return new EmployeeCountByRoleDataCard
+        {
+            DevsCount = devsTotal,
+            DesignersCount = designersTotal,
+            ScrumMastersCount = scrumMastersTotal,
+            BusinessSupportCount = businessSupportTotal
+        };
+    }
+
+    public int GetTotalNumberOfEmployeesOnClients()
+    {
+        var totalOfDevsDesignersAndScrumsOnClients = _db.Employee
+          .Get()
+          .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
+          .ToList()
+          .Count;
+
+        return totalOfDevsDesignersAndScrumsOnClients;
+    }
+
     public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
     {
         var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
@@ -394,8 +432,6 @@ public class EmployeeService : IEmployeeService
             TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench
         };
     }
-
-
 
     public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
     {
