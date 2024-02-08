@@ -291,7 +291,7 @@ public class EmployeeService : IEmployeeService
 
         var previousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-        var employeeTotalDifference = previousMonthTotal.EmployeeTotal - currentMonthTotal.EmployeeTotal;
+        var employeeTotalDifference = currentMonthTotal.EmployeeTotal - previousMonthTotal.EmployeeTotal;
         var isIncrease = employeeTotalDifference > 0;
 
         return new EmployeeCountDataCard
