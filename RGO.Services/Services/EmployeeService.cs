@@ -34,6 +34,7 @@ public class EmployeeService : IEmployeeService
         if (exists)
             throw new Exception("User already exists");
 
+        // TODO: After new employee bug is fixed, test if this condition can ever be reached and update accordingly
         if (employeeDto.EmployeeType == null)
             throw new Exception("Employee type missing");
 
