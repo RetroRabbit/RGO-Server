@@ -45,7 +45,7 @@ public class AuthService : IAuthService
         return await GenerateToken(newEmployee);
     }
 
-    private async Task<string> GenerateToken(EmployeeDto employee)
+    public async Task<string> GenerateToken(EmployeeDto employee)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);

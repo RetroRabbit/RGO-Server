@@ -53,7 +53,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
             .ReturnsAsync(new EmployeeDocumentDto(
                 Id: 1,
-                Employee: employeeMock,
+                EmployeeId: employeeId,
                 Reference: null,
                 FileName: "TestFile.pdf",
                 FileCategory: FileCategory.FixedTerm,
@@ -150,7 +150,7 @@ public class EmployeeDocumentServiceUnitTest
 
         var employeeDocumentDto = new EmployeeDocumentDto(
             Id: 1,
-            Employee: employeeMock,
+            EmployeeId: employeeId,
             Reference: null,
             FileName: "e2.pdf",
             FileCategory: FileCategory.Medical,
@@ -181,7 +181,7 @@ public class EmployeeDocumentServiceUnitTest
 
         var employeeDocumentDto = new EmployeeDocumentDto(
             Id: 1,
-            Employee: employeeMock,
+            EmployeeId: employeeId,
             Reference: null,
             FileName: "e2.pdf",
             FileCategory: FileCategory.Medical,
@@ -211,10 +211,10 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet);
 
-        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeMock, null, "TestFile.pdf", FileCategory.FixedTerm,
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeId, null, "TestFile.pdf", FileCategory.FixedTerm,
         "TestFileContent", Status: DocumentStatus.PendingApproval, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
 
-        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeMock, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeId, null, "TestFile2.pdf", FileCategory.FixedTerm,
         "TestFileContent", Status: DocumentStatus.PendingApproval, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
 
         var employeeDocuments = new List<EmployeeDocument>
@@ -240,10 +240,10 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet);
 
-        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeMock, null, "TestFile.pdf", FileCategory.FixedTerm,
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeId, null, "TestFile.pdf", FileCategory.FixedTerm,
         "TestFileContent", Status: DocumentStatus.Approved, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
 
-        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeMock, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeId, null, "TestFile2.pdf", FileCategory.FixedTerm,
         "TestFileContent", Status: DocumentStatus.Approved, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
 
         var employeeDocuments = new List<EmployeeDocument>
@@ -269,10 +269,10 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet);
 
-        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeMock, null, "TestFile.pdf", FileCategory.FixedTerm,
+        EmployeeDocumentDto testDocument = new EmployeeDocumentDto(1, employeeId, null, "TestFile.pdf", FileCategory.FixedTerm,
         "TestFileContent", Status: DocumentStatus.Rejected, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
 
-        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeMock, null, "TestFile2.pdf", FileCategory.FixedTerm,
+        EmployeeDocumentDto testDocumentTwo = new EmployeeDocumentDto(2, employeeId, null, "TestFile2.pdf", FileCategory.FixedTerm,
         "TestFileContent", Status: DocumentStatus.Rejected, UploadDate: DateTime.Now, Reason: null, CounterSign: false);
 
         var employeeDocuments = new List<EmployeeDocument>

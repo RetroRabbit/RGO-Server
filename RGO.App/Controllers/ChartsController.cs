@@ -122,8 +122,7 @@ namespace RGO.App.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message);
-            }
-           
+            }  
         }
     }
 }
