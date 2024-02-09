@@ -171,30 +171,32 @@ namespace RGO.UnitOfWork.Tests.Repositories
             dbContextMock.Verify(x => x.SaveChangesAsync(default), Times.Never);
         }
 
-        //[Fact]
-        //public async Task AddTest()
-        //{
-        //    var mockEntity = new EmployeeDate
-        //    {
-        //        Id = 1,
-        //        Employee = employee,
-        //        Subject = "Meeting",
-        //        Note = "Discuss project details",
-        //        Date = new DateOnly(2024, 2, 6),
-        //    };
+        [Fact]
+        public async Task AddTest()
+        {
+            var mockEntity = new EmployeeDate
+            {
+                Id = 1,
+                Employee = employee,
+                Subject = "Meeting",
+                Note = "Discuss project details",
+                Date = new DateOnly(2024, 2, 6),
+            };
 
-        //    var dbSetMock = new Mock<DbSet<EmployeeDate>>();
-        //    var mockDbContext = new Mock<DatabaseContext>();
+            //var mockDbContext = new Mock<IDatabaseContext>();
+            //mockdbcontext.setup(x => x.employeedate).returns(mockentity);
+            //var employeedate = mockdbcontext.object.set<employeedate>();
+            //employeedate.add(mockentity);
 
-        //    mockDbContext.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
-        //    var repository = new EmployeeDateRepository(mockDbContext.Object);
+            //mockdbcontext.setup(x => x.set<employeedate>()).returns(dbsetmock.object);
+            //var repository = new employeedaterepository(mockdbcontext.object);
 
-        //    var result = await repository.Add(mockEntity);
+            //var result = await repository.add(mockentity);
 
-        //    dbSetMock.Verify(x => x.AddAsync(It.IsAny<EmployeeDate>(), default), Times.Once);
-        //    mockDbContext.Verify(x => x.SaveChangesAsync(default), Times.Once);
-        //    Assert.NotNull(result);
-        //}
+            //dbsetmock.verify(x => x.addasync(it.isany<employeedate>(), default), times.once);
+            //mockdbcontext.verify(x => x.savechangesasync(default), times.once);
+            //assert.notnull(result);
+        }
 
         //[Fact]
         //public async Task AnyTest()
