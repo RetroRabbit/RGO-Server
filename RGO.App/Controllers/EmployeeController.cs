@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
@@ -20,7 +21,7 @@ public class EmployeeController : ControllerBase
         _chartService = chartService;
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
@@ -32,14 +33,13 @@ public class EmployeeController : ControllerBase
         catch (Exception ex)
         {
             if (ex.Message.Contains("exists"))
-            {
                 return Problem("Unexceptable", "Unexceptable", 406, "User Exists");
-            }
+            
             return NotFound(ex.Message);
         }
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("id")]
     public async Task<IActionResult> GetEmployeeById([FromQuery] int id)
     {
@@ -55,8 +55,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetEmployee([FromQuery] string? email)
     {
@@ -78,29 +77,34 @@ public class EmployeeController : ControllerBase
     }
 
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee)
+    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string userEmail)
     {
         try
         {
-            var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
 
             return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
         }
         catch (Exception ex)
         {
-            return NotFound(ex.Message);
+            if(ex.Message.Contains("Unauthorized action"))
+                return StatusCode(403, $"Forbidden: {ex.Message}");
+            else
+                return NotFound(ex.Message);
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("employees")]
     public async Task<IActionResult> GetAllEmployees()
     {
         try
         {
-            var employees = await _employeeService.GetAll();
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employees = await _employeeService.GetAll(claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
 
             return Ok(employees);
         }
@@ -115,7 +119,8 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var employees = await _employeeService.GetAll();
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employees = await _employeeService.GetAll(claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
 
             return Ok(employees.Count);
         }
@@ -125,7 +130,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("employees/filterbytype")]
     public async Task<IActionResult> FilterByType(string type)
     {
@@ -171,4 +176,18 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [HttpGet("simple-profile")]
+    public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
+    {
+        try
+        {
+            var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+
+            return Ok(simpleProfile);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }
