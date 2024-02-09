@@ -25,6 +25,7 @@ namespace RGO.Services.Tests.Services
         private readonly AuditLogDto _auditLogDto;
         private readonly EmployeeDto _employee;
         public AuditLogServiceUnitTest()
+
         {
             _unitOfWork = new Mock<IUnitOfWork>();
             _auditLogService = new AuditLogService(_unitOfWork.Object);
