@@ -213,9 +213,9 @@ namespace RGO.App.Tests.Controllers
             var employeeDocomentDelete = employeeDocumentDto;
             var employeeDocomentDeleted = updateEmployeeDocumentDto;
 
-            _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocomentDelete)).ReturnsAsync(employeeDocomentDeleted);
+            _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocomentDelete.Id)).ReturnsAsync(employeeDocomentDeleted);
          
-            var result = await _controller.Delete(employeeDocomentDelete);
+            var result = await _controller.Delete(employeeDocomentDelete.Id);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
@@ -229,9 +229,9 @@ namespace RGO.App.Tests.Controllers
             var employeeDocumentToDelete = employeeDocumentDto;
             var exceptionMessage = "An error occurred while deleting the employee document.";
 
-            _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocumentToDelete)).ThrowsAsync(new Exception(exceptionMessage));
+            _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(employeeDocumentToDelete.Id)).ThrowsAsync(new Exception(exceptionMessage));
 
-            var result = await _controller.Delete(employeeDocumentToDelete);
+            var result = await _controller.Delete(employeeDocumentToDelete.Id);
             var notFoundResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal(exceptionMessage, notFoundResult.Value);

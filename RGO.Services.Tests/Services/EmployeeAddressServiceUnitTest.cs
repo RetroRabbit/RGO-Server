@@ -101,7 +101,7 @@ namespace RGO.Services.Tests.Services
 
             _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
-            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Delete(address));
+            await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Delete(address.Id));
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace RGO.Services.Tests.Services
 
             _dbMock.Setup(x => x.EmployeeAddress.Delete(It.IsAny<int>())).Returns(Task.FromResult(address));
 
-            var result = await _employeeAddressService.Delete(address);
+            var result = await _employeeAddressService.Delete(address.Id);
 
             Assert.Equal(address, result);
         }

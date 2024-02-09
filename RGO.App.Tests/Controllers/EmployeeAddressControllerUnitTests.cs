@@ -127,11 +127,11 @@ namespace RGO.App.Tests.Controllers
             var deletedAddress = new EmployeeAddressDto(1, "Deleted 1", "Deleted Complex Name 1", "Deleted Street Number 1", "Deleted Suburb or District 1", "Deleted City 1", "Deleted Country 1", "Deleted Province 1", "0002");
 
             var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
-            mockEmployeeAddressService.Setup(s => s.Delete(addressToDelete)).ReturnsAsync(deletedAddress);
+            mockEmployeeAddressService.Setup(s => s.Delete(addressToDelete.Id)).ReturnsAsync(deletedAddress);
 
             var controller = new EmployeeAddressController(mockEmployeeAddressService.Object);
 
-            var result = await controller.DeleteEmployeeAddress(addressToDelete);
+            var result = await controller.DeleteEmployeeAddress(addressToDelete.Id);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             var actualAddress = Assert.IsAssignableFrom<EmployeeAddressDto>(okResult.Value);
@@ -145,11 +145,11 @@ namespace RGO.App.Tests.Controllers
             var exceptionMessage = "An error occurred while deleting the address.";
 
             var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
-            mockEmployeeAddressService.Setup(s => s.Delete(addressToDelete)).ThrowsAsync(new Exception(exceptionMessage));
+            mockEmployeeAddressService.Setup(s => s.Delete(addressToDelete.Id)).ThrowsAsync(new Exception(exceptionMessage));
 
             var controller = new EmployeeAddressController(mockEmployeeAddressService.Object);
 
-            var result = await controller.DeleteEmployeeAddress(addressToDelete);
+            var result = await controller.DeleteEmployeeAddress(addressToDelete.Id);
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal(exceptionMessage, notFoundResult.Value);
