@@ -17,7 +17,7 @@ namespace RGO.App.Controllers
             _employeeTypeService = employeeTypeService;
         }
 
-        [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpGet("")]
         public async Task<IActionResult> GetAllEmployeeTypes()
         {

@@ -1,26 +1,55 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Moq;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.App.Controllers;
-using Xunit;
-using RGO.Models.Enums;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using RGO.App.Controllers;
+using RGO.Models;
+using RGO.Models.Enums;
+using RGO.Services.Interfaces;
 using RGO.UnitOfWork.Entities;
+using System.Security.Claims;
+using Xunit;
 
 namespace RGO.App.Tests.Controllers;
 
 public class EmployeeBankingControllerUnitTests
 {
+    SimpleEmployeeBankingDto newEntry = new SimpleEmployeeBankingDto
+        (1, 2, "BankName", "Branch", "AccountNo", EmployeeBankingAccountType.Savings,
+        "AccountHolderName", BankApprovalStatus.Approved, "DeclineReason", "File.pdf");
+
+    SimpleEmployeeBankingDto updateEntry = new SimpleEmployeeBankingDto
+        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
+        "John Doe", BankApprovalStatus.Approved, null, "file.pdf");
+
+    Mock<IEmployeeBankingService> mockService;
+    EmployeeBankingController controller;
+    List<Claim> claims;
+    ClaimsPrincipal claimsPrincipal;
+    ClaimsIdentity identity;
+
+    public EmployeeBankingControllerUnitTests()
+    {
+        mockService = new Mock<IEmployeeBankingService>();
+        controller = new EmployeeBankingController(mockService.Object);
+
+        claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, "test@example.com"),
+        };
+
+        identity = new ClaimsIdentity(claims, "TestAuthType");
+        claimsPrincipal = new ClaimsPrincipal(identity);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+        };
+    }
+
     [Fact]
     public async Task AddBankingInfoValidInputReturnsOkResult()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
-        var newEntry = new SimpleEmployeeBankingDto
-            (1, 2, "BankName", "Branch", "AccountNo", EmployeeBankingAccountType.Savings,
-            "AccountHolderName", BankApprovalStatus.Approved, "DeclineReason", "File.pdf");
-
         var result = await controller.AddBankingInfo(newEntry);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -31,9 +60,6 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task UpdateInvalidInputReturnsBadRequest()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
-
         var updateEntry = new SimpleEmployeeBankingDto
             (1, 2, "BankName", "Branch", "AccountNo", EmployeeBankingAccountType.Savings,
             string.Empty, BankApprovalStatus.Approved, "DeclineReason", "File.pdf");
@@ -46,15 +72,8 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task AddBankingInfoExceptionWithDetailsAlreadyExistReturnsProblemResult()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
-
-        var newEntry = new SimpleEmployeeBankingDto
-        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings,
-        "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
-
-        mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>()))
-            .ThrowsAsync(new Exception("Details already exists"));
+        mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
+        .ThrowsAsync(new Exception("Details already exists"));
 
         var result = await controller.AddBankingInfo(newEntry);
 
@@ -76,14 +95,7 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task AddBankingInfoExceptionNotFound()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
-
-        var newEntry = new SimpleEmployeeBankingDto
-        (1, 2, "Bank Name", "Branch", "Account No", EmployeeBankingAccountType.Savings,
-        "Account Holder Name", BankApprovalStatus.Approved, "Decline Reason", "File.pdf");
-
-        mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>()))
+        mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
             .ThrowsAsync(new Exception("Banking information Not Found"));
 
         var result = await controller.AddBankingInfo(newEntry);
@@ -102,10 +114,21 @@ public class EmployeeBankingControllerUnitTests
     }
 
     [Fact]
+    public async Task AddBankingInfoUnauthorizedAccess()
+    {
+        mockService.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
+            .ThrowsAsync(new Exception("Unauthorized access"));
+
+        var result = await controller.AddBankingInfo(newEntry);
+        Assert.NotNull(result);
+
+        var unauthorized = (ObjectResult)result;
+        Assert.Equal("Forbidden: Unauthorized access", unauthorized.Value);
+    }
+
+    [Fact]
     public async Task GetValidStatusReturnsOkResultWithEntries()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
         var status = 1;
 
         var expectedEntries = new List<EmployeeBanking>
@@ -134,8 +157,6 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task GetExceptionThrownReturnsNotFoundResultWithErrorMessage()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
         var status = 1;
         var errorMessage = "Unable to retrieve employee banking entries";
 
@@ -152,14 +173,7 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task UpdateValidDataReturnsOkResult()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
-
-        var updateEntry = new SimpleEmployeeBankingDto
-        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
-        "John Doe", BankApprovalStatus.Approved, null, "file.pdf");
-
-        mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>()))
+        mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
             .ReturnsAsync(new EmployeeBankingDto
             (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
             "John Doe", BankApprovalStatus.Approved, null, "file.pdf", new DateOnly(), new DateOnly()));
@@ -173,15 +187,8 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task UpdateExceptionThrownReturnsNotFoundResultWithErrorMessage()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
-
-        var updateEntry = new SimpleEmployeeBankingDto
-        (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
-        "John Doe", BankApprovalStatus.Approved, null, "file.pdf");
-
         var errorMessage = "Some error message";
-        mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>())).ThrowsAsync(new Exception(errorMessage));
+        mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>(), "test@example.com")).ThrowsAsync(new Exception(errorMessage));
 
         var result = await controller.Update(updateEntry);
 
@@ -195,30 +202,25 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
         var id = 123;
 
-        var expectedDetails = new EmployeeBankingDto
+        var newEntry = new EmployeeBankingDto
         (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
             "John Doe", BankApprovalStatus.Approved, null, "file.pdf", new DateOnly(), new DateOnly());
 
-        mockService.Setup(x => x.GetBanking(id)).ReturnsAsync(expectedDetails);
+        mockService.Setup(x => x.GetBanking(id)).ReturnsAsync(newEntry);
 
         var result = await controller.GetBankingDetails(id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualDetails = Assert.IsType<EmployeeBankingDto>(okResult.Value);
 
-        Assert.Equal(expectedDetails, actualDetails);
-
+        Assert.Equal(newEntry, actualDetails);
     }
 
     [Fact]
     public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()
     {
-        var mockService = new Mock<IEmployeeBankingService>();
-        var controller = new EmployeeBankingController(mockService.Object);
         var id = 456;
         var errorMessage = "Employee banking details not found";
 
