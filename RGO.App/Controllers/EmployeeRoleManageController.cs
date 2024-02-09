@@ -21,7 +21,7 @@ public class EmployeeRoleManageController : ControllerBase
         _roleService = roleService;
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost("add")]
     public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
@@ -75,7 +75,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(EmployeeRoleDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
     [HttpDelete("remove")]
@@ -99,7 +99,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get")]
     public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
     {
@@ -116,7 +116,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get-all")]
     public async Task<IActionResult> GetAllRoles()
     {
@@ -136,7 +136,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get-role")]
     public async Task<IActionResult> GetAllEmployeeOnRoles([FromQuery] int roleId)
     {

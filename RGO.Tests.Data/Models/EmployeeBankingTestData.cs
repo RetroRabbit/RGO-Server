@@ -3,7 +3,7 @@ using RGO.Models.Enums;
 
 namespace RGO.Tests.Data.Models;
 
-public class EmployeeBankingTd
+public class EmployeeBankingTestData
 {
     public static EmployeeBankingDto EmployeeBankingDto = new(1, 1, "FNB", "Not Sure", "120",
         EmployeeBankingAccountType.Savings, "Name1", BankApprovalStatus.PendingApproval, "", "asd", new DateOnly(),

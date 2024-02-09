@@ -18,7 +18,7 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <param name="newEntry"></param>
     /// <returns></returns>
-    Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry);
+    Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail);
 
     /// <summary>
     /// Fetch banking of Employee
@@ -32,5 +32,5 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <param name="newEntry"></param>
     /// <returns>EmployeeBankingDto</returns>
-    Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry);
+    Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry, string userEmail);
 }

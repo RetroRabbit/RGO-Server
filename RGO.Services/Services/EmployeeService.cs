@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RGO.Models;
@@ -33,13 +32,12 @@ public class EmployeeService : IEmployeeService
     {
         bool exists = await CheckUserExist(employeeDto.Email);
         if (exists)
-        {
             throw new Exception("User already exists");
-        }
+
+        // TODO: After new employee bug is fixed, test if this condition can ever be reached and update accordingly
         if (employeeDto.EmployeeType == null)
-        {
             throw new Exception("Employee type missing");
-        }
+
         Employee employee;
 
         try
@@ -72,30 +70,23 @@ public class EmployeeService : IEmployeeService
         EmployeeAddressDto physicalAddress;
 
         if (!physicalAddressExist)
-        {
             physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
-        }
         else
-        {
             physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
-        }
+
         employee.PhysicalAddressId = physicalAddress.Id;
 
         bool postalAddressExist = await _employeeAddressService
             .CheckIfExists(employeeDto.PostalAddress!);
 
-            EmployeeAddressDto postalAddress;
+        EmployeeAddressDto postalAddress;
 
-            if (!postalAddressExist)
-            {
-                postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
-            }
-            else
-            {
-                postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
-            }
+        if (!postalAddressExist)
+            postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
+        else
+            postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
 
-            employee.PostalAddressId = postalAddress.Id;
+        employee.PostalAddressId = postalAddress.Id;
 
         RoleDto roleDto = await _roleService.GetRole("Employee");
         EmployeeDto newEmployee = await _db.Employee.Add(employee);
@@ -119,8 +110,23 @@ public class EmployeeService : IEmployeeService
         return await _db.Employee.Delete(existingEmployee.Id);
     }
 
-    public async Task<List<EmployeeDto>> GetAll()
+    public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
     {
+
+        if(userEmail != "" && await IsJourney(userEmail))
+        {
+            EmployeeDto peopleChampion = await GetEmployee(userEmail);
+
+            return await _db.Employee
+                .Get(employee => employee.PeopleChampion == peopleChampion.Id)
+                .Include(employee => employee.EmployeeType)
+                .Include(employee => employee.PhysicalAddress)
+                .Include(employee => employee.PostalAddress)
+                .OrderBy(employee => employee.Name)
+                .Select(employee => employee.ToDto())
+                .ToListAsync();
+        }
+
         return await _db.Employee
             .Get(employee => true)
             .AsNoTracking()
@@ -144,7 +150,8 @@ public class EmployeeService : IEmployeeService
             .Take(1)
             .FirstOrDefaultAsync();
 
-        if (employee == null) { throw new Exception("Employee not found"); }
+        if (employee == null)
+            throw new Exception("Employee not found"); 
 
         return employee;
     }
@@ -160,20 +167,31 @@ public class EmployeeService : IEmployeeService
             .Select(employee => employee.ToDto())
             .FirstOrDefaultAsync();
 
-        if (employee == null) { throw new Exception("Employee not found"); }
+        if (employee == null)
+            throw new Exception("Employee not found");
 
         return employee;
     }
 
-    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email)
+    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
-        EmployeeTypeDto employeeTypeDto = await _employeeTypeService
-            .GetEmployeeType(employeeDto.EmployeeType.Name);
-
-        Employee employee = new Employee(employeeDto, employeeTypeDto);
-
-        employee.Email = email;
-
+        EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
+                .GetEmployeeType(employeeDto.EmployeeType.Name);
+        Employee employee = null;
+        if (employeeDto.Email == userEmail)
+            employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
+        else
+        {
+            if (await CheckUserExist(userEmail))
+            {
+                if (await IsAdmin(userEmail))
+                    employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
+                else
+                    throw new Exception("Unauthorized action");
+            }
+            else
+                throw new Exception("Unauthorized action");
+        }
         return await _db.Employee.Update(employee);
     }
 
@@ -216,6 +234,44 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
+    public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
+    {
+        var devsTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 2)
+            .ToList().Count;
+
+        var designersTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 3)
+            .ToList().Count;
+
+        var scrumMastersTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 4)
+            .ToList().Count;
+
+        var businessSupportTotal = _db.Employee.Get()
+            .Where(e => e.EmployeeTypeId == 5)
+            .ToList().Count;
+
+        return new EmployeeCountByRoleDataCard
+        {
+            DevsCount = devsTotal,
+            DesignersCount = designersTotal,
+            ScrumMastersCount = scrumMastersTotal,
+            BusinessSupportCount = businessSupportTotal
+        };
+    }
+
+    public int GetTotalNumberOfEmployeesOnClients()
+    {
+        var totalOfDevsDesignersAndScrumsOnClients = _db.Employee
+          .Get()
+          .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
+          .ToList()
+          .Count;
+
+        return totalOfDevsDesignersAndScrumsOnClients;
+    }
+
     public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
     {
         var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
@@ -235,7 +291,7 @@ public class EmployeeService : IEmployeeService
 
         var previousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-        var employeeTotalDifference = previousMonthTotal.EmployeeTotal - currentMonthTotal.EmployeeTotal;
+        var employeeTotalDifference = currentMonthTotal.EmployeeTotal - previousMonthTotal.EmployeeTotal;
         var isIncrease = employeeTotalDifference > 0;
 
         return new EmployeeCountDataCard
@@ -378,42 +434,125 @@ public class EmployeeService : IEmployeeService
         };
     }
 
-    public int GetTotalNumberOfEmployeesOnClients()
+    public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
     {
-        var totalOfDevsDesignersAndScrumsOnClients = _db.Employee
-          .Get()
-          .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
-          .ToList()
-          .Count;
+        EmployeeDto employeeDto = await GetEmployee(employeeEmail);
+        string teamLeadName = "";
+        string peopleChampionName = "";
+        int teamLeadId = 0;
+        int peopleChampionId = 0;
+        int clientAllocatedId = 0;
+        string clientAllocatedName = "";
 
-        return totalOfDevsDesignersAndScrumsOnClients;
+        if (employeeDto.TeamLead != null)
+        {
+            EmployeeDto teamLeadDto = await GetById((int)employeeDto.TeamLead);
+            teamLeadName = teamLeadDto.Name + " " + teamLeadDto.Surname;
+            teamLeadId = teamLeadDto.Id;
+        }
+
+        if (employeeDto.PeopleChampion != null)
+        {
+            EmployeeDto peopleChampionDto = await GetById((int)employeeDto.PeopleChampion);
+            peopleChampionName = peopleChampionDto.Name + " " + peopleChampionDto.Surname;
+            peopleChampionId = peopleChampionDto.Id;
+        }
+
+        if(employeeDto.ClientAllocated != null)
+        {
+            ClientDto clientDto = await _db.Client
+                .Get(client => client.Id == employeeDto.ClientAllocated)
+                .AsNoTracking()
+                .Select(client => client.ToDto())
+                .FirstAsync();
+            
+            clientAllocatedId = clientDto.Id;
+            clientAllocatedName = clientDto.Name;
+        }
+            
+        SimpleEmployeeProfileDto simpleProfile = new SimpleEmployeeProfileDto(
+            employeeDto.Id,
+            employeeDto.EmployeeNumber,
+            employeeDto.TaxNumber,
+            employeeDto.EngagementDate,
+            employeeDto.TerminationDate,
+            peopleChampionName,
+            peopleChampionId == 0 ? null : peopleChampionId,
+            employeeDto.Disability,
+            employeeDto.DisabilityNotes,
+            employeeDto.Level,
+            employeeDto.EmployeeType,
+            employeeDto.Notes,
+            employeeDto.LeaveInterval,
+            employeeDto.SalaryDays,
+            employeeDto.PayRate,
+            employeeDto.Salary,
+            employeeDto.Name,
+            employeeDto.Initials,
+            employeeDto.Surname,
+            employeeDto.DateOfBirth,
+            employeeDto.CountryOfBirth,
+            employeeDto.Nationality,
+            employeeDto.IdNumber,
+            employeeDto.PassportNumber,
+            employeeDto.PassportExpirationDate,
+            employeeDto.PassportCountryIssue,
+            employeeDto.Race,
+            employeeDto.Gender,
+            employeeDto.Photo,
+            employeeDto.Email,
+            employeeDto.PersonalEmail,
+            employeeDto.CellphoneNo,
+            clientAllocatedName,
+            clientAllocatedId,
+            teamLeadName,
+            teamLeadId,
+            employeeDto.PhysicalAddress,
+            employeeDto.PostalAddress,
+            employeeDto.HouseNo,
+            employeeDto.EmergencyContactName,
+            employeeDto.EmergencyContactNo);
+
+        return simpleProfile;
     }
 
-    public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
+    private async Task<bool> IsAdmin(string userEmail)
     {
-        var devsTotal =  _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 2)
-            .ToList().Count;
+        EmployeeDto employeeDto = await GetEmployee(userEmail);
 
-        var designersTotal = _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 3)
-            .ToList().Count;
+        EmployeeRole empRole = await _db.EmployeeRole
+            .Get(role => role.EmployeeId == employeeDto.Id)
+            .FirstOrDefaultAsync();
 
-        var scrumMastersTotal = _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 4)
-            .ToList().Count;
+        Role role = await _db.Role
+            .Get(role => role.Id == empRole.RoleId)
+            .FirstOrDefaultAsync();
 
-        var businessSupportTotal = _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 5)
-            .ToList().Count;
+        return role.Description is "Admin" or "SuperAdmin";
+    }
 
-        return new EmployeeCountByRoleDataCard
-        { 
-            DevsCount = devsTotal,
-            DesignersCount = designersTotal,
-            ScrumMastersCount= scrumMastersTotal,
-            BusinessSupportCount = businessSupportTotal
-        };
+    private async Task<bool> IsJourney(string userEmail)
+    {
+        EmployeeDto employeeDto = await GetEmployee(userEmail);
+        EmployeeRole empRole = await _db.EmployeeRole
+            .Get(role => role.EmployeeId == employeeDto.Id)
+            .FirstOrDefaultAsync();
+
+        Role role = await _db.Role
+            .Get(role => role.Id == empRole.RoleId)
+            .FirstOrDefaultAsync();
+
+        return role.Description is "Journey";
+    }
+
+    private async Task<Employee> CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
+    {
+        Employee employee = new Employee();
+
+        employee = new Employee(employeeDto, employeeTypeDto);
+        employee.Email = employeeDto.Email;
+
+        return employee;
     }
 }
 
