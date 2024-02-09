@@ -19,12 +19,12 @@ public class EmployeeDateControllerUnitTests
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
         var employeeDateInput = new EmployeeDateInput
-        (
-            "test@retrorabbit.co.za",
-            "Test Subject",
-            "Test Note",
-            new DateOnly(2023, 1, 1)
-        );
+        {
+            Email = "test@retrorabbit.co.za",
+            Subject = "Test Subject",
+            Note = "Test Note",
+            Date = new DateOnly(2023, 1, 1)
+        };
 
         employeeServiceMock.Setup(x => x.GetEmployee(employeeDateInput.Email)).ReturnsAsync(new EmployeeDto
         (
@@ -83,12 +83,12 @@ public class EmployeeDateControllerUnitTests
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
         var employeeDateInput = new EmployeeDateInput
-        (
-            "test@retrorabbit.co.za",
-            "Test Subject",
-            "Test Note",
-            new DateOnly(2023, 1, 1)
-        );
+        {
+            Email = "test@retrorabbit.co.za",
+            Subject = "Test Subject",
+            Note = "Test Note",
+            Date = new DateOnly(2023, 1, 1)
+        };
 
         employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("An error occurred while saving employee date information."));
 
@@ -107,12 +107,13 @@ public class EmployeeDateControllerUnitTests
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
         var employeeDateInput = new EmployeeDateInput
-        (
-            "test@retrorabbit.co.za",
-            "Test Subject",
-            "Test Note",
-            new DateOnly(2023, 1, 1)
-        );
+        {
+            Id = 1,
+            Email = "test@retrorabbit.co.za",
+            Subject = "Test Subject",
+            Note = "Test Note",
+            Date = new DateOnly(2023, 1, 1)
+        };
 
         employeeServiceMock.Setup(x => x.GetEmployee(employeeDateInput.Email))
         .ReturnsAsync((new EmployeeDto
@@ -156,9 +157,9 @@ public class EmployeeDateControllerUnitTests
             "Emergency Contact",
             "987654321")));
 
-        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>())).Returns(Task.CompletedTask);
+        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>().Id)).Returns(Task.CompletedTask);
 
-        var result = await controller.DeleteEmployeeDate(employeeDateInput);
+        var result = await controller.DeleteEmployeeDate(employeeDateInput.Id);
 
         Assert.IsType<OkResult>(result);
     }
@@ -171,16 +172,17 @@ public class EmployeeDateControllerUnitTests
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
         var employeeDateInput = new EmployeeDateInput
-        (
-            "test@retrorabbit.co.za",
-            "Test Subject",
-            "Test Note",
-            new DateOnly(2023, 1, 1)
-        );
+        {
+            Id = 1,
+            Email = "test@retrorabbit.co.za",
+            Subject = "Test Subject",
+            Note = "Test Note",
+            Date = new DateOnly(2023, 1, 1)
+        };
 
-        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>())).ThrowsAsync(new Exception("An error occurred while deleting employee date information."));
+        employeeDateServiceMock.Setup(x => x.Delete(It.IsAny<EmployeeDateDto>().Id)).ThrowsAsync(new Exception("An error occurred while deleting employee date information."));
 
-        var result = await controller.DeleteEmployeeDate(employeeDateInput);
+        var result = await controller.DeleteEmployeeDate(employeeDateInput.Id);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("An error occurred while deleting employee date information.", notFoundResult.Value);

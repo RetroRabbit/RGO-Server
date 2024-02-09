@@ -4,7 +4,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("employeedate")]
+[Route("employee-date")]
 [ApiController]
 public class EmployeeDateController : ControllerBase
 {
@@ -17,7 +17,7 @@ public class EmployeeDateController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> SaveEmployeeDate([FromBody] EmployeeDateInput employeeDateInput)
     {
         try
@@ -38,18 +38,12 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
-    [HttpDelete("")]
-    public async Task<IActionResult> DeleteEmployeeDate([FromBody] EmployeeDateInput employeeDateInput)
+    [HttpDelete()]
+    public async Task<IActionResult> DeleteEmployeeDate(int employeeDateId)
     {
         try
         {
-            var employeeDateDto = new EmployeeDateDto(
-                0,
-                await _employeeService.GetEmployee(employeeDateInput.Email),
-                employeeDateInput.Subject,
-                employeeDateInput.Note,
-                employeeDateInput.Date);
-            await _employeeDateService.Delete(employeeDateDto);
+            await _employeeDateService.Delete(employeeDateId);
 
             return Ok();
         }
@@ -59,7 +53,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
-    [HttpPut("")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateEmployeeDate([FromBody] EmployeeDateDto employeeDate)
     {
         try
@@ -81,7 +75,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllEmployeeDate(
         [FromQuery] DateOnly? date = null,
         [FromQuery] string? email = null,

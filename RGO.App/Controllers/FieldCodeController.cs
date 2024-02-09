@@ -18,7 +18,7 @@ namespace RGO.App.Controllers
             _fieldCodeService = fieldCodeService;
         }
 
-        [HttpGet("")]
+        [HttpGet()]
         public async Task<IActionResult> GetAllFieldCodes()
         {
             try
@@ -35,7 +35,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPost("")]
+        [HttpPost()]
         public async Task<IActionResult> SaveFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
@@ -49,7 +49,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPut("")]
+        [HttpPut()]
         public async Task<IActionResult> UpdateFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
@@ -63,7 +63,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpDelete("")]
+        [HttpDelete()]
         public async Task<IActionResult> DeleteFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try

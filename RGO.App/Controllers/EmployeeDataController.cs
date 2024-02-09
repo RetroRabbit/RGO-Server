@@ -63,12 +63,12 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteEmployeeData(int employeeDataId)
         {
             try
             {
-                var deletedEmployeeData = await _employeeDataService.DeleteEmployeeData(employeeDataDto);
+                var deletedEmployeeData = await _employeeDataService.DeleteEmployeeData(employeeDataId);
                 return Ok(deletedEmployeeData);
             }
             catch (Exception ex)

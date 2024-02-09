@@ -17,7 +17,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         _employeeEvaluationAudienceService = employeeEvaluationAudienceService;
     }
 
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> GetAll([FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
@@ -33,7 +33,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> SaveEmployeeEvaluationAudience(
         [FromQuery] string email,
         [FromBody] EmployeeEvaluationInput evaluationInput)
@@ -50,7 +50,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
-    [HttpDelete("")]
+    [HttpDelete()]
     public async Task<IActionResult> DeleteEmployeeEvaluationAudience(
         [FromQuery] string email,
         [FromBody] EmployeeEvaluationInput evaluation)

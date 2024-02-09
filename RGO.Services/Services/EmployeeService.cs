@@ -260,8 +260,11 @@ public class EmployeeService : IEmployeeService
 
         var employeePreviousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-        if (employeePreviousMonthTotal != null && employeePreviousMonthTotal.EmployeeTotal > 0 && employeePreviousMonthTotal.DeveloperTotal > 0
-            && employeePreviousMonthTotal.DesignerTotal > 0 && employeePreviousMonthTotal.ScrumMasterTotal > 0
+        if (employeePreviousMonthTotal != null 
+            && employeePreviousMonthTotal.EmployeeTotal > 0 
+            && employeePreviousMonthTotal.DeveloperTotal > 0
+            && employeePreviousMonthTotal.DesignerTotal > 0 
+            && employeePreviousMonthTotal.ScrumMasterTotal > 0
             && employeePreviousMonthTotal.BusinessSupportTotal > 0)
         {
             var churnRate = (double)(employeeCurrentMonthTotal.EmployeeTotal - employeePreviousMonthTotal.EmployeeTotal) 

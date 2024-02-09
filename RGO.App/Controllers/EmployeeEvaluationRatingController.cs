@@ -14,7 +14,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
     {
         _employeeEvaluationRatingService = employeeEvaluationRatingService;
     }
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> GetAllEmployeeEvaluationRatings(
         [FromBody] EmployeeEvaluationInput evaluationInput)
     {
@@ -31,7 +31,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
         }
     }
 
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> SaveEmployeeEvaluationRating([FromBody] EvaluationRatingInput rating)
     {
         try
@@ -46,7 +46,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
         }
     }
 
-    [HttpPut("")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateEmployeeEvaluationRating([FromBody] EvaluationRatingInput rating)
     {
         try
@@ -61,7 +61,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
         }
     }
 
-    [HttpDelete("")]
+    [HttpDelete()]
     public async Task<IActionResult> DeleteEmployeeEvaluationRating([FromBody] EvaluationRatingInput rating)
     {
         try

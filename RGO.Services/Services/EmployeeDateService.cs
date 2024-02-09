@@ -48,15 +48,9 @@ public class EmployeeDateService : IEmployeeDateService
         await _db.EmployeeDate.Update(new (employeeDateToUpdate));
     }
 
-    public async Task Delete(EmployeeDateDto employeeDate)
+    public async Task Delete(int employeeDateId)
     {
-        bool exists = await CheckIfExists(employeeDate);
-
-        if (!exists) throw new Exception("Employee Date does not exist");
-
-        var employeeDateToDelete = await Get(employeeDate);
-
-        await _db.EmployeeDate.Delete(employeeDateToDelete.Id);
+        await _db.EmployeeDate.Delete(employeeDateId);
     }
 
     public async Task<EmployeeDateDto> Get(EmployeeDateDto employeeDate)

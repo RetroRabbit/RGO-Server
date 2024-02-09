@@ -37,7 +37,7 @@ namespace RGO.Services.Interfaces
         /// </summary>
         /// <param name="employeeAddressDto"></param>
         /// <returns>Employee Address</returns>
-        Task<EmployeeAddressDto> Delete(EmployeeAddressDto employeeAddressDto);
+        Task<EmployeeAddressDto> Delete(int addressId);
 
         Task<List<EmployeeAddressDto>> GetAll();
     }

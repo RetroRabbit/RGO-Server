@@ -4,7 +4,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/evaluation/")]
+[Route("evaluation")]
 [ApiController]
 public class EmployeeEvaluationController : Controller
 {
@@ -15,7 +15,7 @@ public class EmployeeEvaluationController : Controller
         _employeeEvaluationService = employeeEvaluationService;
     }
 
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllEmployeeEvaluations(
         [FromQuery] string email)
     {
@@ -33,7 +33,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetEmployeeEvaluation(
         [FromQuery] string employeeEmail,
         [FromQuery] string ownerEmail,
@@ -52,7 +52,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> SaveEmployeeEvaluation(
         [FromBody] EmployeeEvaluationInput evaluationInput)
     {
@@ -67,7 +67,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpPut("")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateEmployeeEvaluation(
         [FromBody] List<EmployeeEvaluationInput> evaluation)
     {
@@ -84,9 +84,8 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
-    [HttpDelete("")]
-    public async Task<IActionResult> DeleteEmployeeEvaluation(
-        [FromBody] EmployeeEvaluationInput evaluationInput)
+    [HttpDelete()]
+    public async Task<IActionResult> DeleteEmployeeEvaluation([FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try
         {

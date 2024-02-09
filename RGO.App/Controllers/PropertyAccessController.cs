@@ -16,7 +16,7 @@ public class PropertyAccessController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetPropertyWithAccess([FromQuery] string email)
     {
         try
@@ -31,7 +31,7 @@ public class PropertyAccessController : ControllerBase
     }
    
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpPut("")]
+    [HttpPut()]
     public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields, [FromQuery] string email)
     {
         try

@@ -36,8 +36,8 @@ namespace RGO.Services.Interfaces
         /// <summary>
         /// Delete Employee Data
         /// </summary>
-        /// <param name="employeeDataDto"></param>
+        /// <param name="employeeDataId"></param>
         /// <returns>Employee data</returns>
-        Task<EmployeeDataDto> DeleteEmployeeData(EmployeeDataDto employeeDataDto);
+        Task<EmployeeDataDto> DeleteEmployeeData(int employeeDataId);
     }
 }

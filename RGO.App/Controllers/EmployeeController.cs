@@ -144,7 +144,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [HttpGet("employees/data/count")]
+    [HttpGet("card-count")]
     public async Task<IActionResult> GetEmployeesCount()
     {
         try
@@ -158,7 +158,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [HttpGet("employees/churnrate")]
+    [HttpGet("churn-rate")]
     public async Task<IActionResult> GetChurnRate()
     {
         try

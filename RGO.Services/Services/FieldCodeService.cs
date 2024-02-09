@@ -83,7 +83,6 @@ namespace RGO.Services.Services
                 await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
             }
 
-
             var getUpdatedFieldCode = await GetFieldCode(fieldCodeDto.Name);
             return getUpdatedFieldCode;
         }
@@ -92,6 +91,7 @@ namespace RGO.Services.Services
         {
             var ifFieldCode = await GetFieldCode(fieldCodeDto.Name);
             if (ifFieldCode == null) { throw new Exception("No field with that name found"); }
+
             var newFieldCodeDto = new FieldCodeDto(Id: ifFieldCode.Id,
                 Code: ifFieldCode.Code,
                 Name: ifFieldCode.Name,

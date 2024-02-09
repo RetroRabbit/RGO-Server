@@ -70,7 +70,7 @@ public class RoleServiceUnitTest
             .Setup(r => r.Role.Delete(It.IsAny<int>()))
             .Returns(Task.FromResult(expect));
 
-        var result = await _roleService.DeleteRole("Admin");
+        var result = await _roleService.DeleteRole(3);
 
         Assert.NotNull(result);
         Assert.Equivalent(expect, result);

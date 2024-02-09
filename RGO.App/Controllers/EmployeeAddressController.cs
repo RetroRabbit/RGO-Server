@@ -66,11 +66,11 @@ namespace RGO.App.Controllers
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
         [HttpDelete()]
-        public async Task<IActionResult> DeleteEmployeeAddress([FromBody] EmployeeAddressDto address)
+        public async Task<IActionResult> DeleteEmployeeAddress(int addressId)
         {
             try
             {
-                var deletedAddress = await _employeeAddressService.Delete(address);
+                var deletedAddress = await _employeeAddressService.Delete(addressId);
 
                 return Ok(deletedAddress);
             }

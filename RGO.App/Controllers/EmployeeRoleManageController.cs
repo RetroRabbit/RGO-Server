@@ -22,7 +22,7 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
@@ -51,7 +51,7 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
         try
@@ -78,17 +78,11 @@ public class EmployeeRoleManageController : ControllerBase
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(EmployeeRoleDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
-    [HttpDelete("")]
+    [HttpDelete()]
     public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
         try
         {
-            var employee = await _employeeService.GetEmployee(email);
-
-            var roleToRemove = await _roleService.GetRole(role);
-
-            var employeeRole = await _employeeRoleService.GetEmployeeRole(email);
-
             var employeeRoleRemoved = await _employeeRoleService.DeleteEmployeeRole(email, role);
 
             return Ok(employeeRoleRemoved);
@@ -100,7 +94,7 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
     {
         try
@@ -117,7 +111,7 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllRoles()
     {
         try

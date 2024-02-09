@@ -15,7 +15,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         _employeeEvaluationTemplateService = employeeEvaluationTemplateService;
     }
 
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetEmployeeEvaluationTemplate(string template)
     {
         try
@@ -30,7 +30,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
-    [HttpGet("")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllEmployeeEvaluationTemplates()
     {
         try
@@ -45,7 +45,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
-    [HttpPost("")]
+    [HttpPost()]
     public async Task<IActionResult> SaveEmployeeEvaluationTemplate([FromQuery] string template)
     {
         try
@@ -60,7 +60,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
-    [HttpPut("")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateEmployeeEvaluationTemplate([FromBody] EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
     {
         try
@@ -75,7 +75,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
-    [HttpDelete("")]
+    [HttpDelete()]
     public async Task<IActionResult> DeleteEmployeeEvaluationTemplate([FromQuery] string template)
     {
         try

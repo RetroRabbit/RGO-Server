@@ -95,7 +95,7 @@ namespace RGO.Tests.Services
             _dbMock.Setup(x => x.EmployeeData.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(_employeeDataDto));
 
-            var result = await _employeeDataService.DeleteEmployeeData(_employeeDataDto);
+            var result = await _employeeDataService.DeleteEmployeeData(_employeeDataDto.Id);
             Assert.NotNull(result);
             Assert.Equal(_employeeDataDto, result);
             _dbMock.Verify(r => r.EmployeeData.Delete(It.IsAny<int>()), Times.Once);
