@@ -83,6 +83,12 @@ public class EmployeeRoleManageController : ControllerBase
     {
         try
         {
+            var employee = await _employeeService.GetEmployee(email);
+
+            var roleToRemove = await _roleService.GetRole(role);
+
+            var employeeRole = await _employeeRoleService.GetEmployeeRole(email);
+
             var employeeRoleRemoved = await _employeeRoleService.DeleteEmployeeRole(email, role);
 
             return Ok(employeeRoleRemoved);

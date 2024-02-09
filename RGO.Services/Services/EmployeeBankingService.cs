@@ -45,11 +45,11 @@ public class EmployeeBankingService : IEmployeeBankingService
             .FirstAsync();
 
         if(empDto.Email ==  userEmail)
-            employeeBankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
+            bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
         else
         {
             if(await IsAdmin(userEmail))
-                employeeBankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);          
+                bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);          
             else       
                 throw new Exception("Unauthorized access");           
         }
