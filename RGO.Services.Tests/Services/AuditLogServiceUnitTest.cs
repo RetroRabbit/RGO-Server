@@ -29,7 +29,6 @@ public class AuditLogServiceUnitTest
         _unitOfWork = new Mock<IUnitOfWork>();
         _auditLogService = new AuditLogService(_unitOfWork.Object);
 
-
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
         _employee= new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -59,7 +58,6 @@ public class AuditLogServiceUnitTest
         Assert.NotNull(result);
         Assert.Single(result);
         Assert.Equal(auditlogs, result);
-
     }
 
     [Fact]
