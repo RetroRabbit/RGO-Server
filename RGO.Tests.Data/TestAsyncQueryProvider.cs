@@ -11,6 +11,12 @@ namespace RGO.Tests.Data
     internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
+        private object provider;
+
+        public TestAsyncQueryProvider(object provider)
+        {
+            this.provider = provider;
+        }
 
         internal TestAsyncQueryProvider(IQueryProvider inner)
         {
