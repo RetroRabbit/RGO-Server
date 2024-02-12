@@ -225,19 +225,23 @@ namespace RGO.UnitOfWork.Tests.Repositories
         [Fact(Skip = "Awaiting consultation")]
         public async Task UpdateEntityTest()
         {
+            var mockEntity = new EmployeeDate
+            {
+                Id = 1,
+                Employee = employee,
+                Subject = "Meeting",
+                Note = "Discuss project details",
+                Date = new DateOnly(2024, 2, 6),
+            };
+
             var dbContextMock = new Mock<DatabaseContext>();
             var dbSetMock = new Mock<DbSet<EmployeeDate>>();
-            var mockEmployeeDate = new EmployeeDateDto(1, EmployeeTd.EmployeeDto, "subject1", "note", new DateOnly());
-            EmployeeDate exist = new EmployeeDate(mockEmployeeDate);
 
-            dbSetMock.Setup(x => x.FindAsync(1)).ReturnsAsync(exist);
+            dbSetMock.Setup(x => x.FindAsync(1)).ReturnsAsync(mockEntity);
             dbContextMock.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
 
             var repository = new EmployeeDateRepository(dbContextMock.Object);
-            var updatedEmployeeDate = new EmployeeDateDto(1, EmployeeTd.EmployeeDto, "subject2", "note", new DateOnly());
-            EmployeeDate update = new EmployeeDate(mockEmployeeDate);
-
-            var result = await repository.Update(update);
+            var result = await repository.Update(mockEntity);
 
             dbSetMock.Verify(x => x.Update(It.IsAny<EmployeeDate>()), Times.Once);
             dbContextMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -251,9 +255,15 @@ namespace RGO.UnitOfWork.Tests.Repositories
         {
             var dbContextMock = new Mock<DatabaseContext>();
             var dbSetMock = new Mock<DbSet<EmployeeDate>>();
-            var mockEmployeeDate = new EmployeeDateDto(1, EmployeeTd.EmployeeDto, "subject1", "note", new DateOnly());
 
-            EmployeeDate exist = new EmployeeDate(mockEmployeeDate);
+            var mockEntity = new EmployeeDate
+            {
+                Id = 1,
+                Employee = employee,
+                Subject = "Meeting",
+                Note = "Discuss project details",
+                Date = new DateOnly(2024, 2, 6),
+            };
 
             dbContextMock.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
 
