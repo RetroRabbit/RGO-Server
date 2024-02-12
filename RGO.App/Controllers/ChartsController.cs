@@ -17,7 +17,7 @@ namespace RGO.App.Controllers
         {
             _chartService = chartService;
         }
-
+        
         [HttpGet("get")]
         public async Task<IActionResult> GetAllCharts()
         {

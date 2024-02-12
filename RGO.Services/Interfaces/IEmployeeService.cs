@@ -15,7 +15,7 @@ public interface IEmployeeService
     /// Get all employees
     /// </summary>
     /// <returns></returns>
-    Task<List<EmployeeDto>> GetAll();
+    Task<List<EmployeeDto>> GetAll(string userEmail = "");
 
     /// <summary>
     /// Get employee by email
@@ -59,8 +59,15 @@ public interface IEmployeeService
     /// Get employee by the id
     /// </summary>
     /// <param name="employeeId"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> GetById(int employeeId);
+
+
+    /// <summary>
+    /// Get simple employee profile for non admin users
+    /// </summary>
+    /// <returns>SimpeEmployeeProfileDto</returns>
+    Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
 
     /// <summary>
     /// Returns Employees data count 
