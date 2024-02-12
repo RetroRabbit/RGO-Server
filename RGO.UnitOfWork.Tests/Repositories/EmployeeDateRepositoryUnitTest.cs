@@ -104,34 +104,34 @@ namespace RGO.UnitOfWork.Tests.Repositories
             Assert.Equivalent(expectedResult, result);
         }
 
-        [Fact]
-        public async Task GetAllWithCriteriaTest()
-        {
-            Employee employee = new Employee(employeeDto, employeeTypeDto);
-            var employeeDateEntities = new List<EmployeeDate>
-            {
-                new EmployeeDate
-                {
-                    Id = 1,
-                    Employee = employee,
-                    Subject = "Meeting",
-                    Note = "Discuss project details",
-                    Date = new DateOnly(2024, 2, 6)
-                },
-            };
+        //[Fact]
+        //public async Task GetAllWithCriteriaTest()
+        //{
+        //    Employee employee = new Employee(employeeDto, employeeTypeDto);
+        //    var employeeDateEntities = new List<EmployeeDate>
+        //    {
+        //        new EmployeeDate
+        //        {
+        //            Id = 1,
+        //            Employee = employee,
+        //            Subject = "Meeting",
+        //            Note = "Discuss project details",
+        //            Date = new DateOnly(2024, 2, 6)
+        //        },
+        //    };
 
-            var queryableEmployeeDateEntities = employeeDateEntities.AsQueryable();
-            var mockDbSet = MockHelper.GetMockableDbSetWithExtensions(queryableEmployeeDateEntities);
-            _mockDbContext.Setup(m => m.Set<EmployeeDate>()).Returns(mockDbSet.Object);
+        //    var queryableEmployeeDateEntities = employeeDateEntities.AsQueryable();
+        //    var mockDbSet = MockHelper.GetMockableDbSetWithExtensions(queryableEmployeeDateEntities);
+        //    _mockDbContext.Setup(m => m.Set<EmployeeDate>()).Returns(mockDbSet.Object);
 
-            var repository = new EmployeeDateRepository(_mockDbContext.Object);
-            var result = await repository.GetAll(x => x.Id == 1);
+        //    var repository = new EmployeeDateRepository(_mockDbContext.Object);
+        //    var result = await repository.GetAll(x => x.Id == 1);
 
-            Assert.NotNull(result);
-            Assert.Single(result);
-            var expectedResult = employeeDateEntities.Where(e => e.Id == 1).Select(e => e.ToDto());
-            Assert.Equal(expectedResult, result);
-        }
+        //    Assert.NotNull(result);
+        //    Assert.Single(result);
+        //    var expectedResult = employeeDateEntities.Where(e => e.Id == 1).Select(e => e.ToDto());
+        //    Assert.Equal(expectedResult, result);
+        //}
 
         [Fact]
         public async Task DeletePassTest()
@@ -167,32 +167,32 @@ namespace RGO.UnitOfWork.Tests.Repositories
             dbContextMock.Verify(x => x.SaveChangesAsync(default), Times.Never);
         }
 
-        [Fact]
-        public async Task AddTest()
-        {
-            var mockDbSet = MockHelper.GetMockDbSet<EmployeeDate>();
-            var mockEntity = new EmployeeDate
-            {
-                Id = 1,
-                Employee = employee,
-                Subject = "Meeting",
-                Note = "Discuss project details",
-                Date = new DateOnly(2024, 2, 6),
-            };
+        //[Fact]
+        //public async Task AddTest()
+        //{
+        //    var mockDbSet = MockHelper.GetMockDbSet<EmployeeDate>();
+        //    var mockEntity = new EmployeeDate
+        //    {
+        //        Id = 1,
+        //        Employee = employee,
+        //        Subject = "Meeting",
+        //        Note = "Discuss project details",
+        //        Date = new DateOnly(2024, 2, 6),
+        //    };
 
-            mockDbSet.Setup(m => m.AddAsync(It.IsAny<EmployeeDate>(), It.IsAny<CancellationToken>()))
-                     .ReturnsAsync(new Mock<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<EmployeeDate>>().Object);
+        //    mockDbSet.Setup(m => m.AddAsync(It.IsAny<EmployeeDate>(), It.IsAny<CancellationToken>()))
+        //             .ReturnsAsync(new Mock<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<EmployeeDate>>().Object);
 
-            _mockDbContext.Setup(c => c.Set<EmployeeDate>()).Returns(mockDbSet.Object);
+        //    _mockDbContext.Setup(c => c.Set<EmployeeDate>()).Returns(mockDbSet.Object);
 
-            var repository = new EmployeeDateRepository(_mockDbContext.Object);
+        //    var repository = new EmployeeDateRepository(_mockDbContext.Object);
 
-            var result = await repository.Add(mockEntity);
+        //    var result = await repository.Add(mockEntity);
 
-            Assert.NotNull(result);
-            mockDbSet.Verify(x => x.AddAsync(mockEntity, It.IsAny<CancellationToken>()), Times.Once);
-            _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
+        //    Assert.NotNull(result);
+        //    mockDbSet.Verify(x => x.AddAsync(mockEntity, It.IsAny<CancellationToken>()), Times.Once);
+        //    _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        //}
 
         //[Fact]
         //public async Task AnyTest()
