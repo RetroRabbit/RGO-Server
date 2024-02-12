@@ -20,7 +20,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
     public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest 
     {
         private readonly Mock<DbSet<EmployeeDate>> _mockDbSet;
-
         private readonly Mock<DatabaseContext> _mockDbContext;
         private readonly EmployeeDateRepository _repository;
         EmployeeTypeDto employeeTypeDto;
@@ -62,7 +61,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
             mockDbSet.Setup(m => m.FindAsync(1)).ReturnsAsync(employeeDate);
           
             var result = await repository.GetById(1);
-
             Assert.NotNull(result);
         }
 
@@ -81,10 +79,9 @@ namespace RGO.UnitOfWork.Tests.Repositories
                     Date = new DateOnly(2024, 2, 6)
                }
             };
-
             var queryableEmployeeDateEntities = employeeDateEntities.AsQueryable();
-
             var mockDbSet = new Mock<DbSet<EmployeeDate>>();
+
             mockDbSet.As<IAsyncEnumerable<EmployeeDate>>().Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
                    .Returns(new AsyncEnumeratorWrapper<EmployeeDate>(employeeDateEntities.GetEnumerator()));
 
@@ -119,7 +116,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
                     Date = new DateOnly(2024, 2, 6)
                 },
             };
-
             var queryableEmployeeDateEntities = employeeDateEntities.AsQueryable();
             var mockDbSet = MockHelper.GetMockableDbSetWithExtensions(queryableEmployeeDateEntities);
             _mockDbContext.Setup(m => m.Set<EmployeeDate>()).Returns(mockDbSet.Object);
@@ -143,7 +139,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
             dbContextMock.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
 
             var repository = new EmployeeDateRepository(dbContextMock.Object);
-
             var result = await repository.Delete(1);
 
             Assert.NotNull(result);
@@ -182,7 +177,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
 
             mockDbSet.Setup(m => m.AddAsync(It.IsAny<EmployeeDate>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync(new Mock<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<EmployeeDate>>().Object);
-
             _mockDbContext.Setup(c => c.Set<EmployeeDate>()).Returns(mockDbSet.Object);
 
             var repository = new EmployeeDateRepository(_mockDbContext.Object);
@@ -205,7 +199,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
                 Note = "Discuss project details",
                 Date = new DateOnly(2024, 2, 6),
             };
-
             var mockDbSet = new Mock<DbSet<EmployeeDate>>();
             mockDbSet.Setup(m => m.FindAsync(It.IsAny<object[]>())).ReturnsAsync(mockEntity);
 
@@ -233,7 +226,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
                 Note = "Discuss project details",
                 Date = new DateOnly(2024, 2, 6),
             };
-
             var dbContextMock = new Mock<DatabaseContext>();
             var dbSetMock = new Mock<DbSet<EmployeeDate>>();
 
@@ -255,7 +247,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
         {
             var dbContextMock = new Mock<DatabaseContext>();
             var dbSetMock = new Mock<DbSet<EmployeeDate>>();
-
             var mockEntity = new EmployeeDate
             {
                 Id = 1,
@@ -286,7 +277,6 @@ namespace RGO.UnitOfWork.Tests.Repositories
                     Note = "Discuss project details",
                     Date = new DateOnly(2024, 2, 6)},              
             };
-
             var dbSetMock = new Mock<DbSet<EmployeeDate>>();
             var mockDbContext = new Mock<DatabaseContext>();
             
