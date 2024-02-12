@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace RGO.Tests.Data
 {
-    internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
+    public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
         private object provider;

@@ -209,8 +209,7 @@ namespace RGO.UnitOfWork.Tests.Repositories
             var mockDbSet = new Mock<DbSet<EmployeeDate>>();
             mockDbSet.Setup(m => m.FindAsync(It.IsAny<object[]>())).ReturnsAsync(mockEntity);
 
-            var testAsyncQueryProvider = new TestAsyncQueryProvider<EmployeeDate>(_mockDbContext.Object.Set<EmployeeDate>().Provider);
-            mockDbSet.As<IAsyncEnumerable<EmployeeDate>>().Setup(m => m.Provider).Returns(testAsyncQueryProvider);
+            var testAsyncQueryProvider = new TestAsyncQueryProvider<EmployeeDate>(_mockDbContext.Object.Set<EmployeeDate>());
             mockDbSet.As<IQueryable<EmployeeDate>>().Setup(m => m.Provider).Returns(testAsyncQueryProvider);
 
             _mockDbContext.Setup(c => c.Set<EmployeeDate>()).Returns(mockDbSet.Object);
@@ -252,12 +251,9 @@ namespace RGO.UnitOfWork.Tests.Repositories
         {
             var dbContextMock = new Mock<DatabaseContext>();
             var dbSetMock = new Mock<DbSet<EmployeeDate>>();
-
             var mockEmployeeDate = new EmployeeDateDto(1, EmployeeTd.EmployeeDto, "subject1", "note", new DateOnly());
-            EmployeeDate exist = new EmployeeDate(mockEmployeeDate);
 
-            dbSetMock.Setup(x => x.FirstOrDefaultAsync(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-                .ReturnsAsync(exist);
+            EmployeeDate exist = new EmployeeDate(mockEmployeeDate);
 
             dbContextMock.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
 
