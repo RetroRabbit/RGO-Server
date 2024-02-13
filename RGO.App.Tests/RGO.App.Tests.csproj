@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RGO.App\RGO.App.csproj" />
     <ProjectReference Include="..\RGO.Services\RGO.Services.csproj" />
+    <ProjectReference Include="..\RGO.Tests.Data\RGO.Tests.Data.csproj" />
   </ItemGroup>
 
 </Project>

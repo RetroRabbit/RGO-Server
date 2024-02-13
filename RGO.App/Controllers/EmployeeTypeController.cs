@@ -18,7 +18,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
-        [HttpGet("")]
+        [HttpGet()]
         public async Task<IActionResult> GetAllEmployeeTypes()
         {
             try
