@@ -21,7 +21,7 @@ public interface IEmployeeService
     /// Get employee by email
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> GetEmployee(string email);
 
     /// <summary>
@@ -35,7 +35,7 @@ public interface IEmployeeService
     /// Save employee
     /// </summary>
     /// <param name="employeeDto"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto);
 
     /// <summary>
@@ -43,16 +43,21 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="employeeDto"></param>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email);
 
     /// <summary>
     /// Delete employee
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> DeleteEmployee(string email);
 
+    /// <summary>
+    /// Returns an EmployeeDto list filtered by a type
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns>List<EmployeeDto></returns>
     Task<List<EmployeeDto>> GetEmployeesByType(string type);
 
     /// <summary>
