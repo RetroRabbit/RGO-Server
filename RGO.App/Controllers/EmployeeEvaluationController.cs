@@ -15,7 +15,7 @@ public class EmployeeEvaluationController : Controller
         _employeeEvaluationService = employeeEvaluationService;
     }
 
-    [HttpGet()]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployeeEvaluations(
         [FromQuery] string email)
     {

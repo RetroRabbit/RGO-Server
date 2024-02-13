@@ -8,7 +8,7 @@ using System.Security;
 
 namespace RGO.App.Controllers;
 
-[Route("rolemanager")]
+[Route("role-manager")]
 [ApiController]
 public class RoleManageController : ControllerBase
 {
@@ -79,7 +79,7 @@ public class RoleManageController : ControllerBase
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [ProducesResponseType(typeof(List<string>), 200)]
     [ProducesErrorResponseType(typeof(string))]
-    [HttpGet()]
+    [HttpGet("permissions")]
     public async Task<IActionResult> GetRolePermissions([FromQuery] string role)
     {
         try

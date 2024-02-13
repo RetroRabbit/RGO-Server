@@ -51,7 +51,7 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost()]
+    [HttpPut()]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
         try
@@ -117,7 +117,7 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet()]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllRoles()
     {
         try
