@@ -4,6 +4,7 @@ using RGO.App.Controllers;
 using RGO.Models;
 using RGO.Models.Enums;
 using RGO.Services.Interfaces;
+using RGO.Tests.Data.Models;
 using Xunit;
 
 namespace RGO.App.Tests.Controllers
