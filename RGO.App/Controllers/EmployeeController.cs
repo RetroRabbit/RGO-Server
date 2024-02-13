@@ -133,7 +133,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("filterbytype")]
+    [HttpGet("filter-by-type")]
     public async Task<IActionResult> FilterByType(string type)
     {
         try
