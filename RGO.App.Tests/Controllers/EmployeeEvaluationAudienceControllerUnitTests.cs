@@ -53,19 +53,7 @@ namespace RGO.App.Tests.Controllers
                         new DateOnly(2022, 1, 1),
                         new DateOnly(2022, 2, 1)
                     ),
-                    new EmployeeDto(
-                        2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                        new EmployeeAddressDto(
-                            1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                        new EmployeeAddressDto(
-                            2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                        "12",
-                        "Emergency Contact",
-                        "987654321"
-                    )
+                    EmployeeTestData.EmployeeDto3
                 )
             };
 
@@ -103,51 +91,16 @@ namespace RGO.App.Tests.Controllers
             var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
             var savedAudience = new EmployeeEvaluationAudienceDto
-                (1, new EmployeeEvaluationDto(1, new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                        "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                        new EmployeeAddressDto
-                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                        new EmployeeAddressDto
-                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                        "12",
-                        "Emergency Contact",
-                        "987654321"),
+                (1, new EmployeeEvaluationDto(1, EmployeeTestData.EmployeeDto,
 
                     new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
 
-                    new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                        new EmployeeAddressDto
-                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                        new EmployeeAddressDto
-                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                        "12",
-                        "Emergency Contact",
-                        "987654321"
-                        ),
+                    EmployeeTestData.EmployeeDto2,
                         "Employee Evaluation Subject",
                         new DateOnly(2022, 1, 1),
                         new DateOnly(2022, 2, 1)),
 
-                    new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                        new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                        "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male, "photo.jpg",
-                        "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                        new EmployeeAddressDto
-                        (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-                        new EmployeeAddressDto
-                        (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
-                        "12",
-                        "Emergency Contact",
-                        "987654321"
-                        )
+                    EmployeeTestData.EmployeeDto3
                     );
 
             serviceMock.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>())).ReturnsAsync(savedAudience);
