@@ -17,15 +17,6 @@ Runs on(.NET Web API):
 - https://localhost:7026
 - http://localhost:5193
 
-# pgAdmin
-
-### Setup PgAdmin and Create Database
-
-Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
-Password should be postgrespw. Set the host to localhost. You should be able to connect to the
-RGO database after adding migrations and updating the DB in package manager console in
-Visual Studios.
-
 ## Docker
 
 ### Install Docker
@@ -41,6 +32,16 @@ Visual Studios.
 ```powershell
 wsl --install
 ```
+
+# pgAdmin
+
+### Setup PgAdmin and Create Database
+
+Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
+Password should be postgrespw. Set the host to localhost. You should be able to connect to the
+RGO database after adding migrations and updating the DB in package manager console in
+Visual Studios.
+
 
 ### Change to the Dev branch
 
@@ -128,3 +129,43 @@ Generate report
 Navigate to the %temp% / report folder and open index.html using your prefered browser found at
     /RGO-Server/coverage/report/index.html
 ```
+
+# Naming Conventions
+## Endpoints
+Use forward slash
+Use forward slashes for resource hierarchy and to separate URI resources.
+Example: "/employee/{id}"
+
+
+## Use nouns, not verbs
+When naming the URIs, you should use nouns to describe what the resource is and not what it does. For example:
+Wrong:   "getEmployees/"
+Correct: "employees/"
+
+## Use plural nouns
+This makes it clear that there is more than one resource within a collection. Using singular nouns can be confusing. For example:
+Wrong:  "chart/{id}"
+Correct: "charts/{id}"
+
+## Lowercase letters
+As a standard, URLs are typed in lowercase. The same applies to API URIs.
+
+
+## Use hyphens to separate words
+When chaining words together, hyphens are the most user-friendly way and are a better choice than underscores.
+For example: "employee-documents/10"
+
+
+## Endpoint strings can be the same provided that the Request Mapping is different:
+PUT "employee/{id}"
+GET "employee/{id}"
+
+## Variables
+All variables in methods must be in camelCase
+
+Anything referenced by a service should prefixed with an underscore, to indicate that it is a reference to a service 
+
+All Method names must be PascalCase
+ ie: SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto)
+
+PS: When naming and endpoint, variable or method make the name as descriptive as possible. The only exception is for small scopes like a lambda.
