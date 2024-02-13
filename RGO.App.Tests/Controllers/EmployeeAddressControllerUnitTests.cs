@@ -19,8 +19,8 @@ public class EmployeeAddressControllerUnitTests
     {
         var expectedAddresses = new List<EmployeeAddressDto>
         {
-            EmployeeAddressTestData
-            new EmployeeAddressDto(2, "2", "Complex Name 2", "Street Number 2", "Suburb or District 2", "City 2", "Country 2", "Province 2", "0002")
+            EmployeeAddressTestData.EmployeeAddressDto2,
+            EmployeeAddressTestData.EmployeeAddressDto3
         };
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
@@ -53,8 +53,8 @@ public class EmployeeAddressControllerUnitTests
     [Fact]
     public async Task SaveEmployeeAddressReturnsOkResultWithSavedAddress()
     {
-        var addressToSave = new EmployeeAddressDto(1, "1", "Complex Name 1", "Street Number 1", "Suburb or District 1", "City 1", "Country 1", "Province 1", "0001");
-        var savedAddress = new EmployeeAddressDto(1, "1", "Complex Name 1", "Street Number 1", "Suburb or District 1", "City 1", "Country 1", "Province 1", "0001");
+        var addressToSave = EmployeeAddressTestData.EmployeeAddressDto2;
+        var savedAddress = EmployeeAddressTestData.EmployeeAddressDto2;
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
         mockEmployeeAddressService.Setup(s => s.Save(addressToSave)).ReturnsAsync(savedAddress);
@@ -71,7 +71,7 @@ public class EmployeeAddressControllerUnitTests
     [Fact]
     public async Task SaveEmployeeAddressThrowsExceptionReturnsNotFoundResult()
     {
-        var addressToSave = new EmployeeAddressDto(1, "1", "Complex Name 1", "Street Number 1", "Suburb or District 1", "City 1", "Country 1", "Province 1", "0001");
+        var addressToSave = EmployeeAddressTestData.EmployeeAddressDto2;
         var exceptionMessage = "An error occurred while saving the address.";
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
@@ -88,7 +88,7 @@ public class EmployeeAddressControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeAddressReturnsOkResultWithUpdatedAddress()
     {
-        var addressToUpdate = new EmployeeAddressDto(1, "1", "Complex Name 1", "Street Number 1", "Suburb or District 1", "City 1", "Country 1", "Province 1", "0001");
+        var addressToUpdate = EmployeeAddressTestData.EmployeeAddressDto2;
         var updatedAddress = new EmployeeAddressDto(1, "Updated 1", "Updated Complex Name 1", "Updated Street Number 1", "Updated Suburb or District 1", "Updated City 1", "Updated Country 1", "Updated Province 1", "0002");
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
@@ -106,7 +106,7 @@ public class EmployeeAddressControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeAddressReturnsNotFoundResultWhenExceptionThrown()
     {
-        var addressToUpdate = new EmployeeAddressDto(1, "1", "Complex Name 1", "Street Number 1", "Suburb or District 1", "City 1", "Country 1", "Province 1", "0001");
+        var addressToUpdate = EmployeeAddressTestData.EmployeeAddressDto2;
         var exceptionMessage = "An error occurred while updating the address.";
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
@@ -123,7 +123,7 @@ public class EmployeeAddressControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeAddressReturnsOkResultWithDeletedAddress()
     {
-        var addressToDelete = new EmployeeAddressDto(1, "1", "Complex Name 1", "Street Number 1", "Suburb or District 1", "City 1", "Country 1", "Province 1", "0001");
+        var addressToDelete = EmployeeAddressTestData.EmployeeAddressDto2;
         var deletedAddress = new EmployeeAddressDto(1, "Deleted 1", "Deleted Complex Name 1", "Deleted Street Number 1", "Deleted Suburb or District 1", "Deleted City 1", "Deleted Country 1", "Deleted Province 1", "0002");
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
@@ -141,7 +141,7 @@ public class EmployeeAddressControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeAddressReturnsNotFoundResultWhenExceptionThrown()
     {
-        var addressToDelete = new EmployeeAddressDto(1, "1", "Complex Name 1", "Street Number 1", "Suburb or District 1", "City 1", "Country 1", "Province 1", "0001");
+        var addressToDelete = EmployeeAddressTestData.EmployeeAddressDto2;
         var exceptionMessage = "An error occurred while deleting the address.";
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
