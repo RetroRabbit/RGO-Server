@@ -56,9 +56,9 @@ namespace RGO.Services.Services
             foreach (var option in fieldCodeOptionsDto)
             {
                 var field = await GetAllFieldCodeOptions();
-                var existingOptions = field
-                    .Where(fieldCodeOption => fieldCodeOption.FieldCodeId == option.FieldCodeId && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
-                    .FirstOrDefault();
+                var existingOptions = field.Where(fieldCodeOption => fieldCodeOption.FieldCodeId == option.FieldCodeId 
+                                               && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
+                                                .FirstOrDefault();
 
                 if (existingOptions == null)
                 {
@@ -82,7 +82,7 @@ namespace RGO.Services.Services
                 }
                 if (!check)
                 {
-                    var deletedOption = await _db.FieldCodeOptions.Delete(option.Id);
+                    _ = await _db.FieldCodeOptions.Delete(option.Id);
                 }
             }
 

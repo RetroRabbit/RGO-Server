@@ -4,7 +4,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/templateitem/")]
+[Route("template-item")]
 [ApiController]
 public class EmployeeEvaluationTemplateItemController : ControllerBase
 {
@@ -15,7 +15,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         _employeeEvaluationTemplateItemService = employeeEvaluationTemplateItemService;
     }
 
-    [HttpGet("getall")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItems(
         [FromQuery] string? section,
         [FromQuery] string? template)
@@ -39,7 +39,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         }
     }
 
-    [HttpPost("save")]
+    [HttpPost()]
     public async Task<IActionResult> SaveEmployeeEvaluationTemplateItem(
         [FromQuery] string template,
         [FromQuery] string section,
@@ -59,7 +59,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         }
     }
 
-    [HttpPut("update")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateEmployeeEvaluationTemplateItem(
         [FromBody] EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
     {
@@ -75,7 +75,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         }
     }
 
-    [HttpDelete("delete")]
+    [HttpDelete()]
     public async Task<IActionResult> DeleteEmployeeEvaluationTemplateItem(
         [FromQuery] string template,
         [FromQuery] string section,

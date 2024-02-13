@@ -15,17 +15,14 @@ public class AuthService : IAuthService
     private readonly IConfiguration _configuration;
     private readonly IEmployeeService _employeeService;
     private readonly IRoleAccessLinkService _roleAccessLinkService;
-    private readonly IUnitOfWork _db;
 
     public AuthService(
         IConfiguration configuration,
         IEmployeeService employeeService,
-        IUnitOfWork db,
         IRoleAccessLinkService roleAccessLinkService)
     {
         _configuration = configuration;
         _employeeService = employeeService;
-        _db = db;
         _roleAccessLinkService = roleAccessLinkService;
     }
 

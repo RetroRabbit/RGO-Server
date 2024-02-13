@@ -23,13 +23,13 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
     {
         bool exists = await _db.EmployeeEvaluationRating
             .Any(x => x.Employee.Email== rating.EmployeeEmail
-                && x.Evaluation.Employee.Email == rating.Evaluation.EmployeeEmail
-                && x.Evaluation.Owner.Email == rating.Evaluation.OwnerEmail
-                && x.Evaluation.Template.Description == rating.Evaluation.Template
-                && x.Evaluation.Subject == rating.Evaluation.Subject
-                && x.Description == rating.Description
-                && x.Comment == rating.Comment
-                && x.Score == rating.Score);
+                   && x.Evaluation.Employee.Email == rating.Evaluation.EmployeeEmail
+                   && x.Evaluation.Owner.Email == rating.Evaluation.OwnerEmail
+                   && x.Evaluation.Template.Description == rating.Evaluation.Template
+                   && x.Evaluation.Subject == rating.Evaluation.Subject
+                   && x.Description == rating.Description
+                   && x.Comment == rating.Comment
+                   && x.Score == rating.Score);
 
         return exists;
     }
@@ -55,13 +55,13 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
         EmployeeEvaluationRating employeeEvaluationRating = await _db.EmployeeEvaluationRating
             .Get(x => x.Employee.Email == rating.EmployeeEmail
-                && x.Evaluation.Employee.Email == rating.Evaluation.EmployeeEmail
-                && x.Evaluation.Owner.Email == rating.Evaluation.OwnerEmail
-                && x.Evaluation.Template.Description == rating.Evaluation.Template
-                && x.Evaluation.Subject == rating.Evaluation.Subject
-                && x.Description == rating.Description
-                && x.Comment == rating.Comment
-                && x.Score == rating.Score)
+                   && x.Evaluation.Employee.Email == rating.Evaluation.EmployeeEmail
+                   && x.Evaluation.Owner.Email == rating.Evaluation.OwnerEmail
+                   && x.Evaluation.Template.Description == rating.Evaluation.Template
+                   && x.Evaluation.Subject == rating.Evaluation.Subject
+                   && x.Description == rating.Description
+                   && x.Comment == rating.Comment
+                   && x.Score == rating.Score)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)
@@ -103,13 +103,6 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
     public async Task<EmployeeEvaluationRatingDto> Update(EvaluationRatingInput rating)
     {
-        EmployeeEvaluationInput evaluationInput = new(
-            rating.Evaluation.Id,
-            rating.Evaluation.OwnerEmail,
-            rating.Evaluation.EmployeeEmail,
-            rating.Evaluation.Template,
-            rating.Evaluation.Subject);
-
         bool exists = await CheckIfExists(rating);
 
         if (!exists) throw new Exception("Employee Evaluation Rating not found");
@@ -135,12 +128,6 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
         if (!evaluationExists)
             throw new Exception($"Employee Evaluation not found");
-
-        EmployeeEvaluationDto evaluation = await _employeeEvaluationService.Get(
-            rating.Evaluation.EmployeeEmail,
-            rating.Evaluation.OwnerEmail,
-            rating.Evaluation.Template,
-            rating.Evaluation.Subject);
 
         bool exists = await CheckIfExists(rating);
 

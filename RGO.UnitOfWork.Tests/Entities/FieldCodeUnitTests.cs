@@ -21,6 +21,7 @@ public class FieldCodeUnitTests
         var fieldCodeDto = new FieldCodeDto(1, "Code", "Name", "Description", "Regex", FieldCodeType.String, ItemStatus.Active, false, "InternalTable", 0, false);
         var fieldCode = new FieldCode(fieldCodeDto);
         var dto = fieldCode.ToDto();
+        Assert.NotNull(dto);
         Assert.Equal(dto.Id, fieldCode.Id);
         Assert.Equal(dto.Code, fieldCode.Code);
         Assert.Equal(dto.Name, fieldCode.Name);

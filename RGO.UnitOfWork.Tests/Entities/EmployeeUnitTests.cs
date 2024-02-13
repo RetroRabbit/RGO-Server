@@ -10,6 +10,7 @@ namespace RGO.UnitOfWork.Tests.Entities
         public async Task EmployeeTest()
         {
             var employee = new Employee();
+
             Assert.IsType<Employee>(employee);
             Assert.NotNull(employee);
         }
@@ -19,6 +20,7 @@ namespace RGO.UnitOfWork.Tests.Entities
         {
             var employee = new Employee();
             var employeeDto = employee.ToDto();
+
             Assert.IsType<EmployeeDto>(employeeDto);
             Assert.NotNull(employeeDto);
 

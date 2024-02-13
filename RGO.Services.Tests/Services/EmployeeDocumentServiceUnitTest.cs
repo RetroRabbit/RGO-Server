@@ -15,21 +15,17 @@ public class EmployeeDocumentServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
-    private readonly Mock<IEmployeeDocumentService> _employeeDocumentServiceMock;
-
     private readonly EmployeeDocumentService _employeeDocumentService;
 
     public EmployeeDocumentServiceUnitTest()
     {
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _employeeServiceMock = new Mock<IEmployeeService>();
-        _employeeDocumentServiceMock = new Mock<IEmployeeDocumentService>();
         _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
     }
 
     int employeeId = 1;
     static EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-    static EmployeeType employeeType = new EmployeeType(employeeTypeDto);
     static EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
     static EmployeeDto employeeMock = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -203,7 +199,7 @@ public class EmployeeDocumentServiceUnitTest
 
         var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
-        var result = await service.DeleteEmployeeDocument(employeeDocumentDto);
+        var result = await service.DeleteEmployeeDocument(employeeDocumentDto.Id);
 
         Assert.NotNull(result);
     }

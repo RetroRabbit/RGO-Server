@@ -23,12 +23,9 @@ public class RoleService : IRoleService
         return await _db.Role.Add(new Role(roleDto));
     }
 
-    public async Task<RoleDto> DeleteRole(string name)
+    public async Task<RoleDto> DeleteRole(int roleId)
     {
-        RoleDto existingRole = await GetRole(name);
-
-        RoleDto deletedRole = await _db.Role
-            .Delete(existingRole.Id);
+        RoleDto deletedRole = await _db.Role.Delete(roleId);
 
         return deletedRole;
     }

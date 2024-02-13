@@ -4,7 +4,7 @@ using RGO.Services.Services;
 
 namespace RGO.App.Controllers
 {
-    [Route("/client/")]
+    [Route("clients")]
     [ApiController]
     public class ClientController : Controller
     {
@@ -15,7 +15,7 @@ namespace RGO.App.Controllers
             _clientService = clientService;
         }
 
-        [HttpGet("get")]
+        [HttpGet()]
         public async Task<IActionResult> GetAllClients()
         {
             try
