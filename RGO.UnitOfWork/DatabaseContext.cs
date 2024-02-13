@@ -41,7 +41,8 @@ namespace RGO.UnitOfWork
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var builder = new ConfigurationBuilder();
-            builder.AddJsonFile("appsettings.json");
+            builder.AddJsonFile("appsettings.json")
+                .AddUserSecrets<DatabaseContext>();
             var configuration = builder.Build();
             optionsBuilder.UseNpgsql(configuration.GetConnectionString("Default"));
         }
