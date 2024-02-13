@@ -14,7 +14,8 @@ public class FieldCodeDto
         ItemStatus Status,
         bool Internal,
         string? InternalTable,
-        FieldCodeCategory Category)
+        FieldCodeCategory Category,
+        bool Required)
     {
         this.Id = Id;
         this.Code = Code;
@@ -26,6 +27,7 @@ public class FieldCodeDto
         this.Internal = Internal;
         this.InternalTable = InternalTable;
         this.Category = Category;
+        this.Required = Required;
     }
 
     public List<FieldCodeOptionsDto> Options { get; set; }
@@ -39,4 +41,5 @@ public class FieldCodeDto
     public bool Internal { get; set; }
     public string? InternalTable { get; set; }
     public FieldCodeCategory Category { get; set; }
+    public bool Required { get; set; }
 }

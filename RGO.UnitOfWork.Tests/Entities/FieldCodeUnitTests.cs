@@ -18,7 +18,7 @@ public class FieldCodeUnitTests
     [Fact]
     public async Task FieldCodeToDtoTest()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code", "Name", "Description", "Regex", FieldCodeType.String, ItemStatus.Active, false, "InternalTable", 0);
+        var fieldCodeDto = new FieldCodeDto(1, "Code", "Name", "Description", "Regex", FieldCodeType.String, ItemStatus.Active, false, "InternalTable", 0, false);
         var fieldCode = new FieldCode(fieldCodeDto);
         var dto = fieldCode.ToDto();
         Assert.Equal(dto.Id, fieldCode.Id);
@@ -31,5 +31,6 @@ public class FieldCodeUnitTests
         Assert.Equal(dto.Internal, fieldCode.Internal);
         Assert.Equal(dto.InternalTable, fieldCode.InternalTable);
         Assert.Equal(dto.Category, fieldCode.Category);
+        Assert.Equal(dto.Required, fieldCode.Required);
     }
 }
