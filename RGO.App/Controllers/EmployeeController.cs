@@ -57,7 +57,7 @@ public class EmployeeController : ControllerBase
 
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet()]
+    [HttpGet("by-email")]
     public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
     {
         try
@@ -99,7 +99,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet()]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployees()
     {
         try

@@ -30,7 +30,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
-    [HttpGet()]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployeeEvaluationTemplates()
     {
         try

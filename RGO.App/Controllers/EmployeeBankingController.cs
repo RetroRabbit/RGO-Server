@@ -108,7 +108,7 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet()]
+    [HttpGet("details")]
     public async Task<IActionResult> GetBankingDetails([FromQuery] int id)
     {
         try

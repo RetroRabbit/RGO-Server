@@ -17,7 +17,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         _employeeEvaluationAudienceService = employeeEvaluationAudienceService;
     }
 
-    [HttpPost()]
+    [HttpPost("all")]
     public async Task<IActionResult> GetAll([FromBody] EmployeeEvaluationInput evaluationInput)
     {
         try

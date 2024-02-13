@@ -14,7 +14,7 @@ public class EmployeeEvaluationRatingController : ControllerBase
     {
         _employeeEvaluationRatingService = employeeEvaluationRatingService;
     }
-    [HttpPost()]
+    [HttpPost("all")]
     public async Task<IActionResult> GetAllEmployeeEvaluationRatings(
         [FromBody] EmployeeEvaluationInput evaluationInput)
     {
