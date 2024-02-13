@@ -67,16 +67,9 @@ namespace RGO.Services.Services
             return updatedEmployeeData;
         }
 
-        public async Task<EmployeeDataDto> DeleteEmployeeData(EmployeeDataDto employeeDataDto)
+        public async Task<EmployeeDataDto> DeleteEmployeeData(int employeeDataId)
         {
-            var employeesData = await _db.EmployeeData.GetAll();
-            var employeeData = employeesData
-                .Where(employeeData => employeeData.EmployeeId == employeeDataDto.EmployeeId)
-                .Select(employeeData => employeeData)
-                .FirstOrDefault();
-
-            if (employeeData == null) { throw new Exception("No employee data record found"); }
-            var deletedData = await _db.EmployeeData.Delete(new EmployeeData(employeeDataDto).Id);
+            var deletedData = await _db.EmployeeData.Delete(employeeDataId);
             return deletedData;
         }
     }

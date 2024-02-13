@@ -121,7 +121,7 @@ public class EmployeeControllerUnitTests
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
             .ReturnsAsync(_employee);
 
-        var result = await _controller.GetEmployee(null);
+        var result = await _controller.GetEmployeeByEmail(null);
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
@@ -136,7 +136,7 @@ public class EmployeeControllerUnitTests
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
             .ReturnsAsync(_employee);
 
-        var result = await _controller.GetEmployee(_employee.Email);
+        var result = await _controller.GetEmployeeByEmail(_employee.Email);
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
@@ -152,7 +152,7 @@ public class EmployeeControllerUnitTests
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
             .ThrowsAsync(new Exception("Not found"));
 
-        var result = await _controller.GetEmployee(_employee.Email);
+        var result = await _controller.GetEmployeeByEmail(_employee.Email);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(404, notFoundResult.StatusCode);

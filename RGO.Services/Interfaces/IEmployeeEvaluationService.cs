@@ -21,13 +21,13 @@ public interface IEmployeeEvaluationService
     /// <summary>
     /// Get an Employee Evaluation
     /// </summary>
-    /// <param name="employeeEamil"></param>
+    /// <param name="employeeEmail"></param>
     /// <param name="ownerEmail"></param>
     /// <param name="template"></param>
     /// <param name="subject"></param>
     /// <returns>Employee Evaluation</returns>
     Task<EmployeeEvaluationDto> Get(
-        string employeeEamil,
+        string employeeEmail,
         string ownerEmail,
         string template,
         string subject);

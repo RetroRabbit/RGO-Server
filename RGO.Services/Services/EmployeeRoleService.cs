@@ -26,6 +26,7 @@ public class EmployeeRoleService : IEmployeeRoleService
 
         if (isEmployeeRoleExist)
             throw new Exception("Employee Role already exist");
+
         EmployeeRoleDto newEmployeeRole = await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
         if (newEmployeeRole.Employee == null || newEmployeeRole.Role == null)

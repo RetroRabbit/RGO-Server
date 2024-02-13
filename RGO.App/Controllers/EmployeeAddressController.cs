@@ -5,7 +5,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers
 {
-    [Route("/employeeaddress/")]
+    [Route("employee-address")]
     [ApiController]
     public class EmployeeAddressController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpGet("getall")]
+        [HttpGet()]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -33,7 +33,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpPost("save")]
+        [HttpPost()]
         public async Task<IActionResult> SaveEmployeeAddress([FromBody] EmployeeAddressDto address)
         {
             try
@@ -49,7 +49,7 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpPut("update")]
+        [HttpPut()]
         public async Task<IActionResult> UpdateEmployeeAddress([FromBody] EmployeeAddressDto address)
         {
             try
@@ -65,12 +65,12 @@ namespace RGO.App.Controllers
         }
 
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteEmployeeAddress([FromBody] EmployeeAddressDto address)
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteEmployeeAddress(int addressId)
         {
             try
             {
-                var deletedAddress = await _employeeAddressService.Delete(address);
+                var deletedAddress = await _employeeAddressService.Delete(addressId);
 
                 return Ok(deletedAddress);
             }

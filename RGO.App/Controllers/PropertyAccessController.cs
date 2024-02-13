@@ -5,7 +5,7 @@ using RGO.Services.Interfaces;
 
 namespace RGO.App.Controllers;
 
-[Route("/access/")]
+[Route("access")]
 public class PropertyAccessController : ControllerBase
 {
     private readonly IPropertyAccessService _propertyAccessService;
@@ -16,7 +16,7 @@ public class PropertyAccessController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("get")]
+    [HttpGet()]
     public async Task<IActionResult> GetPropertyWithAccess([FromQuery] string email)
     {
         try
@@ -31,7 +31,7 @@ public class PropertyAccessController : ControllerBase
     }
    
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpPut("update")]
+    [HttpPut()]
     public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields, [FromQuery] string email)
     {
         try

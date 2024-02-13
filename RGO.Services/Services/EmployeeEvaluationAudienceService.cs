@@ -62,7 +62,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
 
         EmployeeEvaluationAudience employeeEvaluationAudience = await _db.EmployeeEvaluationAudience
             .Get(x => x.Employee.Email == email
-                           && x.Evaluation.Id == evaluation.Id)
+                    && x.Evaluation.Id == evaluation.Id)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)
@@ -122,11 +122,10 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
             throw new Exception($"Employee Evaluation not found");
 
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
-            .Get(x =>
-                x.Evaluation.Owner.Email == evaluation.OwnerEmail
-                && x.Evaluation.Employee.Email == evaluation.EmployeeEmail
-                && x.Evaluation.Template.Description == evaluation.Template
-                && x.Evaluation.Subject == evaluation.Subject)
+            .Get(x => x.Evaluation.Owner.Email == evaluation.OwnerEmail
+                   && x.Evaluation.Employee.Email == evaluation.EmployeeEmail
+                   && x.Evaluation.Template.Description == evaluation.Template
+                   && x.Evaluation.Subject == evaluation.Subject)
             .AsNoTracking()
             .Include(x => x.Employee)
             .Include(x => x.Employee.EmployeeType)

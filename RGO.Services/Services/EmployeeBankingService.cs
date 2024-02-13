@@ -48,7 +48,7 @@ public class EmployeeBankingService : IEmployeeBankingService
             bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
         else
         {
-            if(await IsAdmin(userEmail))           
+            if(await IsAdmin(userEmail))
                 bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);          
             else       
                 throw new Exception("Unauthorized access");           

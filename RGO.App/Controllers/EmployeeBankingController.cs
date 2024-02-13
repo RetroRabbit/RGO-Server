@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
-[Route("/employeebanking/")]
+[Route("employee-banking")]
 [ApiController]
 public class EmployeeBankingController : ControllerBase
 {
@@ -18,7 +18,7 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPost("add")]
+    [HttpPost()]
     public async Task<IActionResult> AddBankingInfo([FromBody] SimpleEmployeeBankingDto newEntry)
     {
         try
@@ -57,7 +57,7 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("get")]
+    [HttpGet()]
     public async Task<IActionResult> Get([FromQuery] int status)
     {
         try
@@ -72,7 +72,7 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPut("update")]
+    [HttpPut()]
     public async Task<IActionResult> Update([FromBody] SimpleEmployeeBankingDto updateEntry)
      {
         if(updateEntry.AccountHolderName.Length == 0)
@@ -108,7 +108,7 @@ public class EmployeeBankingController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet("getDetails")]
+    [HttpGet()]
     public async Task<IActionResult> GetBankingDetails([FromQuery] int id)
     {
         try

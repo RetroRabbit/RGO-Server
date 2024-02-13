@@ -1,4 +1,5 @@
 ﻿using RGO.Models;
+using RGO.UnitOfWork.Entities;
 
 namespace RGO.Services.Interfaces;
 
@@ -36,7 +37,7 @@ public interface IRoleService
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<RoleDto> DeleteRole(string name);
+    Task<RoleDto> DeleteRole(int roleId);
 
     /// <summary>
     /// Check Role

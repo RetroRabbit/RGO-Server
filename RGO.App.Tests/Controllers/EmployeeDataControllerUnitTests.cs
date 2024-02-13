@@ -136,17 +136,17 @@ namespace RGO.App.Tests.Controllers
         {
             var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
             var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-            mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto))
+            mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto.Id))
                 .ReturnsAsync(employeeDataDto);
 
             var controller = new EmployeeDataController(mockEmployeeDataService.Object);
 
-            var result = await controller.DeleteEmployeeData(employeeDataDto);
+            var result = await controller.DeleteEmployeeData(employeeDataDto.Id);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsType<EmployeeDataDto>(okResult.Value);
 
-            mockEmployeeDataService.Verify(service => service.DeleteEmployeeData(employeeDataDto), Times.Once);
+            mockEmployeeDataService.Verify(service => service.DeleteEmployeeData(employeeDataDto.Id), Times.Once);
         }
 
         [Fact]
@@ -154,19 +154,19 @@ namespace RGO.App.Tests.Controllers
         {
             var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
             var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-            mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto))
+            mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto.Id))
                 .ThrowsAsync(new Exception("Error deleting employee data."));
 
             var controller = new EmployeeDataController(mockEmployeeDataService.Object);
 
-            var result = await controller.DeleteEmployeeData(employeeDataDto);
+            var result = await controller.DeleteEmployeeData(employeeDataDto.Id);
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var errorMessage = Assert.IsType<string>(notFoundResult.Value);
 
             Assert.Equal("Error deleting employee data.", errorMessage);
 
-            mockEmployeeDataService.Verify(service => service.DeleteEmployeeData(employeeDataDto), Times.Once);
+            mockEmployeeDataService.Verify(service => service.DeleteEmployeeData(employeeDataDto.Id), Times.Once);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
-[Route("/employee/")]
+[Route("employees")]
 [ApiController]
 public class EmployeeController : ControllerBase
 {
@@ -22,7 +22,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
-    [HttpPost("add")]
+    [HttpPost()]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
         try
@@ -40,7 +40,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("id")]
+    [HttpGet()]
     public async Task<IActionResult> GetEmployeeById([FromQuery] int id)
     {
         try
@@ -55,9 +55,10 @@ public class EmployeeController : ControllerBase
         }
     }
 
+
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("get")]
-    public async Task<IActionResult> GetEmployee([FromQuery] string? email)
+    [HttpGet()]
+    public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
     {
         try
         {
@@ -78,7 +79,7 @@ public class EmployeeController : ControllerBase
 
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPut("update")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string userEmail)
     {
         try
@@ -98,7 +99,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("employees")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllEmployees()
     {
         try
@@ -114,7 +115,8 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [HttpGet("employees/count")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("count")]
     public async Task<IActionResult> CountAllEmployees()
     {
         try
@@ -131,7 +133,7 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("employees/filterbytype")]
+    [HttpGet("filterbytype")]
     public async Task<IActionResult> FilterByType(string type)
     {
         try
@@ -148,7 +150,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [HttpGet("employees/data/count")]
+    [HttpGet("card-count")]
     public async Task<IActionResult> GetEmployeesCount()
     {
         try
@@ -162,7 +164,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [HttpGet("employees/churnrate")]
+    [HttpGet("churn-rate")]
     public async Task<IActionResult> GetChurnRate()
     {
         try
