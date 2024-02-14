@@ -44,21 +44,6 @@ public class ChartRoleLinkUnitTest
     [Fact]
     public void ChartRoleLinkToDtoTest()
     {
-        var chart = new Chart
-        {
-            Id = 1,
-            Name = "Chart",
-            Data = new List<int> { 1, 2 },
-            Labels = new List<string> { "label 1", "labebl 2" },
-            Type = "type 1"
-        };
-
-        var role = new Role
-        {
-            Id = 1,
-            Description = "Description"
-        };
-
         var chartRoleLink1 = CreateChartRoleLink();
 
         var dto = chartRoleLink1.ToDto();

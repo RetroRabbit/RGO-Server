@@ -4,6 +4,7 @@ using RGO.Services.Interfaces;
 using RGO.UnitOfWork;
 using RGO.UnitOfWork.Entities;
 using System.Data;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace RGO.Services.Services;
@@ -14,22 +15,16 @@ public class ChartService : IChartService
     private readonly IEmployeeService _employeeService;
     private readonly IServiceProvider _services;
 
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services) 
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services)
     {
         _db = db;
         _employeeService = employeeService;
         _services = services;
     }
 
-    public  async Task<List<ChartDto>> GetAllCharts() 
+    public async Task<List<ChartDto>> GetAllCharts()
     {
         return await _db.Chart.GetAll();
-    }
-
-    public async Task<int> GetTotalEmployees()
-    {
-            var employees = await _employeeService.GetAll();
-            return employees.Count;
     }
 
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType)
@@ -38,18 +33,18 @@ public class ChartService : IChartService
 
         var roleList = roles.SelectMany(item => item.Split(',')).ToList();
 
-        if ( roleList[0] == "All")
+        if (roleList[0] == "All")
         {
             employees = await _employeeService.GetAll();
         }
         else
         {
-                employees = await _db.Employee
-                .Get(employee => roleList.Contains(employee.EmployeeType.Name))
-                .Include(employee => employee.EmployeeType)
-                .Select(employee => employee.ToDto())
-                .AsNoTracking()
-                .ToListAsync();
+            employees = await _db.Employee
+            .Get(employee => roleList.Contains(employee.EmployeeType.Name))
+            .Include(employee => employee.EmployeeType)
+            .Select(employee => employee.ToDto())
+            .AsNoTracking()
+            .ToListAsync();
         }
 
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
@@ -82,7 +77,7 @@ public class ChartService : IChartService
              }
              if (keyBuilder.Length > 2)
              {
-                 keyBuilder.Length -= 2; 
+                 keyBuilder.Length -= 2;
              }
              return keyBuilder.ToString();
          })
@@ -120,7 +115,7 @@ public class ChartService : IChartService
 
                      var value = propertyInfo.GetValue(employee);
 
-                     if(value == null )
+                     if (value == null)
                          continue;
 
                      keyBuilder.Append(propertyInfo.GetValue(employee));
@@ -190,54 +185,53 @@ public class ChartService : IChartService
         var propertyNames = new List<string>();
 
         if (dataTypeList.Contains("Age"))
-        {
             propertyNames.Add("Age");
-        }
 
         foreach (var typeName in dataTypeList)
         {
             if (typeName == "Age")
-            {
                 continue;
-            }
 
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
+
             if (propertyInfo == null)
-            {
-                throw new ArgumentException($"Invalid property name: {typeName}", nameof(dataTypeList));
-            }
+                throw new Exception($"Invalid property name: {typeName}");
+
             propertyNames.Add(typeName);
         }
 
         var csvData = new StringBuilder();
         csvData.Append("First Name,Last Name");
+
         foreach (var propertyName in propertyNames)
         {
             csvData.Append("," + propertyName);
         }
         csvData.AppendLine();
+
         foreach (var employee in employees)
         {
             var formattedData = $"{employee.Name},{employee.Surname}";
             foreach (var dataType in propertyNames)
             {
                 if (BaseDataType.HasCustom(dataType))
-                 {
-                     var obj = BaseDataType.GetCustom(dataType);
-                     var val = obj.GenerateData(employee, _services);
-                     if (val == null)
-                         continue;
-                    formattedData += $",{val.Replace(",", "").Trim()}";
+                {
+                    var obj = BaseDataType.GetCustom(dataType);
+                    var val = obj.GenerateData(employee, _services);
+
+                    if (val != null)
+                        formattedData += $",{val.Replace(",", "").Trim()}";
                 }
-                 else
-                 {
-                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
-                     if (propertyInfo == null)
-                         continue;
-                     var val = propertyInfo.GetValue(employee);
-                     if (val == null)
-                         continue;
-                    formattedData += $",{val.ToString().Replace(",", "").Trim()}";
+                else
+                {
+                    var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                    if (propertyInfo != null)
+                    {
+                        var val = propertyInfo.GetValue(employee);
+
+                        if (val != null)
+                            formattedData += $",{val.ToString().Replace(",", "").Trim()}";
+                    }
                 }
             }
             csvData.AppendLine(formattedData);

@@ -15,17 +15,14 @@ public class AuthService : IAuthService
     private readonly IConfiguration _configuration;
     private readonly IEmployeeService _employeeService;
     private readonly IRoleAccessLinkService _roleAccessLinkService;
-    private readonly IUnitOfWork _db;
 
     public AuthService(
         IConfiguration configuration,
         IEmployeeService employeeService,
-        IUnitOfWork db,
         IRoleAccessLinkService roleAccessLinkService)
     {
         _configuration = configuration;
         _employeeService = employeeService;
-        _db = db;
         _roleAccessLinkService = roleAccessLinkService;
     }
 
@@ -48,7 +45,7 @@ public class AuthService : IAuthService
         return await GenerateToken(newEmployee);
     }
 
-    private async Task<string> GenerateToken(EmployeeDto employee)
+    public async Task<string> GenerateToken(EmployeeDto employee)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);

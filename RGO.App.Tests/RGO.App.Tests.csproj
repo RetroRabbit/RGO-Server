@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.15" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="Moq" Version="4.20.69" />
     <PackageReference Include="xunit" Version="2.4.2" />
@@ -26,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RGO.App\RGO.App.csproj" />
     <ProjectReference Include="..\RGO.Services\RGO.Services.csproj" />
+    <ProjectReference Include="..\RGO.Tests.Data\RGO.Tests.Data.csproj" />
   </ItemGroup>
 
 </Project>

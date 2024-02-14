@@ -32,4 +32,11 @@ public interface IAuthService
     /// <param name="newEmployee"></param>
     /// <returns>JWT token</returns>
     Task<string> RegisterEmployee(EmployeeDto employeeDto);
+
+    /// <summary>
+    /// Generate a bearer token
+    /// </summary>
+    /// <param name="employee"></param>
+    /// <returns>JWT as a string</returns>
+    Task<string> GenerateToken(EmployeeDto employee);
 }

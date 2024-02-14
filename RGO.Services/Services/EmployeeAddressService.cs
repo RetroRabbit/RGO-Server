@@ -21,10 +21,9 @@ public class EmployeeAddressService : IEmployeeAddressService
         return exists != null;
     }
 
-    public async Task<EmployeeAddressDto> Delete(EmployeeAddressDto employeeAddressDto)
+    public async Task<EmployeeAddressDto> Delete(int addressId)
     {
-        var foundAddress = await Get(employeeAddressDto);
-        var address = await _db.EmployeeAddress.Delete(foundAddress.Id);
+        var address = await _db.EmployeeAddress.Delete(addressId);
         return address;
     }
 

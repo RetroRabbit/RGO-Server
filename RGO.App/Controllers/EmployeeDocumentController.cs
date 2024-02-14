@@ -9,7 +9,6 @@ namespace RGO.App.Controllers
 {
     [Route("employee-documents")]
     [ApiController]
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     public class EmployeeDocumentController : ControllerBase
     {
         private readonly IEmployeeDocumentService _employeeDocumentService;
@@ -18,7 +17,7 @@ namespace RGO.App.Controllers
             _employeeDocumentService = employeeDocumentService;
         }
 
-        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpGet("{employeeId}")]
         public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
         {
@@ -33,8 +32,8 @@ namespace RGO.App.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOrEmployeePolicy")]
-        [HttpPost]
+        [Authorize(Policy = "AllRolesPolicy")]
+        [HttpPost("save")]
         public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
         {
             try
@@ -63,7 +62,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpPut("{employeeId}")]
         public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
         {
@@ -78,13 +77,13 @@ namespace RGO.App.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] EmployeeDocumentDto employeeDocumentDto)
+        public async Task<IActionResult> Delete(int documentId)
         {
             try
             {
-                var deletedEmployeeDocument = await _employeeDocumentService.DeleteEmployeeDocument(employeeDocumentDto);
+                var deletedEmployeeDocument = await _employeeDocumentService.DeleteEmployeeDocument(documentId);
                 return Ok(deletedEmployeeDocument);
             }
             catch (Exception ex)

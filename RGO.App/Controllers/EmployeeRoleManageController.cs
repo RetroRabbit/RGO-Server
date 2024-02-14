@@ -6,7 +6,7 @@ using RGO.UnitOfWork.Entities;
 
 namespace RGO.App.Controllers;
 
-[Route("/employeerolemanager/")]
+[Route("employee-role-manager")]
 [ApiController]
 public class EmployeeRoleManageController : ControllerBase
 {
@@ -21,8 +21,8 @@ public class EmployeeRoleManageController : ControllerBase
         _roleService = roleService;
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("add")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPost()]
     public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
@@ -51,7 +51,7 @@ public class EmployeeRoleManageController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("update")]
+    [HttpPut()]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
         try
@@ -75,10 +75,10 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(EmployeeRoleDto), 200)]
     [ProducesErrorResponseType(typeof(string))]
-    [HttpDelete("remove")]
+    [HttpDelete()]
     public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
         try
@@ -99,8 +99,8 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("get")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet()]
     public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
     {
         try
@@ -116,8 +116,8 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("get-all")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllRoles()
     {
         try
@@ -136,7 +136,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get-role")]
     public async Task<IActionResult> GetAllEmployeeOnRoles([FromQuery] int roleId)
     {

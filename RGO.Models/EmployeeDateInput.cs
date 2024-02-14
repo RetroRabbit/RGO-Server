@@ -1,7 +1,10 @@
 ﻿namespace RGO.Models;
 
-public record EmployeeDateInput(
-    string Email,
-    string Subject,
-    string Note,
-    DateOnly Date);
+public class EmployeeDateInput
+{
+    public int Id { get; set; }
+    public string Email { get; set; }
+    public string Subject { get; set; }
+    public string Note { get; set; }
+    public DateOnly Date { get; set; }
+}

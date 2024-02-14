@@ -18,7 +18,6 @@ public class PayRateTypeUnitTest
     private PayRateType payRateType;
     EmployeeTypeDto employeeTypeDto;
     EmployeeType employeeType;
-    RoleDto roleDto;
     EmployeeAddressDto employeeAddressDto;
 
     public PayRateTypeUnitTest()
@@ -28,7 +27,6 @@ public class PayRateTypeUnitTest
         payRateType = new PayRateType();
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
-        roleDto = new RoleDto(3, "Employee");
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
@@ -47,10 +45,6 @@ public class PayRateTypeUnitTest
     {
         var employeeDto = CreateEmployee(null);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
@@ -72,10 +66,6 @@ public class PayRateTypeUnitTest
 
         var employeeDto = CreateEmployee(null);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
@@ -97,10 +87,6 @@ public class PayRateTypeUnitTest
     {
         var employeeDto = CreateEmployee(128);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)
@@ -122,10 +108,6 @@ public class PayRateTypeUnitTest
 
         var employeeDto = CreateEmployee(128);
 
-        var employeeDtoList = new List<EmployeeDto>
-        {
-            employeeDto
-        };
         var employeeList = new List<Employee>
         {
             new Employee(employeeDto,employeeDto.EmployeeType)

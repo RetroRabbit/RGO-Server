@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.62.0.3105" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.15" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Include="MimeKit" Version="4.2.0" />
     <PackageReference Include="MockQueryable.Moq" Version="7.0.0" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RGO.Models\RGO.Models.csproj" />
     <ProjectReference Include="..\RGO.Services\RGO.Services.csproj" />
+    <ProjectReference Include="..\RGO.Tests.Data\RGO.Tests.Data.csproj" />
     <ProjectReference Include="..\RGO.UnitOfWork\RGO.UnitOfWork.csproj" />
   </ItemGroup>
 

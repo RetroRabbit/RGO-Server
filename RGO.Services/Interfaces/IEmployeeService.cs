@@ -15,13 +15,13 @@ public interface IEmployeeService
     /// Get all employees
     /// </summary>
     /// <returns></returns>
-    Task<List<EmployeeDto>> GetAll();
+    Task<List<EmployeeDto>> GetAll(string userEmail = "");
 
     /// <summary>
     /// Get employee by email
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> GetEmployee(string email);
 
     /// <summary>
@@ -35,7 +35,7 @@ public interface IEmployeeService
     /// Save employee
     /// </summary>
     /// <param name="employeeDto"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto);
 
     /// <summary>
@@ -43,22 +43,52 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="employeeDto"></param>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email);
 
     /// <summary>
     /// Delete employee
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> DeleteEmployee(string email);
 
+    /// <summary>
+    /// Returns an EmployeeDto list filtered by a type
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns>List<EmployeeDto></returns>
     Task<List<EmployeeDto>> GetEmployeesByType(string type);
 
     /// <summary>
     /// Get employee by the id
     /// </summary>
     /// <param name="employeeId"></param>
-    /// <returns></returns>
+    /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> GetById(int employeeId);
+
+
+    /// <summary>
+    /// Get simple employee profile for non admin users
+    /// </summary>
+    /// <returns>SimpeEmployeeProfileDto</returns>
+    Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
+
+    /// <summary>
+    /// Returns Employees data count 
+    /// </summary>
+    /// <returns>EmployeeDataCard</returns>
+    Task<EmployeeCountDataCard> GenerateDataCardInformation();
+
+    /// <summary>
+    /// Get the total number of employees for the current month 
+    /// </summary>
+    /// <returns>MonthlyEmployeeTotalDto</returns>
+    Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal();
+
+    /// <summary>
+    /// Calculates employee chrunRate over a month
+    /// </summary>
+    /// <returns>ChurnRateDataCard</returns>
+    Task<ChurnRateDataCard> CalculateEmployeeChurnRate();
 }

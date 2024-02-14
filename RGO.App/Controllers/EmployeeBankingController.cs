@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using RGO.Models;
 using RGO.Services.Interfaces;
+using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
-[Route("/employeebanking/")]
+[Route("employee-banking")]
 [ApiController]
 public class EmployeeBankingController : ControllerBase
 {
@@ -16,8 +17,8 @@ public class EmployeeBankingController : ControllerBase
         _employeeBankingService = employeeBankingService;
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPost("add")]
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpPost()]
     public async Task<IActionResult> AddBankingInfo([FromBody] SimpleEmployeeBankingDto newEntry)
     {
         try
@@ -37,7 +38,8 @@ public class EmployeeBankingController : ControllerBase
                 DateOnly.FromDateTime(DateTime.Now),
                 DateOnly.FromDateTime(DateTime.Now)
                 );
-            var employee = await _employeeBankingService.Save(Bankingdto);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employee = await _employeeBankingService.Save(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
             return Ok(Bankingdto);
         }
         catch (Exception ex)
@@ -46,12 +48,16 @@ public class EmployeeBankingController : ControllerBase
             {
                 return Problem("Unexceptable", "Unexceptable", 406, "Details already exists");
             }
+            else if(ex.Message.Contains("Unauthorized access"))
+            {
+                return StatusCode(403, $"Forbidden: {ex.Message}");
+            }
             return NotFound(ex.Message);
         }
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("get")]
+    [HttpGet()]
     public async Task<IActionResult> Get([FromQuery] int status)
     {
         try
@@ -65,14 +71,13 @@ public class EmployeeBankingController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpPut("update")]
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpPut()]
     public async Task<IActionResult> Update([FromBody] SimpleEmployeeBankingDto updateEntry)
      {
         if(updateEntry.AccountHolderName.Length == 0)
-        {
             return BadRequest("Invalid banking details");
-        }
+
         try
         {
             EmployeeBankingDto Bankingdto = new EmployeeBankingDto
@@ -90,7 +95,10 @@ public class EmployeeBankingController : ControllerBase
                DateOnly.FromDateTime(DateTime.Now),
                DateOnly.FromDateTime(DateTime.Now)
                );
-            var employee = await _employeeBankingService.Update(Bankingdto);
+
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var employee = await _employeeBankingService.Update(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
+
             return Ok();
         }
         catch (Exception ex)
@@ -99,8 +107,8 @@ public class EmployeeBankingController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
-    [HttpGet("getDetails")]
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet("details")]
     public async Task<IActionResult> GetBankingDetails([FromQuery] int id)
     {
         try

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace RGO.App.Controllers;
 
-[Route("/auth/")]
+[Route("auth")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {
@@ -57,7 +57,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("roles")]
     public async Task<IActionResult> GetUserRoles([FromQuery] string? email)
     {

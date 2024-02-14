@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace RGO.App.Controllers
 {
-    [Route("/fieldcode/")]
+    [Route("field-code")]
     [ApiController]
     public class FieldCodeController : Controller
     {
@@ -18,7 +18,7 @@ namespace RGO.App.Controllers
             _fieldCodeService = fieldCodeService;
         }
 
-        [HttpGet("get")]
+        [HttpGet()]
         public async Task<IActionResult> GetAllFieldCodes()
         {
             try
@@ -35,7 +35,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPost("save")]
+        [HttpPost()]
         public async Task<IActionResult> SaveFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
@@ -49,7 +49,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpPut("update")]
+        [HttpPut()]
         public async Task<IActionResult> UpdateFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try
@@ -63,7 +63,7 @@ namespace RGO.App.Controllers
             }
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete()]
         public async Task<IActionResult> DeleteFieldCode([FromBody] FieldCodeDto fieldCodeDto)
         {
             try

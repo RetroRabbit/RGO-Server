@@ -17,15 +17,6 @@ Runs on(.NET Web API):
 - https://localhost:7026
 - http://localhost:5193
 
-# pgAdmin
-
-### Setup PgAdmin and Create Database
-
-Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
-Password should be postgrespw. Set the host to localhost. You should be able to connect to the
-RGO database after adding migrations and updating the DB in package manager console in
-Visual Studios.
-
 ## Docker
 
 ### Install Docker
@@ -41,6 +32,40 @@ Visual Studios.
 ```powershell
 wsl --install
 ```
+# User Secrets
+Right Click RGO.App and Click on **Mange User Secrets**
+
+![Image of User Secret Location](./UserSecretsLocation.png)
+
+This will open your secrets.json file
+
+![Image of User secret example](./UserSecretsExample.png)
+
+Paste the following in the file 
+
+{
+  "ConnectionStrings": {
+    "Default": ""
+  },
+  "Auth": {
+    "Key": "",
+    "Issuer": "",
+    "Audience": "",
+    "Expires": 60
+  }
+}
+
+Replace the Connection strings, Auth Key, Auth Issuer and Auth Audience
+
+# pgAdmin
+
+### Setup PgAdmin and Create Database
+
+Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
+Password should be postgrespw. Set the host to localhost. You should be able to connect to the
+RGO database after adding migrations and updating the DB in package manager console in
+Visual Studios.
+
 
 ### Change to the Dev branch
 
@@ -55,6 +80,10 @@ git checkout develop
 
 ```powershell
 docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
+
+For RabbitMQ
+docker pull rabbitmq:3-management
+docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
 
 ### Run migration
@@ -128,3 +157,43 @@ Generate report
 Navigate to the %temp% / report folder and open index.html using your prefered browser found at
     /RGO-Server/coverage/report/index.html
 ```
+
+# Naming Conventions
+## Endpoints
+Use forward slash
+Use forward slashes for resource hierarchy and to separate URI resources.
+Example: "/employee/{id}"
+
+
+## Use nouns, not verbs
+When naming the URIs, you should use nouns to describe what the resource is and not what it does. For example:
+Wrong:   "getEmployees/"
+Correct: "employees/"
+
+## Use plural nouns
+This makes it clear that there is more than one resource within a collection. Using singular nouns can be confusing. For example:
+Wrong:  "chart/{id}"
+Correct: "charts/{id}"
+
+## Lowercase letters
+As a standard, URLs are typed in lowercase. The same applies to API URIs.
+
+
+## Use hyphens to separate words
+When chaining words together, hyphens are the most user-friendly way and are a better choice than underscores.
+For example: "employee-documents/10"
+
+
+## Endpoint strings can be the same provided that the Request Mapping is different:
+PUT "employee/{id}"
+GET "employee/{id}"
+
+## Variables
+All variables in methods must be in camelCase
+
+Anything referenced by a service should prefixed with an underscore, to indicate that it is a reference to a service 
+
+All Method names must be PascalCase
+ ie: SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto)
+
+PS: When naming and endpoint, variable or method make the name as descriptive as possible. The only exception is for small scopes like a lambda.

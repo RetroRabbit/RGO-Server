@@ -20,7 +20,7 @@ public class EmployeeDataUnitTests
             new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
             "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
-        _fieldCode = new FieldCodeDto(1, "email01", "Email", "desciption", "@(\\w+).co.za", Models.Enums.FieldCodeType.String, Models.Enums.ItemStatus.Active, true, "Employee", 0);
+        _fieldCode = new FieldCodeDto(1, "email01", "Email", "desciption", "@(\\w+).co.za", Models.Enums.FieldCodeType.String, Models.Enums.ItemStatus.Active, true, "Employee", 0, false);
     }
 
     [Fact]

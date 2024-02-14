@@ -4,7 +4,35 @@ using RGO.UnitOfWork.Entities;
 
 namespace RGO.UnitOfWork
 {
-    public class DatabaseContext: DbContext
+    public interface IDatabaseContext
+    {
+        DbSet<Employee> employees { get; set; }
+        DbSet<EmployeeRole> employeeRoles { get; set; }
+        DbSet<EmployeeAddress> employeeAddresses { get; set; }
+        DbSet<EmployeeDocument> employeeDocuments { get; set; }
+        DbSet<EmployeeProject> employeeProjects { get; set; }
+        DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }
+        DbSet<EmployeeEvaluationAudience> employeeEvaluationAudiences { get; set; }
+        DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
+        DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
+        DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
+        DbSet<Role> roles { get; set; }
+        DbSet<RoleAccess> roleAccess { get; set; }
+        DbSet<AuditLog> auditLogs { get; set; }
+        DbSet<Chart> Chart { get; set; }
+        DbSet<ChartRoleLink> ChartRoleLink { get; set; }
+        DbSet<FieldCode> fieldCodes { get; set; }
+        DbSet<FieldCodeOptions> fieldCodesOptions { get; set; }
+        DbSet<EmployeeData> employeeData { get; set; }
+        DbSet<EmployeeDate> employeeDate { get; set; }
+        DbSet<PropertyAccess> propertyAccesses { get; set; }
+        DbSet<RoleAccessLink> roleAccessLinks { get; set; }
+        DbSet<EmployeeBanking> employeeBanking { get; set; }
+        DbSet<Client> clients { get; set; }
+        DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
+    }
+
+    public class DatabaseContext: DbContext, IDatabaseContext
     {
         public DatabaseContext() { }
 
@@ -13,7 +41,8 @@ namespace RGO.UnitOfWork
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var builder = new ConfigurationBuilder();
-            builder.AddJsonFile("appsettings.json");
+            builder.AddJsonFile("appsettings.json")
+                .AddUserSecrets<DatabaseContext>();
             var configuration = builder.Build();
             optionsBuilder.UseNpgsql(configuration.GetConnectionString("Default"));
         }
@@ -63,5 +92,6 @@ namespace RGO.UnitOfWork
         public DbSet<RoleAccessLink> roleAccessLinks { get; set; }
         public DbSet<EmployeeBanking> employeeBanking { get; set;}
         public DbSet<Client> clients { get; set; }
+        public DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     }
 }

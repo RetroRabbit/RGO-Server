@@ -1,11 +1,10 @@
-﻿namespace RGO.Models.Enums
+﻿namespace RGO.Models.Enums;
+
+public enum UserRole
 {
-    public enum UserRole
-    {
-        Grad,
-        Employee,
-        Presenter,
-        Mentor,
-        Admin
-    }
+    Grad,
+    Employee,
+    Presenter,
+    Mentor,
+    Admin
 }

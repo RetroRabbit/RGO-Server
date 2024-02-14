@@ -43,9 +43,12 @@ namespace RGO.UnitOfWork.Entities
         [Column("internalTable")]
         public string? InternalTable { get; set; }
 
-
         [Column("category")]
         public FieldCodeCategory Category { get; set; }
+
+        [Column("required")]
+        public bool Required { get; set; }
+
         public FieldCode()
         {
             Internal = false;
@@ -62,6 +65,7 @@ namespace RGO.UnitOfWork.Entities
             Internal = fieldCodeDto.Internal;
             InternalTable = fieldCodeDto.InternalTable;
             Category = fieldCodeDto.Category;
+            Required = fieldCodeDto.Required;
         }
 
         public FieldCodeDto ToDto()
@@ -76,7 +80,8 @@ namespace RGO.UnitOfWork.Entities
                 Status,
                 Internal,
                 InternalTable,
-                Category);
+                Category,
+                Required);
         }
     }
 }
