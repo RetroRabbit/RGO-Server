@@ -32,6 +32,30 @@ Runs on(.NET Web API):
 ```powershell
 wsl --install
 ```
+# User Secrets
+Right Click RGO.App and Click on **Mange User Secrets**
+
+![Image of User Secret Location](./UserSecretsLocation.png)
+
+This will open your secrets.json file
+
+![Image of User secret example](./UserSecretsExample.png)
+
+Paste the following in the file 
+
+{
+  "ConnectionStrings": {
+    "Default": ""
+  },
+  "Auth": {
+    "Key": "",
+    "Issuer": "",
+    "Audience": "",
+    "Expires": 60
+  }
+}
+
+Replace the Connection strings, Auth Key, Auth Issuer and Auth Audience
 
 # pgAdmin
 
