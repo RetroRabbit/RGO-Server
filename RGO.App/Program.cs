@@ -27,7 +27,7 @@ namespace RGO.App
             var builder = WebApplication.CreateBuilder(args);
             ConfigurationManager configuration = builder.Configuration;
             configuration.AddJsonFile("appsettings.json");
-
+            configuration.AddUserSecrets<Program>();
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
@@ -123,6 +123,8 @@ namespace RGO.App
             var confBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .AddUserSecrets<Program>()
                 .Build();
 
             var policies = confBuilder
