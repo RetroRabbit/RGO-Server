@@ -60,7 +60,6 @@ public interface IEmployeeService
     /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> GetById(int employeeId);
 
-
     /// <summary>
     /// Get simple employee profile for non admin users
     /// </summary>
