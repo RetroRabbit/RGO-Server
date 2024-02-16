@@ -58,7 +58,7 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="type"></param>
     /// <returns>List<EmployeeDto></returns>
-    Task<List<EmployeeDto>> GetEmployeesByType(string type);
+    Task<List<EmployeeDto>> GetEmployeesByType(int type);
 
     /// <summary>
     /// Get employee by the id
@@ -91,4 +91,12 @@ public interface IEmployeeService
     /// </summary>
     /// <returns>ChurnRateDataCard</returns>
     Task<ChurnRateDataCard> CalculateEmployeeChurnRate();
+
+    /// <summary>
+    /// Get Employees filtered by Peoples champion or employee type
+    /// </summary>
+    /// <param name="peopleChampId"></param>
+    /// <param name="employeeType"></param>
+    /// <returns>Filtered list of Employees based on assigned Peoples Champion or Employee Type if 0 is passed as parameter it will ignore the filter </returns>
+    Task<List<EmployeeDto>> FillterEmployees(int peopleChampId = 0, int employeeType = 0);
 }

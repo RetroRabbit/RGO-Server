@@ -218,9 +218,9 @@ public class EmployeeService : IEmployeeService
         }
     }
 
-    public async Task<List<EmployeeDto>> GetEmployeesByType(string type)
+    public async Task<List<EmployeeDto>> GetEmployeesByType(int type)
     {
-        var employees = await _db.Employee.Get(employee => employee.EmployeeType.Name == type).AsNoTracking()
+        var employees = await _db.Employee.Get(employee => employee.EmployeeType.Id == type).AsNoTracking()
             .Include(employee => employee.EmployeeType)
             .Include(employee => employee.PhysicalAddress)
             .Include(employee => employee.PostalAddress).Select(employee => employee.ToDto()).ToListAsync();
@@ -556,6 +556,23 @@ public class EmployeeService : IEmployeeService
         employee.Email = employeeDto.Email;
 
         return employee;
+    }
+
+    public async Task<List<EmployeeDto>> FillterEmployees(int peopleChampId = 0, int employeeType = 0)
+    {
+
+        return await _db.Employee
+                    .Get(employee => true)
+                    .Where(employee =>
+                        (peopleChampId == 0 || employee.PeopleChampion == peopleChampId)
+                     && (employeeType == 0 || employee.EmployeeType.Id == employeeType))
+                    .Include(employee => employee.EmployeeType)
+                    .Include(employee => employee.PhysicalAddress)
+                    .Include(employee => employee.PostalAddress)
+                    .OrderBy(employee => employee.Name)
+                    .Select(employee => employee.ToDto())
+                    .ToListAsync();
+
     }
 }
 

@@ -343,9 +343,9 @@ public class EmployeeControllerUnitTests
         {
             _employee
         };
-        _employeeMockService.Setup(service => service.GetEmployeesByType("Developer")).ReturnsAsync(employeesDtos);
+        _employeeMockService.Setup(service => service.GetEmployeesByType(2)).ReturnsAsync(employeesDtos);
 
-        var result = await _controller.FilterByType("Developer");
+        var result = await _controller.FilterByType(2);
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
@@ -354,12 +354,37 @@ public class EmployeeControllerUnitTests
 
     [Fact]
     public async Task FilterByTypeFail()
-    { 
-        _employeeMockService.Setup(service => service.GetEmployeesByType("HR"))
+    {
+        _employeeMockService.Setup(service => service.GetEmployeesByType(-1))
             .ThrowsAsync(new Exception());
 
-        var result = await _controller.FilterByType("HR");
+        var result = await _controller.FilterByType(-1);
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal(400, badRequestResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task FilterEmployeesSuccessTest()
+    {
+        _employeeMockService.Setup(service => service.FillterEmployees(1, 0))
+            .ReturnsAsync(new List<EmployeeDto> { _employee });
+
+        var result = await _controller.FilterEmployees(1, 0);
+
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okObjectResult.StatusCode);
+        Assert.Equal(new List<EmployeeDto> { _employee }, (List<EmployeeDto>)okObjectResult.Value!);
+    }
+
+    [Fact]
+    public async Task FilterEmployeesFailTest()
+    {
+        _employeeMockService.Setup(service => service.FillterEmployees(-1, -1))
+            .ThrowsAsync(new Exception("Not found"));
+
+        var result = await _controller.FilterEmployees(-1, -1);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(404, notFoundResult.StatusCode);
     }
 }

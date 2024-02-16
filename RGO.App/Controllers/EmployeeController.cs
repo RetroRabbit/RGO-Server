@@ -13,12 +13,10 @@ namespace RGO.App.Controllers;
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;
-    private readonly IChartService _chartService;
 
     public EmployeeController(IEmployeeService employeeService, IChartService chartService)
     {
         _employeeService = employeeService;
-        _chartService = chartService;
     }
 
     [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
@@ -134,7 +132,7 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("filter-by-type")]
-    public async Task<IActionResult> FilterByType(string type)
+    public async Task<IActionResult> FilterByType(int type)
     {
         try
         {
@@ -186,6 +184,22 @@ public class EmployeeController : ControllerBase
             var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
 
             return Ok(simpleProfile);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet("filter-employees")]
+    public async Task<IActionResult> FilterEmployees(int peopleChampId, int employeetype)
+    {
+        try
+        {
+            var employees = await _employeeService.FillterEmployees(peopleChampId, employeetype);
+
+            return Ok(employees);
         }
         catch (Exception ex)
         {
