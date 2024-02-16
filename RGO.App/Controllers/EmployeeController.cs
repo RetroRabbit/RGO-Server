@@ -130,24 +130,6 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("filter-by-type")]
-    public async Task<IActionResult> FilterByType(int type)
-    {
-        try
-        {
-            var employees= await _employeeService.GetEmployeesByType(type);
-
-            return Ok(employees);
-            
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-            
-        }
-    }
-
     [HttpGet("card-count")]
     public async Task<IActionResult> GetEmployeesCount()
     {
@@ -197,7 +179,7 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var employees = await _employeeService.FillterEmployees(peopleChampId, employeetype);
+            var employees = await _employeeService.FillerEmployees(peopleChampId, employeetype);
 
             return Ok(employees);
         }

@@ -337,36 +337,9 @@ public class EmployeeControllerUnitTests
     }
 
     [Fact]
-    public async Task FilterByTypeSuccess()
-    {
-        List<EmployeeDto> employeesDtos = new List<EmployeeDto>
-        {
-            _employee
-        };
-        _employeeMockService.Setup(service => service.GetEmployeesByType(2)).ReturnsAsync(employeesDtos);
-
-        var result = await _controller.FilterByType(2);
-
-        var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(employeesDtos, okObjectResult.Value!);
-    }
-
-    [Fact]
-    public async Task FilterByTypeFail()
-    {
-        _employeeMockService.Setup(service => service.GetEmployeesByType(-1))
-            .ThrowsAsync(new Exception());
-
-        var result = await _controller.FilterByType(-1);
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(400, badRequestResult.StatusCode);
-    }
-
-    [Fact]
     public async Task FilterEmployeesSuccessTest()
     {
-        _employeeMockService.Setup(service => service.FillterEmployees(1, 0))
+        _employeeMockService.Setup(service => service.FillerEmployees(1, 0))
             .ReturnsAsync(new List<EmployeeDto> { _employee });
 
         var result = await _controller.FilterEmployees(1, 0);
@@ -379,7 +352,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task FilterEmployeesFailTest()
     {
-        _employeeMockService.Setup(service => service.FillterEmployees(-1, -1))
+        _employeeMockService.Setup(service => service.FillerEmployees(-1, -1))
             .ThrowsAsync(new Exception("Not found"));
 
         var result = await _controller.FilterEmployees(-1, -1);

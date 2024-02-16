@@ -54,13 +54,6 @@ public interface IEmployeeService
     Task<EmployeeDto> DeleteEmployee(string email);
 
     /// <summary>
-    /// Returns an EmployeeDto list filtered by a type
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns>List<EmployeeDto></returns>
-    Task<List<EmployeeDto>> GetEmployeesByType(int type);
-
-    /// <summary>
     /// Get employee by the id
     /// </summary>
     /// <param name="employeeId"></param>
@@ -98,5 +91,5 @@ public interface IEmployeeService
     /// <param name="peopleChampId"></param>
     /// <param name="employeeType"></param>
     /// <returns>Filtered list of Employees based on assigned Peoples Champion or Employee Type if 0 is passed as parameter it will ignore the filter </returns>
-    Task<List<EmployeeDto>> FillterEmployees(int peopleChampId = 0, int employeeType = 0);
+    Task<List<EmployeeDto>> FillerEmployees(int peopleChampId = 0, int employeeType = 0);
 }
