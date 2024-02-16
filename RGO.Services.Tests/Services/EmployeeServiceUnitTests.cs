@@ -389,7 +389,7 @@ namespace RGO.Tests.Services
             _dbMock.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .Returns(employees.AsQueryable().BuildMock());
             
-            var result = await employeeService.GetEmployeesByType(employeeTypeDto.Name);
+            var result = await employeeService.GetEmployeesByType(employeeTypeDto.Id);
             
             Assert.NotNull(result);
             Assert.Equal(1, result.Count);
