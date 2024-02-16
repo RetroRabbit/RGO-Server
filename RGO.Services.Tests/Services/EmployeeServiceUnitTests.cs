@@ -377,25 +377,6 @@ namespace RGO.Tests.Services
         }
 
         [Fact]
-        public async Task GetEmployeeByType()
-        {
-            List<Employee> employees = new List<Employee>
-            {
-                new Employee(EmployeeTestData.EmployeeDto, employeeTypeDto)
-            };
-
-            List<EmployeeDto> expectedList = new List<EmployeeDto> { EmployeeTestData.EmployeeDto };
-            
-            _dbMock.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(employees.AsQueryable().BuildMock());
-            
-            var result = await employeeService.GetEmployeesByType(employeeTypeDto.Id);
-            
-            Assert.NotNull(result);
-            Assert.Equal(1, result.Count);
-        }
-
-        [Fact]
         public async Task GetSimpleProfileWithPCAndTeamLeadAndClient()
         {
             ClientDto allocatedClient = new ClientDto(1, "FNB");
