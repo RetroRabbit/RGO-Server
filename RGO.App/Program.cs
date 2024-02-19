@@ -178,11 +178,11 @@ namespace RGO.App
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 
-            if (app.Environment.IsDevelopment())
-            {
+            //if (app.Environment.IsDevelopment())
+         //   {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+          //  }
 
             app.UseCors(x => x
             .AllowAnyOrigin()
