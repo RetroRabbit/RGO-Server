@@ -1,23 +1,25 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class PropertyAccessUnitTests
 {
-    private RoleDto _role;
-    private FieldCodeDto _fieldCode;
+    private readonly FieldCodeDto _fieldCode;
+    private readonly RoleDto _role;
 
     public PropertyAccessUnitTests()
     {
         _role = new RoleDto(0, "Role");
-        _fieldCode = new FieldCodeDto(0, "email01", "Email", "desciption", "@(\\w+).co.za", Models.Enums.FieldCodeType.String, Models.Enums.ItemStatus.Active, true, "Employee", 0, false);
+        _fieldCode = new FieldCodeDto(0, "email01", "Email", "desciption", "@(\\w+).co.za", FieldCodeType.String,
+                                      ItemStatus.Active, true, "Employee", 0, false);
     }
 
     public PropertyAccess CreatePropertyAccess(RoleDto? role = null, FieldCodeDto? fieldCode = null)
     {
-        PropertyAccess propertyAccess = new PropertyAccess
+        var propertyAccess = new PropertyAccess
         {
             Id = 1,
             RoleId = 1,

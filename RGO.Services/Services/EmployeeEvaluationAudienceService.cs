@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceService
 {
     private readonly IUnitOfWork _db;
-    private readonly IEmployeeService _employeeService;
     private readonly IEmployeeEvaluationService _employeeEvaluationService;
+    private readonly IEmployeeService _employeeService;
 
     public EmployeeEvaluationAudienceService(
         IUnitOfWork db,
@@ -25,9 +24,9 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
 
     public async Task<bool> CheckIfExists(EmployeeEvaluationDto evaluation, string email)
     {
-        bool exists = await _db.EmployeeEvaluationAudience
-            .Any(x => x.Employee.Email == email
-                && x.Evaluation.Id == evaluation.Id);
+        var exists = await _db.EmployeeEvaluationAudience
+                              .Any(x => x.Employee.Email == email
+                                        && x.Evaluation.Id == evaluation.Id);
 
         return exists;
     }
@@ -35,42 +34,42 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     public async Task<EmployeeEvaluationAudienceDto> Delete(string email, EmployeeEvaluationInput evaluationInput)
     {
         var evaluationDto = await _employeeEvaluationService.Get(
-            evaluationInput.EmployeeEmail,
-            evaluationInput.OwnerEmail,
-            evaluationInput.Template,
-            evaluationInput.Subject);
+                                                                 evaluationInput.EmployeeEmail,
+                                                                 evaluationInput.OwnerEmail,
+                                                                 evaluationInput.Template,
+                                                                 evaluationInput.Subject);
 
-        bool exists = await CheckIfExists(evaluationDto, email);
+        var exists = await CheckIfExists(evaluationDto, email);
 
         if (!exists)
-            throw new Exception($"Employee Evaluation Audience not found");
+            throw new Exception("Employee Evaluation Audience not found");
 
-        EmployeeEvaluationAudienceDto employeeEvaluationAudience = await Get(evaluationDto, email);
+        var employeeEvaluationAudience = await Get(evaluationDto, email);
 
-        EmployeeEvaluationAudienceDto deletedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
-            .Delete(employeeEvaluationAudience.Id);
+        var deletedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
+                                                         .Delete(employeeEvaluationAudience.Id);
 
         return deletedEmployeeEvaluationAudience;
     }
 
     public async Task<EmployeeEvaluationAudienceDto> Get(EmployeeEvaluationDto evaluation, string email)
     {
-        bool exists = await CheckIfExists(evaluation, email);
+        var exists = await CheckIfExists(evaluation, email);
 
         if (!exists)
-            throw new Exception($"Employee Evaluation Audience not found");
+            throw new Exception("Employee Evaluation Audience not found");
 
-        EmployeeEvaluationAudience employeeEvaluationAudience = await _db.EmployeeEvaluationAudience
-            .Get(x => x.Employee.Email == email
-                    && x.Evaluation.Id == evaluation.Id)
-            .AsNoTracking()
-            .Include(x => x.Employee)
-            .Include(x => x.Employee.EmployeeType)
-            .Include(x => x.Evaluation)
-            .Include(x => x.Evaluation.Employee)
-            .Include(x => x.Evaluation.Employee.EmployeeType)
-            .Include(x => x.Evaluation.Template)
-            .FirstAsync();
+        var employeeEvaluationAudience = await _db.EmployeeEvaluationAudience
+                                                  .Get(x => x.Employee.Email == email
+                                                            && x.Evaluation.Id == evaluation.Id)
+                                                  .AsNoTracking()
+                                                  .Include(x => x.Employee)
+                                                  .Include(x => x.Employee.EmployeeType)
+                                                  .Include(x => x.Evaluation)
+                                                  .Include(x => x.Evaluation.Employee)
+                                                  .Include(x => x.Evaluation.Employee.EmployeeType)
+                                                  .Include(x => x.Evaluation.Template)
+                                                  .FirstAsync();
 
         return employeeEvaluationAudience.ToDto();
     }
@@ -78,63 +77,63 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     public async Task<List<EmployeeEvaluationAudienceDto>> GetAll()
     {
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
-            .Get()
-            .AsNoTracking()
-            .Include(x => x.Employee)
-            .Include(x => x.Employee.EmployeeType)
-            .Include(x => x.Evaluation)
-            .Include(x => x.Evaluation.Employee)
-            .Include(x => x.Evaluation.Employee.EmployeeType)
-            .Include(x => x.Evaluation.Template)
-            .Select(x => x.ToDto())
-            .ToListAsync();
+                                                   .Get()
+                                                   .AsNoTracking()
+                                                   .Include(x => x.Employee)
+                                                   .Include(x => x.Employee.EmployeeType)
+                                                   .Include(x => x.Evaluation)
+                                                   .Include(x => x.Evaluation.Employee)
+                                                   .Include(x => x.Evaluation.Employee.EmployeeType)
+                                                   .Include(x => x.Evaluation.Template)
+                                                   .Select(x => x.ToDto())
+                                                   .ToListAsync();
 
         return employeeEvaluationAudiences;
     }
 
     public async Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEmployee(string email)
     {
-        bool employeeExists = await _employeeService.CheckUserExist(email);
+        var employeeExists = await _employeeService.CheckUserExist(email);
 
         if (!employeeExists)
             throw new Exception($"Employee with {email} not found");
 
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
-            .Get(x => x.Employee.Email == email)
-            .AsNoTracking()
-            .Include(x => x.Employee)
-            .Include(x => x.Employee.EmployeeType)
-            .Include(x => x.Evaluation)
-            .Include(x => x.Evaluation.Employee)
-            .Include(x => x.Evaluation.Employee.EmployeeType)
-            .Include(x => x.Evaluation.Template)
-            .Select(x => x.ToDto())
-            .ToListAsync();
+                                                   .Get(x => x.Employee.Email == email)
+                                                   .AsNoTracking()
+                                                   .Include(x => x.Employee)
+                                                   .Include(x => x.Employee.EmployeeType)
+                                                   .Include(x => x.Evaluation)
+                                                   .Include(x => x.Evaluation.Employee)
+                                                   .Include(x => x.Evaluation.Employee.EmployeeType)
+                                                   .Include(x => x.Evaluation.Template)
+                                                   .Select(x => x.ToDto())
+                                                   .ToListAsync();
 
         return employeeEvaluationAudiences;
     }
 
     public async Task<List<EmployeeEvaluationAudienceDto>> GetAllbyEvaluation(EmployeeEvaluationInput evaluation)
     {
-        bool evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluation);
+        var evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluation);
 
         if (!evaluationExists)
-            throw new Exception($"Employee Evaluation not found");
+            throw new Exception("Employee Evaluation not found");
 
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
-            .Get(x => x.Evaluation.Owner.Email == evaluation.OwnerEmail
-                   && x.Evaluation.Employee.Email == evaluation.EmployeeEmail
-                   && x.Evaluation.Template.Description == evaluation.Template
-                   && x.Evaluation.Subject == evaluation.Subject)
-            .AsNoTracking()
-            .Include(x => x.Employee)
-            .Include(x => x.Employee.EmployeeType)
-            .Include(x => x.Evaluation)
-            .Include(x => x.Evaluation.Employee)
-            .Include(x => x.Evaluation.Employee.EmployeeType)
-            .Include(x => x.Evaluation.Template)
-            .Select(x => x.ToDto())
-            .ToListAsync();
+                                                   .Get(x => x.Evaluation.Owner.Email == evaluation.OwnerEmail
+                                                             && x.Evaluation.Employee.Email == evaluation.EmployeeEmail
+                                                             && x.Evaluation.Template.Description == evaluation.Template
+                                                             && x.Evaluation.Subject == evaluation.Subject)
+                                                   .AsNoTracking()
+                                                   .Include(x => x.Employee)
+                                                   .Include(x => x.Employee.EmployeeType)
+                                                   .Include(x => x.Evaluation)
+                                                   .Include(x => x.Evaluation.Employee)
+                                                   .Include(x => x.Evaluation.Employee.EmployeeType)
+                                                   .Include(x => x.Evaluation.Template)
+                                                   .Select(x => x.ToDto())
+                                                   .ToListAsync();
 
         return employeeEvaluationAudiences;
     }
@@ -142,34 +141,36 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     public async Task<EmployeeEvaluationAudienceDto> Save(string email, EmployeeEvaluationInput evaluationInput)
     {
         var evaluationDto = await _employeeEvaluationService.Get(
-            evaluationInput.EmployeeEmail,
-            evaluationInput.OwnerEmail,
-            evaluationInput.Template,
-            evaluationInput.Subject);
+                                                                 evaluationInput.EmployeeEmail,
+                                                                 evaluationInput.OwnerEmail,
+                                                                 evaluationInput.Template,
+                                                                 evaluationInput.Subject);
 
         var employeeDto = await _employeeService.GetEmployee(email);
 
-        bool exists = await CheckIfExists(evaluationDto, email);
+        var exists = await CheckIfExists(evaluationDto, email);
 
-        if (exists) throw new Exception($"Employee Evaluation Audience not found");
+        if (exists) throw new Exception("Employee Evaluation Audience not found");
 
         var employeeEvaluationAudienceDto = new EmployeeEvaluationAudienceDto(0, evaluationDto, employeeDto);
-        EmployeeEvaluationAudienceDto savedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
-            .Add(new(employeeEvaluationAudienceDto));
+        var savedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
+                                                       .Add(new
+                                                                EmployeeEvaluationAudience(employeeEvaluationAudienceDto));
 
         return savedEmployeeEvaluationAudience;
     }
 
     public async Task<EmployeeEvaluationAudienceDto> Update(EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto)
     {
-        bool exists = await CheckIfExists(employeeEvaluationAudienceDto.Evaluation!, employeeEvaluationAudienceDto.Employee!.Email);
+        var exists = await CheckIfExists(employeeEvaluationAudienceDto.Evaluation!,
+                                         employeeEvaluationAudienceDto.Employee!.Email);
 
-        if (!exists) throw new Exception($"Employee Evaluation Audience not found");
+        if (!exists) throw new Exception("Employee Evaluation Audience not found");
 
-        EmployeeEvaluationAudience employeeEvaluationAudience = new EmployeeEvaluationAudience(employeeEvaluationAudienceDto);
+        var employeeEvaluationAudience = new EmployeeEvaluationAudience(employeeEvaluationAudienceDto);
 
-        EmployeeEvaluationAudienceDto updatedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
-            .Update(employeeEvaluationAudience);
+        var updatedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
+                                                         .Update(employeeEvaluationAudience);
 
         return updatedEmployeeEvaluationAudience;
     }

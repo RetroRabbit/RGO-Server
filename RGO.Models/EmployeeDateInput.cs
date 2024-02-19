@@ -1,4 +1,4 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class EmployeeDateInput
 {

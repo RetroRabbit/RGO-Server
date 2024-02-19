@@ -1,4 +1,4 @@
-﻿namespace RGO.Services.Extensions;
+﻿namespace HRIS.Services.Extensions;
 
 public static class ListExtensions
 {

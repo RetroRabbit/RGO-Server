@@ -1,38 +1,38 @@
-﻿using RGO.Models;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Interfaces;
+namespace HRIS.Services.Interfaces;
 
 public interface IEmployeeProjectService
 {
     /// <summary>
-    /// Save Employee Project
+    ///     Save Employee Project
     /// </summary>
     /// <param name="employeeProjectDto"></param>
     /// <returns></returns>
     Task<EmployeeProjectDto> SaveEmployeeProject(EmployeeProjectDto employeeProjectDto);
 
     /// <summary>
-    /// Delete Employee Project
+    ///     Delete Employee Project
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     Task<EmployeeProjectDto> DeleteEmployeeProject(string name);
 
     /// <summary>
-    /// Get Employee Project
+    ///     Get Employee Project
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     Task<EmployeeProjectDto> GetEmployeeProject(string name);
 
     /// <summary>
-    /// Get All Employee Projects
+    ///     Get All Employee Projects
     /// </summary>
     /// <returns></returns>
     Task<List<EmployeeProjectDto>> GetAllEmployeeProjects();
 
     /// <summary>
-    /// Update Employee Project
+    ///     Update Employee Project
     /// </summary>
     /// <param name="employeeProjectDto"></param>
     /// <returns></returns>

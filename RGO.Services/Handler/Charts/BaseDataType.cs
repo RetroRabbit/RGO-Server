@@ -1,22 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RGO.Models;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public abstract class BaseDataType
 {
     public abstract string Name { get; }
-    public abstract string GenerateData(EmployeeDto employee, IServiceProvider services);
 
-    public static List<BaseDataType> Charts => new List<BaseDataType>()
+    public static List<BaseDataType> Charts => new()
     {
         new AgeType(),
         new PeopleChampionType(),
         new LevelType(),
         new SalaryType(),
         new PayRateType(),
-        new LeaveIntervalType(),
+        new LeaveIntervalType()
     };
+
+    public abstract string GenerateData(EmployeeDto employee, IServiceProvider services);
 
     public static bool HasCustom(string dataType)
     {

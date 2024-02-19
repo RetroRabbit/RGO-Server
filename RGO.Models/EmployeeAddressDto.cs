@@ -1,17 +1,17 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class EmployeeAddressDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public EmployeeAddressDto(int Id,
-        string UnitNumber,
-        string ComplexName,
-        string StreetNumber,
-        string SuburbOrDistrict,
-        string City,
-        string Country,
-        string Province,
-        string PostalCode)
+                              string UnitNumber,
+                              string ComplexName,
+                              string StreetNumber,
+                              string SuburbOrDistrict,
+                              string City,
+                              string Country,
+                              string Province,
+                              string PostalCode)
     {
         this.Id = Id;
         this.UnitNumber = UnitNumber;
@@ -24,7 +24,9 @@ public class EmployeeAddressDto
         this.PostalCode = PostalCode;
     }
 
-    public EmployeeAddressDto() {}
+    public EmployeeAddressDto()
+    {
+    }
 
     public int Id { get; set; }
     public string UnitNumber { get; set; }

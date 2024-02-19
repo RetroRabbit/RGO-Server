@@ -1,8 +1,9 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class EmployeeDateUnitTests
 {
@@ -11,13 +12,16 @@ public class EmployeeDateUnitTests
     public EmployeeDateUnitTests()
     {
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy", "D",
-            "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null!,
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                    null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy",
+                                    "D",
+                                    "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                    new DateTime(), null, Race.Black, Gender.Male, null!,
+                                    "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
+                                    employeeAddressDto, employeeAddressDto, null, null, null);
     }
 
     public EmployeeDate CreateEmployeeDate(EmployeeDto? employee = null)
@@ -28,7 +32,7 @@ public class EmployeeDateUnitTests
             EmployeeId = 1,
             Subject = "",
             Note = "",
-            Date = DateOnly.FromDateTime(DateTime.Now),
+            Date = DateOnly.FromDateTime(DateTime.Now)
         };
 
         if (employee != null)
@@ -48,7 +52,7 @@ public class EmployeeDateUnitTests
     [Fact]
     public void EmployeeDateToDTO()
     {
-        var employeeDate = CreateEmployeeDate(employee: _employee);
+        var employeeDate = CreateEmployeeDate(_employee);
         var employeeDateDto = employeeDate.ToDto();
 
         Assert.NotNull(employeeDateDto.Employee);

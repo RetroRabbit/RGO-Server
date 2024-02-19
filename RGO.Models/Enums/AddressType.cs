@@ -1,4 +1,4 @@
-﻿namespace RGO.Models.Enums;
+﻿namespace HRIS.Models.Enums;
 
 public enum AddressType
 {

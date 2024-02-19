@@ -1,44 +1,37 @@
-﻿using Moq;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.Services.Services;
-using RGO.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HRIS.Models;
+using HRIS.Services.Services;
+using Moq;
+using RR.UnitOfWork;
 using Xunit;
 
-namespace RGO.Services.Tests.Services
+namespace HRIS.Services.Tests.Services;
+
+public class ClientServiceUnitTest
 {
-    public class ClientServiceUnitTest
+    private readonly ClientDto _clientDto;
+    private readonly ClientService _clientService;
+    private readonly Mock<IUnitOfWork> _dbMock;
+
+    public ClientServiceUnitTest()
     {
-        private readonly Mock<IUnitOfWork> _dbMock;
-        private readonly ClientService _clientService;
-        private readonly ClientDto _clientDto;
+        _dbMock = new Mock<IUnitOfWork>();
+        _clientService = new ClientService(_dbMock.Object);
+        _clientDto = new ClientDto(
+                                   1,
+                                   "string"
+                                  );
+    }
 
-        public ClientServiceUnitTest()
-        {
-            _dbMock = new Mock<IUnitOfWork>();
-            _clientService = new ClientService(_dbMock.Object);
-            _clientDto = new ClientDto(
-                Id: 1, 
-                Name: "string"
-                );
-        }
+    [Fact]
+    public async Task GetAllClientsTest()
+    {
+        var clients = new List<ClientDto> { _clientDto };
 
-        [Fact]
-        public async Task GetAllClientsTest()
-        {
-            List<ClientDto> clients = new List<ClientDto>() { _clientDto };
+        _dbMock.Setup(x => x.Client.GetAll(null)).Returns(Task.FromResult(clients));
+        var result = await _clientService.GetAllClients();
 
-            _dbMock.Setup(x => x.Client.GetAll(null)).Returns(Task.FromResult(clients));
-            var result = await _clientService.GetAllClients();
-
-            Assert.NotNull(result);
-            Assert.Single(result);
-            Assert.Equal(clients, result);
-        }
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal(clients, result);
     }
 }

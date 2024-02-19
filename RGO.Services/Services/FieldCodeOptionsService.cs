@@ -1,102 +1,97 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services
+namespace HRIS.Services.Services;
+
+public class FieldCodeOptionsService : IFieldCodeOptionsService
 {
-    public class FieldCodeOptionsService : IFieldCodeOptionsService
+    private readonly IUnitOfWork _db;
+
+    public FieldCodeOptionsService(IUnitOfWork db)
     {
-        private readonly IUnitOfWork _db;
+        _db = db;
+    }
 
-        public FieldCodeOptionsService(IUnitOfWork db)
+    public async Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
+    {
+        var fieldCodes = await GetAllFieldCodeOptions();
+        var fieldCode = fieldCodes
+                        .Where(fieldCode =>
+                                   fieldCode.Id == fieldCodeOptionsDto.FieldCodeId && fieldCode.Option.ToLower() ==
+                                   fieldCodeOptionsDto.Option.ToLower())
+                        .Select(fieldCode => fieldCode)
+                        .FirstOrDefault();
+
+
+        if (fieldCode != null) throw new Exception("Field option with that name found");
+
+        var newFieldCodeOption = await _db.FieldCodeOptions.Add(new FieldCodeOptions(fieldCodeOptionsDto));
+        return newFieldCodeOption;
+    }
+
+    public async Task<List<FieldCodeOptionsDto>> GetFieldCodeOptions(int id)
+    {
+        var fieldCodes = await GetAllFieldCodeOptions();
+        var fieldCode = fieldCodes
+                        .Where(fieldCode => fieldCode.FieldCodeId == id)
+                        .ToList();
+
+        return fieldCode;
+    }
+
+    public async Task<List<FieldCodeOptionsDto>> GetAllFieldCodeOptions()
+    {
+        return await _db.FieldCodeOptions.GetAll();
+    }
+
+    public async Task<List<FieldCodeOptionsDto>> UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
+    {
+        foreach (var option in fieldCodeOptionsDto)
         {
-            _db = db;
-        }
+            var field = await GetAllFieldCodeOptions();
+            var existingOptions = field.Where(fieldCodeOption => fieldCodeOption.FieldCodeId == option.FieldCodeId
+                                                                 && fieldCodeOption.Option.ToLower() ==
+                                                                 option.Option.ToLower())
+                                       .FirstOrDefault();
 
-        public async Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
-        {
-            var fieldCodes = await GetAllFieldCodeOptions();
-            var fieldCode = fieldCodes
-                .Where(fieldCode => fieldCode.Id == fieldCodeOptionsDto.FieldCodeId && fieldCode.Option.ToLower() == fieldCodeOptionsDto.Option.ToLower())
-                .Select(fieldCode => fieldCode)
-                .FirstOrDefault();
-
- 
-            if (fieldCode != null) { throw new Exception("Field option with that name found"); }
-
-            var newFieldCodeOption = await _db.FieldCodeOptions.Add(new FieldCodeOptions(fieldCodeOptionsDto));
-            return newFieldCodeOption;
-        }
-
-        public async Task<List<FieldCodeOptionsDto>> GetFieldCodeOptions(int id)
-        {
-            var fieldCodes = await GetAllFieldCodeOptions();
-            var fieldCode = fieldCodes
-                .Where(fieldCode => fieldCode.FieldCodeId == id)
-                .ToList();
-
-            return fieldCode;
-        }
-
-        public async Task<List<FieldCodeOptionsDto>> GetAllFieldCodeOptions()
-        {
-            return await _db.FieldCodeOptions.GetAll();
-        }
-
-        public async Task<List<FieldCodeOptionsDto>> UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
-        {
-            foreach (var option in fieldCodeOptionsDto)
+            if (existingOptions == null)
             {
-                var field = await GetAllFieldCodeOptions();
-                var existingOptions = field.Where(fieldCodeOption => fieldCodeOption.FieldCodeId == option.FieldCodeId 
-                                               && fieldCodeOption.Option.ToLower() == option.Option.ToLower())
-                                                .FirstOrDefault();
+                var addFieldCode = new FieldCodeOptions(option);
+                await _db.FieldCodeOptions.Add(addFieldCode);
+            }
+        }
 
-                if (existingOptions == null)
+        var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+        var check = true;
+        foreach (var option in existingFieldCodeOptions)
+        {
+            foreach (var fieldCode in fieldCodeOptionsDto)
+            {
+                if (option.FieldCodeId == fieldCode.FieldCodeId &&
+                    option.Option.ToLower() == fieldCode.Option.ToLower())
                 {
-                    FieldCodeOptions addFieldCode = new FieldCodeOptions(option);
-                    await _db.FieldCodeOptions.Add(addFieldCode);
+                    check = true;
+                    break;
                 }
+
+                check = false;
             }
 
-            var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
-            bool check = true;
-            foreach (var option in existingFieldCodeOptions)
-            {
-                foreach (var fieldCode in fieldCodeOptionsDto)
-                {
-                    if (option.FieldCodeId == fieldCode.FieldCodeId && option.Option.ToLower() == fieldCode.Option.ToLower())
-                    {
-                        check = true;
-                        break;
-                    }
-                    check = false;
-                }
-                if (!check)
-                {
-                    _ = await _db.FieldCodeOptions.Delete(option.Id);
-                }
-            }
-
-            var updatedFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
-            return updatedFieldCodeOptions;
+            if (!check) _ = await _db.FieldCodeOptions.Delete(option.Id);
         }
 
-        public async Task<FieldCodeOptionsDto> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
-        {
-            var ifFieldCodeOption = await GetFieldCodeOptions(fieldCodeOptionsDto.Id);
-            if (ifFieldCodeOption == null) { throw new Exception("No field with that name found"); }
+        var updatedFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+        return updatedFieldCodeOptions;
+    }
 
-            var deleteFieldCodeOptions = await _db.FieldCodeOptions.Delete(new FieldCodeOptions(fieldCodeOptionsDto).Id);
-            return deleteFieldCodeOptions;
-        }
+    public async Task<FieldCodeOptionsDto> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
+    {
+        var ifFieldCodeOption = await GetFieldCodeOptions(fieldCodeOptionsDto.Id);
+        if (ifFieldCodeOption == null) throw new Exception("No field with that name found");
+
+        var deleteFieldCodeOptions = await _db.FieldCodeOptions.Delete(new FieldCodeOptions(fieldCodeOptionsDto).Id);
+        return deleteFieldCodeOptions;
     }
 }

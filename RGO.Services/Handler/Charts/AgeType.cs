@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RGO.Models;
-using RGO.Services.Interfaces;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class AgeType : BaseDataType
 {
@@ -10,7 +8,7 @@ public class AgeType : BaseDataType
 
     public override string GenerateData(EmployeeDto employee, IServiceProvider services)
     {
-        var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");      
+        var dobPropertyInfo = typeof(EmployeeDto).GetProperty("DateOfBirth");
         var employee_dob = (DateTime)dobPropertyInfo.GetValue(employee);
         var dob = new DateOnly(employee_dob.Year, employee_dob.Month, employee_dob.Day);
         var age = CalculateAge(dob);

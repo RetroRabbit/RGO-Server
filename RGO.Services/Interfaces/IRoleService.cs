@@ -1,46 +1,45 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Interfaces;
+namespace HRIS.Services.Interfaces;
 
 public interface IRoleService
 {
     /// <summary>
-    /// Get Role
+    ///     Get Role
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     Task<RoleDto> GetRole(string name);
 
     /// <summary>
-    /// Get All Role
+    ///     Get All Role
     /// </summary>
     /// <returns></returns>
     Task<List<RoleDto>> GetAll();
 
     /// <summary>
-    /// Save Role
+    ///     Save Role
     /// </summary>
     /// <param name="roleDto"></param>
     /// <returns></returns>
     Task<RoleDto> SaveRole(RoleDto roleDto);
 
     /// <summary>
-    /// Update Role
+    ///     Update Role
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     Task<RoleDto> UpdateRole(string name);
 
     /// <summary>
-    /// Delete Role
+    ///     Delete Role
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     Task<RoleDto> DeleteRole(int roleId);
 
     /// <summary>
-    /// Check Role
+    ///     Check Role
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>

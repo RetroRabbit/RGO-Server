@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RGO.Services.Interfaces;
-using RGO.Services.Services;
+﻿using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace RGO.Services;
+namespace HRIS.Services;
 
 public static class RegisterServicesExtension
 {
@@ -27,7 +27,7 @@ public static class RegisterServicesExtension
         services.AddScoped<IRoleAccessLinkService, RoleAccessLinkService>();
         services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
         services.AddScoped<IChartService, ChartService>();
-        services.AddScoped<IFieldCodeService,FieldCodeService>();
+        services.AddScoped<IFieldCodeService, FieldCodeService>();
         services.AddScoped<IFieldCodeOptionsService, FieldCodeOptionsService>();
         services.AddScoped<IEmployeeBankingService, EmployeeBankingService>();
         services.AddScoped<IClientService, ClientService>();

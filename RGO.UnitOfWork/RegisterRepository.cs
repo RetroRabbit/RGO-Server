@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace RGO.UnitOfWork;
+namespace RR.UnitOfWork;
 
 public static class RegisterRepositoryExtension
 {

@@ -1,14 +1,14 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
-public class  ChartDto
+public class ChartDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public ChartDto(int Id,
-        string Name,
-        string Type,
-        List<string> DataTypes,
-        List<string> Labels,
-        List<int> Data)
+                    string Name,
+                    string Type,
+                    List<string> DataTypes,
+                    List<string> Labels,
+                    List<int> Data)
     {
         this.Id = Id;
         this.Name = Name;
@@ -24,4 +24,4 @@ public class  ChartDto
     public List<string> DataTypes { get; set; }
     public List<string> Labels { get; set; }
     public List<int> Data { get; set; }
-}  
+}

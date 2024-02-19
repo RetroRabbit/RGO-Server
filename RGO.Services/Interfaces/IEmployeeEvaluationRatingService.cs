@@ -1,11 +1,11 @@
-﻿using RGO.Models;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Interfaces;
+namespace HRIS.Services.Interfaces;
 
 public interface IEmployeeEvaluationRatingService
 {
     /// <summary>
-    /// Check if Employee Evaluation Rating exists
+    ///     Check if Employee Evaluation Rating exists
     /// </summary>
     /// <param name="email"></param>
     /// <param name="evaluationId"></param>
@@ -13,7 +13,7 @@ public interface IEmployeeEvaluationRatingService
     Task<bool> CheckIfExists(EvaluationRatingInput rating);
 
     /// <summary>
-    /// Get Employee Evaluation Rating
+    ///     Get Employee Evaluation Rating
     /// </summary>
     /// <param name="email"></param>
     /// <param name="evaluationInput"></param>
@@ -21,21 +21,21 @@ public interface IEmployeeEvaluationRatingService
     Task<EmployeeEvaluationRatingDto> Get(EvaluationRatingInput rating);
 
     /// <summary>
-    /// Save Employee Evaluation Rating
+    ///     Save Employee Evaluation Rating
     /// </summary>
     /// <param name="employeeEvaluationRatingDto"></param>
     /// <returns>Employee Evaluation Rating</returns>
     Task<EmployeeEvaluationRatingDto> Save(EvaluationRatingInput rating);
 
     /// <summary>
-    /// Update Employee Evaluation Rating
+    ///     Update Employee Evaluation Rating
     /// </summary>
     /// <param name="employeeEvaluationRatingDto"></param>
     /// <returns>Employee Evaluation Rating</returns>
     Task<EmployeeEvaluationRatingDto> Update(EvaluationRatingInput rating);
 
     /// <summary>
-    /// Delete Employee Evaluation Rating
+    ///     Delete Employee Evaluation Rating
     /// </summary>
     /// <param name="email"></param>
     /// <param name="evaluationInput"></param>
@@ -43,20 +43,20 @@ public interface IEmployeeEvaluationRatingService
     Task<EmployeeEvaluationRatingDto> Delete(EvaluationRatingInput rating);
 
     /// <summary>
-    /// Get All Employee Evaluation Ratings
+    ///     Get All Employee Evaluation Ratings
     /// </summary>
     /// <returns>List of Employee Evaluation Rating</returns>
     Task<List<EmployeeEvaluationRatingDto>> GetAll();
 
     /// <summary>
-    /// Get All Employee Evaluation Ratings By Employee
+    ///     Get All Employee Evaluation Ratings By Employee
     /// </summary>
     /// <param name="email"></param>
     /// <returns>List of Employee Evaluation Rating</returns>
     Task<List<EmployeeEvaluationRatingDto>> GetAllByEmployee(string email);
 
     /// <summary>
-    /// Get All Employee Evaluation Ratings By Evaluation
+    ///     Get All Employee Evaluation Ratings By Evaluation
     /// </summary>
     /// <param name="evaluationInput"></param>
     /// <returns>List of Employee Evaluation Rating</returns>

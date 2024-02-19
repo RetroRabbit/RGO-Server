@@ -1,9 +1,9 @@
-﻿using RGO.Models;
-using RGO.Models.Enums;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class EmployeeAddressUnitTests
 {
@@ -11,19 +11,22 @@ public class EmployeeAddressUnitTests
 
     public EmployeeAddressUnitTests()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy", "D",
-            "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                    null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy",
+                                    "D",
+                                    "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                    new DateTime(), null, Race.Black, Gender.Male, null,
+                                    "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
+                                    employeeAddressDto, employeeAddressDto, null, null, null);
     }
 
     public EmployeeAddress CreateEmployeeAddress()
     {
-        EmployeeAddress employeeAddress = new EmployeeAddress
+        var employeeAddress = new EmployeeAddress
         {
             Id = 1,
             UnitNumber = "1",

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 
-namespace RGO.Models.Enums;
+namespace HRIS.Models.Enums;
 
 public enum Gender
 {
     [Description("Prefer Not To Say")] PreferNotToSay,
     [Description("Male")] Male,
-    [Description("Female")] Female,
+    [Description("Female")] Female
 }

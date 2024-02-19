@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RGO.Models;
-using RGO.Services.Interfaces;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class PayRateType : BaseDataType
 {
@@ -14,7 +12,6 @@ public class PayRateType : BaseDataType
         if (prop.GetValue(employee) == null)
             return null;
 
-        return $"PayRate {prop.GetValue(employee).ToString()}, ";
+        return $"PayRate {prop.GetValue(employee)}, ";
     }
-
 }

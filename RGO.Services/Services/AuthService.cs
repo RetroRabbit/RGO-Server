@@ -1,14 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
+using HRIS.Models;
+using HRIS.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class AuthService : IAuthService
 {
@@ -40,7 +38,7 @@ public class AuthService : IAuthService
 
     public async Task<string> RegisterEmployee(EmployeeDto employeeDto)
     {
-        EmployeeDto newEmployee = await _employeeService.SaveEmployee(employeeDto);
+        var newEmployee = await _employeeService.SaveEmployee(employeeDto);
 
         return await GenerateToken(newEmployee);
     }
@@ -53,19 +51,16 @@ public class AuthService : IAuthService
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
-            new Claim(ClaimTypes.Email, employee.Email),
-            new Claim(ClaimTypes.Name, employee.Name + " " + employee.Surname)
+            new(ClaimTypes.NameIdentifier, employee.Id.ToString()),
+            new(ClaimTypes.Email, employee.Email),
+            new(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 
         foreach (var role in roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role.Key));
 
-            foreach (var permission in role.Value)
-            {
-                claims.Add(new Claim("Permission", permission));
-            }
+            foreach (var permission in role.Value) claims.Add(new Claim("Permission", permission));
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -75,8 +70,8 @@ public class AuthService : IAuthService
             Issuer = _configuration["Auth:Issuer"],
             Audience = _configuration["Auth:Audience"],
             SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
+                                                        new SymmetricSecurityKey(key),
+                                                        SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);

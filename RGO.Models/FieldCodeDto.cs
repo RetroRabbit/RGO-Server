@@ -1,21 +1,21 @@
-﻿using RGO.Models.Enums;
+﻿using HRIS.Models.Enums;
 
-namespace RGO.Models;
+namespace HRIS.Models;
 
 public class FieldCodeDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public FieldCodeDto(int Id,
-        string Code,
-        string Name,
-        string? Description,
-        string? Regex,
-        FieldCodeType Type,
-        ItemStatus Status,
-        bool Internal,
-        string? InternalTable,
-        FieldCodeCategory Category,
-        bool Required)
+                        string Code,
+                        string Name,
+                        string? Description,
+                        string? Regex,
+                        FieldCodeType Type,
+                        ItemStatus Status,
+                        bool Internal,
+                        string? InternalTable,
+                        FieldCodeCategory Category,
+                        bool Required)
     {
         this.Id = Id;
         this.Code = Code;

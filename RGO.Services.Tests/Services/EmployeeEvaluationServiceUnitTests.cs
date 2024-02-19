@@ -1,11 +1,12 @@
-﻿using MockQueryable.Moq;
+﻿using System.Linq.Expressions;
+using HRIS.Models;
+using HRIS.Models.Enums;
+using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
+using MockQueryable.Moq;
 using Moq;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.Services.Services;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System.Linq.Expressions;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RGO.Tests.Services;
@@ -13,11 +14,11 @@ namespace RGO.Tests.Services;
 public class EmployeeEvaluationServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IEmployeeService> _employeeServiceMock;
-    private readonly Mock<IEmployeeEvaluationTemplateService> _employeeEvaluationTemplateServiceMock;
-    private readonly EmployeeEvaluationService _employeeEvaluationService;
     private readonly EmployeeDto _employee;
+    private readonly EmployeeEvaluationService _employeeEvaluationService;
     private readonly EmployeeEvaluationTemplateDto _employeeEvaluationTemplate;
+    private readonly Mock<IEmployeeEvaluationTemplateService> _employeeEvaluationTemplateServiceMock;
+    private readonly Mock<IEmployeeService> _employeeServiceMock;
 
     public EmployeeEvaluationServiceUnitTests()
     {
@@ -25,17 +26,19 @@ public class EmployeeEvaluationServiceUnitTests
         _employeeServiceMock = new Mock<IEmployeeService>();
         _employeeEvaluationTemplateServiceMock = new Mock<IEmployeeEvaluationTemplateService>();
         _employeeEvaluationService = new EmployeeEvaluationService(
-            _dbMock.Object,
-            _employeeServiceMock.Object,
-            _employeeEvaluationTemplateServiceMock.Object);
+                                                                   _dbMock.Object,
+                                                                   _employeeServiceMock.Object,
+                                                                   _employeeEvaluationTemplateServiceMock.Object);
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "1234457899", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null!,
-                "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                    null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
+                                    "Missile", new DateTime(), "South Africa", "South African", "1234457899", " ",
+                                    new DateTime(), null, Race.Black, Gender.Female, null!,
+                                    "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
+                                    employeeAddressDto, employeeAddressDto, null, null, null);
         _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto(1, "template");
     }
 
@@ -73,9 +76,9 @@ public class EmployeeEvaluationServiceUnitTests
         var evaluationInput = new EmployeeEvaluationInput(0, "owner", "employee", "template", "subject");
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
-        bool result = await _employeeEvaluationService.CheckIfExists(evaluationInput);
+        var result = await _employeeEvaluationService.CheckIfExists(evaluationInput);
 
         Assert.True(result);
     }
@@ -85,20 +88,20 @@ public class EmployeeEvaluationServiceUnitTests
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var evaluationInput = new EmployeeEvaluationInput(
-            evaluation.Id,
-            evaluation.Owner.Email,
-            evaluation.Employee.Email,
-            evaluation.Template.Description,
-            evaluation.Subject);
+                                                          evaluation.Id,
+                                                          evaluation.Owner.Email,
+                                                          evaluation.Employee.Email,
+                                                          evaluation.Template.Description,
+                                                          evaluation.Subject);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(false);
+               .ReturnsAsync(false);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.Get(
-            evaluationInput.EmployeeEmail,
-            evaluationInput.OwnerEmail,
-            evaluationInput.Template,
-            evaluationInput.Subject));
+                                             evaluationInput.EmployeeEmail,
+                                             evaluationInput.OwnerEmail,
+                                             evaluationInput.Template,
+                                             evaluationInput.Subject));
     }
 
     [Fact]
@@ -106,23 +109,23 @@ public class EmployeeEvaluationServiceUnitTests
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var evaluationInput = new EmployeeEvaluationInput(
-            evaluation.Id,
-            evaluation.Owner.Email,
-            evaluation.Employee.Email,
-            evaluation.Template.Description,
-            evaluation.Subject);
+                                                          evaluation.Id,
+                                                          evaluation.Owner.Email,
+                                                          evaluation.Employee.Email,
+                                                          evaluation.Template.Description,
+                                                          evaluation.Subject);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .Returns(new List<EmployeeEvaluation> { evaluation }.AsQueryable().BuildMock());
+               .Returns(new List<EmployeeEvaluation> { evaluation }.AsQueryable().BuildMock());
 
-        EmployeeEvaluationDto result = await _employeeEvaluationService.Get(
-            evaluationInput.EmployeeEmail,
-            evaluationInput.OwnerEmail,
-            evaluationInput.Template,
-            evaluationInput.Subject);
+        var result = await _employeeEvaluationService.Get(
+                                                          evaluationInput.EmployeeEmail,
+                                                          evaluationInput.OwnerEmail,
+                                                          evaluationInput.Template,
+                                                          evaluationInput.Subject);
 
         Assert.Equivalent(evaluation.ToDto(), result);
     }
@@ -134,7 +137,7 @@ public class EmployeeEvaluationServiceUnitTests
         _ = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(false);
+               .ReturnsAsync(false);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.Delete(evaluationInput));
     }
@@ -146,15 +149,15 @@ public class EmployeeEvaluationServiceUnitTests
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .Returns(new List<EmployeeEvaluation> { employeeEvaluation }.AsQueryable().BuildMock());
+               .Returns(new List<EmployeeEvaluation> { employeeEvaluation }.AsQueryable().BuildMock());
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Delete(It.IsAny<int>()))
-            .ReturnsAsync(employeeEvaluation.ToDto());
+               .ReturnsAsync(employeeEvaluation.ToDto());
 
-        EmployeeEvaluationDto result = await _employeeEvaluationService.Delete(evaluationInput);
+        var result = await _employeeEvaluationService.Delete(evaluationInput);
 
         Assert.Equivalent(employeeEvaluation.ToDto(), result);
     }
@@ -166,7 +169,7 @@ public class EmployeeEvaluationServiceUnitTests
         _ = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.SetupSequence(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.Save(evaluationInput));
     }
@@ -178,19 +181,19 @@ public class EmployeeEvaluationServiceUnitTests
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(false);
+               .ReturnsAsync(false);
 
         _employeeServiceMock.SetupSequence(x => x.GetEmployee(It.IsAny<string>()))
-            .ReturnsAsync(_employee)
-            .ReturnsAsync(_employee);
+                            .ReturnsAsync(_employee)
+                            .ReturnsAsync(_employee);
 
         _employeeEvaluationTemplateServiceMock.Setup(x => x.Get(It.IsAny<string>()))
-            .ReturnsAsync(_employeeEvaluationTemplate);
+                                              .ReturnsAsync(_employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Add(It.IsAny<EmployeeEvaluation>()))
-            .ReturnsAsync(employeeEvaluation.ToDto());
+               .ReturnsAsync(employeeEvaluation.ToDto());
 
-        EmployeeEvaluationDto result = await _employeeEvaluationService.Save(evaluationInput);
+        var result = await _employeeEvaluationService.Save(evaluationInput);
 
         Assert.Equivalent(employeeEvaluation.ToDto(), result);
     }
@@ -201,61 +204,63 @@ public class EmployeeEvaluationServiceUnitTests
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         var oldEvaluationInput = new EmployeeEvaluationInput(
-            0,
-            employeeEvaluation.Owner.Email,
-            employeeEvaluation.Employee.Email,
-            employeeEvaluation.Template.Description,
-            employeeEvaluation.Subject);
+                                                             0,
+                                                             employeeEvaluation.Owner.Email,
+                                                             employeeEvaluation.Employee.Email,
+                                                             employeeEvaluation.Template.Description,
+                                                             employeeEvaluation.Subject);
 
         var newEvaluationInput = new EmployeeEvaluationInput(
-            0,
-            employeeEvaluation.Owner.Email,
-            employeeEvaluation.Employee.Email,
-            employeeEvaluation.Template.Description,
-            "new subject");
+                                                             0,
+                                                             employeeEvaluation.Owner.Email,
+                                                             employeeEvaluation.Employee.Email,
+                                                             employeeEvaluation.Template.Description,
+                                                             "new subject");
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(false);
+               .ReturnsAsync(false);
 
         await Assert.ThrowsAsync<Exception>(() =>
-            _employeeEvaluationService.Update(oldEvaluationInput, newEvaluationInput));
+                                                _employeeEvaluationService.Update(oldEvaluationInput,
+                                                 newEvaluationInput));
     }
 
     [Fact]
     public async Task UpdatePassTest()
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var newEmployeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate, "new subject");
+        var newEmployeeEvaluation =
+            CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate, "new subject");
 
         var oldEvaluationInput = new EmployeeEvaluationInput(
-            0,
-            employeeEvaluation.Owner.Email,
-            employeeEvaluation.Employee.Email,
-            employeeEvaluation.Template.Description,
-            employeeEvaluation.Subject);
+                                                             0,
+                                                             employeeEvaluation.Owner.Email,
+                                                             employeeEvaluation.Employee.Email,
+                                                             employeeEvaluation.Template.Description,
+                                                             employeeEvaluation.Subject);
         var newEvaluationInput = new EmployeeEvaluationInput(
-            0,
-            newEmployeeEvaluation.Owner.Email,
-            newEmployeeEvaluation.Employee.Email,
-            newEmployeeEvaluation.Template.Description,
-            newEmployeeEvaluation.Subject);
+                                                             0,
+                                                             newEmployeeEvaluation.Owner.Email,
+                                                             newEmployeeEvaluation.Employee.Email,
+                                                             newEmployeeEvaluation.Template.Description,
+                                                             newEmployeeEvaluation.Subject);
 
         _dbMock.SetupSequence(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .ReturnsAsync(true)
-            .ReturnsAsync(true);
+               .ReturnsAsync(true)
+               .ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .Returns(new List<EmployeeEvaluation> { employeeEvaluation }.AsQueryable().BuildMock());
+               .Returns(new List<EmployeeEvaluation> { employeeEvaluation }.AsQueryable().BuildMock());
 
         _employeeServiceMock.SetupSequence(x => x.GetEmployee(It.IsAny<string>()))
-            .ReturnsAsync(_employee)
-            .ReturnsAsync(_employee);
+                            .ReturnsAsync(_employee)
+                            .ReturnsAsync(_employee);
 
         _employeeEvaluationTemplateServiceMock.Setup(x => x.Get(It.IsAny<string>()))
-            .ReturnsAsync(_employeeEvaluationTemplate);
+                                              .ReturnsAsync(_employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Update(It.IsAny<EmployeeEvaluation>()))
-            .ReturnsAsync(newEmployeeEvaluation.ToDto());
+               .ReturnsAsync(newEmployeeEvaluation.ToDto());
 
         var result = await _employeeEvaluationService.Update(oldEvaluationInput, newEvaluationInput);
         var expected = newEmployeeEvaluation.ToDto();
@@ -275,10 +280,10 @@ public class EmployeeEvaluationServiceUnitTests
         employeeEvaluations[1].Owner.Email = "demo@retrorabbit.co.za";
 
         Expression<Func<EmployeeEvaluation, bool>> criteria = x => x.Owner.Email == _employee.Email
-            || x.Employee.Email == _employee.Email;
+                                                                   || x.Employee.Email == _employee.Email;
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
+               .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
 
         var result = await _employeeEvaluationService.GetAllEvaluationsByEmail(_employee.Email);
 
@@ -289,7 +294,7 @@ public class EmployeeEvaluationServiceUnitTests
     public async Task GetAllByEmployeeFailTest()
     {
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
-            .ReturnsAsync(false);
+                            .ReturnsAsync(false);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByEmployee(_employee.Email));
     }
@@ -299,16 +304,16 @@ public class EmployeeEvaluationServiceUnitTests
     {
         var employeeEvaluations = new List<EmployeeEvaluation>
         {
-            CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate),
+            CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate)
         };
 
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
-            .ReturnsAsync(true);
+                            .ReturnsAsync(true);
 
         Expression<Func<EmployeeEvaluation, bool>> criteria = x => x.Employee.Email == _employee.Email;
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
+               .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
 
         var result = await _employeeEvaluationService.GetAllByEmployee(_employee.Email);
 
@@ -319,7 +324,7 @@ public class EmployeeEvaluationServiceUnitTests
     public async Task GetAllByOwnerFailTest()
     {
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
-            .ReturnsAsync(false);
+                            .ReturnsAsync(false);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByOwner(_employee.Email));
     }
@@ -329,16 +334,16 @@ public class EmployeeEvaluationServiceUnitTests
     {
         var employeeEvaluations = new List<EmployeeEvaluation>
         {
-            CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate),
+            CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate)
         };
 
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
-            .ReturnsAsync(true);
+                            .ReturnsAsync(true);
 
         Expression<Func<EmployeeEvaluation, bool>> criteria = x => x.Employee.Email == _employee.Email;
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
+               .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
 
         var result = await _employeeEvaluationService.GetAllByOwner(_employee.Email);
 
@@ -349,9 +354,11 @@ public class EmployeeEvaluationServiceUnitTests
     public async Task GetAllFailTest()
     {
         _employeeEvaluationTemplateServiceMock.Setup(x => x.CheckIfExists(It.IsAny<string>()))
-            .ReturnsAsync(false);
+                                              .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByTemplate(_employeeEvaluationTemplate.Description));
+        await Assert.ThrowsAsync<Exception>(() =>
+                                                _employeeEvaluationService.GetAllByTemplate(_employeeEvaluationTemplate
+                                                    .Description));
     }
 
     [Fact]
@@ -359,16 +366,16 @@ public class EmployeeEvaluationServiceUnitTests
     {
         var employeeEvaluations = new List<EmployeeEvaluation>
         {
-            CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate),
+            CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate)
         };
 
         _employeeEvaluationTemplateServiceMock.Setup(x => x.CheckIfExists(It.IsAny<string>()))
-            .ReturnsAsync(true);
+                                              .ReturnsAsync(true);
 
         Expression<Func<EmployeeEvaluation, bool>> criteria = x => x.Employee.Email == _employee.Email;
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
-            .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
+               .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
 
         var result = await _employeeEvaluationService.GetAllByTemplate(_employeeEvaluationTemplate.Description);
 

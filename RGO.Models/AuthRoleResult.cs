@@ -1,13 +1,13 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class AuthRoleResult
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public AuthRoleResult(string Role,
-        string Action,
-        bool View,
-        bool Edit,
-        bool Delete)
+                          string Action,
+                          bool View,
+                          bool Edit,
+                          bool Delete)
     {
         this.Role = Role;
         this.Action = Action;

@@ -1,8 +1,8 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class RoleAccessLinkUnitTests
 {
@@ -17,13 +17,13 @@ public class RoleAccessLinkUnitTests
     [Fact]
     public async Task roleAccessLinkToDtoTest()
     {
-        RoleDto roleDto = new RoleDto(1, "Employee");
-        RoleAccessDto roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
-        
-        RoleAccessLinkDto roleAccessLinkDto = new RoleAccessLinkDto(
-            1,
-            roleDto,
-            roleAccessDto);
+        var roleDto = new RoleDto(1, "Employee");
+        var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
+
+        var roleAccessLinkDto = new RoleAccessLinkDto(
+                                                      1,
+                                                      roleDto,
+                                                      roleAccessDto);
         var roleAccessLink = new RoleAccessLink(roleAccessLinkDto);
 
         roleAccessLink.Role = new Role(roleDto);
@@ -36,13 +36,13 @@ public class RoleAccessLinkUnitTests
     [Fact]
     public async Task roleAccessLinkToDtoNullTest()
     {
-        RoleDto roleDto = new RoleDto(1, "Employee");
-        RoleAccessDto roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
+        var roleDto = new RoleDto(1, "Employee");
+        var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
 
-        RoleAccessLinkDto roleAccessLinkDto = new RoleAccessLinkDto(
-            1,
-            roleDto,
-            roleAccessDto);
+        var roleAccessLinkDto = new RoleAccessLinkDto(
+                                                      1,
+                                                      roleDto,
+                                                      roleAccessDto);
         var roleAccessLink = new RoleAccessLink(roleAccessLinkDto);
 
         Assert.Null(roleAccessLink.Role);

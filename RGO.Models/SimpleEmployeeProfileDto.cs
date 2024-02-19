@@ -1,11 +1,6 @@
-﻿using RGO.Models.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HRIS.Models.Enums;
 
-namespace RGO.Models;
+namespace HRIS.Models;
 
 public record SimpleEmployeeProfileDto(
     int Id,
@@ -49,5 +44,4 @@ public record SimpleEmployeeProfileDto(
     string? HouseNo,
     string? EmergencyContactName,
     string? EmergencyContactNo
-    );
-
+);

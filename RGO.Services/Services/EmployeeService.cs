@@ -1,26 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text;
+using HRIS.Models;
+using HRIS.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
+    private const string QueueName = "employee_data_queue";
+    public static ConnectionFactory _employeeFactory;
+    private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IRoleService _roleService;
-    private readonly IUnitOfWork _db;
-    private const string QueueName = "employee_data_queue";
-    public static ConnectionFactory _employeeFactory;
-    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db, IEmployeeAddressService employeeAddressService, IRoleService roleService)
+
+    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
+                           IEmployeeAddressService employeeAddressService, IRoleService roleService)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
@@ -30,7 +29,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
     {
-        bool exists = await CheckUserExist(employeeDto.Email);
+        var exists = await CheckUserExist(employeeDto.Email);
         if (exists)
             throw new Exception("User already exists");
 
@@ -58,13 +57,13 @@ public class EmployeeService : IEmployeeService
         }
         catch (Exception)
         {
-            EmployeeTypeDto newEmployeeType = await _employeeTypeService
+            var newEmployeeType = await _employeeTypeService
                 .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType!.Name));
 
             employee = new Employee(employeeDto, newEmployeeType);
         }
 
-        bool physicalAddressExist = await _employeeAddressService
+        var physicalAddressExist = await _employeeAddressService
             .CheckIfExists(employeeDto.PhysicalAddress!);
 
         EmployeeAddressDto physicalAddress;
@@ -76,7 +75,7 @@ public class EmployeeService : IEmployeeService
 
         employee.PhysicalAddressId = physicalAddress.Id;
 
-        bool postalAddressExist = await _employeeAddressService
+        var postalAddressExist = await _employeeAddressService
             .CheckIfExists(employeeDto.PostalAddress!);
 
         EmployeeAddressDto postalAddress;
@@ -88,10 +87,10 @@ public class EmployeeService : IEmployeeService
 
         employee.PostalAddressId = postalAddress.Id;
 
-        RoleDto roleDto = await _roleService.GetRole("Employee");
-        EmployeeDto newEmployee = await _db.Employee.Add(employee);
+        var roleDto = await _roleService.GetRole("Employee");
+        var newEmployee = await _db.Employee.Add(employee);
 
-        EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto(0, newEmployee, roleDto);
+        var employeeRoleDto = new EmployeeRoleDto(0, newEmployee, roleDto);
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
         return newEmployee;
@@ -100,7 +99,7 @@ public class EmployeeService : IEmployeeService
     public async Task<bool> CheckUserExist(string email)
     {
         return await _db.Employee
-            .Any(employee => employee.Email == email);
+                        .Any(employee => employee.Email == email);
     }
 
     public async Task<EmployeeDto> DeleteEmployee(string email)
@@ -112,46 +111,45 @@ public class EmployeeService : IEmployeeService
 
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
     {
-
-        if(userEmail != "" && await IsJourney(userEmail))
+        if (userEmail != "" && await IsJourney(userEmail))
         {
-            EmployeeDto peopleChampion = await GetEmployee(userEmail);
+            var peopleChampion = await GetEmployee(userEmail);
 
             return await _db.Employee
-                .Get(employee => employee.PeopleChampion == peopleChampion.Id)
-                .Include(employee => employee.EmployeeType)
-                .Include(employee => employee.PhysicalAddress)
-                .Include(employee => employee.PostalAddress)
-                .OrderBy(employee => employee.Name)
-                .Select(employee => employee.ToDto())
-                .ToListAsync();
+                            .Get(employee => employee.PeopleChampion == peopleChampion.Id)
+                            .Include(employee => employee.EmployeeType)
+                            .Include(employee => employee.PhysicalAddress)
+                            .Include(employee => employee.PostalAddress)
+                            .OrderBy(employee => employee.Name)
+                            .Select(employee => employee.ToDto())
+                            .ToListAsync();
         }
 
         return await _db.Employee
-            .Get(employee => true)
-            .AsNoTracking()
-            .Include(employee => employee.EmployeeType)
-            .Include(employee => employee.PhysicalAddress)
-            .Include(employee => employee.PostalAddress)
-            .OrderBy(employee => employee.Name)
-            .Select(employee => employee.ToDto())
-            .ToListAsync();
+                        .Get(employee => true)
+                        .AsNoTracking()
+                        .Include(employee => employee.EmployeeType)
+                        .Include(employee => employee.PhysicalAddress)
+                        .Include(employee => employee.PostalAddress)
+                        .OrderBy(employee => employee.Name)
+                        .Select(employee => employee.ToDto())
+                        .ToListAsync();
     }
 
     public async Task<EmployeeDto> GetEmployee(string email)
     {
         var employee = await _db.Employee
-            .Get(employee => employee.Email == email)
-            .AsNoTracking()
-            .Include(employee => employee.EmployeeType)
-            .Include(employee => employee.PhysicalAddress)
-            .Include(employee => employee.PostalAddress)
-            .Select(employee => employee.ToDto())
-            .Take(1)
-            .FirstOrDefaultAsync();
+                                .Get(employee => employee.Email == email)
+                                .AsNoTracking()
+                                .Include(employee => employee.EmployeeType)
+                                .Include(employee => employee.PhysicalAddress)
+                                .Include(employee => employee.PostalAddress)
+                                .Select(employee => employee.ToDto())
+                                .Take(1)
+                                .FirstOrDefaultAsync();
 
         if (employee == null)
-            throw new Exception("Employee not found"); 
+            throw new Exception("Employee not found");
 
         return employee;
     }
@@ -159,13 +157,13 @@ public class EmployeeService : IEmployeeService
     public async Task<EmployeeDto> GetEmployeeById(int id)
     {
         var employee = await _db.Employee
-            .Get(employee => employee.Id == id)
-            .AsNoTracking()
-            .Include(employee => employee.EmployeeType)
-            .Include(employee => employee.PhysicalAddress)
-            .Include(employee => employee.PostalAddress)
-            .Select(employee => employee.ToDto())
-            .FirstOrDefaultAsync();
+                                .Get(employee => employee.Id == id)
+                                .AsNoTracking()
+                                .Include(employee => employee.EmployeeType)
+                                .Include(employee => employee.PhysicalAddress)
+                                .Include(employee => employee.PostalAddress)
+                                .Select(employee => employee.ToDto())
+                                .FirstOrDefaultAsync();
 
         if (employee == null)
             throw new Exception("Employee not found");
@@ -176,10 +174,12 @@ public class EmployeeService : IEmployeeService
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
         EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
-                .GetEmployeeType(employeeDto.EmployeeType.Name);
+            .GetEmployeeType(employeeDto.EmployeeType.Name);
         Employee employee = null;
         if (employeeDto.Email == userEmail)
+        {
             employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
+        }
         else
         {
             if (await CheckUserExist(userEmail))
@@ -190,86 +190,18 @@ public class EmployeeService : IEmployeeService
                     throw new Exception("Unauthorized action");
             }
             else
-                throw new Exception("Unauthorized action");
-        }
-        return await _db.Employee.Update(employee);
-    }
-
-    public void PushToProducer(Employee employeeData)
-    {
-        try
-        {
-            using (IConnection connection = _employeeFactory.CreateConnection())
-            using (IModel channel = connection.CreateModel())
             {
-                var messageBody = JsonConvert.SerializeObject(employeeData);
-                var body = Encoding.UTF8.GetBytes(messageBody);
-
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
-
-                channel.QueueDeclare(QueueName, durable: true, exclusive: false, autoDelete: false, null);
-                channel.BasicPublish(string.Empty, QueueName, properties, body);
+                throw new Exception("Unauthorized action");
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
 
-    public async Task<List<EmployeeDto>> GetEmployeesByType(string type)
-    {
-        var employees = await _db.Employee.Get(employee => employee.EmployeeType.Name == type).AsNoTracking()
-            .Include(employee => employee.EmployeeType)
-            .Include(employee => employee.PhysicalAddress)
-            .Include(employee => employee.PostalAddress).Select(employee => employee.ToDto()).ToListAsync();
-
-        return employees;
+        return await _db.Employee.Update(employee);
     }
 
     public async Task<EmployeeDto?> GetById(int employeeId)
     {
-     var employee = await _db.Employee.GetById(employeeId);
+        var employee = await _db.Employee.GetById(employeeId);
         return employee;
-    }
-
-    public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
-    {
-        var devsTotal = _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 2)
-            .ToList().Count;
-
-        var designersTotal = _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 3)
-            .ToList().Count;
-
-        var scrumMastersTotal = _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 4)
-            .ToList().Count;
-
-        var businessSupportTotal = _db.Employee.Get()
-            .Where(e => e.EmployeeTypeId == 5)
-            .ToList().Count;
-
-        return new EmployeeCountByRoleDataCard
-        {
-            DevsCount = devsTotal,
-            DesignersCount = designersTotal,
-            ScrumMastersCount = scrumMastersTotal,
-            BusinessSupportCount = businessSupportTotal
-        };
-    }
-
-    public int GetTotalNumberOfEmployeesOnClients()
-    {
-        var totalOfDevsDesignersAndScrumsOnClients = _db.Employee
-          .Get()
-          .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 || e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
-          .ToList()
-          .Count;
-
-        return totalOfDevsDesignersAndScrumsOnClients;
     }
 
     public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
@@ -278,14 +210,14 @@ public class EmployeeService : IEmployeeService
 
         var totalNumberOfEmployeesOnBench = GetTotalNumberOfEmployeesOnBench();
 
-        var totalNumberOfEmployeesOnClients  = GetTotalNumberOfEmployeesOnClients();
-        
+        var totalNumberOfEmployeesOnClients = GetTotalNumberOfEmployeesOnClients();
+
         var totalNumberOfEmployeesDevsScrumsAndDesigners = totalNumberOfEmployeesOnBench.TotalNumberOfEmployeesOnBench
-            + totalNumberOfEmployeesOnClients;
+                                                           + totalNumberOfEmployeesOnClients;
 
         var billableEmployeesPercentage = totalNumberOfEmployeesDevsScrumsAndDesigners > 0
-               ? (double)totalNumberOfEmployeesOnClients / totalNumberOfEmployeesDevsScrumsAndDesigners * 100
-               : 0;
+            ? (double)totalNumberOfEmployeesOnClients / totalNumberOfEmployeesDevsScrumsAndDesigners * 100
+            : 0;
 
         var currentMonthTotal = await GetEmployeeCurrentMonthTotal();
 
@@ -306,7 +238,7 @@ public class EmployeeService : IEmployeeService
             TotalNumberOfEmployeesOnBench = totalNumberOfEmployeesOnBench.TotalNumberOfEmployeesOnBench,
             BillableEmployeesPercentage = Math.Round(billableEmployeesPercentage, 0),
             EmployeeTotalDifference = employeeTotalDifference,
-            isIncrease = isIncrease,
+            isIncrease = isIncrease
         };
     }
 
@@ -316,26 +248,30 @@ public class EmployeeService : IEmployeeService
 
         var employeePreviousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-        if (employeePreviousMonthTotal != null 
-            && employeePreviousMonthTotal.EmployeeTotal > 0 
+        if (employeePreviousMonthTotal != null
+            && employeePreviousMonthTotal.EmployeeTotal > 0
             && employeePreviousMonthTotal.DeveloperTotal > 0
-            && employeePreviousMonthTotal.DesignerTotal > 0 
+            && employeePreviousMonthTotal.DesignerTotal > 0
             && employeePreviousMonthTotal.ScrumMasterTotal > 0
             && employeePreviousMonthTotal.BusinessSupportTotal > 0)
         {
-            var churnRate = (double)(employeeCurrentMonthTotal.EmployeeTotal - employeePreviousMonthTotal.EmployeeTotal) 
+            var churnRate = (double)(employeeCurrentMonthTotal.EmployeeTotal - employeePreviousMonthTotal.EmployeeTotal)
                 / employeePreviousMonthTotal.EmployeeTotal * 100;
 
-            var devChurnRate = (double)(employeeCurrentMonthTotal.DeveloperTotal - employeePreviousMonthTotal.DeveloperTotal)
+            var devChurnRate =
+                (double)(employeeCurrentMonthTotal.DeveloperTotal - employeePreviousMonthTotal.DeveloperTotal)
                 / employeePreviousMonthTotal.DeveloperTotal * 100;
 
-            var designerChurnRate = (double)(employeeCurrentMonthTotal.DesignerTotal - employeePreviousMonthTotal.DesignerTotal)
+            var designerChurnRate =
+                (double)(employeeCurrentMonthTotal.DesignerTotal - employeePreviousMonthTotal.DesignerTotal)
                 / employeePreviousMonthTotal.DesignerTotal * 100;
 
-            var scrumMasterChurnRate = (double)(employeeCurrentMonthTotal.ScrumMasterTotal - employeePreviousMonthTotal.ScrumMasterTotal)
+            var scrumMasterChurnRate =
+                (double)(employeeCurrentMonthTotal.ScrumMasterTotal - employeePreviousMonthTotal.ScrumMasterTotal)
                 / employeePreviousMonthTotal.ScrumMasterTotal * 100;
 
-            var businessSupportChurnRate = (double)(employeeCurrentMonthTotal.BusinessSupportTotal - employeePreviousMonthTotal.BusinessSupportTotal)
+            var businessSupportChurnRate = (double)(employeeCurrentMonthTotal.BusinessSupportTotal -
+                                                    employeePreviousMonthTotal.BusinessSupportTotal)
                 / employeePreviousMonthTotal.BusinessSupportTotal * 100;
 
             return new ChurnRateDataCard
@@ -346,22 +282,20 @@ public class EmployeeService : IEmployeeService
                 ScrumMasterChurnRate = Math.Round(scrumMasterChurnRate, 0),
                 BusinessSupportChurnRate = Math.Round(businessSupportChurnRate, 0),
                 Month = employeePreviousMonthTotal.Month,
-                Year = employeePreviousMonthTotal.Year,
+                Year = employeePreviousMonthTotal.Year
             };
         }
-        else
+
+        return new ChurnRateDataCard
         {
-            return new ChurnRateDataCard
-            {
-                ChurnRate = 0,
-                DeveloperChurnRate = 0,
-                DesignerChurnRate = 0,
-                ScrumMasterChurnRate = 0,
-                BusinessSupportChurnRate = 0,
-                Month = DateTime.Now.AddMonths(-1).ToString("MMMM"),
-                Year = DateTime.Now.Year,
-            };
-        }
+            ChurnRate = 0,
+            DeveloperChurnRate = 0,
+            DesignerChurnRate = 0,
+            ScrumMasterChurnRate = 0,
+            BusinessSupportChurnRate = 0,
+            Month = DateTime.Now.AddMonths(-1).ToString("MMMM"),
+            Year = DateTime.Now.Year
+        };
     }
 
     public async Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal()
@@ -371,19 +305,21 @@ public class EmployeeService : IEmployeeService
         var currentYear = DateTime.Now.Year;
 
         var currentEmployeeTotal = _db.MonthlyEmployeeTotal
-            .Get()
-            .Where(e => e.Month == currentMonth && e.Year == currentYear)
-            .FirstOrDefault();
+                                      .Get()
+                                      .Where(e => e.Month == currentMonth && e.Year == currentYear)
+                                      .FirstOrDefault();
 
         if (currentEmployeeTotal == null)
         {
             var employeeTotalCount = await _db.Employee.GetAll();
 
-            var employeeCountTotalsByRole =  GetEmployeeCountTotalByRole();
+            var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
 
-            MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
-                (0, employeeTotalCount.Count, employeeCountTotalsByRole.DevsCount, employeeCountTotalsByRole.DesignersCount,
-               employeeCountTotalsByRole.ScrumMastersCount,employeeCountTotalsByRole.BusinessSupportCount, currentMonth, currentYear);
+            var monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+                (0, employeeTotalCount.Count, employeeCountTotalsByRole.DevsCount,
+                 employeeCountTotalsByRole.DesignersCount,
+                 employeeCountTotalsByRole.ScrumMastersCount, employeeCountTotalsByRole.BusinessSupportCount,
+                 currentMonth, currentYear);
 
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
@@ -393,19 +329,175 @@ public class EmployeeService : IEmployeeService
         return currentEmployeeTotal.ToDto();
     }
 
+    public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
+    {
+        var employeeDto = await GetEmployee(employeeEmail);
+        var teamLeadName = "";
+        var peopleChampionName = "";
+        var teamLeadId = 0;
+        var peopleChampionId = 0;
+        var clientAllocatedId = 0;
+        var clientAllocatedName = "";
+
+        if (employeeDto.TeamLead != null)
+        {
+            var teamLeadDto = await GetById((int)employeeDto.TeamLead);
+            teamLeadName = teamLeadDto.Name + " " + teamLeadDto.Surname;
+            teamLeadId = teamLeadDto.Id;
+        }
+
+        if (employeeDto.PeopleChampion != null)
+        {
+            var peopleChampionDto = await GetById((int)employeeDto.PeopleChampion);
+            peopleChampionName = peopleChampionDto.Name + " " + peopleChampionDto.Surname;
+            peopleChampionId = peopleChampionDto.Id;
+        }
+
+        if (employeeDto.ClientAllocated != null)
+        {
+            var clientDto = await _db.Client
+                                     .Get(client => client.Id == employeeDto.ClientAllocated)
+                                     .AsNoTracking()
+                                     .Select(client => client.ToDto())
+                                     .FirstAsync();
+
+            clientAllocatedId = clientDto.Id;
+            clientAllocatedName = clientDto.Name;
+        }
+
+        var simpleProfile = new SimpleEmployeeProfileDto(
+                                                         employeeDto.Id,
+                                                         employeeDto.EmployeeNumber,
+                                                         employeeDto.TaxNumber,
+                                                         employeeDto.EngagementDate,
+                                                         employeeDto.TerminationDate,
+                                                         peopleChampionName,
+                                                         peopleChampionId == 0 ? null : peopleChampionId,
+                                                         employeeDto.Disability,
+                                                         employeeDto.DisabilityNotes,
+                                                         employeeDto.Level,
+                                                         employeeDto.EmployeeType,
+                                                         employeeDto.Notes,
+                                                         employeeDto.LeaveInterval,
+                                                         employeeDto.SalaryDays,
+                                                         employeeDto.PayRate,
+                                                         employeeDto.Salary,
+                                                         employeeDto.Name,
+                                                         employeeDto.Initials,
+                                                         employeeDto.Surname,
+                                                         employeeDto.DateOfBirth,
+                                                         employeeDto.CountryOfBirth,
+                                                         employeeDto.Nationality,
+                                                         employeeDto.IdNumber,
+                                                         employeeDto.PassportNumber,
+                                                         employeeDto.PassportExpirationDate,
+                                                         employeeDto.PassportCountryIssue,
+                                                         employeeDto.Race,
+                                                         employeeDto.Gender,
+                                                         employeeDto.Photo,
+                                                         employeeDto.Email,
+                                                         employeeDto.PersonalEmail,
+                                                         employeeDto.CellphoneNo,
+                                                         clientAllocatedName,
+                                                         clientAllocatedId,
+                                                         teamLeadName,
+                                                         teamLeadId,
+                                                         employeeDto.PhysicalAddress,
+                                                         employeeDto.PostalAddress,
+                                                         employeeDto.HouseNo,
+                                                         employeeDto.EmergencyContactName,
+                                                         employeeDto.EmergencyContactNo);
+
+        return simpleProfile;
+    }
+
+    public async Task<List<EmployeeDto>> FillerEmployees(int peopleChampId = 0, int employeeType = 0)
+    {
+        return await _db.Employee
+                        .Get(employee => true)
+                        .Where(employee =>
+                                   (peopleChampId == 0 || employee.PeopleChampion == peopleChampId)
+                                   && (employeeType == 0 || employee.EmployeeType.Id == employeeType))
+                        .Include(employee => employee.EmployeeType)
+                        .Include(employee => employee.PhysicalAddress)
+                        .Include(employee => employee.PostalAddress)
+                        .OrderBy(employee => employee.Name)
+                        .Select(employee => employee.ToDto())
+                        .ToListAsync();
+    }
+
+    public void PushToProducer(Employee employeeData)
+    {
+        try
+        {
+            using (var connection = _employeeFactory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                var messageBody = JsonConvert.SerializeObject(employeeData);
+                var body = Encoding.UTF8.GetBytes(messageBody);
+
+                var properties = channel.CreateBasicProperties();
+                properties.Persistent = true;
+
+                channel.QueueDeclare(QueueName, true, false, false, null);
+                channel.BasicPublish(string.Empty, QueueName, properties, body);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
+    {
+        var devsTotal = _db.Employee.Get()
+                           .Where(e => e.EmployeeTypeId == 2)
+                           .ToList().Count;
+
+        var designersTotal = _db.Employee.Get()
+                                .Where(e => e.EmployeeTypeId == 3)
+                                .ToList().Count;
+
+        var scrumMastersTotal = _db.Employee.Get()
+                                   .Where(e => e.EmployeeTypeId == 4)
+                                   .ToList().Count;
+
+        var businessSupportTotal = _db.Employee.Get()
+                                      .Where(e => e.EmployeeTypeId == 5)
+                                      .ToList().Count;
+
+        return new EmployeeCountByRoleDataCard
+        {
+            DevsCount = devsTotal,
+            DesignersCount = designersTotal,
+            ScrumMastersCount = scrumMastersTotal,
+            BusinessSupportCount = businessSupportTotal
+        };
+    }
+
+    public int GetTotalNumberOfEmployeesOnClients()
+    {
+        var totalOfDevsDesignersAndScrumsOnClients = _db.Employee
+                                                        .Get()
+                                                        .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 ||
+                                                                     e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
+                                                        .ToList()
+                                                        .Count;
+
+        return totalOfDevsDesignersAndScrumsOnClients;
+    }
+
     public async Task<MonthlyEmployeeTotalDto> GetEmployeePreviousMonthTotal()
     {
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
         var previousEmployeeTotal = _db.MonthlyEmployeeTotal
-            .Get()
-            .Where(e => e.Month == previousMonth)
-            .FirstOrDefault();
+                                       .Get()
+                                       .Where(e => e.Month == previousMonth)
+                                       .FirstOrDefault();
 
-        if (previousEmployeeTotal == null)
-        {
-            return await GetEmployeeCurrentMonthTotal();
-        }
+        if (previousEmployeeTotal == null) return await GetEmployeeCurrentMonthTotal();
 
         return previousEmployeeTotal.ToDto();
     }
@@ -413,20 +505,20 @@ public class EmployeeService : IEmployeeService
     public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
     {
         var totalNumberOfDevsOnBench = _db.Employee.Get()
-            .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 2)
-            .ToList().Count;
+                                          .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 2)
+                                          .ToList().Count;
 
         var totalNumberOfDesignersOnBench = _db.Employee.Get()
-            .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 3)
-            .ToList().Count;
+                                               .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 3)
+                                               .ToList().Count;
 
         var totalNumberOfScrumMastersOnBench = _db.Employee.Get()
-            .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 4)
-            .ToList().Count;
+                                                  .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 4)
+                                                  .ToList().Count;
 
         var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
-           totalNumberOfDesignersOnBench +
-           totalNumberOfScrumMastersOnBench;
+                                            totalNumberOfDesignersOnBench +
+                                            totalNumberOfScrumMastersOnBench;
 
         return new EmployeeOnBenchDataCard
         {
@@ -437,120 +529,38 @@ public class EmployeeService : IEmployeeService
         };
     }
 
-    public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
-    {
-        EmployeeDto employeeDto = await GetEmployee(employeeEmail);
-        string teamLeadName = "";
-        string peopleChampionName = "";
-        int teamLeadId = 0;
-        int peopleChampionId = 0;
-        int clientAllocatedId = 0;
-        string clientAllocatedName = "";
-
-        if (employeeDto.TeamLead != null)
-        {
-            EmployeeDto teamLeadDto = await GetById((int)employeeDto.TeamLead);
-            teamLeadName = teamLeadDto.Name + " " + teamLeadDto.Surname;
-            teamLeadId = teamLeadDto.Id;
-        }
-
-        if (employeeDto.PeopleChampion != null)
-        {
-            EmployeeDto peopleChampionDto = await GetById((int)employeeDto.PeopleChampion);
-            peopleChampionName = peopleChampionDto.Name + " " + peopleChampionDto.Surname;
-            peopleChampionId = peopleChampionDto.Id;
-        }
-
-        if(employeeDto.ClientAllocated != null)
-        {
-            ClientDto clientDto = await _db.Client
-                .Get(client => client.Id == employeeDto.ClientAllocated)
-                .AsNoTracking()
-                .Select(client => client.ToDto())
-                .FirstAsync();
-            
-            clientAllocatedId = clientDto.Id;
-            clientAllocatedName = clientDto.Name;
-        }
-            
-        SimpleEmployeeProfileDto simpleProfile = new SimpleEmployeeProfileDto(
-            employeeDto.Id,
-            employeeDto.EmployeeNumber,
-            employeeDto.TaxNumber,
-            employeeDto.EngagementDate,
-            employeeDto.TerminationDate,
-            peopleChampionName,
-            peopleChampionId == 0 ? null : peopleChampionId,
-            employeeDto.Disability,
-            employeeDto.DisabilityNotes,
-            employeeDto.Level,
-            employeeDto.EmployeeType,
-            employeeDto.Notes,
-            employeeDto.LeaveInterval,
-            employeeDto.SalaryDays,
-            employeeDto.PayRate,
-            employeeDto.Salary,
-            employeeDto.Name,
-            employeeDto.Initials,
-            employeeDto.Surname,
-            employeeDto.DateOfBirth,
-            employeeDto.CountryOfBirth,
-            employeeDto.Nationality,
-            employeeDto.IdNumber,
-            employeeDto.PassportNumber,
-            employeeDto.PassportExpirationDate,
-            employeeDto.PassportCountryIssue,
-            employeeDto.Race,
-            employeeDto.Gender,
-            employeeDto.Photo,
-            employeeDto.Email,
-            employeeDto.PersonalEmail,
-            employeeDto.CellphoneNo,
-            clientAllocatedName,
-            clientAllocatedId,
-            teamLeadName,
-            teamLeadId,
-            employeeDto.PhysicalAddress,
-            employeeDto.PostalAddress,
-            employeeDto.HouseNo,
-            employeeDto.EmergencyContactName,
-            employeeDto.EmergencyContactNo);
-
-        return simpleProfile;
-    }
-
     private async Task<bool> IsAdmin(string userEmail)
     {
-        EmployeeDto employeeDto = await GetEmployee(userEmail);
+        var employeeDto = await GetEmployee(userEmail);
 
-        EmployeeRole empRole = await _db.EmployeeRole
-            .Get(role => role.EmployeeId == employeeDto.Id)
-            .FirstOrDefaultAsync();
+        var empRole = await _db.EmployeeRole
+                               .Get(role => role.EmployeeId == employeeDto.Id)
+                               .FirstOrDefaultAsync();
 
-        Role role = await _db.Role
-            .Get(role => role.Id == empRole.RoleId)
-            .FirstOrDefaultAsync();
+        var role = await _db.Role
+                            .Get(role => role.Id == empRole.RoleId)
+                            .FirstOrDefaultAsync();
 
         return role.Description is "Admin" or "SuperAdmin";
     }
 
     private async Task<bool> IsJourney(string userEmail)
     {
-        EmployeeDto employeeDto = await GetEmployee(userEmail);
-        EmployeeRole empRole = await _db.EmployeeRole
-            .Get(role => role.EmployeeId == employeeDto.Id)
-            .FirstOrDefaultAsync();
+        var employeeDto = await GetEmployee(userEmail);
+        var empRole = await _db.EmployeeRole
+                               .Get(role => role.EmployeeId == employeeDto.Id)
+                               .FirstOrDefaultAsync();
 
-        Role role = await _db.Role
-            .Get(role => role.Id == empRole.RoleId)
-            .FirstOrDefaultAsync();
+        var role = await _db.Role
+                            .Get(role => role.Id == empRole.RoleId)
+                            .FirstOrDefaultAsync();
 
         return role.Description is "Journey";
     }
 
     private async Task<Employee> CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
     {
-        Employee employee = new Employee();
+        var employee = new Employee();
 
         employee = new Employee(employeeDto, employeeTypeDto);
         employee.Email = employeeDto.Email;
@@ -558,4 +568,3 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 }
-

@@ -1,15 +1,15 @@
-﻿using MockQueryable.Moq;
+﻿using System.Linq.Expressions;
+using HRIS.Models;
+using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
+using MockQueryable.Moq;
 using Moq;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.Services.Services;
-using RGO.Tests.Data.Models;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System.Linq.Expressions;
+using RR.Tests.Data.Models.HRIS;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Services.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeBankingServiceTest
 {
@@ -30,51 +30,51 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(
-                new List<EmployeeBanking>
-                {
-                    new(EmployeeBankingTestData.EmployeeBankingDto)
-                }.AsQueryable().BuildMock());
+                     new List<EmployeeBanking>
+                     {
+                         new(EmployeeBankingTestData.EmployeeBankingDto)
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto2, EmployeeTypeTestData.DeveloperType)
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto2, EmployeeTypeTestData.DeveloperType)
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(
-                new List<EmployeeBanking>
-                {
-                    new(EmployeeBankingTestData.EmployeeBankingDto2)
-                }.AsQueryable().BuildMock());
+                     new List<EmployeeBanking>
+                     {
+                         new(EmployeeBankingTestData.EmployeeBankingDto2)
+                     }.AsQueryable().BuildMock());
 
 
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto3, EmployeeTypeTestData.DeveloperType)
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto3, EmployeeTypeTestData.DeveloperType)
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(
-                new List<EmployeeBanking>
-                {
-                    new(EmployeeBankingTestData.EmployeeBankingDto3)
-                }.AsQueryable().BuildMock());
+                     new List<EmployeeBanking>
+                     {
+                         new(EmployeeBankingTestData.EmployeeBankingDto3)
+                     }.AsQueryable().BuildMock());
 
         var result = await _employeeBankingService.Get(0);
         Assert.Single(result);
@@ -96,25 +96,26 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                    {
-                        EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
-                        PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
-                        PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
-                    }
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+                         {
+                             EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+                             PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+                             PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+                         }
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(
-                new List<EmployeeBanking>
-                {
-                    new(EmployeeBankingTestData.EmployeeBankingDto)
-                }.AsQueryable().BuildMock());
+                     new List<EmployeeBanking>
+                     {
+                         new(EmployeeBankingTestData.EmployeeBankingDto)
+                     }.AsQueryable().BuildMock());
 
-        var result = await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingDto, "test@retrorabbit.co.za");
+        var result =
+            await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingDto, "test@retrorabbit.co.za");
 
         Assert.Equal(EmployeeBankingTestData.EmployeeBankingDto, result);
     }
@@ -129,31 +130,33 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                    {
-                        EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
-                        PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
-                        PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
-                    }
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+                         {
+                             EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+                             PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+                             PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+                         }
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(
-                new List<EmployeeBanking>
-                {
-                    new(EmployeeBankingTestData.EmployeeBankingDto)
-                }.AsQueryable().BuildMock());
+                     new List<EmployeeBanking>
+                     {
+                         new(EmployeeBankingTestData.EmployeeBankingDto)
+                     }.AsQueryable().BuildMock());
 
 
-        List<EmployeeRole> empRoles = new List<EmployeeRole> { 
-            new EmployeeRole(
+        var empRoles = new List<EmployeeRole>
+        {
+            new(
                 new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(2, "Admin"))
-            )};
+               )
+        };
 
-        List<Role> roles = new List<Role> { new Role( new RoleDto(2, "Admin") ) };
+        var roles = new List<Role> { new(new RoleDto(2, "Admin")) };
 
         _mockUnitOfWork
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
@@ -163,7 +166,8 @@ public class EmployeeBankingServiceTest
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roles.AsQueryable().BuildMock());
 
-        var result = await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingDto, "admin.email@example.com");
+        var result =
+            await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingDto, "admin.email@example.com");
 
         Assert.Equal(EmployeeBankingTestData.EmployeeBankingDto, result);
     }
@@ -178,34 +182,37 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                    {
-                        EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
-                        PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
-                        PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
-                    }
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+                         {
+                             EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+                             PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+                             PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+                         }
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(
-                new List<EmployeeBanking>
-                {
-                    new(EmployeeBankingTestData.EmployeeBankingDto)
-                }.AsQueryable().BuildMock());
+                     new List<EmployeeBanking>
+                     {
+                         new(EmployeeBankingTestData.EmployeeBankingDto)
+                     }.AsQueryable().BuildMock());
 
 
-        List<EmployeeRole> empRoles = new List<EmployeeRole> { 
-            new EmployeeRole(
+        var empRoles = new List<EmployeeRole>
+        {
+            new(
                 new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(3, "Employee"))
-            )};
+               )
+        };
 
-        List<Role> roles = new List<Role> { 
-            new Role( 
-                new RoleDto(3, "Employee") 
-            ) 
+        var roles = new List<Role>
+        {
+            new(
+                new RoleDto(3, "Employee")
+               )
         };
 
         _mockUnitOfWork
@@ -217,7 +224,10 @@ public class EmployeeBankingServiceTest
             .Returns(roles.AsQueryable().BuildMock());
 
         var exception = await Assert.ThrowsAsync<Exception>(
-            async () => await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingDto, "unauthorized.email@example.com"));
+                                                            async () =>
+                                                                await _employeeBankingService
+                                                                    .Update(EmployeeBankingTestData.EmployeeBankingDto,
+                                                                            "unauthorized.email@example.com"));
 
         Assert.Equal("Unauthorized access", exception.Message);
     }
@@ -232,21 +242,22 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                    {
-                        EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
-                        PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
-                        PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
-                    }
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+                         {
+                             EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+                             PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+                             PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+                         }
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Add(It.IsAny<EmployeeBanking>()))
             .ReturnsAsync(EmployeeBankingTestData.EmployeeBankingDto);
 
-        var result = await _employeeBankingService.Save(EmployeeBankingTestData.EmployeeBankingDto, "test@retrorabbit.co.za");
+        var result =
+            await _employeeBankingService.Save(EmployeeBankingTestData.EmployeeBankingDto, "test@retrorabbit.co.za");
 
         Assert.Equal(EmployeeBankingTestData.EmployeeBankingDto, result);
     }
@@ -261,26 +272,28 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                    {
-                        EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
-                        PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
-                        PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
-                    }
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+                         {
+                             EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+                             PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+                             PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+                         }
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Add(It.IsAny<EmployeeBanking>()))
             .ReturnsAsync(EmployeeBankingTestData.EmployeeBankingDto);
 
-        List<EmployeeRole> empRoles = new List<EmployeeRole> {
-            new EmployeeRole(
+        var empRoles = new List<EmployeeRole>
+        {
+            new(
                 new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(2, "Admin"))
-            )};
+               )
+        };
 
-        List<Role> roles = new List<Role> { new Role(new RoleDto(2, "Admin")) };
+        var roles = new List<Role> { new(new RoleDto(2, "Admin")) };
 
         _mockUnitOfWork
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
@@ -290,11 +303,11 @@ public class EmployeeBankingServiceTest
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roles.AsQueryable().BuildMock());
 
-        var result = await _employeeBankingService.Save(EmployeeBankingTestData.EmployeeBankingDto, "admin.email@example.com");
+        var result =
+            await _employeeBankingService.Save(EmployeeBankingTestData.EmployeeBankingDto, "admin.email@example.com");
 
         Assert.NotNull(result);
         Assert.Equal(EmployeeBankingTestData.EmployeeBankingDto, result);
-
     }
 
     [Fact]
@@ -307,29 +320,32 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                    {
-                        EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
-                        PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
-                        PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
-                    }
-                }.AsQueryable().BuildMock());
+                     new List<Employee>
+                     {
+                         new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+                         {
+                             EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+                             PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+                             PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+                         }
+                     }.AsQueryable().BuildMock());
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Add(It.IsAny<EmployeeBanking>()))
             .ReturnsAsync(EmployeeBankingTestData.EmployeeBankingDto);
 
-        List<EmployeeRole> empRoles = new List<EmployeeRole> {
-            new EmployeeRole(
+        var empRoles = new List<EmployeeRole>
+        {
+            new(
                 new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(3, "Employee"))
-            )};
+               )
+        };
 
-        List<Role> roles = new List<Role> { 
-            new Role(
+        var roles = new List<Role>
+        {
+            new(
                 new RoleDto(3, "Employee")
-            ) 
+               )
         };
 
         _mockUnitOfWork
@@ -341,7 +357,10 @@ public class EmployeeBankingServiceTest
             .Returns(roles.AsQueryable().BuildMock());
 
         var exception = await Assert.ThrowsAsync<Exception>(
-            async () => await _employeeBankingService.Save(EmployeeBankingTestData.EmployeeBankingDto, "unauthorized.email@example.com"));
+                                                            async () =>
+                                                                await _employeeBankingService
+                                                                    .Save(EmployeeBankingTestData.EmployeeBankingDto,
+                                                                          "unauthorized.email@example.com"));
 
         Assert.Equal("Unauthorized access", exception.Message);
     }
@@ -349,9 +368,10 @@ public class EmployeeBankingServiceTest
     [Fact]
     public async Task GetBankingPass()
     {
-       _mockUnitOfWork
+        _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
-            .Returns(new List<EmployeeBanking> { new EmployeeBanking(EmployeeBankingTestData.EmployeeBankingDto) }.AsQueryable().BuildMock());
+            .Returns(new List<EmployeeBanking> { new(EmployeeBankingTestData.EmployeeBankingDto) }.AsQueryable()
+                         .BuildMock());
 
         var result = await _employeeBankingService.GetBanking(1);
 
@@ -392,7 +412,8 @@ public class EmployeeBankingServiceTest
             .Setup(u => u.EmployeeBanking.Add(It.IsAny<EmployeeBanking>()))
             .ReturnsAsync(EmployeeBankingTestData.EmployeeBankingDto);
 
-        var result = await _employeeBankingService.Save(EmployeeBankingTestData.EmployeeBankingDto, "test@retrorabbit.co.za");
+        var result =
+            await _employeeBankingService.Save(EmployeeBankingTestData.EmployeeBankingDto, "test@retrorabbit.co.za");
 
         Assert.Equal(EmployeeBankingTestData.EmployeeBankingDto, result);
     }

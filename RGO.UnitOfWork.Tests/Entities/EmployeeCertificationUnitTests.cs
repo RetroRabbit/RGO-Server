@@ -1,34 +1,39 @@
-﻿using RGO.Models;
-using RGO.Models.Enums;
-using RGO.UnitOfWork.Entities;
-using System.Text;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class EmployeeCertificationUnitTests
 {
-    private EmployeeDto _employee;
-    private EmployeeDocumentDto _employeeDocument;
+    private readonly EmployeeDto _employee;
+    private readonly EmployeeDocumentDto _employeeDocument;
 
     public EmployeeCertificationUnitTests()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy", "D",
-            "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                    null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy",
+                                    "D",
+                                    "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                    new DateTime(), null, Race.Black, Gender.Male, null,
+                                    "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
+                                    employeeAddressDto, employeeAddressDto, null, null, null);
 
 
-        _employeeDocument = new EmployeeDocumentDto(1, 1, "", "CVE256", FileCategory.Medical, "Picture", DocumentStatus.Approved, DateTime.Now, null, false);
+        _employeeDocument = new EmployeeDocumentDto(1, 1, "", "CVE256", FileCategory.Medical, "Picture",
+                                                    DocumentStatus.Approved, DateTime.Now, null, false);
     }
 
-    public EmployeeCertification CreateEmployeeCertification(EmployeeDto? employee = null, EmployeeDocumentDto? employeeDocument = null, EmployeeDto? auditBy = null)
+    public EmployeeCertification CreateEmployeeCertification(EmployeeDto? employee = null,
+                                                             EmployeeDocumentDto? employeeDocument = null,
+                                                             EmployeeDto? auditBy = null)
     {
-        EmployeeCertification employeeCertification = new EmployeeCertification
+        var employeeCertification = new EmployeeCertification
         {
             Id = 1,
             EmployeeId = 1,
@@ -65,9 +70,9 @@ public class EmployeeCertificationUnitTests
     public void EmployeeCertificationToDTO()
     {
         var employeeCertification = CreateEmployeeCertification(
-            employee: _employee,
-            employeeDocument: _employeeDocument,
-            auditBy: _employee);
+                                                                _employee,
+                                                                _employeeDocument,
+                                                                _employee);
         var dto = employeeCertification.ToDto();
 
         Assert.NotNull(dto.Employee);
@@ -81,8 +86,8 @@ public class EmployeeCertificationUnitTests
         Assert.Null(initializedEmployeeCertification.EmployeeAuditBy);
 
         employeeCertification = CreateEmployeeCertification(
-            employee: _employee,
-            employeeDocument: _employeeDocument);
+                                                            _employee,
+                                                            _employeeDocument);
         dto = employeeCertification.ToDto();
 
         Assert.NotNull(dto.Employee);
@@ -90,8 +95,8 @@ public class EmployeeCertificationUnitTests
         Assert.Null(dto.AuditBy);
 
         employeeCertification = CreateEmployeeCertification(
-            employee: _employee,
-            auditBy: _employee);
+                                                            _employee,
+                                                            auditBy: _employee);
         dto = employeeCertification.ToDto();
 
         Assert.NotNull(dto.Employee);
@@ -99,8 +104,8 @@ public class EmployeeCertificationUnitTests
         Assert.NotNull(dto.AuditBy);
 
         employeeCertification = CreateEmployeeCertification(
-            employeeDocument: _employeeDocument,
-            auditBy: _employee);
+                                                            employeeDocument: _employeeDocument,
+                                                            auditBy: _employee);
         dto = employeeCertification.ToDto();
 
         Assert.Null(dto.Employee);

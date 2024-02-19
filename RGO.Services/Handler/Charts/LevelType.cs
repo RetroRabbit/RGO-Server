@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RGO.Models;
-using RGO.Services.Interfaces;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class LevelType : BaseDataType
 {

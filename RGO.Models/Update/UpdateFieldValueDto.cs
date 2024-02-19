@@ -1,4 +1,4 @@
-﻿namespace RGO.Models.Update;
+﻿namespace HRIS.Models.Update;
 
 public class UpdateFieldValueDto
 {

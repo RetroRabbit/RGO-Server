@@ -1,18 +1,12 @@
-﻿using RGO.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Interfaces
+namespace HRIS.Services.Interfaces;
+
+public interface IClientService
 {
-    public interface IClientService
-    {
-        /// <summary>
-        /// Get all clients
-        /// </summary>
-        /// <returns>List of ClientDto
-        Task<List<ClientDto>> GetAllClients();
-    }
+    /// <summary>
+    ///     Get all clients
+    /// </summary>
+    /// <returns>List of ClientDto
+    Task<List<ClientDto>> GetAllClients();
 }

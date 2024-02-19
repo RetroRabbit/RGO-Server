@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace HRIS.Models;
 
-namespace RGO.Models
+public class ChurnRateDataCard
 {
-    public class ChurnRateDataCard
-    {
-        public double ChurnRate { get; set; }
+    public double ChurnRate { get; set; }
 
-        public double DeveloperChurnRate { get; set; }
+    public double DeveloperChurnRate { get; set; }
 
-        public double DesignerChurnRate { get; set; }
+    public double DesignerChurnRate { get; set; }
 
-        public double ScrumMasterChurnRate { get; set; }
+    public double ScrumMasterChurnRate { get; set; }
 
-        public double BusinessSupportChurnRate { get; set; }
+    public double BusinessSupportChurnRate { get; set; }
 
-        public string Month { get; set; }
+    public string Month { get; set; }
 
-        public int Year { get; set; }
-    }
+    public int Year { get; set; }
 }

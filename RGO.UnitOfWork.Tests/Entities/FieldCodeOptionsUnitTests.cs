@@ -1,8 +1,8 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class FieldCodeOptionsUnitTests
 {
