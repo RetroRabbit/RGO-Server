@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RGO.Services.Interfaces;
 using RGO.Services.Services;
 
@@ -15,6 +16,7 @@ namespace RGO.App.Controllers
             _clientService = clientService;
         }
 
+        [AllowAnonymous] //TODO: Remove this
         [HttpGet()]
         public async Task<IActionResult> GetAllClients()
         {
