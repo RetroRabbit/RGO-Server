@@ -16,7 +16,6 @@ namespace RGO.App.Controllers
             _clientService = clientService;
         }
 
-        [AllowAnonymous] //TODO: Remove this
         [HttpGet()]
         public async Task<IActionResult> GetAllClients()
         {
