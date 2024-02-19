@@ -77,9 +77,10 @@ namespace RGO.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = configuration["Auth:Issuer"]!,
-                        ValidAudience = configuration["Auth:Audience"]!,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Key"]!))
+
+                        ValidIssuer = Environment.GetEnvironmentVariable("Auth__Issuer"),
+                        ValidAudience = Environment.GetEnvironmentVariable("Auth__Audience"),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Auth__Key")))
                     };
 
                     options.Events = new JwtBearerEvents
@@ -91,7 +92,7 @@ namespace RGO.App
                             var issuer = context.Principal.FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
                             var audience = context.Principal.FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
 
-                            if (issuer != configuration["Auth:Issuer"] || audience != configuration["Auth:Audience"])
+                            if (issuer != Environment.GetEnvironmentVariable("Auth__Issuer") || audience != Environment.GetEnvironmentVariable("Auth__Audience"))
                             {
                                 context.Fail("Token is not valid");
                                 return Task.CompletedTask;

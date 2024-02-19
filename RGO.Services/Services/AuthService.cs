@@ -72,8 +72,8 @@ public class AuthService : IAuthService
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Auth:Expires"]!)),
-            Issuer = _configuration["Auth:Issuer"],
-            Audience = _configuration["Auth:Audience"],
+            Issuer = Environment.GetEnvironmentVariable("Auth__Issuer"),
+            Audience = Environment.GetEnvironmentVariable("Auth__Audience"),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
