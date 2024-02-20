@@ -28,6 +28,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             throw new Exception("employee not found");
         }
 
+        bool sameEmail = email.Equals(employee.Email);
+
         var employeeDocument = new EmployeeDocumentDto(
                                                        employeeDocDto.Id,
                                                        employee.Id,

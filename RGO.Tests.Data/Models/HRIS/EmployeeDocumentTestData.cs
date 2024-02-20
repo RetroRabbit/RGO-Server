@@ -37,5 +37,5 @@ public class EmployeeDocumentTestData
     public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto(
             Id: 1, EmployeeId: EmployeeTestData.EmployeeDto.Id,
             FileName: "TestFile.pdf", FileCategory: FileCategory.FixedTerm,
-            File: "TestFileContent", UploadDate: DateTime.Now);
+            Blob: "TestFileContent", UploadDate: DateTime.Now);
 }
