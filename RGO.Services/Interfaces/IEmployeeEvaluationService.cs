@@ -1,25 +1,25 @@
-﻿using RGO.Models;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Interfaces;
+namespace HRIS.Services.Interfaces;
 
 public interface IEmployeeEvaluationService
 {
     /// <summary>
-    /// Save Employee Evaluation
+    ///     Save Employee Evaluation
     /// </summary>
     /// <param name="evaluationInput"></param>
     /// <returns>Added Employee Evaluation</returns>
     Task<EmployeeEvaluationDto> Save(EmployeeEvaluationInput evaluationInput);
 
     /// <summary>
-    /// Delete Employee Evaluation
+    ///     Delete Employee Evaluation
     /// </summary>
     /// <param name="evaluationInput"></param>
     /// <returns>Deleted Employee Evaluation</returns>
     Task<EmployeeEvaluationDto> Delete(EmployeeEvaluationInput evaluationInput);
 
     /// <summary>
-    /// Get an Employee Evaluation
+    ///     Get an Employee Evaluation
     /// </summary>
     /// <param name="employeeEmail"></param>
     /// <param name="ownerEmail"></param>
@@ -33,35 +33,35 @@ public interface IEmployeeEvaluationService
         string subject);
 
     /// <summary>
-    /// Get All Employee Evaluations By Owner email
+    ///     Get All Employee Evaluations By Owner email
     /// </summary>
     /// <param name="email"></param>
     /// <returns>List of EmployeeEvaluation</returns>
     Task<List<EmployeeEvaluationDto>> GetAllByOwner(string email);
 
     /// <summary>
-    /// Get All Employee Evaluations By Employee email
+    ///     Get All Employee Evaluations By Employee email
     /// </summary>
     /// <param name="email"></param>
     /// <returns>List of EmployeeEvaluation</returns>
     Task<List<EmployeeEvaluationDto>> GetAllByEmployee(string email);
 
     /// <summary>
-    /// Get All Employee Evaluations By Template name
+    ///     Get All Employee Evaluations By Template name
     /// </summary>
     /// <param name="template"></param>
     /// <returns>List of EmployeeEvaluation</returns>
     Task<List<EmployeeEvaluationDto>> GetAllByTemplate(string template);
 
     /// <summary>
-    /// Get All Employee Evaluations By Email
+    ///     Get All Employee Evaluations By Email
     /// </summary>
     /// <param name="email"></param>
     /// <returns>List of EmployeeEvaluation</returns>
     Task<List<EmployeeEvaluationDto>> GetAllEvaluationsByEmail(string email);
 
     /// <summary>
-    /// Update Employee Evaluation
+    ///     Update Employee Evaluation
     /// </summary>
     /// <param name="oldEvaluation"></param>
     /// <param name="newEvaluation"></param>
@@ -71,7 +71,7 @@ public interface IEmployeeEvaluationService
         EmployeeEvaluationInput newEvaluation);
 
     /// <summary>
-    /// Check if Employee Evaluation exists
+    ///     Check if Employee Evaluation exists
     /// </summary>
     /// <param name="evaluationInput"></param>
     /// <returns>true or false</returns>

@@ -1,11 +1,11 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class RoleAccessDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public RoleAccessDto(int Id,
-        string Permission,
-        string Grouping)
+                         string Permission,
+                         string Grouping)
     {
         this.Id = Id;
         this.Permission = Permission;

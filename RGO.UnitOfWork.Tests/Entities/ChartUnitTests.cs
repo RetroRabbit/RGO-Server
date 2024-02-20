@@ -1,8 +1,8 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class ChartUnitTests
 {
@@ -17,26 +17,26 @@ public class ChartUnitTests
     public Chart CreateTestChartDto()
     {
         var chart = new ChartDto(
-            0,
-            "Name",
-            "Type",
-            new List<string> { "data 1", "data 2" },
-            new List<string> { "Label1", "Label2" },
-            new List<int> { 1, 2 });
+                                 0,
+                                 "Name",
+                                 "Type",
+                                 new List<string> { "data 1", "data 2" },
+                                 new List<string> { "Label1", "Label2" },
+                                 new List<int> { 1, 2 });
 
         return new Chart(chart);
     }
 
-    [Fact] 
+    [Fact]
     public void ChartToDtoTest()
     {
         var chartDto = new ChartDto(
-            0,
-            "Name",
-            "Type",
-            new List<string> { "data 1", "data 2" },
-            new List<string> { "Label1", "Label2" },
-            new List<int> { 1, 2 });
+                                    0,
+                                    "Name",
+                                    "Type",
+                                    new List<string> { "data 1", "data 2" },
+                                    new List<string> { "Label1", "Label2" },
+                                    new List<int> { 1, 2 });
 
         var chart = new Chart(chartDto);
 

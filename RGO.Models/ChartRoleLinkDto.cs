@@ -1,11 +1,11 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class ChartRoleLinkDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public ChartRoleLinkDto(int Id,
-        ChartDto? Chart,
-        RoleDto? Role)
+                            ChartDto? Chart,
+                            RoleDto? Role)
     {
         this.Id = Id;
         this.Chart = Chart;

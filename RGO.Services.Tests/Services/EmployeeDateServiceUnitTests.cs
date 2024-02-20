@@ -1,40 +1,46 @@
-﻿using MockQueryable.Moq;
+﻿using System.Linq.Expressions;
+using HRIS.Models;
+using HRIS.Models.Enums;
+using HRIS.Services.Services;
+using MockQueryable.Moq;
 using Moq;
-using RGO.Models;
-using RGO.Services.Services;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System.Linq.Expressions;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RGO.Tests.Services;
 
 public class EmployeeDateServiceUnitTests
 {
-    private readonly Mock<IUnitOfWork> _mockDb;
     private readonly EmployeeDateService _employeeDateService;
     private readonly EmployeeDto _employeeDto;
+    private readonly Mock<IUnitOfWork> _mockDb;
 
     public EmployeeDateServiceUnitTests()
     {
         _mockDb = new Mock<IUnitOfWork>();
         _employeeDateService = new EmployeeDateService(_mockDb.Object);
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Employee");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Employee");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "1234457899", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null!,
-                "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "1234457899", " ",
+                                       new DateTime(), null, Race.Black, Gender.Female, null!,
+                                       "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
+                                       employeeAddressDto, employeeAddressDto, null, null, null);
     }
 
     [Fact]
     public async Task CheckIfExistsFailTest()
     {
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .ReturnsAsync(false);
+               .ReturnsAsync(false);
 
-        bool exists = await _employeeDateService.CheckIfExists(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly()));
+        var exists =
+            await _employeeDateService.CheckIfExists(new EmployeeDateDto(1, _employeeDto, "Subject", "Note",
+                                                                         new DateOnly()));
 
         Assert.False(exists);
     }
@@ -43,9 +49,11 @@ public class EmployeeDateServiceUnitTests
     public async Task CheckIfExistsPassTest()
     {
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
-        bool exists = await _employeeDateService.CheckIfExists(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly()));
+        var exists =
+            await _employeeDateService.CheckIfExists(new EmployeeDateDto(1, _employeeDto, "Subject", "Note",
+                                                                         new DateOnly()));
 
         Assert.True(exists);
     }
@@ -54,16 +62,18 @@ public class EmployeeDateServiceUnitTests
     public async Task SaveFailTest()
     {
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeDateService.Save(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())));
+        await Assert.ThrowsAsync<Exception>(() =>
+                                                _employeeDateService.Save(new EmployeeDateDto(1, _employeeDto,
+                                                                           "Subject", "Note", new DateOnly())));
     }
 
     [Fact]
     public async Task SavePassTest()
     {
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .ReturnsAsync(false);
+               .ReturnsAsync(false);
 
         await _employeeDateService.Save(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly()));
 
@@ -74,16 +84,18 @@ public class EmployeeDateServiceUnitTests
     public async Task UpdateFailTest()
     {
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .ReturnsAsync(false);
+               .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeDateService.Update(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())));
+        await Assert.ThrowsAsync<Exception>(() =>
+                                                _employeeDateService.Update(new EmployeeDateDto(1, _employeeDto,
+                                                                             "Subject", "Note", new DateOnly())));
     }
 
     [Fact]
     public async Task UpdatePassTest()
     {
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
         await _employeeDateService.Update(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly()));
 
@@ -96,10 +108,10 @@ public class EmployeeDateServiceUnitTests
         var employeeDate = new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly());
 
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .ReturnsAsync(true);
+               .ReturnsAsync(true);
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .Returns(new List<EmployeeDate> { new(employeeDate) }.AsQueryable().BuildMock());
+               .Returns(new List<EmployeeDate> { new(employeeDate) }.AsQueryable().BuildMock());
 
         await _employeeDateService.Delete(1);
 
@@ -112,7 +124,7 @@ public class EmployeeDateServiceUnitTests
         var employeeDate = new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly());
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .Returns(new List<EmployeeDate> { }.AsQueryable().BuildMock());
+               .Returns(new List<EmployeeDate>().AsQueryable().BuildMock());
 
         await Assert.ThrowsAsync<Exception>(() => _employeeDateService.Get(employeeDate));
     }
@@ -123,7 +135,7 @@ public class EmployeeDateServiceUnitTests
         var employeeDate = new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly());
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .Returns(new List<EmployeeDate> { new (employeeDate) }.AsQueryable().BuildMock());
+               .Returns(new List<EmployeeDate> { new(employeeDate) }.AsQueryable().BuildMock());
 
         await _employeeDateService.Get(employeeDate);
 
@@ -133,15 +145,16 @@ public class EmployeeDateServiceUnitTests
     [Fact]
     public async Task GetAllTest()
     {
-        var employeeDateList = new List<EmployeeDate>() { new (new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
+        var employeeDateList = new List<EmployeeDate>
+            { new(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
 
-        var employeeList = new List<Employee>() { new (_employeeDto, _employeeDto.EmployeeType) };
+        var employeeList = new List<Employee> { new(_employeeDto, _employeeDto.EmployeeType) };
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .Returns(employeeDateList.AsQueryable().BuildMock());
+               .Returns(employeeDateList.AsQueryable().BuildMock());
 
         _mockDb.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.AsQueryable().BuildMock());
 
         var result = _employeeDateService.GetAll();
 
@@ -151,15 +164,16 @@ public class EmployeeDateServiceUnitTests
     [Fact]
     public async Task GetAllByEmployeeTest()
     {
-        var employeeDateList = new List<EmployeeDate>() { new (new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
+        var employeeDateList = new List<EmployeeDate>
+            { new(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
 
-        var employeeList = new List<Employee>() { new (_employeeDto, _employeeDto.EmployeeType) };
+        var employeeList = new List<Employee> { new(_employeeDto, _employeeDto.EmployeeType) };
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .Returns(employeeDateList.AsQueryable().BuildMock());
+               .Returns(employeeDateList.AsQueryable().BuildMock());
 
         _mockDb.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.AsQueryable().BuildMock());
 
         var result = _employeeDateService.GetAllByEmployee(_employeeDto.Email);
 
@@ -169,15 +183,16 @@ public class EmployeeDateServiceUnitTests
     [Fact]
     public async Task GetAllByDateTest()
     {
-        var employeeDateList = new List<EmployeeDate>() { new (new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
+        var employeeDateList = new List<EmployeeDate>
+            { new(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
 
-        var employeeList = new List<Employee>() { new (_employeeDto, _employeeDto.EmployeeType) };
+        var employeeList = new List<Employee> { new(_employeeDto, _employeeDto.EmployeeType) };
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .Returns(employeeDateList.AsQueryable().BuildMock());
+               .Returns(employeeDateList.AsQueryable().BuildMock());
 
         _mockDb.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.AsQueryable().BuildMock());
 
         var result = _employeeDateService.GetAllByDate(new DateOnly());
 
@@ -187,15 +202,16 @@ public class EmployeeDateServiceUnitTests
     [Fact]
     public async Task GetAllBySubjectTest()
     {
-        var employeeDateList = new List<EmployeeDate>() { new (new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
+        var employeeDateList = new List<EmployeeDate>
+            { new(new EmployeeDateDto(1, _employeeDto, "Subject", "Note", new DateOnly())) };
 
-        var employeeList = new List<Employee>() { new (_employeeDto, _employeeDto.EmployeeType) };
+        var employeeList = new List<Employee> { new(_employeeDto, _employeeDto.EmployeeType) };
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-            .Returns(employeeDateList.AsQueryable().BuildMock());
+               .Returns(employeeDateList.AsQueryable().BuildMock());
 
         _mockDb.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.AsQueryable().BuildMock());
 
         var result = _employeeDateService.GetAllBySubject("Subject");
 

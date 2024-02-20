@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class RoleAccessService : IRoleAccessService
 {
@@ -18,7 +18,7 @@ public class RoleAccessService : IRoleAccessService
     public Task<bool> CheckRoleAccess(string permission)
     {
         return _db.RoleAccess
-            .Any(r => r.Permission == permission);
+                  .Any(r => r.Permission == permission);
     }
 
     public async Task<RoleAccessDto> DeleteRoleAccess(string permission)
@@ -38,9 +38,9 @@ public class RoleAccessService : IRoleAccessService
     public async Task<RoleAccessDto> GetRoleAccess(string permission)
     {
         var roleAccess = await _db.RoleAccess
-            .Get(r => r.Permission == permission)
-            .Select(r => r.ToDto())
-            .FirstOrDefaultAsync();
+                                  .Get(r => r.Permission == permission)
+                                  .Select(r => r.ToDto())
+                                  .FirstOrDefaultAsync();
 
         if (roleAccess == null) throw new Exception($"RoleAccess not found({permission})");
 

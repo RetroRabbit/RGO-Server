@@ -1,20 +1,20 @@
-﻿using Moq;
-using MockQueryable.Moq;
-using RGO.Models;
-using RGO.Services.Services;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System.Linq.Expressions;
-using Xunit;
+﻿using System.Linq.Expressions;
+using HRIS.Models;
+using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
+using Xunit;
 
 namespace RGO.Tests.Services;
 
 public class RoleAccessServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly RoleAccessService _roleAccessService;
     private readonly RoleAccessDto _roleAccessDto;
+    private readonly RoleAccessService _roleAccessService;
 
     public RoleAccessServiceUnitTest()
     {
@@ -39,7 +39,7 @@ public class RoleAccessServiceUnitTest
     [Fact]
     public async Task GetAllRoleAccessTest()
     {
-        var listOfRoleAccess = new List<RoleAccessDto>() { _roleAccessDto };
+        var listOfRoleAccess = new List<RoleAccessDto> { _roleAccessDto };
 
         _dbMock
             .Setup(r => r.RoleAccess.GetAll(null))
@@ -57,9 +57,9 @@ public class RoleAccessServiceUnitTest
     {
         var permissions = new List<RoleAccess>
         {
-            new RoleAccess { Id = 1, Permission = "ViewEmployee" },
-            new RoleAccess { Id = 2, Permission = "ViewManager" },
-            new RoleAccess { Id = 3, Permission = "ViewAdmin" }
+            new() { Id = 1, Permission = "ViewEmployee" },
+            new() { Id = 2, Permission = "ViewManager" },
+            new() { Id = 3, Permission = "ViewAdmin" }
         }.AsQueryable().BuildMock();
 
         var randPermission = permissions.Where(r => r.Id == 3).Select(r => r.Permission).First();
@@ -97,9 +97,9 @@ public class RoleAccessServiceUnitTest
     {
         var permissions = new List<RoleAccess>
         {
-            new RoleAccess { Id = 1, Permission = "ViewEmployee" },
-            new RoleAccess { Id = 2, Permission = "ViewManager" },
-            new RoleAccess { Id = 3, Permission = "ViewAdmin" }
+            new() { Id = 1, Permission = "ViewEmployee" },
+            new() { Id = 2, Permission = "ViewManager" },
+            new() { Id = 3, Permission = "ViewAdmin" }
         }.AsQueryable().BuildMock();
 
         var randPermission = permissions.Where(r => r.Id == 3).Select(r => r.Permission).First();

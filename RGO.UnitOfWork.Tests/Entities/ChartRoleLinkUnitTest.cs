@@ -1,23 +1,24 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class ChartRoleLinkUnitTest
 {
-    private ChartDto _chart;
-    private RoleDto _role;
+    private readonly ChartDto _chart;
+    private readonly RoleDto _role;
 
     public ChartRoleLinkUnitTest()
     {
-        _chart = new ChartDto(1 , "Chart", "type 1", new List<string> { "data 1", "data 2" }, new List<string> { "label 1", "labebl 2" }, new List<int> { 1, 2 });
+        _chart = new ChartDto(1, "Chart", "type 1", new List<string> { "data 1", "data 2" },
+                              new List<string> { "label 1", "labebl 2" }, new List<int> { 1, 2 });
         _role = new RoleDto(1, "Description");
     }
 
     public ChartRoleLink CreateChartRoleLink(ChartDto? chart = null, RoleDto? role = null)
     {
-        ChartRoleLink chartRoleLink = new ChartRoleLink
+        var chartRoleLink = new ChartRoleLink
         {
             Id = 1,
             ChartId = 1,
@@ -25,10 +26,10 @@ public class ChartRoleLinkUnitTest
         };
 
         if (chart != null)
-            chartRoleLink.Chart = new(chart);
+            chartRoleLink.Chart = new Chart(chart);
 
         if (role != null)
-            chartRoleLink.Role = new(role);
+            chartRoleLink.Role = new Role(role);
 
         return chartRoleLink;
     }
@@ -50,7 +51,7 @@ public class ChartRoleLinkUnitTest
         Assert.Null(dto.Chart);
         Assert.Null(dto.Role);
 
-        var chartRoleLink2 = CreateChartRoleLink(chart: _chart);
+        var chartRoleLink2 = CreateChartRoleLink(_chart);
 
         dto = chartRoleLink2.ToDto();
         Assert.Null(chartRoleLink2.Role);
@@ -64,7 +65,7 @@ public class ChartRoleLinkUnitTest
         Assert.NotNull(dto.Role);
         Assert.Equal(chartRoleLink3.RoleId, dto.Role!.Id);
 
-        var chartRoleLink4 = CreateChartRoleLink(chart: _chart, role: _role);
+        var chartRoleLink4 = CreateChartRoleLink(_chart, _role);
 
         dto = chartRoleLink4.ToDto();
         Assert.NotNull(dto.Chart);

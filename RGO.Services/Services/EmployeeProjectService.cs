@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class EmployeeProjectService : IEmployeeProjectService
 {
@@ -17,17 +17,17 @@ public class EmployeeProjectService : IEmployeeProjectService
 
     public async Task<EmployeeProjectDto> SaveEmployeeProject(EmployeeProjectDto employeeProjectDto)
     {
-        EmployeeProjectDto newEmployeeProject = await _db.EmployeeProject.Add(new EmployeeProject(employeeProjectDto));
+        var newEmployeeProject = await _db.EmployeeProject.Add(new EmployeeProject(employeeProjectDto));
 
         return newEmployeeProject;
     }
 
     public async Task<EmployeeProjectDto> DeleteEmployeeProject(string name)
     {
-        EmployeeProjectDto existsingEmployeeProject = await GetEmployeeProject(name);
+        var existsingEmployeeProject = await GetEmployeeProject(name);
 
-        EmployeeProjectDto employeeProjectDto = await _db.EmployeeProject
-            .Delete(existsingEmployeeProject.Id);
+        var employeeProjectDto = await _db.EmployeeProject
+                                          .Delete(existsingEmployeeProject.Id);
 
         return employeeProjectDto;
     }
@@ -39,20 +39,20 @@ public class EmployeeProjectService : IEmployeeProjectService
 
     public async Task<EmployeeProjectDto> GetEmployeeProject(string name)
     {
-        EmployeeProjectDto existingEmployeeProject = await _db.EmployeeProject
-            .Get(employeeProject => employeeProject.Name == name)
-            .Select(employeeProject => employeeProject.ToDto())
-            .FirstAsync();
+        var existingEmployeeProject = await _db.EmployeeProject
+                                               .Get(employeeProject => employeeProject.Name == name)
+                                               .Select(employeeProject => employeeProject.ToDto())
+                                               .FirstAsync();
 
         return existingEmployeeProject;
     }
 
     public async Task<EmployeeProjectDto> UpdateEmployeeProject(EmployeeProjectDto employeeProjectDto)
     {
-        EmployeeProjectDto existingEmployeeProject = await GetEmployeeProject(employeeProjectDto.Name);
+        var existingEmployeeProject = await GetEmployeeProject(employeeProjectDto.Name);
 
-        EmployeeProjectDto updatedEmployeeProject = await _db.EmployeeProject
-            .Update(new EmployeeProject(existingEmployeeProject));
+        var updatedEmployeeProject = await _db.EmployeeProject
+                                              .Update(new EmployeeProject(existingEmployeeProject));
 
         return updatedEmployeeProject;
     }

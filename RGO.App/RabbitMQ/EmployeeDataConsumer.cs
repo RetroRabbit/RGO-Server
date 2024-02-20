@@ -1,87 +1,87 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using System.Net.Mail;
+using System.Text;
+using System.Timers;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
+using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using MimeKit;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
-using System.Text;
-using System.Timers;
-using RGO.UnitOfWork.Entities;
+using RR.UnitOfWork.Entities.HRIS;
+using Timer = System.Timers.Timer;
 
-namespace RGO.Services.Services
+namespace HRIS.Services.Services;
+
+public class EmployeeDataConsumer
 {
-    public class EmployeeDataConsumer
+    private const string QueueName = "employee_data_queue";
+    private const int TimeInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
+    private readonly IModel _channel;
+    private readonly IConnection _connection;
+
+    private readonly Timer _consumeTimer;
+
+    private readonly ConnectionFactory _factory;
+    private readonly string ApplicationName = "Retro HR";
+
+    private readonly string[] Scopes = { GmailService.Scope.GmailSend };
+
+    public EmployeeDataConsumer(ConnectionFactory factory)
     {
-        private const string QueueName = "employee_data_queue";
-
-        private ConnectionFactory _factory;
-        private IConnection _connection;
-        private IModel _channel;
-
-        private System.Timers.Timer _consumeTimer;
-        private const int TimeInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
-
-        private string[] Scopes = { GmailService.Scope.GmailSend };
-        private string ApplicationName = "Retro HR";
-
-        public EmployeeDataConsumer(ConnectionFactory factory)
+        try
         {
-            try
-            {
-                _factory = factory;
-                _connection = _factory.CreateConnection();
-                _channel = _connection.CreateModel();
-                _channel.QueueDeclare(queue: QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            _factory = factory;
+            _connection = _factory.CreateConnection();
+            _channel = _connection.CreateModel();
+            _channel.QueueDeclare(QueueName, true, false, false, null);
 
-                _consumeTimer = new System.Timers.Timer(TimeInterval);
-                _consumeTimer.Elapsed += OnTimedEvent;
-                _consumeTimer.AutoReset = true;
-                _consumeTimer.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }    
+            _consumeTimer = new Timer(TimeInterval);
+            _consumeTimer.Elapsed += OnTimedEvent;
+            _consumeTimer.AutoReset = true;
+            _consumeTimer.Enabled = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private void SendEmail(Employee employee)
+    {
+        if (!IsValidEmail(employee.Email)) throw new ArgumentException("Invalid email format", nameof(employee.Email));
+
+        UserCredential credential;
+
+        using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
+        {
+            var credPath = "token.json";
+            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                                                                     GoogleClientSecrets.Load(stream).Secrets,
+                                                                     Scopes,
+                                                                     "user",
+                                                                     CancellationToken.None,
+                                                                     new FileDataStore(credPath, true)).Result;
         }
 
-        private void SendEmail(Employee employee)
-        { 
-            if (!IsValidEmail(employee.Email))
-            {
-                throw new ArgumentException("Invalid email format", nameof(employee.Email));
-            }
-
-            UserCredential credential;
-
-            using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
-            {
-                string credPath = "token.json";
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    Scopes,
-                    "user",
-                    System.Threading.CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
-            }
-            
-            var service = new GmailService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
-            });
-
-            var message = CreateMessage(employee);
-            SendMessage(message, service);
-        }
-
-        private Google.Apis.Gmail.v1.Data.Message CreateMessage(Employee employee)
+        var service = new GmailService(new BaseClientService.Initializer
         {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Retro Rabbit", "mschoeman@retrorabbit.co.za"));
-            emailMessage.To.Add(new MailboxAddress(employee.Name, employee.Email));
-            emailMessage.Subject = $"Welcome to Retro Rabbit, {employee.Name}!";
-            string body = $@"
+            HttpClientInitializer = credential,
+            ApplicationName = ApplicationName
+        });
+
+        var message = CreateMessage(employee);
+        SendMessage(message, service);
+    }
+
+    private Message CreateMessage(Employee employee)
+    {
+        var emailMessage = new MimeMessage();
+        emailMessage.From.Add(new MailboxAddress("Retro Rabbit", "mschoeman@retrorabbit.co.za"));
+        emailMessage.To.Add(new MailboxAddress(employee.Name, employee.Email));
+        emailMessage.Subject = $"Welcome to Retro Rabbit, {employee.Name}!";
+        var body = $@"
             <html>
             <body>
                 <p>Dear {employee.Name},</p>
@@ -92,81 +92,75 @@ namespace RGO.Services.Services
                 <p>Click <a href='http://localhost:4200/'>here</a> to visit our employee portal</p>
             </body>
             </html>";
-            // Todo: Change link to the actual link when deployed. Currently set to localhost
-            emailMessage.Body = new TextPart("html") { Text = body };
+        // Todo: Change link to the actual link when deployed. Currently set to localhost
+        emailMessage.Body = new TextPart("html") { Text = body };
 
-            var rawMessage = Base64UrlEncode(emailMessage.ToString());
-            var message = new Google.Apis.Gmail.v1.Data.Message
-            {
-                Raw = rawMessage
-            };
-            return message;
-        }
-        private void SendMessage(Google.Apis.Gmail.v1.Data.Message message, GmailService service)
+        var rawMessage = Base64UrlEncode(emailMessage.ToString());
+        var message = new Message
         {
-            var sentMessage = service.Users.Messages.Send(message, "me").Execute();
+            Raw = rawMessage
+        };
+        return message;
+    }
 
-            if (!string.IsNullOrEmpty(sentMessage.Id))
-            {
-                Console.WriteLine($"Email sent successfully. Message ID: {sentMessage.Id}");
-            }
-            else
-            {
-                Console.WriteLine("Failed to send email.");
-            }
-        }
-        private string Base64UrlEncode(string input)
+    private void SendMessage(Message message, GmailService service)
+    {
+        var sentMessage = service.Users.Messages.Send(message, "me").Execute();
+
+        if (!string.IsNullOrEmpty(sentMessage.Id))
+            Console.WriteLine($"Email sent successfully. Message ID: {sentMessage.Id}");
+        else
+            Console.WriteLine("Failed to send email.");
+    }
+
+    private string Base64UrlEncode(string input)
+    {
+        var inputBytes = Encoding.UTF8.GetBytes(input);
+        return Convert.ToBase64String(inputBytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        try
         {
-            var inputBytes = Encoding.UTF8.GetBytes(input);
-            return Convert.ToBase64String(inputBytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+            var addr = new MailAddress(email);
+            return addr.Address == email;
         }
-        private bool IsValidEmail(string email)
+        catch
         {
+            return false;
+        }
+    }
+
+    private void OnTimedEvent(object source, ElapsedEventArgs e)
+    {
+        ConsumeAndSendBatchEmails();
+    }
+
+    public void ConsumeAndSendBatchEmails()
+    {
+        var newEmployee = new List<Employee>();
+
+        while (true)
+        {
+            var result = _channel.BasicGet(QueueName, false);
+            if (result == null) break;
+
+            var body = result.Body.ToArray();
+            var employeeData = JsonConvert.DeserializeObject<Employee>(Encoding.UTF8.GetString(body));
+            newEmployee.Add(employeeData);
+
+            _channel.BasicAck(result.DeliveryTag, false);
+        }
+
+        foreach (var employee in newEmployee)
             try
             {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
+                if (!string.IsNullOrEmpty(employee.Email)) SendEmail(employee);
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                Console.WriteLine(ex.Message);
             }
-        }
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            ConsumeAndSendBatchEmails();
-        }
-
-        public void ConsumeAndSendBatchEmails()
-        {
-            List<Employee> newEmployee = new List<Employee>();
-
-            while (true)
-            {
-                BasicGetResult result = _channel.BasicGet(QueueName, false);
-                if (result == null) break;
-
-                var body = result.Body.ToArray();
-                var employeeData = JsonConvert.DeserializeObject<Employee>(Encoding.UTF8.GetString(body));
-                newEmployee.Add(employeeData);
-
-                _channel.BasicAck(result.DeliveryTag, false);
-            }
-
-            foreach (var employee in newEmployee)
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(employee.Email))
-                    {
-                        SendEmail(employee);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
     }
 }

@@ -86,6 +86,15 @@ docker pull rabbitmq:3-management
 docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
 
+### Add new user
+
+- To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
+- Add new Migration for your user
+
+```powershell
+add-migration newMigrationYouCanChooseName
+```
+
 ### Run migration
 
 Open Visual Studio 2022 and open the RGO-Server project file. Pull up the nuget package manager console:
@@ -95,15 +104,6 @@ Make sure the **Default project** is **_RGO.UnitOfWork_**.
 ---
 
 ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
-
-### Add new user
-
-- To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
-- Add new Migration for your user
-
-```powershell
-add-migration newMigrationYouCanChooseName
-```
 
 ```powershell
 Update-Database
@@ -133,8 +133,6 @@ Update-Database
 ![PgAdmin Employee Table Navigation](./EmployeeTable-Example.png)
 
 - Check if your new user is added
-
-![PgAdmin new user check](./EmployeeTableCheckUpdate-Example.png)
 
 ### Unit Test Coverage
 

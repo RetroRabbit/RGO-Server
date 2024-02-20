@@ -1,22 +1,22 @@
-﻿using RGO.Models.Enums;
+﻿using HRIS.Models.Enums;
 
-namespace RGO.Models;
+namespace HRIS.Models;
 
 public class EmployeeBankingDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public EmployeeBankingDto(int Id,
-        int EmployeeId,
-        string BankName,
-        string Branch,
-        string AccountNo,
-        EmployeeBankingAccountType AccountType,
-        string AccountHolderName,
-        BankApprovalStatus Status,
-        string? DeclineReason,
-        string File,
-        DateOnly LastUpdateDate,
-        DateOnly PendingUpdateDate)
+                              int EmployeeId,
+                              string BankName,
+                              string Branch,
+                              string AccountNo,
+                              EmployeeBankingAccountType AccountType,
+                              string AccountHolderName,
+                              BankApprovalStatus Status,
+                              string? DeclineReason,
+                              string File,
+                              DateOnly LastUpdateDate,
+                              DateOnly PendingUpdateDate)
     {
         this.Id = Id;
         this.EmployeeId = EmployeeId;

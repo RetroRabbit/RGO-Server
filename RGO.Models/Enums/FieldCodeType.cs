@@ -1,9 +1,9 @@
-﻿namespace RGO.Models.Enums;
+﻿namespace HRIS.Models.Enums;
 
 public enum FieldCodeType
 {
-    Date, 
-    String, 
+    Date,
+    String,
     Int,
     Float,
     Options

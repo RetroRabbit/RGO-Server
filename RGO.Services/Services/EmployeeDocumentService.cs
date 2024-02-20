@@ -1,130 +1,127 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using RGO.Models.Enums;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using HRIS.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services
+namespace HRIS.Services.Services;
+
+public class EmployeeDocumentService : IEmployeeDocumentService
 {
-    public class EmployeeDocumentService : IEmployeeDocumentService
+    private readonly IUnitOfWork _db;
+    private readonly IEmployeeService _employeeService;
+
+    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService)
     {
-        private readonly IUnitOfWork _db;
-        private readonly IEmployeeService _employeeService;
+        _db = db;
+        _employeeService = employeeService;
+    }
 
-        public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService)
-        {
-            _db = db;
-            _employeeService = employeeService;
-        }
+    public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto)
+    {
+        var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
 
-        public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto)
-        {
+        if (employee == null) throw new Exception("employee not found");
 
-            var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
+        var employeeDocument = new EmployeeDocumentDto(
+                                                       employeeDocDto.Id,
+                                                       employee.Id,
+                                                       null,
+                                                       employeeDocDto.FileName,
+                                                       employeeDocDto.FileCategory,
+                                                       employeeDocDto.File,
+                                                       DocumentStatus.PendingApproval,
+                                                       DateTime.Now,
+                                                       null,
+                                                       false);
 
-            if (employee == null)
-            {
-                throw new Exception("employee not found");
-            }
+        var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
-            EmployeeDocumentDto employeeDocument = new EmployeeDocumentDto(
-               employeeDocDto.Id,
-               employee.Id,
-               null,
-               employeeDocDto.FileName,
-               employeeDocDto.FileCategory,
-               employeeDocDto.File,
-               DocumentStatus.PendingApproval,
-               DateTime.Now,
-               null,
-               false) ;
+        return newEmployeeDocument;
+    }
 
-            var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
+    public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename)
+    {
+        var ifEmployeeExists = await CheckEmployee(employeeId);
 
-            return newEmployeeDocument;
-        }
+        if (!ifEmployeeExists) throw new Exception("Employee not found");
 
-        public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename)
-        {
-            var ifEmployeeExists = await CheckEmployee(employeeId);
+        var employeeDocument = await _db.EmployeeDocument
+                                        .Get(employeeDocument =>
+                                                 employeeDocument.EmployeeId == employeeId &&
+                                                 employeeDocument.FileName.Equals(filename,
+                                                  StringComparison.CurrentCultureIgnoreCase))
+                                        .AsNoTracking()
+                                        .Include(employeeDocument => employeeDocument.Employee)
+                                        .Select(employeeDocument => employeeDocument.ToDto())
+                                        .Take(1)
+                                        .FirstOrDefaultAsync();
 
-            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+        if (employeeDocument == null) throw new Exception("Employee certification record not found");
+        return employeeDocument;
+    }
 
-            var employeeDocument = await _db.EmployeeDocument
-                .Get(employeeDocument =>
-                    employeeDocument.EmployeeId == employeeId &&
-                    employeeDocument.FileName.Equals(filename, StringComparison.CurrentCultureIgnoreCase))
-                .AsNoTracking()
-                .Include(employeeDocument => employeeDocument.Employee)
-                .Select(employeeDocument => employeeDocument.ToDto())
-                .Take(1)
-                .FirstOrDefaultAsync();
+    public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId)
+    {
+        var ifEmployeeExists = await CheckEmployee(employeeId);
 
-            if (employeeDocument == null) { throw new Exception("Employee certification record not found"); }
-            return employeeDocument;
-        }
+        if (!ifEmployeeExists) throw new Exception("Employee not found");
 
-        public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId)
-        {
-            var ifEmployeeExists = await CheckEmployee(employeeId);
+        var employeeDocuments = await _db.EmployeeDocument
+                                         .Get(employeeDocument => employeeDocument.EmployeeId == employeeId)
+                                         .AsNoTracking()
+                                         .Include(employeeDocument => employeeDocument.Employee)
+                                         .Select(employeeDocument => employeeDocument.ToDto())
+                                         .ToListAsync();
 
-            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+        return employeeDocuments;
+    }
 
-            var employeeDocuments = await _db.EmployeeDocument
-                .Get(employeeDocument => employeeDocument.EmployeeId == employeeId)
-                .AsNoTracking()
-                .Include(employeeDocument => employeeDocument.Employee)
-                .Select(employeeDocument => employeeDocument.ToDto())
-                .ToListAsync();
+    public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
+    {
+        var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
-            return employeeDocuments;
-        }
+        if (!ifEmployeeExists) throw new Exception("Employee not found");
 
-        public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
-        {
-            var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
+        var employeeDocument = new EmployeeDocument(employeeDocumentDto);
+        var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
 
-            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+        return updatedEmployeeDocument;
+    }
 
-            EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
-            var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
+    public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(int documentId)
+    {
+        var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(documentId);
 
-            return updatedEmployeeDocument;
-        }
+        return deletedEmployeeDocument;
+    }
 
-        public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(int documentId)
-        {  
-            var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(documentId);
+    public async Task<List<EmployeeDocumentDto>> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status)
+    {
+        var ifEmployeeExists = await CheckEmployee(employeeId);
 
-            return deletedEmployeeDocument;
-        }
+        if (!ifEmployeeExists) throw new Exception("Employee not found");
 
-        public async Task<List<EmployeeDocumentDto>> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status)
-        {
-            var ifEmployeeExists = await CheckEmployee(employeeId);
+        var employeeDocuments = await _db.EmployeeDocument
+                                         .Get(employeeDocument => employeeDocument.EmployeeId == employeeId &&
+                                                                  employeeDocument.Status.Equals(status))
+                                         .AsNoTracking()
+                                         .Include(employeeDocument => employeeDocument.Employee)
+                                         .Select(employeeDocument => employeeDocument.ToDto())
+                                         .ToListAsync();
 
-            if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
-            
-            var employeeDocuments = await _db.EmployeeDocument
-                .Get(employeeDocument => employeeDocument.EmployeeId == employeeId &&
-                    employeeDocument.Status.Equals(status))
-                .AsNoTracking()
-                .Include(employeeDocument => employeeDocument.Employee)
-                .Select(employeeDocument => employeeDocument.ToDto())
-                .ToListAsync();
+        return employeeDocuments;
+    }
 
-            return employeeDocuments;
-        }
+    public async Task<bool> CheckEmployee(int employeeId)
+    {
+        var employee = await _db.Employee
+                                .Get(employee => employee.Id == employeeId)
+                                .FirstOrDefaultAsync();
 
-        public async Task<bool> CheckEmployee(int employeeId)
-        {
-            var employee = await _db.Employee
-            .Get(employee => employee.Id == employeeId)
-            .FirstOrDefaultAsync();
-
-            if (employee == null) { return false; }
-            else { return true; }
-        }
+        if (employee == null)
+            return false;
+        return true;
     }
 }

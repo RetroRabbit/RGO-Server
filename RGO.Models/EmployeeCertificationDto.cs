@@ -1,19 +1,19 @@
-﻿using RGO.Models.Enums;
+﻿using HRIS.Models.Enums;
 
-namespace RGO.Models;
+namespace HRIS.Models;
 
 public class EmployeeCertificationDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public EmployeeCertificationDto(int Id,
-        EmployeeDto? Employee,
-        EmployeeDocumentDto? EmployeeDocument,
-        string Title,
-        string Publisher,
-        EmployeeCertificationStatus Status,
-        EmployeeDto? AuditBy,
-        DateTime? AuditDate,
-        string? AuditNote)
+                                    EmployeeDto? Employee,
+                                    EmployeeDocumentDto? EmployeeDocument,
+                                    string Title,
+                                    string Publisher,
+                                    EmployeeCertificationStatus Status,
+                                    EmployeeDto? AuditBy,
+                                    DateTime? AuditDate,
+                                    string? AuditNote)
     {
         this.Id = Id;
         this.Employee = Employee;

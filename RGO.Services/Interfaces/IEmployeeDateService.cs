@@ -1,6 +1,6 @@
-﻿using RGO.Models;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Interfaces;
+namespace HRIS.Services.Interfaces;
 
 public interface IEmployeeDateService
 {

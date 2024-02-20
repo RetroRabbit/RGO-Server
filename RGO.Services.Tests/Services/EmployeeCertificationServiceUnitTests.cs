@@ -1,22 +1,19 @@
-﻿using Moq;
-using Xunit;
-using RGO.Services.Services;
-using RGO.UnitOfWork;
-using System.Threading.Tasks;
-using RGO.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Linq;
+﻿using System.Linq.Expressions;
+using HRIS.Models;
+using HRIS.Models.Enums;
+using HRIS.Services.Services;
 using MockQueryable.Moq;
-using RGO.UnitOfWork.Entities;
+using Moq;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
+using Xunit;
 
-namespace RGO.Services.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeCertificationServiceUnitTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWork = new Mock<IUnitOfWork>();
     private readonly EmployeeCertificationService _employeeCertificationService;
+    private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
     public EmployeeCertificationServiceUnitTests()
     {
@@ -25,36 +22,43 @@ public class EmployeeCertificationServiceUnitTests
 
     private EmployeeCertificationDto CreateEmployeeCertificationDto()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(2020, 1, 1), new DateTime(2020, 1, 1),
-            null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28, 128, 100000, "Dotty", "D",
-            "Missile", new DateTime(1990, 1, 1), "South Africa", "South African", "5522522655", " ",
-            new DateTime(2020, 1, 1), null, Models.Enums.Race.Black, Models.Enums.Gender.Female, null,
-            "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(2020, 1, 1), new DateTime(2020, 1, 1),
+                                          null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28,
+                                          128, 100000, "Dotty", "D",
+                                          "Missile", new DateTime(1990, 1, 1), "South Africa", "South African",
+                                          "5522522655", " ",
+                                          new DateTime(2020, 1, 1), null, Race.Black, Gender.Female, null,
+                                          "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
+                                          employeeAddressDto, employeeAddressDto, null, null, null);
 
-        EmployeeDocumentDto employeeDocumentDto = new EmployeeDocumentDto(1, 001, null, "filename", Models.Enums.FileCategory.FixedTerm,
-            "blobstring", Models.Enums.DocumentStatus.Approved, new DateTime(2020, 1, 1), null, true);
+        var employeeDocumentDto = new EmployeeDocumentDto(1, 001, null, "filename", FileCategory.FixedTerm,
+                                                          "blobstring", DocumentStatus.Approved,
+                                                          new DateTime(2020, 1, 1), null, true);
 
-        EmployeeCertificationDto employeeCertificationDto = new EmployeeCertificationDto(1, employeeDto, employeeDocumentDto, "Title", "Publisher",
-            Models.Enums.EmployeeCertificationStatus.Approved, employeeDto, new DateTime(2020, 1, 1), "audit note");
+        var employeeCertificationDto = new EmployeeCertificationDto(1, employeeDto, employeeDocumentDto, "Title",
+                                                                    "Publisher",
+                                                                    EmployeeCertificationStatus.Approved, employeeDto,
+                                                                    new DateTime(2020, 1, 1), "audit note");
 
         return employeeCertificationDto;
     }
 
     private void MockEmployeeRepositorySetup(EmployeeDto employeeDto)
     {
-        var employeeList = new List<Employee> { new Employee(employeeDto, employeeDto.EmployeeType) };
+        var employeeList = new List<Employee> { new(employeeDto, employeeDto.EmployeeType) };
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+                   .Returns(employeeList.AsQueryable().BuildMock());
     }
 
     private void MockEmployeeCertificationRepositorySetup(EmployeeCertificationDto employeeCertificationDto)
     {
-        var employeeCertificationList = new List<EmployeeCertification> { new EmployeeCertification(employeeCertificationDto) };
+        var employeeCertificationList = new List<EmployeeCertification> { new(employeeCertificationDto) };
         _unitOfWork.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
-            .Returns(employeeCertificationList.AsQueryable().BuildMock().Take(1));
+                   .Returns(employeeCertificationList.AsQueryable().BuildMock().Take(1));
     }
 
     private void MockEmployeeRepositorySetupWithEmployee(EmployeeDto employeeDto)
@@ -66,7 +70,8 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(mock);
     }
 
-    private void MockEmployeeCertificationRepositorySetupWithCertification(EmployeeCertificationDto employeeCertificationDto)
+    private void MockEmployeeCertificationRepositorySetupWithCertification(
+        EmployeeCertificationDto employeeCertificationDto)
     {
         var employeeCertification = new EmployeeCertification(employeeCertificationDto);
         var employeeCertificationList = new List<EmployeeCertification> { employeeCertification };
@@ -75,18 +80,15 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(mock);
     }
 
-    private void MockEmployeeCertificationRepositorySetupForAddOrUpdate(EmployeeCertificationDto employeeCertificationDto, bool isAdd)
+    private void MockEmployeeCertificationRepositorySetupForAddOrUpdate(
+        EmployeeCertificationDto employeeCertificationDto, bool isAdd)
     {
         if (isAdd)
-        {
             _unitOfWork.Setup(u => u.EmployeeCertification.Add(It.IsAny<EmployeeCertification>()))
                        .ReturnsAsync(employeeCertificationDto);
-        }
         else
-        {
             _unitOfWork.Setup(u => u.EmployeeCertification.Update(It.IsAny<EmployeeCertification>()))
                        .ReturnsAsync(employeeCertificationDto);
-        }
     }
 
     private void MockEmployeeCertificationRepositorySetupForDelete(EmployeeCertificationDto employeeCertificationDto)
@@ -105,6 +107,7 @@ public class EmployeeCertificationServiceUnitTests
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(mock);
     }
+
     private void MockEmployeeCertificationRepositorySetupEmptyAsync()
     {
         var employeeCertificationList = new List<EmployeeCertification>().AsQueryable();
@@ -135,7 +138,9 @@ public class EmployeeCertificationServiceUnitTests
 
         var employeeCertificationDto = CreateEmployeeCertificationDto();
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeCertificationService.SaveEmployeeCertification(employeeCertificationDto));
+        await Assert.ThrowsAsync<Exception>(() =>
+                                                _employeeCertificationService
+                                                    .SaveEmployeeCertification(employeeCertificationDto));
     }
 
     [Fact]
@@ -145,7 +150,9 @@ public class EmployeeCertificationServiceUnitTests
         MockEmployeeRepositorySetup(employeeCertificationDto.Employee);
         MockEmployeeCertificationRepositorySetup(employeeCertificationDto);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeCertificationService.SaveEmployeeCertification(employeeCertificationDto));
+        await Assert.ThrowsAsync<Exception>(() =>
+                                                _employeeCertificationService
+                                                    .SaveEmployeeCertification(employeeCertificationDto));
     }
 
     [Fact]
@@ -169,7 +176,9 @@ public class EmployeeCertificationServiceUnitTests
         MockEmployeeRepositorySetup(employeeCertificationDto.Employee);
         MockEmployeeCertificationRepositorySetupWithCertification(employeeCertificationDto);
 
-        var result = await _employeeCertificationService.GetEmployeeCertification(employeeCertificationDto.Employee.Id, employeeCertificationDto.Id);
+        var result =
+            await _employeeCertificationService.GetEmployeeCertification(employeeCertificationDto.Employee.Id,
+                                                                         employeeCertificationDto.Id);
 
         Assert.NotNull(result);
     }
@@ -184,15 +193,16 @@ public class EmployeeCertificationServiceUnitTests
 
         var employeeCertificationList = new List<EmployeeCertification>
         {
-            new EmployeeCertification(employeeCertificationDto1),
-            new EmployeeCertification(employeeCertificationDto2)
+            new(employeeCertificationDto1),
+            new(employeeCertificationDto2)
         };
 
         var mock = employeeCertificationList.AsQueryable().BuildMock();
         _unitOfWork.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
                    .Returns(mock);
 
-        var results = await _employeeCertificationService.GetAllEmployeeCertifications(employeeCertificationDto1.Employee.Id);
+        var results =
+            await _employeeCertificationService.GetAllEmployeeCertifications(employeeCertificationDto1.Employee.Id);
 
         Assert.NotNull(results);
         Assert.Equal(2, results.Count);
@@ -222,4 +232,3 @@ public class EmployeeCertificationServiceUnitTests
         Assert.NotNull(result);
     }
 }
-

@@ -1,16 +1,16 @@
-﻿using RGO.Models.Enums;
+﻿using HRIS.Models.Enums;
 
-namespace RGO.Models;
+namespace HRIS.Models;
 
 public class SimpleEmployeeDocumentDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public SimpleEmployeeDocumentDto(int Id,
-        int EmployeeId,
-        string FileName,
-        FileCategory FileCategory,
-        string File,
-        DateTime UploadDate)
+                                     int EmployeeId,
+                                     string FileName,
+                                     FileCategory FileCategory,
+                                     string File,
+                                     DateTime UploadDate)
     {
         this.Id = Id;
         this.EmployeeId = EmployeeId;

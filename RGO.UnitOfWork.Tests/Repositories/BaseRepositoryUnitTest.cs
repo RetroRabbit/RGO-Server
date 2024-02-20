@@ -1,74 +1,65 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace RR.UnitOfWork.Tests.Repositories;
 
-namespace RGO.UnitOfWork.Tests.Repositories
+public class BaseRepositoryUnitTest
 {
-    public class BaseRepositoryUnitTest
+    public class AsyncEnumeratorWrapper<T> : IAsyncEnumerator<T>
     {
-        public class AsyncEnumeratorWrapper<T> : IAsyncEnumerator<T>
+        private readonly IEnumerator<T> _enumerator;
+
+        public AsyncEnumeratorWrapper(IEnumerator<T> enumerator)
         {
-            private readonly IEnumerator<T> _enumerator;
-            public AsyncEnumeratorWrapper(IEnumerator<T> enumerator)
-            {
-                _enumerator = enumerator;
-            }
-
-            public T Current => _enumerator.Current;
-
-            public ValueTask DisposeAsync()
-            {
-                _enumerator.Dispose();
-                return new ValueTask();
-            }
-
-            public ValueTask<bool> MoveNextAsync()
-            {
-                return new ValueTask<bool>(_enumerator.MoveNext());
-            }
+            _enumerator = enumerator;
         }
 
-        public class TestAsyncEnumerable<T> : IAsyncEnumerable<T>
+        public T Current => _enumerator.Current;
+
+        public ValueTask DisposeAsync()
         {
-            private readonly IEnumerable<T> _enumerable;
-
-            public TestAsyncEnumerable(IEnumerable<T> enumerable)
-            {
-                _enumerable = enumerable;
-            }
-
-            public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-            {
-                return new AsyncEnumeratorWrapper<T>(_enumerable.GetEnumerator());
-            }
+            _enumerator.Dispose();
+            return new ValueTask();
         }
 
-        public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+        public ValueTask<bool> MoveNextAsync()
         {
-            private readonly IEnumerator<T> _innerEnumerator;
+            return new ValueTask<bool>(_enumerator.MoveNext());
+        }
+    }
 
-            public TestAsyncEnumerator(IEnumerator<T> innerEnumerator)
-            {
-                _innerEnumerator = innerEnumerator;
-            }
+    public class TestAsyncEnumerable<T> : IAsyncEnumerable<T>
+    {
+        private readonly IEnumerable<T> _enumerable;
 
-            public ValueTask<bool> MoveNextAsync()
-            {
-                return new ValueTask<bool>(_innerEnumerator.MoveNext());
-            }
+        public TestAsyncEnumerable(IEnumerable<T> enumerable)
+        {
+            _enumerable = enumerable;
+        }
 
-            public T Current => _innerEnumerator.Current;
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            return new AsyncEnumeratorWrapper<T>(_enumerable.GetEnumerator());
+        }
+    }
 
-            public ValueTask DisposeAsync()
-            {
-                _innerEnumerator.Dispose();
-                return new ValueTask();
-            }
+    public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+    {
+        private readonly IEnumerator<T> _innerEnumerator;
+
+        public TestAsyncEnumerator(IEnumerator<T> innerEnumerator)
+        {
+            _innerEnumerator = innerEnumerator;
+        }
+
+        public ValueTask<bool> MoveNextAsync()
+        {
+            return new ValueTask<bool>(_innerEnumerator.MoveNext());
+        }
+
+        public T Current => _innerEnumerator.Current;
+
+        public ValueTask DisposeAsync()
+        {
+            _innerEnumerator.Dispose();
+            return new ValueTask();
         }
     }
 }

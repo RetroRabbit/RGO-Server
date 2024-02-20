@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RGO.Services;
-using RGO.UnitOfWork;
+using HRIS.Services;
+using RR.UnitOfWork;
 using System.Security.Claims;
 using System.Text;
-using RGO.Models;
-using RGO.Services.Services;
+using HRIS.Models;
+using HRIS.Services.Services;
 using RabbitMQ.Client;
 
-namespace RGO.App
+namespace RR.App
 {
     public class Program
     {

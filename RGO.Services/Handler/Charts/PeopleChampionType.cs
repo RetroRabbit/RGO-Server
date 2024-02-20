@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RGO.Models;
-using RGO.Services.Interfaces;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class PeopleChampionType : BaseDataType
 {

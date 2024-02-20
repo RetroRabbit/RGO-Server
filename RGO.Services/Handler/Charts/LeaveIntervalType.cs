@@ -1,11 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.DependencyInjection;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using System.Reflection;
-using System.Reflection.PortableExecutable;
+﻿using HRIS.Models;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class LeaveIntervalType : BaseDataType
 {
@@ -19,7 +14,6 @@ public class LeaveIntervalType : BaseDataType
 
         if (prop.GetValue(employee).ToString() != "1")
             return $"{prop.GetValue(employee)} Days, ";
-        else
-            return $"{prop.GetValue(employee)} Day, ";
+        return $"{prop.GetValue(employee)} Day, ";
     }
 }

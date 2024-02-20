@@ -1,9 +1,9 @@
-﻿using RGO.Models;
-using RGO.Models.Enums;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class FieldCodeUnitTests
 {
@@ -18,7 +18,8 @@ public class FieldCodeUnitTests
     [Fact]
     public async Task FieldCodeToDtoTest()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code", "Name", "Description", "Regex", FieldCodeType.String, ItemStatus.Active, false, "InternalTable", 0, false);
+        var fieldCodeDto = new FieldCodeDto(1, "Code", "Name", "Description", "Regex", FieldCodeType.String,
+                                            ItemStatus.Active, false, "InternalTable", 0, false);
         var fieldCode = new FieldCode(fieldCodeDto);
         var dto = fieldCode.ToDto();
         Assert.NotNull(dto);

@@ -1,11 +1,11 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class FieldCodeOptionsDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public FieldCodeOptionsDto(int Id,
-        int FieldCodeId,
-        string Option)
+                               int FieldCodeId,
+                               string Option)
     {
         this.Id = Id;
         this.FieldCodeId = FieldCodeId;

@@ -1,10 +1,11 @@
-﻿using MockQueryable.Moq;
+﻿using System.Linq.Expressions;
+using HRIS.Models;
+using HRIS.Models.Enums;
+using HRIS.Services.Services;
+using MockQueryable.Moq;
 using Moq;
-using RGO.Models;
-using RGO.Services.Services;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System.Linq.Expressions;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RGO.Tests.Services;
@@ -26,25 +27,28 @@ public class EmployeeRoleServiceUnitTest
         const string Email = "test@retrorabbit.co.za";
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-                Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                       new DateTime(), null, Race.Black, Gender.Male, null,
+                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
+                                       employeeAddressDto, null, null, null);
 
-        var roleList = new List<RoleDto>()
+        var roleList = new List<RoleDto>
         {
-            new RoleDto(1, "Admin"),
-            new RoleDto(2, "Manager"),
-            new RoleDto(3, "Employee"),
-            new RoleDto(4, "Intern")
+            new(1, "Admin"),
+            new(2, "Manager"),
+            new(3, "Employee"),
+            new(4, "Intern")
         };
 
         var employeeRoleList = new List<EmployeeRole>
         {
-            new EmployeeRole
+            new()
             {
                 Id = 1,
                 EmployeeId = testEmployee.Id,
@@ -52,21 +56,21 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[0])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 2,
                 EmployeeId = testEmployee.Id,
                 RoleId = roleList[1].Id,
                 Employee = new Employee(testEmployee, employeeTypeDto)
             },
-            new EmployeeRole
+            new()
             {
                 Id = 3,
                 EmployeeId = testEmployee.Id,
                 RoleId = roleList[2].Id,
                 Role = new Role(roleList[2])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 4,
                 EmployeeId = testEmployee.Id,
@@ -83,33 +87,32 @@ public class EmployeeRoleServiceUnitTest
         };
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(Task.FromResult(true))
-            .Returns(Task.FromResult(false))
-            .Returns(Task.FromResult(false))
-            .Returns(Task.FromResult(false))
-            .Returns(Task.FromResult(false));
+               .Returns(Task.FromResult(true))
+               .Returns(Task.FromResult(false))
+               .Returns(Task.FromResult(false))
+               .Returns(Task.FromResult(false))
+               .Returns(Task.FromResult(false));
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Add(It.IsAny<EmployeeRole>()))
-            .Returns(Task.FromResult(employeeRoleList[0].ToDto()))
-            .Returns(Task.FromResult(employeeRoleList[1].ToDto()))
-            .Returns(Task.FromResult(employeeRoleList[2].ToDto()))
-            .Returns(Task.FromResult(employeeRoleList[3].ToDto()));
+               .Returns(Task.FromResult(employeeRoleList[0].ToDto()))
+               .Returns(Task.FromResult(employeeRoleList[1].ToDto()))
+               .Returns(Task.FromResult(employeeRoleList[2].ToDto()))
+               .Returns(Task.FromResult(employeeRoleList[3].ToDto()));
 
         employeeRoleList[1].Role = new Role(roleList[1]);
         employeeRoleList[2].Employee = new Employee(testEmployee, employeeTypeDto);
 
         _dbMock.SetupSequence(e => e.EmployeeRole.GetById(It.IsAny<int>()))
-            .Returns(Task.FromResult(employeeRoleList[1].ToDto()))
-            .Returns(Task.FromResult(employeeRoleList[2].ToDto()))
-            .Returns(Task.FromResult(employeeRoleList[3].ToDto()));
+               .Returns(Task.FromResult(employeeRoleList[1].ToDto()))
+               .Returns(Task.FromResult(employeeRoleList[2].ToDto()))
+               .Returns(Task.FromResult(employeeRoleList[3].ToDto()));
 
         await Assert.ThrowsAsync<Exception>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
-        (
-            employeeRoleList[0].Id,
-            employeeRoleList[0].Employee.ToDto(),
-            employeeRoleList[0].Role.ToDto()
-
-        )));
+                                                (
+                                                 employeeRoleList[0].Id,
+                                                 employeeRoleList[0].Employee.ToDto(),
+                                                 employeeRoleList[0].Role.ToDto()
+                                                )));
         var result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[0].ToDto());
         Assert.Equivalent(employeeRoleList[0].ToDto(), result);
         result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[1].ToDto());
@@ -125,25 +128,28 @@ public class EmployeeRoleServiceUnitTest
         const string Email = "test@retrorabbit.co.za";
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-                Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                       new DateTime(), null, Race.Black, Gender.Male, null,
+                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
+                                       employeeAddressDto, null, null, null);
 
-        var roleList = new List<RoleDto>()
+        var roleList = new List<RoleDto>
         {
-            new RoleDto(1, "Admin"),
-            new RoleDto(2, "Manager"),
-            new RoleDto(3, "Employee"),
-            new RoleDto(4, "Intern")
+            new(1, "Admin"),
+            new(2, "Manager"),
+            new(3, "Employee"),
+            new(4, "Intern")
         };
 
         var employeeRoleList = new List<EmployeeRole>
         {
-            new EmployeeRole
+            new()
             {
                 Id = 1,
                 EmployeeId = testEmployee.Id,
@@ -151,7 +157,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[0])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 2,
                 EmployeeId = testEmployee.Id,
@@ -159,7 +165,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[1])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 3,
                 EmployeeId = testEmployee.Id,
@@ -176,18 +182,20 @@ public class EmployeeRoleServiceUnitTest
         };
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[0])))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[1])));
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[0])))
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[1])));
 
         _dbMock.Setup(e => e.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(employeeRoleList.Where(e => e.Employee.Email == Email).AsQueryable().BuildMock());
+               .Returns(employeeRoleList.Where(e => e.Employee.Email == Email).AsQueryable().BuildMock());
 
         _dbMock.Setup(e => e.EmployeeRole.GetAll(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(Task.FromResult(employeeRoleList.Select(e => e.ToDto()).ToList()));
+               .Returns(Task.FromResult(employeeRoleList.Select(e => e.ToDto()).ToList()));
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Delete(It.IsAny<int>()))
-            .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role.Description == roleList[0].Description).Select(e => e.ToDto()).FirstOrDefault()))
-            .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role.Description == roleList[1].Description).Select(e => e.ToDto()).FirstOrDefault()));
+               .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role.Description == roleList[0].Description)
+                                                        .Select(e => e.ToDto()).FirstOrDefault()))
+               .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role.Description == roleList[1].Description)
+                                                        .Select(e => e.ToDto()).FirstOrDefault()));
 
         var result1 = await _employeeRoleService.DeleteEmployeeRole(Email, roleList[0].Description);
 
@@ -201,25 +209,28 @@ public class EmployeeRoleServiceUnitTest
         const string Email = "test@retrorabbit.co.za";
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-                Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                       new DateTime(), null, Race.Black, Gender.Male, null,
+                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
+                                       employeeAddressDto, null, null, null);
 
-        var roleList = new List<RoleDto>()
+        var roleList = new List<RoleDto>
         {
-            new RoleDto(1, "Admin"),
-            new RoleDto(2, "Manager"),
-            new RoleDto(3, "Employee"),
-            new RoleDto(4, "Intern")
+            new(1, "Admin"),
+            new(2, "Manager"),
+            new(3, "Employee"),
+            new(4, "Intern")
         };
 
         var employeeRoleList = new List<EmployeeRole>
         {
-            new EmployeeRole
+            new()
             {
                 Id = 1,
                 EmployeeId = testEmployee.Id,
@@ -227,7 +238,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[0])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 2,
                 EmployeeId = testEmployee.Id,
@@ -235,7 +246,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[1])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 3,
                 EmployeeId = testEmployee.Id,
@@ -254,15 +265,15 @@ public class EmployeeRoleServiceUnitTest
         };
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[0])))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[1])))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[2])))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[3])));
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[0])))
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[1])))
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[2])))
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[3])));
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Update(It.IsAny<EmployeeRole>()))
-            .Returns(Task.FromResult(employeeRoleList[0].ToDto()))
-            .Returns(Task.FromResult(employeeRoleList[1].ToDto()))
-            .Returns(Task.FromResult(employeeRoleList[2].ToDto()));
+               .Returns(Task.FromResult(employeeRoleList[0].ToDto()))
+               .Returns(Task.FromResult(employeeRoleList[1].ToDto()))
+               .Returns(Task.FromResult(employeeRoleList[2].ToDto()));
 
         var result1 = await _employeeRoleService.UpdateEmployeeRole(employeeRoleList[0].ToDto());
         var result2 = await _employeeRoleService.UpdateEmployeeRole(employeeRoleList[1].ToDto());
@@ -273,10 +284,10 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[2].ToDto(), result3);
 
         Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
-            (
-            4,
-            employeeRoleList[0].Employee.ToDto(),
-            new RoleDto(0, "Made up Role"))));
+                                          (
+                                           4,
+                                           employeeRoleList[0].Employee.ToDto(),
+                                           new RoleDto(0, "Made up Role"))));
     }
 
     [Fact]
@@ -285,25 +296,28 @@ public class EmployeeRoleServiceUnitTest
         const string Email = "test@retrorabbit.co.za";
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-                Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                       new DateTime(), null, Race.Black, Gender.Male, null,
+                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
+                                       employeeAddressDto, null, null, null);
 
-        var roleList = new List<RoleDto>()
+        var roleList = new List<RoleDto>
         {
-            new RoleDto(1, "Admin"),
-            new RoleDto(2, "Manager"),
-            new RoleDto(3, "Employee"),
-            new RoleDto(4, "Intern")
+            new(1, "Admin"),
+            new(2, "Manager"),
+            new(3, "Employee"),
+            new(4, "Intern")
         };
 
         var employeeRoleList = new List<EmployeeRole>
         {
-            new EmployeeRole
+            new()
             {
                 Id = 1,
                 EmployeeId = testEmployee.Id,
@@ -311,7 +325,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[0])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 2,
                 EmployeeId = testEmployee.Id,
@@ -319,7 +333,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[1])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 3,
                 EmployeeId = testEmployee.Id,
@@ -338,7 +352,7 @@ public class EmployeeRoleServiceUnitTest
         };
 
         _dbMock.Setup(e => e.EmployeeRole.GetAll(null))
-        .Returns(Task.FromResult(employeeRoleList.Select(e => e.ToDto()).ToList()));
+               .Returns(Task.FromResult(employeeRoleList.Select(e => e.ToDto()).ToList()));
 
         var result = await _employeeRoleService.GetAllEmployeeRoles();
 
@@ -352,25 +366,28 @@ public class EmployeeRoleServiceUnitTest
         const string Email = "test@retrorabbit.co.za";
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 10000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-                Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 10000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                       new DateTime(), null, Race.Black, Gender.Male, null,
+                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
+                                       employeeAddressDto, null, null, null);
 
-        var roleList = new List<RoleDto>()
+        var roleList = new List<RoleDto>
         {
-            new RoleDto(1, "Admin"),
-            new RoleDto(2, "Manager"),
-            new RoleDto(3, "Employee"),
-            new RoleDto(4, "Intern")
+            new(1, "Admin"),
+            new(2, "Manager"),
+            new(3, "Employee"),
+            new(4, "Intern")
         };
 
         var employeeRoleList = new List<EmployeeRole>
         {
-            new EmployeeRole
+            new()
             {
                 Id = 1,
                 EmployeeId = testEmployee.Id,
@@ -382,11 +399,11 @@ public class EmployeeRoleServiceUnitTest
 
         Expression<Func<EmployeeRole, bool>>[] criteriAList =
         {
-            e => e.Employee.Email == employeeRoleList[0].Employee.Email,
+            e => e.Employee.Email == employeeRoleList[0].Employee.Email
         };
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(employeeRoleList.AsQueryable().BuildMock().Where(criteriAList[0]));
+               .Returns(employeeRoleList.AsQueryable().BuildMock().Where(criteriAList[0]));
 
         var result1 = await _employeeRoleService.GetEmployeeRole(employeeRoleList[0].Employee.Email);
 
@@ -399,25 +416,28 @@ public class EmployeeRoleServiceUnitTest
         const string Email = "test@retrorabbit.co.za";
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-                Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                       new DateTime(), null, Race.Black, Gender.Male, null,
+                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
+                                       employeeAddressDto, null, null, null);
 
-        var roleList = new List<RoleDto>()
+        var roleList = new List<RoleDto>
         {
-            new RoleDto(1, "Admin"),
-            new RoleDto(2, "Manager"),
-            new RoleDto(3, "Employee"),
-            new RoleDto(4, "Intern")
+            new(1, "Admin"),
+            new(2, "Manager"),
+            new(3, "Employee"),
+            new(4, "Intern")
         };
 
         var employeeRoleList = new List<EmployeeRole>
         {
-            new EmployeeRole
+            new()
             {
                 Id = 1,
                 EmployeeId = testEmployee.Id,
@@ -425,7 +445,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[0])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 2,
                 EmployeeId = testEmployee.Id,
@@ -433,7 +453,7 @@ public class EmployeeRoleServiceUnitTest
                 Employee = new Employee(testEmployee, employeeTypeDto),
                 Role = new Role(roleList[1])
             },
-            new EmployeeRole
+            new()
             {
                 Id = 3,
                 EmployeeId = testEmployee.Id,
@@ -452,15 +472,15 @@ public class EmployeeRoleServiceUnitTest
         };
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[0])))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[1])))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[2])))
-        .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[3])));
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[0])))
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[1])))
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[2])))
+               .Returns(Task.FromResult(employeeRoleList.AsQueryable().BuildMock().Any(criteriAList[3])));
 
-        bool result1 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[0].Description);
-        bool result2 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[1].Description);
-        bool result3 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[2].Description);
-        bool result4 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[3].Description);
+        var result1 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[0].Description);
+        var result2 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[1].Description);
+        var result3 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[2].Description);
+        var result4 = await _employeeRoleService.CheckEmployeeRole(Email, roleList[3].Description);
 
         Assert.True(result1);
         Assert.True(result2);
@@ -474,25 +494,28 @@ public class EmployeeRoleServiceUnitTest
         const string Email = "test@retrorabbit.co.za";
 
         EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-                "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-                Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
+                                       "D",
+                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
+                                       new DateTime(), null, Race.Black, Gender.Male, null,
+                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
+                                       employeeAddressDto, null, null, null);
 
-        var roleList = new List<RoleDto>()
+        var roleList = new List<RoleDto>
         {
-            new RoleDto(1, "Admin"),
-            new RoleDto(2, "Manager"),
-            new RoleDto(3, "Employee"),
-            new RoleDto(4, "Intern")
+            new(1, "Admin"),
+            new(2, "Manager"),
+            new(3, "Employee"),
+            new(4, "Intern")
         };
 
         var employeeRoleList = new List<EmployeeRole>
         {
-            new EmployeeRole
+            new()
             {
                 Id = 1,
                 EmployeeId = testEmployee.Id,
@@ -504,11 +527,11 @@ public class EmployeeRoleServiceUnitTest
 
         Expression<Func<EmployeeRole, bool>>[] criteriAList =
         {
-            e => e.Role.Id == employeeRoleList[0].Role.Id,
+            e => e.Role.Id == employeeRoleList[0].Role.Id
         };
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(employeeRoleList.AsQueryable().BuildMock().Where(criteriAList[0]));
+               .Returns(employeeRoleList.AsQueryable().BuildMock().Where(criteriAList[0]));
 
         var result1 = await _employeeRoleService.GetAllEmployeeOnRoles(employeeRoleList[0].Role.Id);
 

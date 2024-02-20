@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class RoleService : IRoleService
 {
@@ -17,7 +17,7 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> SaveRole(RoleDto roleDto)
     {
-        bool isRoleExist = await CheckRole(roleDto.Description);
+        var isRoleExist = await CheckRole(roleDto.Description);
         if (isRoleExist) return await GetRole(roleDto.Description);
 
         return await _db.Role.Add(new Role(roleDto));
@@ -25,7 +25,7 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> DeleteRole(int roleId)
     {
-        RoleDto deletedRole = await _db.Role.Delete(roleId);
+        var deletedRole = await _db.Role.Delete(roleId);
 
         return deletedRole;
     }
@@ -37,10 +37,10 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> GetRole(string name)
     {
-        RoleDto? existingRole = await _db.Role
-            .Get(role => role.Description == name)
-            .Select(role => role.ToDto())
-            .FirstOrDefaultAsync();
+        var existingRole = await _db.Role
+                                    .Get(role => role.Description == name)
+                                    .Select(role => role.ToDto())
+                                    .FirstOrDefaultAsync();
 
         if (existingRole == null) throw new Exception($"Role not found({name})");
 
@@ -49,10 +49,10 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> UpdateRole(string name)
     {
-        RoleDto existingRole = await GetRole(name);
+        var existingRole = await GetRole(name);
 
-        RoleDto updatedRole = await _db.Role
-            .Update(new Role(existingRole));
+        var updatedRole = await _db.Role
+                                   .Update(new Role(existingRole));
 
         return updatedRole;
     }

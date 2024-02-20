@@ -1,13 +1,13 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class EmployeeDateDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public EmployeeDateDto(int Id,
-        EmployeeDto? Employee,
-        string Subject,
-        string Note,
-        DateOnly Date)
+                           EmployeeDto? Employee,
+                           string Subject,
+                           string Note,
+                           DateOnly Date)
     {
         this.Id = Id;
         this.Employee = Employee;

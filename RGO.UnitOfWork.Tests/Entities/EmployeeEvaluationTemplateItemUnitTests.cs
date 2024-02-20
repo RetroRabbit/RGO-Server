@@ -1,12 +1,12 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class EmployeeEvaluationTemplateItemUnitTests
 {
-    private EmployeeEvaluationTemplateDto _template;
+    private readonly EmployeeEvaluationTemplateDto _template;
 
     public EmployeeEvaluationTemplateItemUnitTests()
     {
@@ -23,7 +23,8 @@ public class EmployeeEvaluationTemplateItemUnitTests
     [Fact]
     public void InitialoizationWithDtoTest()
     {
-        var employeeEvaluationTemplateItemDto = new EmployeeEvaluationTemplateItemDto(1, _template, "Section", "Question");
+        var employeeEvaluationTemplateItemDto =
+            new EmployeeEvaluationTemplateItemDto(1, _template, "Section", "Question");
         var employeeEvaluationTemplateItem = new EmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto);
         var dto = employeeEvaluationTemplateItem.ToDto();
 

@@ -1,12 +1,12 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class PropertyAccessDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public PropertyAccessDto(int Id,
-        RoleDto? Role,
-        int Condition,
-        FieldCodeDto? FieldCode)
+                             RoleDto? Role,
+                             int Condition,
+                             FieldCodeDto? FieldCode)
     {
         this.Id = Id;
         this.Role = Role;

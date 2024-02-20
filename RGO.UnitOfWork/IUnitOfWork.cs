@@ -1,7 +1,7 @@
 using Npgsql;
-using RGO.UnitOfWork.Interfaces;
+using RR.UnitOfWork.Interfaces.HRIS;
 
-namespace RGO.UnitOfWork;
+namespace RR.UnitOfWork;
 
 public interface IUnitOfWork
 {

@@ -1,13 +1,13 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class EmployeeEvaluationInput
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public EmployeeEvaluationInput(int? Id,
-        string OwnerEmail,
-        string EmployeeEmail,
-        string Template,
-        string Subject)
+                                   string OwnerEmail,
+                                   string EmployeeEmail,
+                                   string Template,
+                                   string Subject)
     {
         this.Id = Id;
         this.OwnerEmail = OwnerEmail;

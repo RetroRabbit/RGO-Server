@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RGO.Models;
-using RGO.Services.Interfaces;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
-namespace RGO.Services.Services;
+namespace HRIS.Services.Services;
 
 public class EmployeeAddressService : IEmployeeAddressService
 {
@@ -34,14 +33,15 @@ public class EmployeeAddressService : IEmployeeAddressService
         if (!exists) throw new Exception("Employee Address does not exist");
 
         return await _db.EmployeeAddress.FirstOrDefault(address =>
-                            address.UnitNumber == employeeAddressDto.UnitNumber &&
-                            address.ComplexName == employeeAddressDto.ComplexName &&
-                            address.StreetNumber == employeeAddressDto.StreetNumber &&
-                            address.SuburbOrDistrict == employeeAddressDto.SuburbOrDistrict &&
-                            address.City == employeeAddressDto.City &&
-                            address.Country == employeeAddressDto.Country &&
-                            address.Province == employeeAddressDto.Province &&
-                            address.PostalCode == employeeAddressDto.PostalCode);
+                                                            address.UnitNumber == employeeAddressDto.UnitNumber &&
+                                                            address.ComplexName == employeeAddressDto.ComplexName &&
+                                                            address.StreetNumber == employeeAddressDto.StreetNumber &&
+                                                            address.SuburbOrDistrict ==
+                                                            employeeAddressDto.SuburbOrDistrict &&
+                                                            address.City == employeeAddressDto.City &&
+                                                            address.Country == employeeAddressDto.Country &&
+                                                            address.Province == employeeAddressDto.Province &&
+                                                            address.PostalCode == employeeAddressDto.PostalCode);
     }
 
     public async Task<List<EmployeeAddressDto>> GetAll()

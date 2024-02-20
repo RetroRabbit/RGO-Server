@@ -1,28 +1,33 @@
-﻿using RGO.Models;
-using RGO.UnitOfWork.Entities;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.UnitOfWork.Tests.Entities;
+namespace RR.UnitOfWork.Tests.Entities;
 
 public class AuditLogUnitTests
 {
     public EmployeeDto CreateTestEmployee()
     {
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeAddressDto =
+            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-        EmployeeDto testEmployee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy", "D",
-            "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-            new DateTime(), null, Models.Enums.Race.Black, Models.Enums.Gender.Male, null,
-            "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        var testEmployee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
+                                           null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000,
+                                           "Dorothy", "D",
+                                           "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000",
+                                           " ",
+                                           new DateTime(), null, Race.Black, Gender.Male, null,
+                                           "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null,
+                                           null, employeeAddressDto, employeeAddressDto, null, null, null);
 
         return testEmployee;
     }
 
     public AuditLog CreateTestAuditLog(Employee? editBy = null, Employee? editFor = null)
     {
-        AuditLog auditLog = new AuditLog
+        var auditLog = new AuditLog
         {
             Id = 1,
             Description = "Description",
@@ -40,7 +45,7 @@ public class AuditLogUnitTests
         return auditLog;
     }
 
-     [Fact]
+    [Fact]
     public void auditLogTest()
     {
         var auditLog = new AuditLog();
@@ -51,16 +56,16 @@ public class AuditLogUnitTests
     [Fact]
     public void AuditLogToDtoTest()
     {
-        EmployeeDto testEmployee = CreateTestEmployee();
+        var testEmployee = CreateTestEmployee();
 
         var auditLogs = new List<AuditLog>
         {
             CreateTestAuditLog(),
-            CreateTestAuditLog(editBy: new (testEmployee, testEmployee.EmployeeType)),
-            CreateTestAuditLog(editFor: new (testEmployee, testEmployee.EmployeeType)),
+            CreateTestAuditLog(new Employee(testEmployee, testEmployee.EmployeeType)),
+            CreateTestAuditLog(editFor: new Employee(testEmployee, testEmployee.EmployeeType)),
             CreateTestAuditLog(
-                editBy: new (testEmployee, testEmployee.EmployeeType),
-                editFor: new (testEmployee, testEmployee.EmployeeType)),
+                               new Employee(testEmployee, testEmployee.EmployeeType),
+                               new Employee(testEmployee, testEmployee.EmployeeType))
         };
 
         var auditLogDto = auditLogs[0].ToDto();
@@ -83,7 +88,7 @@ public class AuditLogUnitTests
 
         auditLogDto = auditLogs[3].ToDto();
         Assert.IsType<AuditLogDto>(auditLogDto);
-        Assert.NotNull(auditLogDto.EditFor);    
+        Assert.NotNull(auditLogDto.EditFor);
         Assert.NotNull(auditLogDto.EditBy);
         Assert.Equal(auditLogs[3].Id, auditLogDto.Id);
     }
@@ -91,10 +96,10 @@ public class AuditLogUnitTests
     [Fact]
     public void AuditLog_InitialzeWithDtoTest()
     {
-        EmployeeDto testEmployee = CreateTestEmployee();
+        var testEmployee = CreateTestEmployee();
         var auditLog = CreateTestAuditLog(
-                editBy: new(testEmployee, testEmployee.EmployeeType),
-                editFor: new(testEmployee, testEmployee.EmployeeType));
+                                          new Employee(testEmployee, testEmployee.EmployeeType),
+                                          new Employee(testEmployee, testEmployee.EmployeeType));
 
         var initializedAuditLog = new AuditLog(auditLog.ToDto());
 

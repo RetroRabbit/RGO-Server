@@ -1,10 +1,10 @@
-﻿namespace RGO.Models;
+﻿namespace HRIS.Models;
 
 public class EmployeeTypeDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public EmployeeTypeDto(int Id,
-        string Name)
+                           string Name)
     {
         this.Id = Id;
         this.Name = Name;

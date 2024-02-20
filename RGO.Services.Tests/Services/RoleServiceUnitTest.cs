@@ -1,20 +1,20 @@
-﻿using Moq;
-using MockQueryable.Moq;
-using RGO.Models;
-using RGO.Services.Services;
-using RGO.UnitOfWork;
-using RGO.UnitOfWork.Entities;
-using System.Linq.Expressions;
-using Xunit;
+﻿using System.Linq.Expressions;
+using HRIS.Models;
+using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
+using Xunit;
 
 namespace RGO.Tests.Services;
 
 public class RoleServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly RoleService _roleService;
     private readonly RoleDto _roleDto;
+    private readonly RoleService _roleService;
 
     public RoleServiceUnitTest()
     {
@@ -55,8 +55,8 @@ public class RoleServiceUnitTest
     {
         var roleQueryable = new List<Role>
         {
-            new Role { Id = 2, Description = "Manager"},
-            new Role { Id = 3, Description = "Admin"}
+            new() { Id = 2, Description = "Manager" },
+            new() { Id = 3, Description = "Admin" }
         }.AsQueryable().BuildMock();
 
         Expression<Func<Role, bool>> criteria = r => r.Description == "Admin";
@@ -80,7 +80,7 @@ public class RoleServiceUnitTest
     [Fact]
     public async Task GetAllRolesTest()
     {
-        List<RoleDto> roles = new List<RoleDto>() { _roleDto };
+        var roles = new List<RoleDto> { _roleDto };
 
         _dbMock
             .Setup(r => r.Role.GetAll(null))
@@ -96,7 +96,7 @@ public class RoleServiceUnitTest
     [Fact]
     public async Task GetRoleTest()
     {
-        var roleQueryable = new List<Role> { new Role(_roleDto) }.AsQueryable().BuildMock();
+        var roleQueryable = new List<Role> { new(_roleDto) }.AsQueryable().BuildMock();
 
         _dbMock
             .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
@@ -114,8 +114,8 @@ public class RoleServiceUnitTest
     {
         var roleQueryable = new List<Role>
         {
-            new Role { Id = 2, Description = "Manager"},
-            new Role { Id = 3, Description = "Admin"}
+            new() { Id = 2, Description = "Manager" },
+            new() { Id = 3, Description = "Admin" }
         }.AsQueryable().BuildMock();
 
         Expression<Func<Role, bool>> criteria = r => r.Description == "Admin";
