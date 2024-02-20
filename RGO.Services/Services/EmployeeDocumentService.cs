@@ -30,7 +30,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                                                        null,
                                                        employeeDocDto.FileName,
                                                        employeeDocDto.FileCategory,
-                                                       employeeDocDto.File,
+                                                       employeeDocDto.Blob,
                                                        DocumentStatus.PendingApproval,
                                                        DateTime.Now,
                                                        null,
