@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- azure-pipelines-github
+- main
  
 pool:
   vmImage: ubuntu-latest
@@ -28,9 +28,9 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
-    publishWebProjects: True
+    publishWebProjects: true
     arguments: '--configuration $(BuildConfiguration) --framework $(dotNetFramework) --runtime $(targetRuntime) --self-contained --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
+    zipAfterPublish: true
     modifyOutputPath: false
 
 # Package the file and uploads them as an artifact of the build
