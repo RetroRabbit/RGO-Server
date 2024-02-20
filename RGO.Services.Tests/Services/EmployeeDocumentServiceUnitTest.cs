@@ -312,4 +312,15 @@ public class EmployeeDocumentServiceUnitTest
         Assert.Equal(2, result.Count);
     }
 
+    [Fact]
+    public async Task CheckEmployeeFail()
+    {
+        var mockEmployeeDbSet = new List<Employee>();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                       .Returns(mockEmployeeDbSet.AsQueryable().BuildMock());
+
+        var result = await _employeeDocumentService.CheckEmployee(employeeId);
+        Assert.Equal(false, result);
+        
+    }
 }

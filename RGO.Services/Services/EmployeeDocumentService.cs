@@ -28,19 +28,17 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             throw new Exception("employee not found");
         }
 
-        bool sameEmail = email.Equals(employee.Email);
-
-        EmployeeDocumentDto employeeDocument = new EmployeeDocumentDto(
-           employeeDocDto.Id,
-           employee.Id,
-           null,
-           employeeDocDto.FileName,
-           employeeDocDto.FileCategory,
-           employeeDocDto.File,
-           await IsAdmin(email) && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval,
-           DateTime.Now,
-           null,
-           false);
+        var employeeDocument = new EmployeeDocumentDto(
+                                                       employeeDocDto.Id,
+                                                       employee.Id,
+                                                       null,
+                                                       employeeDocDto.FileName,
+                                                       employeeDocDto.FileCategory,
+                                                       employeeDocDto.Blob,
+                                                       await IsAdmin(email) && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval,
+                                                       DateTime.Now,
+                                                       null,
+                                                       false);
 
         var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 

@@ -64,7 +64,7 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPut("{employeeId}")]
+    [HttpPut()]
     public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
     {
         try
