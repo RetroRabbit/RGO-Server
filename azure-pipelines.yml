@@ -13,6 +13,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   solution: '**/RGO-Server.sln'
+  project: '**/*.csproj'
  
 steps:
 - task: NuGetToolInstaller@1
@@ -41,6 +42,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
+    projects: '$(project)'
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: false
  
