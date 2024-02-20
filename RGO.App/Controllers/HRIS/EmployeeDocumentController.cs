@@ -3,6 +3,7 @@ using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -11,7 +12,6 @@ namespace RR.App.Controllers.HRIS;
 public class EmployeeDocumentController : ControllerBase
 {
     private readonly IEmployeeDocumentService _employeeDocumentService;
-
     public EmployeeDocumentController(IEmployeeDocumentService employeeDocumentService)
     {
         _employeeDocumentService = employeeDocumentService;
@@ -33,12 +33,13 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPost("save")]
+    [HttpPost()]
     public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
     {
         try
         {
-            var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
             return Ok(newEmployeeDocument);
         }
         catch (Exception ex)
