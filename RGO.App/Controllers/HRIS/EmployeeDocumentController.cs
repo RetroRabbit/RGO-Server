@@ -33,7 +33,7 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPost("save")]
+    [HttpPost()]
     public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
     {
         try
@@ -63,7 +63,7 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPut("{employeeId}")]
+    [HttpPut()]
     public async Task<IActionResult> Update([FromBody] EmployeeDocumentDto employeeDocumentDto)
     {
         try
