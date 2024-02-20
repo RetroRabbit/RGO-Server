@@ -7,49 +7,33 @@ trigger:
 - azure-pipelines-github
  
 pool:
-  vmImage: 'ubuntu-latest'
- 
+  vmImage: ubuntu-latest
+
 variables:
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  solution: '**/RGO-Server.sln'
-  project: '**/RGO.App.csproj'
- 
+  dotNetFramework: 'net7.0'
+  dotNetVersion: '7.0.x'
+  targetRuntime: 'linux-x64'
+
+# Build the app for .NET 7 framework
 steps:
-- task: NuGetToolInstaller@1
-  name: 'NuGetToolInstaller'
-  displayName: 'NuGet tool installer'
- 
-- task: NuGetCommand@2
-  name: 'NuGetRestore'
-  displayName: 'NuGet restore packages'
+- task: UseDotNet@2
   inputs:
-    command: 'restore'
-    restoreSolution: '$(solution)'
-    feedsToUse: 'select'
- 
+    version: $(dotNetVersion)
+    includePreviewVersions: true
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'Build .NET 6 Application'
+
+# Publish it as .NET 7 self-contained application for linux runtime
 - task: DotNetCoreCLI@2
-  name: 'Tests'
-  displayName: 'Run tests'
   inputs:
-    command: 'test'
-    projects: '$(solution)'
-    arguments: '--configuration $(BuildConfiguration)'
- 
-- task: DotNetCoreCLI@2
-  name: 'Publish'
-  displayName: 'Publish'
+    command: publish
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --framework $(dotNetFramework) --runtime $(targetRuntime) --self-contained --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
+
+# Package the file and uploads them as an artifact of the build
+- task: PublishPipelineArtifact@1
   inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: '$(project)'
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: false
- 
-- task: PublishBuildArtifacts@1
-  name: 'PublishBuildArtifacts'
-  displayName: 'Publish build artifacts'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'rgo-server'
-    publishLocation: 'Container'
+    targetPath: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'rgo-server'
