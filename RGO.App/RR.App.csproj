@@ -44,8 +44,8 @@
     <Folder Include="Controllers\ATS\" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Debug node ../Scripts/init.js" />
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(ConfigurationName) == Debug">
+    <Exec Command="node ../Scripts/init.js" />
   </Target>
 
 </Project>
