@@ -194,7 +194,6 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task DeleteEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
     {
-        // var employeeDocumentToDelete = employeeDocumentDto;
         var exceptionMessage = "An error occurred while deleting the employee document.";
 
         _employeeMockDocumentService.Setup(e => e.DeleteEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id)).ThrowsAsync(new Exception(exceptionMessage));
