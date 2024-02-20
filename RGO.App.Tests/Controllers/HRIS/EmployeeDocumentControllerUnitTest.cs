@@ -11,33 +11,7 @@ namespace RR.App.Tests.Controllers.HRIS;
 
 public class EmployeeDocumentControllerUnitTest
 {
-    private static readonly EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-    private static EmployeeType employeeType = new(employeeTypeDto);
-
-    private static readonly EmployeeAddressDto employeeAddressDto =
-        new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-
-    private static EmployeeDto employeeMock = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                                  null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000,
-                                                  "Matt", "MT",
-                                                  "Schoeman", new DateTime(), "South Africa", "South African",
-                                                  "0000080000000", " ",
-                                                  new DateTime(), null, Race.Black, Gender.Male, null,
-                                                  "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000",
-                                                  null, null, employeeAddressDto, employeeAddressDto, null, null, null);
-
-    private static EmployeeDto UpdateemployeeMock = new(1, "008", "123456789", new DateTime(), new DateTime(),
-                                                        null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128,
-                                                        100000, "Matt", "MT",
-                                                        "Schoeman", new DateTime(), "South America", "South African",
-                                                        "0000055000000", " ",
-                                                        new DateTime(), null, Race.Black, Gender.Male, null,
-                                                        "test@retrorabbit.co.za", "test.example@gmail.com",
-                                                        "0000000000", null, null, employeeAddressDto,
-                                                        employeeAddressDto, null, null, null);
-
     private readonly EmployeeDocumentController _controller;
-    private readonly EmployeeDocumentDto _employeeDocument;
     private readonly Mock<IEmployeeDocumentService> _employeeMockDocumentService;
     private readonly SimpleEmployeeDocumentDto _simpleEmployeeDocument;
 
