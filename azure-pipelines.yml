@@ -7,13 +7,13 @@ trigger:
 - azure-pipelines-github
  
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
  
 variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   solution: '**/RGO-Server.sln'
-  project: '**/*.csproj'
+  project: '**/RGO.App.csproj'
  
 steps:
 - task: NuGetToolInstaller@1
