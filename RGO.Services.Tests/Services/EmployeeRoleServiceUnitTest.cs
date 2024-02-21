@@ -119,7 +119,7 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[1].ToDto(), result);
         result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[2].ToDto());
         Assert.Equivalent(employeeRoleList[2].ToDto(), result);
-        Assert.ThrowsAsync<Exception>(() => _employeeRoleService.SaveEmployeeRole(employeeRoleList[3].ToDto()));
+        await Assert.ThrowsAsync<Exception>(() => _employeeRoleService.SaveEmployeeRole(employeeRoleList[3].ToDto()));
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class EmployeeRoleServiceUnitTest
         var result1 = await _employeeRoleService.DeleteEmployeeRole(Email, roleList[0].Description);
 
         Assert.NotNull(result1);
-        Assert.ThrowsAsync<Exception>(() => _employeeRoleService.DeleteEmployeeRole("", ""));
+        await Assert.ThrowsAsync<Exception>(() => _employeeRoleService.DeleteEmployeeRole("", ""));
     }
 
     [Fact]
@@ -283,7 +283,7 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[1].ToDto(), result2);
         Assert.Equivalent(employeeRoleList[2].ToDto(), result3);
 
-        Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
+        await Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
                                           (
                                            4,
                                            employeeRoleList[0].Employee.ToDto(),

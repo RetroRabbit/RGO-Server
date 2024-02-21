@@ -16,7 +16,7 @@ public class PeopleChampionTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private EmployeeAddressDto employeeAddressDto;
+    //private EmployeeAddressDto employeeAddressDto;
     private readonly EmployeeType employeeType1;
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;

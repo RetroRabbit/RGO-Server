@@ -7,7 +7,7 @@ namespace RR.UnitOfWork.Repositories.HRIS;
 
 public class PropertyAccessRepository : BaseRepository<PropertyAccess, PropertyAccessDto>, IPropertyAccessRepository
 {
-    private readonly DatabaseContext _db;
+    private new readonly DatabaseContext _db;
 
     public PropertyAccessRepository(DatabaseContext db) : base(db)
     {

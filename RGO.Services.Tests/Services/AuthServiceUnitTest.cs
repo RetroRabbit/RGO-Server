@@ -85,7 +85,7 @@ public class AuthServiceUnitTest
 
         var result = await _authService.CheckUserExist("dm@retrorabbit.co.za");
 
-        Assert.NotNull(result);
+        //Assert.NotNull(result);
         Assert.IsType<bool>(result);
         Assert.True(result);
     }

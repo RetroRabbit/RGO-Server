@@ -39,7 +39,7 @@ public class EmployeeDocumentControllerUnitTest
     private readonly EmployeeDocumentController _controller;
     private readonly EmployeeDocumentDto _employeeDocument;
     private readonly Mock<IEmployeeDocumentService> _employeeMockDocumentService;
-    private readonly SimpleEmployeeDocumentDto _simpleEmployeeDocument;
+    //private readonly SimpleEmployeeDocumentDto _simpleEmployeeDocument;
 
     private readonly EmployeeDocumentDto employeeDocumentDto;
     private readonly EmployeeDocumentDto updateEmployeeDocumentDto;

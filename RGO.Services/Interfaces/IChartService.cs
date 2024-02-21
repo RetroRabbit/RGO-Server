@@ -51,5 +51,5 @@ public interface IChartService
     /// </summary>
     /// <param name="dataTypes"></param>
     /// <returns>Report CSV File</returns>
-    Task<byte[]> ExportCsvAsync(List<string> dataTypes);
+    Task<byte[]?> ExportCsvAsync(List<string> dataTypes);
 }

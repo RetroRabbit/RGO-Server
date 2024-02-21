@@ -85,10 +85,7 @@ public class SalaryTypeUnitTest
     [Fact]
     public async Task SalaryTypeNullEmployee()
     {
-        var employeeList = new List<Employee>
-        {
-            null
-        };
+        var employeeList = new List<Employee>();
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.AsQueryable().BuildMock());

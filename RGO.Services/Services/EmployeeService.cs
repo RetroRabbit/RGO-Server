@@ -175,7 +175,7 @@ public class EmployeeService : IEmployeeService
     {
         EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
             .GetEmployeeType(employeeDto.EmployeeType.Name);
-        Employee employee = null;
+        Employee? employee = null;
         if (employeeDto.Email == userEmail)
         {
             employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);

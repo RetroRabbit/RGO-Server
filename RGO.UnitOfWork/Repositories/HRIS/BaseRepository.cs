@@ -20,14 +20,14 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
         return (await _entity.FindAsync(id)).ToDto();
     }
 
-    public IQueryable<TK> Get(Expression<Func<TK, bool>> criteria = null)
+    public IQueryable<TK> Get(Expression<Func<TK, bool>>? criteria = null)
     {
         return criteria == null
             ? _entity.AsQueryable()
             : _entity.Where(criteria);
     }
 
-    public async Task<List<T>> GetAll(Expression<Func<TK, bool>> criteria = null)
+    public async Task<List<T>> GetAll(Expression<Func<TK, bool>>? criteria = null)
     {
         return (criteria == null
                    ? await _entity.ToListAsync()

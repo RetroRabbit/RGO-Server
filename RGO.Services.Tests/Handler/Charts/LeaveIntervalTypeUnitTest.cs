@@ -98,7 +98,7 @@ public class LeaveIntervalTypeUnitTest
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
 
-        Assert.True(result.Contains("Days"));
+        Assert.Contains("Days",result);
     }
 
     [Fact]
@@ -176,6 +176,6 @@ public class LeaveIntervalTypeUnitTest
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result2 = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
 
-        Assert.True(result2.Contains("Days"));
+        Assert.Contains("Days", result2);
     }
 }

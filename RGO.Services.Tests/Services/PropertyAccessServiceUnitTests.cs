@@ -412,7 +412,7 @@ public class PropertyAccessServiceUnitTests
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
+        await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
             new(12, "zxy 035 gp"),
             new(13, "James"),
@@ -545,7 +545,7 @@ public class PropertyAccessServiceUnitTests
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
+        await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
             new(12, "zxy 035 gp"),
             new(13, "James"),
@@ -698,7 +698,7 @@ public class PropertyAccessServiceUnitTests
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
+        await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
             new(12, "zxy 035 gp"),
             new(13, "James"),

@@ -9,9 +9,15 @@ public class PayRateType : BaseDataType
     public override string GenerateData(EmployeeDto employee, IServiceProvider services)
     {
         var prop = typeof(EmployeeDto).GetProperty("PayRate");
-        if (prop.GetValue(employee) == null)
-            return null;
 
-        return $"PayRate {prop.GetValue(employee)}, ";
+        if(prop != null)
+        {
+            if (prop.GetValue(employee) == null)
+                return null;
+
+            return $"PayRate {prop.GetValue(employee)}, ";
+        }
+
+        return null;
     }
 }

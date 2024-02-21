@@ -6,7 +6,7 @@ public class SalaryType : BaseDataType
 {
     public override string Name => "Salary";
 
-    public override string GenerateData(EmployeeDto employee, IServiceProvider services)
+    public override string GenerateData(EmployeeDto? employee, IServiceProvider services)
     {
         if (employee == null)
             return null;

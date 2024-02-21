@@ -98,7 +98,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                                 .Select(employee => employee)
                                 .FirstAsync();
 
-        EmployeeBankingDto newEntryDto = null;
+        EmployeeBankingDto? newEntryDto = null;
 
         if (employee.Email == userEmail)
         {

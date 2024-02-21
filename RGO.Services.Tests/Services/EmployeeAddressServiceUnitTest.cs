@@ -40,7 +40,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(1);
 
-        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto)null);
+        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto?)null);
 
         var result = await _employeeAddressService.CheckIfExists(address);
 
@@ -138,7 +138,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(1);
 
-        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto)null);
+        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto?)null);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Update(address));
     }

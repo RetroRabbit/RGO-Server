@@ -82,7 +82,7 @@ public class EmployeeDocumentServiceUnitTest
     public async Task SaveEmployeeDocumentFail()
     {
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
-                            .ReturnsAsync((EmployeeDto)null);
+                            .ReturnsAsync((EmployeeDto?)null);
 
         var employeeDocDto = new SimpleEmployeeDocumentDto(
                                                            1,

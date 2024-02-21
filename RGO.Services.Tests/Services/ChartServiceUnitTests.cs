@@ -17,7 +17,7 @@ public class ChartServiceUnitTests
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IServiceProvider> _services;
     private readonly Mock<IUnitOfWork> _unitOfWork;
-    private EmployeeAddressDto employeeAddressDto;
+    //private EmployeeAddressDto employeeAddressDto;
     private readonly EmployeeType employeeType1;
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;

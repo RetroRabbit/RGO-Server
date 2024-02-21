@@ -139,7 +139,7 @@ public class EmployeeBankingControllerUnitTests
                 Id = 1, EmployeeId = 123, BankName = "Test Bank", Branch = "Test Branch",
                 AccountNo = "123456789", AccountType = EmployeeBankingAccountType.Savings,
                 AccountHolderName = "John Doe", Status = BankApprovalStatus.Approved,
-                DeclineReason = null, File = "file.pdf",
+                DeclineReason = string.Empty, File = "file.pdf",
                 LastUpdateDate = new DateOnly(2023, 11, 28), PendingUpdateDate = new DateOnly(2023, 11, 29)
             }
         };

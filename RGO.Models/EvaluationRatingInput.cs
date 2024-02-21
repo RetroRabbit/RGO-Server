@@ -5,7 +5,7 @@ public class EvaluationRatingInput
     // TODO : Remove this Constructor + Update UNIT TESTS
     public EvaluationRatingInput(int Id,
                                  string EmployeeEmail,
-                                 EmployeeEvaluationInput Evaluation,
+                                 EmployeeEvaluationInput? Evaluation,
                                  string Description,
                                  float Score,
                                  string Comment)

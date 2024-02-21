@@ -152,7 +152,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
     {
         var dbContextMock = new Mock<DatabaseContext>();
         var dbSetMock = new Mock<DbSet<EmployeeDate>>();
-        dbSetMock.Setup(x => x.FindAsync(1)).ReturnsAsync((EmployeeDate)null);
+        dbSetMock.Setup(x => x.FindAsync(1)).ReturnsAsync((EmployeeDate?)null);
         dbContextMock.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
 
         var repository = new EmployeeDateRepository(dbContextMock.Object);
