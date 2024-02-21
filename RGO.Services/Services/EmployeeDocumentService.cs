@@ -50,7 +50,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var employeeDocument = await _db.EmployeeDocument
                                         .Get(employeeDocument =>
                                                  employeeDocument.EmployeeId == employeeId &&
-                                                 employeeDocument.FileName.Equals(filename,
+                                                 employeeDocument.FileName!.Equals(filename,
                                                   StringComparison.CurrentCultureIgnoreCase))
                                         .AsNoTracking()
                                         .Include(employeeDocument => employeeDocument.Employee)

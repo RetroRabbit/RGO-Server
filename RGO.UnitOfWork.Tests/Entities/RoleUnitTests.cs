@@ -7,7 +7,7 @@ namespace RR.UnitOfWork.Tests.Entities;
 public class RoleUnitTests
 {
     [Fact]
-    public async Task roleTest()
+    public void roleTest()
     {
         var role = new Role();
         Assert.IsType<Role>(role);
@@ -15,7 +15,7 @@ public class RoleUnitTests
     }
 
     [Fact]
-    public async Task roleTodtoTest()
+    public void roleTodtoTest()
     {
         var role = new Role(new RoleDto(1, "Employee"));
         Assert.IsType<RoleDto>(role.ToDto());

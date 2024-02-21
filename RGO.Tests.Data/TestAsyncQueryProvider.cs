@@ -30,12 +30,12 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
 
     public object Execute(Expression expression)
     {
-        return _inner.Execute(expression);
+        return _inner!.Execute(expression)!;
     }
 
     public TResult Execute<TResult>(Expression expression)
     {
-        return _inner.Execute<TResult>(expression);
+        return _inner!.Execute<TResult>(expression);
     }
 
     TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)

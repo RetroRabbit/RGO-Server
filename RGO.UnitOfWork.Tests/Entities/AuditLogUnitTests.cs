@@ -61,7 +61,7 @@ public class AuditLogUnitTests
         var auditLogs = new List<AuditLog>
         {
             CreateTestAuditLog(),
-            CreateTestAuditLog(new Employee(testEmployee, testEmployee.EmployeeType)),
+            CreateTestAuditLog(new Employee(testEmployee, testEmployee.EmployeeType!)),
             CreateTestAuditLog(editFor: new Employee(testEmployee, testEmployee.EmployeeType)),
             CreateTestAuditLog(
                                new Employee(testEmployee, testEmployee.EmployeeType),

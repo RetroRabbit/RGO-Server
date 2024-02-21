@@ -22,7 +22,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                                           .Get(entry => entry.Status == (BankApprovalStatus)approvalStatus)
                                           .AsNoTracking()
                                           .Include(entry => entry.Employee)
-                                          .Include(entry => entry.Employee.EmployeeType)
+                                          .Include(entry => entry.Employee!.EmployeeType)
                                           .Select(bankEntry => bankEntry)
                                           .ToListAsync();
 
@@ -48,12 +48,12 @@ public class EmployeeBankingService : IEmployeeBankingService
 
         if (empDto.Email == userEmail)
         {
-            bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
+            bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
         }
         else
         {
             if (await IsAdmin(userEmail))
-                bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
+                bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
             else
                 throw new Exception("Unauthorized access");
         }
@@ -78,11 +78,11 @@ public class EmployeeBankingService : IEmployeeBankingService
                                            .Select(employeeBanking => employeeBanking.ToDto())
                                            .FirstOrDefaultAsync();
 
-            return employeeBanking;
+            return employeeBanking!;
         }
         catch (Exception ex)
         {
-            throw new Exception("Employee banking details not found");
+            throw new Exception($@"Employee banking details not found - {ex.Message}");
         }
     }
 
@@ -125,17 +125,17 @@ public class EmployeeBankingService : IEmployeeBankingService
                                    .FirstOrDefaultAsync();
 
         var empRole = await _db.EmployeeRole
-                               .Get(role => role.EmployeeId == employeeDto.Id)
+                               .Get(role => role.EmployeeId == employeeDto!.Id)
                                .FirstOrDefaultAsync();
 
         var role = await _db.Role
-                            .Get(role => role.Id == empRole.RoleId)
+                            .Get(role => role.Id == empRole!.RoleId)
                             .FirstOrDefaultAsync();
 
-        return role.Description is "Admin" or "SuperAdmin";
+        return role!.Description is "Admin" or "SuperAdmin";
     }
 
-    private async Task<EmployeeBankingDto> CreateEmployeeBankingDto(EmployeeBankingDto newEntry,
+    private EmployeeBankingDto CreateEmployeeBankingDto(EmployeeBankingDto newEntry,
                                                                     EmployeeBankingDto empBankingDto)
     {
         var Bankingdto = new EmployeeBankingDto

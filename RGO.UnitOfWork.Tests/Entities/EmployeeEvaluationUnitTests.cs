@@ -40,13 +40,13 @@ public class EmployeeEvaluationUnitTests
         };
 
         if (employee != null)
-            entity.Employee = new Employee(employee, employee.EmployeeType);
+            entity.Employee = new Employee(employee, employee.EmployeeType!);
 
         if (template != null)
             entity.Template = new EmployeeEvaluationTemplate(template);
 
         if (owner != null)
-            entity.Owner = new Employee(owner, owner.EmployeeType);
+            entity.Owner = new Employee(owner, owner.EmployeeType!);
 
         return entity.ToDto();
     }

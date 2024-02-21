@@ -16,8 +16,8 @@ public class EmployeeRole : IModel<EmployeeRoleDto>
     public EmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
         Id = employeeRoleDto.Id;
-        EmployeeId = employeeRoleDto.Employee.Id;
-        RoleId = employeeRoleDto.Role.Id;
+        EmployeeId = employeeRoleDto.Employee!.Id;
+        RoleId = employeeRoleDto.Role!.Id;
     }
 
     [Column("employeeId")]

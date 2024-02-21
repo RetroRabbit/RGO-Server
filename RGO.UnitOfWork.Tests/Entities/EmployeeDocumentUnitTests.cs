@@ -34,7 +34,7 @@ public class EmployeeDocumentUnitTests
         };
 
         if (employee != null)
-            employeeDocument.Employee = new Employee(employee, employee.EmployeeType);
+            employeeDocument.Employee = new Employee(employee, employee.EmployeeType!);
 
         return employeeDocument;
     }

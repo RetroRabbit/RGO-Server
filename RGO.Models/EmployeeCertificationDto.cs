@@ -8,8 +8,8 @@ public class EmployeeCertificationDto
     public EmployeeCertificationDto(int Id,
                                     EmployeeDto? Employee,
                                     EmployeeDocumentDto? EmployeeDocument,
-                                    string Title,
-                                    string Publisher,
+                                    string? Title,
+                                    string? Publisher,
                                     EmployeeCertificationStatus Status,
                                     EmployeeDto? AuditBy,
                                     DateTime? AuditDate,
@@ -29,8 +29,8 @@ public class EmployeeCertificationDto
     public int Id { get; set; }
     public EmployeeDto? Employee { get; set; }
     public EmployeeDocumentDto? EmployeeDocument { get; set; }
-    public string Title { get; set; }
-    public string Publisher { get; set; }
+    public string? Title { get; set; }
+    public string? Publisher { get; set; }
     public EmployeeCertificationStatus Status { get; set; }
     public EmployeeDto? AuditBy { get; set; }
     public DateTime? AuditDate { get; set; }

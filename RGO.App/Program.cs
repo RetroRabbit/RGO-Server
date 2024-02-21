@@ -154,9 +154,9 @@ namespace RR.App
             {
                 Policies = policies
                 .Select(policy => new PolicySettings(
-                    policy.Value["Name"].First(),
-                    policy.Value["Roles"],
-                    policy.Value["Permissions"]))
+                    policy.Value["Name"].First()!,
+                    policy.Value["Roles"]!,
+                    policy.Value["Permissions"]!))
                 .ToList()
             }.Policies.ForEach(policySettings =>
             {

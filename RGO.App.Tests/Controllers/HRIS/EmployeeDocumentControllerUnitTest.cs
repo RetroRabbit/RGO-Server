@@ -37,7 +37,7 @@ public class EmployeeDocumentControllerUnitTest
                                                         employeeAddressDto, null, null, null);
 
     private readonly EmployeeDocumentController _controller;
-    private readonly EmployeeDocumentDto? _employeeDocument;
+    //private readonly EmployeeDocumentDto? _employeeDocument;
     private readonly Mock<IEmployeeDocumentService> _employeeMockDocumentService;
     private readonly SimpleEmployeeDocumentDto? _simpleEmployeeDocument;
 

@@ -24,9 +24,9 @@ public class EmployeeDateController : ControllerBase
         {
             var employeeDateDto = new EmployeeDateDto(
                                                       0,
-                                                      await _employeeService.GetEmployee(employeeDateInput.Email),
-                                                      employeeDateInput.Subject,
-                                                      employeeDateInput.Note,
+                                                      await _employeeService.GetEmployee(employeeDateInput.Email!),
+                                                      employeeDateInput.Subject!,
+                                                      employeeDateInput.Note!,
                                                       employeeDateInput.Date);
             await _employeeDateService.Save(employeeDateDto);
 

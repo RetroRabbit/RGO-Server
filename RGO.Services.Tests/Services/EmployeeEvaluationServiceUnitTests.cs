@@ -59,10 +59,10 @@ public class EmployeeEvaluationServiceUnitTests
         };
 
         if (employee != null)
-            employeeEvaluation.Employee = new Employee(employee, employee.EmployeeType);
+            employeeEvaluation.Employee = new Employee(employee, employee.EmployeeType!);
 
         if (owner != null)
-            employeeEvaluation.Owner = new Employee(owner, owner.EmployeeType);
+            employeeEvaluation.Owner = new Employee(owner, owner.EmployeeType!);
 
         if (template != null)
             employeeEvaluation.Template = new EmployeeEvaluationTemplate(template);

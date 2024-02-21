@@ -34,7 +34,7 @@ public class EmployeeTypesServiceUnitTest
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>())).Throws(new Exception());
         _employeeTypeServiceMock.Setup(x => x.SaveEmployeeType(employeeTypeDto)).ReturnsAsync(employeeTypeDto);
-        _employeeTypeServiceMock.Setup(x => x.GetEmployeeType(employeeType.Name)).ReturnsAsync(employeeTypeDto);
+        _employeeTypeServiceMock.Setup(x => x.GetEmployeeType(employeeType.Name!)).ReturnsAsync(employeeTypeDto);
 
         _dbMock.Setup(r => r.EmployeeType.Add(It.IsAny<EmployeeType>())).Returns(Task.FromResult(employeeTypeDto));
         _dbMock.Setup(x => x.EmployeeType.Add(employeeType)).ReturnsAsync(employeeTypeDto);

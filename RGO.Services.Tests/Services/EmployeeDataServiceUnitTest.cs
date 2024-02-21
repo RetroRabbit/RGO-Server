@@ -39,7 +39,7 @@ public class EmployeeDataServiceUnitTest
         var result = await _employeeDataService.GetAllEmployeeData(_employeeDataDto.Id);
 
         Assert.NotNull(result);
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
         Assert.Equal(employee, result);
     }
 

@@ -117,7 +117,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetEmployeeWithClaimTest()
     {
-        var principal = SetupClaimsProncipal(_employee.Email);
+        var principal = SetupClaimsProncipal(_employee.Email!);
         SetupControllerContext(_controller, principal);
 
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
@@ -132,7 +132,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetEmployeeSuccessTest()
     {
-        var principal = SetupClaimsProncipal(_employee.Email);
+        var principal = SetupClaimsProncipal(_employee.Email!);
         SetupControllerContext(_controller, principal);
 
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
@@ -148,7 +148,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetEmployeeFailTest()
     {
-        var principal = SetupClaimsProncipal(_employee.Email);
+        var principal = SetupClaimsProncipal(_employee.Email!);
         SetupControllerContext(_controller, principal);
 
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
@@ -163,7 +163,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeSuccessTest()
     {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
                             .ReturnsAsync(_employee);
 
         var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
@@ -176,7 +176,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeFailTest()
     {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
                             .ThrowsAsync(new Exception("Not found"));
 
         var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
@@ -188,7 +188,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeUnauthorized()
     {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email))
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
                             .ThrowsAsync(new Exception("Unauthorized action"));
 
         var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
@@ -290,7 +290,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetEmployeeByIdFail()
     {
-        var principal = SetupClaimsProncipal(_employee.Email);
+        var principal = SetupClaimsProncipal(_employee.Email!);
         SetupControllerContext(_controller, principal);
 
         _employeeMockService.Setup(service => service.GetEmployeeById(It.IsAny<int>()))
@@ -316,7 +316,7 @@ public class EmployeeControllerUnitTests
 
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(employee);
 
-        var result = await _controller.GetSimpleEmployee(employee.Email);
+        var result = await _controller.GetSimpleEmployee(employee.Email!);
 
         var simpleEmployee = (ObjectResult)result;
 
@@ -338,7 +338,7 @@ public class EmployeeControllerUnitTests
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
                             .ThrowsAsync(new Exception("Not Found"));
 
-        var result = await _controller.GetSimpleEmployee(employee.Email);
+        var result = await _controller.GetSimpleEmployee(employee.Email!);
 
         var simpleEmployee = (NotFoundObjectResult)result;
 

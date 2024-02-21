@@ -29,7 +29,7 @@ public class RoleAccess : IModel<RoleAccessDto>
     {
         return new RoleAccessDto(
                                  Id,
-                                 Permission,
-                                 Grouping);
+                                 Permission!,
+                                 Grouping!);
     }
 }

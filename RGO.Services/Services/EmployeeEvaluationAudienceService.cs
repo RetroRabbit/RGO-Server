@@ -163,7 +163,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     public async Task<EmployeeEvaluationAudienceDto> Update(EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto)
     {
         var exists = await CheckIfExists(employeeEvaluationAudienceDto.Evaluation!,
-                                         employeeEvaluationAudienceDto.Employee!.Email);
+                                         employeeEvaluationAudienceDto.Employee!.Email!);
 
         if (!exists) throw new Exception("Employee Evaluation Audience not found");
 

@@ -103,15 +103,15 @@ public class EmployeeRoleServiceUnitTest
         employeeRoleList[2].Employee = new Employee(testEmployee, employeeTypeDto);
 
         _dbMock.SetupSequence(e => e.EmployeeRole.GetById(It.IsAny<int>()))
-               .Returns(Task.FromResult(employeeRoleList[1].ToDto()))
-               .Returns(Task.FromResult(employeeRoleList[2].ToDto()))
-               .Returns(Task.FromResult(employeeRoleList[3].ToDto()));
+               .Returns(Task.FromResult(employeeRoleList[1].ToDto())!)
+               .Returns(Task.FromResult(employeeRoleList[2].ToDto())!)
+               .Returns(Task.FromResult(employeeRoleList[3].ToDto())!);
 
         await Assert.ThrowsAsync<Exception>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
                                                 (
                                                  employeeRoleList[0].Id,
-                                                 employeeRoleList[0].Employee.ToDto(),
-                                                 employeeRoleList[0].Role.ToDto()
+                                                 employeeRoleList[0].Employee!.ToDto(),
+                                                 employeeRoleList[0].Role!.ToDto()
                                                 )));
         var result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[0].ToDto());
         Assert.Equivalent(employeeRoleList[0].ToDto(), result);
@@ -193,9 +193,9 @@ public class EmployeeRoleServiceUnitTest
 
         _dbMock.SetupSequence(e => e.EmployeeRole.Delete(It.IsAny<int>()))
                .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role.Description == roleList[0].Description)
-                                                        .Select(e => e.ToDto()).FirstOrDefault()))
+                                                        .Select(e => e.ToDto()).FirstOrDefault())!)
                .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role.Description == roleList[1].Description)
-                                                        .Select(e => e.ToDto()).FirstOrDefault()));
+                                                        .Select(e => e.ToDto()).FirstOrDefault())!);
 
         var result1 = await _employeeRoleService.DeleteEmployeeRole(Email, roleList[0].Description);
 

@@ -13,11 +13,11 @@ public class PayRateType : BaseDataType
         if(prop != null)
         {
             if (prop.GetValue(employee) == null)
-                return null;
+                return null!;
 
             return $"PayRate {prop.GetValue(employee)}, ";
         }
 
-        return null;
+        return null!;
     }
 }

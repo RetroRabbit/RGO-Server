@@ -47,7 +47,7 @@ public class EmployeeCertificationUnitTests
         };
 
         if (employee != null)
-            employeeCertification.Employee = new Employee(employee, employee.EmployeeType);
+            employeeCertification.Employee = new Employee(employee, employee.EmployeeType!);
 
         if (employeeDocument != null)
             employeeCertification.EmployeeDocument = new EmployeeDocument(employeeDocument);

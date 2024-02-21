@@ -49,7 +49,7 @@ public class MonthlyEmployeeTotal : IModel<MonthlyEmployeeTotalDto>
                                            DesignerTotal,
                                            ScrumMasterTotal,
                                            BusinessSupportTotal,
-                                           Month,
+                                           Month!,
                                            Year
                                           );
     }

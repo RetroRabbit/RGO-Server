@@ -26,6 +26,6 @@ public class EmployeeType : IModel<EmployeeTypeDto>
     {
         return new EmployeeTypeDto(
                                    Id,
-                                   Name);
+                                   Name!);
     }
 }

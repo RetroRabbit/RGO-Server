@@ -15,7 +15,7 @@ public class ClientUnitTest
     }
 
     [Fact]
-    public async Task ClientToDtoTest()
+    public void ClientToDtoTest()
     {
         var clientDto = new ClientDto(1, "Name");
         var client = new Client(clientDto);

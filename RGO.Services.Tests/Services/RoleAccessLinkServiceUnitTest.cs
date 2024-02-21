@@ -153,8 +153,8 @@ public class RoleAccessLinkServiceUnitTest
         var result = await _roleAccessLinkService.GetAll();
 
         Assert.Equal(2, result.Count);
-        Assert.Equal(expect.Keys, result.Keys);
-        Assert.Equal(expect.Values, result.Values);
+        Assert.Equal(expect.Keys!, result.Keys);
+        Assert.Equal(expect.Values!, result.Values);
         _dbMock.Verify(r => r.RoleAccessLink.Get(null), Times.Once);
     }
 
@@ -207,8 +207,8 @@ public class RoleAccessLinkServiceUnitTest
         var result = await _roleAccessLinkService.GetByRole(randLink.Role.Description);
 
         Assert.Equal(2, result.First().Value.Count);
-        Assert.Equal(expect.Keys, result.Keys);
-        Assert.Equal(expect.Values, result.Values);
+        Assert.Equal(expect.Keys!, result.Keys);
+        Assert.Equal(expect.Values!, result.Values);
         _dbMock.Verify(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()), Times.Once);
     }
 
@@ -261,8 +261,8 @@ public class RoleAccessLinkServiceUnitTest
         var result = await _roleAccessLinkService.GetByPermission(randLink.RoleAccess.Permission);
 
         Assert.Equal(2, result.Count);
-        Assert.Equal(expect.Keys, result.Keys);
-        Assert.Equal(expect.Values, result.Values);
+        Assert.Equal(expect.Keys!, result.Keys);
+        Assert.Equal(expect.Values!, result.Values);
         _dbMock.Verify(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()), Times.Once);
     }
 

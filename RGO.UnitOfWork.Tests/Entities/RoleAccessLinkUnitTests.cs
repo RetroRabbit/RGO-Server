@@ -7,7 +7,7 @@ namespace RR.UnitOfWork.Tests.Entities;
 public class RoleAccessLinkUnitTests
 {
     [Fact]
-    public async Task roleAccessLinkTest()
+    public void roleAccessLinkTest()
     {
         var roleAccessLink = new RoleAccessLink();
         Assert.IsType<RoleAccessLink>(roleAccessLink);
@@ -15,7 +15,7 @@ public class RoleAccessLinkUnitTests
     }
 
     [Fact]
-    public async Task roleAccessLinkToDtoTest()
+    public void roleAccessLinkToDtoTest()
     {
         var roleDto = new RoleDto(1, "Employee");
         var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");

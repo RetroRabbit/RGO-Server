@@ -17,7 +17,7 @@ public class AuthServiceUnitTest
     private readonly AuthService _authService;
     private readonly Mock<IAuthService> _authServiceMock;
     private readonly Mock<IConfiguration> _configuration;
-    private readonly Mock<IEmployeeAddressService>? _employeeAddressService;
+    //private readonly Mock<IEmployeeAddressService>? _employeeAddressService;
     private readonly Mock<IEmployeeRoleService> _employeeRoleServiceMock;
     private readonly Mock<IEmployeeService> _employeeService;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
@@ -48,9 +48,9 @@ public class AuthServiceUnitTest
         employeeType1 = new EmployeeType(employeeTypeDto1);
         employeeType2 = new EmployeeType(employeeTypeDto2);
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto1));
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
 
         employeeAddressDto =

@@ -29,7 +29,7 @@ public class SalaryTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto(3, "Employee");
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
         employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
@@ -46,13 +46,13 @@ public class SalaryTypeUnitTest
     }
 
     [Fact]
-    public async Task SalaryTypeNullTestSuccess()
+    public void SalaryTypeNullTestSuccess()
     {
         var employeeDto = CreateEmployee(null);
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -64,13 +64,13 @@ public class SalaryTypeUnitTest
     }
 
     [Fact]
-    public async Task SalaryTypePass()
+    public void SalaryTypePass()
     {
         var employeeDto = CreateEmployee(3);
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -83,7 +83,7 @@ public class SalaryTypeUnitTest
     }
 
     [Fact]
-    public async Task SalaryTypeNullEmployee()
+    public void SalaryTypeNullEmployee()
     {
         var employeeList = new List<Employee>();
 

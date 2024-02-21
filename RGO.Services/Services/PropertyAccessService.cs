@@ -63,7 +63,7 @@ public class PropertyAccessService : IPropertyAccessService
         if (employee == null) throw new Exception("Employee not found.");
 
         var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-                            .Select(r => r.Role.Id)
+                            .Select(r => r.Role!.Id)
                             .ToList();
 
         var get = _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId));
@@ -76,7 +76,7 @@ public class PropertyAccessService : IPropertyAccessService
         foreach (var fieldValue in fields)
         {
             var field = await _db.FieldCode.GetById(fieldValue.fieldId);
-            if (field.Internal)
+            if (field!.Internal)
             {
                 var table = field.InternalTable;
                 var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
@@ -87,7 +87,7 @@ public class PropertyAccessService : IPropertyAccessService
                 switch (field.Type)
                 {
                     case FieldCodeType.Date:
-                        valueParam = new NpgsqlParameter("value", DateOnly.Parse(fieldValue.value.ToString()));
+                        valueParam = new NpgsqlParameter("value", DateOnly.Parse(fieldValue.value.ToString()!));
                         break;
 
                     case FieldCodeType.String:
@@ -100,7 +100,7 @@ public class PropertyAccessService : IPropertyAccessService
                         break;
 
                     case FieldCodeType.Float:
-                        valueParam = new NpgsqlParameter("value", float.Parse(fieldValue.value.ToString()));
+                        valueParam = new NpgsqlParameter("value", float.Parse(fieldValue.value.ToString()!));
                         break;
 
                     default:
@@ -125,7 +125,7 @@ public class PropertyAccessService : IPropertyAccessService
                                                                  data.Id,
                                                                  data.EmployeeId,
                                                                  data.FieldCodeId,
-                                                                 fieldValue.value.ToString()
+                                                                 fieldValue.value.ToString()!
                                                                 );
 
                     await _employeeDataService.UpdateEmployeeData(updateEmployeeData);
@@ -136,7 +136,7 @@ public class PropertyAccessService : IPropertyAccessService
                                                                  0,
                                                                  employee.Id,
                                                                  field.Id,
-                                                                 fieldValue.value.ToString()
+                                                                 fieldValue.value.ToString()!
                                                                 );
                     await _employeeDataService.SaveEmployeeData(updateEmployeeData);
                 }

@@ -29,9 +29,9 @@ public class AgeTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto(3, "Employee");
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
@@ -46,7 +46,7 @@ public class AgeTypeUnitTest
     }
 
     [Fact]
-    public async Task GenerateDataDobTestSuccess()
+    public void GenerateDataDobTestSuccess()
     {
         var testDate = "05/05/2005";
         var employeeDto = CreateEmployee(Convert.ToDateTime(testDate));

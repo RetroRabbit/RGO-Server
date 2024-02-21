@@ -34,7 +34,7 @@ public class FieldCodeOptions : IModel<FieldCodeOptionsDto>
         return new FieldCodeOptionsDto(
                                        Id,
                                        FieldCodeId,
-                                       Option
+                                       Option!
                                       );
     }
 }

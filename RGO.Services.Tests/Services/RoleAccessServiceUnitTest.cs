@@ -71,7 +71,7 @@ public class RoleAccessServiceUnitTest
             .Setup(r => r.RoleAccess.Get(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
             .Returns(permissions.Where(criteria));
 
-        var result = await _roleAccessService.GetRoleAccess(randPermission);
+        var result = await _roleAccessService.GetRoleAccess(randPermission!);
 
         Assert.NotNull(result);
         Assert.Equal(randPermission, result.Permission);

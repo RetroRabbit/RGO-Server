@@ -52,7 +52,7 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, employee.Id.ToString()),
-            new(ClaimTypes.Email, employee.Email),
+            new(ClaimTypes.Email, employee.Email!),
             new(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 

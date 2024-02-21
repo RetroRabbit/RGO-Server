@@ -19,7 +19,7 @@ public class EmployeeDateService : IEmployeeDateService
     {
         var exists = await _db.EmployeeDate.Any(x =>
                                                     x.Id == employeeDate.Id &&
-                                                    x.Employee.Email == employeeDate.Employee!.Email);
+                                                    x.Employee!.Email == employeeDate.Employee!.Email);
 
         return exists;
     }
@@ -57,12 +57,12 @@ public class EmployeeDateService : IEmployeeDateService
     public async Task<EmployeeDateDto> Get(EmployeeDateDto employeeDate)
     {
         var employeeDateDto = await _db.EmployeeDate.Get(x =>
-                                                             x.Employee.Email == employeeDate.Employee!.Email &&
+                                                             x.Employee!.Email == employeeDate.Employee!.Email &&
                                                              x.Subject == employeeDate.Subject &&
                                                              x.Note == employeeDate.Note)
                                        .AsNoTracking()
                                        .Include(x => x.Employee)
-                                       .Include(x => x.Employee.EmployeeType)
+                                       .Include(x => x.Employee!.EmployeeType)
                                        .Select(x => x.ToDto())
                                        .FirstOrDefaultAsync();
 
