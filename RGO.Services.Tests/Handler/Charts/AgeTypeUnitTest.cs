@@ -16,7 +16,7 @@ public class AgeTypeUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly AgeType ageType;
-    //private EmployeeAddressDto employeeAddressDto;
+    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private RoleDto roleDto;
@@ -53,7 +53,7 @@ public class AgeTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))

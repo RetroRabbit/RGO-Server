@@ -11,13 +11,13 @@ namespace RR.App.Tests.Controllers.HRIS;
 
 public class EmployeeDocumentControllerUnitTest
 {
-    private static readonly EmployeeTypeDto employeeTypeDto = new(1, "Developer");
-    private static EmployeeType employeeType = new(employeeTypeDto);
+    private static readonly EmployeeTypeDto? employeeTypeDto = new(1, "Developer");
+    private static EmployeeType? employeeType = new(employeeTypeDto);
 
-    private static readonly EmployeeAddressDto employeeAddressDto =
+    private static readonly EmployeeAddressDto? employeeAddressDto =
         new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-    private static EmployeeDto employeeMock = new(1, "001", "34434434", new DateTime(), new DateTime(),
+    private static EmployeeDto? employeeMock = new(1, "001", "34434434", new DateTime(), new DateTime(),
                                                   null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000,
                                                   "Matt", "MT",
                                                   "Schoeman", new DateTime(), "South Africa", "South African",
@@ -26,7 +26,7 @@ public class EmployeeDocumentControllerUnitTest
                                                   "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000",
                                                   null, null, employeeAddressDto, employeeAddressDto, null, null, null);
 
-    private static EmployeeDto UpdateemployeeMock = new(1, "008", "123456789", new DateTime(), new DateTime(),
+    private static EmployeeDto? UpdateemployeeMock = new(1, "008", "123456789", new DateTime(), new DateTime(),
                                                         null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128,
                                                         100000, "Matt", "MT",
                                                         "Schoeman", new DateTime(), "South America", "South African",
@@ -37,9 +37,9 @@ public class EmployeeDocumentControllerUnitTest
                                                         employeeAddressDto, null, null, null);
 
     private readonly EmployeeDocumentController _controller;
-    private readonly EmployeeDocumentDto _employeeDocument;
+    private readonly EmployeeDocumentDto? _employeeDocument;
     private readonly Mock<IEmployeeDocumentService> _employeeMockDocumentService;
-    //private readonly SimpleEmployeeDocumentDto _simpleEmployeeDocument;
+    private readonly SimpleEmployeeDocumentDto? _simpleEmployeeDocument;
 
     private readonly EmployeeDocumentDto employeeDocumentDto;
     private readonly EmployeeDocumentDto updateEmployeeDocumentDto;
@@ -155,10 +155,10 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task SaveEmployeeDocumentReturnsOkResult()
     {
-        _employeeMockDocumentService.Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument))
+        _employeeMockDocumentService.Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument!))
                                     .ReturnsAsync(employeeDocumentDto);
 
-        var result = await _controller.Save(_simpleEmployeeDocument);
+        var result = await _controller.Save(_simpleEmployeeDocument!);
         var okresult = Assert.IsType<OkObjectResult>(result);
         var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
 
@@ -171,7 +171,7 @@ public class EmployeeDocumentControllerUnitTest
         _employeeMockDocumentService.Setup(x => x.SaveEmployeeDocument(It.IsAny<SimpleEmployeeDocumentDto>()))
                                     .Throws(new Exception("An error occurred while saving the employee document."));
 
-        var result = await _controller.Save(_simpleEmployeeDocument);
+        var result = await _controller.Save(_simpleEmployeeDocument!);
         var notfoundResult = Assert.IsType<ObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 

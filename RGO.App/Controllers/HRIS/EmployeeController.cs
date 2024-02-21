@@ -82,7 +82,7 @@ public class EmployeeController : ControllerBase
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var updatedEmployee =
-                await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
+                await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
 
             return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
         }

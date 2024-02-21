@@ -18,12 +18,12 @@ public class EmployeeDataConsumer
 {
     private const string QueueName = "employee_data_queue";
     private const int TimeInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
-    private readonly IModel _channel;
-    private readonly IConnection _connection;
+    private readonly IModel? _channel;
+    private readonly IConnection? _connection;
 
-    private readonly Timer _consumeTimer;
+    private readonly Timer? _consumeTimer;
 
-    private readonly ConnectionFactory _factory;
+    private readonly ConnectionFactory? _factory;
     private readonly string ApplicationName = "Retro HR";
 
     private readonly string[] Scopes = { GmailService.Scope.GmailSend };
@@ -119,10 +119,15 @@ public class EmployeeDataConsumer
         return Convert.ToBase64String(inputBytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
     }
 
-    private bool IsValidEmail(string email)
+    private bool IsValidEmail(string? email)
     {
         try
         {
+            if(email == null)
+            {
+                email = string.Empty;
+            }
+
             var addr = new MailAddress(email);
             return addr.Address == email;
         }

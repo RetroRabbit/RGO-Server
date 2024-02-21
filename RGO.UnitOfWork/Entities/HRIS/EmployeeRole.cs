@@ -28,8 +28,8 @@ public class EmployeeRole : IModel<EmployeeRoleDto>
     [ForeignKey("Role")]
     public int RoleId { get; set; }
 
-    public Employee Employee { get; set; }
-    public Role Role { get; set; }
+    public Employee? Employee { get; set; }
+    public Role? Role { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

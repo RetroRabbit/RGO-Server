@@ -13,7 +13,7 @@ public class EmployeeAddressServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeAddressService _employeeAddressService;
-    private readonly EmployeeDto _employeeDto;
+    private readonly EmployeeDto? _employeeDto;
 
     public EmployeeAddressServiceUnitTest()
     {

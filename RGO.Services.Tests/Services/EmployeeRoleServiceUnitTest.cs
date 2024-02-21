@@ -405,7 +405,7 @@ public class EmployeeRoleServiceUnitTest
         _dbMock.SetupSequence(e => e.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
                .Returns(employeeRoleList.AsQueryable().BuildMock().Where(criteriAList[0]));
 
-        var result1 = await _employeeRoleService.GetEmployeeRole(employeeRoleList[0].Employee.Email);
+        var result1 = await _employeeRoleService.GetEmployeeRole(employeeRoleList[0].Employee!.Email!);
 
         Assert.Equivalent(employeeRoleList[0].ToDto(), result1);
     }

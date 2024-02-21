@@ -57,7 +57,7 @@ public class FieldCodeService : IFieldCodeService
         return fieldCode;
     }
 
-    public async Task<List<FieldCodeDto>> GetAllFieldCodes()
+    public async Task<List<FieldCodeDto>?> GetAllFieldCodes()
     {
         var fieldCodes = await _db.FieldCode.GetAll();
         var fieldCode = fieldCodes

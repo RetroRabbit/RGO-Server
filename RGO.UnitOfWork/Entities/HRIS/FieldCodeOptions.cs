@@ -23,9 +23,9 @@ public class FieldCodeOptions : IModel<FieldCodeOptionsDto>
     [ForeignKey("FieldCode")]
     public int FieldCodeId { get; set; }
 
-    [Column("option")] public string Option { get; set; }
+    [Column("option")] public string? Option { get; set; }
 
-    public virtual FieldCode FieldCode { get; set; }
+    public virtual FieldCode? FieldCode { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

@@ -29,7 +29,7 @@ public class LeaveIntervalTypeUnitTest
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
@@ -51,7 +51,7 @@ public class LeaveIntervalTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -70,7 +70,7 @@ public class LeaveIntervalTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -89,7 +89,7 @@ public class LeaveIntervalTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -111,7 +111,7 @@ public class LeaveIntervalTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
@@ -137,7 +137,7 @@ public class LeaveIntervalTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))

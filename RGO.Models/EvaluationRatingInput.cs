@@ -20,7 +20,7 @@ public class EvaluationRatingInput
 
     public int Id { get; set; }
     public string EmployeeEmail { get; set; }
-    public EmployeeEvaluationInput Evaluation { get; set; }
+    public EmployeeEvaluationInput? Evaluation { get; set; }
     public string Description { get; set; }
     public float Score { get; set; }
     public string Comment { get; set; }

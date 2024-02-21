@@ -15,7 +15,7 @@ public class PayRateTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    //private EmployeeAddressDto employeeAddressDto;
+    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private readonly PayRateType payRateType;

@@ -5,8 +5,8 @@ namespace RR.Tests.Data;
 
 public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
 {
-    private readonly IQueryProvider _inner;
-    private object provider;
+    private readonly IQueryProvider? _inner;
+    private object? provider;
 
     public TestAsyncQueryProvider(object provider)
     {

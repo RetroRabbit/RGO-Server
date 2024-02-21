@@ -163,7 +163,7 @@ public class ChartService : IChartService
         return quantifiableColumnNames;
     }
 
-    public async Task<byte[]> ExportCsvAsync(List<string> dataTypes)
+    public async Task<byte[]?> ExportCsvAsync(List<string> dataTypes)
     {
         var employees = await _db.Employee.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();

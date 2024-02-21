@@ -203,7 +203,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Employee.Delete(EmployeeTestData.EmployeeDto.Id))
                .Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
 
-        var result = await employeeService.DeleteEmployee(EmployeeTestData.EmployeeDto.Email);
+        var result = await employeeService.DeleteEmployee(EmployeeTestData.EmployeeDto.Email!);
         Assert.NotNull(result);
     }
 
@@ -431,7 +431,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>()))
                .Returns(clients.AsQueryable().BuildMock());
 
-        var result = await employeeService.GetSimpleProfile(EmployeeTestData.EmployeeDto4.Email);
+        var result = await employeeService.GetSimpleProfile(EmployeeTestData.EmployeeDto4.Email!);
 
         Assert.NotNull(result);
         Assert.Equal(EmployeeTestData.EmployeeDto4.TeamLead, result.TeamLeadId);

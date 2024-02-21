@@ -33,14 +33,14 @@ public class PropertyAccessService : IPropertyAccessService
 
         foreach (var access in properties.Where(a => a.Condition != 0))
         {
-            var value = await GetSqlValues(access.FieldCode, employee);
+            var value = await GetSqlValues(access.FieldCode!, employee!);
 
             var dto = new EmployeeAccessDto(
-                                            access.FieldCode.Id,
+                                            access.FieldCode!.Id,
                                             access.Condition,
                                             access.FieldCode.Internal,
-                                            access.FieldCode.Code,
-                                            access.FieldCode.Name,
+                                            access.FieldCode.Code!,
+                                            access.FieldCode.Name!,
                                             access.FieldCode.Type.ToString().ToLower(),
                                             value,
                                             access.FieldCode.Description,

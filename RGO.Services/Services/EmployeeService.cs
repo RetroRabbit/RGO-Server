@@ -12,7 +12,7 @@ namespace HRIS.Services.Services;
 public class EmployeeService : IEmployeeService
 {
     private const string QueueName = "employee_data_queue";
-    public static ConnectionFactory _employeeFactory;
+    public static ConnectionFactory? _employeeFactory;
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
@@ -96,7 +96,7 @@ public class EmployeeService : IEmployeeService
         return newEmployee;
     }
 
-    public async Task<bool> CheckUserExist(string email)
+    public async Task<bool> CheckUserExist(string? email)
     {
         return await _db.Employee
                         .Any(employee => employee.Email == email);
@@ -136,7 +136,7 @@ public class EmployeeService : IEmployeeService
                         .ToListAsync();
     }
 
-    public async Task<EmployeeDto> GetEmployee(string email)
+    public async Task<EmployeeDto?> GetEmployee(string email)
     {
         var employee = await _db.Employee
                                 .Get(employee => employee.Email == email)

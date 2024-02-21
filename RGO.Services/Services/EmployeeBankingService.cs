@@ -58,7 +58,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                 throw new Exception("Unauthorized access");
         }
 
-        var newEmployee = new Employee(empDto, empDto.EmployeeType);
+        var newEmployee = new Employee(empDto, empDto.EmployeeType!);
         var entry = new EmployeeBanking(bankingDto);
         entry.Employee = newEmployee;
 

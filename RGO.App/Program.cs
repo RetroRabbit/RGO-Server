@@ -147,7 +147,7 @@ namespace RR.App
                 .ToList()
                 .ForEach(key =>
                 {
-                    policies[key]["Permissions"] = new List<string>();
+                    policies[key]["Permissions"] = new List<string?>();
                 });
 
             new AuthorizationPolicySettings

@@ -130,7 +130,7 @@ public class EmployeeDateControllerUnitTests
              new DateOnly(2023, 1, 1)
             );
 
-        employeeServiceMock.Setup(x => x.GetEmployee(employeeDateDto.Employee!.Email))
+        employeeServiceMock.Setup(x => x.GetEmployee(employeeDateDto.Employee!.Email!))
                            .ReturnsAsync(employeeDateDto.Employee);
 
         employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>()))
