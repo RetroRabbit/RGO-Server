@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RGO.Models\HRIS.Models.csproj" />
+    <ProjectReference Include="..\RGO.UnitOfWork\RR.UnitOfWork.csproj" />
   </ItemGroup>
 
   <ItemGroup>

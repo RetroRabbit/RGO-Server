@@ -59,18 +59,14 @@ public class EmployeeDocumentServiceUnitTest
                 }.AsQueryable().BuildMock());
 
 
-        List<EmployeeRole> empRoles = new List<EmployeeRole> {
-            new EmployeeRole(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(3, "Employee"))
-            )};
 
-        List<Role> roles = new List<Role> { new Role(new RoleDto(3, "Employee")) };
+        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
             .ReturnsAsync(EmployeeTestData.EmployeeDto);
 
         _unitOfWorkMock
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(empRoles.AsQueryable().BuildMock());
+            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
 
         _unitOfWorkMock
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
@@ -115,17 +111,11 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-
-        List<EmployeeRole> empRoles = new List<EmployeeRole> {
-            new EmployeeRole(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(2, "Admin"))
-            )};
-
-        List<Role> roles = new List<Role> { new Role(new RoleDto(2, "Admin")) };
+        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoAdmin) };
 
         _unitOfWorkMock
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(empRoles.AsQueryable().BuildMock());
+            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
 
         _unitOfWorkMock
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))

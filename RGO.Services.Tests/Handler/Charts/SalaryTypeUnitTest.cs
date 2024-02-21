@@ -5,6 +5,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -15,10 +16,7 @@ public class SalaryTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private readonly EmployeeAddressDto employeeAddressDto;
     private readonly EmployeeType employeeType;
-    private readonly EmployeeTypeDto employeeTypeDto;
-    private RoleDto roleDto;
     private readonly SalaryType salaryType;
 
     public SalaryTypeUnitTest()
@@ -26,23 +24,14 @@ public class SalaryTypeUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         salaryType = new SalaryType();
-        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
-        employeeType = new EmployeeType(employeeTypeDto);
-        roleDto = new RoleDto(3, "Employee");
+        employeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
-                                .Returns(Task.FromResult(employeeTypeDto));
-        employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+                                .Returns(Task.FromResult(EmployeeTypeTestData.DeveloperType));
     }
 
     private EmployeeDto CreateEmployee(int? salary)
     {
-        return new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                               null, false, "None", 1, employeeTypeDto, "Notes", 1, 28, 128, salary, "Matt", "MT",
-                               "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                               new DateTime(), null, Race.Black, Gender.Male, null,
-                               "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                               employeeAddressDto, employeeAddressDto, null, null, null);
+        return EmployeeTestData.EmployeeDto;
     }
 
     [Fact]

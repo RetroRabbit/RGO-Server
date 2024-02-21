@@ -152,11 +152,11 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(2, "Admin"))
+                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoAdmin)
                )
         };
 
-        var roles = new List<Role> { new(new RoleDto(2, "Admin")) };
+        var roles = new List<Role> { new(EmployeeRoleTestData.RoleDtoAdmin) };
 
         _mockUnitOfWork
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
@@ -204,14 +204,14 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(3, "Employee"))
+                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee)
                )
         };
 
         var roles = new List<Role>
         {
             new(
-                new RoleDto(3, "Employee")
+                EmployeeRoleTestData.RoleDtoEmployee
                )
         };
 
@@ -289,11 +289,11 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(2, "Admin"))
+                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoAdmin)
                )
         };
 
-        var roles = new List<Role> { new(new RoleDto(2, "Admin")) };
+        var roles = new List<Role> { new(EmployeeRoleTestData.RoleDtoAdmin) };
 
         _mockUnitOfWork
             .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
@@ -337,14 +337,14 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, new RoleDto(3, "Employee"))
+                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee)
                )
         };
 
         var roles = new List<Role>
         {
             new(
-                new RoleDto(3, "Employee")
+                EmployeeRoleTestData.RoleDtoEmployee
                )
         };
 
