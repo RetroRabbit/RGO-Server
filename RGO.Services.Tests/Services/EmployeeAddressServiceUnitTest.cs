@@ -36,7 +36,7 @@ public class EmployeeAddressServiceUnitTest
     }
 
     [Fact]
-    public async Task CheckIfExistsFailTest()
+    public async Task CheckIfExistsFail()
     {
         var address = CreateAddress(1);
 
