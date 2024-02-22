@@ -60,7 +60,7 @@ public class EmployeeDateController : ControllerBase
         {
             var employeeDateDto = new EmployeeDateDto(
                                                       employeeDate.Id,
-                                                      await _employeeService.GetEmployee(employeeDate.Employee!.Email),
+                                                      await _employeeService.GetEmployee(employeeDate.Employee!.Email!),
                                                       employeeDate.Subject,
                                                       employeeDate.Note,
                                                       employeeDate.Date);
@@ -76,7 +76,7 @@ public class EmployeeDateController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllEmployeeDate(
+    public IActionResult GetAllEmployeeDate(
         [FromQuery] DateOnly? date = null,
         [FromQuery] string? email = null,
         [FromQuery] string? subject = null)

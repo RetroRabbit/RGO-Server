@@ -53,7 +53,7 @@ public class EmployeeCertificationUnitTests
             employeeCertification.EmployeeDocument = new EmployeeDocument(employeeDocument);
 
         if (auditBy != null)
-            employeeCertification.EmployeeAuditBy = new Employee(auditBy, auditBy.EmployeeType);
+            employeeCertification.EmployeeAuditBy = new Employee(auditBy, auditBy.EmployeeType!);
 
         return employeeCertification;
     }

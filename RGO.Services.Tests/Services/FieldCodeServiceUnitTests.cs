@@ -192,7 +192,7 @@ public class FieldCodeServiceUnitTests
         result = await _fieldCodeService.GetByCategory(category);
 
         Assert.NotNull(result);
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
 
         fieldCodes = new List<FieldCode>
         {
@@ -207,7 +207,7 @@ public class FieldCodeServiceUnitTests
         result = await _fieldCodeService.GetByCategory(category);
 
         Assert.NotNull(result);
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
     }
 
     [Fact]

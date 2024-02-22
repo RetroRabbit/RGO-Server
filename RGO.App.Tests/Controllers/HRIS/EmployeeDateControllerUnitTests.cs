@@ -167,7 +167,7 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task GetAllEmployeeDateByDateReturnsOkResultWithList()
+    public void GetAllEmployeeDateByDateReturnsOkResultWithList()
     {
         var employeeDateServiceMock = new Mock<IEmployeeDateService>();
         var employeeServiceMock = new Mock<IEmployeeService>();
@@ -194,7 +194,7 @@ public class EmployeeDateControllerUnitTests
 
         employeeDateServiceMock.Setup(x => x.GetAllByDate(date)).Returns(expectedEmployeeDates);
 
-        var result = await controller.GetAllEmployeeDate(date);
+        var result = controller.GetAllEmployeeDate(date);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
@@ -202,7 +202,7 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task GetAllEmployeeDateByEmployeeReturnsOkResultWithList()
+    public void GetAllEmployeeDateByEmployeeReturnsOkResultWithList()
     {
         var employeeDateServiceMock = new Mock<IEmployeeDateService>();
         var employeeServiceMock = new Mock<IEmployeeService>();
@@ -223,7 +223,7 @@ public class EmployeeDateControllerUnitTests
 
         employeeDateServiceMock.Setup(x => x.GetAllByEmployee(email)).Returns(expectedEmployeeDates);
 
-        var result = await controller.GetAllEmployeeDate(email: email);
+        var result = controller.GetAllEmployeeDate(email: email);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
@@ -231,7 +231,7 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task GetAllEmployeeDateBySubjectReturnsOkResultWithList()
+    public void GetAllEmployeeDateBySubjectReturnsOkResultWithList()
     {
         var employeeDateServiceMock = new Mock<IEmployeeDateService>();
         var employeeServiceMock = new Mock<IEmployeeService>();
@@ -252,7 +252,7 @@ public class EmployeeDateControllerUnitTests
 
         employeeDateServiceMock.Setup(x => x.GetAllBySubject(subject)).Returns(expectedEmployeeDates);
 
-        var result = await controller.GetAllEmployeeDate(subject: subject);
+        var result = controller.GetAllEmployeeDate(subject: subject);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
@@ -260,7 +260,7 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task GetAllEmployeeDateNoFiltersReturnsOkResultWithList()
+    public void GetAllEmployeeDateNoFiltersReturnsOkResultWithList()
     {
         var employeeDateServiceMock = new Mock<IEmployeeDateService>();
         var employeeServiceMock = new Mock<IEmployeeService>();
@@ -280,7 +280,7 @@ public class EmployeeDateControllerUnitTests
 
         employeeDateServiceMock.Setup(x => x.GetAll()).Returns(expectedEmployeeDates);
 
-        var result = await controller.GetAllEmployeeDate();
+        var result = controller.GetAllEmployeeDate();
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
@@ -288,7 +288,7 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task GetAllEmployeeDate_ExceptionThrown_ReturnsNotFoundWithMessage()
+    public void GetAllEmployeeDate_ExceptionThrown_ReturnsNotFoundWithMessage()
     {
         var employeeDateServiceMock = new Mock<IEmployeeDateService>();
         var employeeServiceMock = new Mock<IEmployeeService>();
@@ -297,7 +297,7 @@ public class EmployeeDateControllerUnitTests
         employeeDateServiceMock.Setup(x => x.GetAll())
                                .Throws(new Exception("An error occurred while retrieving employee dates."));
 
-        var result = await controller.GetAllEmployeeDate();
+        var result = controller.GetAllEmployeeDate();
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("An error occurred while retrieving employee dates.", notFoundResult.Value);

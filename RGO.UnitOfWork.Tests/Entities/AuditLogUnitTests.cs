@@ -62,10 +62,10 @@ public class AuditLogUnitTests
         {
             CreateTestAuditLog(),
             CreateTestAuditLog(new Employee(testEmployee, testEmployee.EmployeeType!)),
-            CreateTestAuditLog(editFor: new Employee(testEmployee, testEmployee.EmployeeType)),
+            CreateTestAuditLog(editFor: new Employee(testEmployee, testEmployee.EmployeeType!)),
             CreateTestAuditLog(
-                               new Employee(testEmployee, testEmployee.EmployeeType),
-                               new Employee(testEmployee, testEmployee.EmployeeType))
+                               new Employee(testEmployee, testEmployee.EmployeeType!),
+                               new Employee(testEmployee, testEmployee.EmployeeType!))
         };
 
         var auditLogDto = auditLogs[0].ToDto();
@@ -98,8 +98,8 @@ public class AuditLogUnitTests
     {
         var testEmployee = CreateTestEmployee();
         var auditLog = CreateTestAuditLog(
-                                          new Employee(testEmployee, testEmployee.EmployeeType),
-                                          new Employee(testEmployee, testEmployee.EmployeeType));
+                                          new Employee(testEmployee, testEmployee.EmployeeType!),
+                                          new Employee(testEmployee, testEmployee.EmployeeType!));
 
         var initializedAuditLog = new AuditLog(auditLog.ToDto());
 

@@ -166,7 +166,7 @@ public class EmployeeServiceUnitTests
 
 
     [Fact]
-    public async Task GetEmployeeTest()
+    public void GetEmployeeTest()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         var _dbMock = new Mock<IUnitOfWork>();
@@ -213,7 +213,7 @@ public class EmployeeServiceUnitTests
         var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         var employeeType = new EmployeeType(employeeTypeDto);
 
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                .Returns(Task.FromResult(employeeTypeDto));
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
@@ -264,13 +264,13 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(expectedEmployees.AsQueryable().BuildMock());
 
-        var journeyEmployees = await employeeService.GetAll(EmployeeTestData.EmployeeDto2.Email);
+        var journeyEmployees = await employeeService.GetAll(EmployeeTestData.EmployeeDto2.Email!);
 
-        Assert.Equal(journeyEmployees.Count, 1);
+        Assert.Single(journeyEmployees);
     }
 
     [Fact]
-    public async Task CheckEmployeeExistsTest()
+    public void CheckEmployeeExistsTest()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         var _dbMock = new Mock<IUnitOfWork>();
@@ -293,7 +293,7 @@ public class EmployeeServiceUnitTests
                .Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
 
         var result =
-            await employeeService.UpdateEmployee(EmployeeTestData.EmployeeDto, EmployeeTestData.EmployeeDto.Email);
+            await employeeService.UpdateEmployee(EmployeeTestData.EmployeeDto, EmployeeTestData.EmployeeDto.Email!);
 
         Assert.Equal(EmployeeTestData.EmployeeDto, result);
     }

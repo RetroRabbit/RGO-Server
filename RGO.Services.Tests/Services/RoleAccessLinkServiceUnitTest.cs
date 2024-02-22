@@ -78,8 +78,8 @@ public class RoleAccessLinkServiceUnitTest
                        .First();
 
         Expression<Func<RoleAccessLink, bool>> criteria = r =>
-            r.Role.Description == randLink.Role.Description &&
-            r.RoleAccess.Permission == randLink.RoleAccess.Permission;
+            r.Role!.Description == randLink.Role!.Description &&
+            r.RoleAccess!.Permission == randLink.RoleAccess!.Permission;
 
         var expect = await roleAccessLinks
                            .Where(criteria)
@@ -101,12 +101,12 @@ public class RoleAccessLinkServiceUnitTest
             .Returns(Task.FromResult(expect))
             .Returns(Task.FromResult(malformed));
 
-        var result1 = await _roleAccessLinkService.Delete(_roleDto.Description, _roleAccessDto.Permission);
+        var result1 = await _roleAccessLinkService.Delete(_roleDto.Description!, _roleAccessDto.Permission);
 
         Assert.NotNull(result1);
         Assert.Equal(expect.Id, result1.Id);
 
-        var result2 = await _roleAccessLinkService.Delete(_roleDto.Description, _roleAccessDto.Permission);
+        var result2 = await _roleAccessLinkService.Delete(_roleDto.Description!, _roleAccessDto.Permission);
 
         Assert.NotNull(result2.RoleAccess);
         Assert.NotNull(result2.Role);
@@ -141,10 +141,10 @@ public class RoleAccessLinkServiceUnitTest
         }.AsQueryable().BuildMock();
 
         var expect = await roleAccessLinks
-                           .GroupBy(r => r.Role.Description)
+                           .GroupBy(r => r.Role!.Description)
                            .ToDictionaryAsync(
-                                              group => group.Key,
-                                              group => group.Select(r => r.RoleAccess.Permission).ToList());
+                                              group => group.Key!,
+                                              group => group.Select(r => r.RoleAccess!.Permission).ToList());
 
         _dbMock
             .Setup(r => r.RoleAccessLink.Get(null))
@@ -186,25 +186,25 @@ public class RoleAccessLinkServiceUnitTest
         }.AsQueryable().BuildMock();
 
         var randLink = roleAccessLinks
-                       .Where(r => r.Role.Id == 1)
+                       .Where(r => r.Role!.Id == 1)
                        .Select(r => r.ToDto())
                        .First();
 
         Expression<Func<RoleAccessLink, bool>> criteria = r =>
-            r.Role.Description == randLink.Role.Description;
+            r.Role!.Description == randLink.Role!.Description;
 
         var expect = await roleAccessLinks
                            .Where(criteria)
-                           .GroupBy(r => r.Role.Description)
+                           .GroupBy(r => r.Role!.Description)
                            .ToDictionaryAsync(
-                                              group => group.Key,
-                                              group => group.Select(r => r.RoleAccess.Permission).ToList());
+                                              group => group.Key!,
+                                              group => group.Select(r => r.RoleAccess!.Permission).ToList());
 
         _dbMock
             .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
             .Returns(roleAccessLinks.Where(criteria));
 
-        var result = await _roleAccessLinkService.GetByRole(randLink.Role.Description);
+        var result = await _roleAccessLinkService.GetByRole(randLink.Role!.Description!);
 
         Assert.Equal(2, result.First().Value.Count);
         Assert.Equal(expect.Keys!, result.Keys);
@@ -240,25 +240,25 @@ public class RoleAccessLinkServiceUnitTest
         }.AsQueryable().BuildMock();
 
         var randLink = roleAccessLinks
-                       .Where(r => r.Role.Id == 1)
+                       .Where(r => r.Role!.Id == 1)
                        .Select(r => r.ToDto())
                        .First();
 
         Expression<Func<RoleAccessLink, bool>> criteria = r =>
-            r.RoleAccess.Permission == randLink.RoleAccess.Permission;
+            r.RoleAccess!.Permission == randLink.RoleAccess!.Permission;
 
         var expect = await roleAccessLinks
                            .Where(criteria)
-                           .GroupBy(r => r.Role.Description)
+                           .GroupBy(r => r.Role!.Description)
                            .ToDictionaryAsync(
-                                              group => group.Key,
-                                              group => group.Select(r => r.RoleAccess.Permission).ToList());
+                                              group => group.Key!,
+                                              group => group.Select(r => r.RoleAccess!.Permission).ToList());
 
         _dbMock
             .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
             .Returns(roleAccessLinks.Where(criteria));
 
-        var result = await _roleAccessLinkService.GetByPermission(randLink.RoleAccess.Permission);
+        var result = await _roleAccessLinkService.GetByPermission(randLink.RoleAccess!.Permission);
 
         Assert.Equal(2, result.Count);
         Assert.Equal(expect.Keys!, result.Keys);
@@ -299,7 +299,7 @@ public class RoleAccessLinkServiceUnitTest
             .ReturnsAsync(employeeRoleDtos);
 
         var rolesAssignedToEmplyee = employeeRoleDtos
-                                     .Select(r => r.Role.Description)
+                                     .Select(r => r.Role!.Description)
                                      .ToList();
 
         var roleAccessLinks = new List<RoleAccessLink>
@@ -327,10 +327,10 @@ public class RoleAccessLinkServiceUnitTest
         }.AsQueryable().BuildMock();
 
         var criteria = roleAccessLinks
-                       .GroupBy(r => r.Role.Description)
+                       .GroupBy(r => r.Role!.Description)
                        .Select(r => r.Key)
                        .Distinct()
-                       .Select(r => (Expression<Func<RoleAccessLink, bool>>)(x => x.Role.Description == r))
+                       .Select(r => (Expression<Func<RoleAccessLink, bool>>)(x => x.Role!.Description == r))
                        .ToList();
 
         var returns = _dbMock
@@ -408,11 +408,11 @@ public class RoleAccessLinkServiceUnitTest
 
         var employeeEvaluationTemplateItems = await _roleAccessLinkService.GetAllRoleAccessLink();
 
-        Assert.Equal("Employee", employeeEvaluationTemplateItems[0].Role.Description);
-        Assert.Equal("ViewEmployee", employeeEvaluationTemplateItems[0].RoleAccess.Permission);
+        Assert.Equal("Employee", employeeEvaluationTemplateItems[0].Role!.Description);
+        Assert.Equal("ViewEmployee", employeeEvaluationTemplateItems[0].RoleAccess!.Permission);
 
 
-        Assert.Equal("Employee", employeeEvaluationTemplateItems[1].Role.Description);
-        Assert.Equal("EditEmployee", employeeEvaluationTemplateItems[1].RoleAccess.Permission);
+        Assert.Equal("Employee", employeeEvaluationTemplateItems[1].Role!.Description);
+        Assert.Equal("EditEmployee", employeeEvaluationTemplateItems[1].RoleAccess!.Permission);
     }
 }

@@ -115,7 +115,7 @@ public class RoleAccessServiceUnitTest
             .Setup(r => r.RoleAccess.Delete(It.IsAny<int>()))
             .Returns(Task.FromResult(expect));
 
-        var result = await _roleAccessService.DeleteRoleAccess(randPermission);
+        var result = await _roleAccessService.DeleteRoleAccess(randPermission!);
 
         Assert.NotNull(result);
         Assert.Equal(expect, result);

@@ -105,7 +105,7 @@ public class AuthenticationControllerUnitTests
              "987654321"
             );
 
-        authServiceMock.Setup(x => x.CheckUserExist(existingEmployee.Email)).ReturnsAsync(true);
+        authServiceMock.Setup(x => x.CheckUserExist(existingEmployee.Email!)).ReturnsAsync(true);
 
         var result = await controller.RegisterEmployee(existingEmployee);
 

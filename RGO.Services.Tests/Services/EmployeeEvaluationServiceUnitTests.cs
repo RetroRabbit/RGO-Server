@@ -89,8 +89,8 @@ public class EmployeeEvaluationServiceUnitTests
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var evaluationInput = new EmployeeEvaluationInput(
                                                           evaluation.Id,
-                                                          evaluation.Owner.Email,
-                                                          evaluation.Employee.Email,
+                                                          evaluation.Owner.Email!,
+                                                          evaluation.Employee.Email!,
                                                           evaluation.Template.Description,
                                                           evaluation.Subject);
 
@@ -110,8 +110,8 @@ public class EmployeeEvaluationServiceUnitTests
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var evaluationInput = new EmployeeEvaluationInput(
                                                           evaluation.Id,
-                                                          evaluation.Owner.Email,
-                                                          evaluation.Employee.Email,
+                                                          evaluation.Owner.Email!,
+                                                          evaluation.Employee.Email!,
                                                           evaluation.Template.Description,
                                                           evaluation.Subject);
 
@@ -205,15 +205,15 @@ public class EmployeeEvaluationServiceUnitTests
 
         var oldEvaluationInput = new EmployeeEvaluationInput(
                                                              0,
-                                                             employeeEvaluation.Owner.Email,
-                                                             employeeEvaluation.Employee.Email,
+                                                             employeeEvaluation.Owner.Email!,
+                                                             employeeEvaluation.Employee.Email!,
                                                              employeeEvaluation.Template.Description,
                                                              employeeEvaluation.Subject);
 
         var newEvaluationInput = new EmployeeEvaluationInput(
                                                              0,
-                                                             employeeEvaluation.Owner.Email,
-                                                             employeeEvaluation.Employee.Email,
+                                                             employeeEvaluation.Owner.Email!,
+                                                             employeeEvaluation.Employee.Email!,
                                                              employeeEvaluation.Template.Description,
                                                              "new subject");
 
@@ -234,14 +234,14 @@ public class EmployeeEvaluationServiceUnitTests
 
         var oldEvaluationInput = new EmployeeEvaluationInput(
                                                              0,
-                                                             employeeEvaluation.Owner.Email,
-                                                             employeeEvaluation.Employee.Email,
+                                                             employeeEvaluation.Owner.Email!,
+                                                             employeeEvaluation.Employee.Email!,
                                                              employeeEvaluation.Template.Description,
                                                              employeeEvaluation.Subject);
         var newEvaluationInput = new EmployeeEvaluationInput(
                                                              0,
-                                                             newEmployeeEvaluation.Owner.Email,
-                                                             newEmployeeEvaluation.Employee.Email,
+                                                             newEmployeeEvaluation.Owner.Email!,
+                                                             newEmployeeEvaluation.Employee.Email!,
                                                              newEmployeeEvaluation.Template.Description,
                                                              newEmployeeEvaluation.Subject);
 
@@ -285,7 +285,7 @@ public class EmployeeEvaluationServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
 
-        var result = await _employeeEvaluationService.GetAllEvaluationsByEmail(_employee.Email);
+        var result = await _employeeEvaluationService.GetAllEvaluationsByEmail(_employee.Email!);
 
         Assert.Equal(employeeEvaluations.Count, result.Count);
     }
@@ -296,7 +296,7 @@ public class EmployeeEvaluationServiceUnitTests
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
                             .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByEmployee(_employee.Email));
+        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByEmployee(_employee.Email!));
     }
 
     [Fact]
@@ -315,7 +315,7 @@ public class EmployeeEvaluationServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
 
-        var result = await _employeeEvaluationService.GetAllByEmployee(_employee.Email);
+        var result = await _employeeEvaluationService.GetAllByEmployee(_employee.Email!);
 
         Assert.Equal(employeeEvaluations.Count, result.Count);
     }
@@ -326,7 +326,7 @@ public class EmployeeEvaluationServiceUnitTests
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
                             .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByOwner(_employee.Email));
+        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByOwner(_employee.Email!));
     }
 
     [Fact]
@@ -345,7 +345,7 @@ public class EmployeeEvaluationServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluation.Get(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .Returns(employeeEvaluations.AsQueryable().Where(criteria).BuildMock());
 
-        var result = await _employeeEvaluationService.GetAllByOwner(_employee.Email);
+        var result = await _employeeEvaluationService.GetAllByOwner(_employee.Email!);
 
         Assert.Equal(employeeEvaluations.Count, result.Count);
     }

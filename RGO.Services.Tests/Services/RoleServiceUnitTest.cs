@@ -102,7 +102,7 @@ public class RoleServiceUnitTest
             .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roleQueryable);
 
-        var result = await _roleService.GetRole(_roleDto.Description);
+        var result = await _roleService.GetRole(_roleDto.Description!);
 
         Assert.NotNull(result);
         Assert.Equivalent(_roleDto, result);

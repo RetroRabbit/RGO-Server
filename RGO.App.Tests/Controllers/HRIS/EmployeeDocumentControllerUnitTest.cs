@@ -80,11 +80,11 @@ public class EmployeeDocumentControllerUnitTest
     public async Task GetEmployeeDocumentReturnsOkfoundResult()
     {
         var id = employeeDocumentDto.Id;
-        var fileName = employeeDocumentDto.FileName;
+        var fileName = employeeDocumentDto.FileName!;
 
         _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, fileName)).ReturnsAsync(employeeDocumentDto);
 
-        var result = await _controller.GetEmployeeDocument(employeeDocumentDto.Id, employeeDocumentDto.FileName);
+        var result = await _controller.GetEmployeeDocument(employeeDocumentDto.Id, employeeDocumentDto.FileName!);
 
         Assert.NotNull(result);
 

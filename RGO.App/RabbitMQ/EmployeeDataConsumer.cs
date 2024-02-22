@@ -38,7 +38,7 @@ public class EmployeeDataConsumer
             _channel.QueueDeclare(QueueName, true, false, false, null);
 
             _consumeTimer = new Timer(TimeInterval);
-            _consumeTimer.Elapsed += OnTimedEvent;
+            _consumeTimer.Elapsed += OnTimedEvent!;
             _consumeTimer.AutoReset = true;
             _consumeTimer.Enabled = true;
         }
@@ -148,12 +148,12 @@ public class EmployeeDataConsumer
 
         while (true)
         {
-            var result = _channel.BasicGet(QueueName, false);
+            var result = _channel!.BasicGet(QueueName, false);
             if (result == null) break;
 
             var body = result.Body.ToArray();
             var employeeData = JsonConvert.DeserializeObject<Employee>(Encoding.UTF8.GetString(body));
-            newEmployee.Add(employeeData);
+            newEmployee.Add(employeeData!);
 
             _channel.BasicAck(result.DeliveryTag, false);
         }

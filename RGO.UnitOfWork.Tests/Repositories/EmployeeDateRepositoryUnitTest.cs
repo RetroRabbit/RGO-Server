@@ -264,7 +264,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
 
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
-        Assert.Equal("Existing Employee", result.Employee.Name);
+        Assert.Equal("Existing Employee", result.Employee!.Name);
     }
 
     [Fact]

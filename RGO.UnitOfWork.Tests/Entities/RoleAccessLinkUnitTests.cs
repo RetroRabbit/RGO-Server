@@ -34,7 +34,7 @@ public class RoleAccessLinkUnitTests
     }
 
     [Fact]
-    public async Task roleAccessLinkToDtoNullTest()
+    public void roleAccessLinkToDtoNullTest()
     {
         var roleDto = new RoleDto(1, "Employee");
         var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");

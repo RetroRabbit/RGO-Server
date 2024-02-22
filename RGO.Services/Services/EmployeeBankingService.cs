@@ -80,9 +80,9 @@ public class EmployeeBankingService : IEmployeeBankingService
 
             return employeeBanking!;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception($@"Employee banking details not found - {ex.Message}");
+            throw new Exception("Employee banking details not found");
         }
     }
 

@@ -123,7 +123,7 @@ public class EmployeeRoleManageController : ControllerBase
         try
         {
             var employeeRoles = await _employeeRoleService.GetEmployeeRole(email);
-            string[] role = { employeeRoles.Role.Description };
+            string[] role = { employeeRoles.Role!.Description! };
 
             return Ok(role);
         }

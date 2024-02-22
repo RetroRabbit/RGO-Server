@@ -26,7 +26,7 @@ public class EmployeeDocumentController : ControllerBase
             var employeeDocuments = await _employeeDocumentService.GetAllEmployeeDocuments(employeeId);
             return Ok(employeeDocuments);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching employee documents.");
         }
@@ -41,7 +41,7 @@ public class EmployeeDocumentController : ControllerBase
             var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto);
             return Ok(newEmployeeDocument);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while saving the employee document.");
         }
@@ -56,7 +56,7 @@ public class EmployeeDocumentController : ControllerBase
             var employeeDocument = await _employeeDocumentService.GetEmployeeDocument(employeeId, filename);
             return Ok(employeeDocument);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching the employee document.");
         }
@@ -71,7 +71,7 @@ public class EmployeeDocumentController : ControllerBase
             var updatedEmployeeDocument = await _employeeDocumentService.UpdateEmployeeDocument(employeeDocumentDto);
             return Ok(updatedEmployeeDocument);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while updating the employee document.");
         }
@@ -86,7 +86,7 @@ public class EmployeeDocumentController : ControllerBase
             var deletedEmployeeDocument = await _employeeDocumentService.DeleteEmployeeDocument(documentId);
             return Ok(deletedEmployeeDocument);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while deleting the employee document.");
         }
@@ -101,7 +101,7 @@ public class EmployeeDocumentController : ControllerBase
             var employeeDocuments = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, status);
             return Ok(employeeDocuments);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching the employee documents.");
         }
