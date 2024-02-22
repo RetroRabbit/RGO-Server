@@ -60,6 +60,18 @@ public class EmployeeAddressServiceUnitTest
     }
 
     [Fact]
+    public async Task CheckIfExistPassFail()
+    {
+        var address = CreateAddress(0);
+
+        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
+
+        var result = await _employeeAddressService.CheckIfExists(address);
+
+        Assert.False(result);
+    }
+
+    [Fact]
     public async Task GetFailTest()
     {
         var address = CreateAddress(1);
