@@ -9,14 +9,14 @@ public class SimpleEmployeeDocumentDto
                                      int EmployeeId,
                                      string FileName,
                                      FileCategory FileCategory,
-                                     string File,
+                                     string Blob,
                                      DateTime UploadDate)
     {
         this.Id = Id;
         this.EmployeeId = EmployeeId;
         this.FileName = FileName;
         this.FileCategory = FileCategory;
-        this.File = File;
+        this.Blob = Blob;
         this.UploadDate = UploadDate;
     }
 
@@ -24,6 +24,6 @@ public class SimpleEmployeeDocumentDto
     public int EmployeeId { get; set; }
     public string FileName { get; set; }
     public FileCategory FileCategory { get; set; }
-    public string File { get; set; }
+    public string Blob { get; set; }
     public DateTime UploadDate { get; set; }
 }

@@ -4,5 +4,6 @@ public enum DocumentStatus
 {
     Approved,
     PendingApproval,
-    Rejected
+    Rejected,
+    ActionRequired
 }
