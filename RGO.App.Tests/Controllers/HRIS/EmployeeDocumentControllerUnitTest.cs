@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.Tests.Data.Models;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using System.Security.Claims;
 using Xunit;
@@ -15,7 +16,7 @@ namespace RR.App.Tests.Controllers.HRIS;
 public class EmployeeDocumentControllerUnitTest
 {
     private readonly Mock<IEmployeeDocumentService> _employeeMockDocumentService;
-    private readonly EmployeeDocumentDto _employeeDocument;
+    //private readonly EmployeeDocumentDto _employeeDocument;
     private readonly SimpleEmployeeDocumentDto _simpleEmployeeDocument;
     private readonly EmployeeDocumentController _controller;
 
@@ -40,16 +41,21 @@ public class EmployeeDocumentControllerUnitTest
         {
             HttpContext = new DefaultHttpContext { User = claimsPrincipal }
         };
+
+        _simpleEmployeeDocument = new SimpleEmployeeDocumentDto(
+            Id: 1, EmployeeId: EmployeeTestData.EmployeeDto.Id,
+            FileName: "TestFile.pdf", FileCategory: FileCategory.FixedTerm,
+            Blob: "TestFileContent", UploadDate: DateTime.Now);
     }
 
     [Fact]
     public async Task GetEmployeeDocumentReturnsOkfoundResult()
     {
         _employeeMockDocumentService
-            .Setup(x => x.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName))
+            .Setup(x => x.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName!))
             .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
-        var result = await _controller.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName);
+        var result = await _controller.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName!);
 
         Assert.NotNull(result);
 
@@ -208,7 +214,7 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task GetEmployeeDocumentByStatusReturnsOkResult()
     {
-        var status = DocumentStatus.Rejected;
+        //var status = DocumentStatus.Rejected;
 
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
             {
@@ -216,11 +222,11 @@ public class EmployeeDocumentControllerUnitTest
             };
 
         _employeeMockDocumentService
-            .Setup(x => x.GetEmployeeDocumentsByStatus(EmployeeDocumentTestData.EmployeeDocumentPending.Id, (DocumentStatus)EmployeeDocumentTestData.EmployeeDocumentPending.Status))
+            .Setup(x => x.GetEmployeeDocumentsByStatus(EmployeeDocumentTestData.EmployeeDocumentPending.Id, (DocumentStatus)EmployeeDocumentTestData.EmployeeDocumentPending.Status!))
             .ReturnsAsync(listOfEmployeeDocumentsDto);
 
         var result = await _controller
-            .GetEmployeeDocumentsByStatus(EmployeeDocumentTestData.EmployeeDocumentPending.Id, (DocumentStatus)EmployeeDocumentTestData.EmployeeDocumentPending.Status);
+            .GetEmployeeDocumentsByStatus(EmployeeDocumentTestData.EmployeeDocumentPending.Id, (DocumentStatus)EmployeeDocumentTestData.EmployeeDocumentPending.Status!);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);

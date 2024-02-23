@@ -39,7 +39,7 @@ public class EmployeeDocumentController : ControllerBase
         try
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value);
+            var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
             return Ok(newEmployeeDocument);
         }
         catch (Exception)

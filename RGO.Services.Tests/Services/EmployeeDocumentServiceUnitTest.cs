@@ -310,7 +310,7 @@ public class EmployeeDocumentServiceUnitTest
                        .Returns(mockEmployeeDbSet.AsQueryable().BuildMock());
 
         var result = await _employeeDocumentService.CheckEmployee(employeeId);
-        Assert.Equal(false, result);
+        Assert.False(result);
         
     }
 }
