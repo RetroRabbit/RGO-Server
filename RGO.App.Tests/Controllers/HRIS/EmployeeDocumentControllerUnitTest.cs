@@ -74,6 +74,15 @@ public class EmployeeDocumentControllerUnitTest
                                                             null,
                                                             false
                                                            );
+
+        _simpleEmployeeDocument = new SimpleEmployeeDocumentDto(
+                                                           1,
+                                                           2,
+                                                           "TestFile.pdf",
+                                                           FileCategory.FixedTerm,
+                                                           "TestFileContent",
+                                                           DateTime.Now
+                                                          );
     }
 
     [Fact]
