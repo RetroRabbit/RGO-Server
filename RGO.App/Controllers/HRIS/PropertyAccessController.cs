@@ -1,4 +1,6 @@
-﻿using HRIS.Models.Update;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +17,45 @@ public class PropertyAccessController : ControllerBase
         _propertyAccessService = propertyAccessService;
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet]
-    public async Task<IActionResult> GetPropertyWithAccess([FromQuery] string email)
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet("role-access")]
+    public async Task<IActionResult> GetPropertyWithAccess(int employeeId)
     {
         try
         {
-            var access = await _propertyAccessService.GetPropertiesWithAccess(email);
-            return Ok(access);
+            var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
+            return Ok(accessList);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllPropertyAccess()
+    {
+        try
+        {
+            var accessList = await _propertyAccessService.GetAll();
+            return Ok(accessList);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpPut]
+    public async Task<IActionResult> UpdatePropertyRoleAccess(int propertyId,[FromBody] PropertyAccessLevel propertyAccess)
+    {
+        try
+        {
+            await _propertyAccessService.UpdatePropertyAccess(propertyId, propertyAccess);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -31,13 +64,12 @@ public class PropertyAccessController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpPut]
-    public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields,
-                                                              [FromQuery] string email)
+    [HttpGet("test-prop")]
+    public async Task<IActionResult> test()
     {
         try
         {
-            await _propertyAccessService.UpdatePropertiesWithAccess(fields, email);
+            await _propertyAccessService.CreatePropertyAccessEntries();
             return Ok();
         }
         catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HRIS.Models;
+using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces.HRIS;
 
 namespace RR.UnitOfWork.Entities.HRIS;
@@ -15,33 +16,36 @@ public class PropertyAccess : IModel<PropertyAccessDto>
     public PropertyAccess(PropertyAccessDto propertyAccessDto)
     {
         Id = propertyAccessDto.Id;
-        RoleId = propertyAccessDto.Role!.Id;
-        Condition = propertyAccessDto.Condition;
-        FieldCodeId = propertyAccessDto.FieldCode!.Id;
+        RoleId = propertyAccessDto.Role.Id;
+        Table = propertyAccessDto.Table;
+        Field = propertyAccessDto.Field;
+        AccessLevel = propertyAccessDto.AccessLevel;
     }
+
+    [Key][Column("id")] public int Id { get; set; }
 
     [Column("roleId")]
     [ForeignKey("Role")]
     public int RoleId { get; set; }
 
-    [Column("condition")] public int Condition { get; set; }
-
-    [Column("fieldCodeId")]
-    [ForeignKey("FieldCode")]
-    public int FieldCodeId { get; set; }
-
     public virtual Role Role { get; set; }
 
-    public virtual FieldCode FieldCode { get; set; }
+    public string Table { get; set; }
 
-    [Key] [Column("id")] public int Id { get; set; }
+    public string Field { get; set; }
+
+    public PropertyAccessLevel AccessLevel { get; set; }
 
     public PropertyAccessDto ToDto()
     {
-        return new PropertyAccessDto(
-                                     Id,
-                                     Role?.ToDto(),
-                                     Condition,
-                                     FieldCode?.ToDto());
+        return new PropertyAccessDto
+        {
+            Id = Id,
+            RoleId = RoleId,
+            Role = Role?.ToDto(),
+            Table = Table,
+            Field =Field,
+            AccessLevel = AccessLevel
+        };
     }
 }

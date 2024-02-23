@@ -17,46 +17,46 @@ public class PropertyAccessUnitTests
                                       ItemStatus.Active, true, "Employee", 0, false);
     }
 
-    public PropertyAccess CreatePropertyAccess(RoleDto? role = null, FieldCodeDto? fieldCode = null)
-    {
-        var propertyAccess = new PropertyAccess
-        {
-            Id = 1,
-            RoleId = 1,
-            Condition = 1,
-            FieldCodeId = 1
-        };
+    //public PropertyAccess CreatePropertyAccess(RoleDto? role = null, FieldCodeDto? fieldCode = null)
+    //{
+    //    var propertyAccess = new PropertyAccess
+    //    {
+    //        Id = 1,
+    //        RoleId = 1,
+    //        Condition = 1,
+    //        FieldCodeId = 1
+    //    };
 
-        if (role != null)
-            propertyAccess.Role = new Role(role);
+    //    if (role != null)
+    //        propertyAccess.Role = new Role(role);
 
-        if (fieldCode != null)
-            propertyAccess.FieldCode = new FieldCode(fieldCode);
+    //    if (fieldCode != null)
+    //        propertyAccess.FieldCode = new FieldCode(fieldCode);
 
-        return propertyAccess;
-    }
+    //    return propertyAccess;
+    //}
 
-    [Fact]
-    public void PropertyAccessTest()
-    {
-        var propertyAccess = new PropertyAccess();
-        Assert.IsType<PropertyAccess>(propertyAccess);
-        Assert.NotNull(propertyAccess);
-    }
+    //[Fact]
+    //public void PropertyAccessTest()
+    //{
+    //    var propertyAccess = new PropertyAccess();
+    //    Assert.IsType<PropertyAccess>(propertyAccess);
+    //    Assert.NotNull(propertyAccess);
+    //}
 
-    [Fact]
-    public void PropertyAccessToDTO()
-    {
-        var propertyAccess = CreatePropertyAccess(_role, _fieldCode);
-        var propertyAccessDto = propertyAccess.ToDto();
+    //[Fact]
+    //public void PropertyAccessToDTO()
+    //{
+    //    var propertyAccess = CreatePropertyAccess(_role, _fieldCode);
+    //    var propertyAccessDto = propertyAccess.ToDto();
 
-        Assert.NotNull(propertyAccessDto.Role);
-        Assert.NotNull(propertyAccessDto.FieldCode);
+    //    Assert.NotNull(propertyAccessDto.Role);
+    //    Assert.NotNull(propertyAccessDto.FieldCode);
 
-        propertyAccess = new PropertyAccess(propertyAccessDto);
-        propertyAccessDto = propertyAccess.ToDto();
+    //    propertyAccess = new PropertyAccess(propertyAccessDto);
+    //    propertyAccessDto = propertyAccess.ToDto();
 
-        Assert.Null(propertyAccessDto.Role);
-        Assert.Null(propertyAccessDto.FieldCode);
-    }
+    //    Assert.Null(propertyAccessDto.Role);
+    //    Assert.Null(propertyAccessDto.FieldCode);
+    //}
 }

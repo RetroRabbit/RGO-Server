@@ -79,5 +79,6 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
     public async Task AddRange(List<TK> entities)
     {
         await _entity.AddRangeAsync(entities);
+        await _db.SaveChangesAsync();
     }
 }

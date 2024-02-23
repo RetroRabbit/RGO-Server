@@ -97,4 +97,21 @@ public class DatabaseContext : DbContext, IDatabaseContext
         modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
         modelBuilder.Entity<EmployeeData>().HasData(TestData.EmployeeDataSet());
     }
+
+    public List<string> GetColumnNames(string tableName)
+    {
+        var dbSetProperty = GetType().GetProperties()
+            .FirstOrDefault(p => p.PropertyType.IsGenericType &&
+                                 p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>) &&
+                                 p.PropertyType.GenericTypeArguments[0].Name == tableName);
+
+        if (dbSetProperty == null)
+        {
+            throw new ArgumentException($"Table '{tableName}' not found in the DbContext.");
+        }
+
+        var entityType = Model.FindEntityType(dbSetProperty.PropertyType.GenericTypeArguments[0]);
+        var columns = entityType.GetProperties().Select(p => p.GetColumnName()).ToList();
+        return columns;
+    }
 }
