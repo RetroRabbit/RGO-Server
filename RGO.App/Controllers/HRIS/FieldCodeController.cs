@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -15,6 +16,7 @@ public class FieldCodeController : Controller
         _fieldCodeService = fieldCodeService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllFieldCodes()
     {

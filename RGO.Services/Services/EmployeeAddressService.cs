@@ -16,6 +16,9 @@ public class EmployeeAddressService : IEmployeeAddressService
 
     public async Task<bool> CheckIfExists(EmployeeAddressDto employeeAddressDto)
     {
+        if(employeeAddressDto.Id == 0) {
+            return false;
+        }
         var exists = await _db.EmployeeAddress.GetById(employeeAddressDto.Id);
         return exists != null;
     }
