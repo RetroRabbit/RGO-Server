@@ -24,7 +24,7 @@ public class EmployeeControllerTest : IClassFixture<SharedDbFixture>
         _sharedDbFixture = sharedDbFixture;
     }
 
-    [Fact]
+    [Fact(Skip ="test incomplete")]
     public void ValidId_ReturnsEnitity()
     {
           //find the ID in the shared database 
