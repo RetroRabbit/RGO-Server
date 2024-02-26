@@ -463,8 +463,16 @@ public class EmployeeServiceUnitTests
 
         var currentYear = DateTime.Now.Year;
 
-        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new(1, 1, 1, 0, 0, 0, currentMonth, currentYear);
-
+        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 1,
+            DeveloperTotal = 1,
+            ScrumMasterTotal = 0,
+            BusinessSupportTotal = 0,
+            Month = currentMonth,
+            Year = currentYear
+        };
         var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
             new(monthlyEmployeeTotalDto)
@@ -501,7 +509,16 @@ public class EmployeeServiceUnitTests
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
         var currentYear = DateTime.Now.Year;
-        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new(1, 1, 1, 0, 0, 0, previousMonth, currentYear);
+        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 1,
+            DeveloperTotal = 1,
+            ScrumMasterTotal = 0,
+            BusinessSupportTotal = 0,
+            Month = previousMonth,
+            Year = currentYear
+        };
 
         var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
@@ -529,7 +546,16 @@ public class EmployeeServiceUnitTests
     {
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
-        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new(1, 1, 1, 1, 1, 1, previousMonth, 2024);
+        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 1,
+            DeveloperTotal = 1,
+            ScrumMasterTotal = 0,
+            BusinessSupportTotal = 0,
+            Month = previousMonth,
+            Year = 2024
+        };
 
         var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
@@ -566,7 +592,16 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employee.AsQueryable().BuildMock());
 
-        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new(1, 1, 1, 1, 1, 1, "November", 2023);
+        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 1,
+            DeveloperTotal = 1,
+            ScrumMasterTotal = 1,
+            BusinessSupportTotal = 1,
+            Month = "November",
+            Year = 2023
+        };
 
         var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
@@ -605,7 +640,16 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employee.AsQueryable().BuildMock());
 
-        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new(1, 1, 1, 1, 1, 1, previousMonth, 2023);
+        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 1,
+            DeveloperTotal = 1,
+            ScrumMasterTotal = 1,
+            BusinessSupportTotal = 1,
+            Month = previousMonth,
+            Year = 2032
+        };
 
         var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
@@ -655,7 +699,17 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employee.AsQueryable().BuildMock());
 
-        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new(1, 0, 0, 0, 0, 0, previousMonth, 2023);
+        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 0,
+            DeveloperTotal = 0,
+            DesignerTotal = 0,
+            ScrumMasterTotal = 0,
+            BusinessSupportTotal = 0,
+            Month = previousMonth,
+            Year = 2023
+        };
 
         var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
@@ -713,7 +767,17 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
               .Returns(employee.AsQueryable().BuildMock());
 
-        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new(1, 1, 1, 1, 1, 1, "February", 2024);
+        MonthlyEmployeeTotalDto monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 1,
+            DeveloperTotal = 1,
+            DesignerTotal = 1,
+            ScrumMasterTotal = 1,
+            BusinessSupportTotal = 1,
+            Month = "February",
+            Year = 2024
+        };
 
         var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
             {

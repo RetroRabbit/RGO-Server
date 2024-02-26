@@ -316,10 +316,17 @@ public class EmployeeService : IEmployeeService
             var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
 
             var monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
-                (0, employeeTotalCount.Count, employeeCountTotalsByRole.DevsCount,
-                 employeeCountTotalsByRole.DesignersCount,
-                 employeeCountTotalsByRole.ScrumMastersCount, employeeCountTotalsByRole.BusinessSupportCount,
-                 currentMonth, currentYear);
+            {
+                Id = 0,
+                EmployeeTotal = employeeTotalCount.Count,
+                DeveloperTotal = employeeCountTotalsByRole.DevsCount,
+                DesignerTotal = employeeCountTotalsByRole.DesignersCount,
+                ScrumMasterTotal = employeeCountTotalsByRole.ScrumMastersCount,
+                BusinessSupportTotal = employeeCountTotalsByRole.BusinessSupportCount,
+                Month = currentMonth,
+                Year = currentYear
+            };
+
 
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
