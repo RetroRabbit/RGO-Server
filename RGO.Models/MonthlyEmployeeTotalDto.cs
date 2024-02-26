@@ -1,12 +1,13 @@
 ﻿namespace HRIS.Models;
 
-public record MonthlyEmployeeTotalDto(
-    int Id,
-    int EmployeeTotal,
-    int DeveloperTotal,
-    int DesignerTotal,
-    int ScrumMasterTotal,
-    int BusinessSupportTotal,
-    string Month,
-    int Year
-);
+public class MonthlyEmployeeTotalDto
+{
+    public int Id { get; set; }
+    public int EmployeeTotal { get; set; }
+    public int DeveloperTotal { get; set; }
+    public int DesignerTotal { get; set; }
+    public int ScrumMasterTotal { get; set; }
+    public int BusinessSupportTotal { get; set; }
+    public string Month { get; set; }
+    public int Year { get; set; }
+}
