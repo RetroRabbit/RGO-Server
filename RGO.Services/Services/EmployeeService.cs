@@ -326,13 +326,10 @@ public class EmployeeService : IEmployeeService
                 Month = currentMonth,
                 Year = currentYear
             };
-
-
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
             return await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
         }
-
         return currentEmployeeTotal.ToDto();
     }
 
@@ -416,7 +413,6 @@ public class EmployeeService : IEmployeeService
             EmergencyContactName = employeeDto.EmergencyContactName,
             EmergencyContactNo = employeeDto.EmergencyContactNo
         };
-
         return simpleProfile;
     }
 
