@@ -9,7 +9,6 @@ namespace RR.Tests.Data.Models.HRIS
 {
     public class MonthlyEmployeeTotalTestData
     {
-        
         public static MonthlyEmployeeTotalDto monthlyEmployeeTotalDtoCurrentYearCurrentMonth = new MonthlyEmployeeTotalDto
         {
             Id = 1,
