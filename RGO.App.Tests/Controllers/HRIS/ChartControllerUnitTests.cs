@@ -154,6 +154,7 @@ public class ChartControllerUnitTests
         var dataTypes = new List<string> { "Type1", "Type2", "Type3" };
         var labels = new List<string> { "Label1", "Label2", "Label3" };
         var data = new List<int> { 10, 20, 30 };
+
         var mockChartDto = new  ChartDto
                             {
                                 Id = 1,
