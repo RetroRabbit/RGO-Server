@@ -27,7 +27,6 @@ public class ChartUnitTests
         };
 
         return new Chart(chartDto);
-
     }
 
     [Fact]
