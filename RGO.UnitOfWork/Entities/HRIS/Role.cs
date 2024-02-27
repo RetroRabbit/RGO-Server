@@ -24,8 +24,6 @@ public class Role : IModel<RoleDto>
 
     public RoleDto ToDto()
     {
-        return new RoleDto(
-                           Id,
-                           Description);
+        return new RoleDto { Id=Id, Description=Description};              
     }
 }
