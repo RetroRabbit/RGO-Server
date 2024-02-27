@@ -16,27 +16,31 @@ public class ChartUnitTests
 
     public Chart CreateTestChartDto()
     {
-        var chart = new ChartDto(
-                                 0,
-                                 "Name",
-                                 "Type",
-                                 new List<string> { "data 1", "data 2" },
-                                 new List<string> { "Label1", "Label2" },
-                                 new List<int> { 1, 2 });
+        var chartDto = new ChartDto
+        {
+            Id = 0,
+            Name = "Name",
+            Type = "Type",
+            DataTypes = new List<string> { "data 1", "data 2" },
+            Labels = new List<string> { "Label1", "Label2" },
+            Data = new List<int> { 1, 2 }
+        };
 
-        return new Chart(chart);
+        return new Chart(chartDto);
     }
 
     [Fact]
     public void ChartToDtoTest()
     {
-        var chartDto = new ChartDto(
-                                    0,
-                                    "Name",
-                                    "Type",
-                                    new List<string> { "data 1", "data 2" },
-                                    new List<string> { "Label1", "Label2" },
-                                    new List<int> { 1, 2 });
+        var chartDto = new ChartDto
+        {
+            Id = 0,
+            Name = "Name",
+            Type = "Type",
+            DataTypes = new List<string> { "data 1", "data 2" },
+            Labels = new List<string> { "Label1", "Label2" },
+            Data = new List<int> { 1, 2 }
+        };
 
         var chart = new Chart(chartDto);
 

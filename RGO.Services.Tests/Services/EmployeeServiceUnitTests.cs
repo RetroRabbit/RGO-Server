@@ -385,7 +385,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task GetSimpleProfileWithPCAndTeamLeadAndClient()
     {
-        var allocatedClient = new ClientDto(1, "FNB");
+        var allocatedClient = new ClientDto { Id = 1, Name = "FNB" };
         var clients = new List<Client> { new(allocatedClient) };
 
         var employeeList = new List<Employee> { new(EmployeeTestData.EmployeeDto4, EmployeeTypeTestData.DeveloperType) };
