@@ -14,13 +14,13 @@ public class ClientControllerUnitTests
     {
         var expectedClients = new List<ClientDto>
         {
-            new(1, "Discovery"),
-            new(2, "FNB"),
-            new(3, "Capitec"),
-            new(4, "Telesure"),
-            new(5, "Nedbank"),
-            new(6, "Standard Bank"),
-            new(7, "Bench")
+          new ClientDto{Id = 1,Name = "string"},
+          new ClientDto { Id = 2, Name = "string" },
+          new ClientDto { Id = 3, Name = "string" },
+          new ClientDto { Id = 4, Name = "string" },
+          new ClientDto { Id = 5, Name = "string" },
+          new ClientDto { Id = 6, Name = "string" },
+          new ClientDto { Id = 7, Name = "string" }
         };
 
         var mockClientService = new Mock<IClientService>();

@@ -11,9 +11,17 @@ public class ChartRoleLinkUnitTest
 
     public ChartRoleLinkUnitTest()
     {
-        _chart = new ChartDto(1, "Chart", "type 1", new List<string> { "data 1", "data 2" },
-                              new List<string> { "label 1", "labebl 2" }, new List<int> { 1, 2 });
-        _role = new RoleDto { Id = 0, Description = "Description" };
+        _chart = new ChartDto
+        {
+            Id = 1,
+            Name = "Chart",
+            Type = "type 1",
+            DataTypes = new List<string> { "data 1", "data 2" },
+            Labels = new List<string> { "label 1", "label 2" },
+            Data = new List<int> { 1, 2 }
+        };
+
+        _role = new RoleDto(1, "Description");
     }
 
     public ChartRoleLink CreateChartRoleLink(ChartDto? chart = null, RoleDto? role = null)
