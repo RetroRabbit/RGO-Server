@@ -20,7 +20,7 @@ public class RoleServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _roleService = new RoleService(_dbMock.Object);
-        _roleDto = new RoleDto { Id = 0, Description = "Employee" };
+        _roleDto = new RoleDto { Id = 1, Description = "Employee" };
     }
 
     [Fact]

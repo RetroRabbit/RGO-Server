@@ -97,7 +97,7 @@ public class AuthServiceUnitTest
         var employeeType = new EmployeeType(employeeTypeDto);
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-        var roleDto = new RoleDto { Id = 0, Description = "Developer" };
+        var roleDto = new RoleDto { Id = 1, Description = "Developer" };
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                                           null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28,

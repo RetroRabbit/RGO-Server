@@ -284,7 +284,7 @@ public class EmployeeServiceUnitTests
         Employee emp = new Employee(EmployeeTestData.EmployeeDto2, EmployeeTypeTestData.DeveloperType);
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
 
-        RoleDto roleDto = new RoleDto { Id = 0, Description = "Admin" };
+        RoleDto roleDto = new RoleDto { Id = 2, Description = "Admin" };
         EmployeeRoleDto empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto2, roleDto);
         EmployeeRole empRole = new EmployeeRole(empRoleDto);
 
