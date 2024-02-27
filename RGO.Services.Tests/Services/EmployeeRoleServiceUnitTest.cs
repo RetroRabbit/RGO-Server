@@ -287,7 +287,7 @@ public class EmployeeRoleServiceUnitTest
                                           (
                                            4,
                                            employeeRoleList[0].Employee.ToDto(),
-                                           new RoleDto { Id = 0, Description = "Made up Role" })));
+                                           new RoleDto { Id = 2, Description = "Made up Role" })));
     }
 
     [Fact]

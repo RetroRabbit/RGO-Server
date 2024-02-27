@@ -50,7 +50,7 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
 
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 0, Description = "Admin" });
+        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 1, Description = "Admin" });
 
         employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
                                .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
@@ -75,7 +75,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto { Id = 0, Description = "Admin" }));
+                                                                 new RoleDto { Id = 1, Description = "Admin" }));
 
         var result = await controller.AddRole(email, role);
 
@@ -105,7 +105,7 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
 
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto{ Id = 0, Description = "Super Admin" });
+        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto{ Id = 1, Description = "Super Admin" });
 
         employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
                                .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
@@ -130,7 +130,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto { Id = 0, Description = "Super Admin" }));
+                                                                 new RoleDto { Id = 1, Description = "Super Admin" }));
 
         var result = await controller.AddRole(email, role);
 
@@ -182,7 +182,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto {Id = 0, Description = "Super Admin"}));
+                                                                 new RoleDto {Id = 1, Description = "Super Admin"}));
 
         var result = await controller.AddRole(email, role);
 
@@ -284,7 +284,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                           "12",
                                                                           "Emergency Contact",
                                                                           "987654321"),
-                                                                  new RoleDto{ Id = 0, Description = "Employee" });
+                                                                  new RoleDto{ Id = 1, Description = "Employee" });
 
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
         employeeRoleServiceMock.Setup(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()))
@@ -434,7 +434,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto { Id = 0, Description = "Employee Role" }));
+                                                                 new RoleDto { Id = 1, Description = "Employee Role" }));
 
         var result = await controller.GetEmployeeRole(email);
 
