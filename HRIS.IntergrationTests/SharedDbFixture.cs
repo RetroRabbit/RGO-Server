@@ -20,7 +20,6 @@ namespace HRIS.IntegrationTests
              
             DatabaseContext = new DatabaseContext(options);
 
-           // DatabaseContext.employeeAddresses.Add(new EmployeeAddressTestData.)
             DatabaseContext.SaveChanges();
         }
 

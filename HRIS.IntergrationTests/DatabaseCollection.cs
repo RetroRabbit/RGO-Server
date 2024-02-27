@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HRIS.IntegrationTests
 {
-    [CollectionDefinition("DataabseCollection")]
+    [CollectionDefinition("DatabaseCollection")]
     public class DatabaseCollection : ICollectionFixture<SharedDbFixture>
     {
     }
