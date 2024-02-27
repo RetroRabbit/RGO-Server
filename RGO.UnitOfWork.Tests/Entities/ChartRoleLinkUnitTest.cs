@@ -30,7 +30,7 @@ public class ChartRoleLinkUnitTest
         {
             Id = 1,
             ChartId = 1,
-            RoleId = 0
+            RoleId = 1
         };
 
         if (chart != null)
