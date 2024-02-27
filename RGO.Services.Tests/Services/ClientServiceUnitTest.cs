@@ -2,6 +2,7 @@
 using HRIS.Services.Services;
 using Moq;
 using RR.UnitOfWork;
+using System.Xml.Linq;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -16,10 +17,11 @@ public class ClientServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _clientService = new ClientService(_dbMock.Object);
-        _clientDto = new ClientDto(
-                                   1,
-                                   "string"
-                                  );
+        _clientDto = new ClientDto
+        {
+            Id = 1,
+            Name = "string"
+        };
     }
 
     [Fact]
