@@ -21,7 +21,7 @@ public class ChartRoleLinkUnitTest
             Data = new List<int> { 1, 2 }
         };
 
-        _role = new RoleDto(1, "Description");
+        _role = new RoleDto { Id = 1, Description = "Description" };
     }
 
     public ChartRoleLink CreateChartRoleLink(ChartDto? chart = null, RoleDto? role = null)
