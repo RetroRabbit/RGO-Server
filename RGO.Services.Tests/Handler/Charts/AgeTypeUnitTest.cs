@@ -28,7 +28,7 @@ public class AgeTypeUnitTest
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
-        roleDto = new RoleDto(3, "Employee");
+        roleDto = new RoleDto{ Id = 0, Description = "Employee" };
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
                                 .Returns(Task.FromResult(employeeTypeDto));
         var employeeAddressDto =

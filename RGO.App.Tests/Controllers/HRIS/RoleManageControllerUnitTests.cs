@@ -22,7 +22,7 @@ public class RoleManageControllerUnitTests
 
     public static RoleDto CreateRoleDto()
     {
-        return new RoleDto(1, "Super Admin");
+        return new RoleDto { Id = 0, Description = "Super Admin"};
     }
 
     public static RoleAccessDto CreateRoleAccessDto()
