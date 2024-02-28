@@ -17,7 +17,7 @@ public class RoleUnitTests
     [Fact]
     public async Task roleTodtoTest()
     {
-        var role = new Role(new RoleDto { Id = 0, Description = "Employee" });
+        var role = new Role(new RoleDto { Id = 1, Description = "Employee" });
         Assert.IsType<RoleDto>(role.ToDto());
         Assert.NotNull(role.ToDto());
     }
