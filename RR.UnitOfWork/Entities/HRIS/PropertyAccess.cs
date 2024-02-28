@@ -40,7 +40,7 @@ public class PropertyAccess : IModel<PropertyAccessDto>
     {
         return new PropertyAccessDto {
                                      Id = Id,
-                                     Role = new RoleDto { Id = 1, Description = "Admin" },
+                                     Role = Role?.ToDto(),
                                      Condition = Condition,
                                      FieldCode = FieldCode?.ToDto()};
     }
