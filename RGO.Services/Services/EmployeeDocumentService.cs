@@ -20,7 +20,6 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email)
     {
-
         var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
 
         if (employee == null)
@@ -29,18 +28,20 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         }
 
         bool sameEmail = email.Equals(employee.Email);
+        var isAdmin = await IsAdmin(email);
+        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
 
-        var employeeDocument = new EmployeeDocumentDto(
-                                                       employeeDocDto.Id,
-                                                       employee.Id,
-                                                       null,
-                                                       employeeDocDto.FileName,
-                                                       employeeDocDto.FileCategory,
-                                                       employeeDocDto.Blob,
-                                                       await IsAdmin(email) && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval,
-                                                       DateTime.Now,
-                                                       null,
-                                                       false);
+        var employeeDocument = new EmployeeDocumentDto
+        {
+            Id = employeeDocDto.Id,
+            EmployeeId = employee.Id,
+            FileName = employeeDocDto.FileName,
+            FileCategory = employeeDocDto.FileCategory,
+            Blob = employeeDocDto.Blob,
+            Status = status,
+            UploadDate = DateTime.Now,
+            CounterSign = false, 
+        };
 
         var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 

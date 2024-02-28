@@ -4,30 +4,6 @@ namespace HRIS.Models;
 
 public class EmployeeDocumentDto
 {
-    // TODO : Remove this Constructor + Update UNIT TESTS
-    public EmployeeDocumentDto(int Id,
-                               int EmployeeId,
-                               string? Reference,
-                               string FileName,
-                               FileCategory FileCategory,
-                               string Blob,
-                               DocumentStatus? Status,
-                               DateTime UploadDate,
-                               string? Reason,
-                               bool CounterSign)
-    {
-        this.Id = Id;
-        this.EmployeeId = EmployeeId;
-        this.Reference = Reference;
-        this.FileName = FileName;
-        this.FileCategory = FileCategory;
-        this.Blob = Blob;
-        this.Status = Status;
-        this.UploadDate = UploadDate;
-        this.Reason = Reason;
-        this.CounterSign = CounterSign;
-    }
-
     public int Id { get; set; }
     public int EmployeeId { get; set; }
     public string? Reference { get; set; }

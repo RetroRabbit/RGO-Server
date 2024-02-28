@@ -35,9 +35,20 @@ public class EmployeeCertificationServiceUnitTests
                                           "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
                                           employeeAddressDto, employeeAddressDto, null, null, null);
 
-        var employeeDocumentDto = new EmployeeDocumentDto(1, 001, null, "filename", FileCategory.FixedTerm,
-                                                          "blobstring", DocumentStatus.Approved,
-                                                          new DateTime(2020, 1, 1), null, true);
+        var employeeDocumentDto = new EmployeeDocumentDto
+        {
+            Id = 1,
+            EmployeeId = 1,
+            Reference = null,
+            FileName = "filename",
+            FileCategory = FileCategory.FixedTerm,
+            Blob = "blobstring",
+            Status = DocumentStatus.Approved,
+            UploadDate = new DateTime(2020, 1, 1),
+            Reason = null,
+            CounterSign = true
+        };
+
 
         var employeeCertificationDto = new EmployeeCertificationDto(1, employeeDto, employeeDocumentDto, "Title",
                                                                     "Publisher",

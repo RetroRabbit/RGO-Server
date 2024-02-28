@@ -53,16 +53,17 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
 
     public EmployeeDocumentDto ToDto()
     {
-        return new EmployeeDocumentDto(
-                                       Id,
-                                       EmployeeId,
-                                       Reference,
-                                       FileName,
-                                       FileCategory,
-                                       Blob,
-                                       Status,
-                                       UploadDate,
-                                       Reason,
-                                       CounterSign);
+        return new EmployeeDocumentDto {
+                                       Id = Id,
+                                       EmployeeId = EmployeeId,
+                                       Reference = Reference,
+                                       FileName = FileName,
+                                       FileCategory = FileCategory,
+                                       Blob = Blob,
+                                       Status = Status,
+                                       UploadDate = UploadDate,
+                                       Reason = Reason,
+                                       CounterSign = CounterSign
+        };
     }
 }
