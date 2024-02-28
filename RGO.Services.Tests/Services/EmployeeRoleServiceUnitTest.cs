@@ -40,10 +40,10 @@ public class EmployeeRoleServiceUnitTest
 
         var roleList = new List<RoleDto>
         {
-            new(1, "Admin"),
-            new(2, "Manager"),
-            new(3, "Employee"),
-            new(4, "Intern")
+            new RoleDto{Id = 1, Description = "Admin" },
+            new RoleDto { Id = 2, Description = "Manager" },
+            new RoleDto { Id = 3, Description = "Employee" },
+            new RoleDto { Id = 4, Description = "Intern" }
         };
 
         var employeeRoleList = new List<EmployeeRole>
@@ -141,10 +141,10 @@ public class EmployeeRoleServiceUnitTest
 
         var roleList = new List<RoleDto>
         {
-            new(1, "Admin"),
-            new(2, "Manager"),
-            new(3, "Employee"),
-            new(4, "Intern")
+            new RoleDto{Id = 1, Description = "Admin" },
+            new RoleDto { Id = 2, Description = "Manager" },
+            new RoleDto { Id = 3, Description = "Employee" },
+            new RoleDto { Id = 4, Description = "Intern" }
         };
 
         var employeeRoleList = new List<EmployeeRole>
@@ -222,10 +222,10 @@ public class EmployeeRoleServiceUnitTest
 
         var roleList = new List<RoleDto>
         {
-            new(1, "Admin"),
-            new(2, "Manager"),
-            new(3, "Employee"),
-            new(4, "Intern")
+            new RoleDto{Id = 1, Description = "Admin" },
+            new RoleDto { Id = 2, Description = "Manager" },
+            new RoleDto { Id = 3, Description = "Employee" },
+            new RoleDto { Id = 4, Description = "Intern" }
         };
 
         var employeeRoleList = new List<EmployeeRole>
@@ -287,7 +287,7 @@ public class EmployeeRoleServiceUnitTest
                                           (
                                            4,
                                            employeeRoleList[0].Employee.ToDto(),
-                                           new RoleDto(0, "Made up Role"))));
+                                           new RoleDto { Id = 2, Description = "Made up Role" })));
     }
 
     [Fact]
@@ -309,10 +309,10 @@ public class EmployeeRoleServiceUnitTest
 
         var roleList = new List<RoleDto>
         {
-            new(1, "Admin"),
-            new(2, "Manager"),
-            new(3, "Employee"),
-            new(4, "Intern")
+            new RoleDto{Id = 1, Description = "Admin" },
+            new RoleDto { Id = 2, Description = "Manager" },
+            new RoleDto { Id = 3, Description = "Employee" },
+            new RoleDto { Id = 4, Description = "Intern" }
         };
 
         var employeeRoleList = new List<EmployeeRole>
@@ -379,10 +379,10 @@ public class EmployeeRoleServiceUnitTest
 
         var roleList = new List<RoleDto>
         {
-            new(1, "Admin"),
-            new(2, "Manager"),
-            new(3, "Employee"),
-            new(4, "Intern")
+            new RoleDto{Id = 1, Description = "Admin" },
+            new RoleDto { Id = 2, Description = "Manager" },
+            new RoleDto { Id = 3, Description = "Employee" },
+            new RoleDto { Id = 4, Description = "Intern" }
         };
 
         var employeeRoleList = new List<EmployeeRole>
@@ -429,10 +429,10 @@ public class EmployeeRoleServiceUnitTest
 
         var roleList = new List<RoleDto>
         {
-            new(1, "Admin"),
-            new(2, "Manager"),
-            new(3, "Employee"),
-            new(4, "Intern")
+            new RoleDto{Id = 1, Description = "Admin" },
+            new RoleDto { Id = 2, Description = "Manager" },
+            new RoleDto { Id = 3, Description = "Employee" },
+            new RoleDto { Id = 4, Description = "Intern" }
         };
 
         var employeeRoleList = new List<EmployeeRole>
@@ -507,10 +507,10 @@ public class EmployeeRoleServiceUnitTest
 
         var roleList = new List<RoleDto>
         {
-            new(1, "Admin"),
-            new(2, "Manager"),
-            new(3, "Employee"),
-            new(4, "Intern")
+             new RoleDto{Id = 1, Description = "Admin" },
+             new RoleDto { Id = 2, Description = "Manager" },
+             new RoleDto { Id = 3, Description = "Employee" },
+             new RoleDto { Id = 4, Description = "Intern" }
         };
 
         var employeeRoleList = new List<EmployeeRole>

@@ -50,7 +50,7 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
 
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto(1, "Admin"));
+        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 1, Description = "Admin" });
 
         employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
                                .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
@@ -75,7 +75,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto(1, "Admin")));
+                                                                 new RoleDto { Id = 1, Description = "Admin" }));
 
         var result = await controller.AddRole(email, role);
 
@@ -105,7 +105,7 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
 
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto(1, "Super Admin"));
+        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto{ Id = 1, Description = "Super Admin" });
 
         employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
                                .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
@@ -130,7 +130,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto(1, "Super Admin")));
+                                                                 new RoleDto { Id = 1, Description = "Super Admin" }));
 
         var result = await controller.AddRole(email, role);
 
@@ -182,7 +182,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto(1, "Super Admin")));
+                                                                 new RoleDto {Id = 1, Description = "Super Admin"}));
 
         var result = await controller.AddRole(email, role);
 
@@ -259,7 +259,7 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
 
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto(1, "Employee"));
+        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 0, Description = "Employee"});
 
         var existingEmployeeRole = new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
                                                                           new DateTime(2022, 1, 1), null, 1, false,
@@ -284,7 +284,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                           "12",
                                                                           "Emergency Contact",
                                                                           "987654321"),
-                                                       new RoleDto(1, "Employee"));
+                                                                  new RoleDto{ Id = 1, Description = "Employee" });
 
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
         employeeRoleServiceMock.Setup(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()))
@@ -359,7 +359,7 @@ public class EmployeeRoleManagerControllerUnitTests
              "987654321"
             );
 
-        var roleDto = new RoleDto(1, "Employee");
+        var roleDto = new RoleDto{ Id = 0, Description = "Employee" };
 
         employeeRoleServiceMock.Setup(x => x.DeleteEmployeeRole(email, role))
                                .ReturnsAsync(new EmployeeRoleDto(1, employeeDto, roleDto));
@@ -434,7 +434,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto(1, "Employee Role")));
+                                                                 new RoleDto { Id = 1, Description = "Employee Role" }));
 
         var result = await controller.GetEmployeeRole(email);
 
@@ -455,11 +455,12 @@ public class EmployeeRoleManagerControllerUnitTests
 
         var roles = new List<RoleDto>
         {
-            new(1, "Super Admin"),
-            new(2, "Admin")
+            new RoleDto{ Id = 1, Description = "Super Admin" },
+            new RoleDto{Id = 2, Description = "Admin"},
         };
 
         roleServiceMock.Setup(x => x.GetAll()).ReturnsAsync(roles);
+
 
         var result = await controller.GetAllRoles();
 
@@ -498,8 +499,8 @@ public class EmployeeRoleManagerControllerUnitTests
         var roleId = 1;
         var employeeRoles = new List<EmployeeRoleDto>
         {
-            new(1, null, new RoleDto(roleId, "Super Admin")),
-            new(2, null, new RoleDto(roleId, "Admin"))
+            new(1, null, new RoleDto{Id = 0, Description = "Super Admin" }),
+            new(2, null, new RoleDto{Id = 0, Description = "Admin" })
         };
 
         employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId)).ReturnsAsync(employeeRoles);
