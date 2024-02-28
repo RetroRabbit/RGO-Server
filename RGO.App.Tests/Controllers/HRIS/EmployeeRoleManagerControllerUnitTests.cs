@@ -455,7 +455,7 @@ public class EmployeeRoleManagerControllerUnitTests
 
         var roles = new List<RoleDto>
         {
-            new RoleDto{ Description = "Super Admin" },
+            new RoleDto{ Id = 1, Description = "Super Admin" },
             new RoleDto{Id = 1, Description = "Admin"},
         };
 
