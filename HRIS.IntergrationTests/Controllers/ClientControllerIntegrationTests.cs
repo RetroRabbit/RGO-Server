@@ -29,8 +29,8 @@ namespace RR.App.Tests.Controllers
             //mockClientService.Setup(x => x.GetAllClients()).ReturnsAsync(new List<ClientDto>());
             mockClientService.Setup(x => x.GetAllClients()).ReturnsAsync(new List<ClientDto>
             {
-                new ClientDto(1, "Client1"),
-                new ClientDto(2, "Client2")
+                new ClientDto{ Id = 1, Name = "Client1" },
+                new ClientDto{ Id = 2, Name = "Client2" }
             });
 
             _server = new TestServer(new WebHostBuilder()
