@@ -456,7 +456,7 @@ public class EmployeeRoleManagerControllerUnitTests
         var roles = new List<RoleDto>
         {
             new RoleDto{ Id = 1, Description = "Super Admin" },
-            new RoleDto{Id = 1, Description = "Admin"},
+            new RoleDto{Id = 2, Description = "Admin"},
         };
 
         roleServiceMock.Setup(x => x.GetAll()).ReturnsAsync(roles);
