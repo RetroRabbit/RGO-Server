@@ -42,15 +42,16 @@ public class MonthlyEmployeeTotal : IModel<MonthlyEmployeeTotalDto>
 
     public MonthlyEmployeeTotalDto ToDto()
     {
-        return new MonthlyEmployeeTotalDto(
-                                           Id,
-                                           EmployeeTotal,
-                                           DeveloperTotal,
-                                           DesignerTotal,
-                                           ScrumMasterTotal,
-                                           BusinessSupportTotal,
-                                           Month,
-                                           Year
-                                          );
+        return new MonthlyEmployeeTotalDto
+        {
+            Id = this.Id,
+            EmployeeTotal = this.EmployeeTotal,
+            DeveloperTotal = this.DeveloperTotal,
+            DesignerTotal = this.DesignerTotal,
+            ScrumMasterTotal = this.ScrumMasterTotal,
+            BusinessSupportTotal = this.BusinessSupportTotal,
+            Month = this.Month,
+            Year = this.Year
+        };
     }
 }
