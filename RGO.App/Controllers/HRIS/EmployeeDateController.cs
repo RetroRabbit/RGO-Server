@@ -22,12 +22,16 @@ public class EmployeeDateController : ControllerBase
     {
         try
         {
-            var employeeDateDto = new EmployeeDateDto(
-                                                      0,
-                                                      await _employeeService.GetEmployee(employeeDateInput.Email),
-                                                      employeeDateInput.Subject,
-                                                      employeeDateInput.Note,
-                                                      employeeDateInput.Date);
+            var employee = await _employeeService.GetEmployee(employeeDateInput.Email);
+            var employeeDateDto = new EmployeeDateDto
+            {
+                Id = 0,
+                Employee = employee,
+                Subject = employeeDateInput.Subject,
+                Note = employeeDateInput.Note,
+                Date = employeeDateInput.Date
+            };
+
             await _employeeDateService.Save(employeeDateDto);
 
             return Ok();
@@ -58,12 +62,15 @@ public class EmployeeDateController : ControllerBase
     {
         try
         {
-            var employeeDateDto = new EmployeeDateDto(
-                                                      employeeDate.Id,
-                                                      await _employeeService.GetEmployee(employeeDate.Employee!.Email),
-                                                      employeeDate.Subject,
-                                                      employeeDate.Note,
-                                                      employeeDate.Date);
+            var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email);
+            var employeeDateDto = new EmployeeDateDto
+            {
+                Id = employeeDate.Id,
+                Employee = employee,
+                Subject = employeeDate.Subject,
+                Note = employeeDate.Note,
+                Date = employeeDate.Date
+            };
 
             await _employeeDateService.Update(employeeDateDto);
 

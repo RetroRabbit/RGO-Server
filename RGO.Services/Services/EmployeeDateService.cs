@@ -39,12 +39,14 @@ public class EmployeeDateService : IEmployeeDateService
 
         if (!exists) throw new Exception("Employee Date does not exist");
 
-        var employeeDateToUpdate = new EmployeeDateDto(
-                                                       newEmployeeDate.Id,
-                                                       newEmployeeDate.Employee,
-                                                       newEmployeeDate.Subject,
-                                                       newEmployeeDate.Note,
-                                                       newEmployeeDate.Date);
+        var employeeDateToUpdate = new EmployeeDateDto
+        {
+            Id = newEmployeeDate.Id,
+            Employee = newEmployeeDate.Employee,
+            Subject = newEmployeeDate.Subject,
+            Note = newEmployeeDate.Note,
+            Date = newEmployeeDate.Date
+        };
 
         await _db.EmployeeDate.Update(new EmployeeDate(employeeDateToUpdate));
     }
@@ -76,12 +78,14 @@ public class EmployeeDateService : IEmployeeDateService
         var employeeDates = from employeeDate in _db.EmployeeDate.Get()
                             join employee in _db.Employee.Get() on employeeDate.EmployeeId equals employee.Id
                             orderby employeeDate.Date
-                            select new EmployeeDateDto(
-                                                       employeeDate.Id,
-                                                       employee.ToDto(),
-                                                       employeeDate.Subject,
-                                                       employeeDate.Note,
-                                                       employeeDate.Date);
+                            select new EmployeeDateDto
+                            {
+                                Id = employeeDate.Id,
+                                Employee = employee.ToDto(),
+                                Subject = employeeDate.Subject,
+                                Note = employeeDate.Note,
+                                Date = employeeDate.Date
+                            };
 
         return employeeDates.ToList();
     }
@@ -92,12 +96,14 @@ public class EmployeeDateService : IEmployeeDateService
                                                            join employee in _db.Employee.Get() on employeeDate
                                                                .EmployeeId equals employee.Id
                                                            where employeeDate.Date == Date
-                                                           select new EmployeeDateDto(
-                                                            employeeDate.Id,
-                                                            employee.ToDto(),
-                                                            employeeDate.Subject,
-                                                            employeeDate.Note,
-                                                            employeeDate.Date)
+                                                           select new EmployeeDateDto
+                                                           {
+                                                              Id = employeeDate.Id,
+                                                              Employee = employee.ToDto(),
+                                                              Subject = employeeDate.Subject,
+                                                              Note = employeeDate.Note,
+                                                              Date = employeeDate.Date
+                                                           }
                                                            into employeeDateDto
                                                            orderby employeeDateDto.Date
                                                            select employeeDateDto;
@@ -111,12 +117,14 @@ public class EmployeeDateService : IEmployeeDateService
                                                            join employee in _db.Employee.Get() on employeeDate
                                                                .EmployeeId equals employee.Id
                                                            where employee.Email == email
-                                                           select new EmployeeDateDto(
-                                                            employeeDate.Id,
-                                                            employee.ToDto(),
-                                                            employeeDate.Subject,
-                                                            employeeDate.Note,
-                                                            employeeDate.Date)
+                                                           select new EmployeeDateDto
+                                                           {
+                                                               Id = employeeDate.Id,
+                                                               Employee = employee.ToDto(),
+                                                               Subject = employeeDate.Subject,
+                                                               Note = employeeDate.Note,
+                                                               Date = employeeDate.Date
+                                                           }
                                                            into employeeDateDto
                                                            orderby employeeDateDto.Date
                                                            select employeeDateDto;
@@ -130,12 +138,14 @@ public class EmployeeDateService : IEmployeeDateService
                                                            join employee in _db.Employee.Get() on employeeDate
                                                                .EmployeeId equals employee.Id
                                                            where employeeDate.Subject == subject
-                                                           select new EmployeeDateDto(
-                                                            employeeDate.Id,
-                                                            employee.ToDto(),
-                                                            employeeDate.Subject,
-                                                            employeeDate.Note,
-                                                            employeeDate.Date)
+                                                           select new EmployeeDateDto
+                                                           {
+                                                               Id = employeeDate.Id,
+                                                               Employee = employee.ToDto(),
+                                                               Subject = employeeDate.Subject,
+                                                               Note = employeeDate.Note,
+                                                               Date = employeeDate.Date
+                                                           }
                                                            into employeeDateDto
                                                            orderby employeeDateDto.Date
                                                            select employeeDateDto;

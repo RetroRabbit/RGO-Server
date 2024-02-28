@@ -37,11 +37,13 @@ public class EmployeeDate : IModel<EmployeeDateDto>
 
     public EmployeeDateDto ToDto()
     {
-        return new EmployeeDateDto(
-                                   Id,
-                                   Employee?.ToDto(),
-                                   Subject,
-                                   Note,
-                                   Date);
+        return new EmployeeDateDto
+        {
+            Id = Id,
+            Employee = Employee?.ToDto(),
+            Subject = Subject,
+            Note = Note,
+            Date = Date
+        };
     }
 }

@@ -66,7 +66,6 @@ public class EmployeeDateControllerUnitTests
     {
         var employeeDateServiceMock = new Mock<IEmployeeDateService>();
         var employeeServiceMock = new Mock<IEmployeeService>();
-
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
         var employeeDateInput = new EmployeeDateInput
@@ -118,17 +117,16 @@ public class EmployeeDateControllerUnitTests
     {
         var employeeDateServiceMock = new Mock<IEmployeeDateService>();
         var employeeServiceMock = new Mock<IEmployeeService>();
-
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
         var employeeDateDto = new EmployeeDateDto
-            (
-             1,
-             EmployeeTestData.EmployeeDto,
-             "Test Subject",
-             "Test Note",
-             new DateOnly(2023, 1, 1)
-            );
+        {
+            Id = 1,
+            Employee = EmployeeTestData.EmployeeDto,
+            Subject = "Test Subject",
+            Note = "Test Note",
+            Date = new DateOnly(2023, 1, 1)
+        };
 
         employeeServiceMock.Setup(x => x.GetEmployee(employeeDateDto.Employee!.Email))
                            .ReturnsAsync(employeeDateDto.Employee);
@@ -149,13 +147,14 @@ public class EmployeeDateControllerUnitTests
         var controller = new EmployeeDateController(employeeDateServiceMock.Object, employeeServiceMock.Object);
 
         var employeeDateDto = new EmployeeDateDto
-            (
-             1,
-             EmployeeTestData.EmployeeDto,
-             "Test Subject",
-             "Test Note",
-             new DateOnly(2023, 1, 1)
-            );
+        {
+            Id = 1,
+            Employee = EmployeeTestData.EmployeeDto,
+            Subject = "Test Subject",
+            Note = "Test Note",
+            Date = new DateOnly(2023, 1, 1)
+        };
+
 
         employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>()))
                                .ThrowsAsync(new Exception("An error occurred while updating employee date information."));
@@ -177,19 +176,22 @@ public class EmployeeDateControllerUnitTests
         var date = new DateOnly(2023, 1, 1);
         var expectedEmployeeDates = new List<EmployeeDateDto>
         {
-            new(
-                1,
-                EmployeeTestData.EmployeeDto,
-                "Test Subject",
-                "Test Note",
-                date
-               ),
-            new(
-                1,
-                EmployeeTestData.EmployeeDto2,
-                "Test Subject",
-                "Test Note",
-                date)
+           new EmployeeDateDto
+           {
+                Id = 1,
+                Employee = EmployeeTestData.EmployeeDto,
+                Subject = "Test Subject",
+                Note = "Test Note",
+                Date = date
+           },
+           new EmployeeDateDto
+           {
+                Id = 1,
+                Employee = EmployeeTestData.EmployeeDto2,
+                Subject = "Test Subject",
+                Note = "Test Note",
+                Date = date
+           }
         };
 
         employeeDateServiceMock.Setup(x => x.GetAllByDate(date)).Returns(expectedEmployeeDates);
@@ -212,13 +214,14 @@ public class EmployeeDateControllerUnitTests
         var email = "test@retrorabbit.co.za";
         var expectedEmployeeDates = new List<EmployeeDateDto>
         {
-            new(
-                1,
-                EmployeeTestData.EmployeeDto,
-                "Test Subject",
-                "Test Note",
-                new DateOnly(2023, 1, 1)
-               )
+           new EmployeeDateDto
+           {
+                Id = 1,
+                Employee = EmployeeTestData.EmployeeDto,
+                Subject = "Test Subject",
+                Note = "Test Note",
+                Date = new DateOnly(2023, 1, 1)
+           }
         };
 
         employeeDateServiceMock.Setup(x => x.GetAllByEmployee(email)).Returns(expectedEmployeeDates);
@@ -241,13 +244,14 @@ public class EmployeeDateControllerUnitTests
         var subject = "Test Subject";
         var expectedEmployeeDates = new List<EmployeeDateDto>
         {
-            new(
-                1,
-                EmployeeTestData.EmployeeDto,
-                subject,
-                "Test Note",
-                new DateOnly(2023, 1, 1)
-               )
+          new EmployeeDateDto
+           {
+              Id = 1,
+              Employee = EmployeeTestData.EmployeeDto,
+              Subject = "Test Subject",
+              Note = "Test Note",
+              Date = new DateOnly(2023, 1, 1)
+          }
         };
 
         employeeDateServiceMock.Setup(x => x.GetAllBySubject(subject)).Returns(expectedEmployeeDates);
@@ -269,13 +273,14 @@ public class EmployeeDateControllerUnitTests
 
         var expectedEmployeeDates = new List<EmployeeDateDto>
         {
-            new(
-                1,
-                EmployeeTestData.EmployeeDto,
-                "Test Subject",
-                "Test Note",
-                new DateOnly(2023, 1, 1)
-               )
+           new EmployeeDateDto
+           {
+              Id = 1,
+              Employee = EmployeeTestData.EmployeeDto,
+              Subject = "Test Subject",
+              Note = "Test Note",
+              Date = new DateOnly(2023, 1, 1)
+          }
         };
 
         employeeDateServiceMock.Setup(x => x.GetAll()).Returns(expectedEmployeeDates);
