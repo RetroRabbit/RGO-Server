@@ -283,7 +283,7 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[1].ToDto(), result2);
         Assert.Equivalent(employeeRoleList[2].ToDto(), result3);
 
-        _ = Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
+        Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
                                           (
                                            4,
                                            employeeRoleList[0].Employee.ToDto(),
