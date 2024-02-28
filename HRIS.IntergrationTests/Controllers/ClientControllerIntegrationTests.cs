@@ -13,6 +13,8 @@ using Moq;
 using RR.App.Controllers.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace RR.App.Tests.Controllers
 {
@@ -45,6 +47,11 @@ namespace RR.App.Tests.Controllers
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var clients = JsonConvert.DeserializeObject<List<ClientDto>>(content);
+
+            Assert.Equal(2, clients.Count);
         }
 
         [Fact]
