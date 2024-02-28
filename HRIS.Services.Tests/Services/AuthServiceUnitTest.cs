@@ -172,7 +172,7 @@ public class AuthServiceUnitTest
         _employeeService.Setup(x => x.SaveEmployee(employeeDto)).ReturnsAsync(employeeDto);
         _roleAccessLinkService.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(roles);
 
-        _configuration.Setup(c => c["Auth:Key"]).Returns("2OaBCxEn0WHe$HaZn%0teZG7^fQ^#H02");
+        _configuration.Setup(c => c["Auth:Key"]).Returns("34bDExFk0WHe$GaXn%0xcZY3^fT^#J05");
         _configuration.Setup(c => c["Auth:Expires"]).Returns("30");
         _configuration.Setup(c => c["Auth:Issuer"]).Returns("YourIssuer");
         _configuration.Setup(c => c["Auth:Audience"]).Returns("YourAudience");
