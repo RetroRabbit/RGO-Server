@@ -17,7 +17,7 @@ public class RoleAccessLinkUnitTests
     [Fact]
     public async Task roleAccessLinkToDtoTest()
     {
-        var roleDto = new RoleDto(1, "Employee");
+        var roleDto = new RoleDto{Id = 0, Description = "Employee"};
         var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
 
         var roleAccessLinkDto = new RoleAccessLinkDto(
@@ -36,7 +36,7 @@ public class RoleAccessLinkUnitTests
     [Fact]
     public async Task roleAccessLinkToDtoNullTest()
     {
-        var roleDto = new RoleDto(1, "Employee");
+        var roleDto = new RoleDto { Id = 0, Description = "Employee" };
         var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
 
         var roleAccessLinkDto = new RoleAccessLinkDto(

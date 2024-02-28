@@ -32,7 +32,7 @@ public class RoleManageController : ControllerBase
         {
             var foundRole = await _roleService.CheckRole(role)
                 ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto(0, role));
+                : await _roleService.SaveRole(new RoleDto{Id = 0, Description = role });
 
             var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
                 ? await _roleAccessService.GetRoleAccess(permission)
@@ -59,7 +59,7 @@ public class RoleManageController : ControllerBase
         {
             var foundRole = await _roleService.CheckRole(role)
                 ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto(0, role));
+                : await _roleService.SaveRole(new RoleDto{ Id = 0, Description = role});
 
             var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
                 ? await _roleAccessService.GetRoleAccess(permission)
