@@ -248,6 +248,33 @@ public class EmployeeControllerUnitTests
     }
 
     [Fact]
+    public async Task GetEmployeeCountSuccessTest()
+    {
+        var expectedCount = new EmployeeCountDataCard { EmployeeTotalDifference = 42 };
+        _employeeMockService.Setup(service => service.GenerateDataCardInformation())
+                            .ReturnsAsync(expectedCount);
+
+        var result = await _controller.GetEmployeesCount();
+
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okObjectResult.StatusCode);
+        Assert.Equal(expectedCount.EmployeeTotalDifference, ((EmployeeCountDataCard)okObjectResult.Value!).EmployeeTotalDifference);
+    }
+
+    [Fact]
+    public async Task GetEmployeesCountFailTest()
+    {
+        _employeeMockService.Setup(service => service.GenerateDataCardInformation())
+                            .ThrowsAsync(new Exception("Failed to generate data card"));
+
+        var result = await _controller.GetEmployeesCount();
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(404, notFoundResult.StatusCode);
+        Assert.Equal("Failed to generate data card", notFoundResult.Value);
+    }
+
+    [Fact]
     public async Task GetEmployeeByIdSuccessTest()
     {
         var expectedDetails = _employee;
@@ -305,14 +332,27 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetSimpleEmployeeSuccess()
     {
-        var employee = new SimpleEmployeeProfileDto(1, "1", "123123",
-                                                    new DateTime(), null, null, null, false, "", 3, employeeTypeDto, "",
-                                                    null,
-                                                    null, null, null, "John", "J", "Doe", new DateTime(), null, null,
-                                                    "123", "123", null,
-                                                    null, Race.Coloured, Gender.Male, null, "ksmith@retrorabbit.co.za",
-                                                    "ba@gmail.com", "123", null, null, null, null, employeeAddressDto,
-                                                    employeeAddressDto, null, null, null);
+        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto
+        {
+            Id = 1,
+            EmployeeNumber = "1",
+            TaxNumber = "123123",
+            EngagementDate = new DateTime(),
+            Disability = false,
+            DisabilityNotes = "",
+            Level = 3,
+            EmployeeType = employeeTypeDto,
+            Name = "John",
+            Initials = "J",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(),
+            IdNumber = "123",
+            Email = "ksmith@retrorabbit.co.za",
+            PersonalEmail = "ba@gmail.com",
+            CellphoneNo = "123",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(employee);
 
@@ -326,14 +366,27 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetSimpleEmployeeFail()
     {
-        var employee = new SimpleEmployeeProfileDto(1, "1", "123123",
-                                                    new DateTime(), null, null, null, false, "", 3, employeeTypeDto, "",
-                                                    null,
-                                                    null, null, null, "John", "J", "Doe", new DateTime(), null, null,
-                                                    "123", "123", null,
-                                                    null, Race.Coloured, Gender.Male, null, "ksmith@retrorabbit.co.za",
-                                                    "ba@gmail.com", "123", null, null, null, null, employeeAddressDto,
-                                                    employeeAddressDto, null, null, null);
+        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto
+        {
+            Id = 1,
+            EmployeeNumber = "1",
+            TaxNumber = "123123",
+            EngagementDate = new DateTime(),
+            Disability = false,
+            DisabilityNotes = "",
+            Level = 3,
+            EmployeeType = employeeTypeDto,
+            Name = "John",
+            Initials = "J",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(),
+            IdNumber = "123",
+            Email = "ksmith@retrorabbit.co.za",
+            PersonalEmail = "ba@gmail.com",
+            CellphoneNo = "123",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
                             .ThrowsAsync(new Exception("Not Found"));
@@ -368,5 +421,32 @@ public class EmployeeControllerUnitTests
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(404, notFoundResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetChurnRateSuccessTest()
+    {
+        var expectedChurnRate = new ChurnRateDataCard { ChurnRate = 0.15 };
+        _employeeMockService.Setup(service => service.CalculateEmployeeChurnRate())
+                            .ReturnsAsync(expectedChurnRate);
+
+        var result = await _controller.GetChurnRate();
+
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okObjectResult.StatusCode);
+        Assert.Equal(expectedChurnRate.ChurnRate, ((ChurnRateDataCard)okObjectResult.Value!).ChurnRate);
+    }
+
+    [Fact]
+    public async Task GetChurnRateFailTest()
+    {
+        _employeeMockService.Setup(service => service.CalculateEmployeeChurnRate())
+                            .ThrowsAsync(new Exception("Failed to calculate churn rate"));
+
+        var result = await _controller.GetChurnRate();
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(404, notFoundResult.StatusCode);
+        Assert.Equal("Failed to calculate churn rate", notFoundResult.Value);
     }
 }
