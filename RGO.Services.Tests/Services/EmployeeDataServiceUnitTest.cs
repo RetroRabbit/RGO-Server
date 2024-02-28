@@ -18,16 +18,21 @@ public class EmployeeDataServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeDataService = new EmployeeDataService(_dbMock.Object);
-        _employeeDataDto = new EmployeeDataDto(0,
-                                               0,
-                                               0,
-                                               "string"
-                                              );
-        _employeeDataDto2 = new EmployeeDataDto(0,
-                                                1,
-                                                1,
-                                                "string"
-                                               );
+        _employeeDataDto = new EmployeeDataDto
+        {
+            Id = 0,
+            EmployeeId = 0,
+            FieldCodeId = 0,
+            Value = "string"
+        };
+
+        _employeeDataDto2 = new EmployeeDataDto
+        {
+            Id = 0,
+            EmployeeId = 1,
+            FieldCodeId = 1,
+            Value = "string"
+        };
     }
 
     [Fact]

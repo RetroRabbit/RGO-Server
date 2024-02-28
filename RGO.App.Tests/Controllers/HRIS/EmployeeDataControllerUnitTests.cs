@@ -17,8 +17,9 @@ public class EmployeeDataControllerUnitTests
         mockEmployeeDataService.Setup(service => service.GetAllEmployeeData(id))
                                .ReturnsAsync(new List<EmployeeDataDto>
                                {
-                                   new(1, 1, 1, "example 1"),
-                                   new(2, 2, 1, "example 1")
+                                  new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" },
+                                  new EmployeeDataDto { Id = 2, EmployeeId = 2, FieldCodeId = 1, Value = "example 1" }
+
                                });
 
         var controller = new EmployeeDataController(mockEmployeeDataService.Object);
@@ -54,7 +55,7 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task SaveEmployeeDataReturnsOkResult()
     {
-        var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
+        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
         var mockEmployeeDataService = new Mock<IEmployeeDataService>();
         mockEmployeeDataService.Setup(service => service.SaveEmployeeData(employeeDataDto))
                                .ReturnsAsync(employeeDataDto);
@@ -72,7 +73,7 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task SaveEmployeeDataReturnsNotFoundResultOnException()
     {
-        var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
+        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
         var mockEmployeeDataService = new Mock<IEmployeeDataService>();
         mockEmployeeDataService.Setup(service => service.SaveEmployeeData(employeeDataDto))
                                .ThrowsAsync(new Exception("Error saving employee data."));
@@ -92,7 +93,7 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeDataReturnsOkResult()
     {
-        var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
+        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
         var mockEmployeeDataService = new Mock<IEmployeeDataService>();
         mockEmployeeDataService.Setup(service => service.UpdateEmployeeData(employeeDataDto))
                                .ReturnsAsync(employeeDataDto);
@@ -110,7 +111,7 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeDataReturnsNotFoundResultOnException()
     {
-        var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
+        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
         var mockEmployeeDataService = new Mock<IEmployeeDataService>();
         mockEmployeeDataService.Setup(service => service.UpdateEmployeeData(employeeDataDto))
                                .ThrowsAsync(new Exception("Error updating employee data."));
@@ -131,7 +132,7 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeDataReturnsOkResult()
     {
-        var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
+        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
         var mockEmployeeDataService = new Mock<IEmployeeDataService>();
         mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto.Id))
                                .ReturnsAsync(employeeDataDto);
@@ -149,7 +150,7 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeDataReturnsNotFoundResultOnException()
     {
-        var employeeDataDto = new EmployeeDataDto(1, 1, 1, "example 1");
+        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
         var mockEmployeeDataService = new Mock<IEmployeeDataService>();
         mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto.Id))
                                .ThrowsAsync(new Exception("Error deleting employee data."));

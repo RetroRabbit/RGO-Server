@@ -37,10 +37,12 @@ public class EmployeeData : IModel<EmployeeDataDto>
 
     public EmployeeDataDto ToDto()
     {
-        return new EmployeeDataDto(
-                                   Id,
-                                   EmployeeId,
-                                   FieldCodeId,
-                                   Value);
+        return new EmployeeDataDto
+        {
+            Id = Id,
+            EmployeeId = EmployeeId,
+            FieldCodeId = FieldCodeId,
+            Value = Value,
+        };
     }
 }

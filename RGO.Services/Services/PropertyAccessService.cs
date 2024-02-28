@@ -121,23 +121,27 @@ public class PropertyAccessService : IPropertyAccessService
 
                 if (data != null)
                 {
-                    var updateEmployeeData = new EmployeeDataDto(
-                                                                 data.Id,
-                                                                 data.EmployeeId,
-                                                                 data.FieldCodeId,
-                                                                 fieldValue.value.ToString()
-                                                                );
+                    var updateEmployeeData = new EmployeeDataDto
+                    {
+                        Id = data.Id,
+                        EmployeeId = data.EmployeeId,
+                        FieldCodeId = data.FieldCodeId,
+                        Value = fieldValue.value.ToString()
+                    };
+
 
                     await _employeeDataService.UpdateEmployeeData(updateEmployeeData);
                 }
                 else
                 {
-                    var updateEmployeeData = new EmployeeDataDto(
-                                                                 0,
-                                                                 employee.Id,
-                                                                 field.Id,
-                                                                 fieldValue.value.ToString()
-                                                                );
+                    var updateEmployeeData = new EmployeeDataDto
+                    {
+                        Id = 0,
+                        EmployeeId = employee.Id,
+                        FieldCodeId = field.Id,
+                        Value = fieldValue.value.ToString()
+                    };
+
                     await _employeeDataService.SaveEmployeeData(updateEmployeeData);
                 }
             }
