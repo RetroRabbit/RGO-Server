@@ -25,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RGO.App\RR.App.csproj" />
-    <ProjectReference Include="..\RGO.Services\HRIS.Services.csproj" />
-    <ProjectReference Include="..\RGO.Tests.Data\RR.Tests.Data.csproj" />
+    <ProjectReference Include="..\RR.App\RR.App.csproj" />
+    <ProjectReference Include="..\HRIS.Services\HRIS.Services.csproj" />
+    <ProjectReference Include="..\RR.Tests.Data\RR.Tests.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

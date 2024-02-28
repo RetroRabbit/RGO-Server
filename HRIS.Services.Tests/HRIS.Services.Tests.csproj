@@ -22,10 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RGO.Models\HRIS.Models.csproj" />
-    <ProjectReference Include="..\RGO.Services\HRIS.Services.csproj" />
-    <ProjectReference Include="..\RGO.Tests.Data\RR.Tests.Data.csproj" />
-    <ProjectReference Include="..\RGO.UnitOfWork\RR.UnitOfWork.csproj" />
+    <ProjectReference Include="..\HRIS.Models\HRIS.Models.csproj" />
+    <ProjectReference Include="..\HRIS.Services\HRIS.Services.csproj" />
+    <ProjectReference Include="..\RR.Tests.Data\RR.Tests.Data.csproj" />
+    <ProjectReference Include="..\RR.UnitOfWork\RR.UnitOfWork.csproj" />
   </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RGO.UnitOfWork\RR.UnitOfWork.csproj" />
+    <ProjectReference Include="..\RR.UnitOfWork\RR.UnitOfWork.csproj" />
   </ItemGroup>
 
 </Project>

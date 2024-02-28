@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RGO.Models\HRIS.Models.csproj" />
-    <ProjectReference Include="..\RGO.UnitOfWork\RR.UnitOfWork.csproj" />
+    <ProjectReference Include="..\HRIS.Models\HRIS.Models.csproj" />
+    <ProjectReference Include="..\RR.UnitOfWork\RR.UnitOfWork.csproj" />
   </ItemGroup>
 
   <ItemGroup>
