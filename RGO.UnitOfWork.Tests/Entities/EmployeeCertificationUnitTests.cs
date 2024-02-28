@@ -25,8 +25,20 @@ public class EmployeeCertificationUnitTests
                                     employeeAddressDto, employeeAddressDto, null, null, null);
 
 
-        _employeeDocument = new EmployeeDocumentDto(1, 1, "", "CVE256", FileCategory.Medical, "Picture",
-                                                    DocumentStatus.Approved, DateTime.Now, null, false);
+        _employeeDocument = new EmployeeDocumentDto
+        {
+            Id = 1,
+            EmployeeId = 1,
+            Reference = "",
+            FileName = "CVE256",
+            FileCategory = FileCategory.Medical,
+            Blob = "Picture",
+            Status = DocumentStatus.Approved,
+            UploadDate = DateTime.Now,
+            Reason = null,
+            CounterSign = false
+        };
+
     }
 
     public EmployeeCertification CreateEmployeeCertification(EmployeeDto? employee = null,
