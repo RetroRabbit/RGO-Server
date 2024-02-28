@@ -98,14 +98,16 @@ public class ChartServiceUnitTests
             desEmployeeDto
         };
 
-        var chartDto = new ChartDto(
-                                    1,
-                                    chartName,
-                                    chartType,
-                                    dataTypes,
-                                    new List<string> { "Male", "Female" },
-                                    new List<int> { 1, 1 }
-                                   );
+        var chartDto = new ChartDto
+        {
+            Id = 1,
+            Name = chartName,
+            Type = chartType,
+            DataTypes = dataTypes,
+            Labels = new List<string> { "Male", "Female" },
+            Data = new List<int> { 1, 1 }
+        };
+
 
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
 
@@ -166,14 +168,16 @@ public class ChartServiceUnitTests
             desEmployeeDto
         };
 
-        var chartDto = new ChartDto(
-                                    1,
-                                    chartName,
-                                    chartType,
-                                    dataTypes,
-                                    new List<string> { "Male", "Female" },
-                                    new List<int> { 1, 1 }
-                                   );
+        var chartDto = new ChartDto
+        {
+            Id = 1,
+            Name = chartName,
+            Type = chartType,
+            DataTypes = dataTypes,
+            Labels = new List<string> { "Male", "Female" },
+            Data = new List<int> { 1, 1 }
+        };
+
 
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
 
@@ -229,12 +233,16 @@ public class ChartServiceUnitTests
     public async Task DeleteChartTest()
     {
         var chartId = 1;
-        var expectedChartDto = new ChartDto(chartId,
-                                            "Test",
-                                            "Pie",
-                                            new List<string> { "Gender", "Race" },
-                                            new List<string> { "Male", "Female" },
-                                            new List<int> { 1, 1 });
+        var expectedChartDto = new ChartDto
+        {
+            Id = chartId,
+            Name = "Test",
+            Type = "Pie",
+            DataTypes = new List<string> { "Gender", "Race" },
+            Labels = new List<string> { "Male", "Female" },
+            Data = new List<int> { 1, 1 }
+        };
+
 
         _unitOfWork.Setup(u => u.Chart.Delete(chartId)).ReturnsAsync(expectedChartDto);
 
@@ -251,24 +259,27 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task UpdateChartTest()
     {
-        var chartDtoToUpdate = new ChartDto(1,
-                                            "Update",
-                                            "Pie",
-                                            new List<string> { "Gender", "Race" },
-                                            new List<string> { "Male", "Female" },
-                                            new List<int> { 1, 1 }
-                                           );
+        var chartDtoToUpdate = new ChartDto
+        {
+            Id = 1,
+            Name = "Update",
+            Type = "Pie",
+            DataTypes = new List<string> { "Gender", "Race" },
+            Labels = new List<string> { "Male", "Female" },
+            Data = new List<int> { 1, 1 }
+        };
 
         var existingCharts = new List<ChartDto>
         {
-            new(
-                1,
-                "Existing Chart",
-                "Existing Type",
-                chartDtoToUpdate.DataTypes,
-                chartDtoToUpdate.Labels,
-                chartDtoToUpdate.Data
-               )
+            new ChartDto
+            {
+                Id = 1,
+                Name = "Existing Chart",
+                Type = "Existing Type",
+                DataTypes = chartDtoToUpdate.DataTypes,
+                Labels = chartDtoToUpdate.Labels,
+                Data = chartDtoToUpdate.Data
+            }
         };
 
         _unitOfWork.Setup(x => x.Chart.GetAll(null)).Returns(Task.FromResult(existingCharts));

@@ -17,7 +17,7 @@ public class ClientUnitTest
     [Fact]
     public void ClientToDtoTest()
     {
-        var clientDto = new ClientDto(1, "Name");
+        var clientDto = new ClientDto{ Id = 1, Name = "Name" };
         var client = new Client(clientDto);
         var dto = client.ToDto();
         Assert.Equal(dto.Id, client.Id);

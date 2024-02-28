@@ -24,9 +24,10 @@ public class Client : IModel<ClientDto>
 
     public ClientDto ToDto()
     {
-        return new ClientDto(
-                             Id,
-                             Name
-                            );
+        return new ClientDto
+        {
+            Id = Id,
+            Name = Name
+        };
     }
 }

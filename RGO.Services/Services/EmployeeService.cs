@@ -316,16 +316,20 @@ public class EmployeeService : IEmployeeService
             var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
 
             var monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
-                (0, employeeTotalCount.Count, employeeCountTotalsByRole.DevsCount,
-                 employeeCountTotalsByRole.DesignersCount,
-                 employeeCountTotalsByRole.ScrumMastersCount, employeeCountTotalsByRole.BusinessSupportCount,
-                 currentMonth, currentYear);
-
+            {
+                Id = 0,
+                EmployeeTotal = employeeTotalCount.Count,
+                DeveloperTotal = employeeCountTotalsByRole.DevsCount,
+                DesignerTotal = employeeCountTotalsByRole.DesignersCount,
+                ScrumMasterTotal = employeeCountTotalsByRole.ScrumMastersCount,
+                BusinessSupportTotal = employeeCountTotalsByRole.BusinessSupportCount,
+                Month = currentMonth,
+                Year = currentYear
+            };
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
             return await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
         }
-
         return currentEmployeeTotal.ToDto();
     }
 
@@ -365,49 +369,50 @@ public class EmployeeService : IEmployeeService
             clientAllocatedName = clientDto.Name;
         }
 
-        var simpleProfile = new SimpleEmployeeProfileDto(
-                                                         employeeDto.Id,
-                                                         employeeDto.EmployeeNumber,
-                                                         employeeDto.TaxNumber,
-                                                         employeeDto.EngagementDate,
-                                                         employeeDto.TerminationDate,
-                                                         peopleChampionName,
-                                                         peopleChampionId == 0 ? null : peopleChampionId,
-                                                         employeeDto.Disability,
-                                                         employeeDto.DisabilityNotes,
-                                                         employeeDto.Level,
-                                                         employeeDto.EmployeeType,
-                                                         employeeDto.Notes,
-                                                         employeeDto.LeaveInterval,
-                                                         employeeDto.SalaryDays,
-                                                         employeeDto.PayRate,
-                                                         employeeDto.Salary,
-                                                         employeeDto.Name,
-                                                         employeeDto.Initials,
-                                                         employeeDto.Surname,
-                                                         employeeDto.DateOfBirth,
-                                                         employeeDto.CountryOfBirth,
-                                                         employeeDto.Nationality,
-                                                         employeeDto.IdNumber,
-                                                         employeeDto.PassportNumber,
-                                                         employeeDto.PassportExpirationDate,
-                                                         employeeDto.PassportCountryIssue,
-                                                         employeeDto.Race,
-                                                         employeeDto.Gender,
-                                                         employeeDto.Photo,
-                                                         employeeDto.Email,
-                                                         employeeDto.PersonalEmail,
-                                                         employeeDto.CellphoneNo,
-                                                         clientAllocatedName,
-                                                         clientAllocatedId,
-                                                         teamLeadName,
-                                                         teamLeadId,
-                                                         employeeDto.PhysicalAddress,
-                                                         employeeDto.PostalAddress,
-                                                         employeeDto.HouseNo,
-                                                         employeeDto.EmergencyContactName,
-                                                         employeeDto.EmergencyContactNo);
-
+        var simpleProfile = new SimpleEmployeeProfileDto
+        {
+            Id = employeeDto.Id,
+            EmployeeNumber = employeeDto.EmployeeNumber,
+            TaxNumber = employeeDto.TaxNumber,
+            EngagementDate = employeeDto.EngagementDate,
+            TerminationDate = employeeDto.TerminationDate,
+            PeopleChampionName = peopleChampionName,
+            PeopleChampionId = peopleChampionId == 0 ? null : peopleChampionId,
+            Disability = employeeDto.Disability,
+            DisabilityNotes = employeeDto.DisabilityNotes,
+            Level = employeeDto.Level,
+            EmployeeType = employeeDto.EmployeeType,
+            Notes = employeeDto.Notes,
+            LeaveInterval = employeeDto.LeaveInterval,
+            SalaryDays = employeeDto.SalaryDays,
+            PayRate = employeeDto.PayRate,
+            Salary = employeeDto.Salary,
+            Name = employeeDto.Name,
+            Initials = employeeDto.Initials,
+            Surname = employeeDto.Surname,
+            DateOfBirth = employeeDto.DateOfBirth,
+            CountryOfBirth = employeeDto.CountryOfBirth,
+            Nationality = employeeDto.Nationality,
+            IdNumber = employeeDto.IdNumber,
+            PassportNumber = employeeDto.PassportNumber,
+            PassportExpirationDate = employeeDto.PassportExpirationDate,
+            PassportCountryIssue = employeeDto.PassportCountryIssue,
+            Race = employeeDto.Race,
+            Gender = employeeDto.Gender,
+            Photo = employeeDto.Photo,
+            Email = employeeDto.Email,
+            PersonalEmail = employeeDto.PersonalEmail,
+            CellphoneNo = employeeDto.CellphoneNo,
+            ClientAllocatedName = clientAllocatedName,
+            ClientAllocatedId = clientAllocatedId,
+            TeamLeadName = teamLeadName,
+            TeamLeadId = teamLeadId,
+            PhysicalAddress = employeeDto.PhysicalAddress,
+            PostalAddress = employeeDto.PostalAddress,
+            HouseNo = employeeDto.HouseNo,
+            EmergencyContactName = employeeDto.EmergencyContactName,
+            EmergencyContactNo = employeeDto.EmergencyContactNo
+        };
         return simpleProfile;
     }
 

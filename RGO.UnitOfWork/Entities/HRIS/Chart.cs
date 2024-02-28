@@ -36,13 +36,12 @@ public class Chart : IModel<ChartDto>
 
     public ChartDto ToDto()
     {
-        return new ChartDto(
-                            Id,
-                            Name,
-                            Type,
-                            DataTypes,
-                            Labels,
-                            Data
-                           );
+        return new ChartDto { 
+            Id=Id,
+            Name=Name,
+            Type=Type,
+            DataTypes=DataTypes,
+            Labels=Labels,
+            Data=Data};                      
+        }
     }
-}
