@@ -87,18 +87,20 @@ public class FieldCodeService : IFieldCodeService
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name);
         if (ifFieldCode == null) throw new Exception("No field with that name found");
 
-        var newFieldCodeDto = new FieldCodeDto(ifFieldCode.Id,
-                                               ifFieldCode.Code,
-                                               ifFieldCode.Name,
-                                               ifFieldCode.Description,
-                                               ifFieldCode.Regex,
-                                               ifFieldCode.Type,
-                                               ItemStatus.Archive,
-                                               ifFieldCode.Internal,
-                                               ifFieldCode.InternalTable,
-                                               ifFieldCode.Category,
-                                               ifFieldCode.Required
-                                              );
+        var newFieldCodeDto = new FieldCodeDto
+        {
+            Id = ifFieldCode.Id,
+            Code = ifFieldCode.Code,
+            Name = ifFieldCode.Name,
+            Description = ifFieldCode.Description,
+            Regex = ifFieldCode.Regex,
+            Type = ifFieldCode.Type,
+            Status = ItemStatus.Archive,
+            Internal = ifFieldCode.Internal,
+            InternalTable = ifFieldCode.InternalTable,
+            Category = ifFieldCode.Category,
+            Required = ifFieldCode.Required
+        };
 
         var fieldCode = await _db.FieldCode.Update(new FieldCode(newFieldCodeDto));
         var options = await _fieldCodeOptionsService.GetFieldCodeOptions(fieldCode.Id);
