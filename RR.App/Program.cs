@@ -10,7 +10,6 @@ using System.Text;
 using HRIS.Models;
 using HRIS.Services.Services;
 using RabbitMQ.Client;
-using System.Xml.Linq;
 
 namespace RR.App
 {
