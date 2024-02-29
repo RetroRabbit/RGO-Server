@@ -14,8 +14,14 @@ public class EmployeeEvaluationRatingControllerUnitTests
     public async Task GetAllEmployeeEvaluationRatingsValidInputReturnsOkResult()
     {
         var evaluationInput =
-            new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@test.com", "Template 1",
-                                        "Subject 1");
+            new EmployeeEvaluationInput
+            {
+                Id = null,
+                OwnerEmail = "owner@retrorabbit.co.za",
+                EmployeeEmail = "employee@test.com",
+                Template = "Template 1",
+                Subject = "Subject 1"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         var expectedRatings = new List<EmployeeEvaluationRatingDto>
@@ -96,8 +102,14 @@ public class EmployeeEvaluationRatingControllerUnitTests
     public async Task GetAllEmployeeEvaluationRatingsExceptionThrownReturnsNotFoundResult()
     {
         var evaluationInput =
-            new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@test.com", "Template 1",
-                                        "Subject 1");
+            new EmployeeEvaluationInput
+            {
+                Id = null,
+                OwnerEmail = "owner@retrorabbit.co.za",
+                EmployeeEmail = "employee@test.com",
+                Template = "Template 1",
+                Subject = "Subject 1"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         var exceptionMessage = "An error occurred while fetching employee evaluation ratings.";
@@ -115,8 +127,14 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task SaveEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = null,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
 
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
@@ -191,8 +209,12 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput { Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1" };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Updated Description",
                                                     4.5f, "Updated Comment");
 
@@ -363,8 +385,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeEvaluationRatingExceptionThrownReturnsNotFoundResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Updated Description",
                                                     4.5f, "Updated Comment");
 
@@ -383,8 +412,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
 
@@ -426,8 +462,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationRatingExceptionThrownReturnsNotFoundResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
 

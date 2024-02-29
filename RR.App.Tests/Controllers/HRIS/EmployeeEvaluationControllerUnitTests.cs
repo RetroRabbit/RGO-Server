@@ -188,7 +188,13 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var input = new EmployeeEvaluationInput
-            (1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Template 1", "Subject 1");
+        {
+            Id = 1,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
 
         var expectedSavedEvaluation = new EmployeeEvaluationDto
             (
@@ -262,7 +268,7 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var invalidInput = new EmployeeEvaluationInput
-            (1, string.Empty, "employee@retrorabbit.co.za", "", "Evaluation Subject 1");
+        { Id = 1, OwnerEmail = string.Empty, EmployeeEmail = "employee@retrorabbit.co.za", Template = "template", Subject = "Evaluation Subject 1";
 
         mockService.Setup(x => x.Save(invalidInput))
                    .ThrowsAsync(new Exception("Invalid input error message"));
@@ -366,8 +372,8 @@ public class EmployeeEvaluationControllerUnitTests
 
         var invalidInputList = new List<EmployeeEvaluationInput>
         {
-            new(0, string.Empty, "invalidemail", "", string.Empty),
-            new(-1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Template 1", "Subject 1")
+            new{ Id = 0, OwnerEmail = string.Empty, EmployeeEmail = "invalidemail", Template = "template", Subject = string.Empty },
+            new{Id = -1, OwnerEmail = "owner@retrorabbit.co.za", EmpoyeeEmail = "employee@retrorabbit.co.za", Template ="Template 1", Subject="Subject 1" }
         };
 
         var errorMessage = "Invalid input error message";
@@ -389,7 +395,7 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var evaluationInput = new EmployeeEvaluationInput
-            (1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Template 1", "Subject 1");
+        { Id = 1, OwnerEmail = "owner@retrorabbit.co.za", EmployeeEmail = "employee@retrorabbit.co.za", Template = "Template 1", Subject = "Subject 1" };
 
         mockService.Setup(x => x.Delete(evaluationInput))
                    .ReturnsAsync(new EmployeeEvaluationDto
@@ -456,7 +462,7 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var invalidEvaluationInput = new EmployeeEvaluationInput
-            (0, string.Empty, "invalidemail", "", string.Empty);
+        { Id = 0, OwnerEmail = string.Empty, EmployeeEmail="invalidemail", Template = "template", Subject = string.Empty};
 
         var errorMessage = "Invalid input error message";
         mockService.Setup(x => x.Delete(invalidEvaluationInput))
