@@ -88,8 +88,8 @@ public class FieldCodeServiceUnitTests
             Required = false
         };
 
-        _fieldCodeOptionsDto = new FieldCodeOptionsDto(1, 1, "string");
-        _fieldCodeOptionsDto2 = new FieldCodeOptionsDto(2, 1, "string");
+        _fieldCodeOptionsDto = new FieldCodeOptionsDto{ Id = 1, FieldCodeId = 1, Option = "string" };
+        _fieldCodeOptionsDto2 = new FieldCodeOptionsDto{ Id = 2, FieldCodeId = 1, Option = "string" };
         _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object);
     }
 

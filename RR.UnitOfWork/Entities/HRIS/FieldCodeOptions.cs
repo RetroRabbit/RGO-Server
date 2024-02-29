@@ -31,10 +31,10 @@ public class FieldCodeOptions : IModel<FieldCodeOptionsDto>
 
     public FieldCodeOptionsDto ToDto()
     {
-        return new FieldCodeOptionsDto(
-                                       Id,
-                                       FieldCodeId,
-                                       Option
-                                      );
+        return new FieldCodeOptionsDto
+        {
+            FieldCodeId = Id,
+            Option = Option,
+        };                       
     }
 }

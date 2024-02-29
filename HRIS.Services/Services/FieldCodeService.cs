@@ -28,10 +28,12 @@ public class FieldCodeService : IFieldCodeService
         if (newFieldCode != null && fieldCodeDto.Options.Count > 0)
             foreach (var option in fieldCodeDto.Options)
             {
-                var fieldCodeOptionsDto = new FieldCodeOptionsDto(
-                                                                  0,
-                                                                  newFieldCode.Id,
-                                                                  option.Option);
+                var fieldCodeOptionsDto = new FieldCodeOptionsDto
+                {
+                   Id = 0,
+                   FieldCodeId = newFieldCode.Id,
+                   Option = option.Option
+                };
                 await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
             }
 
