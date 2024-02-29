@@ -137,7 +137,7 @@ public class EmployeeDocumentServiceUnitTest
     public async Task SaveEmployeeDocumentFail()
     {
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync((EmployeeDto)null);
+                            .ReturnsAsync((EmployeeDto?)null);
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _employeeDocumentService
             .SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za"));
@@ -310,7 +310,7 @@ public class EmployeeDocumentServiceUnitTest
                        .Returns(mockEmployeeDbSet.AsQueryable().BuildMock());
 
         var result = await _employeeDocumentService.CheckEmployee(employeeId);
-        Assert.Equal(false, result);
+        Assert.False(result);
         
     }
 }

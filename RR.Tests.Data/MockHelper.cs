@@ -5,7 +5,7 @@ namespace RR.Tests.Data;
 
 public static class MockHelper
 {
-    public static Mock<DbSet<T>> GetMockDbSet<T>(IQueryable<T> data = null) where T : class
+    public static Mock<DbSet<T>> GetMockDbSet<T>(IQueryable<T>? data = null) where T : class
     {
         var mockSet = new Mock<DbSet<T>>();
         if (data != null)
@@ -23,7 +23,7 @@ public static class MockHelper
         return mockSet;
     }
 
-    public static Mock<MockableDbSetWithExtensions<T>> GetMockableDbSetWithExtensions<T>(IQueryable<T> data = null)
+    public static Mock<MockableDbSetWithExtensions<T>> GetMockableDbSetWithExtensions<T>(IQueryable<T>? data = null)
         where T : class
     {
         var mockSet = new Mock<MockableDbSetWithExtensions<T>>();

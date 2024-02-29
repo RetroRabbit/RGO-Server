@@ -6,5 +6,5 @@ public class AuditLogDto
     public EmployeeDto? EditFor { get; set; }
     public EmployeeDto? EditBy { get; set; }
     public DateTime EditDate { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
 }

@@ -34,7 +34,7 @@ public class EmployeeDocumentUnitTests
         };
 
         if (employee != null)
-            employeeDocument.Employee = new Employee(employee, employee.EmployeeType);
+            employeeDocument.Employee = new Employee(employee, employee.EmployeeType!);
 
         return employeeDocument;
     }
@@ -54,7 +54,7 @@ public class EmployeeDocumentUnitTests
                                                       _employee);
         var dto = employeeDocument.ToDto();
 
-        Assert.Equal(dto.EmployeeId!, employeeDocument.Employee.Id);
+        Assert.Equal(dto.EmployeeId!, employeeDocument.Employee!.Id);
 
         var initializedEmployeeDocument = new EmployeeDocument(dto);
 

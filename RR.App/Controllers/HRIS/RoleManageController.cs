@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,14 +10,14 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class RoleManageController : ControllerBase
 {
-    private readonly IRoleAccessLinkService _roleAccessLinkService;
-    private readonly IRoleAccessService _roleAccessService;
-    private readonly IRoleService _roleService;
+    private readonly IRoleAccessLinkService? _roleAccessLinkService;
+    private readonly IRoleAccessService? _roleAccessService;
+    private readonly IRoleService? _roleService;
 
     public RoleManageController(
-        IRoleAccessLinkService roleAccessLinkService,
-        IRoleService roleService,
-        IRoleAccessService roleAccessService)
+        IRoleAccessLinkService? roleAccessLinkService,
+        IRoleService? roleService,
+        IRoleAccessService? roleAccessService)
     {
         _roleAccessLinkService = roleAccessLinkService;
         _roleService = roleService;
@@ -28,6 +29,11 @@ public class RoleManageController : ControllerBase
     public async Task<IActionResult> AddPermission([FromQuery] string role, [FromQuery] string permission,
                                                    [FromQuery] string grouping)
     {
+        if (_roleService == null || _roleAccessService == null || _roleAccessLinkService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var foundRole = await _roleService.CheckRole(role)
@@ -55,6 +61,11 @@ public class RoleManageController : ControllerBase
     public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission,
                                                       string grouping)
     {
+        if (_roleService == null || _roleAccessService == null || _roleAccessLinkService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var foundRole = await _roleService.CheckRole(role)
@@ -81,6 +92,11 @@ public class RoleManageController : ControllerBase
     [HttpGet("permissions")]
     public async Task<IActionResult> GetRolePermissions([FromQuery] string role)
     {
+        if (_roleAccessLinkService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
@@ -97,6 +113,11 @@ public class RoleManageController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllRoleAccessLink()
     {
+        if (_roleAccessLinkService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roleAccessLink = await _roleAccessLinkService.GetAll();
@@ -113,6 +134,11 @@ public class RoleManageController : ControllerBase
     [HttpGet("role-access-links")]
     public async Task<IActionResult> GetAllRoleAccessLinks()
     {
+        if (_roleAccessLinkService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roleAccessLink = await _roleAccessLinkService.GetAllRoleAccessLink();
@@ -129,6 +155,11 @@ public class RoleManageController : ControllerBase
     [HttpGet("role-accesses")]
     public async Task<IActionResult> GetAllRoleAccesses()
     {
+        if (_roleAccessService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roleAccesses = await _roleAccessService.GetAllRoleAccess();
@@ -145,6 +176,11 @@ public class RoleManageController : ControllerBase
     [HttpGet("roles")]
     public async Task<IActionResult> GetAllRoles()
     {
+        if (_roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roles = await _roleService.GetAll();

@@ -18,12 +18,12 @@ public class EmployeeDataConsumer
 {
     private const string QueueName = "employee_data_queue";
     private const int TimeInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
-    private readonly IModel _channel;
-    private readonly IConnection _connection;
+    private readonly IModel? _channel;
+    private readonly IConnection? _connection;
 
-    private readonly Timer _consumeTimer;
+    private readonly Timer? _consumeTimer;
 
-    private readonly ConnectionFactory _factory;
+    private readonly ConnectionFactory? _factory;
     private readonly string ApplicationName = "Retro HR";
 
     private readonly string[] Scopes = { GmailService.Scope.GmailSend };
@@ -38,7 +38,7 @@ public class EmployeeDataConsumer
             _channel.QueueDeclare(QueueName, true, false, false, null);
 
             _consumeTimer = new Timer(TimeInterval);
-            _consumeTimer.Elapsed += OnTimedEvent;
+            _consumeTimer.Elapsed += OnTimedEvent!;
             _consumeTimer.AutoReset = true;
             _consumeTimer.Enabled = true;
         }
@@ -58,7 +58,7 @@ public class EmployeeDataConsumer
         {
             var credPath = "token.json";
             credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                                                                     GoogleClientSecrets.Load(stream).Secrets,
+                                                                     GoogleClientSecrets.FromStream(stream).Secrets,
                                                                      Scopes,
                                                                      "user",
                                                                      CancellationToken.None,
@@ -119,10 +119,15 @@ public class EmployeeDataConsumer
         return Convert.ToBase64String(inputBytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
     }
 
-    private bool IsValidEmail(string email)
+    private bool IsValidEmail(string? email)
     {
         try
         {
+            if(email == null)
+            {
+                email = string.Empty;
+            }
+
             var addr = new MailAddress(email);
             return addr.Address == email;
         }
@@ -143,12 +148,12 @@ public class EmployeeDataConsumer
 
         while (true)
         {
-            var result = _channel.BasicGet(QueueName, false);
+            var result = _channel!.BasicGet(QueueName, false);
             if (result == null) break;
 
             var body = result.Body.ToArray();
             var employeeData = JsonConvert.DeserializeObject<Employee>(Encoding.UTF8.GetString(body));
-            newEmployee.Add(employeeData);
+            newEmployee.Add(employeeData!);
 
             _channel.BasicAck(result.DeliveryTag, false);
         }

@@ -34,7 +34,7 @@ public class MonthlyEmployeeTotal : IModel<MonthlyEmployeeTotalDto>
 
     [Column("businessSupportTotal")] public int BusinessSupportTotal { get; set; }
 
-    [Column("month")] public string Month { get; set; }
+    [Column("month")] public string? Month { get; set; }
 
     [Column("year")] public int Year { get; set; }
 

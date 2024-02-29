@@ -12,7 +12,7 @@ public class ChurnRateDataCard
 
     public double BusinessSupportChurnRate { get; set; }
 
-    public string Month { get; set; }
+    public string? Month { get; set; }
 
     public int Year { get; set; }
 }

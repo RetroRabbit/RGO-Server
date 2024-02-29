@@ -29,9 +29,9 @@ public class FieldCode : IModel<FieldCodeDto>
         Required = fieldCodeDto.Required;
     }
 
-    [Column("code")] public string Code { get; set; }
+    [Column("code")] public string? Code { get; set; }
 
-    [Column("name")] public string Name { get; set; }
+    [Column("name")] public string? Name { get; set; }
 
     [Column("description")] public string? Description { get; set; }
 

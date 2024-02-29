@@ -6,8 +6,8 @@ public class FieldCodeDto
 {
     // TODO : Remove this Constructor + Update UNIT TESTS
     public FieldCodeDto(int Id,
-                        string Code,
-                        string Name,
+                        string? Code,
+                        string? Name,
                         string? Description,
                         string? Regex,
                         FieldCodeType Type,
@@ -30,10 +30,10 @@ public class FieldCodeDto
         this.Required = Required;
     }
 
-    public List<FieldCodeOptionsDto> Options { get; set; }
+    public List<FieldCodeOptionsDto>? Options { get; set; }
     public int Id { get; set; }
-    public string Code { get; set; }
-    public string Name { get; set; }
+    public string? Code { get; set; }
+    public string? Name { get; set; }
     public string? Description { get; set; }
     public string? Regex { get; set; }
     public FieldCodeType Type { get; set; }

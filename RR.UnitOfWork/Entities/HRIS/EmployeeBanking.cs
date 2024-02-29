@@ -33,27 +33,27 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("bankName")] public string BankName { get; set; }
+    [Column("bankName")] public string? BankName { get; set; }
 
-    [Column("branch")] public string Branch { get; set; }
+    [Column("branch")] public string? Branch { get; set; }
 
-    [Column("accountNo")] public string AccountNo { get; set; }
+    [Column("accountNo")] public string? AccountNo { get; set; }
 
     [Column("accountType")] public EmployeeBankingAccountType AccountType { get; set; }
 
-    [Column("accountHolderName")] public string AccountHolderName { get; set; }
+    [Column("accountHolderName")] public string? AccountHolderName { get; set; }
 
     [Column("status")] public BankApprovalStatus Status { get; set; }
 
-    [Column("reason")] public string DeclineReason { get; set; }
+    [Column("reason")] public string? DeclineReason { get; set; }
 
-    [Column("file")] public string File { get; set; }
+    [Column("file")] public string? File { get; set; }
 
     [Column("lastUpdateDate")] public DateOnly LastUpdateDate { get; set; }
 
     [Column("pendingUpdateDate")] public DateOnly PendingUpdateDate { get; set; }
 
-    public virtual Employee Employee { get; set; }
+    public virtual Employee? Employee { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

@@ -17,7 +17,7 @@ public class ChartServiceUnitTests
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IServiceProvider> _services;
     private readonly Mock<IUnitOfWork> _unitOfWork;
-    private EmployeeAddressDto employeeAddressDto;
+    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType1;
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
@@ -34,11 +34,11 @@ public class ChartServiceUnitTests
         employeeTypeDto2 = new EmployeeTypeDto(7, "People Champion");
         employeeType1 = new EmployeeType(employeeTypeDto1);
         employeeType2 = new EmployeeType(employeeTypeDto2);
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto1));
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 

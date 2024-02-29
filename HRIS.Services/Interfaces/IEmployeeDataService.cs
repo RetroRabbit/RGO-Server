@@ -24,7 +24,7 @@ public interface IEmployeeDataService
     /// </summary>
     /// <param name="employeeId"></param>
     /// <returns>List of Employee data</returns>
-    Task<List<EmployeeDataDto>> GetAllEmployeeData(int employeeId);
+    Task<List<EmployeeDataDto>?> GetAllEmployeeData(int employeeId);
 
     /// <summary>
     ///     Update Employee Data

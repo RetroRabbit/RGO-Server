@@ -13,7 +13,7 @@ public class EmployeeAddressServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeAddressService _employeeAddressService;
-    private readonly EmployeeDto _employeeDto;
+    //private readonly EmployeeDto? _employeeDto;
 
     public EmployeeAddressServiceUnitTest()
     {
@@ -40,7 +40,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(1);
 
-        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto)null);
+        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto?)null);
 
         var result = await _employeeAddressService.CheckIfExists(address);
 
@@ -150,7 +150,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(1);
 
-        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto)null);
+        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto?)null);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Update(address));
     }
