@@ -10,6 +10,7 @@ using System.Text;
 using HRIS.Models;
 using HRIS.Services.Services;
 using RabbitMQ.Client;
+using System.Xml.Linq;
 
 namespace RR.App
 {
@@ -153,10 +154,10 @@ namespace RR.App
             new AuthorizationPolicySettings
             {
                 Policies = policies
-                .Select(policy => new PolicySettings(
-                    policy.Value["Name"].First(),
-                    policy.Value["Roles"],
-                    policy.Value["Permissions"]))
+                .Select(policy => new PolicySettings {
+                    Name = policy.Value["Name"].First(),
+                    Roles = policy.Value["Roles"],
+                    Permissions = policy.Value["Permissions"]})
                 .ToList()
             }.Policies.ForEach(policySettings =>
             {
