@@ -36,7 +36,7 @@ public class ChartService : IChartService
             employees = await _employeeService.GetAll();
         else
             employees = await _db.Employee
-                                 .Get(employee => roleList.Contains(employee.EmployeeType.Name))
+                                 .Get(employee => roleList.Contains(employee.EmployeeType!.Name!))
                                  .Include(employee => employee.EmployeeType)
                                  .Select(employee => employee.ToDto())
                                  .AsNoTracking()
@@ -163,7 +163,7 @@ public class ChartService : IChartService
         return quantifiableColumnNames;
     }
 
-    public async Task<byte[]> ExportCsvAsync(List<string> dataTypes)
+    public async Task<byte[]?> ExportCsvAsync(List<string> dataTypes)
     {
         var employees = await _db.Employee.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
@@ -211,7 +211,7 @@ public class ChartService : IChartService
                         var val = propertyInfo.GetValue(employee);
 
                         if (val != null)
-                            formattedData += $",{val.ToString().Replace(",", "").Trim()}";
+                            formattedData += $",{val.ToString()!.Replace(",", "").Trim()}";
                     }
                 }
 

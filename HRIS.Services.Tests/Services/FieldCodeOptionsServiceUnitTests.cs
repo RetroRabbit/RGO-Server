@@ -31,7 +31,7 @@ public class FieldCodeOptionsServiceUnitTests
         var result = await _fieldCodeOptionsService.GetAllFieldCodeOptions();
 
         Assert.NotNull(result);
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
         Assert.Equal(fields, result);
     }
 

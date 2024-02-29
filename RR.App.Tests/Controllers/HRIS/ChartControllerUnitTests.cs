@@ -280,7 +280,7 @@ public class ChartControllerUnitTests
     {
         var mockDataTypes = new List<string> { "Type1", "Type2", "Type3" };
 
-        byte[] mockCsvData = null;
+        byte[]? mockCsvData = null;
 
         _chartServiceMock.Setup(service => service.ExportCsvAsync(mockDataTypes))
                          .ReturnsAsync(mockCsvData);

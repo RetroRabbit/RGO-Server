@@ -16,7 +16,7 @@ public class FieldCodeUnitTests
     }
 
     [Fact]
-    public async Task FieldCodeToDtoTest()
+    public void FieldCodeToDtoTest()
     {
         var fieldCodeDto = new FieldCodeDto
         {

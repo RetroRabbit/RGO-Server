@@ -18,7 +18,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     public async Task<EmployeeCertificationDto> SaveEmployeeCertification(
         EmployeeCertificationDto employeeCertificationDto)
     {
-        var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee.Id);
+        var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
 
         if (!ifEmployee) throw new Exception("Employee not found");
 
@@ -81,7 +81,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     public async Task<EmployeeCertificationDto> UpdateEmployeeCertification(
         EmployeeCertificationDto employeeCertificationDto)
     {
-        var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee.Id);
+        var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
 
         if (!ifEmployee) throw new Exception("Employee not found");
         var employeeCertification = new EmployeeCertification(employeeCertificationDto);
@@ -93,7 +93,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     public async Task<EmployeeCertificationDto> DeleteEmployeeCertification(
         EmployeeCertificationDto employeeCertificationDto)
     {
-        var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee.Id);
+        var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
 
         if (!ifEmployee) throw new Exception("Employee not found");
 

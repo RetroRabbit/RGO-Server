@@ -12,11 +12,11 @@ public class PeopleChampionType : BaseDataType
     {
         var prop = typeof(EmployeeDto).GetProperty("PeopleChampion");
         if (prop == null || employee.PeopleChampion == null)
-            return null;
+            return null!;
 
-        var id = (int)prop.GetValue(employee);
-        var task = services.GetService<IEmployeeService>().GetById(id);
+        var id = (int)prop.GetValue(employee)!;
+        var task = services.GetService<IEmployeeService>()!.GetById(id);
         var champion = task.GetAwaiter().GetResult();
-        return champion.Name + ' ' + champion.Surname + ", ";
+        return champion!.Name + ' ' + champion.Surname + ", ";
     }
 }

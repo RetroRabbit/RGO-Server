@@ -27,17 +27,17 @@ public class EmployeeProject : IModel<EmployeeProjectDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("name")] public string Name { get; set; }
+    [Column("name")] public string? Name { get; set; }
 
-    [Column("description")] public string Description { get; set; }
+    [Column("description")] public string? Description { get; set; }
 
-    [Column("client")] public string Client { get; set; }
+    [Column("client")] public string? Client { get; set; }
 
     [Column("startDate")] public DateTime StartDate { get; set; }
 
     [Column("endDate")] public DateTime? EndDate { get; set; }
 
-    public virtual Employee Employee { get; set; }
+    public virtual Employee? Employee { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

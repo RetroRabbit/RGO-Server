@@ -38,7 +38,7 @@ public class EmployeeDataControllerUnitTests
         var id = 1;
         var mockEmployeeDataService = new Mock<IEmployeeDataService>();
         mockEmployeeDataService.Setup(service => service.GetAllEmployeeData(id))
-                               .ReturnsAsync((List<EmployeeDataDto>)null);
+                               .ReturnsAsync((List<EmployeeDataDto>?)null);
 
         var controller = new EmployeeDataController(mockEmployeeDataService.Object);
 

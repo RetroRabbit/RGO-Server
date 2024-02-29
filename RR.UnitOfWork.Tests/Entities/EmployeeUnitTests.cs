@@ -7,7 +7,7 @@ namespace RR.UnitOfWork.Tests.Entities;
 public class EmployeeUnitTests
 {
     [Fact]
-    public async Task EmployeeTest()
+    public void EmployeeTest()
     {
         var employee = new Employee();
 
@@ -16,7 +16,7 @@ public class EmployeeUnitTests
     }
 
     [Fact]
-    public async Task toDtoTest()
+    public void toDtoTest()
     {
         var employee = new Employee();
         var employeeDto = employee.ToDto();

@@ -22,7 +22,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                                           .Get(entry => entry.Status == (BankApprovalStatus)approvalStatus)
                                           .AsNoTracking()
                                           .Include(entry => entry.Employee)
-                                          .Include(entry => entry.Employee.EmployeeType)
+                                          .Include(entry => entry.Employee!.EmployeeType)
                                           .Select(bankEntry => bankEntry)
                                           .ToListAsync();
 
@@ -48,17 +48,17 @@ public class EmployeeBankingService : IEmployeeBankingService
 
         if (empDto.Email == userEmail)
         {
-            bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
+            bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
         }
         else
         {
             if (await IsAdmin(userEmail))
-                bankingDto = await CreateEmployeeBankingDto(newEntry, empBankingDto);
+                bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
             else
                 throw new Exception("Unauthorized access");
         }
 
-        var newEmployee = new Employee(empDto, empDto.EmployeeType);
+        var newEmployee = new Employee(empDto, empDto.EmployeeType!);
         var entry = new EmployeeBanking(bankingDto);
         entry.Employee = newEmployee;
 
@@ -78,9 +78,9 @@ public class EmployeeBankingService : IEmployeeBankingService
                                            .Select(employeeBanking => employeeBanking.ToDto())
                                            .FirstOrDefaultAsync();
 
-            return employeeBanking;
+            return employeeBanking!;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw new Exception("Employee banking details not found");
         }
@@ -98,7 +98,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                                 .Select(employee => employee)
                                 .FirstAsync();
 
-        EmployeeBankingDto newEntryDto = null;
+        EmployeeBankingDto? newEntryDto = null;
 
         if (employee.Email == userEmail)
         {
@@ -125,17 +125,17 @@ public class EmployeeBankingService : IEmployeeBankingService
                                    .FirstOrDefaultAsync();
 
         var empRole = await _db.EmployeeRole
-                               .Get(role => role.EmployeeId == employeeDto.Id)
+                               .Get(role => role.EmployeeId == employeeDto!.Id)
                                .FirstOrDefaultAsync();
 
         var role = await _db.Role
-                            .Get(role => role.Id == empRole.RoleId)
+                            .Get(role => role.Id == empRole!.RoleId)
                             .FirstOrDefaultAsync();
 
-        return role.Description is "Admin" or "SuperAdmin";
+        return role!.Description is "Admin" or "SuperAdmin";
     }
 
-    private async Task<EmployeeBankingDto> CreateEmployeeBankingDto(EmployeeBankingDto newEntry,
+    private EmployeeBankingDto CreateEmployeeBankingDto(EmployeeBankingDto newEntry,
                                                                     EmployeeBankingDto empBankingDto)
     {
         var Bankingdto = new EmployeeBankingDto

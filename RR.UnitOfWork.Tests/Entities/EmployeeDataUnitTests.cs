@@ -59,7 +59,7 @@ public class EmployeeDataUnitTests
         };
 
         if (employee != null)
-            employeeData.Employee = new Employee(employee, employee.EmployeeType);
+            employeeData.Employee = new Employee(employee, employee.EmployeeType!);
 
         if (fieldCode != null)
             employeeData.FieldCode = new FieldCode(fieldCode);

@@ -15,7 +15,7 @@ public class LevelTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private EmployeeAddressDto employeeAddressDto;
+    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private readonly LevelType levelType;
@@ -27,9 +27,9 @@ public class LevelTypeUnitTest
         levelType = new LevelType();
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
@@ -45,13 +45,13 @@ public class LevelTypeUnitTest
     }
 
     [Fact]
-    public async Task LevelTypeNullTestSuccess()
+    public void LevelTypeNullTestSuccess()
     {
         var employeeDto = CreateEmployee(null);
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -64,7 +64,7 @@ public class LevelTypeUnitTest
     }
 
     [Fact]
-    public async Task LevelTypeNullFail()
+    public void LevelTypeNullFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
@@ -73,7 +73,7 @@ public class LevelTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
@@ -90,13 +90,13 @@ public class LevelTypeUnitTest
     }
 
     [Fact]
-    public async Task LevelTypeValueTestSuccess()
+    public void LevelTypeValueTestSuccess()
     {
         var employeeDto = CreateEmployee(3);
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -109,7 +109,7 @@ public class LevelTypeUnitTest
     }
 
     [Fact]
-    public async Task LevelTypeValueTestFail()
+    public void LevelTypeValueTestFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
@@ -118,7 +118,7 @@ public class LevelTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
