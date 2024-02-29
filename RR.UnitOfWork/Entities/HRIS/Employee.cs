@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using HRIS.Models;
 using HRIS.Models.Enums;
-using RR.UnitOfWork.Interfaces.HRIS;
+using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 

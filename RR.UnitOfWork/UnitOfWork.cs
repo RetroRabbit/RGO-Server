@@ -1,7 +1,9 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using RR.UnitOfWork.Interfaces.ATS;
 using RR.UnitOfWork.Interfaces.HRIS;
+using RR.UnitOfWork.Repositories.ATS;
 using RR.UnitOfWork.Repositories.HRIS;
 
 namespace RR.UnitOfWork;
@@ -39,6 +41,7 @@ public class UnitOfWork : IUnitOfWork
         EmployeeBanking = new EmployeeBankingRepository(_db);
         Client = new ClientRepository(_db);
         MonthlyEmployeeTotal = new MonthlyEmployeeTotalRepository(_db);
+        Applicant = new ApplicantRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -69,7 +72,7 @@ public class UnitOfWork : IUnitOfWork
     public IClientRepository Client { get; }
 
     public IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
-
+    public IApplicantRepository Applicant { get; }
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
         await _db.Database.ExecuteSqlRawAsync(sql, parameters);

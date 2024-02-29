@@ -35,13 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ATS.Services\ATS.Services.csproj" />
     <ProjectReference Include="..\HRIS.Models\HRIS.Models.csproj" />
     <ProjectReference Include="..\HRIS.Services\HRIS.Services.csproj" />
     <ProjectReference Include="..\RR.UnitOfWork\RR.UnitOfWork.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\ATS\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
