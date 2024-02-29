@@ -4,6 +4,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -26,7 +27,7 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task SaveEmployeeTypeTestFail()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = EmployeeTypeTestData.DeveloperType;
         var employeeType = new EmployeeType(employeeTypeDto);
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
@@ -50,7 +51,8 @@ public class EmployeeTypesServiceUnitTest
     [Fact]
     public async Task SaveEmployeeTypeTestSuccessSave()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = EmployeeTypeTestData.DeveloperType;
+
         var employeeType = new EmployeeType(employeeTypeDto);
 
         _employeeTypeServiceMock.Setup(x => x.SaveEmployeeType(employeeTypeDto)).ReturnsAsync(employeeTypeDto);

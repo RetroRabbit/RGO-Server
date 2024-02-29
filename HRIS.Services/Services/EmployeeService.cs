@@ -58,7 +58,7 @@ public class EmployeeService : IEmployeeService
         catch (Exception)
         {
             var newEmployeeType = await _employeeTypeService
-                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType!.Name));
+                .SaveEmployeeType(new EmployeeTypeDto { Id = 0, Name = employeeDto.EmployeeType!.Name });
 
             employee = new Employee(employeeDto, newEmployeeType);
         }
