@@ -38,10 +38,10 @@ public class PropertyAccess : IModel<PropertyAccessDto>
 
     public PropertyAccessDto ToDto()
     {
-        return new PropertyAccessDto(
-                                     Id,
-                                     Role?.ToDto(),
-                                     Condition,
-                                     FieldCode?.ToDto());
+        return new PropertyAccessDto {
+                                     Id = Id,
+                                     Role = Role?.ToDto(),
+                                     Condition = Condition,
+                                     FieldCode = FieldCode?.ToDto()};
     }
 }
