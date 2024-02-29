@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
+using System.Security;
 using Xunit;
 
 namespace RR.UnitOfWork.Tests.Entities;
@@ -17,8 +18,8 @@ public class RoleAccessLinkUnitTests
     [Fact]
     public void roleAccessLinkToDtoTest()
     {
-        var roleDto = new RoleDto{Id = 0, Description = "Employee"};
-        var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
+        var roleDto = new RoleDto { Id = 0, Description = "Employee" };
+        var roleAccessDto = new RoleAccessDto{Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data"};
 
         var roleAccessLinkDto = new RoleAccessLinkDto(
                                                       1,
@@ -37,7 +38,7 @@ public class RoleAccessLinkUnitTests
     public void roleAccessLinkToDtoNullTest()
     {
         var roleDto = new RoleDto { Id = 0, Description = "Employee" };
-        var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
+        var roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
 
         var roleAccessLinkDto = new RoleAccessLinkDto(
                                                       1,

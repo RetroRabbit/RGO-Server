@@ -27,7 +27,7 @@ public class RoleAccessLinkServiceUnitTest
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object);
         _roleDto = new RoleDto {Id = 1, Description = "Employee"};
-        _roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
+        _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
         _roleAccessLinkDto = new RoleAccessLinkDto(1, _roleDto, _roleAccessDto);
     }
 
@@ -375,7 +375,7 @@ public class RoleAccessLinkServiceUnitTest
         var roleAccessLinkToUpdate = new RoleAccessLinkDto(
                                                            _roleAccessLinkDto.Id,
                                                            new RoleDto { Id = 1, Description = "Employee"},
-                                                           new RoleAccessDto(2, "EditEmployee", "Employee Data"));
+                                                           new RoleAccessDto { Id = 2, Permission = "EditEmployee", Grouping = "Employee Data" });
 
         _dbMock
             .Setup(r => r.RoleAccessLink.Update(It.IsAny<RoleAccessLink>()))
