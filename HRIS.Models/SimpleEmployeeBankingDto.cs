@@ -4,7 +4,6 @@ namespace HRIS.Models;
 
 public class SimpleEmployeeBankingDto
 {
-    // TODO : Remove this Constructor + Update UNIT TESTS
     public int Id { get; set; }
     public int EmployeeId { get; set; }
     public string BankName { get; set; }
