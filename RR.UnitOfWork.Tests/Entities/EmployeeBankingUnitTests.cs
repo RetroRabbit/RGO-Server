@@ -38,7 +38,7 @@ public class EmployeeBankingUnitTests
         };
 
         if (employee != null)
-            employeeBanking.Employee = new Employee(employee, employee.EmployeeType);
+            employeeBanking.Employee = new Employee(employee, employee.EmployeeType!);
 
         return employeeBanking;
     }

@@ -35,7 +35,7 @@ public class EmployeeTypesServiceUnitTest
 
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>())).Throws(new Exception());
         _employeeTypeServiceMock.Setup(x => x.SaveEmployeeType(employeeTypeDto)).ReturnsAsync(employeeTypeDto);
-        _employeeTypeServiceMock.Setup(x => x.GetEmployeeType(employeeType.Name)).ReturnsAsync(employeeTypeDto);
+        _employeeTypeServiceMock.Setup(x => x.GetEmployeeType(employeeType.Name!)).ReturnsAsync(employeeTypeDto);
 
         _dbMock.Setup(r => r.EmployeeType.Add(It.IsAny<EmployeeType>())).Returns(Task.FromResult(employeeTypeDto));
         _dbMock.Setup(x => x.EmployeeType.Add(employeeType)).ReturnsAsync(employeeTypeDto);
@@ -57,7 +57,7 @@ public class EmployeeTypesServiceUnitTest
 
         _employeeTypeServiceMock.Setup(x => x.SaveEmployeeType(employeeTypeDto)).ReturnsAsync(employeeTypeDto);
 
-        _employeeTypeServiceMock.Setup(x => x.GetEmployeeType(employeeType.Name)).ReturnsAsync(employeeTypeDto);
+        _employeeTypeServiceMock.Setup(x => x.GetEmployeeType(employeeType.Name!)).ReturnsAsync(employeeTypeDto);
 
         _dbMock.Setup(r => r.EmployeeType.Add(It.IsAny<EmployeeType>())).Returns(Task.FromResult(employeeTypeDto));
         _dbMock.Setup(x => x.EmployeeType.Add(employeeType)).ReturnsAsync(employeeTypeDto);
@@ -126,14 +126,14 @@ public class EmployeeTypesServiceUnitTest
             new(employeeTypeDto)
         };
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
 
         _dbMock.Setup(e => e.EmployeeType.Get(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .Returns(employeeTypeList.AsQueryable().BuildMock());
         _dbMock.Setup(x => x.EmployeeType.Delete(employeeTypeList[0].Id)).Returns(Task.FromResult(employeeTypeDto));
 
-        var result = await employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Name);
+        var result = await employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Name!);
 
         Assert.NotNull(result);
         Assert.Equal(employeeTypeDto, result);
@@ -150,8 +150,8 @@ public class EmployeeTypesServiceUnitTest
             new(employeeTypeDto)
         };
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name)).Throws(new Exception());
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name!)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
@@ -160,7 +160,7 @@ public class EmployeeTypesServiceUnitTest
                .Returns(employeeTypeList.AsQueryable().BuildMock());
         _dbMock.Setup(x => x.EmployeeType.Delete(employeeTypeList[0].Id)).Returns(Task.FromResult(employeeTypeDto));
 
-        var result = await employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Name);
+        var result = await employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Name!);
 
         Assert.NotNull(result);
         Assert.Equal(employeeTypeDto, result);
@@ -197,14 +197,14 @@ public class EmployeeTypesServiceUnitTest
             new(employeeTypeDto)
         };
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name!)).Throws(new Exception());
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .Returns(Task.FromResult(false));
         _dbMock.Setup(e => e.EmployeeType.Get(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .Returns(employeeTypeList.AsQueryable().BuildMock());
 
-        var result = await employeeTypeService.GetEmployeeType(employeeTypeList[0].Name);
+        var result = await employeeTypeService.GetEmployeeType(employeeTypeList[0].Name!);
 
         Assert.NotNull(result);
         Assert.Equal(employeeTypeDto.Id, result.Id);
@@ -268,7 +268,7 @@ public class EmployeeTypesServiceUnitTest
             new(employeeTypeDto)
         };
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
 
         _dbMock.Setup(e => e.EmployeeType.Get(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
@@ -292,8 +292,8 @@ public class EmployeeTypesServiceUnitTest
             new(employeeTypeDto)
         };
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name)).Throws(new Exception());
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeList[0].Name!)).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))

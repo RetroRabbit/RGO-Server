@@ -22,7 +22,7 @@ public interface IFieldCodeService
     ///     Get all field codes
     /// </summary>
     /// <returns></returns>
-    Task<List<FieldCodeDto>> GetAllFieldCodes();
+    Task<List<FieldCodeDto>?> GetAllFieldCodes();
 
     /// <summary>
     ///     Update field code

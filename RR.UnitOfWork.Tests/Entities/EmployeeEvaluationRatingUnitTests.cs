@@ -47,7 +47,7 @@ public class EmployeeEvaluationRatingUnitTests
             entity.Evaluation = new EmployeeEvaluation(evaluation);
 
         if (employee != null)
-            entity.Employee = new Employee(employee, employee.EmployeeType);
+            entity.Employee = new Employee(employee, employee.EmployeeType!);
 
         return entity.ToDto();
     }

@@ -17,8 +17,8 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> SaveRole(RoleDto roleDto)
     {
-        var isRoleExist = await CheckRole(roleDto.Description);
-        if (isRoleExist) return await GetRole(roleDto.Description);
+        var isRoleExist = await CheckRole(roleDto.Description!);
+        if (isRoleExist) return await GetRole(roleDto.Description!);
 
         return await _db.Role.Add(new Role(roleDto));
     }

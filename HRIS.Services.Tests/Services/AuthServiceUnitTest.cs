@@ -17,20 +17,20 @@ public class AuthServiceUnitTest
     private readonly AuthService _authService;
     private readonly Mock<IAuthService> _authServiceMock;
     private readonly Mock<IConfiguration> _configuration;
-    private readonly Mock<IEmployeeAddressService> _employeeAddressService;
+    //private readonly Mock<IEmployeeAddressService>? _employeeAddressService;
     private readonly Mock<IEmployeeRoleService> _employeeRoleServiceMock;
     private readonly Mock<IEmployeeService> _employeeService;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IRoleAccessLinkService> _roleAccessLinkService;
-    private readonly Mock<IRoleService> _roleService;
+    //private readonly Mock<IRoleService> _roleService;
     private readonly Mock<IUnitOfWork> _unitOfWork;
-    private EmployeeAddressDto employeeAddressDto;
-    private readonly EmployeeType employeeType1;
-    private readonly EmployeeType employeeType2;
+    private EmployeeAddressDto? employeeAddressDto;
+    private readonly EmployeeType? employeeType1;
+    private readonly EmployeeType? employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
-    private readonly EmployeeTypeDto employeeTypeDto2;
+    private readonly EmployeeTypeDto? employeeTypeDto2;
 
-    private EmployeeTypeService employeeTypeService;
+    private EmployeeTypeService? employeeTypeService;
 
     public AuthServiceUnitTest()
     {
@@ -48,12 +48,12 @@ public class AuthServiceUnitTest
         employeeType1 = new EmployeeType(employeeTypeDto1);
         employeeType2 = new EmployeeType(employeeTypeDto2);
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto1));
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
 
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _authService = new AuthService(_configuration.Object, _employeeService.Object, _roleAccessLinkService.Object);
     }
@@ -63,7 +63,7 @@ public class AuthServiceUnitTest
     {
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -85,7 +85,7 @@ public class AuthServiceUnitTest
 
         var result = await _authService.CheckUserExist("dm@retrorabbit.co.za");
 
-        Assert.NotNull(result);
+        //Assert.NotNull(result);
         Assert.IsType<bool>(result);
         Assert.True(result);
     }
@@ -95,7 +95,7 @@ public class AuthServiceUnitTest
     {
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         var roleDto = new RoleDto { Id = 1, Description = "Developer" };
 
@@ -142,7 +142,7 @@ public class AuthServiceUnitTest
     {
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),

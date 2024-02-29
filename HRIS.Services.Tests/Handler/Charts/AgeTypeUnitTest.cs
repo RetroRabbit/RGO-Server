@@ -16,7 +16,7 @@ public class AgeTypeUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly AgeType ageType;
-    private readonly EmployeeAddressDto employeeAddressDto;
+    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private RoleDto roleDto;
@@ -29,9 +29,9 @@ public class AgeTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto{ Id = 3, Description = "Employee" };
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
@@ -46,14 +46,14 @@ public class AgeTypeUnitTest
     }
 
     [Fact]
-    public async Task GenerateDataDobTestSuccess()
+    public void GenerateDataDobTestSuccess()
     {
         var testDate = "05/05/2005";
         var employeeDto = CreateEmployee(Convert.ToDateTime(testDate));
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, employeeDto.EmployeeType)
+            new(employeeDto, employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))

@@ -33,14 +33,14 @@ public class PropertyAccessService : IPropertyAccessService
 
         foreach (var access in properties.Where(a => a.Condition != 0))
         {
-            var value = await GetSqlValues(access.FieldCode, employee);
+            var value = await GetSqlValues(access.FieldCode!, employee!);
 
             var dto = new EmployeeAccessDto(
-                                            access.FieldCode.Id,
+                                            access.FieldCode!.Id,
                                             access.Condition,
                                             access.FieldCode.Internal,
-                                            access.FieldCode.Code,
-                                            access.FieldCode.Name,
+                                            access.FieldCode.Code!,
+                                            access.FieldCode.Name!,
                                             access.FieldCode.Type.ToString().ToLower(),
                                             value,
                                             access.FieldCode.Description,
@@ -63,7 +63,7 @@ public class PropertyAccessService : IPropertyAccessService
         if (employee == null) throw new Exception("Employee not found.");
 
         var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-                            .Select(r => r.Role.Id)
+                            .Select(r => r.Role!.Id)
                             .ToList();
 
         var get = _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId));
@@ -76,7 +76,7 @@ public class PropertyAccessService : IPropertyAccessService
         foreach (var fieldValue in fields)
         {
             var field = await _db.FieldCode.GetById(fieldValue.fieldId);
-            if (field.Internal)
+            if (field!.Internal)
             {
                 var table = field.InternalTable;
                 var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
@@ -87,7 +87,7 @@ public class PropertyAccessService : IPropertyAccessService
                 switch (field.Type)
                 {
                     case FieldCodeType.Date:
-                        valueParam = new NpgsqlParameter("value", DateOnly.Parse(fieldValue.value.ToString()));
+                        valueParam = new NpgsqlParameter("value", DateOnly.Parse(fieldValue.value.ToString()!));
                         break;
 
                     case FieldCodeType.String:
@@ -100,7 +100,7 @@ public class PropertyAccessService : IPropertyAccessService
                         break;
 
                     case FieldCodeType.Float:
-                        valueParam = new NpgsqlParameter("value", float.Parse(fieldValue.value.ToString()));
+                        valueParam = new NpgsqlParameter("value", float.Parse(fieldValue.value.ToString()!));
                         break;
 
                     default:

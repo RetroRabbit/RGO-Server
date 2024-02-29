@@ -33,7 +33,7 @@ public class AuthService : IAuthService
     {
         var employee = await _employeeService.GetEmployee(email);
 
-        return await GenerateToken(employee);
+        return await GenerateToken(employee!);
     }
 
     public async Task<string> RegisterEmployee(EmployeeDto employeeDto)
@@ -47,12 +47,12 @@ public class AuthService : IAuthService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);
-        var roles = await GetUserRoles(employee.Email);
+        var roles = await GetUserRoles(employee.Email!);
 
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, employee.Id.ToString()),
-            new(ClaimTypes.Email, employee.Email),
+            new(ClaimTypes.Email, employee.Email!),
             new(ClaimTypes.Name, employee.Name + " " + employee.Surname)
         };
 

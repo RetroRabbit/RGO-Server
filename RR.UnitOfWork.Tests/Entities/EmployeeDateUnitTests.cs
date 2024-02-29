@@ -40,7 +40,7 @@ public class EmployeeDateUnitTests
         };
 
         if (employee != null)
-            employeeDate.Employee = new Employee(employee, employee.EmployeeType);
+            employeeDate.Employee = new Employee(employee, employee.EmployeeType!);
 
         return employeeDate;
     }

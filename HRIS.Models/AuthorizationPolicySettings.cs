@@ -2,5 +2,5 @@
 
 public class AuthorizationPolicySettings
 {
-    public List<PolicySettings> Policies { get; set; }
+    public List<PolicySettings>? Policies { get; set; }
 }

@@ -20,12 +20,12 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto)
     {
-        var ifFieldCode = await GetFieldCode(fieldCodeDto.Name);
+        var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
 
         if (ifFieldCode != null) throw new Exception("Field with that name found");
 
         var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
-        if (newFieldCode != null && fieldCodeDto.Options.Count > 0)
+        if (newFieldCode != null && fieldCodeDto.Options!.Count > 0)
             foreach (var option in fieldCodeDto.Options)
             {
                 var fieldCodeOptionsDto = new FieldCodeOptionsDto(
@@ -35,7 +35,7 @@ public class FieldCodeService : IFieldCodeService
                 await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
             }
 
-        var options = await _fieldCodeOptionsService.GetFieldCodeOptions(newFieldCode.Id);
+        var options = await _fieldCodeOptionsService.GetFieldCodeOptions(newFieldCode!.Id);
         newFieldCode.Options = options;
         return newFieldCode;
     }
@@ -57,7 +57,7 @@ public class FieldCodeService : IFieldCodeService
         return fieldCode;
     }
 
-    public async Task<List<FieldCodeDto>> GetAllFieldCodes()
+    public async Task<List<FieldCodeDto>?> GetAllFieldCodes()
     {
         var fieldCodes = await _db.FieldCode.GetAll();
         var fieldCode = fieldCodes
@@ -76,15 +76,15 @@ public class FieldCodeService : IFieldCodeService
     public async Task<FieldCodeDto> UpdateFieldCode(FieldCodeDto fieldCodeDto)
     {
         await _db.FieldCode.Update(new FieldCode(fieldCodeDto));
-        if (fieldCodeDto.Options.Count > 0) await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
+        if (fieldCodeDto.Options!.Count > 0) await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
 
-        var getUpdatedFieldCode = await GetFieldCode(fieldCodeDto.Name);
-        return getUpdatedFieldCode;
+        var getUpdatedFieldCode = await GetFieldCode(fieldCodeDto.Name!);
+        return getUpdatedFieldCode!;
     }
 
     public async Task<FieldCodeDto> DeleteFieldCode(FieldCodeDto fieldCodeDto)
     {
-        var ifFieldCode = await GetFieldCode(fieldCodeDto.Name);
+        var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
         if (ifFieldCode == null) throw new Exception("No field with that name found");
 
         var newFieldCodeDto = new FieldCodeDto(ifFieldCode.Id,

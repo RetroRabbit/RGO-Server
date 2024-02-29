@@ -166,7 +166,7 @@ public class EmployeeServiceUnitTests
 
 
     [Fact]
-    public async Task GetEmployeeTest()
+    public void GetEmployeeTest()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         var _dbMock = new Mock<IUnitOfWork>();
@@ -203,7 +203,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Employee.Delete(EmployeeTestData.EmployeeDto.Id))
                .Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
 
-        var result = await employeeService.DeleteEmployee(EmployeeTestData.EmployeeDto.Email);
+        var result = await employeeService.DeleteEmployee(EmployeeTestData.EmployeeDto.Email!);
         Assert.NotNull(result);
     }
 
@@ -261,13 +261,13 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(expectedEmployees.AsQueryable().BuildMock());
 
-        var journeyEmployees = await employeeService.GetAll(EmployeeTestData.EmployeeDto2.Email);
+        var journeyEmployees = await employeeService.GetAll(EmployeeTestData.EmployeeDto2.Email!);
 
-        Assert.Equal(journeyEmployees.Count, 1);
+        Assert.Single(journeyEmployees);
     }
 
     [Fact]
-    public async Task CheckEmployeeExistsTest()
+    public void CheckEmployeeExistsTest()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         var _dbMock = new Mock<IUnitOfWork>();
@@ -290,7 +290,7 @@ public class EmployeeServiceUnitTests
                .Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
 
         var result =
-            await employeeService.UpdateEmployee(EmployeeTestData.EmployeeDto, EmployeeTestData.EmployeeDto.Email);
+            await employeeService.UpdateEmployee(EmployeeTestData.EmployeeDto, EmployeeTestData.EmployeeDto.Email!);
 
         Assert.Equal(EmployeeTestData.EmployeeDto, result);
     }
@@ -420,7 +420,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>()))
                .Returns(clients.AsQueryable().BuildMock());
 
-        var result = await employeeService.GetSimpleProfile(EmployeeTestData.EmployeeDto4.Email);
+        var result = await employeeService.GetSimpleProfile(EmployeeTestData.EmployeeDto4.Email!);
 
         Assert.NotNull(result);
         Assert.Equal(EmployeeTestData.EmployeeDto4.TeamLead, result.TeamLeadId);
