@@ -40,7 +40,7 @@ public class EmployeeDataService : IEmployeeDataService
         return employeeData;
     }
 
-    public async Task<List<EmployeeDataDto>> GetAllEmployeeData(int employeeId)
+    public async Task<List<EmployeeDataDto>?> GetAllEmployeeData(int employeeId)
     {
         var employeesData = await _db.EmployeeData.GetAll();
         var employeeData = employeesData

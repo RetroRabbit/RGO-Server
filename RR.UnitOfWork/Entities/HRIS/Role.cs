@@ -18,7 +18,7 @@ public class Role : IModel<RoleDto>
         Description = roleDto.Description;
     }
 
-    [Column("Description")] public string Description { get; set; }
+    [Column("Description")] public string? Description { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

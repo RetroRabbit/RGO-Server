@@ -7,7 +7,7 @@ namespace RR.UnitOfWork.Repositories.HRIS;
 
 public class PropertyAccessRepository : BaseRepository<PropertyAccess, PropertyAccessDto>, IPropertyAccessRepository
 {
-    private readonly DatabaseContext _db;
+    private new readonly DatabaseContext _db;
 
     public PropertyAccessRepository(DatabaseContext db) : base(db)
     {
@@ -17,7 +17,7 @@ public class PropertyAccessRepository : BaseRepository<PropertyAccess, PropertyA
     public async Task<List<PropertyAccessDto>> GetForEmployee(string email)
     {
         var employeeRoles = await _db.employeeRoles
-                                     .Where(employeeRole => employeeRole.Employee.Email == email)
+                                     .Where(employeeRole => employeeRole.Employee!.Email == email)
                                      .Select(x => x.RoleId)
                                      .ToListAsync();
 
@@ -30,7 +30,7 @@ public class PropertyAccessRepository : BaseRepository<PropertyAccess, PropertyA
                             .ToListAsync();
 
         foreach (var access in list)
-            access.FieldCode.Options = await _db.fieldCodesOptions
+            access.FieldCode!.Options = await _db.fieldCodesOptions
                                                 .Where(options => options.FieldCodeId == access.FieldCode.Id)
                                                 .Select(options => options.ToDto())
                                                 .ToListAsync();

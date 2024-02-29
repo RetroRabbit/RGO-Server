@@ -30,7 +30,7 @@ public class RoleServiceUnitTest
             .Setup(r => r.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(Task.FromResult(true));
 
-        var result = await _roleService.CheckRole(_roleDto.Description);
+        var result = await _roleService.CheckRole(_roleDto.Description!);
 
         Assert.True(result);
         _dbMock.Verify(r => r.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()), Times.Once);
@@ -102,7 +102,7 @@ public class RoleServiceUnitTest
             .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roleQueryable);
 
-        var result = await _roleService.GetRole(_roleDto.Description);
+        var result = await _roleService.GetRole(_roleDto.Description!);
 
         Assert.NotNull(result);
         Assert.Equivalent(_roleDto, result);

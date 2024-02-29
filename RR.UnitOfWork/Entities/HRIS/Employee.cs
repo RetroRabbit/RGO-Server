@@ -69,7 +69,7 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("disability")] public bool Disability { get; set; }
 
-    [Column("disabilityNotes")] public string DisabilityNotes { get; set; }
+    [Column("disabilityNotes")] public string? DisabilityNotes { get; set; }
 
     [Column("level")] public int? Level { get; set; }
 
@@ -87,11 +87,11 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("salary")] public int? Salary { get; set; }
 
-    [Column("name")] public string Name { get; set; }
+    [Column("name")] public string? Name { get; set; }
 
-    [Column("initials")] public string Initials { get; set; }
+    [Column("initials")] public string? Initials { get; set; }
 
-    [Column("surname")] public string Surname { get; set; }
+    [Column("surname")] public string? Surname { get; set; }
 
     [Column("dateOfBirth")] public DateTime DateOfBirth { get; set; }
 
@@ -99,7 +99,7 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("nationality")] public string? Nationality { get; set; }
 
-    [Column("idNumber")] public string IdNumber { get; set; }
+    [Column("idNumber")] public string? IdNumber { get; set; }
 
     [Column("passportNumber")] public string? PassportNumber { get; set; }
 
@@ -113,11 +113,11 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("photo")] public string? Photo { get; set; }
 
-    [Column("email")] public string Email { get; set; }
+    [Column("email")] public string? Email { get; set; }
 
-    [Column("personalEmail")] public string PersonalEmail { get; set; }
+    [Column("personalEmail")] public string? PersonalEmail { get; set; }
 
-    [Column("cellphoneNo")] public string CellphoneNo { get; set; }
+    [Column("cellphoneNo")] public string? CellphoneNo { get; set; }
 
     [Column("clientAllocated")]
     [ForeignKey("ClientAssigned")]
@@ -141,12 +141,12 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("emergencyContactNo")] public string? EmergencyContactNo { get; set; }
 
-    public virtual EmployeeType EmployeeType { get; set; }
-    public virtual Employee ChampionEmployee { get; set; }
-    public virtual Employee TeamLeadAssigned { get; set; }
-    public virtual Client ClientAssigned { get; set; }
-    public virtual EmployeeAddress PhysicalAddress { get; set; }
-    public virtual EmployeeAddress PostalAddress { get; set; }
+    public virtual EmployeeType? EmployeeType { get; set; }
+    public virtual Employee? ChampionEmployee { get; set; }
+    public virtual Employee? TeamLeadAssigned { get; set; }
+    public virtual Client? ClientAssigned { get; set; }
+    public virtual EmployeeAddress? PhysicalAddress { get; set; }
+    public virtual EmployeeAddress? PostalAddress { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

@@ -33,11 +33,11 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
 
     [Column("reference")] public string? Reference { get; set; }
 
-    [Column("fileName")] public string FileName { get; set; }
+    [Column("fileName")] public string? FileName { get; set; }
 
     [Column("fileCategory")] public FileCategory FileCategory { get; set; }
 
-    [Column("blob")] public string Blob { get; set; }
+    [Column("blob")] public string? Blob { get; set; }
 
     [Column("status")] public DocumentStatus? Status { get; set; }
 
@@ -47,7 +47,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
 
     [Column("counterSign")] public bool CounterSign { get; set; }
 
-    public virtual Employee Employee { get; set; }
+    public virtual Employee? Employee { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

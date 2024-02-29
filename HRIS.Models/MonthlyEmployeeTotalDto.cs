@@ -8,6 +8,6 @@ public class MonthlyEmployeeTotalDto
     public int DesignerTotal { get; set; }
     public int ScrumMasterTotal { get; set; }
     public int BusinessSupportTotal { get; set; }
-    public string Month { get; set; }
+    public string? Month { get; set; }
     public int Year { get; set; }
 }

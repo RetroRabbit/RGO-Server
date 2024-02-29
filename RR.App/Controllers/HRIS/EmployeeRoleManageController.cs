@@ -9,12 +9,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeRoleManageController : ControllerBase
 {
-    private readonly IEmployeeRoleService _employeeRoleService;
-    private readonly IEmployeeService _employeeService;
-    private readonly IRoleService _roleService;
+    private readonly IEmployeeRoleService? _employeeRoleService;
+    private readonly IEmployeeService? _employeeService;
+    private readonly IRoleService? _roleService;
 
-    public EmployeeRoleManageController(IEmployeeRoleService employeeRoleService, IEmployeeService employeeService,
-                                        IRoleService roleService)
+    public EmployeeRoleManageController(IEmployeeRoleService? employeeRoleService, IEmployeeService? employeeService,
+                                        IRoleService? roleService)
     {
         _employeeRoleService = employeeRoleService;
         _employeeService = employeeService;
@@ -26,6 +26,11 @@ public class EmployeeRoleManageController : ControllerBase
     public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role)) return BadRequest("Invalid input");
+
+        if(_employeeRoleService == null || _employeeService == null || _roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
 
         try
         {
@@ -51,6 +56,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
+        if (_employeeRoleService == null || _employeeService == null || _roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employee = await _employeeService.GetEmployee(email);
@@ -78,6 +88,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
+        if (_employeeRoleService == null || _employeeService == null || _roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employee = await _employeeService.GetEmployee(email);
@@ -100,10 +115,15 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
     {
+        if (_employeeRoleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employeeRoles = await _employeeRoleService.GetEmployeeRole(email);
-            string[] role = { employeeRoles.Role.Description };
+            string[] role = { employeeRoles.Role!.Description! };
 
             return Ok(role);
         }
@@ -117,6 +137,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpGet("all")]
     public async Task<IActionResult> GetAllRoles()
     {
+        if (_roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roles = await _roleService.GetAll();
@@ -137,6 +162,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpGet("get-role")]
     public async Task<IActionResult> GetAllEmployeeOnRoles([FromQuery] int roleId)
     {
+        if (_employeeRoleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roles = await _employeeRoleService.GetAllEmployeeOnRoles(roleId);
