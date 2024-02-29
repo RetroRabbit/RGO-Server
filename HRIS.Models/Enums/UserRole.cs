@@ -2,9 +2,14 @@
 
 public enum UserRole
 {
-    Grad,
+    /*Grad,
     Employee,
     Presenter,
     Mentor,
-    Admin
+    Admin*/
+    SuperAdmin,
+    Admin,
+    Employee,
+    Talent,
+    Journey
 }

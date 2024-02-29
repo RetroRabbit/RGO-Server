@@ -34,7 +34,9 @@ public class ApplicantService : IApplicantService
         await _db.Applicant.GetAll();
 
     public async Task<ApplicantDto> GetApplicantById(int id) => 
-        await _db.Applicant.GetById(id);
+        await _db.Applicant.Get(applicant => applicant.Id == id)
+        .Select(applicant => applicant.ToDto())
+        .FirstAsync();
 
     public async Task<ApplicantDto> GetApplicantByEmail(string email)
     {
