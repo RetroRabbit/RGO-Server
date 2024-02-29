@@ -176,10 +176,20 @@ public class EmployeeBankingControllerUnitTests
     {
         mockService.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
                    .ReturnsAsync(new EmployeeBankingDto
-                                     (1, 123, "Test Bank", "Test Branch", "123456789",
-                                      EmployeeBankingAccountType.Savings,
-                                      "John Doe", BankApprovalStatus.Approved, null, "file.pdf", new DateOnly(),
-                                      new DateOnly()));
+                   {
+                       Id = 1,
+                       EmployeeId = 123,
+                       BankName = "Test Bank",
+                       Branch = "Test Branch",
+                       AccountNo = "123456789",
+                       AccountType = EmployeeBankingAccountType.Savings,
+                       AccountHolderName = "John Doe",
+                       Status = BankApprovalStatus.Approved,
+                       DeclineReason = null,
+                       File = "file.pdf",
+                       LastUpdateDate = new DateOnly(),
+                       PendingUpdateDate = new DateOnly()
+                   });
 
         var result = await controller.Update(updateEntry);
 
@@ -209,9 +219,20 @@ public class EmployeeBankingControllerUnitTests
         var id = 123;
 
         var newEntry = new EmployeeBankingDto
-            (1, 123, "Test Bank", "Test Branch", "123456789", EmployeeBankingAccountType.Savings,
-             "John Doe", BankApprovalStatus.Approved, null, "file.pdf", new DateOnly(), new DateOnly());
-
+        {
+            Id = 1,
+            EmployeeId = 123,
+            BankName = "Test Bank",
+            Branch = "Test Branch",
+            AccountNo = "123456789",
+            AccountType = EmployeeBankingAccountType.Savings,
+            AccountHolderName = "John Doe",
+            Status = BankApprovalStatus.Approved,
+            DeclineReason = null,
+            File = "file.pdf",
+            LastUpdateDate = new DateOnly(),
+            PendingUpdateDate = new DateOnly()
+        };
         mockService.Setup(x => x.GetBanking(id)).ReturnsAsync(newEntry);
 
         var result = await controller.GetBankingDetails(id);
