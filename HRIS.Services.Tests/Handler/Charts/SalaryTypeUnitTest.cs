@@ -29,7 +29,7 @@ public class SalaryTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto(1, "Developer");
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto{ Id = 3, Description = "Employee"};
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!)).Returns(Task.FromResult(employeeTypeDto));
         employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 

@@ -286,7 +286,7 @@ public class EmployeeRoleServiceUnitTest
         await Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
                                           (
                                            4,
-                                           employeeRoleList[0].Employee.ToDto(),
+                                           employeeRoleList[0].Employee!.ToDto(),
                                            new RoleDto { Id = 2, Description = "Made up Role" })));
     }
 

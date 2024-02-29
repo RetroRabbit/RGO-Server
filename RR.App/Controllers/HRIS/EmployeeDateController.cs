@@ -22,7 +22,7 @@ public class EmployeeDateController : ControllerBase
     {
         try
         {
-            var employee = await _employeeService.GetEmployee(employeeDateInput.Email);
+            var employee = await _employeeService.GetEmployee(employeeDateInput.Email!);
             var employeeDateDto = new EmployeeDateDto
             {
                 Id = 0,
@@ -62,7 +62,7 @@ public class EmployeeDateController : ControllerBase
     {
         try
         {
-            var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email);
+            var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email!);
             var employeeDateDto = new EmployeeDateDto
             {
                 Id = employeeDate.Id,
