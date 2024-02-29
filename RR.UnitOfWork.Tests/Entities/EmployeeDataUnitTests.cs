@@ -24,8 +24,20 @@ public class EmployeeDataUnitTests
                                     "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
                                     employeeAddressDto, employeeAddressDto, null, null, null);
 
-        _fieldCode = new FieldCodeDto(1, "email01", "Email", "desciption", "@(\\w+).co.za", FieldCodeType.String,
-                                      ItemStatus.Active, true, "Employee", 0, false);
+        _fieldCode = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "email01",
+            Name = "Email",
+            Description = "desciption",
+            Regex = "@(\\w+).co.za",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "Employee",
+            Category = 0,
+            Required = false
+        };
     }
 
     [Fact]

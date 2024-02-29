@@ -18,8 +18,21 @@ public class FieldCodeUnitTests
     [Fact]
     public async Task FieldCodeToDtoTest()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code", "Name", "Description", "Regex", FieldCodeType.String,
-                                            ItemStatus.Active, false, "InternalTable", 0, false);
+        var fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
+
         var fieldCode = new FieldCode(fieldCodeDto);
         var dto = fieldCode.ToDto();
         Assert.NotNull(dto);
