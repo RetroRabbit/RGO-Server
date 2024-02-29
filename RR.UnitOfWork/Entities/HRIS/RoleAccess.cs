@@ -27,9 +27,9 @@ public class RoleAccess : IModel<RoleAccessDto>
 
     public RoleAccessDto ToDto()
     {
-        return new RoleAccessDto(
-                                 Id,
-                                 Permission,
-                                 Grouping);
+        return new RoleAccessDto { 
+                                 Id = Id,
+                                 Permission = Permission,
+                                 Grouping = Grouping};
     }
 }
