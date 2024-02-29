@@ -26,7 +26,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -108,11 +108,11 @@ public class EmployeeRoleServiceUnitTest
                .Returns(Task.FromResult(employeeRoleList[3].ToDto())!);
 
         await Assert.ThrowsAsync<Exception>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
-                                                (
-                                                 employeeRoleList[0].Id,
-                                                 employeeRoleList[0].Employee!.ToDto(),
-                                                 employeeRoleList[0].Role!.ToDto()
-                                                )));
+        {
+            Id = employeeRoleList[0].Id,
+            Employee = employeeRoleList[0].Employee.ToDto(),
+            Role = employeeRoleList[0].Role.ToDto()
+        }));
         var result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[0].ToDto());
         Assert.Equivalent(employeeRoleList[0].ToDto(), result);
         result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[1].ToDto());
@@ -127,7 +127,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -208,7 +208,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -283,11 +283,12 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[1].ToDto(), result2);
         Assert.Equivalent(employeeRoleList[2].ToDto(), result3);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
-                                          (
-                                           4,
-                                           employeeRoleList[0].Employee!.ToDto(),
-                                           new RoleDto { Id = 2, Description = "Made up Role" })));
+        Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
+        {
+            Id = 4,
+            Employee = employeeRoleList[0].Employee.ToDto(),
+            Role = new RoleDto { Id = 2, Description = "Made up Role" }
+        }));
     }
 
     [Fact]
@@ -295,7 +296,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -365,7 +366,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -415,7 +416,11 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto
+        {
+            Id = 1,
+            Name = "Developer"
+        };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -493,7 +498,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 

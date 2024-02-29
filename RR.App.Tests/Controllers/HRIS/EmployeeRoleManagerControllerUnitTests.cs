@@ -4,6 +4,7 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -15,7 +16,7 @@ public class EmployeeRoleManagerControllerUnitTests
         return new EmployeeDto
             (
              1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-             new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+             new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
              new DateTime(1990, 1, 1),
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",
@@ -53,10 +54,10 @@ public class EmployeeRoleManagerControllerUnitTests
         roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 1, Description = "Admin" });
 
         employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
-                               .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
+                               .ReturnsAsync(new EmployeeRoleDto{Id = 1, Employee = new EmployeeDto(1, "Emp123", "Tax123",
                                                                   new DateTime(2022, 1, 1), null, 1, false,
                                                                   "No disability", 2,
-                                                                  new EmployeeTypeDto(1, "Full Time"), "Notes",
+                                                                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes",
                                                                   20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD",
                                                                   "Doe", new DateTime(1990, 1, 1),
                                                                   "South Africa", "South African", "123456789",
@@ -75,7 +76,7 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto { Id = 1, Description = "Admin" }));
+                                                                 Role = new RoleDto { Id = 1, Description = "Admin" }});
 
         var result = await controller.AddRole(email, role);
 
@@ -108,10 +109,13 @@ public class EmployeeRoleManagerControllerUnitTests
         roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto{ Id = 1, Description = "Super Admin" });
 
         employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
-                               .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
+                               .ReturnsAsync(new EmployeeRoleDto
+                               {
+                                   Id = 1,
+                                   Employee = new EmployeeDto(1, "Emp123", "Tax123",
                                                                   new DateTime(2022, 1, 1), null, 1, false,
                                                                   "No disability", 2,
-                                                                  new EmployeeTypeDto(1, "Full Time"), "Notes",
+                                                                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes",
                                                                   20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD",
                                                                   "Doe", new DateTime(1990, 1, 1),
                                                                   "South Africa", "South African", "123456789",
@@ -130,7 +134,8 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto { Id = 1, Description = "Super Admin" }));
+                                   Role = new RoleDto { Id = 1, Description = "Super Admin" }
+                               });
 
         var result = await controller.AddRole(email, role);
 
@@ -160,10 +165,13 @@ public class EmployeeRoleManagerControllerUnitTests
 
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(false);
         employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
-                               .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
+                               .ReturnsAsync(new EmployeeRoleDto
+                               {
+                                   Id = 1,
+                                   Employee = new EmployeeDto(1, "Emp123", "Tax123",
                                                                   new DateTime(2022, 1, 1), null, 1, false,
                                                                   "No disability", 2,
-                                                                  new EmployeeTypeDto(1, "Full Time"), "Notes",
+                                                                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes",
                                                                   20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD",
                                                                   "Doe", new DateTime(1990, 1, 1),
                                                                   "South Africa", "South African", "123456789",
@@ -182,7 +190,8 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto {Id = 1, Description = "Super Admin"}));
+                                   Role = new RoleDto { Id = 1, Description = "Super Admin" }
+                               });
 
         var result = await controller.AddRole(email, role);
 
@@ -261,10 +270,13 @@ public class EmployeeRoleManagerControllerUnitTests
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
         roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 0, Description = "Employee"});
 
-        var existingEmployeeRole = new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
+        var existingEmployeeRole = new EmployeeRoleDto
+        {
+            Id = 1,
+            Employee = new EmployeeDto(1, "Emp123", "Tax123",
                                                                           new DateTime(2022, 1, 1), null, 1, false,
                                                                           "No disability", 2,
-                                                                          new EmployeeTypeDto(1, "Full Time"), "Notes",
+                                                                          new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes",
                                                                           20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD",
                                                                           "Doe", new DateTime(1990, 1, 1),
                                                                           "South Africa", "South African", "123456789",
@@ -284,7 +296,8 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                           "12",
                                                                           "Emergency Contact",
                                                                           "987654321"),
-                                                                  new RoleDto{ Id = 1, Description = "Employee" });
+                                                                          Role = new RoleDto { Id = 1, Description = "Employee" }
+        };
 
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
         employeeRoleServiceMock.Setup(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()))
@@ -345,7 +358,7 @@ public class EmployeeRoleManagerControllerUnitTests
 
         var employeeDto = new EmployeeDto
             (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-             new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+             new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
              new DateTime(1990, 1, 1),
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",
@@ -362,7 +375,7 @@ public class EmployeeRoleManagerControllerUnitTests
         var roleDto = new RoleDto{ Id = 0, Description = "Employee" };
 
         employeeRoleServiceMock.Setup(x => x.DeleteEmployeeRole(email, role))
-                               .ReturnsAsync(new EmployeeRoleDto(1, employeeDto, roleDto));
+                               .ReturnsAsync(new EmployeeRoleDto{ Id = 1, Employee = employeeDto, Role = roleDto });
 
         var result = await controller.RemoveRole(email, role);
 
@@ -412,10 +425,13 @@ public class EmployeeRoleManagerControllerUnitTests
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
 
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email))
-                               .ReturnsAsync(new EmployeeRoleDto(1, new EmployeeDto(1, "Emp123", "Tax123",
+                               .ReturnsAsync(new EmployeeRoleDto
+                               {
+                                   Id = 1,
+                                   Employee = new EmployeeDto(1, "Emp123", "Tax123",
                                                                   new DateTime(2022, 1, 1), null, 1, false,
                                                                   "No disability", 2,
-                                                                  new EmployeeTypeDto(1, "Full Time"), "Notes",
+                                                                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes",
                                                                   20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD",
                                                                   "Doe", new DateTime(1990, 1, 1),
                                                                   "South Africa", "South African", "123456789",
@@ -434,7 +450,8 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
-                                                                 new RoleDto { Id = 1, Description = "Employee Role" }));
+                                   Role = new RoleDto { Id = 1, Description = "Employee Role" }
+                               });
 
         var result = await controller.GetEmployeeRole(email);
 
@@ -499,8 +516,18 @@ public class EmployeeRoleManagerControllerUnitTests
         var roleId = 1;
         var employeeRoles = new List<EmployeeRoleDto>
         {
-            new(1, null, new RoleDto{Id = 0, Description = "Super Admin" }),
-            new(2, null, new RoleDto{Id = 0, Description = "Admin" })
+           new EmployeeRoleDto
+           {
+                Id = 1,
+                Employee = null,
+                Role = new RoleDto { Id = 0, Description = "Super Admin" }
+           },
+           new EmployeeRoleDto
+           {
+                Id = 2,
+                Employee = null,
+                Role = new RoleDto { Id = 0, Description = "Admin" }
+           }
         };
 
         employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId)).ReturnsAsync(employeeRoles);

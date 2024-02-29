@@ -15,7 +15,7 @@ public class LeaveIntervalTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private EmployeeAddressDto employeeAddressDto;
+    private readonly EmployeeAddressDto employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private readonly LeaveIntervalType leaveIntervalType;
@@ -25,7 +25,7 @@ public class LeaveIntervalTypeUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         leaveIntervalType = new LeaveIntervalType();
-        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));

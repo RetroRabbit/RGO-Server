@@ -270,7 +270,7 @@ public class RoleAccessLinkServiceUnitTest
     public async Task GetRoleByEmployeeTest()
     {
         var email = "test@retrorabbit.co.za";
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         var testEmployee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -284,14 +284,19 @@ public class RoleAccessLinkServiceUnitTest
 
         var employeeRoleDtos = new List<EmployeeRoleDto>
         {
-            new(
-                1,
-                testEmployee,
-                new RoleDto{ Id = 1, Description = "Employee" }),
-            new(
-                2,
-                testEmployee,
-                new RoleDto{Id = 1, Description = "Manager" }),
+            new EmployeeRoleDto
+            {
+                Id = 1,
+                Employee = testEmployee,
+                Role = new RoleDto { Id = 1, Description = "Employee" }
+            },
+
+            new EmployeeRoleDto
+            {
+                Id = 2,
+                Employee = testEmployee,
+                Role = new RoleDto { Id = 1, Description = "Manager" }
+            }
         };
 
         _employeeRoleServiceMock

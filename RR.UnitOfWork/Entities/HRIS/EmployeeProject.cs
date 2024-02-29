@@ -43,13 +43,15 @@ public class EmployeeProject : IModel<EmployeeProjectDto>
 
     public EmployeeProjectDto ToDto()
     {
-        return new EmployeeProjectDto(
-                                      Id,
-                                      EmployeeId,
-                                      Name,
-                                      Description,
-                                      Client,
-                                      StartDate,
-                                      EndDate);
+        return new EmployeeProjectDto
+        {
+            Id = Id,
+            EmployeeId = EmployeeId,
+            Name = Name,
+            Description = Description,
+            Client = Client,
+            StartDate = StartDate,
+            EndDate = EndDate,                      
+        };
     }
 }

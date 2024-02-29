@@ -58,7 +58,7 @@ public class AuthenticationControllerUnitTests
 
         var newEmployee = new EmployeeDto
             (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-             new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+             new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
              new DateTime(1990, 1, 1),
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",
@@ -91,7 +91,7 @@ public class AuthenticationControllerUnitTests
 
         var existingEmployee = new EmployeeDto
             (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-             new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+             new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
              new DateTime(1990, 1, 1),
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",

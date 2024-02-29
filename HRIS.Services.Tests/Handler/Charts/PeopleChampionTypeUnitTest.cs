@@ -28,8 +28,8 @@ public class PeopleChampionTypeUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         peopleChampionType = new PeopleChampionType();
-        employeeTypeDto1 = new EmployeeTypeDto(3, "Developer");
-        employeeTypeDto2 = new EmployeeTypeDto(7, "People Champion");
+        employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
+        employeeTypeDto2 = new EmployeeTypeDto{ Id = 7, Name = "People Champion" };
         employeeType1 = new EmployeeType(employeeTypeDto1);
         employeeType2 = new EmployeeType(employeeTypeDto2);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name!))

@@ -2,6 +2,7 @@
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -40,7 +41,7 @@ public class EmployeeRoleManageController : ControllerBase
                 ? await _roleService.GetRole(role)
                 : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
 
-            var employeeRole = new EmployeeRoleDto(0, employee, currRole);
+            var employeeRole = new EmployeeRoleDto{ Id = 0, Employee = employee, Role = currRole };
 
             var employeeRoleSaved = await _employeeRoleService.SaveEmployeeRole(employeeRole);
 
@@ -70,7 +71,7 @@ public class EmployeeRoleManageController : ControllerBase
                 : await _roleService.SaveRole(new RoleDto{ Id = 0, Description = role });
 
             var currEmployeeRole = await _employeeRoleService.GetEmployeeRole(email);
-            var employeeRole = new EmployeeRoleDto(currEmployeeRole.Id, employee, currRole);
+            var employeeRole = new EmployeeRoleDto { Id = currEmployeeRole.Id, Employee = employee, Role = currRole };
 
             var employeeRoleSaved = await _employeeRoleService.UpdateEmployeeRole(employeeRole);
 

@@ -22,7 +22,7 @@ public class EmployeeControllerUnitTests
     private readonly EmployeeAddressDto employeeAddressDto =
         new(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
-    private readonly EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+    private readonly EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
 
     private readonly List<Claim> claims;
     private readonly ClaimsPrincipal claimsPrincipal;

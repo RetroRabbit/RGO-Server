@@ -24,8 +24,10 @@ public class EmployeeType : IModel<EmployeeTypeDto>
 
     public EmployeeTypeDto ToDto()
     {
-        return new EmployeeTypeDto(
-                                   Id,
-                                   Name!);
+        return new EmployeeTypeDto
+        {
+            Id = Id,
+            Name = Name
+        };
     }
 }

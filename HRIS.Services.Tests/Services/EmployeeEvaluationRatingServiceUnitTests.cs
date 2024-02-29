@@ -29,7 +29,7 @@ public class EmployeeEvaluationRatingServiceUnitTests
             new EmployeeEvaluationRatingService(_dbMock.Object, _employeeEvaluationServiceMock.Object,
                                                 _employeeServiceMock.Object);
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),

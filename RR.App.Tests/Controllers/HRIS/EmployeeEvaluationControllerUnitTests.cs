@@ -20,7 +20,7 @@ public class EmployeeEvaluationControllerUnitTests
                 1,
                 new EmployeeDto
                     (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                     new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                     new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                      new DateTime(1990, 1, 1),
                      "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                      Race.White, Gender.Male, "photo.jpg",
@@ -36,7 +36,7 @@ public class EmployeeEvaluationControllerUnitTests
                 new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
                 new EmployeeDto
                     (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                     new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                     new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                      new DateTime(1990, 1, 1),
                      "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                      Race.White, Gender.Male, "photo.jpg",
@@ -100,7 +100,7 @@ public class EmployeeEvaluationControllerUnitTests
              1,
              new EmployeeDto
                  (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -120,7 +120,7 @@ public class EmployeeEvaluationControllerUnitTests
                  ),
              new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -195,7 +195,7 @@ public class EmployeeEvaluationControllerUnitTests
              1,
              new EmployeeDto
                  (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -215,7 +215,7 @@ public class EmployeeEvaluationControllerUnitTests
                  ),
              new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -307,7 +307,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -332,7 +332,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -398,7 +398,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -423,7 +423,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,

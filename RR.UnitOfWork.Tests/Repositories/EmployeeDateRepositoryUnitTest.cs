@@ -30,7 +30,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
 
         _mockDbContext.Setup(m => m.Set<EmployeeDate>()).Returns(_mockDbSet.Object);
 
-        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");

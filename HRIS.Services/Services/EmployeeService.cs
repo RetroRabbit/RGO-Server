@@ -58,7 +58,7 @@ public class EmployeeService : IEmployeeService
         catch (Exception)
         {
             var newEmployeeType = await _employeeTypeService
-                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType!.Name));
+                .SaveEmployeeType(new EmployeeTypeDto { Id = 0, Name = employeeDto.EmployeeType!.Name });
 
             employee = new Employee(employeeDto, newEmployeeType);
         }
@@ -90,7 +90,8 @@ public class EmployeeService : IEmployeeService
         var roleDto = await _roleService.GetRole("Employee");
         var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto(0, newEmployee, roleDto);
+        var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee, Role = roleDto };
+
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
         return newEmployee;
