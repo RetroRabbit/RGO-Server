@@ -34,10 +34,10 @@ public class ChartRoleLink : IModel<ChartRoleLinkDto>
 
     public ChartRoleLinkDto ToDto()
     {
-        return new ChartRoleLinkDto(
-                                    Id,
-                                    Chart?.ToDto(),
-                                    Role?.ToDto()
-                                   );
+        return new ChartRoleLinkDto {
+                                    Id = Id,
+                                    Chart = Chart?.ToDto(),
+                                    Role = Role?.ToDto()
+                                   };
     }
 }

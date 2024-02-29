@@ -127,7 +127,7 @@ public class AuthServiceUnitTest
         _authServiceMock.Setup(x => x.GetUserRoles(email)).ReturnsAsync(roles);
         _roleAccessLinkService.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(roles);
 
-        _configuration.Setup(x => x["Auth:Key"]).Returns("2OaBCxEn0WHe$HaZn%0teZG7^fQ^#H02");
+        _configuration.Setup(x => x["Auth:Key"]).Returns("34bDExFk0WHe$GaXn%0xcZY3^fT^#J05");
         _configuration.Setup(x => x["Auth:Expires"]).Returns("30");
         _configuration.Setup(x => x["Auth:Issuer"]).Returns("YourIssuer");
         _configuration.Setup(x => x["Auth:Audience"]).Returns("YourAudience");

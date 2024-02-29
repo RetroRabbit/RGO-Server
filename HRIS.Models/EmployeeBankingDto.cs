@@ -4,34 +4,6 @@ namespace HRIS.Models;
 
 public class EmployeeBankingDto
 {
-    // TODO : Remove this Constructor + Update UNIT TESTS
-    public EmployeeBankingDto(int Id,
-                              int EmployeeId,
-                              string? BankName,
-                              string? Branch,
-                              string? AccountNo,
-                              EmployeeBankingAccountType AccountType,
-                              string? AccountHolderName,
-                              BankApprovalStatus Status,
-                              string? DeclineReason,
-                              string? File,
-                              DateOnly LastUpdateDate,
-                              DateOnly PendingUpdateDate)
-    {
-        this.Id = Id;
-        this.EmployeeId = EmployeeId;
-        this.BankName = BankName;
-        this.Branch = Branch;
-        this.AccountNo = AccountNo;
-        this.AccountType = AccountType;
-        this.AccountHolderName = AccountHolderName;
-        this.Status = Status;
-        this.DeclineReason = DeclineReason;
-        this.File = File;
-        this.LastUpdateDate = LastUpdateDate;
-        this.PendingUpdateDate = PendingUpdateDate;
-    }
-
     public int Id { get; set; }
     public int EmployeeId { get; set; }
     public string? BankName { get; set; }

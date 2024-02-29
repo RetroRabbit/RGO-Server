@@ -59,19 +59,20 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
 
     public EmployeeBankingDto ToDto()
     {
-        return new EmployeeBankingDto(
-                                      Id,
-                                      EmployeeId,
-                                      BankName,
-                                      Branch,
-                                      AccountNo,
-                                      AccountType,
-                                      AccountHolderName,
-                                      Status,
-                                      DeclineReason,
-                                      File,
-                                      LastUpdateDate,
-                                      PendingUpdateDate
-                                     );
+        return new EmployeeBankingDto
+        {
+            Id = Id,
+            EmployeeId = EmployeeId,
+            BankName = BankName,
+            Branch = Branch,
+            AccountNo = AccountNo,
+            AccountType = AccountType,
+            AccountHolderName = AccountHolderName,
+            Status = Status,
+            DeclineReason = DeclineReason,
+            File = File,
+            LastUpdateDate = LastUpdateDate,
+            PendingUpdateDate = PendingUpdateDate
+        };
     }
 }

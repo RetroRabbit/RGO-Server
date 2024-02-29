@@ -139,20 +139,20 @@ public class EmployeeBankingService : IEmployeeBankingService
                                                                     EmployeeBankingDto empBankingDto)
     {
         var Bankingdto = new EmployeeBankingDto
-            (
-             newEntry.Id,
-             newEntry.EmployeeId,
-             newEntry.BankName,
-             newEntry.Branch,
-             newEntry.AccountNo,
-             newEntry.AccountType,
-             newEntry.AccountHolderName,
-             newEntry.Status,
-             newEntry.DeclineReason,
-             newEntry.File,
-             empBankingDto.LastUpdateDate,
-             newEntry.PendingUpdateDate
-            );
+        {
+            Id = newEntry.Id,
+            EmployeeId = newEntry.EmployeeId,
+            BankName = newEntry.BankName,
+            Branch = newEntry.Branch,
+            AccountNo = newEntry.AccountNo,
+            AccountType = newEntry.AccountType,
+            AccountHolderName = newEntry.AccountHolderName,
+            Status = newEntry.Status,
+            DeclineReason = newEntry.DeclineReason,
+            File = newEntry.File,
+            LastUpdateDate = empBankingDto.LastUpdateDate,
+            PendingUpdateDate = newEntry.PendingUpdateDate
+        };
         return Bankingdto;
     }
 }

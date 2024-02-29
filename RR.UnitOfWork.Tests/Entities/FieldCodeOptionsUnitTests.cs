@@ -17,7 +17,7 @@ public class FieldCodeOptionsUnitTests
     [Fact]
     public void FieldCodeOptionsToDtoTest()
     {
-        var fieldCodeOptionsDto = new FieldCodeOptionsDto(1, 1, "Option");
+        var fieldCodeOptionsDto = new FieldCodeOptionsDto{ Id = 0, FieldCodeId = 0, Option = "Option" };
         var fieldCodeOptions = new FieldCodeOptions(fieldCodeOptionsDto);
         fieldCodeOptions.FieldCode = new FieldCode();
         var dto = fieldCodeOptions.ToDto();

@@ -24,20 +24,21 @@ public class EmployeeBankingController : ControllerBase
         try
         {
             var Bankingdto = new EmployeeBankingDto
-                (
-                 newEntry.Id,
-                 newEntry.EmployeeId,
-                 newEntry.BankName,
-                 newEntry.Branch,
-                 newEntry.AccountNo,
-                 newEntry.AccountType,
-                 newEntry.AccountHolderName,
-                 newEntry.Status,
-                 newEntry.DeclineReason,
-                 newEntry.File,
-                 DateOnly.FromDateTime(DateTime.Now),
-                 DateOnly.FromDateTime(DateTime.Now)
-                );
+            {
+                Id = newEntry.Id,
+                EmployeeId = newEntry.EmployeeId,
+                BankName = newEntry.BankName,
+                Branch = newEntry.Branch,
+                AccountNo = newEntry.AccountNo,
+                AccountType = newEntry.AccountType,
+                AccountHolderName = newEntry.AccountHolderName,
+                Status = newEntry.Status,
+                DeclineReason = newEntry.DeclineReason,
+                File = newEntry.File,
+                LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
+                PendingUpdateDate = DateOnly.FromDateTime(DateTime.Now)
+            };
+
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var employee =
                 await _employeeBankingService.Save(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
@@ -73,24 +74,23 @@ public class EmployeeBankingController : ControllerBase
     {
         if (updateEntry.AccountHolderName.Length == 0)
             return BadRequest("Invalid banking details");
-
         try
         {
             var Bankingdto = new EmployeeBankingDto
-                (
-                 updateEntry.Id,
-                 updateEntry.EmployeeId,
-                 updateEntry.BankName,
-                 updateEntry.Branch,
-                 updateEntry.AccountNo,
-                 updateEntry.AccountType,
-                 updateEntry.AccountHolderName,
-                 updateEntry.Status,
-                 updateEntry.DeclineReason,
-                 updateEntry.File,
-                 DateOnly.FromDateTime(DateTime.Now),
-                 DateOnly.FromDateTime(DateTime.Now)
-                );
+            {
+                Id = updateEntry.Id,
+                EmployeeId = updateEntry.EmployeeId,
+                BankName = updateEntry.BankName,
+                Branch = updateEntry.Branch,
+                AccountNo = updateEntry.AccountNo,
+                AccountType = updateEntry.AccountType,
+                AccountHolderName = updateEntry.AccountHolderName,
+                Status = updateEntry.Status,
+                DeclineReason = updateEntry.DeclineReason,
+                File = updateEntry.File,
+                LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
+                PendingUpdateDate = DateOnly.FromDateTime(DateTime.Now)
+            };
 
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var employee =

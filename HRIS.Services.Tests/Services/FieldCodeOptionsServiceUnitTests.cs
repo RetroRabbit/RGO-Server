@@ -18,8 +18,8 @@ public class FieldCodeOptionsServiceUnitTests
     {
         _dbMock = new Mock<IUnitOfWork>();
         _fieldCodeOptionsService = new FieldCodeOptionsService(_dbMock.Object);
-        _fieldCodeOptionsDto = new FieldCodeOptionsDto(1, 1, "string");
-        _fieldCodeOptionsDto2 = new FieldCodeOptionsDto(0, 1, "string2");
+        _fieldCodeOptionsDto = new FieldCodeOptionsDto { Id=1, FieldCodeId = 1, Option = "string" };
+        _fieldCodeOptionsDto2 = new FieldCodeOptionsDto{ Id = 0, FieldCodeId = 1, Option = "string2" };
     }
 
     [Fact]
