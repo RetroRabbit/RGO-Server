@@ -284,14 +284,19 @@ public class RoleAccessLinkServiceUnitTest
 
         var employeeRoleDtos = new List<EmployeeRoleDto>
         {
-            new(
-                1,
-                testEmployee,
-                new RoleDto{ Id = 1, Description = "Employee" }),
-            new(
-                2,
-                testEmployee,
-                new RoleDto{Id = 1, Description = "Manager" }),
+            new EmployeeRoleDto
+            {
+                Id = 1,
+                Employee = testEmployee,
+                Role = new RoleDto { Id = 1, Description = "Employee" }
+            },
+
+            new EmployeeRoleDto
+            {
+                Id = 2,
+                Employee = testEmployee,
+                Role = new RoleDto { Id = 1, Description = "Manager" }
+            }
         };
 
         _employeeRoleServiceMock

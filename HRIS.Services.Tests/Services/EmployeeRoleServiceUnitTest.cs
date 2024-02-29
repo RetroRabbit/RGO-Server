@@ -108,11 +108,11 @@ public class EmployeeRoleServiceUnitTest
                .Returns(Task.FromResult(employeeRoleList[3].ToDto()));
 
         await Assert.ThrowsAsync<Exception>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
-                                                (
-                                                 employeeRoleList[0].Id,
-                                                 employeeRoleList[0].Employee.ToDto(),
-                                                 employeeRoleList[0].Role.ToDto()
-                                                )));
+        {
+            Id = employeeRoleList[0].Id,
+            Employee = employeeRoleList[0].Employee.ToDto(),
+            Role = employeeRoleList[0].Role.ToDto()
+        }));
         var result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[0].ToDto());
         Assert.Equivalent(employeeRoleList[0].ToDto(), result);
         result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[1].ToDto());
@@ -284,10 +284,11 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[2].ToDto(), result3);
 
         Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
-                                          (
-                                           4,
-                                           employeeRoleList[0].Employee.ToDto(),
-                                           new RoleDto { Id = 2, Description = "Made up Role" })));
+        {
+            Id = 4,
+            Employee = employeeRoleList[0].Employee.ToDto(),
+            Role = new RoleDto { Id = 2, Description = "Made up Role" }
+        }));
     }
 
     [Fact]

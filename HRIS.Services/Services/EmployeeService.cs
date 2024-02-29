@@ -90,7 +90,8 @@ public class EmployeeService : IEmployeeService
         var roleDto = await _roleService.GetRole("Employee");
         var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto(0, newEmployee, roleDto);
+        var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee, Role = roleDto };
+
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
         return newEmployee;

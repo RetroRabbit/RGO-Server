@@ -30,7 +30,13 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private readonly Mock<IRoleService> roleServiceMock;
 
-    private readonly EmployeeRoleDto employeeRoleDto = new(0, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee);
+    private readonly EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto
+    {
+        Id = 0,
+        Employee = EmployeeTestData.EmployeeDto,
+        Role = EmployeeRoleTestData.RoleDtoEmployee
+    };
+
     private readonly EmployeeService employeeService;
 
     public EmployeeServiceUnitTests()
@@ -114,7 +120,12 @@ public class EmployeeServiceUnitTests
     {
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .Returns(Task.FromResult(EmployeeTypeTestData.DeveloperType));
-        var employeeRoleDto = new EmployeeRoleDto(0, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee);
+        var employeeRoleDto = new EmployeeRoleDto
+        {
+            Id = 0,
+            Employee = EmployeeTestData.EmployeeDto,
+            Role = EmployeeRoleTestData.RoleDtoEmployee
+        };
 
         employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(false)
@@ -223,7 +234,13 @@ public class EmployeeServiceUnitTests
         var emp = new Employee(EmployeeTestData.EmployeeDto2, EmployeeTypeTestData.DeveloperType);
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
 
-        var empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee);
+        var empRoleDto = new EmployeeRoleDto
+        {
+            Id = 1,
+            Employee = EmployeeTestData.EmployeeDto,
+            Role = EmployeeRoleTestData.RoleDtoEmployee
+        };
+
         var empRole = new EmployeeRole(empRoleDto);
 
         var employees = new List<Employee> { emp };
@@ -285,7 +302,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
 
         RoleDto roleDto = new RoleDto { Id = 2, Description = "Admin" };
-        EmployeeRoleDto empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto2, roleDto);
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = roleDto };
         EmployeeRole empRole = new EmployeeRole(empRoleDto);
 
         List<Employee> employees = new List<Employee> { emp };
@@ -313,7 +330,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto2, EmployeeRoleTestData.RoleDtoEmployee);
+        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
         var empRole = new EmployeeRole(empRoleDto);
 
         var empRoles = new List<EmployeeRole> { empRole };
@@ -349,7 +366,7 @@ public class EmployeeServiceUnitTests
 
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto2, EmployeeRoleTestData.RoleDtoEmployee);
+        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
 
         var roles = new List<Role> { new(EmployeeRoleTestData.RoleDtoEmployee) };
 

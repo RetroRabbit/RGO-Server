@@ -15,7 +15,7 @@ public class EmployeeRoleTestData
     static public RoleDto RoleDtoAdmin = new RoleDto { Id = 3, Description = "Admin" };
     static public List<EmployeeRole> EmployeeRolesList = new List<EmployeeRole> {
         new EmployeeRole(
-            new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoAdmin)
+            new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = EmployeeRoleTestData.RoleDtoAdmin }
         )
     };
 }

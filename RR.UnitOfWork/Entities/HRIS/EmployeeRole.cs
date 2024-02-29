@@ -35,9 +35,11 @@ public class EmployeeRole : IModel<EmployeeRoleDto>
 
     public EmployeeRoleDto ToDto()
     {
-        return new EmployeeRoleDto(
-                                   Id,
-                                   Employee?.ToDto(),
-                                   Role?.ToDto());
+        return new EmployeeRoleDto
+        {
+            Id = Id,
+            Employee = Employee?.ToDto(),
+            Role = Role?.ToDto()
+        };
     }
 }
