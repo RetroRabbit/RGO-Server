@@ -33,7 +33,8 @@ public class FieldCodeOptions : IModel<FieldCodeOptionsDto>
     {
         return new FieldCodeOptionsDto
         {
-            FieldCodeId = Id,
+            Id = Id,
+            FieldCodeId = FieldCodeId,
             Option = Option,
         };                       
     }
