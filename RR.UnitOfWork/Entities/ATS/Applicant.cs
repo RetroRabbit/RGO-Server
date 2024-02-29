@@ -30,7 +30,7 @@ public class Applicant : IModel<ApplicantDto>
 
     [Column("personalEmail")] public string PersonalEmail { get; set; }
 
-    [Column("potentialLevel")] public string PotentialLevel { get; set; }
+    [Column("potentialLevel")] public int PotentialLevel { get; set; }
 
     [Column("jobPosition")] public string JobPosition { get; set; }
 

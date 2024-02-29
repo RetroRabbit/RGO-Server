@@ -6,7 +6,7 @@ public class ApplicantDto
     public required string Name { get; set; }
     public required string Surname {  get; set; }
     public required string PersonalEmail { get; set; }
-    public required string PotentialLevel { get; set; }
+    public required int PotentialLevel { get; set; }
     public required string JobPosition {  get; set; }
     public string? LinkedIn { get; set; }
     public string? ProfilePicture { get; set; }
