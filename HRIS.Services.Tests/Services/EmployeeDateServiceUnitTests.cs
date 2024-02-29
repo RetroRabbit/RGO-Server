@@ -20,7 +20,7 @@ public class EmployeeDateServiceUnitTests
     {
         _mockDb = new Mock<IUnitOfWork>();
         _employeeDateService = new EmployeeDateService(_mockDb.Object);
-        var employeeTypeDto = new EmployeeTypeDto(1, "Employee");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Employee" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         _employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),

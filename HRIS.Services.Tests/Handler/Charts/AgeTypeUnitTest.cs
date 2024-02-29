@@ -16,7 +16,7 @@ public class AgeTypeUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly AgeType ageType;
-    private EmployeeAddressDto employeeAddressDto;
+    private readonly EmployeeAddressDto employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private RoleDto roleDto;
@@ -26,7 +26,7 @@ public class AgeTypeUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         ageType = new AgeType();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto{ Id = 3, Description = "Employee" };
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name))

@@ -689,7 +689,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task GenerateEmployeeDataCardInfomrationTest()
     {
-        EmployeeTypeDto employeeTypeDto = new(2, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Developer" };
         EmployeeType employeeType = new(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 

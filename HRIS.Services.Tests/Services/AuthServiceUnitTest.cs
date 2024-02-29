@@ -43,8 +43,8 @@ public class AuthServiceUnitTest
         _authServiceMock = new Mock<IAuthService>();
 
         employeeTypeService = new EmployeeTypeService(_unitOfWork.Object);
-        employeeTypeDto1 = new EmployeeTypeDto(3, "Developer");
-        employeeTypeDto2 = new EmployeeTypeDto(7, "People Champion");
+        employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
+        employeeTypeDto2 = new EmployeeTypeDto{ Id = 7, Name = "People Champion" };
         employeeType1 = new EmployeeType(employeeTypeDto1);
         employeeType2 = new EmployeeType(employeeTypeDto2);
 
@@ -61,13 +61,13 @@ public class AuthServiceUnitTest
     [Fact]
     public async Task CheckUserExist()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28,
+                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
                                           128, 100000, "Dotty", "D",
                                           "Missile", new DateTime(), "South Africa", "South African", "5522522655", " ",
                                           new DateTime(), null, Race.Black, Gender.Female, null,
@@ -93,14 +93,14 @@ public class AuthServiceUnitTest
     [Fact]
     public async Task Login()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
         var roleDto = new RoleDto { Id = 1, Description = "Developer" };
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28,
+                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
                                           128, 100000, "Dotty", "D",
                                           "Missile", new DateTime(), "South Africa", "South African", "5522522655", " ",
                                           new DateTime(), null, Race.Black, Gender.Female, null,
@@ -140,13 +140,13 @@ public class AuthServiceUnitTest
     [Fact]
     public async Task RegisterEmployee()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28,
+                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
                                           128, 100000, "Dotty", "D",
                                           "Missile", new DateTime(), "South Africa", "South African", "5522522655", " ",
                                           new DateTime(), null, Race.Black, Gender.Female, null,

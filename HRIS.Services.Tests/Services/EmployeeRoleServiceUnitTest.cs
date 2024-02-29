@@ -26,7 +26,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -127,7 +127,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -208,7 +208,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -295,7 +295,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -365,7 +365,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -415,7 +415,11 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto
+        {
+            Id = 1,
+            Name = "Developer"
+        };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -493,7 +497,7 @@ public class EmployeeRoleServiceUnitTest
     {
         const string Email = "test@retrorabbit.co.za";
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 

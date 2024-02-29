@@ -23,7 +23,7 @@ public class AuditLogServiceUnitTest
 
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                                     null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Kamo",
                                     "K.G.",

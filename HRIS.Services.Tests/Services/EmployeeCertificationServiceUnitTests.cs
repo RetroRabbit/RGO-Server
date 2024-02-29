@@ -22,12 +22,12 @@ public class EmployeeCertificationServiceUnitTests
 
     private EmployeeCertificationDto CreateEmployeeCertificationDto()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(2020, 1, 1), new DateTime(2020, 1, 1),
-                                          null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28,
+                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
                                           128, 100000, "Dotty", "D",
                                           "Missile", new DateTime(1990, 1, 1), "South Africa", "South African",
                                           "5522522655", " ",
