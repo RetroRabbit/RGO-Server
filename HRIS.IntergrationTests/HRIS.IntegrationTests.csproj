@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="35.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.2" />
@@ -33,11 +34,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HRIS.Models\HRIS.Models.csproj" />
     <ProjectReference Include="..\HRIS.Services\HRIS.Services.csproj" />
-    <ProjectReference Include="..\RGO.App\RR.App.csproj" />
-    <ProjectReference Include="..\RGO.Models\HRIS.Models.csproj" />
-    <ProjectReference Include="..\RGO.Services\HRIS.Services.csproj" />
-    <ProjectReference Include="..\RGO.Tests.Data\RR.Tests.Data.csproj" />
-    <ProjectReference Include="..\RGO.UnitOfWork\RR.UnitOfWork.csproj" />
     <ProjectReference Include="..\RR.App.Tests\RR.App.Tests.csproj" />
     <ProjectReference Include="..\RR.App\RR.App.csproj" />
     <ProjectReference Include="..\RR.Tests.Data\RR.Tests.Data.csproj" />

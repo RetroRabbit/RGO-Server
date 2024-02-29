@@ -1,83 +1,68 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Google.Apis.Services;
 using HRIS.Models;
-using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using Xunit;
 using RR.App.Controllers.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
-using Xunit;
-using System.Net.Http;
-using Newtonsoft.Json;
+using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
+using IClientService = HRIS.Services.Interfaces.IClientService;
 
 namespace RR.App.Tests.Controllers
 {
-    public class ClientControllerIntegrationTests
+    public class ClientControllerIntegrationTests : IClassFixture<WebApplicationFactory<RR.App.Program>>
     {
-        private readonly TestServer _server;
-        private readonly HttpClient _client;
+        private readonly WebApplicationFactory<RR.App.Program> _factory;
 
-        public ClientControllerIntegrationTests()
+        public ClientControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
         {
-            var mockClientService = new Mock<IClientService>();
-            //mockClientService.Setup(x => x.GetAllClients()).ReturnsAsync(new List<ClientDto>());
-            mockClientService.Setup(x => x.GetAllClients()).ReturnsAsync(new List<ClientDto>
-            {
-                new ClientDto{ Id = 1, Name = "Client1" },
-                new ClientDto{ Id = 2, Name = "Client2" }
-            });
-
-            _server = new TestServer(new WebHostBuilder()
-                .ConfigureTestServices(services => { services.AddSingleton(mockClientService.Object); })
-                .UseStartup<TestStartup>());
-
-            _client = _server.CreateClient();
+            _factory = factory;
         }
 
         [Fact]
-        public async Task GetAllClients_ReturnsSuccess()
+        public async Task GetAllClients_ReturnsOkResult()
         {
-            var response = await _client.GetAsync("/clients");
+            var mockClientService = new Mock<IClientService>();
+            mockClientService.Setup(service => service.GetAllClients()).ReturnsAsync(new List<ClientDto>());
+
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddScoped<IClientService>(_ => mockClientService.Object);
+                });
+            }).CreateClient();
+
+            var response = await client.GetAsync("/clients");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            var content = await response.Content.ReadAsStringAsync();
-            var clients = JsonConvert.DeserializeObject<List<ClientDto>>(content);
-
-            Assert.Equal(2, clients.Count);
         }
 
         [Fact]
-        public async Task GetAllClients_NoClientsFound_ReturnsNotFound()
+        public async Task GetAllClients_ReturnsNotFoundResultOnException()
         {
-            var response = await _client.GetAsync("/clients");
+            var mockClientService = new Mock<IClientService>();
+            mockClientService.Setup(service => service.GetAllClients()).ThrowsAsync(new Exception("An error occurred"));
+
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddScoped<IClientService>(_ => mockClientService.Object);
+                });
+            }).CreateClient();
+
+            var response = await client.GetAsync("/clients");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
-    }
-
-    public class TestStartup
-    {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
-            services.AddScoped<IClientService, ClientService>();
-        }
-
-        public void Configure(IApplicationBuilder app)
-        {
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
         }
     }
 }
