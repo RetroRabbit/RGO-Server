@@ -13,7 +13,7 @@ public class EmployeeEvaluationAudienceUnitTests
 
     public EmployeeEvaluationAudienceUnitTests()
     {
-        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
+        var employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -27,11 +27,19 @@ public class EmployeeEvaluationAudienceUnitTests
 
         _template = new EmployeeEvaluationTemplateDto(1, "Template");
 
-        _evaluation = new EmployeeEvaluationDto(0, _employee, _template, _employee, "Subject",
-                                                DateOnly.FromDateTime(DateTime.Now), null);
+        _evaluation = new EmployeeEvaluationDto
+        {
+            Id = 0,
+            Employee = _employee,
+            Template = _template,
+            Owner = _employee,
+            Subject = "Subject",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null
+        };
     }
 
-    private EmployeeEvaluationAudienceDto CreateEmployeeEvaluationAudience(
+        private EmployeeEvaluationAudienceDto CreateEmployeeEvaluationAudience(
         EmployeeEvaluationDto? evaluation = null,
         EmployeeDto? employee = null)
     {

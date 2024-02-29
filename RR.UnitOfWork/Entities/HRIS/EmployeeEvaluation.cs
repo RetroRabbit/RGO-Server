@@ -49,13 +49,14 @@ public class EmployeeEvaluation : IModel<EmployeeEvaluationDto>
 
     public EmployeeEvaluationDto ToDto()
     {
-        return new EmployeeEvaluationDto(
-                                         Id,
-                                         Employee?.ToDto(),
-                                         Template?.ToDto(),
-                                         Owner?.ToDto(),
-                                         Subject,
-                                         StartDate,
-                                         EndDate);
+        return new EmployeeEvaluationDto
+        {
+            Id = Id,
+            Employee = Employee?.ToDto(),
+            Template = Template?.ToDto(),
+            Subject = Subject,
+            StartDate = StartDate,
+            EndDate = EndDate
+        };
     }
 }
