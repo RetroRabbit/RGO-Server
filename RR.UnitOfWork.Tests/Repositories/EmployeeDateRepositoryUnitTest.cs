@@ -30,7 +30,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
 
         _mockDbContext.Setup(m => m.Set<EmployeeDate>()).Returns(_mockDbSet.Object);
 
-        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
@@ -152,7 +152,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
     {
         var dbContextMock = new Mock<DatabaseContext>();
         var dbSetMock = new Mock<DbSet<EmployeeDate>>();
-        dbSetMock.Setup(x => x.FindAsync(1)).ReturnsAsync((EmployeeDate)null);
+        dbSetMock.Setup(x => x.FindAsync(1)).ReturnsAsync((EmployeeDate?)null);
         dbContextMock.Setup(x => x.Set<EmployeeDate>()).Returns(dbSetMock.Object);
 
         var repository = new EmployeeDateRepository(dbContextMock.Object);
@@ -264,7 +264,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
 
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
-        Assert.Equal("Existing Employee", result.Employee.Name);
+        Assert.Equal("Existing Employee", result.Employee!.Name);
     }
 
     [Fact]

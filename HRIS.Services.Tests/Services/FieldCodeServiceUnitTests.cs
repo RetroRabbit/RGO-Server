@@ -27,59 +27,69 @@ public class FieldCodeServiceUnitTests
     {
         _dbMock = new Mock<IUnitOfWork>();
         _fieldCodeOptionsService = new Mock<IFieldCodeOptionsService>();
-        _fieldCodeDto = new FieldCodeDto(
-                                         1,
-                                         "AAA000",
-                                         "string",
-                                         "string",
-                                         "string",
-                                         FieldCodeType.String,
-                                         ItemStatus.Active,
-                                         false,
-                                         "",
-                                         FieldCodeCategory.Profile,
-                                         false
-                                        );
-        _fieldCodeDto2 = new FieldCodeDto(
-                                          2,
-                                          "AAA000",
-                                          "string2",
-                                          "string",
-                                          "string",
-                                          FieldCodeType.String,
-                                          ItemStatus.Archive,
-                                          false,
-                                          "",
-                                          FieldCodeCategory.Profile,
-                                          false);
-        _fieldCodeDto3 = new FieldCodeDto(
-                                          0,
-                                          "CCC222",
-                                          "string3",
-                                          "string",
-                                          "string",
-                                          FieldCodeType.String,
-                                          ItemStatus.Active,
-                                          false,
-                                          "",
-                                          FieldCodeCategory.Banking,
-                                          false
-                                         );
-        _fieldCodeDto4 = new FieldCodeDto(
-                                          1,
-                                          "AAA000",
-                                          "string",
-                                          "string",
-                                          "string",
-                                          FieldCodeType.String,
-                                          ItemStatus.Archive,
-                                          false,
-                                          "",
-                                          FieldCodeCategory.Documents,
-                                          false
-                                         );
-        _fieldCodeOptionsDto = new FieldCodeOptionsDto(1, 1, "string");
-        _fieldCodeOptionsDto2 = new FieldCodeOptionsDto(2, 1, "string");
+
+        _fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "AAA000",
+            Name = "string",
+            Description = "string",
+            Regex = "string",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = false,
+            InternalTable = "",
+            Category = FieldCodeCategory.Profile,
+            Required = false
+        };
+
+        _fieldCodeDto2 = new FieldCodeDto
+        {
+            Id = 2,
+            Code = "AAA000",
+            Name = "string2",
+            Description = "string",
+            Regex = "string",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Archive,
+            Internal = false,
+            InternalTable = "",
+            Category = FieldCodeCategory.Profile,
+            Required = false
+        };
+
+        _fieldCodeDto3 = new FieldCodeDto
+        {
+            Id = 0,
+            Code = "CCC222",
+            Name = "string3",
+            Description = "string",
+            Regex = "string",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = false,
+            InternalTable = "",
+            Category = FieldCodeCategory.Banking,
+            Required = false
+        };
+
+        _fieldCodeDto4 = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "AAA000",
+            Name = "string",
+            Description = "string",
+            Regex = "string",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Archive,
+            Internal = false,
+            InternalTable = "",
+            Category = FieldCodeCategory.Documents,
+            Required = false
+        };
+
+        _fieldCodeOptionsDto = new FieldCodeOptionsDto{ Id = 1, FieldCodeId = 1, Option = "string" };
+        _fieldCodeOptionsDto2 = new FieldCodeOptionsDto{ Id = 2, FieldCodeId = 1, Option = "string" };
         _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object);
     }
 
@@ -192,7 +202,7 @@ public class FieldCodeServiceUnitTests
         result = await _fieldCodeService.GetByCategory(category);
 
         Assert.NotNull(result);
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
 
         fieldCodes = new List<FieldCode>
         {
@@ -207,7 +217,7 @@ public class FieldCodeServiceUnitTests
         result = await _fieldCodeService.GetByCategory(category);
 
         Assert.NotNull(result);
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
     }
 
     [Fact]

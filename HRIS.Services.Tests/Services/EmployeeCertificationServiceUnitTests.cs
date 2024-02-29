@@ -22,12 +22,12 @@ public class EmployeeCertificationServiceUnitTests
 
     private EmployeeCertificationDto CreateEmployeeCertificationDto()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(2020, 1, 1), new DateTime(2020, 1, 1),
-                                          null, false, "None", 4, new EmployeeTypeDto(1, "Developer"), "Notes", 1, 28,
+                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
                                           128, 100000, "Dotty", "D",
                                           "Missile", new DateTime(1990, 1, 1), "South Africa", "South African",
                                           "5522522655", " ",
@@ -60,7 +60,7 @@ public class EmployeeCertificationServiceUnitTests
 
     private void MockEmployeeRepositorySetup(EmployeeDto employeeDto)
     {
-        var employeeList = new List<Employee> { new(employeeDto, employeeDto.EmployeeType) };
+        var employeeList = new List<Employee> { new(employeeDto, employeeDto.EmployeeType!) };
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(employeeList.AsQueryable().BuildMock());
     }
@@ -74,7 +74,7 @@ public class EmployeeCertificationServiceUnitTests
 
     private void MockEmployeeRepositorySetupWithEmployee(EmployeeDto employeeDto)
     {
-        var employee = new Employee(employeeDto, employeeDto.EmployeeType);
+        var employee = new Employee(employeeDto, employeeDto.EmployeeType!);
         var employeeList = new List<Employee> { employee };
         var mock = employeeList.AsQueryable().BuildMock();
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -110,7 +110,7 @@ public class EmployeeCertificationServiceUnitTests
 
     private void MockEmployeeRepositorySetupWithEmployeeAsync(EmployeeDto employeeDto)
     {
-        var employee = new Employee(employeeDto, employeeDto.EmployeeType);
+        var employee = new Employee(employeeDto, employeeDto.EmployeeType!);
         var employeeList = new List<Employee> { employee }.AsQueryable();
 
         var mock = employeeList.BuildMock();
@@ -158,7 +158,7 @@ public class EmployeeCertificationServiceUnitTests
     public async Task SaveEmployeeCertificationFailWhenCertificationExists()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetup(employeeCertificationDto.Employee);
+        MockEmployeeRepositorySetup(employeeCertificationDto.Employee!);
         MockEmployeeCertificationRepositorySetup(employeeCertificationDto);
 
         await Assert.ThrowsAsync<Exception>(() =>
@@ -171,7 +171,7 @@ public class EmployeeCertificationServiceUnitTests
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
 
-        MockEmployeeRepositorySetupWithEmployeeAsync(employeeCertificationDto.Employee);
+        MockEmployeeRepositorySetupWithEmployeeAsync(employeeCertificationDto.Employee!);
         MockEmployeeCertificationRepositorySetupEmptyAsync();
         MockEmployeeCertificationRepositorySetupForAdd(employeeCertificationDto);
 
@@ -184,11 +184,11 @@ public class EmployeeCertificationServiceUnitTests
     public async Task GetEmployeeCertificationPass()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetup(employeeCertificationDto.Employee);
+        MockEmployeeRepositorySetup(employeeCertificationDto.Employee!);
         MockEmployeeCertificationRepositorySetupWithCertification(employeeCertificationDto);
 
         var result =
-            await _employeeCertificationService.GetEmployeeCertification(employeeCertificationDto.Employee.Id,
+            await _employeeCertificationService.GetEmployeeCertification(employeeCertificationDto.Employee!.Id,
                                                                          employeeCertificationDto.Id);
 
         Assert.NotNull(result);
@@ -200,7 +200,7 @@ public class EmployeeCertificationServiceUnitTests
         var employeeCertificationDto1 = CreateEmployeeCertificationDto();
         var employeeCertificationDto2 = CreateEmployeeCertificationDto();
 
-        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto1.Employee);
+        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto1.Employee!);
 
         var employeeCertificationList = new List<EmployeeCertification>
         {
@@ -213,7 +213,7 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(mock);
 
         var results =
-            await _employeeCertificationService.GetAllEmployeeCertifications(employeeCertificationDto1.Employee.Id);
+            await _employeeCertificationService.GetAllEmployeeCertifications(employeeCertificationDto1.Employee!.Id);
 
         Assert.NotNull(results);
         Assert.Equal(2, results.Count);
@@ -223,7 +223,7 @@ public class EmployeeCertificationServiceUnitTests
     public async Task UpdateEmployeeCertificationPass()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto.Employee);
+        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto.Employee!);
         MockEmployeeCertificationRepositorySetupForAddOrUpdate(employeeCertificationDto, false);
 
         var result = await _employeeCertificationService.UpdateEmployeeCertification(employeeCertificationDto);
@@ -235,7 +235,7 @@ public class EmployeeCertificationServiceUnitTests
     public async Task DeleteEmployeeCertificationPass()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto.Employee);
+        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto.Employee!);
         MockEmployeeCertificationRepositorySetupForDelete(employeeCertificationDto);
 
         var result = await _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto);

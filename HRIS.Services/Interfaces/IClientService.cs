@@ -8,5 +8,5 @@ public interface IClientService
     ///     Get all clients
     /// </summary>
     /// <returns>List of ClientDto
-    Task<List<ClientDto>> GetAllClients();
+    Task<List<ClientDto>?> GetAllClients();
 }

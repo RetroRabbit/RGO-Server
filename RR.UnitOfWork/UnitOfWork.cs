@@ -84,16 +84,16 @@ public class UnitOfWork : IUnitOfWork
                 command.CommandText = sql;
                 command.Parameters.AddRange(parameters);
 
-                if (command.Connection.State == ConnectionState.Closed) await command.Connection.OpenAsync();
+                if (command.Connection!.State == ConnectionState.Closed) await command.Connection.OpenAsync();
 
                 var result = await command.ExecuteScalarAsync();
 
-                return result?.ToString();
+                return result?.ToString()!;
             }
         }
         catch (Exception)
         {
-            return null;
+            return null!;
         }
     }
 }

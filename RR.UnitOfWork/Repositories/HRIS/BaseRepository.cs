@@ -17,17 +17,17 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
 
     public async Task<T?> GetById(int id)
     {
-        return (await _entity.FindAsync(id)).ToDto();
+        return (await _entity.FindAsync(id))!.ToDto();
     }
 
-    public IQueryable<TK> Get(Expression<Func<TK, bool>> criteria = null)
+    public IQueryable<TK> Get(Expression<Func<TK, bool>>? criteria = null)
     {
         return criteria == null
             ? _entity.AsQueryable()
             : _entity.Where(criteria);
     }
 
-    public async Task<List<T>> GetAll(Expression<Func<TK, bool>> criteria = null)
+    public async Task<List<T>> GetAll(Expression<Func<TK, bool>>? criteria = null)
     {
         return (criteria == null
                    ? await _entity.ToListAsync()
@@ -40,7 +40,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
     {
         return (criteria == null
                 ? await _entity.FirstOrDefaultAsync()
-                : await _entity.Where(criteria).FirstOrDefaultAsync())
+                : await _entity.Where(criteria).FirstOrDefaultAsync())!
             .ToDto();
     }
 

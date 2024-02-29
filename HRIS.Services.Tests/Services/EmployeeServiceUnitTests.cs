@@ -30,7 +30,13 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private readonly Mock<IRoleService> roleServiceMock;
 
-    private readonly EmployeeRoleDto employeeRoleDto = new(0, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee);
+    private readonly EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto
+    {
+        Id = 0,
+        Employee = EmployeeTestData.EmployeeDto,
+        Role = EmployeeRoleTestData.RoleDtoEmployee
+    };
+
     private readonly EmployeeService employeeService;
 
     public EmployeeServiceUnitTests()
@@ -114,7 +120,12 @@ public class EmployeeServiceUnitTests
     {
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .Returns(Task.FromResult(EmployeeTypeTestData.DeveloperType));
-        var employeeRoleDto = new EmployeeRoleDto(0, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee);
+        var employeeRoleDto = new EmployeeRoleDto
+        {
+            Id = 0,
+            Employee = EmployeeTestData.EmployeeDto,
+            Role = EmployeeRoleTestData.RoleDtoEmployee
+        };
 
         employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(false)
@@ -155,7 +166,7 @@ public class EmployeeServiceUnitTests
 
 
     [Fact]
-    public async Task GetEmployeeTest()
+    public void GetEmployeeTest()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         var _dbMock = new Mock<IUnitOfWork>();
@@ -192,7 +203,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Employee.Delete(EmployeeTestData.EmployeeDto.Id))
                .Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
 
-        var result = await employeeService.DeleteEmployee(EmployeeTestData.EmployeeDto.Email);
+        var result = await employeeService.DeleteEmployee(EmployeeTestData.EmployeeDto.Email!);
         Assert.NotNull(result);
     }
 
@@ -223,7 +234,13 @@ public class EmployeeServiceUnitTests
         var emp = new Employee(EmployeeTestData.EmployeeDto2, EmployeeTypeTestData.DeveloperType);
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
 
-        var empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee);
+        var empRoleDto = new EmployeeRoleDto
+        {
+            Id = 1,
+            Employee = EmployeeTestData.EmployeeDto,
+            Role = EmployeeRoleTestData.RoleDtoEmployee
+        };
+
         var empRole = new EmployeeRole(empRoleDto);
 
         var employees = new List<Employee> { emp };
@@ -244,13 +261,13 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(expectedEmployees.AsQueryable().BuildMock());
 
-        var journeyEmployees = await employeeService.GetAll(EmployeeTestData.EmployeeDto2.Email);
+        var journeyEmployees = await employeeService.GetAll(EmployeeTestData.EmployeeDto2.Email!);
 
-        Assert.Equal(journeyEmployees.Count, 1);
+        Assert.Single(journeyEmployees);
     }
 
     [Fact]
-    public async Task CheckEmployeeExistsTest()
+    public void CheckEmployeeExistsTest()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         var _dbMock = new Mock<IUnitOfWork>();
@@ -273,7 +290,7 @@ public class EmployeeServiceUnitTests
                .Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
 
         var result =
-            await employeeService.UpdateEmployee(EmployeeTestData.EmployeeDto, EmployeeTestData.EmployeeDto.Email);
+            await employeeService.UpdateEmployee(EmployeeTestData.EmployeeDto, EmployeeTestData.EmployeeDto.Email!);
 
         Assert.Equal(EmployeeTestData.EmployeeDto, result);
     }
@@ -285,7 +302,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
 
         RoleDto roleDto = new RoleDto { Id = 2, Description = "Admin" };
-        EmployeeRoleDto empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto2, roleDto);
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = roleDto };
         EmployeeRole empRole = new EmployeeRole(empRoleDto);
 
         List<Employee> employees = new List<Employee> { emp };
@@ -313,7 +330,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto2, EmployeeRoleTestData.RoleDtoEmployee);
+        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
         var empRole = new EmployeeRole(empRoleDto);
 
         var empRoles = new List<EmployeeRole> { empRole };
@@ -349,7 +366,7 @@ public class EmployeeServiceUnitTests
 
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto2, EmployeeRoleTestData.RoleDtoEmployee);
+        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
 
         var roles = new List<Role> { new(EmployeeRoleTestData.RoleDtoEmployee) };
 
@@ -403,7 +420,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>()))
                .Returns(clients.AsQueryable().BuildMock());
 
-        var result = await employeeService.GetSimpleProfile(EmployeeTestData.EmployeeDto4.Email);
+        var result = await employeeService.GetSimpleProfile(EmployeeTestData.EmployeeDto4.Email!);
 
         Assert.NotNull(result);
         Assert.Equal(EmployeeTestData.EmployeeDto4.TeamLead, result.TeamLeadId);
@@ -689,7 +706,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task GenerateEmployeeDataCardInfomrationTest()
     {
-        EmployeeTypeDto employeeTypeDto = new(2, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Developer" };
         EmployeeType employeeType = new(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 

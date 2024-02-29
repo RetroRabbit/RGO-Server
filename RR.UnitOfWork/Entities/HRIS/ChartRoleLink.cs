@@ -26,18 +26,18 @@ public class ChartRoleLink : IModel<ChartRoleLinkDto>
     [ForeignKey("Chart")]
     public int ChartId { get; set; }
 
-    public virtual Role Role { get; set; }
+    public virtual Role? Role { get; set; }
 
-    public virtual Chart Chart { get; set; }
+    public virtual Chart? Chart { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 
     public ChartRoleLinkDto ToDto()
     {
-        return new ChartRoleLinkDto(
-                                    Id,
-                                    Chart?.ToDto(),
-                                    Role?.ToDto()
-                                   );
+        return new ChartRoleLinkDto {
+                                    Id = Id,
+                                    Chart = Chart?.ToDto(),
+                                    Role = Role?.ToDto()
+                                   };
     }
 }

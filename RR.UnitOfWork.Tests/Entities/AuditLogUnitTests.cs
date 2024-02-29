@@ -9,7 +9,7 @@ public class AuditLogUnitTests
 {
     public EmployeeDto CreateTestEmployee()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -61,11 +61,11 @@ public class AuditLogUnitTests
         var auditLogs = new List<AuditLog>
         {
             CreateTestAuditLog(),
-            CreateTestAuditLog(new Employee(testEmployee, testEmployee.EmployeeType)),
-            CreateTestAuditLog(editFor: new Employee(testEmployee, testEmployee.EmployeeType)),
+            CreateTestAuditLog(new Employee(testEmployee, testEmployee.EmployeeType!)),
+            CreateTestAuditLog(editFor: new Employee(testEmployee, testEmployee.EmployeeType!)),
             CreateTestAuditLog(
-                               new Employee(testEmployee, testEmployee.EmployeeType),
-                               new Employee(testEmployee, testEmployee.EmployeeType))
+                               new Employee(testEmployee, testEmployee.EmployeeType!),
+                               new Employee(testEmployee, testEmployee.EmployeeType!))
         };
 
         var auditLogDto = auditLogs[0].ToDto();
@@ -98,8 +98,8 @@ public class AuditLogUnitTests
     {
         var testEmployee = CreateTestEmployee();
         var auditLog = CreateTestAuditLog(
-                                          new Employee(testEmployee, testEmployee.EmployeeType),
-                                          new Employee(testEmployee, testEmployee.EmployeeType));
+                                          new Employee(testEmployee, testEmployee.EmployeeType!),
+                                          new Employee(testEmployee, testEmployee.EmployeeType!));
 
         var initializedAuditLog = new AuditLog(auditLog.ToDto());
 
