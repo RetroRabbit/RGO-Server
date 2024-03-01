@@ -4,6 +4,7 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -16,9 +17,9 @@ public class EmployeeEvaluationControllerUnitTests
         var email = "test@retrorabbit.co.za";
         var expectedEvaluations = new List<EmployeeEvaluationDto>
         {
-            new(
-                1,
-                new EmployeeDto
+            new EmployeeEvaluationDto{
+                Id = 1,
+                Employee = new EmployeeDto
                     (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
                      new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                      new DateTime(1990, 1, 1),
@@ -33,8 +34,8 @@ public class EmployeeEvaluationControllerUnitTests
                      "Emergency Contact",
                      "987654321"
                     ),
-                new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
-                new EmployeeDto
+                Template = new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
+                Owner = new EmployeeDto
                     (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
                      new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                      new DateTime(1990, 1, 1),
@@ -49,10 +50,10 @@ public class EmployeeEvaluationControllerUnitTests
                      "Emergency Contact",
                      "987654321"
                     ),
-                "Employee Evaluation Subject",
-                new DateOnly(2022, 1, 1),
-                new DateOnly(2022, 2, 1)
-               )
+                Subject = "Employee Evaluation Subject",
+                StartDate = new DateOnly(2022, 1, 1),
+                EndDate = new DateOnly(2022, 2, 1),
+            }
         };
 
         var mockService = new Mock<IEmployeeEvaluationService>();
@@ -96,11 +97,11 @@ public class EmployeeEvaluationControllerUnitTests
         var subject = "SampleSubject";
 
         var expectedEvaluation = new EmployeeEvaluationDto
-            (
-             1,
-             new EmployeeDto
+        {
+            Id = 1,
+            Employee = new EmployeeDto
                  (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -113,14 +114,14 @@ public class EmployeeEvaluationControllerUnitTests
                   "Emergency Contact",
                   "987654321"
                  ),
-             new EmployeeEvaluationTemplateDto
+            Template = new EmployeeEvaluationTemplateDto
                  (
                   1,
                   "Sample Description"
                  ),
-             new EmployeeDto
+            Owner = new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -133,10 +134,10 @@ public class EmployeeEvaluationControllerUnitTests
                   "Emergency Contact",
                   "987654321"
                  ),
-             "Employee Evaluation Subject",
-             new DateOnly(2022, 1, 1),
-             new DateOnly(2022, 2, 1)
-            );
+            Subject = "Employee Evaluation Subject",
+            StartDate = new DateOnly(2022, 1, 1),
+            EndDate = new DateOnly(2022, 2, 1)
+        };
 
         var mockService = new Mock<IEmployeeEvaluationService>();
         mockService.Setup(x => x.Get(employeeEmail, ownerEmail, template, subject)).ReturnsAsync(expectedEvaluation);
@@ -197,11 +198,11 @@ public class EmployeeEvaluationControllerUnitTests
         };
 
         var expectedSavedEvaluation = new EmployeeEvaluationDto
-            (
-             1,
-             new EmployeeDto
+        { 
+            Id = 1,
+            Employee = new EmployeeDto
                  (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -214,14 +215,14 @@ public class EmployeeEvaluationControllerUnitTests
                   "Emergency Contact",
                   "987654321"
                  ),
-             new EmployeeEvaluationTemplateDto
+            Template = new EmployeeEvaluationTemplateDto
                  (
                   1,
                   "Sample Description"
                  ),
-             new EmployeeDto
+            Owner = new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -234,12 +235,12 @@ public class EmployeeEvaluationControllerUnitTests
                   "Emergency Contact",
                   "987654321"
                  ),
-             "Subject 1",
-             new DateOnly(2022, 1, 1),
-             new DateOnly(2022, 2, 1)
-            );
+            Subject = "Employee Evaluation Subject",
+            StartDate = new DateOnly(2022, 1, 1),
+            EndDate = new DateOnly(2022, 2, 1)
+        };
 
-        mockService.Setup(x => x.Save(It.IsAny<EmployeeEvaluationInput>())).ReturnsAsync(expectedSavedEvaluation);
+    mockService.Setup(x => x.Save(It.IsAny<EmployeeEvaluationInput>())).ReturnsAsync(expectedSavedEvaluation);
 
         var result = await controller.SaveEmployeeEvaluation(input);
 
@@ -311,12 +312,12 @@ public class EmployeeEvaluationControllerUnitTests
 
         mockService.Setup(x => x.Update(It.IsAny<EmployeeEvaluationInput>(), It.IsAny<EmployeeEvaluationInput>()))
                    .ReturnsAsync(new EmployeeEvaluationDto
-                                     (
-                                      1,
-                                      new EmployeeDto
+                   {
+                       Id = 1,
+                       Employee = new EmployeeDto
                                           (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -333,15 +334,15 @@ public class EmployeeEvaluationControllerUnitTests
                                            "Emergency Contact",
                                            "987654321"
                                           ),
-                                      new EmployeeEvaluationTemplateDto
+                       Template = new EmployeeEvaluationTemplateDto
                                           (
                                            1,
                                            "Sample Description"
                                           ),
-                                      new EmployeeDto
+                       Owner = new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -357,10 +358,10 @@ public class EmployeeEvaluationControllerUnitTests
                                            "Emergency Contact",
                                            "987654321"
                                           ),
-                                      "Subject 1",
-                                      new DateOnly(2022, 1, 1),
-                                      new DateOnly(2022, 2, 1)
-                                     ));
+                       Subject = "Subject 1",
+                       StartDate = new DateOnly(2022, 1, 1),
+                       EndDate = new DateOnly(2022, 2, 1)
+                   });
 
         var result = await controller.UpdateEmployeeEvaluation(evaluationInputList);
 
@@ -402,12 +403,12 @@ public class EmployeeEvaluationControllerUnitTests
 
         mockService.Setup(x => x.Delete(evaluationInput))
                    .ReturnsAsync(new EmployeeEvaluationDto
-                                     (
-                                      1,
-                                      new EmployeeDto
+                   {
+                       Id = 1,
+                       Employee = new EmployeeDto
                                           (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -424,15 +425,15 @@ public class EmployeeEvaluationControllerUnitTests
                                            "Emergency Contact",
                                            "987654321"
                                           ),
-                                      new EmployeeEvaluationTemplateDto
+                       Template = new EmployeeEvaluationTemplateDto
                                           (
                                            1,
                                            "Sample Description"
                                           ),
-                                      new EmployeeDto
+                       Owner = new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -448,10 +449,10 @@ public class EmployeeEvaluationControllerUnitTests
                                            "Emergency Contact",
                                            "987654321"
                                           ),
-                                      "Subject 1",
-                                      new DateOnly(2022, 1, 1),
-                                      new DateOnly(2022, 2, 1)
-                                     ));
+                       Subject = "Subject 1",
+                       StartDate = new DateOnly(2022, 1, 1),
+                       EndDate = new DateOnly(2022, 2, 1)
+                   });
 
         var result = await controller.DeleteEmployeeEvaluation(evaluationInput);
 

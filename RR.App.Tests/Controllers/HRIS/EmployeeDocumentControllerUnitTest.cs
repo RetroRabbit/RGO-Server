@@ -44,7 +44,6 @@ public class EmployeeDocumentControllerUnitTest
 
         _simpleEmployeeDocument = new SimpleEmployeeDocumentDto
         {
-
             Id = 1,
             EmployeeId = EmployeeTestData.EmployeeDto.Id,
             FileName = "TestFile.pdf",

@@ -17,22 +17,23 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
         var expectedAudiences = new List<EmployeeEvaluationAudienceDto>
-        {
-            new(
-                1,
-                new EmployeeEvaluationDto(
-                                          1,
-                                          EmployeeTestData.EmployeeDto,
-                                          new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
-                                          EmployeeTestData.EmployeeDto2,
-                                          "Employee Evaluation Subject",
-                                          new DateOnly(2022, 1, 1),
-                                          new DateOnly(2022, 2, 1)
-                                         ),
-                EmployeeTestData.EmployeeDto3
-               )
+{
+            new EmployeeEvaluationAudienceDto
+            {
+                Id = 1,
+                Evaluation = new EmployeeEvaluationDto
+                {
+                    Id = 1,
+                    Employee = EmployeeTestData.EmployeeDto,
+                    Template = new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
+                    Owner = EmployeeTestData.EmployeeDto2,
+                    Subject = "Employee Evaluation Subject",
+                    StartDate = new DateOnly(2022, 1, 1),
+                    EndDate = new DateOnly(2022, 2, 1)
+                },
+                Employee = EmployeeTestData.EmployeeDto3
+            }
         };
-
 
         serviceMock.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>()))
                    .ReturnsAsync(expectedAudiences);
@@ -83,14 +84,19 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
         var savedAudience = new EmployeeEvaluationAudienceDto
-            (1, new EmployeeEvaluationDto(1, EmployeeTestData.EmployeeDto,
-                                          new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
-                                          EmployeeTestData.EmployeeDto2,
-                                          "Employee Evaluation Subject",
-                                          new DateOnly(2022, 1, 1),
-                                          new DateOnly(2022, 2, 1)),
-             EmployeeTestData.EmployeeDto3
-            );
+        { Id = 1, Evaluation = new EmployeeEvaluationDto
+        {
+            Id = 1,
+            Employee = EmployeeTestData.EmployeeDto,
+            Template = new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
+            Owner = EmployeeTestData.EmployeeDto2,
+            Subject = "Employee Evaluation Subject",
+            StartDate = new DateOnly(2022, 1, 1),
+            EndDate = new DateOnly(2022, 2, 1)
+        },
+
+        Employee = EmployeeTestData.EmployeeDto3
+        };
 
         serviceMock.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
                    .ReturnsAsync(savedAudience);
