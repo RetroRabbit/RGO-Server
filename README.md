@@ -38,7 +38,8 @@ Add system environments as follows
 
 ![Image of System Environment Variables](./EnvironmentVariables.png)
 
-With the respective values in the redacted spaces
+With the respective values in the redacted spaces 
+(please note that the dashes in between the variable names are double dashes)
 
 # User Secrets
 Right Click RGO.App and Click on **Mange User Secrets**
