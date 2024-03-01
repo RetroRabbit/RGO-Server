@@ -27,7 +27,7 @@ public class RoleManageControllerUnitTests
 
     public static RoleAccessDto CreateRoleAccessDto()
     {
-        return new RoleAccessDto(1, "Permission 1", "Group 1");
+        return new RoleAccessDto { Id = 1, Permission =  "Permission 1", Grouping = "Group 1" };
     }
 
     public static RoleAccessLinkDto CreateRoleAccessLinkDto()

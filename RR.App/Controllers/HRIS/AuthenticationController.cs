@@ -63,7 +63,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var userExists = await _authService.CheckUserExist(newEmployee.Email);
+            var userExists = await _authService.CheckUserExist(newEmployee.Email!);
 
             if (userExists) throw new Exception("Employee already exists");
 

@@ -20,7 +20,7 @@ public class EmployeeEvaluationControllerUnitTests
                 1,
                 new EmployeeDto
                     (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                     new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                     new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                      new DateTime(1990, 1, 1),
                      "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                      Race.White, Gender.Male, "photo.jpg",
@@ -36,7 +36,7 @@ public class EmployeeEvaluationControllerUnitTests
                 new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
                 new EmployeeDto
                     (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                     new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                     new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                      new DateTime(1990, 1, 1),
                      "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                      Race.White, Gender.Male, "photo.jpg",
@@ -100,7 +100,7 @@ public class EmployeeEvaluationControllerUnitTests
              1,
              new EmployeeDto
                  (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -120,7 +120,7 @@ public class EmployeeEvaluationControllerUnitTests
                  ),
              new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -195,7 +195,7 @@ public class EmployeeEvaluationControllerUnitTests
              1,
              new EmployeeDto
                  (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -215,7 +215,7 @@ public class EmployeeEvaluationControllerUnitTests
                  ),
              new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
+                  new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
                   new DateTime(1990, 1, 1),
                   "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
                   Race.White, Gender.Male, "photo.jpg",
@@ -262,7 +262,7 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var invalidInput = new EmployeeEvaluationInput
-            (1, null, "employee@retrorabbit.co.za", "", "Evaluation Subject 1");
+            (1, string.Empty, "employee@retrorabbit.co.za", "", "Evaluation Subject 1");
 
         mockService.Setup(x => x.Save(invalidInput))
                    .ThrowsAsync(new Exception("Invalid input error message"));
@@ -307,7 +307,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -332,7 +332,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -366,7 +366,7 @@ public class EmployeeEvaluationControllerUnitTests
 
         var invalidInputList = new List<EmployeeEvaluationInput>
         {
-            new(0, null, "invalidemail", "", null),
+            new(0, string.Empty, "invalidemail", "", string.Empty),
             new(-1, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za", "Template 1", "Subject 1")
         };
 
@@ -398,7 +398,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -423,7 +423,7 @@ public class EmployeeEvaluationControllerUnitTests
                                       new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
-                                           new EmployeeTypeDto(1, "Full Time"), "Notes", 20.0f, 15.0f, 50.0f, 50000,
+                                           new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
                                            "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
                                            "South Africa", "South African", "123456789", "AB123456",
                                            new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
@@ -456,7 +456,7 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var invalidEvaluationInput = new EmployeeEvaluationInput
-            (0, null, "invalidemail", "", null);
+            (0, string.Empty, "invalidemail", "", string.Empty);
 
         var errorMessage = "Invalid input error message";
         mockService.Setup(x => x.Delete(invalidEvaluationInput))

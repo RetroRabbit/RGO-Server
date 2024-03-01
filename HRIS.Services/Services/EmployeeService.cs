@@ -12,7 +12,7 @@ namespace HRIS.Services.Services;
 public class EmployeeService : IEmployeeService
 {
     private const string QueueName = "employee_data_queue";
-    public static ConnectionFactory _employeeFactory;
+    public static ConnectionFactory? _employeeFactory;
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
@@ -58,7 +58,7 @@ public class EmployeeService : IEmployeeService
         catch (Exception)
         {
             var newEmployeeType = await _employeeTypeService
-                .SaveEmployeeType(new EmployeeTypeDto(0, employeeDto.EmployeeType!.Name));
+                .SaveEmployeeType(new EmployeeTypeDto { Id = 0, Name = employeeDto.EmployeeType!.Name });
 
             employee = new Employee(employeeDto, newEmployeeType);
         }
@@ -90,13 +90,14 @@ public class EmployeeService : IEmployeeService
         var roleDto = await _roleService.GetRole("Employee");
         var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto(0, newEmployee, roleDto);
+        var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee, Role = roleDto };
+
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
         return newEmployee;
     }
 
-    public async Task<bool> CheckUserExist(string email)
+    public async Task<bool> CheckUserExist(string? email)
     {
         return await _db.Employee
                         .Any(employee => employee.Email == email);
@@ -106,7 +107,7 @@ public class EmployeeService : IEmployeeService
     {
         var existingEmployee = await GetEmployee(email);
 
-        return await _db.Employee.Delete(existingEmployee.Id);
+        return await _db.Employee.Delete(existingEmployee!.Id);
     }
 
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
@@ -116,7 +117,7 @@ public class EmployeeService : IEmployeeService
             var peopleChampion = await GetEmployee(userEmail);
 
             return await _db.Employee
-                            .Get(employee => employee.PeopleChampion == peopleChampion.Id)
+                            .Get(employee => employee.PeopleChampion == peopleChampion!.Id)
                             .Include(employee => employee.EmployeeType)
                             .Include(employee => employee.PhysicalAddress)
                             .Include(employee => employee.PostalAddress)
@@ -136,7 +137,7 @@ public class EmployeeService : IEmployeeService
                         .ToListAsync();
     }
 
-    public async Task<EmployeeDto> GetEmployee(string email)
+    public async Task<EmployeeDto?> GetEmployee(string email)
     {
         var employee = await _db.Employee
                                 .Get(employee => employee.Email == email)
@@ -174,18 +175,18 @@ public class EmployeeService : IEmployeeService
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
         EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
-            .GetEmployeeType(employeeDto.EmployeeType.Name);
-        Employee employee = null;
+            .GetEmployeeType(employeeDto.EmployeeType!.Name);
+        Employee? employee = null;
         if (employeeDto.Email == userEmail)
         {
-            employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
+            employee = CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
         }
         else
         {
             if (await CheckUserExist(userEmail))
             {
                 if (await IsAdmin(userEmail))
-                    employee = await CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
+                    employee = CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
                 else
                     throw new Exception("Unauthorized action");
             }
@@ -343,17 +344,17 @@ public class EmployeeService : IEmployeeService
         var clientAllocatedId = 0;
         var clientAllocatedName = "";
 
-        if (employeeDto.TeamLead != null)
+        if (employeeDto!.TeamLead != null)
         {
             var teamLeadDto = await GetById((int)employeeDto.TeamLead);
-            teamLeadName = teamLeadDto.Name + " " + teamLeadDto.Surname;
+            teamLeadName = teamLeadDto!.Name + " " + teamLeadDto.Surname;
             teamLeadId = teamLeadDto.Id;
         }
 
         if (employeeDto.PeopleChampion != null)
         {
             var peopleChampionDto = await GetById((int)employeeDto.PeopleChampion);
-            peopleChampionName = peopleChampionDto.Name + " " + peopleChampionDto.Surname;
+            peopleChampionName = peopleChampionDto!.Name + " " + peopleChampionDto.Surname;
             peopleChampionId = peopleChampionDto.Id;
         }
 
@@ -422,7 +423,7 @@ public class EmployeeService : IEmployeeService
                         .Get(employee => true)
                         .Where(employee =>
                                    (peopleChampId == 0 || employee.PeopleChampion == peopleChampId)
-                                   && (employeeType == 0 || employee.EmployeeType.Id == employeeType))
+                                   && (employeeType == 0 || employee.EmployeeType!.Id == employeeType))
                         .Include(employee => employee.EmployeeType)
                         .Include(employee => employee.PhysicalAddress)
                         .Include(employee => employee.PostalAddress)
@@ -435,7 +436,7 @@ public class EmployeeService : IEmployeeService
     {
         try
         {
-            using (var connection = _employeeFactory.CreateConnection())
+            using (var connection = _employeeFactory!.CreateConnection())
             using (var channel = connection.CreateModel())
             {
                 var messageBody = JsonConvert.SerializeObject(employeeData);
@@ -539,31 +540,31 @@ public class EmployeeService : IEmployeeService
         var employeeDto = await GetEmployee(userEmail);
 
         var empRole = await _db.EmployeeRole
-                               .Get(role => role.EmployeeId == employeeDto.Id)
+                               .Get(role => role.EmployeeId == employeeDto!.Id)
                                .FirstOrDefaultAsync();
 
         var role = await _db.Role
-                            .Get(role => role.Id == empRole.RoleId)
+                            .Get(role => role.Id == empRole!.RoleId)
                             .FirstOrDefaultAsync();
 
-        return role.Description is "Admin" or "SuperAdmin";
+        return role!.Description is "Admin" or "SuperAdmin";
     }
 
     private async Task<bool> IsJourney(string userEmail)
     {
         var employeeDto = await GetEmployee(userEmail);
         var empRole = await _db.EmployeeRole
-                               .Get(role => role.EmployeeId == employeeDto.Id)
+                               .Get(role => role.EmployeeId == employeeDto!.Id)
                                .FirstOrDefaultAsync();
 
         var role = await _db.Role
-                            .Get(role => role.Id == empRole.RoleId)
+                            .Get(role => role.Id == empRole!.RoleId)
                             .FirstOrDefaultAsync();
 
-        return role.Description is "Journey";
+        return role!.Description is "Journey";
     }
 
-    private async Task<Employee> CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
+    private Employee CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
     {
         var employee = new Employee();
 

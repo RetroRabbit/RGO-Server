@@ -25,6 +25,6 @@ public abstract class BaseDataType
 
     public static BaseDataType GetCustom(string dataType)
     {
-        return Charts.FirstOrDefault(x => x.Name == dataType);
+        return Charts.FirstOrDefault(x => x.Name == dataType)!;
     }
 }

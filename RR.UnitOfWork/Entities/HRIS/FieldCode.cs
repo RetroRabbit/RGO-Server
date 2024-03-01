@@ -29,9 +29,9 @@ public class FieldCode : IModel<FieldCodeDto>
         Required = fieldCodeDto.Required;
     }
 
-    [Column("code")] public string Code { get; set; }
+    [Column("code")] public string? Code { get; set; }
 
-    [Column("name")] public string Name { get; set; }
+    [Column("name")] public string? Name { get; set; }
 
     [Column("description")] public string? Description { get; set; }
 
@@ -53,17 +53,19 @@ public class FieldCode : IModel<FieldCodeDto>
 
     public FieldCodeDto ToDto()
     {
-        return new FieldCodeDto(
-                                Id,
-                                Code,
-                                Name,
-                                Description,
-                                Regex,
-                                Type,
-                                Status,
-                                Internal,
-                                InternalTable,
-                                Category,
-                                Required);
+        return new FieldCodeDto
+        {
+            Id = Id,
+            Code = Code,
+            Name = Name,
+            Description = Description,
+            Regex = Regex,
+            Type = Type,
+            Status = Status,
+            Internal = Internal,
+            InternalTable = InternalTable,
+            Category = Category,
+            Required = Required
+        };
     }
 }

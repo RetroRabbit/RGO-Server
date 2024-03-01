@@ -152,7 +152,7 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoAdmin)
+                new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = EmployeeRoleTestData.RoleDtoAdmin }
                )
         };
 
@@ -204,7 +204,7 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee)
+                new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = EmployeeRoleTestData.RoleDtoEmployee }
                )
         };
 
@@ -289,7 +289,7 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoAdmin)
+                new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = EmployeeRoleTestData.RoleDtoAdmin }
                )
         };
 
@@ -337,7 +337,7 @@ public class EmployeeBankingServiceTest
         var empRoles = new List<EmployeeRole>
         {
             new(
-                new EmployeeRoleDto(1, EmployeeTestData.EmployeeDto, EmployeeRoleTestData.RoleDtoEmployee)
+                new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = EmployeeRoleTestData.RoleDtoEmployee }
                )
         };
 

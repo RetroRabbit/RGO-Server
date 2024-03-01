@@ -15,7 +15,7 @@ namespace RR.App
 {
     public class Program
     {
-        public static async Task Main(params string[] args)
+        public static void Main(params string[] args)
         {
             ConnectionFactory _factory;
             _factory = new ConnectionFactory();
@@ -87,7 +87,7 @@ namespace RR.App
                     {
                         OnTokenValidated = context =>
                         {
-                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                            var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
 
                             var issuer = context.Principal.FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
                             var audience = context.Principal.FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
@@ -98,7 +98,7 @@ namespace RR.App
                                 return Task.CompletedTask;
                             }
 
-                            Claim? roleClaims = claimsIdentity.Claims
+                            Claim? roleClaims = claimsIdentity!.Claims
                                 .FirstOrDefault(c => c.Type == ClaimTypes.Role);
 
                             if (roleClaims == null) return Task.CompletedTask;
@@ -148,16 +148,17 @@ namespace RR.App
                 .ToList()
                 .ForEach(key =>
                 {
-                    policies[key]["Permissions"] = new List<string>();
+                    policies[key]["Permissions"] = new List<string?>();
                 });
 
             new AuthorizationPolicySettings
             {
                 Policies = policies
-                .Select(policy => new PolicySettings(
-                    policy.Value["Name"].First(),
-                    policy.Value["Roles"],
-                    policy.Value["Permissions"]))
+                .Select(policy => new PolicySettings {
+                    Name = policy.Value["Name"].First(),
+                    Roles = policy.Value["Roles"],
+                    Permissions = policy.Value["Permissions"]})
+
                 .ToList()
             }.Policies.ForEach(policySettings =>
             {

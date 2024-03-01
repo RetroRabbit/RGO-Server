@@ -135,7 +135,7 @@ public class PropertyAccessServiceUnitTests
                                                 _employeeDataService.Object, _employeeService.Object);
 
         _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>()))
-                        .Returns(Task.FromResult(employee.ToDto()));
+                        .Returns(Task.FromResult(employee.ToDto())!);
 
         _dbMock
             .Setup(r => r.PropertyAccess.GetForEmployee(It.IsAny<string>()))
@@ -263,7 +263,7 @@ public class PropertyAccessServiceUnitTests
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
                                                 _employeeDataService.Object, _employeeService.Object);
 
-        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto()));
+        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
         var employeeList = new List<Employee> { employee }.AsQueryable().BuildMock();
 
@@ -289,13 +289,13 @@ public class PropertyAccessServiceUnitTests
         var fieldCodeService = new Mock<FieldCodeService>();
 
         _dbMock.SetupSequence(f => f.FieldCode.GetById(It.IsAny<int>()))
-               .Returns(Task.FromResult(fieldCode[0].ToDto()))
-               .Returns(Task.FromResult(fieldCode[1].ToDto()))
-               .Returns(Task.FromResult(fieldCode[2].ToDto()))
-               .Returns(Task.FromResult(fieldCode[3].ToDto()))
-               .Returns(Task.FromResult(fieldCode[4].ToDto()))
-               .Returns(Task.FromResult(fieldCode[5].ToDto()))
-               .Returns(Task.FromResult(fieldCode[6].ToDto()));
+               .Returns(Task.FromResult(fieldCode[0].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[1].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[2].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[3].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[4].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[5].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[6].ToDto())!);
 
 
         _dbMock
@@ -376,7 +376,7 @@ public class PropertyAccessServiceUnitTests
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
                                                 _employeeDataService.Object, _employeeService.Object);
 
-        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto()));
+        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
         var employeeList = new List<Employee>().AsQueryable().BuildMock();
 
@@ -402,17 +402,17 @@ public class PropertyAccessServiceUnitTests
         var fieldCodeService = new Mock<FieldCodeService>();
 
         _dbMock.SetupSequence(f => f.FieldCode.GetById(It.IsAny<int>()))
-               .Returns(Task.FromResult(fieldCode[0].ToDto()))
-               .Returns(Task.FromResult(fieldCode[1].ToDto()))
-               .Returns(Task.FromResult(fieldCode[2].ToDto()))
-               .Returns(Task.FromResult(fieldCode[3].ToDto()));
+               .Returns(Task.FromResult(fieldCode[0].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[1].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[2].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[3].ToDto())!);
 
 
         _dbMock
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
+        await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
             new(12, "zxy 035 gp"),
             new(13, "James"),
@@ -509,7 +509,7 @@ public class PropertyAccessServiceUnitTests
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
                                                 _employeeDataService.Object, _employeeService.Object);
 
-        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto()));
+        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
         var employeeList = new List<Employee> { employee }.AsQueryable().BuildMock();
 
@@ -535,17 +535,17 @@ public class PropertyAccessServiceUnitTests
         var fieldCodeService = new Mock<FieldCodeService>();
 
         _dbMock.SetupSequence(f => f.FieldCode.GetById(It.IsAny<int>()))
-               .Returns(Task.FromResult(fieldCode[0].ToDto()))
-               .Returns(Task.FromResult(fieldCode[1].ToDto()))
-               .Returns(Task.FromResult(fieldCode[2].ToDto()))
-               .Returns(Task.FromResult(fieldCode[3].ToDto()));
+               .Returns(Task.FromResult(fieldCode[0].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[1].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[2].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[3].ToDto())!);
 
 
         _dbMock
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
+        await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
             new(12, "zxy 035 gp"),
             new(13, "James"),
@@ -660,7 +660,7 @@ public class PropertyAccessServiceUnitTests
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
                                                 _employeeDataService.Object, _employeeService.Object);
 
-        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto()));
+        _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
         var employeeList = new List<Employee> { employee }.AsQueryable().BuildMock();
 
@@ -686,19 +686,19 @@ public class PropertyAccessServiceUnitTests
         var fieldCodeService = new Mock<FieldCodeService>();
 
         _dbMock.SetupSequence(f => f.FieldCode.GetById(It.IsAny<int>()))
-               .Returns(Task.FromResult(fieldCode[0].ToDto()))
-               .Returns(Task.FromResult(fieldCode[1].ToDto()))
-               .Returns(Task.FromResult(fieldCode[2].ToDto()))
-               .Returns(Task.FromResult(fieldCode[3].ToDto()))
-               .Returns(Task.FromResult(fieldCode[4].ToDto()))
-               .Returns(Task.FromResult(fieldCode[5].ToDto()));
+               .Returns(Task.FromResult(fieldCode[0].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[1].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[2].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[3].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[4].ToDto())!)
+               .Returns(Task.FromResult(fieldCode[5].ToDto())!);
 
 
         _dbMock
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
+        await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
             new(12, "zxy 035 gp"),
             new(13, "James"),

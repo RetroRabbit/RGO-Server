@@ -7,7 +7,7 @@ namespace RR.UnitOfWork.Tests.Entities;
 public class RoleAccessUnitTests
 {
     [Fact]
-    public async Task roleAccessTest()
+    public void roleAccessTest()
     {
         var roleAccess = new RoleAccess();
         Assert.IsType<RoleAccess>(roleAccess);
@@ -15,9 +15,9 @@ public class RoleAccessUnitTests
     }
 
     [Fact]
-    public async Task roleAccessTodtoTest()
+    public void roleAccessTodtoTest()
     {
-        var roleAccess = new RoleAccess(new RoleAccessDto(1, "ViewEmployee", "Employee Data"));
+        var roleAccess = new RoleAccess(new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" });
         Assert.IsType<RoleAccessDto>(roleAccess.ToDto());
         Assert.NotNull(roleAccess.ToDto());
     }

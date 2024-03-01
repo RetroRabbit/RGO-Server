@@ -30,18 +30,18 @@ public class PropertyAccess : IModel<PropertyAccessDto>
     [ForeignKey("FieldCode")]
     public int FieldCodeId { get; set; }
 
-    public virtual Role Role { get; set; }
+    public virtual Role? Role { get; set; }
 
-    public virtual FieldCode FieldCode { get; set; }
+    public virtual FieldCode? FieldCode { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 
     public PropertyAccessDto ToDto()
     {
-        return new PropertyAccessDto(
-                                     Id,
-                                     Role?.ToDto(),
-                                     Condition,
-                                     FieldCode?.ToDto());
+        return new PropertyAccessDto {
+                                     Id = Id,
+                                     Role = Role?.ToDto(),
+                                     Condition = Condition,
+                                     FieldCode = FieldCode?.ToDto()};
     }
 }

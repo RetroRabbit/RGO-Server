@@ -17,7 +17,7 @@ public class ChartServiceUnitTests
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IServiceProvider> _services;
     private readonly Mock<IUnitOfWork> _unitOfWork;
-    private EmployeeAddressDto employeeAddressDto;
+    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType1;
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
@@ -30,15 +30,15 @@ public class ChartServiceUnitTests
         _services = new Mock<IServiceProvider>();
 
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        employeeTypeDto1 = new EmployeeTypeDto(3, "Developer");
-        employeeTypeDto2 = new EmployeeTypeDto(7, "People Champion");
+        employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
+        employeeTypeDto2 = new EmployeeTypeDto{ Id = 7, Name = "People Champion" };
         employeeType1 = new EmployeeType(employeeTypeDto1);
         employeeType2 = new EmployeeType(employeeTypeDto2);
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto1));
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
-        var employeeAddressDto =
+        employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
@@ -64,8 +64,8 @@ public class ChartServiceUnitTests
         var chartName = "TestChart";
         var chartType = "Pie";
 
-        EmployeeTypeDto developerEmployeeTypeDto = new(1, "Developer");
-        EmployeeTypeDto designerEmployeeTypeDto = new(2, "Designer");
+        EmployeeTypeDto developerEmployeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
+        EmployeeTypeDto designerEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
 
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
@@ -134,8 +134,8 @@ public class ChartServiceUnitTests
         var chartName = "TestChart";
         var chartType = "Pie";
 
-        EmployeeTypeDto devEmployeeTypeDto = new(1, "Developer");
-        EmployeeTypeDto desEmployeeTypeDto = new(2, "Designer");
+        EmployeeTypeDto devEmployeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
+        EmployeeTypeDto desEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
 
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
@@ -201,7 +201,7 @@ public class ChartServiceUnitTests
     {
         var dataType = new List<string> { "Gender", "Race" };
 
-        EmployeeTypeDto employeeTypeDto = new(1, "Developer");
+        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         EmployeeType employeeType = new(employeeTypeDto);
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");

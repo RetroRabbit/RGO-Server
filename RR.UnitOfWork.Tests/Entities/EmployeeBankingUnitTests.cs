@@ -11,7 +11,7 @@ public class EmployeeBankingUnitTests
 
     public EmployeeBankingUnitTests()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -38,7 +38,7 @@ public class EmployeeBankingUnitTests
         };
 
         if (employee != null)
-            employeeBanking.Employee = new Employee(employee, employee.EmployeeType);
+            employeeBanking.Employee = new Employee(employee, employee.EmployeeType!);
 
         return employeeBanking;
     }

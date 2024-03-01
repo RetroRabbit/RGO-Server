@@ -22,7 +22,7 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="email"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto> GetEmployee(string email);
+    Task<EmployeeDto?> GetEmployee(string email);
 
     /// <summary>
     ///     Get employee by id
@@ -58,7 +58,7 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="employeeId"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto> GetById(int employeeId);
+    Task<EmployeeDto?> GetById(int employeeId);
 
     /// <summary>
     ///     Get simple employee profile for non admin users

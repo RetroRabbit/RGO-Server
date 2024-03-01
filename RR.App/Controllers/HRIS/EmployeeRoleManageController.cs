@@ -2,6 +2,7 @@
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -9,12 +10,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeRoleManageController : ControllerBase
 {
-    private readonly IEmployeeRoleService _employeeRoleService;
-    private readonly IEmployeeService _employeeService;
-    private readonly IRoleService _roleService;
+    private readonly IEmployeeRoleService? _employeeRoleService;
+    private readonly IEmployeeService? _employeeService;
+    private readonly IRoleService? _roleService;
 
-    public EmployeeRoleManageController(IEmployeeRoleService employeeRoleService, IEmployeeService employeeService,
-                                        IRoleService roleService)
+    public EmployeeRoleManageController(IEmployeeRoleService? employeeRoleService, IEmployeeService? employeeService,
+                                        IRoleService? roleService)
     {
         _employeeRoleService = employeeRoleService;
         _employeeService = employeeService;
@@ -27,6 +28,11 @@ public class EmployeeRoleManageController : ControllerBase
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role)) return BadRequest("Invalid input");
 
+        if(_employeeRoleService == null || _employeeService == null || _roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employee = await _employeeService.GetEmployee(email);
@@ -35,7 +41,7 @@ public class EmployeeRoleManageController : ControllerBase
                 ? await _roleService.GetRole(role)
                 : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
 
-            var employeeRole = new EmployeeRoleDto(0, employee, currRole);
+            var employeeRole = new EmployeeRoleDto{ Id = 0, Employee = employee, Role = currRole };
 
             var employeeRoleSaved = await _employeeRoleService.SaveEmployeeRole(employeeRole);
 
@@ -51,6 +57,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
+        if (_employeeRoleService == null || _employeeService == null || _roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employee = await _employeeService.GetEmployee(email);
@@ -60,7 +71,7 @@ public class EmployeeRoleManageController : ControllerBase
                 : await _roleService.SaveRole(new RoleDto{ Id = 0, Description = role });
 
             var currEmployeeRole = await _employeeRoleService.GetEmployeeRole(email);
-            var employeeRole = new EmployeeRoleDto(currEmployeeRole.Id, employee, currRole);
+            var employeeRole = new EmployeeRoleDto { Id = currEmployeeRole.Id, Employee = employee, Role = currRole };
 
             var employeeRoleSaved = await _employeeRoleService.UpdateEmployeeRole(employeeRole);
 
@@ -78,6 +89,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
+        if (_employeeRoleService == null || _employeeService == null || _roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employee = await _employeeService.GetEmployee(email);
@@ -100,10 +116,15 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
     {
+        if (_employeeRoleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var employeeRoles = await _employeeRoleService.GetEmployeeRole(email);
-            string[] role = { employeeRoles.Role.Description };
+            string[] role = { employeeRoles.Role!.Description! };
 
             return Ok(role);
         }
@@ -117,6 +138,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpGet("all")]
     public async Task<IActionResult> GetAllRoles()
     {
+        if (_roleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roles = await _roleService.GetAll();
@@ -137,6 +163,11 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpGet("get-role")]
     public async Task<IActionResult> GetAllEmployeeOnRoles([FromQuery] int roleId)
     {
+        if (_employeeRoleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
         try
         {
             var roles = await _employeeRoleService.GetAllEmployeeOnRoles(roleId);

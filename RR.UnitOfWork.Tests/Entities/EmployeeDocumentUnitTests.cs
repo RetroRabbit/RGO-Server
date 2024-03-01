@@ -11,7 +11,7 @@ public class EmployeeDocumentUnitTests
 
     public EmployeeDocumentUnitTests()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -34,7 +34,7 @@ public class EmployeeDocumentUnitTests
         };
 
         if (employee != null)
-            employeeDocument.Employee = new Employee(employee, employee.EmployeeType);
+            employeeDocument.Employee = new Employee(employee, employee.EmployeeType!);
 
         return employeeDocument;
     }
@@ -54,7 +54,7 @@ public class EmployeeDocumentUnitTests
                                                       _employee);
         var dto = employeeDocument.ToDto();
 
-        Assert.Equal(dto.EmployeeId!, employeeDocument.Employee.Id);
+        Assert.Equal(dto.EmployeeId!, employeeDocument.Employee!.Id);
 
         var initializedEmployeeDocument = new EmployeeDocument(dto);
 

@@ -13,7 +13,7 @@ public class EmployeeEvaluationRatingUnitTests
 
     public EmployeeEvaluationRatingUnitTests()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -47,7 +47,7 @@ public class EmployeeEvaluationRatingUnitTests
             entity.Evaluation = new EmployeeEvaluation(evaluation);
 
         if (employee != null)
-            entity.Employee = new Employee(employee, employee.EmployeeType);
+            entity.Employee = new Employee(employee, employee.EmployeeType!);
 
         return entity.ToDto();
     }

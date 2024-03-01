@@ -17,7 +17,7 @@ public class EmployeeTypeUnitTests
     [Fact]
     public void EmployeeTypeToDtoTest()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Name");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Name" };
         var employeeType = new EmployeeType(employeeTypeDto);
         var dto = employeeType.ToDto();
         Assert.Equal(dto.Id, employeeType.Id);
