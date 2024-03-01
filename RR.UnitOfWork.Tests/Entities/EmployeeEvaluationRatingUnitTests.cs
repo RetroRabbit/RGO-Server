@@ -27,8 +27,17 @@ public class EmployeeEvaluationRatingUnitTests
 
         _template = new EmployeeEvaluationTemplateDto(1, "Template");
 
-        _evaluation = new EmployeeEvaluationDto(0, _employee, _template, _employee, "Subject",
-                                                DateOnly.FromDateTime(DateTime.Now), null);
+        _evaluation = new EmployeeEvaluationDto
+        {
+            Id = 0,
+            Employee = _employee,
+            Template = _template,
+            Owner = _employee,
+            Subject = "Subject",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null
+        };
+
     }
 
     private EmployeeEvaluationRatingDto CreateEmployeeEvaluationRating(

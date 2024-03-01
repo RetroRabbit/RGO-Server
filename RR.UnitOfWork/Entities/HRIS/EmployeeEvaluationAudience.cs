@@ -34,9 +34,11 @@ public class EmployeeEvaluationAudience : IModel<EmployeeEvaluationAudienceDto>
 
     public EmployeeEvaluationAudienceDto ToDto()
     {
-        return new EmployeeEvaluationAudienceDto(
-                                                 Id,
-                                                 Evaluation?.ToDto(),
-                                                 Employee?.ToDto());
+        return new EmployeeEvaluationAudienceDto
+        {
+            Id = Id,
+            Evaluation = Evaluation?.ToDto(),
+            Employee = Employee?.ToDto()
+        };
     }
 }

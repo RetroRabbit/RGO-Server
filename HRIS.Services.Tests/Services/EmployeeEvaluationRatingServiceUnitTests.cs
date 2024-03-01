@@ -74,12 +74,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(evaluation, _employee);
-        var employeeEvaluationInput = new EmployeeEvaluationInput(
-                                                                  evaluation.Id,
-                                                                  evaluation.Owner.Email!,
-                                                                  evaluation.Employee.Email!,
-                                                                  evaluation.Template.Description,
-                                                                  evaluation.Subject);
+        var employeeEvaluationInput = new EmployeeEvaluationInput
+        {
+            Id = evaluation.Id,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
 
         var evaluationInput = new EvaluationRatingInput(
                                                         0,
@@ -108,12 +110,12 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput { 
+                                                          Id = employeeEvaluation.Id,
+                                                          OwnerEmail =employeeEvaluation.Owner.Email!,
+                                                          EmployeeEmail = employeeEvaluation.Employee.Email!,
+                                                          Template = employeeEvaluation.Template.Description,
+                                                          Subject = employeeEvaluation.Subject};
 
         var evaluationRatingInput = new EvaluationRatingInput(
                                                               0,
@@ -143,12 +145,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
         var evaluationRatingInput = new EvaluationRatingInput(
                                                               0,
@@ -218,12 +222,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
         var ratingInput = new EvaluationRatingInput(
                                                     0,
@@ -251,12 +257,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
         var ratingInput = new EvaluationRatingInput(
                                                     0,
@@ -289,12 +297,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+            {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
         var ratingInput = new EvaluationRatingInput(
                                                     0,
@@ -315,12 +325,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
         var ratingInput = new EvaluationRatingInput(
                                                     0,
@@ -365,12 +377,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
         var ratingInput = new EvaluationRatingInput(
                                                     0,
@@ -400,12 +414,14 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
         var ratingInput = new EvaluationRatingInput(
                                                     0,
@@ -448,13 +464,15 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
-
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
+                                                        
         var evaluationRatingInput = new EvaluationRatingInput(
                                                               0,
                                                               employeeEvaluationRating.Employee.Email!,
@@ -483,13 +501,15 @@ public class EmployeeEvaluationRatingServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var employeeEvaluationRating = CreateRating(employeeEvaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
-
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
+                                                          
         var evaluationRatingInput = new EvaluationRatingInput(
                                                               0,
                                                               employeeEvaluationRating.Employee.Email!,
@@ -577,13 +597,15 @@ public class EmployeeEvaluationRatingServiceUnitTests
     public async Task GetAllByEvaluationFailTest()
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
-
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
+                                                          
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(false);
 
@@ -594,13 +616,15 @@ public class EmployeeEvaluationRatingServiceUnitTests
     public async Task GetAllByEvaluationPassTest()
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          employeeEvaluation.Id,
-                                                          employeeEvaluation.Owner.Email!,
-                                                          employeeEvaluation.Employee.Email!,
-                                                          employeeEvaluation.Template.Description,
-                                                          employeeEvaluation.Subject);
-
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = employeeEvaluation.Id,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
+                                                          
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(true);
 

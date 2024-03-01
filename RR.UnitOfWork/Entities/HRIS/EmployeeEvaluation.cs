@@ -15,13 +15,14 @@ public class EmployeeEvaluation : IModel<EmployeeEvaluationDto>
     public EmployeeEvaluation(EmployeeEvaluationDto employeeEvaluationDto)
     {
         Id = employeeEvaluationDto.Id;
-        EmployeeId = employeeEvaluationDto.Employee!.Id;
-        TemplateId = employeeEvaluationDto.Template!.Id;
-        OwnerId = employeeEvaluationDto.Owner!.Id;
+        EmployeeId = employeeEvaluationDto.Employee?.Id ?? 0; 
+        TemplateId = employeeEvaluationDto.Template?.Id ?? 0; 
+        OwnerId = employeeEvaluationDto.Owner?.Id ?? 0; 
         Subject = employeeEvaluationDto.Subject;
         StartDate = employeeEvaluationDto.StartDate;
         EndDate = employeeEvaluationDto.EndDate;
     }
+
 
     [Column("employeeId")]
     [ForeignKey("Employee")]
@@ -49,13 +50,14 @@ public class EmployeeEvaluation : IModel<EmployeeEvaluationDto>
 
     public EmployeeEvaluationDto ToDto()
     {
-        return new EmployeeEvaluationDto(
-                                         Id,
-                                         Employee?.ToDto(),
-                                         Template?.ToDto(),
-                                         Owner?.ToDto(),
-                                         Subject,
-                                         StartDate,
-                                         EndDate);
+        return new EmployeeEvaluationDto
+        {
+            Id = Id,
+            Employee = Employee?.ToDto(),
+            Template = Template?.ToDto(),
+            Subject = Subject,
+            StartDate = StartDate,
+            EndDate = EndDate
+        };
     }
 }

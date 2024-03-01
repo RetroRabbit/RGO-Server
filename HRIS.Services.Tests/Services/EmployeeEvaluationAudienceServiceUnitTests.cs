@@ -157,12 +157,14 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     public async Task DeleteFailTest()
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          0,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
 
         _dbMock
             .Setup(x =>
@@ -176,12 +178,14 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     public async Task DeletePassTest()
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          0,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
         var evaluationAudience = CreateEmployeeEvaluationAudience(evaluation, _employee);
 
         var targetEmail = _employee.Email;
@@ -218,12 +222,15 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var evaluationAudience = CreateEmployeeEvaluationAudience(evaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          0,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
+                                                          
 
         _dbMock
             .Setup(x =>
@@ -239,12 +246,14 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var evaluationAudience = CreateEmployeeEvaluationAudience(evaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          0,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
 
         _employeeEvaluationServiceMock.Setup(x => x.Get(
                                                         It.IsAny<string>(),
@@ -355,12 +364,15 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     public async Task GetAllByEvaluationFailTest()
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          0,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
+                                                          
 
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(false);
@@ -374,12 +386,15 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
         var evaluationAudience = CreateEmployeeEvaluationAudience(evaluation, _employee);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          0,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
+                                                          
 
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(true);
