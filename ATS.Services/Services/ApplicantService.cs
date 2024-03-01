@@ -44,12 +44,12 @@ public class ApplicantService : IApplicantService
             .Get(applicant => applicant.PersonalEmail == email)
             .AsNoTracking()
             .Select(applicant => applicant.ToDto())
-            .FirstOrDefaultAsync();
+            .FirstAsync();
     }
 
-    public async Task<ApplicantDto> UpdateApplicant(ApplicantDto applicantDto) => await 
-        _db.Applicant.Update(new Applicant(applicantDto));
+    public async Task<ApplicantDto> UpdateApplicant(ApplicantDto applicantDto) => 
+        await _db.Applicant.Update(new Applicant(applicantDto));
 
-    public async Task<ApplicantDto> DeleteApplicant(int id) => await _db.Applicant
-            .Delete(id);
+    public async Task<ApplicantDto> DeleteApplicant(int id) => await 
+        _db.Applicant.Delete(id);
 }

@@ -1,4 +1,5 @@
 ﻿using ATS.Models;
+using ATS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -32,7 +33,7 @@ public class Applicant : IModel<ApplicantDto>
 
     [Column("potentialLevel")] public int PotentialLevel { get; set; }
 
-    [Column("jobPosition")] public string JobPosition { get; set; }
+    [Column("jobPosition")] public PositionType JobPosition { get; set; }
 
     [Column("linkedIn")] public string? LinkedIn { get; set; }
 

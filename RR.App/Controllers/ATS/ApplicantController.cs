@@ -16,7 +16,7 @@ public class ApplicantController : ControllerBase
         _applicantService = applicantService;
     }
 
-    //[Authorize(Policy = "TalentPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> AddApplicant([FromBody] ApplicantDto applicant)
     {
@@ -34,7 +34,7 @@ public class ApplicantController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "TalentPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAll()
     {
@@ -49,7 +49,7 @@ public class ApplicantController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "TaTalentPolicylent")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetById([FromQuery] int id)
     {
@@ -64,7 +64,7 @@ public class ApplicantController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "TalentPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpGet("by-email")]
     public async Task<IActionResult> GetByEmail([FromQuery] string email)
     {
@@ -79,7 +79,7 @@ public class ApplicantController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "TalentPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateApplicant([FromBody] ApplicantDto applicant)
     {
@@ -94,7 +94,7 @@ public class ApplicantController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "TalentPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteApplicant([FromQuery] int id)
     {
