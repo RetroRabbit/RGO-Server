@@ -46,9 +46,8 @@ public class AuthService : IAuthService
     public async Task<string> GenerateToken(EmployeeDto employee)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Auth:Key"]!);
-        var roles = await GetUserRoles(employee.Email!);
-
+        var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("Auth__Key"));
+        var roles = await GetUserRoles(employee.Email);
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, employee.Id.ToString()),
@@ -66,9 +65,9 @@ public class AuthService : IAuthService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Auth:Expires"]!)),
-            Issuer = _configuration["Auth:Issuer"],
-            Audience = _configuration["Auth:Audience"],
+            Expires = DateTime.UtcNow.AddMinutes(int.Parse(Environment.GetEnvironmentVariable("Auth__Expires")!)),
+            Issuer = Environment.GetEnvironmentVariable("Auth__Issuer"),
+            Audience = Environment.GetEnvironmentVariable("Auth__Audience"),
             SigningCredentials = new SigningCredentials(
                                                         new SymmetricSecurityKey(key),
                                                         SecurityAlgorithms.HmacSha256Signature)
