@@ -132,7 +132,14 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         string template,
         string subject)
     {
-        EmployeeEvaluationInput evaluationInput = new(0, ownerEmail, employeeEmail, template, subject);
+        EmployeeEvaluationInput evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = ownerEmail,
+            EmployeeEmail = employeeEmail,
+            Template = template,
+            Subject = subject
+        };
 
         var exists = await CheckIfExists(evaluationInput);
 
