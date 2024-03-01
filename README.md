@@ -36,7 +36,7 @@ wsl --install
 # Environment Variables
 Add system environments as follows 
 
-![Image of User Secret Location](./EnvironmentVariables.png)
+![Image of System Environment Variables](./EnvironmentVariables.png)
 
 With the respective values in the redacted spaces
 
