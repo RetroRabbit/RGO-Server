@@ -24,10 +24,35 @@ public class FieldCodeControllerTests
     {
         var fieldCodes = new List<FieldCodeDto>
         {
-            new(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true,
-                "InternalTable1", 0, false),
-            new(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String, ItemStatus.Active, true,
-                "InternalTable2", 0, false)
+           new FieldCodeDto
+           {
+                Id = 1,
+                Code = "Code1",
+                Name = "Name1",
+                Description = "Description1",
+                Regex = "Regex1",
+                Type = FieldCodeType.String,
+                Status = ItemStatus.Active,
+                Internal = true,
+                InternalTable = "InternalTable1",
+                Category = 0,
+                Required = false
+           },
+
+            new FieldCodeDto
+            {
+                Id = 2,
+                Code = "Code2",
+                Name = "Name2",
+                Description = "Description2",
+                Regex = "Regex2",
+                Type = FieldCodeType.String,
+                Status = ItemStatus.Active,
+                Internal = true,
+                InternalTable = "InternalTable2",
+                Category = 0,
+                Required = false
+            }
         };
 
         _fieldCodeServiceMock.Setup(s => s.GetAllFieldCodes()).ReturnsAsync(fieldCodes);
@@ -53,10 +78,36 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task SaveFieldCodeReturnsOkResultWithSavedFieldCode()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String,
-                                            ItemStatus.Active, true, "InternalTable1", 0, false);
-        var savedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String,
-                                              ItemStatus.Active, true, "InternalTable2", 0, false);
+        var fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
+
+        var savedFieldCode = new FieldCodeDto
+        {
+            Id = 2,
+            Code = "Code2",
+            Name = "Name2",
+            Description = "Description2",
+            Regex = "Regex2",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable2",
+            Category = 0,
+            Required = false
+        };
+
         _fieldCodeServiceMock.Setup(s => s.SaveFieldCode(fieldCodeDto)).ReturnsAsync(savedFieldCode);
 
         var result = await _controller.SaveFieldCode(fieldCodeDto);
@@ -69,8 +120,20 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task SaveFieldCodeReturnsNotFoundResultWhenExceptionThrown()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String,
-                                            ItemStatus.Active, true, "InternalTable1", 0, false);
+        var fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
         var exceptionMessage = "An error occurred";
         _fieldCodeServiceMock.Setup(s => s.SaveFieldCode(fieldCodeDto)).ThrowsAsync(new Exception(exceptionMessage));
 
@@ -83,10 +146,36 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task UpdateFieldCodeReturnsOkResultWithUpdatedFieldCode()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String,
-                                            ItemStatus.Active, true, "InternalTable1", 0, false);
-        var updatedFieldCode = new FieldCodeDto(2, "Code2", "Name2", "Description2", "Regex2", FieldCodeType.String,
-                                                ItemStatus.Active, true, "InternalTable2", 0, false);
+        var fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
+
+        var updatedFieldCode = new FieldCodeDto
+        {
+            Id = 2,
+            Code = "Code2",
+            Name = "Name2",
+            Description = "Description2",
+            Regex = "Regex2",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable2",
+            Category = 0,
+            Required = false
+        };
+
         _fieldCodeServiceMock.Setup(s => s.UpdateFieldCode(fieldCodeDto)).ReturnsAsync(updatedFieldCode);
 
         var result = await _controller.UpdateFieldCode(fieldCodeDto);
@@ -99,8 +188,21 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task UpdateFieldCodeReturnsNotFoundResultWhenExceptionThrown()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String,
-                                            ItemStatus.Active, true, "InternalTable1", 0, false);
+        var fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
+
         var exceptionMessage = "An error occurred";
         _fieldCodeServiceMock.Setup(s => s.UpdateFieldCode(fieldCodeDto)).ThrowsAsync(new Exception(exceptionMessage));
 
@@ -113,10 +215,36 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task DeleteFieldCodeReturnsOkResultWithDeletedFieldCode()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String,
-                                            ItemStatus.Active, true, "InternalTable1", 0, false);
-        var deletedFieldCode = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String,
-                                                ItemStatus.Active, true, "InternalTable1", 0, false);
+        var fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
+
+        var deletedFieldCode = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
+
         _fieldCodeServiceMock.Setup(s => s.DeleteFieldCode(fieldCodeDto)).ReturnsAsync(deletedFieldCode);
 
         var result = await _controller.DeleteFieldCode(fieldCodeDto);
@@ -129,8 +257,21 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task DeleteFieldCodeReturnsNotFoundResultWhenExceptionThrown()
     {
-        var fieldCodeDto = new FieldCodeDto(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String,
-                                            ItemStatus.Active, true, "InternalTable1", 0, false);
+        var fieldCodeDto = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "Code1",
+            Name = "Name1",
+            Description = "Description1",
+            Regex = "Regex1",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = true,
+            InternalTable = "InternalTable1",
+            Category = 0,
+            Required = false
+        };
+
         var exceptionMessage = "An error occurred";
         _fieldCodeServiceMock.Setup(s => s.DeleteFieldCode(fieldCodeDto)).ThrowsAsync(new Exception(exceptionMessage));
 
@@ -146,8 +287,20 @@ public class FieldCodeControllerTests
         var validCategory = 1;
         var expectedCategoryCodes = new List<FieldCodeDto>
         {
-            new(1, "Code1", "Name1", "Description1", "Regex1", FieldCodeType.String, ItemStatus.Active, true,
-                "InternalTable1", FieldCodeCategory.Banking, false)
+           new FieldCodeDto
+           {
+                Id = 1,
+                Code = "Code1",
+                Name = "Name1",
+                Description = "Description1",
+                Regex = "Regex1",
+                Type = FieldCodeType.String,
+                Status = ItemStatus.Active,
+                Internal = true,
+                InternalTable = "InternalTable1",
+                Category = FieldCodeCategory.Banking,
+                Required = false
+           }
         };
 
         var mockFieldCodeService = new Mock<IFieldCodeService>();

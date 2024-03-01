@@ -9,8 +9,8 @@ public class LevelType : BaseDataType
     public override string GenerateData(EmployeeDto employee, IServiceProvider services)
     {
         var prop = typeof(EmployeeDto).GetProperty("Level");
-        if (prop.GetValue(employee) == null)
-            return null;
+        if (prop!.GetValue(employee) == null)
+            return null!;
 
         return $"Level {prop.GetValue(employee)}, ";
     }

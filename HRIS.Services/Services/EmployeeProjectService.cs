@@ -49,7 +49,7 @@ public class EmployeeProjectService : IEmployeeProjectService
 
     public async Task<EmployeeProjectDto> UpdateEmployeeProject(EmployeeProjectDto employeeProjectDto)
     {
-        var existingEmployeeProject = await GetEmployeeProject(employeeProjectDto.Name);
+        var existingEmployeeProject = await GetEmployeeProject(employeeProjectDto.Name!);
 
         var updatedEmployeeProject = await _db.EmployeeProject
                                               .Update(new EmployeeProject(existingEmployeeProject));

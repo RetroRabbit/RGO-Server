@@ -12,7 +12,7 @@ public class EmployeeCertificationUnitTests
 
     public EmployeeCertificationUnitTests()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -59,13 +59,13 @@ public class EmployeeCertificationUnitTests
         };
 
         if (employee != null)
-            employeeCertification.Employee = new Employee(employee, employee.EmployeeType);
+            employeeCertification.Employee = new Employee(employee, employee.EmployeeType!);
 
         if (employeeDocument != null)
             employeeCertification.EmployeeDocument = new EmployeeDocument(employeeDocument);
 
         if (auditBy != null)
-            employeeCertification.EmployeeAuditBy = new Employee(auditBy, auditBy.EmployeeType);
+            employeeCertification.EmployeeAuditBy = new Employee(auditBy, auditBy.EmployeeType!);
 
         return employeeCertification;
     }

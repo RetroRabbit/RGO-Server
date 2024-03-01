@@ -29,7 +29,7 @@ public class RoleAccessLinkService : IRoleAccessLinkService
     public async Task<RoleAccessLinkDto> Delete(string role, string permission)
     {
         var roleAccessLink = await _db.RoleAccessLink
-                                      .Get(r => r.Role.Description == role && r.RoleAccess.Permission == permission)
+                                      .Get(r => r.Role!.Description == role && r.RoleAccess!.Permission == permission)
                                       .AsNoTracking()
                                       .Include(r => r.Role)
                                       .Include(r => r.RoleAccess)
@@ -51,44 +51,44 @@ public class RoleAccessLinkService : IRoleAccessLinkService
                                        .AsNoTracking()
                                        .Include(r => r.Role)
                                        .Include(r => r.RoleAccess)
-                                       .GroupBy(r => r.Role.Description)
+                                       .GroupBy(r => r.Role!.Description)
                                        .ToDictionaryAsync(
-                                                          group => group.Key,
-                                                          group => group.Select(link => link.RoleAccess.Permission)
+                                                          group => group.Key!,
+                                                          group => group.Select(link => link.RoleAccess!.Permission)
                                                                         .ToList());
 
-        return roleAccessLinks;
+        return roleAccessLinks!;
     }
 
     public async Task<Dictionary<string, List<string>>> GetByRole(string role)
     {
         var roleAccessLinks = await _db.RoleAccessLink
-                                       .Get(r => r.Role.Description == role)
+                                       .Get(r => r.Role!.Description == role)
                                        .AsNoTracking()
                                        .Include(r => r.Role)
                                        .Include(r => r.RoleAccess)
-                                       .GroupBy(r => r.Role.Description)
+                                       .GroupBy(r => r.Role!.Description)
                                        .ToDictionaryAsync(
-                                                          group => group.Key,
-                                                          group => group.Select(link => link.RoleAccess.Permission)
+                                                          group => group.Key!,
+                                                          group => group.Select(link => link.RoleAccess!.Permission)
                                                                         .ToList());
 
-        return roleAccessLinks;
+        return roleAccessLinks!;
     }
 
     public Task<Dictionary<string, List<string>>> GetByPermission(string permission)
     {
         var roleAccessLinks = _db.RoleAccessLink
-                                 .Get(r => r.RoleAccess.Permission == permission)
+                                 .Get(r => r.RoleAccess!.Permission == permission)
                                  .AsNoTracking()
                                  .Include(r => r.Role)
                                  .Include(r => r.RoleAccess)
-                                 .GroupBy(r => r.Role.Description)
+                                 .GroupBy(r => r.Role!.Description)
                                  .ToDictionaryAsync(
-                                                    group => group.Key,
-                                                    group => group.Select(link => link.RoleAccess.Permission).ToList());
+                                                    group => group.Key!,
+                                                    group => group.Select(link => link.RoleAccess!.Permission).ToList());
 
-        return roleAccessLinks;
+        return roleAccessLinks!;
     }
 
     public async Task<Dictionary<string, List<string>>> GetRoleByEmployee(string email)
@@ -101,7 +101,7 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
         foreach (var role in employeeRoles)
         {
-            var roleAccessLinks = await GetByRole(role);
+            var roleAccessLinks = await GetByRole(role!);
 
             accessRoles.Add(roleAccessLinks);
         }

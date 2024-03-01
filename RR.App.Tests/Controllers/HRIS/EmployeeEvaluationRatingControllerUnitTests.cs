@@ -14,19 +14,25 @@ public class EmployeeEvaluationRatingControllerUnitTests
     public async Task GetAllEmployeeEvaluationRatingsValidInputReturnsOkResult()
     {
         var evaluationInput =
-            new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@test.com", "Template 1",
-                                        "Subject 1");
+            new EmployeeEvaluationInput
+            {
+                Id = null,
+                OwnerEmail = "owner@retrorabbit.co.za",
+                EmployeeEmail = "employee@test.com",
+                Template = "Template 1",
+                Subject = "Subject 1"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         var expectedRatings = new List<EmployeeEvaluationRatingDto>
         {
             new(
                 1,
-                new EmployeeEvaluationDto(
-                                          101,
-                                          new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
+                new EmployeeEvaluationDto{
+                                          Id = 101,
+                                          Employee = new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
                                                           DateTime.Now.AddMonths(6), 1, false, "No disability", 2,
-                                                          new EmployeeTypeDto(1, "Regular"), "Some notes", 25.0f, 20.0f,
+                                                          new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f,
                                                           50.0f, 50000, "John Doe", "JD", "Doe",
                                                           DateTime.Parse("1990-01-01"), "South Africa", "South African",
                                                           "ID123456", "PP789012",
@@ -41,10 +47,10 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                            "SuburbXYZ", "City456", "South Africa",
                                                            "ProvinceABC", "67890"), "123 Main St",
                                                           "Emergency Contact", "+9876543210"),
-                                          new EmployeeEvaluationTemplateDto(301, "Template1"),
-                                          new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
+                                          Template = new EmployeeEvaluationTemplateDto(301, "Template1"),
+                                          Owner = new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
                                                           DateTime.Now.AddMonths(6), 1, false, "No disability", 2,
-                                                          new EmployeeTypeDto(1, "Regular"),
+                                                          new EmployeeTypeDto{ Id = 1, Name = "Regular" },
                                                           "Some notes", 25.0f, 20.0f, 50.0f, 50000, "John Doe", "JD",
                                                           "Doe", DateTime.Parse("1990-01-01"),
                                                           "South Africa", "South African", "ID123456", "PP789012",
@@ -58,11 +64,12 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                           new EmployeeAddressDto(402, "Unit456", "Complex123", "5678",
                                                            "SuburbXYZ", "City456", "South Africa",
                                                            "ProvinceABC", "67890"), "123 Main St",
-                                                          "Emergency Contact", "+9876543210"), "Subject1",
-                                          DateOnly.FromDateTime(DateTime.Now), null),
+                                                          "Emergency Contact", "+9876543210"), Subject = "Subject1",
+                                          StartDate = DateOnly.FromDateTime(DateTime.Now), EndDate = null },
+
                 new EmployeeDto(1, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
                                 "No disability",
-                                2, new EmployeeTypeDto(1, "Regular"), "Some notes", 25.0f, 20.0f, 50.0f, 50000,
+                                2, new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                 "John Doe", "JD",
                                 "Doe", DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
                                 "PP789012",
@@ -96,8 +103,14 @@ public class EmployeeEvaluationRatingControllerUnitTests
     public async Task GetAllEmployeeEvaluationRatingsExceptionThrownReturnsNotFoundResult()
     {
         var evaluationInput =
-            new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@test.com", "Template 1",
-                                        "Subject 1");
+            new EmployeeEvaluationInput
+            {
+                Id = null,
+                OwnerEmail = "owner@retrorabbit.co.za",
+                EmployeeEmail = "employee@test.com",
+                Template = "Template 1",
+                Subject = "Subject 1"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         var exceptionMessage = "An error occurred while fetching employee evaluation ratings.";
@@ -115,8 +128,14 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task SaveEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = null,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
 
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
@@ -125,7 +144,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
 
         var employeeDto = new EmployeeDto(201, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
                                           "No disability", 2,
-                                          new EmployeeTypeDto(1, "Regular"), "Some notes", 25.0f, 20.0f, 50.0f, 50000,
+                                          new EmployeeTypeDto { Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                           "John Doe", "JD", "Doe",
                                           DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
                                           "PP789012",
@@ -143,9 +162,16 @@ public class EmployeeEvaluationRatingControllerUnitTests
         var templateDto = new EmployeeEvaluationTemplateDto(301, "Template 1");
 
         var savedRating = new EmployeeEvaluationRatingDto(1,
-                                                          new EmployeeEvaluationDto(201, employeeDto, templateDto,
-                                                           employeeDto, "Subject 1",
-                                                           DateOnly.FromDateTime(DateTime.Now), null),
+                                                          new EmployeeEvaluationDto
+                                                          {
+                                                              Id = 201,
+                                                              Employee = employeeDto,
+                                                              Template = templateDto,
+                                                              Owner = employeeDto,
+                                                              Subject = "Subject 1",
+                                                              StartDate = DateOnly.FromDateTime(DateTime.Now),
+                                                              EndDate = null
+                                                          },
                                                           employeeDto, "Test Description", 5.0f, "Test Comment");
 
         serviceMock.Setup(x => x.Save(ratingInput)).ReturnsAsync(savedRating);
@@ -191,8 +217,12 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput { Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1" };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Updated Description",
                                                     4.5f, "Updated Comment");
 
@@ -200,7 +230,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
 
         var employeeDto = new EmployeeDto(201, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
                                           "No disability", 2,
-                                          new EmployeeTypeDto(1, "Regular"), "Some notes", 25.0f, 20.0f, 50.0f, 50000,
+                                          new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                           "John Doe", "JD", "Doe",
                                           DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
                                           "PP789012",
@@ -215,12 +245,13 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                  "ProvinceABC", "67890"), "123 Main St",
                                           "Emergency Contact", "+9876543210");
 
-        var evaluationDto = new EmployeeEvaluationDto(
-                                                      101,
-                                                      new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
+        var evaluationDto = new EmployeeEvaluationDto
+        {
+            Id = 101,
+            Employee = new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
                                                                       DateTime.Now.AddMonths(6), 1, false,
                                                                       "No disability", 2,
-                                                                      new EmployeeTypeDto(1, "Regular"), "Some notes",
+                                                                      new EmployeeTypeDto { Id = 1, Name = "Regular" }, "Some notes",
                                                                       25.0f, 20.0f, 50.0f, 50000, "John Doe", "JD",
                                                                       "Doe",
                                                                       DateTime.Parse("1990-01-01"), "South Africa",
@@ -239,11 +270,11 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                        "South Africa",
                                                                        "ProvinceABC", "67890"), "123 Main St",
                                                                       "Emergency Contact", "+9876543210"),
-                                                      new EmployeeEvaluationTemplateDto(301, "Template1"),
-                                                      new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
+            Template = new EmployeeEvaluationTemplateDto(301, "Template1"),
+            Owner = new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
                                                                       DateTime.Now.AddMonths(6), 1, false,
                                                                       "No disability", 2,
-                                                                      new EmployeeTypeDto(1, "Regular"),
+                                                                      new EmployeeTypeDto { Id = 1, Name = "Regular" },
                                                                       "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                                                       "John Doe", "JD", "Doe",
                                                                       DateTime.Parse("1990-01-01"),
@@ -262,17 +293,20 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                        "Complex123", "5678", "SuburbXYZ", "City456",
                                                                        "South Africa",
                                                                        "ProvinceABC", "67890"), "123 Main St",
-                                                                      "Emergency Contact", "+9876543210"), "Subject1",
-                                                      DateOnly.FromDateTime(DateTime.Now), null);
+                                                                      "Emergency Contact", "+9876543210"),
+            Subject = "Subject1",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null
+        };
 
         var originalRatingDto = new EmployeeEvaluationRatingDto(
                                                                 1,
-                                                                new EmployeeEvaluationDto(
-                                                                 101,
-                                                                 new EmployeeDto(201, "EMP123", "123456",
+                                                                new EmployeeEvaluationDto {
+                                                                 Id = 101,
+                                                                 Employee = new EmployeeDto(201, "EMP123", "123456",
                                                                   DateTime.Now, DateTime.Now.AddMonths(6), 1,
                                                                   false, "No disability", 2,
-                                                                  new EmployeeTypeDto(1, "Regular"),
+                                                                  new EmployeeTypeDto{ Id = 1, Name = "Regular" },
                                                                   "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                                                   "John Doe", "JD", "Doe",
                                                                   DateTime.Parse("1990-01-01"), "South Africa",
@@ -291,13 +325,13 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                    "City456", "South Africa",
                                                                    "ProvinceABC", "67890"), "123 Main St",
                                                                   "Emergency Contact", "+9876543210"),
-                                                                 new EmployeeEvaluationTemplateDto(301,
+                                                                 Template = new EmployeeEvaluationTemplateDto(301,
                                                                   "Template1"),
-                                                                 new EmployeeDto(1, "EMP123", "123456",
+                                                                 Owner = new EmployeeDto(1, "EMP123", "123456",
                                                                   DateTime.Now,
                                                                   DateTime.Now.AddMonths(6), 1, false,
                                                                   "No disability", 2,
-                                                                  new EmployeeTypeDto(1, "Regular"),
+                                                                  new EmployeeTypeDto{ Id = 1, Name = "Regular" },
                                                                   "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                                                   "John Doe", "JD", "Doe",
                                                                   DateTime.Parse("1990-01-01"),
@@ -317,12 +351,13 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                    "City456", "South Africa",
                                                                    "ProvinceABC", "67890"), "123 Main St",
                                                                   "Emergency Contact", "+9876543210"),
-                                                                 "Subject1",
-                                                                 DateOnly.FromDateTime(DateTime.Now), null),
+                                                                  Subject = "Subject1",
+                                                                  StartDate = DateOnly.FromDateTime(DateTime.Now), EndDate = null},
+
                                                                 new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
                                                                                 DateTime.Now.AddMonths(6), 1, false,
                                                                                 "No disability",
-                                                                                2, new EmployeeTypeDto(1, "Regular"),
+                                                                                2, new EmployeeTypeDto{ Id = 1, Name = "Regular" },
                                                                                 "Some notes", 25.0f, 20.0f, 50.0f,
                                                                                 50000, "John Doe", "JD",
                                                                                 "Doe", DateTime.Parse("1990-01-01"),
@@ -363,8 +398,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeEvaluationRatingExceptionThrownReturnsNotFoundResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Updated Description",
                                                     4.5f, "Updated Comment");
 
@@ -383,14 +425,21 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
 
         var employeeDto = new EmployeeDto(201, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
                                           "No disability", 2,
-                                          new EmployeeTypeDto(1, "Regular"), "Some notes", 25.0f, 20.0f, 50.0f, 50000,
+                                          new EmployeeTypeDto { Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                           "John Doe", "JD", "Doe",
                                           DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
                                           "PP789012",
@@ -409,9 +458,16 @@ public class EmployeeEvaluationRatingControllerUnitTests
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         serviceMock.Setup(x => x.Delete(ratingInput)).ReturnsAsync(new EmployeeEvaluationRatingDto(1,
-                                                                    new EmployeeEvaluationDto(201, employeeDto,
-                                                                     templateDto, employeeDto, "Subject 1",
-                                                                     DateOnly.FromDateTime(DateTime.Now), null),
+                                                                    new EmployeeEvaluationDto
+                                                                    {
+                                                                        Id = 201,
+                                                                        Employee = employeeDto,
+                                                                        Template = templateDto,
+                                                                        Owner = employeeDto,
+                                                                        Subject = "Subject 1",
+                                                                        StartDate = DateOnly.FromDateTime(DateTime.Now),
+                                                                        EndDate = null
+                                                                    },
                                                                     employeeDto, "Test Description", 5.0f,
                                                                     "Test Comment"));
 
@@ -426,8 +482,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationRatingExceptionThrownReturnsNotFoundResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
 

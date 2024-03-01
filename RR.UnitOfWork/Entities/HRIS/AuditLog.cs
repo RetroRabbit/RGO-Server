@@ -31,10 +31,10 @@ public class AuditLog : IModel<AuditLogDto>
 
     [Column("editDate")] public DateTime EditDate { get; set; }
 
-    [Column("description")] public string Description { get; set; }
+    [Column("description")] public string? Description { get; set; }
 
-    public virtual Employee EmployeeEditFor { get; set; }
-    public virtual Employee EmployeeEditBy { get; set; }
+    public virtual Employee? EmployeeEditFor { get; set; }
+    public virtual Employee? EmployeeEditBy { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

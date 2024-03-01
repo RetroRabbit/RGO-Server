@@ -26,10 +26,10 @@ public class SalaryTypeUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         salaryType = new SalaryType();
-        employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto{ Id = 3, Description = "Employee"};
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name)).Returns(Task.FromResult(employeeTypeDto));
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!)).Returns(Task.FromResult(employeeTypeDto));
         employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
     }
 
@@ -43,13 +43,13 @@ public class SalaryTypeUnitTest
     }
 
     [Fact]
-    public async Task SalaryTypeNullTestSuccess()
+    public void SalaryTypeNullTestSuccess()
     {
         var employeeDto = CreateEmployee(null);
 
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType)
+            new Employee(employeeDto,employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -61,13 +61,13 @@ public class SalaryTypeUnitTest
     }
 
     [Fact]
-    public async Task SalaryTypePass()
+    public void SalaryTypePass()
     {
         var employeeDto = CreateEmployee(3);
 
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType)
+            new Employee(employeeDto,employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -80,12 +80,9 @@ public class SalaryTypeUnitTest
     }
 
     [Fact]
-    public async Task SalaryTypeNullEmployee()
+    public void SalaryTypeNullEmployee()
     {
-        var employeeList = new List<Employee>
-        {
-            null
-        };
+        var employeeList = new List<Employee>();
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(employeeList.AsQueryable().BuildMock());

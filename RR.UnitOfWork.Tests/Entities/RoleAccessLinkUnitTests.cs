@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
+using System.Security;
 using Xunit;
 
 namespace RR.UnitOfWork.Tests.Entities;
@@ -7,7 +8,7 @@ namespace RR.UnitOfWork.Tests.Entities;
 public class RoleAccessLinkUnitTests
 {
     [Fact]
-    public async Task roleAccessLinkTest()
+    public void roleAccessLinkTest()
     {
         var roleAccessLink = new RoleAccessLink();
         Assert.IsType<RoleAccessLink>(roleAccessLink);
@@ -15,10 +16,10 @@ public class RoleAccessLinkUnitTests
     }
 
     [Fact]
-    public async Task roleAccessLinkToDtoTest()
+    public void roleAccessLinkToDtoTest()
     {
-        var roleDto = new RoleDto{Id = 0, Description = "Employee"};
-        var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
+        var roleDto = new RoleDto { Id = 0, Description = "Employee" };
+        var roleAccessDto = new RoleAccessDto{Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data"};
 
         var roleAccessLinkDto = new RoleAccessLinkDto(
                                                       1,
@@ -34,10 +35,10 @@ public class RoleAccessLinkUnitTests
     }
 
     [Fact]
-    public async Task roleAccessLinkToDtoNullTest()
+    public void roleAccessLinkToDtoNullTest()
     {
         var roleDto = new RoleDto { Id = 0, Description = "Employee" };
-        var roleAccessDto = new RoleAccessDto(1, "ViewEmployee", "Employee Data");
+        var roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
 
         var roleAccessLinkDto = new RoleAccessLinkDto(
                                                       1,

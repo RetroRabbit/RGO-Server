@@ -38,12 +38,32 @@ public class AuthenticationController : ControllerBase
     }
 
     [AllowAnonymous]
+    [ApiExplorerSettings (IgnoreApi = true)]
+    [HttpGet("config")]
+    public async Task<IActionResult> Auth0Config()
+    {
+        try
+        {
+            return Ok(new
+            {
+                clientId = Environment.GetEnvironmentVariable("CLIENT_ID"),
+                domainKey = Environment.GetEnvironmentVariable("DOMAIN_KEY")
+            }) ;
+        }
+
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeDto newEmployee)
     {
         try
         {
-            var userExists = await _authService.CheckUserExist(newEmployee.Email);
+            var userExists = await _authService.CheckUserExist(newEmployee.Email!);
 
             if (userExists) throw new Exception("Employee already exists");
 

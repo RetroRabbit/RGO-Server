@@ -12,7 +12,7 @@ public class EmployeeEvaluationUnitTests
 
     public EmployeeEvaluationUnitTests()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -40,13 +40,13 @@ public class EmployeeEvaluationUnitTests
         };
 
         if (employee != null)
-            entity.Employee = new Employee(employee, employee.EmployeeType);
+            entity.Employee = new Employee(employee, employee.EmployeeType!);
 
         if (template != null)
             entity.Template = new EmployeeEvaluationTemplate(template);
 
         if (owner != null)
-            entity.Owner = new Employee(owner, owner.EmployeeType);
+            entity.Owner = new Employee(owner, owner.EmployeeType!);
 
         return entity.ToDto();
     }

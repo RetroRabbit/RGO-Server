@@ -31,7 +31,7 @@
     <PackageReference Include="MimeKit" Version="4.2.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,8 +41,12 @@
     <ProjectReference Include="..\RR.UnitOfWork\RR.UnitOfWork.csproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Debug node ../Scripts/init.js" />
+  <ItemGroup>
+    <Folder Include="Controllers\ATS\" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(ConfigurationName) == Debug">
+    <Exec Command="node ../Scripts/init.js" />
   </Target>
 
 </Project>

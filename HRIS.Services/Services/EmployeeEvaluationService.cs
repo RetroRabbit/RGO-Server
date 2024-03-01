@@ -132,7 +132,14 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         string template,
         string subject)
     {
-        EmployeeEvaluationInput evaluationInput = new(0, ownerEmail, employeeEmail, template, subject);
+        EmployeeEvaluationInput evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = ownerEmail,
+            EmployeeEmail = employeeEmail,
+            Template = template,
+            Subject = subject
+        };
 
         var exists = await CheckIfExists(evaluationInput);
 
@@ -166,14 +173,16 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var ownerDto = await _employeeService.GetEmployee(evaluationInput.OwnerEmail);
         var templateDto = await _employeeEvaluationTemplateService.Get(evaluationInput.Template);
 
-        EmployeeEvaluationDto employeeEvaluationDto = new(
-                                                          0,
-                                                          employeeDto,
-                                                          templateDto,
-                                                          ownerDto,
-                                                          evaluationInput.Subject,
-                                                          DateOnly.FromDateTime(DateTime.Now),
-                                                          null);
+        EmployeeEvaluationDto employeeEvaluationDto = new EmployeeEvaluationDto
+        {
+            Id = 0,
+            Employee = employeeDto,
+            Template = templateDto,
+            Owner = ownerDto,
+            Subject = evaluationInput.Subject,
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null
+        };
 
         var savedEmployeeEvaluation = await _db.EmployeeEvaluation.Add(new EmployeeEvaluation(employeeEvaluationDto));
 
@@ -199,14 +208,17 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var ownerDto = await _employeeService.GetEmployee(newEvaluation.OwnerEmail);
         var templateDto = await _employeeEvaluationTemplateService.Get(newEvaluation.Template);
 
-        EmployeeEvaluationDto newEmployeeEvauation = new(
-                                                         employeeEvaluation.Id,
-                                                         employeeDto,
-                                                         templateDto,
-                                                         ownerDto,
-                                                         newEvaluation.Subject,
-                                                         DateOnly.FromDateTime(DateTime.Now),
-                                                         null);
+        EmployeeEvaluationDto newEmployeeEvauation = new EmployeeEvaluationDto
+        {
+            Id = employeeEvaluation.Id,
+            Employee = employeeDto,
+            Template = templateDto,
+            Owner = ownerDto,
+            Subject = newEvaluation.Subject,
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null 
+        };
+
 
         var updatedEmployeeEvaluation =
             await _db.EmployeeEvaluation.Update(new EmployeeEvaluation(newEmployeeEvauation));

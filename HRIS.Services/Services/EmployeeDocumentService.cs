@@ -57,7 +57,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var employeeDocument = await _db.EmployeeDocument
             .Get(employeeDocument =>
                 employeeDocument.EmployeeId == employeeId &&
-                employeeDocument.FileName.Equals(filename, StringComparison.CurrentCultureIgnoreCase))
+                employeeDocument.FileName!.Equals(filename, StringComparison.CurrentCultureIgnoreCase))
             .AsNoTracking()
             .Include(employeeDocument => employeeDocument.Employee)
             .Select(employeeDocument => employeeDocument.ToDto())
@@ -132,15 +132,15 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     private async Task<bool> IsAdmin(string email)
     {
-        EmployeeDto checkingEmployee = await _employeeService.GetEmployee(email);
+        EmployeeDto checkingEmployee = (await _employeeService.GetEmployee(email))!;
 
-        EmployeeRole empRole = await _db.EmployeeRole
-            .Get(role => role.EmployeeId == checkingEmployee.Id)
-            .FirstOrDefaultAsync();
+        EmployeeRole empRole = (await _db.EmployeeRole
+            .Get(role => role.EmployeeId == checkingEmployee!.Id)
+            .FirstOrDefaultAsync())!;
 
-        Role role = await _db.Role
-            .Get(role => role.Id == empRole.RoleId)
-            .FirstOrDefaultAsync();
+        Role role = (await _db.Role
+            .Get(role => role.Id == empRole!.RoleId)
+            .FirstOrDefaultAsync())!;
 
         return role.Description is "Admin" or "SuperAdmin";
     }

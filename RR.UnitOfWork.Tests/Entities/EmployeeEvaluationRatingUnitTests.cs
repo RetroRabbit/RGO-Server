@@ -13,7 +13,7 @@ public class EmployeeEvaluationRatingUnitTests
 
     public EmployeeEvaluationRatingUnitTests()
     {
-        var employeeTypeDto = new EmployeeTypeDto(1, "Developer");
+        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
 
@@ -27,8 +27,17 @@ public class EmployeeEvaluationRatingUnitTests
 
         _template = new EmployeeEvaluationTemplateDto(1, "Template");
 
-        _evaluation = new EmployeeEvaluationDto(0, _employee, _template, _employee, "Subject",
-                                                DateOnly.FromDateTime(DateTime.Now), null);
+        _evaluation = new EmployeeEvaluationDto
+        {
+            Id = 0,
+            Employee = _employee,
+            Template = _template,
+            Owner = _employee,
+            Subject = "Subject",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null
+        };
+
     }
 
     private EmployeeEvaluationRatingDto CreateEmployeeEvaluationRating(
@@ -47,7 +56,7 @@ public class EmployeeEvaluationRatingUnitTests
             entity.Evaluation = new EmployeeEvaluation(evaluation);
 
         if (employee != null)
-            entity.Employee = new Employee(employee, employee.EmployeeType);
+            entity.Employee = new Employee(employee, employee.EmployeeType!);
 
         return entity.ToDto();
     }

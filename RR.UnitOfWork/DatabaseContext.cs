@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Entities.ATS;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace RR.UnitOfWork;
 
@@ -76,7 +77,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
         builder.AddJsonFile("appsettings.json")
                .AddUserSecrets<DatabaseContext>();
         var configuration = builder.Build();
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("Default"));
+        optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__Default"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

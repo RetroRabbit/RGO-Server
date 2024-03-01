@@ -17,8 +17,8 @@ public class EmployeeTypeControllerUnitTests
 
         var fakeEmployeeTypes = new List<EmployeeTypeDto>
         {
-            new(1, "Type1"),
-            new(2, "Type2")
+            new EmployeeTypeDto { Id = 1, Name = "Type1" },
+            new EmployeeTypeDto { Id = 2, Name = "Type2" }
         };
 
         employeeTypeServiceMock.Setup(service => service.GetAllEmployeeType())

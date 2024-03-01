@@ -18,14 +18,16 @@ public class EmployeeType : IModel<EmployeeTypeDto>
         Name = employmentType.Name;
     }
 
-    [Column("name")] public string Name { get; set; }
+    [Column("name")] public string? Name { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 
     public EmployeeTypeDto ToDto()
     {
-        return new EmployeeTypeDto(
-                                   Id,
-                                   Name);
+        return new EmployeeTypeDto
+        {
+            Id = Id,
+            Name = Name
+        };
     }
 }

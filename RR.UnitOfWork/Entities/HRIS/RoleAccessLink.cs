@@ -27,8 +27,8 @@ public class RoleAccessLink : IModel<RoleAccessLinkDto>
     [ForeignKey("RoleAccess")]
     public int RoleAccessId { get; set; }
 
-    public virtual Role Role { get; set; }
-    public virtual RoleAccess RoleAccess { get; set; }
+    public virtual Role? Role { get; set; }
+    public virtual RoleAccess? RoleAccess { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

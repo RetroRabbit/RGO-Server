@@ -16,8 +16,8 @@ public class EmployeeRole : IModel<EmployeeRoleDto>
     public EmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
         Id = employeeRoleDto.Id;
-        EmployeeId = employeeRoleDto.Employee.Id;
-        RoleId = employeeRoleDto.Role.Id;
+        EmployeeId = employeeRoleDto.Employee!.Id;
+        RoleId = employeeRoleDto.Role!.Id;
     }
 
     [Column("employeeId")]
@@ -28,16 +28,18 @@ public class EmployeeRole : IModel<EmployeeRoleDto>
     [ForeignKey("Role")]
     public int RoleId { get; set; }
 
-    public Employee Employee { get; set; }
-    public Role Role { get; set; }
+    public Employee? Employee { get; set; }
+    public Role? Role { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 
     public EmployeeRoleDto ToDto()
     {
-        return new EmployeeRoleDto(
-                                   Id,
-                                   Employee?.ToDto(),
-                                   Role?.ToDto());
+        return new EmployeeRoleDto
+        {
+            Id = Id,
+            Employee = Employee?.ToDto(),
+            Role = Role?.ToDto()
+        };
     }
 }

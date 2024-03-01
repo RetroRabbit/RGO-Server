@@ -20,7 +20,7 @@ public class RoleAccessServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _roleAccessService = new RoleAccessService(_dbMock.Object);
-        _roleAccessDto = new RoleAccessDto(1, "ViewEmplopyee", "Employee Data");
+        _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmplopyee", Grouping = "Employee Data" };
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class RoleAccessServiceUnitTest
             .Setup(r => r.RoleAccess.Get(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
             .Returns(permissions.Where(criteria));
 
-        var result = await _roleAccessService.GetRoleAccess(randPermission);
+        var result = await _roleAccessService.GetRoleAccess(randPermission!);
 
         Assert.NotNull(result);
         Assert.Equal(randPermission, result.Permission);
@@ -115,7 +115,7 @@ public class RoleAccessServiceUnitTest
             .Setup(r => r.RoleAccess.Delete(It.IsAny<int>()))
             .Returns(Task.FromResult(expect));
 
-        var result = await _roleAccessService.DeleteRoleAccess(randPermission);
+        var result = await _roleAccessService.DeleteRoleAccess(randPermission!);
 
         Assert.NotNull(result);
         Assert.Equal(expect, result);

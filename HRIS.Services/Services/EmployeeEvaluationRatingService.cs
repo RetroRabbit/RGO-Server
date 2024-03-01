@@ -24,7 +24,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
     {
         var exists = await _db.EmployeeEvaluationRating
                               .Any(x => x.Employee.Email == rating.EmployeeEmail
-                                        && x.Evaluation.Employee.Email == rating.Evaluation.EmployeeEmail
+                                        && x.Evaluation.Employee.Email == rating.Evaluation!.EmployeeEmail
                                         && x.Evaluation.Owner.Email == rating.Evaluation.OwnerEmail
                                         && x.Evaluation.Template.Description == rating.Evaluation.Template
                                         && x.Evaluation.Subject == rating.Evaluation.Subject
@@ -37,12 +37,14 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
     public async Task<EmployeeEvaluationRatingDto> Get(EvaluationRatingInput rating)
     {
-        EmployeeEvaluationInput evaluationInputToCheck = new(
-                                                             rating.Evaluation.Id,
-                                                             rating.Evaluation.OwnerEmail,
-                                                             rating.Evaluation.EmployeeEmail,
-                                                             rating.Evaluation.Template,
-                                                             rating.Evaluation.Subject);
+        EmployeeEvaluationInput evaluationInputToCheck = new EmployeeEvaluationInput
+        {
+            Id =rating.Evaluation!.Id,
+            OwnerEmail = rating.Evaluation.OwnerEmail,
+            EmployeeEmail = rating.Evaluation.EmployeeEmail,
+            Template = rating.Evaluation.Template,
+            Subject = rating.Evaluation.Subject
+        };
 
         var evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluationInputToCheck);
 
@@ -81,7 +83,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
     {
         var employee = await _employeeService.GetEmployee(rating.EmployeeEmail);
         var evaluation = await _employeeEvaluationService.Get(
-                                                              rating.Evaluation.EmployeeEmail,
+                                                              rating.Evaluation!.EmployeeEmail,
                                                               rating.Evaluation.OwnerEmail,
                                                               rating.Evaluation.Template,
                                                               rating.Evaluation.Subject);
@@ -127,7 +129,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
     public async Task<EmployeeEvaluationRatingDto> Delete(EvaluationRatingInput rating)
     {
-        var evaluationExists = await _employeeEvaluationService.CheckIfExists(rating.Evaluation);
+        var evaluationExists = await _employeeEvaluationService.CheckIfExists(rating.Evaluation!);
 
         if (!evaluationExists)
             throw new Exception("Employee Evaluation not found");

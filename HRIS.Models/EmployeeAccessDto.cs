@@ -2,30 +2,6 @@
 
 public class EmployeeAccessDto
 {
-    // TODO : Remove this Constructor + Update UNIT TESTS
-    public EmployeeAccessDto(int Id,
-                             int Condition, //view, edit, Hidden
-                             bool Internal, //Custom or internal
-                             string PropName, //unique identifier
-                             string Label, //Just for display
-                             string Type, //text, bool, int
-                             string Value, //value of the selected value
-                             string? Description, //additional front-end info
-                             string? Regex, //additional validation for front-end
-                             List<string>? Options)
-    {
-        this.Id = Id;
-        this.Condition = Condition;
-        this.Internal = Internal;
-        this.PropName = PropName;
-        this.Label = Label;
-        this.Type = Type;
-        this.Value = Value;
-        this.Description = Description;
-        this.Regex = Regex;
-        this.Options = Options;
-    }
-
     public int Id { get; set; }
     public int Condition { get; set; }
     public bool Internal { get; set; }

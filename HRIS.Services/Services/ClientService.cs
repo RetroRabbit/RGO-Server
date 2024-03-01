@@ -13,7 +13,7 @@ public class ClientService : IClientService
         _db = db;
     }
 
-    public async Task<List<ClientDto>> GetAllClients()
+    public async Task<List<ClientDto>?> GetAllClients()
     {
         var clients = await _db.Client.GetAll();
         var allClients = clients

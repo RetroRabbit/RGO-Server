@@ -152,7 +152,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
 
         if (exists) throw new Exception("Employee Evaluation Audience not found");
 
-        var employeeEvaluationAudienceDto = new EmployeeEvaluationAudienceDto(0, evaluationDto, employeeDto);
+        var employeeEvaluationAudienceDto = new EmployeeEvaluationAudienceDto { Id = 0,  Evaluation = evaluationDto, Employee = employeeDto };
         var savedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
                                                        .Add(new
                                                                 EmployeeEvaluationAudience(employeeEvaluationAudienceDto));
@@ -163,7 +163,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     public async Task<EmployeeEvaluationAudienceDto> Update(EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto)
     {
         var exists = await CheckIfExists(employeeEvaluationAudienceDto.Evaluation!,
-                                         employeeEvaluationAudienceDto.Employee!.Email);
+                                         employeeEvaluationAudienceDto.Employee!.Email!);
 
         if (!exists) throw new Exception("Employee Evaluation Audience not found");
 
