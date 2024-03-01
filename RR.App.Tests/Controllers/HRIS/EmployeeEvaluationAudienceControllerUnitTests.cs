@@ -25,7 +25,7 @@ public class EmployeeEvaluationAudienceControllerUnitTests
                 {
                     Id = 1,
                     Employee = EmployeeTestData.EmployeeDto,
-                    Template = new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
+                    Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
                     Owner = EmployeeTestData.EmployeeDto2,
                     Subject = "Employee Evaluation Subject",
                     StartDate = new DateOnly(2022, 1, 1),
@@ -88,7 +88,7 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         {
             Id = 1,
             Employee = EmployeeTestData.EmployeeDto,
-            Template = new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
+            Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
             Owner = EmployeeTestData.EmployeeDto2,
             Subject = "Employee Evaluation Subject",
             StartDate = new DateOnly(2022, 1, 1),

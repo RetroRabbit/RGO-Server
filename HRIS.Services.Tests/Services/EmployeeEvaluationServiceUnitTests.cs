@@ -39,7 +39,7 @@ public class EmployeeEvaluationServiceUnitTests
                                     new DateTime(), null, Race.Black, Gender.Female, null!,
                                     "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
                                     employeeAddressDto, employeeAddressDto, null, null, null);
-        _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto(1, "template");
+        _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "template" };
     }
 
     private EmployeeEvaluation CreateEmployeeEvaluation(

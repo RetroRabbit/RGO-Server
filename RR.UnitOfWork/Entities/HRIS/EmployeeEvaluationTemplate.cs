@@ -24,8 +24,10 @@ public class EmployeeEvaluationTemplate : IModel<EmployeeEvaluationTemplateDto>
 
     public EmployeeEvaluationTemplateDto ToDto()
     {
-        return new EmployeeEvaluationTemplateDto(
-                                                 Id,
-                                                 Description);
+        return new EmployeeEvaluationTemplateDto
+        {
+            Id = Id,
+            Description = Description
+        };
     }
 }

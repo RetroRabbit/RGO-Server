@@ -25,7 +25,7 @@ public class EmployeeEvaluationAudienceUnitTests
                                     "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
                                     employeeAddressDto, employeeAddressDto, null, null, null);
 
-        _template = new EmployeeEvaluationTemplateDto(1, "Template");
+        _template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Template" };
 
         _evaluation = new EmployeeEvaluationDto
         {

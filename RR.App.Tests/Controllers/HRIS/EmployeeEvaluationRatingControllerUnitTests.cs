@@ -49,7 +49,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                 "SuburbXYZ", "City456", "South Africa",
                                 "ProvinceABC", "67890"), "123 Main St",
                             "Emergency Contact", "+9876543210"),
-                        Template = new EmployeeEvaluationTemplateDto(301, "Template1"),
+                        Template = new EmployeeEvaluationTemplateDto{ Id = 301, Description = "Template1" },
                         Owner = new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
                             DateTime.Now.AddMonths(6), 1, false, "No disability", 2,
                             new EmployeeTypeDto{ Id = 1, Name = "Regular" },
@@ -165,7 +165,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                  "ProvinceABC", "67890"), "123 Main St",
                                           "Emergency Contact", "+9876543210");
 
-        var templateDto = new EmployeeEvaluationTemplateDto(301, "Template 1");
+        var templateDto = new EmployeeEvaluationTemplateDto{ Id = 301, Description = "Template 1" };
 
         var savedRating = new EmployeeEvaluationRatingDto
         {
@@ -282,7 +282,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                        "South Africa",
                                                                        "ProvinceABC", "67890"), "123 Main St",
                                                                       "Emergency Contact", "+9876543210"),
-            Template = new EmployeeEvaluationTemplateDto(301, "Template1"),
+            Template = new EmployeeEvaluationTemplateDto{ Id = 301, Description = "Template1" },
             Owner = new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
                                                                       DateTime.Now.AddMonths(6), 1, false,
                                                                       "No disability", 2,
@@ -339,8 +339,11 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                    "City456", "South Africa",
                                                                    "ProvinceABC", "67890"), "123 Main St",
                                                                   "Emergency Contact", "+9876543210"),
-                Template = new EmployeeEvaluationTemplateDto(301,
-                                                                  "Template1"),
+                Template = new EmployeeEvaluationTemplateDto
+                {
+                    Id = 301,
+                    Description = "Template1"
+                },
                 Owner = new EmployeeDto(1, "EMP123", "123456",
                                                                   DateTime.Now,
                                                                   DateTime.Now.AddMonths(6), 1, false,
@@ -471,7 +474,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                  "ProvinceABC", "67890"), "123 Main St",
                                           "Emergency Contact", "+9876543210");
 
-        var templateDto = new EmployeeEvaluationTemplateDto(301, "Template 1");
+        var templateDto = new EmployeeEvaluationTemplateDto{ Id = 301, Description = "Template 1" };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         serviceMock.Setup(x => x.Delete(ratingInput)).ReturnsAsync(new EmployeeEvaluationRatingDto

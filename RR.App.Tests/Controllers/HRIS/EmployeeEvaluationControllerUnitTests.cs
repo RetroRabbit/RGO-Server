@@ -34,7 +34,7 @@ public class EmployeeEvaluationControllerUnitTests
                      "Emergency Contact",
                      "987654321"
                     ),
-                Template = new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
+                Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
                 Owner = new EmployeeDto
                     (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
                      new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
@@ -115,10 +115,10 @@ public class EmployeeEvaluationControllerUnitTests
                   "987654321"
                  ),
             Template = new EmployeeEvaluationTemplateDto
-                 (
-                  1,
-                  "Sample Description"
-                 ),
+            {
+                Id = 1,
+                Description = "Sample Description"
+            },
             Owner = new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
                   new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
@@ -216,10 +216,10 @@ public class EmployeeEvaluationControllerUnitTests
                   "987654321"
                  ),
             Template = new EmployeeEvaluationTemplateDto
-                 (
-                  1,
-                  "Sample Description"
-                 ),
+            {
+                Id = 1,
+                Description = "Sample Description"
+            },
             Owner = new EmployeeDto
                  (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
                   new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
@@ -334,11 +334,11 @@ public class EmployeeEvaluationControllerUnitTests
                                            "Emergency Contact",
                                            "987654321"
                                           ),
-                       Template = new EmployeeEvaluationTemplateDto
-                                          (
-                                           1,
-                                           "Sample Description"
-                                          ),
+                                           Template = new EmployeeEvaluationTemplateDto
+                                           { 
+                                              Id = 1,
+                                              Description = "Sample Description"
+                                           },
                        Owner = new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
@@ -426,10 +426,10 @@ public class EmployeeEvaluationControllerUnitTests
                                            "987654321"
                                           ),
                        Template = new EmployeeEvaluationTemplateDto
-                                          (
-                                           1,
-                                           "Sample Description"
-                                          ),
+                       {
+                          Id =  1,
+                          Description = "Sample Description"
+                       },
                        Owner = new EmployeeDto
                                           (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
                                            "No disability", 2,
