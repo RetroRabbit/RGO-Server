@@ -2,7 +2,7 @@
 
 ### NB!!! Make sure you're checked out on the develop branch
 
-This system is an employee management system for Retro Rabbit Specificaly this is the back end for said system and works in conjuncture with the Front End repo
+This system is an employee management system for Retro Rabbit Enterprise Services. This is the back end for said system and works in conjuncture with the Front End repository
 
 # Getting Started
 
@@ -32,6 +32,15 @@ Runs on(.NET Web API):
 ```powershell
 wsl --install
 ```
+
+# Environment Variables
+Add system environments as follows 
+
+![Image of System Environment Variables](./EnvironmentVariables.png)
+
+With the respective values in the redacted spaces 
+(please note that the dashes in between the variable names are double dashes)
+
 # User Secrets
 Right Click RGO.App and Click on **Mange User Secrets**
 
