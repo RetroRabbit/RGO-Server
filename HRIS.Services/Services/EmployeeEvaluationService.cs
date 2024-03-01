@@ -132,7 +132,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         string template,
         string subject)
     {
-        EmployeeEvaluationInput evaluationInput = new
+        EmployeeEvaluationInput evaluationInput = new EmployeeEvaluationInput
         {
             Id = 0,
             OwnerEmail = ownerEmail,

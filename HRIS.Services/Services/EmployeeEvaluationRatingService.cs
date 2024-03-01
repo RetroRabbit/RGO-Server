@@ -37,13 +37,13 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
     public async Task<EmployeeEvaluationRatingDto> Get(EvaluationRatingInput rating)
     {
-        EmployeeEvaluationInput evaluationInputToCheck = new
+        EmployeeEvaluationInput evaluationInputToCheck = new EmployeeEvaluationInput
         {
-            rating.Evaluation!.Id,
-            rating.Evaluation.OwnerEmail,
-            rating.Evaluation.EmployeeEmail,
-            rating.Evaluation.Template,
-            rating.Evaluation.Subject
+            Id =rating.Evaluation!.Id,
+            OwnerEmail = rating.Evaluation.OwnerEmail,
+            EmployeeEmail = rating.Evaluation.EmployeeEmail,
+            Template = rating.Evaluation.Template,
+            Subject = rating.Evaluation.Subject
         };
 
         var evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluationInputToCheck);

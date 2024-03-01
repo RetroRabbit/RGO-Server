@@ -268,7 +268,7 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var invalidInput = new EmployeeEvaluationInput
-        { Id = 1, OwnerEmail = string.Empty, EmployeeEmail = "employee@retrorabbit.co.za", Template = "template", Subject = "Evaluation Subject 1";
+        { Id = 1, OwnerEmail = string.Empty, EmployeeEmail = "employee@retrorabbit.co.za", Template = "template", Subject = "Evaluation Subject 1" };
 
         mockService.Setup(x => x.Save(invalidInput))
                    .ThrowsAsync(new Exception("Invalid input error message"));
@@ -289,21 +289,24 @@ public class EmployeeEvaluationControllerUnitTests
         var controller = new EmployeeEvaluationController(mockService.Object);
 
         var evaluationInputList = new List<EmployeeEvaluationInput>
-        {
-            new(
-                1,
-                "owner@retrorabbit.co.za",
-                "employee@retrorabbit.co.za",
-                "Template 1",
-                "Subject 1"
-               ),
-            new(
-                2,
-                "owner@retrorabbit.co.za",
-                "employee@retrorabbit.co.za",
-                "Template 2",
-                "Subject 2"
-               )
+{
+            new EmployeeEvaluationInput
+            { 
+              Id = 1,
+              OwnerEmail = "owner@retrorabbit.co.za",
+              EmployeeEmail = "employee@retrorabbit.co.za",
+              Template = "Template 1",
+              Subject = "Subject 1"
+            },
+
+            new EmployeeEvaluationInput
+            {
+              Id = 2,
+              OwnerEmail = "owner@retrorabbit.co.za",
+              EmployeeEmail = "employee@retrorabbit.co.za",
+              Template = "Template 2",
+              Subject = "Subject 2"
+            }
         };
 
         mockService.Setup(x => x.Update(It.IsAny<EmployeeEvaluationInput>(), It.IsAny<EmployeeEvaluationInput>()))
@@ -372,8 +375,8 @@ public class EmployeeEvaluationControllerUnitTests
 
         var invalidInputList = new List<EmployeeEvaluationInput>
         {
-            new{ Id = 0, OwnerEmail = string.Empty, EmployeeEmail = "invalidemail", Template = "template", Subject = string.Empty },
-            new{Id = -1, OwnerEmail = "owner@retrorabbit.co.za", EmpoyeeEmail = "employee@retrorabbit.co.za", Template ="Template 1", Subject="Subject 1" }
+            new EmployeeEvaluationInput{ Id = 0, OwnerEmail = string.Empty, EmployeeEmail = "invalidemail", Template = "template", Subject = string.Empty },
+            new EmployeeEvaluationInput{Id = -1, OwnerEmail = "owner@retrorabbit.co.za", EmployeeEmail = "employee@retrorabbit.co.za", Template ="Template 1", Subject="Subject 1" }
         };
 
         var errorMessage = "Invalid input error message";
