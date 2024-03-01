@@ -56,15 +56,17 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
 
     public EmployeeCertificationDto ToDto()
     {
-        return new EmployeeCertificationDto(
-                                            Id,
-                                            Employee?.ToDto(),
-                                            EmployeeDocument?.ToDto(),
-                                            Title,
-                                            Publisher,
-                                            Status,
-                                            EmployeeAuditBy?.ToDto(),
-                                            AuditDate,
-                                            AuditNote);
+        return new EmployeeCertificationDto
+        {
+            Id = Id,
+            Employee = Employee?.ToDto(),
+            EmployeeDocument = EmployeeDocument?.ToDto(),
+            Title = Title,
+            Publisher = Publisher,
+            Status = Status,
+            AuditBy = EmployeeAuditBy?.ToDto(),
+            AuditDate = AuditDate,
+            AuditNote = AuditNote
+        };
     }
 }

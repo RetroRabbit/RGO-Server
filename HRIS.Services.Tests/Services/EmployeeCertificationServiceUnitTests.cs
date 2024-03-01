@@ -50,11 +50,18 @@ public class EmployeeCertificationServiceUnitTests
         };
 
 
-        var employeeCertificationDto = new EmployeeCertificationDto(1, employeeDto, employeeDocumentDto, "Title",
-                                                                    "Publisher",
-                                                                    EmployeeCertificationStatus.Approved, employeeDto,
-                                                                    new DateTime(2020, 1, 1), "audit note");
-
+        var employeeCertificationDto = new EmployeeCertificationDto
+        {
+            Id = 1,
+            Employee = employeeDto,
+            EmployeeDocument = employeeDocumentDto,
+            Title = "Title",
+            Publisher = "Publisher",
+            Status = EmployeeCertificationStatus.Approved,
+            AuditBy = employeeDto,
+            AuditDate = new DateTime(2020, 1, 1),
+            AuditNote = "audit note"
+        };
         return employeeCertificationDto;
     }
 
