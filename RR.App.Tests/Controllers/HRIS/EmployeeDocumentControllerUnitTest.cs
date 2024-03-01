@@ -42,10 +42,15 @@ public class EmployeeDocumentControllerUnitTest
             HttpContext = new DefaultHttpContext { User = claimsPrincipal }
         };
 
-        _simpleEmployeeDocument = new SimpleEmployeeDocumentDto(
-            Id: 1, EmployeeId: EmployeeTestData.EmployeeDto.Id,
-            FileName: "TestFile.pdf", FileCategory: FileCategory.FixedTerm,
-            Blob: "TestFileContent", UploadDate: DateTime.Now);
+        _simpleEmployeeDocument = new SimpleEmployeeDocumentDto
+        {
+            Id = 1,
+            EmployeeId = EmployeeTestData.EmployeeDto.Id,
+            FileName = "TestFile.pdf",
+            FileCategory = FileCategory.FixedTerm,
+            Blob = "TestFileContent",
+            UploadDate = DateTime.Now
+        };
     }
 
     [Fact]
