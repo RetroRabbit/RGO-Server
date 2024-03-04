@@ -77,8 +77,8 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("dateOfIncident")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("dateOfIncident")
+                        .HasColumnType("date")
                         .HasColumnName("dateOfIncident");
 
                     b.Property<string>("exceptionType")
@@ -94,6 +94,29 @@ namespace RR.UnitOfWork.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ErrorLog");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            dateOfIncident = new DateOnly(2024, 3, 4),
+                            exceptionType = "errortype 1",
+                            message = "this is a new error"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            dateOfIncident = new DateOnly(2024, 3, 4),
+                            exceptionType = "errortype 3",
+                            message = "this is a new error 3"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            dateOfIncident = new DateOnly(2024, 3, 4),
+                            exceptionType = "errortype 5",
+                            message = "this is a new error 5"
+                        });
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.AuditLog", b =>
@@ -430,7 +453,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "cwehl@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(617),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1185),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "C",
@@ -462,7 +485,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "awalls@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(768),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1326),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "A",
@@ -494,7 +517,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "mschoeman@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(785),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1341),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "M",
@@ -526,7 +549,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "dalberts@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(795),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1351),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "D",
@@ -558,7 +581,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "gesterhuyse@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(811),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1360),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "G",
@@ -589,7 +612,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "ksabjee@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(821),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1369),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "K",
@@ -620,7 +643,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "lvanwyk@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(829),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1378),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "L",
@@ -652,7 +675,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "dvanhout@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 2,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(838),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1388),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "D",
@@ -685,7 +708,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "dmahoko@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 2,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(847),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1397),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "C",
@@ -717,7 +740,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "lmalinga@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(857),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1406),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "l",
@@ -750,7 +773,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "lanthony@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(871),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1415),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "LA",
@@ -783,7 +806,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "jminne@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(880),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1423),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "J",
@@ -816,7 +839,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "mshongwe@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(888),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1432),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "M",
@@ -849,7 +872,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "ebritz@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(901),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1440),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "E",
@@ -882,7 +905,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "rpowell@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 4, 7, 55, 21, 821, DateTimeKind.Utc).AddTicks(909),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1449),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "R",

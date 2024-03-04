@@ -103,5 +103,6 @@ public class DatabaseContext : DbContext, IDatabaseContext
         modelBuilder.Entity<EmployeeAddress>().HasData(TestData.EmployeeAddressSet());
         modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
         modelBuilder.Entity<EmployeeData>().HasData(TestData.EmployeeDataSet());
+        modelBuilder.Entity<ErrorLogging>().HasData(TestData.ErrorLoggingList());
     }
 }

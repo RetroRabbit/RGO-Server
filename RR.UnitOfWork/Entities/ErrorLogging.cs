@@ -1,10 +1,8 @@
 ﻿using ATS.Models;
-using Google.Apis.Gmail.v1.Data;
-using HRIS.Models;
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
+
 
 namespace RR.UnitOfWork.Entities;
 
@@ -14,7 +12,7 @@ public class ErrorLogging: IModel<ErrorLoggingDto>
     public ErrorLogging() { }
 
     public ErrorLogging(ErrorLoggingDto errorLoggingDto)
-    {
+    {   
         Id = errorLoggingDto.Id;
         dateOfIncident = errorLoggingDto.dateOfIncident;
         exceptionType = errorLoggingDto.exceptionType;
@@ -22,7 +20,7 @@ public class ErrorLogging: IModel<ErrorLoggingDto>
     }
 
     [Key][Column("id")] public int Id { get; set; }
-    [Column("dateOfIncident")] public DateTime dateOfIncident { get; set; }
+    [Column("dateOfIncident")] public DateOnly dateOfIncident { get; set; }
     [Column("exceptionType")] public string exceptionType { get; set; }
     [Column("message")] public string message { get; set; }
 

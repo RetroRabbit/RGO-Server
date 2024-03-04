@@ -1,4 +1,5 @@
 ﻿using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork;
@@ -1042,6 +1043,17 @@ public static class TestData
             new() { Id = id++, Name = "Telesure" },
             new() { Id = id++, Name = "Nedbank" },
             new() { Id = id++, Name = "Standard Bank" }
+        };
+    }
+
+    public static ErrorLogging[] ErrorLoggingList()
+    {
+        var id = 1;
+        return new ErrorLogging[]
+        {
+            new(){Id = id++, dateOfIncident = DateOnly.FromDateTime(DateTime.Now), exceptionType = "errortype 1", message = "this is a new error"},
+            new(){Id = id++, dateOfIncident = DateOnly.FromDateTime(DateTime.Now), exceptionType = "errortype 3", message = "this is a new error 3"},
+            new(){Id = id++, dateOfIncident = DateOnly.FromDateTime(DateTime.Now), exceptionType = "errortype 5", message = "this is a new error 5"}
         };
     }
 }

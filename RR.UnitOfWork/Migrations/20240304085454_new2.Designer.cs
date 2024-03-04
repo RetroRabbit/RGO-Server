@@ -13,8 +13,8 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240301084256_UpdateEnum")]
-    partial class UpdateEnum
+    [Migration("20240304085454_new2")]
+    partial class new2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,6 +71,57 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("Applicant");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.ErrorLogging", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("dateOfIncident")
+                        .HasColumnType("date")
+                        .HasColumnName("dateOfIncident");
+
+                    b.Property<string>("exceptionType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("exceptionType");
+
+                    b.Property<string>("message")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("message");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ErrorLog");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            dateOfIncident = new DateOnly(2024, 3, 4),
+                            exceptionType = "errortype 1",
+                            message = "this is a new error"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            dateOfIncident = new DateOnly(2024, 3, 4),
+                            exceptionType = "errortype 3",
+                            message = "this is a new error 3"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            dateOfIncident = new DateOnly(2024, 3, 4),
+                            exceptionType = "errortype 5",
+                            message = "this is a new error 5"
+                        });
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.AuditLog", b =>
                 {
                     b.Property<int>("Id")
@@ -81,7 +132,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("description");
 
@@ -116,27 +166,22 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<List<int>>("Data")
-                        .IsRequired()
                         .HasColumnType("integer[]")
                         .HasColumnName("data");
 
                     b.Property<List<string>>("DataTypes")
-                        .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("dataTypes");
 
                     b.Property<List<string>>("Labels")
-                        .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("labels");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("type");
 
@@ -181,7 +226,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
@@ -237,7 +281,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CellphoneNo")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cellphoneNo");
 
@@ -258,12 +301,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("disability");
 
                     b.Property<string>("DisabilityNotes")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("disabilityNotes");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("email");
 
@@ -296,12 +337,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("houseNo");
 
                     b.Property<string>("IdNumber")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("idNumber");
 
                     b.Property<string>("Initials")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("initials");
 
@@ -314,7 +353,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("level");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
@@ -347,7 +385,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("peopleChampion");
 
                     b.Property<string>("PersonalEmail")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("personalEmail");
 
@@ -356,12 +393,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("photo");
 
                     b.Property<int?>("PhysicalAddressId")
-                        .IsRequired()
                         .HasColumnType("integer")
                         .HasColumnName("physicalAddress");
 
                     b.Property<int?>("PostalAddressId")
-                        .IsRequired()
                         .HasColumnType("integer")
                         .HasColumnName("postalAddress");
 
@@ -378,7 +413,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("salaryDays");
 
                     b.Property<string>("Surname")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("surname");
 
@@ -422,7 +456,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "cwehl@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9190),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1185),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "C",
@@ -454,7 +488,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "awalls@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9304),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1326),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "A",
@@ -486,7 +520,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "mschoeman@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9318),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1341),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "M",
@@ -518,7 +552,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "dalberts@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9327),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1351),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "D",
@@ -550,7 +584,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "gesterhuyse@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9344),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1360),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "G",
@@ -581,7 +615,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "ksabjee@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9352),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1369),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "K",
@@ -612,7 +646,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "lvanwyk@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9360),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1378),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "L",
@@ -644,7 +678,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "dvanhout@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 2,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9368),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1388),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "D",
@@ -677,7 +711,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "dmahoko@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 2,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9376),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1397),
                             Gender = 2,
                             IdNumber = "0231646",
                             Initials = "C",
@@ -709,7 +743,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "lmalinga@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9384),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1406),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "l",
@@ -742,7 +776,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "lanthony@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9392),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1415),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "LA",
@@ -775,7 +809,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "jminne@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9420),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1423),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "J",
@@ -808,7 +842,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "mshongwe@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9430),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1432),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "M",
@@ -841,7 +875,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "ebritz@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9438),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1440),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "E",
@@ -874,7 +908,7 @@ namespace RR.UnitOfWork.Migrations
                             Email = "rpowell@retrorabbit.co.za",
                             EmployeeNumber = "8464",
                             EmployeeTypeId = 7,
-                            EngagementDate = new DateTime(2024, 3, 1, 8, 42, 56, 720, DateTimeKind.Utc).AddTicks(9445),
+                            EngagementDate = new DateTime(2024, 3, 4, 8, 54, 54, 696, DateTimeKind.Utc).AddTicks(1449),
                             Gender = 1,
                             IdNumber = "0231646",
                             Initials = "R",
@@ -908,42 +942,34 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("city");
 
                     b.Property<string>("ComplexName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("complexName");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("country");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("postalCode");
 
                     b.Property<string>("Province")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("province");
 
                     b.Property<string>("StreetNumber")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("streetNumber");
 
                     b.Property<string>("SuburbOrDistrict")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("suburbOrDistrict");
 
                     b.Property<string>("UnitNumber")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("unitNumber");
 
@@ -1012,12 +1038,10 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AccountHolderName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("accountHolderName");
 
                     b.Property<string>("AccountNo")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("accountNo");
 
@@ -1026,17 +1050,14 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("accountType");
 
                     b.Property<string>("BankName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("bankName");
 
                     b.Property<string>("Branch")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("branch");
 
                     b.Property<string>("DeclineReason")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("reason");
 
@@ -1045,7 +1066,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("employeeId");
 
                     b.Property<string>("File")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("file");
 
@@ -1126,12 +1146,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("employeeId");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("note");
 
                     b.Property<string>("Subject")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("subject");
 
@@ -1152,7 +1170,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Blob")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("blob");
 
@@ -1169,7 +1186,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("fileCategory");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("fileName");
 
@@ -1246,7 +1262,7 @@ namespace RR.UnitOfWork.Migrations
                             Id = 1,
                             EmployeeId = 1,
                             OwnerId = 1,
-                            StartDate = new DateOnly(2024, 3, 1),
+                            StartDate = new DateOnly(2024, 3, 4),
                             Subject = "Peoples' Champion Checkin",
                             TemplateId = 1
                         },
@@ -1255,7 +1271,7 @@ namespace RR.UnitOfWork.Migrations
                             Id = 2,
                             EmployeeId = 2,
                             OwnerId = 1,
-                            StartDate = new DateOnly(2024, 3, 1),
+                            StartDate = new DateOnly(2024, 3, 4),
                             Subject = "Peoples' Champion Checkin",
                             TemplateId = 1
                         });
@@ -1465,12 +1481,10 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Client")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("client");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("description");
 
@@ -1483,7 +1497,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("endDate");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
@@ -1626,7 +1639,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
@@ -1686,7 +1698,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("category");
 
                     b.Property<string>("Code")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("code");
 
@@ -1703,7 +1714,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("internalTable");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
@@ -1854,7 +1864,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("fieldCodeId");
 
                     b.Property<string>("Option")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("option");
 
@@ -2187,7 +2196,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("employeeTotal");
 
                     b.Property<string>("Month")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("month");
 
@@ -2274,7 +2282,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("Description");
 
@@ -2320,12 +2327,10 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Grouping")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("grouping");
 
                     b.Property<string>("Permission")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("permission");
 
@@ -2696,15 +2701,11 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeAddress", "PhysicalAddress")
                         .WithMany()
-                        .HasForeignKey("PhysicalAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PhysicalAddressId");
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeAddress", "PostalAddress")
                         .WithMany()
-                        .HasForeignKey("PostalAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostalAddressId");
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "TeamLeadAssigned")
                         .WithMany()
