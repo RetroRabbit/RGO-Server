@@ -29,8 +29,14 @@ namespace RR.App.Tests.Controllers
         [Fact]
         public async Task GetAllClients_ReturnsOkResult()
         {
+            var clients = new List<ClientDto>
+            { 
+                new ClientDto { Id = 1, Name = "Client1"},
+                new ClientDto { Id = 2, Name = "Client2"}
+            };
+
             var mockClientService = new Mock<IClientService>();
-            mockClientService.Setup(service => service.GetAllClients()).ReturnsAsync(new List<ClientDto>());
+            mockClientService.Setup(service => service.GetAllClients()).ReturnsAsync(clients);
 
             var client = _factory.WithWebHostBuilder(builder =>
             {
