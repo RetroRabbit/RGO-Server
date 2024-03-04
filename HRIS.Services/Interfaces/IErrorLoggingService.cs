@@ -10,37 +10,37 @@ namespace HRIS.Services.Interfaces
     public interface IErrorLoggingService
     {
         /// <summary>
-        ///     Check if the applicant exists in the system
+        ///     Check if the error log exists in the system
         /// </summary>
         /// <param name="message"></param>
-        /// <returns>Bool depending on they exists or not</returns>
+        /// <returns>Bool depending if on they exists or not</returns>
         Task<bool> CheckErrorLogExists(int Id);
 
         /// <summary>
-        ///     Takes in an applicant and adds it to the database
+        ///     Takes in a errorlog and adds it to the database
         /// </summary>
         /// <param name="errorLoggingDto"></param>
-        /// <returns>The new ApplicantDto</returns>
+        /// <returns>The new ErrorLoggingDto</returns>
         Task<ErrorLoggingDto> SaveErrorLog(ErrorLoggingDto errorLoggingDto);
 
         /// <summary>
-        ///     Returns a list of all applicants
+        ///     Returns a list of all errorlogs
         /// </summary>
-        /// <returns>List<ApplicantDto</returns>
+        /// <returns>List<ErrorLoggingDto</returns>
         Task<List<ErrorLoggingDto>> GetAllErrorLogs();
 
         /// <summary>
-        ///     Fetches a single applicant by id
+        ///     Fetches a single errorlog by id
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>Single ApplicantDto</returns>
+        /// <returns>Single ErrorLoggingDto</returns>
         Task<ErrorLoggingDto> GetErrorLogById(int id);
 
         /// <summary>
-        ///     Deletes an applicant
+        ///     Deletes an errorlog
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>The deleted applicantDto</returns>
+        /// <returns>The deleted ErrorLoggingDto</returns>
         Task<ErrorLoggingDto> DeleteErrorLog(int id);
     }
 }
