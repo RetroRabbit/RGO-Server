@@ -17,29 +17,35 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
         var expectedAudiences = new List<EmployeeEvaluationAudienceDto>
-        {
-            new(
-                1,
-                new EmployeeEvaluationDto(
-                                          1,
-                                          EmployeeTestData.EmployeeDto,
-                                          new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
-                                          EmployeeTestData.EmployeeDto2,
-                                          "Employee Evaluation Subject",
-                                          new DateOnly(2022, 1, 1),
-                                          new DateOnly(2022, 2, 1)
-                                         ),
-                EmployeeTestData.EmployeeDto3
-               )
+{
+            new EmployeeEvaluationAudienceDto
+            {
+                Id = 1,
+                Evaluation = new EmployeeEvaluationDto
+                {
+                    Id = 1,
+                    Employee = EmployeeTestData.EmployeeDto,
+                    Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
+                    Owner = EmployeeTestData.EmployeeDto2,
+                    Subject = "Employee Evaluation Subject",
+                    StartDate = new DateOnly(2022, 1, 1),
+                    EndDate = new DateOnly(2022, 2, 1)
+                },
+                Employee = EmployeeTestData.EmployeeDto3
+            }
         };
-
 
         serviceMock.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>()))
                    .ReturnsAsync(expectedAudiences);
 
-        var result = await controller.GetAll(new EmployeeEvaluationInput(1, "owner@retrorabbit.co.za",
-                                                                         "employee@retrorabbit.co.za", "Test Template",
-                                                                         "Test Subject"));
+        var result = await controller.GetAll(new EmployeeEvaluationInput
+        {
+            Id = 1,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Test Template",
+            Subject = "Test Subject"
+        });
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualAudiences = Assert.IsType<List<EmployeeEvaluationAudienceDto>>(okResult.Value);
@@ -55,9 +61,14 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         serviceMock.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>()))
                    .ThrowsAsync(new Exception("Error retrieving employee evaluation audiences."));
 
-        var result = await controller.GetAll(new EmployeeEvaluationInput(1, "owner@retrorabbit.co.za",
-                                                                         "employee@retrorabbit.co.za", "Test Template",
-                                                                         "Test Subject"));
+        var result = await controller.GetAll(new EmployeeEvaluationInput
+        {
+            Id = 1,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Test Template",
+            Subject = "Test Subject"
+        });
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notFoundResult.Value);
@@ -73,23 +84,33 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
         var savedAudience = new EmployeeEvaluationAudienceDto
-            (1, new EmployeeEvaluationDto(1, EmployeeTestData.EmployeeDto,
-                                          new EmployeeEvaluationTemplateDto(1, "Employee Evaluation Template 1"),
-                                          EmployeeTestData.EmployeeDto2,
-                                          "Employee Evaluation Subject",
-                                          new DateOnly(2022, 1, 1),
-                                          new DateOnly(2022, 2, 1)),
-             EmployeeTestData.EmployeeDto3
-            );
+        { Id = 1, Evaluation = new EmployeeEvaluationDto
+        {
+            Id = 1,
+            Employee = EmployeeTestData.EmployeeDto,
+            Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
+            Owner = EmployeeTestData.EmployeeDto2,
+            Subject = "Employee Evaluation Subject",
+            StartDate = new DateOnly(2022, 1, 1),
+            EndDate = new DateOnly(2022, 2, 1)
+        },
+
+        Employee = EmployeeTestData.EmployeeDto3
+        };
 
         serviceMock.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
                    .ReturnsAsync(savedAudience);
 
-        var result = await controller.SaveEmployeeEvaluationAudience("test@retrorabbit.co.za",
-                                                                     new EmployeeEvaluationInput(1,
-                                                                      "owner@retrorabbit.co.za",
-                                                                      "employee@retrorabbit.co.za", "Test Template",
-                                                                      "Test Subject"));
+        var result = await controller.SaveEmployeeEvaluationAudience( "test@retrorabbit.co.za",
+                                                                     new EmployeeEvaluationInput
+                                                                     {
+                                                                         Id = 1,
+                                                                         OwnerEmail = "owner@retrorabbit.co.za",
+                                                                         EmployeeEmail = "employee@retrorabbit.co.za",
+                                                                         Template = "Test Template",
+                                                                         Subject = "Test Subject"
+                                                                     });
+                                                                      
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualSavedAudience = Assert.IsType<EmployeeEvaluationAudienceDto>(okResult.Value);
@@ -106,10 +127,14 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
         var result = await controller.SaveEmployeeEvaluationAudience("test@retrorabbit.co.za",
-                                                                     new EmployeeEvaluationInput(1,
-                                                                      "owner@retrorabbit.co.za",
-                                                                      "employee@retrorabbit.co.za", "Test Template",
-                                                                      "Test Subject"));
+                                                                     new EmployeeEvaluationInput
+                                                                     {
+                                                                         Id = 1,
+                                                                         OwnerEmail = "owner@retrorabbit.co.za",
+                                                                         EmployeeEmail = "employee@retrorabbit.co.za",
+                                                                         Template = "Test Template",
+                                                                         Subject = "Test Subject"
+                                                                     });
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notFoundResult.Value);
@@ -124,10 +149,14 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
         var result = await controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za",
-                                                                       new EmployeeEvaluationInput(1,
-                                                                        "owner@retrorabbit.co.za",
-                                                                        "employee@retrorabbit.co.za",
-                                                                        "Test Template", "Test Subject"));
+                                                                       new EmployeeEvaluationInput
+                                                                       {
+                                                                           Id = 1,
+                                                                           OwnerEmail = "owner@retrorabbit.co.za",
+                                                                           EmployeeEmail = "employee@retrorabbit.co.za",
+                                                                           Template = "Test Template",
+                                                                           Subject = "Test Subject"
+                                                                       });
 
         Assert.IsType<OkResult>(result);
     }
@@ -141,10 +170,14 @@ public class EmployeeEvaluationAudienceControllerUnitTests
         var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
         var result = await controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za",
-                                                                       new EmployeeEvaluationInput(1,
-                                                                        "owner@retrorabbit.co.za",
-                                                                        "employee@retrorabbit.co.za",
-                                                                        "Test Template", "Test Subject"));
+                                                                       new EmployeeEvaluationInput
+                                                                       {
+                                                                           Id = 1,
+                                                                           OwnerEmail = "owner@retrorabbit.co.za",
+                                                                           EmployeeEmail = "employee@retrorabbit.co.za",
+                                                                           Template = "Test Template",
+                                                                           Subject = "Test Subject"
+                                                                       });
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notFoundResult.Value);

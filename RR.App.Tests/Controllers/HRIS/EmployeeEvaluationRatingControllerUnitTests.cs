@@ -14,71 +14,138 @@ public class EmployeeEvaluationRatingControllerUnitTests
     public async Task GetAllEmployeeEvaluationRatingsValidInputReturnsOkResult()
     {
         var evaluationInput =
-            new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@test.com", "Template 1",
-                                        "Subject 1");
+            new EmployeeEvaluationInput
+            {
+                Id = null,
+                OwnerEmail = "owner@retrorabbit.co.za",
+                EmployeeEmail = "employee@test.com",
+                Template = "Template 1",
+                Subject = "Subject 1"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         var expectedRatings = new List<EmployeeEvaluationRatingDto>
         {
-            new(
-                1,
-                new EmployeeEvaluationDto(
-                                          101,
-                                          new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
-                                                          DateTime.Now.AddMonths(6), 1, false, "No disability", 2,
-                                                          new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f,
-                                                          50.0f, 50000, "John Doe", "JD", "Doe",
-                                                          DateTime.Parse("1990-01-01"), "South Africa", "South African",
-                                                          "ID123456", "PP789012",
-                                                          DateTime.Now.AddYears(5), "South Africa", Race.Black,
-                                                          Gender.Male, "photo.jpg",
-                                                          "john.doe@example.com", "john.doe.personal@example.com",
-                                                          "+1234567890", 3, 2,
-                                                          new EmployeeAddressDto(401, "Unit123", "ComplexXYZ", "1234",
-                                                           "SuburbABC", "City123", "South Africa",
-                                                           "ProvinceXYZ", "12345"),
-                                                          new EmployeeAddressDto(402, "Unit456", "Complex123", "5678",
-                                                           "SuburbXYZ", "City456", "South Africa",
-                                                           "ProvinceABC", "67890"), "123 Main St",
-                                                          "Emergency Contact", "+9876543210"),
-                                          new EmployeeEvaluationTemplateDto(301, "Template1"),
-                                          new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
-                                                          DateTime.Now.AddMonths(6), 1, false, "No disability", 2,
-                                                          new EmployeeTypeDto{ Id = 1, Name = "Regular" },
-                                                          "Some notes", 25.0f, 20.0f, 50.0f, 50000, "John Doe", "JD",
-                                                          "Doe", DateTime.Parse("1990-01-01"),
-                                                          "South Africa", "South African", "ID123456", "PP789012",
-                                                          DateTime.Now.AddYears(5), "South Africa",
-                                                          Race.Black, Gender.Male, "photo.jpg", "john.doe@example.com",
-                                                          "john.doe.personal@example.com",
-                                                          "+1234567890", 3, 2,
-                                                          new EmployeeAddressDto(401, "Unit123", "ComplexXYZ", "1234",
-                                                           "SuburbABC",
-                                                           "City123", "South Africa", "ProvinceXYZ", "12345"),
-                                                          new EmployeeAddressDto(402, "Unit456", "Complex123", "5678",
-                                                           "SuburbXYZ", "City456", "South Africa",
-                                                           "ProvinceABC", "67890"), "123 Main St",
-                                                          "Emergency Contact", "+9876543210"), "Subject1",
-                                          DateOnly.FromDateTime(DateTime.Now), null),
-                new EmployeeDto(1, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
-                                "No disability",
-                                2, new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
-                                "John Doe", "JD",
-                                "Doe", DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
-                                "PP789012",
-                                DateTime.Now.AddYears(5), "South Africa", Race.Black, Gender.Male, "photo.jpg",
-                                "john.doe@example.com", "john.doe.personal@example.com", "+1234567890", 3, 2,
-                                new EmployeeAddressDto(401, "Unit123", "ComplexXYZ", "1234", "SuburbABC", "City123",
-                                                       "South Africa",
-                                                       "ProvinceXYZ", "12345"),
-                                new EmployeeAddressDto(402, "Unit456", "Complex123", "5678", "SuburbXYZ", "City456",
-                                                       "South Africa",
-                                                       "ProvinceABC", "67890"), "123 Main St", "Emergency Contact",
-                                "+9876543210"),
-                "exampleDescription",
-                4.5f,
-                "exampleComment")
+             new EmployeeEvaluationRatingDto
+                {
+                    Id = 1,
+                    Evaluation = new EmployeeEvaluationDto
+                    {
+                        Id = 101,
+                        Employee = new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
+                            DateTime.Now.AddMonths(6), 1, false, "No disability", 2,
+                            new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f,
+                            50.0f, 50000, "John Doe", "JD", "Doe",
+                            DateTime.Parse("1990-01-01"), "South Africa", "South African",
+                            "ID123456", "PP789012",
+                            DateTime.Now.AddYears(5), "South Africa", Race.Black,
+                            Gender.Male, "photo.jpg",
+                            "john.doe@example.com", "john.doe.personal@example.com",
+                            "+1234567890", 3, 2,
+                             new EmployeeAddressDto
+                             {
+                                    Id = 1,
+                                    UnitNumber = "Unit 1",
+                                    ComplexName = "Complex A",
+                                    StreetNumber = "123",
+                                    SuburbOrDistrict = "Suburb",
+                                    City = "City",
+                                    Country = "Country",
+                                    Province = "Province",
+                                    PostalCode = "12345"
+                             },
+
+                                new EmployeeAddressDto
+                                {
+                                    Id = 2,
+                                    UnitNumber = "P.O. Box 123",
+                                    StreetNumber = "456",
+                                    SuburbOrDistrict = "Suburb",
+                                    City = "City",
+                                    Country = "Country",
+                                    Province = "Province",
+                                    PostalCode = "54321"
+                                }, "123 Main St",
+                            "Emergency Contact", "+9876543210"),
+                        Template = new EmployeeEvaluationTemplateDto{ Id = 301, Description = "Template1" },
+                        Owner = new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
+                            DateTime.Now.AddMonths(6), 1, false, "No disability", 2,
+                            new EmployeeTypeDto{ Id = 1, Name = "Regular" },
+                            "Some notes", 25.0f, 20.0f, 50.0f, 50000, "John Doe", "JD",
+                            "Doe", DateTime.Parse("1990-01-01"),
+                            "South Africa", "South African", "ID123456", "PP789012",
+                            DateTime.Now.AddYears(5), "South Africa",
+                            Race.Black, Gender.Male, "photo.jpg", "john.doe@example.com",
+                            "john.doe.personal@example.com",
+                            "+1234567890", 3, 2,
+                             new EmployeeAddressDto
+                             {
+                                Id = 1,
+                                UnitNumber = "Unit 1",
+                                ComplexName = "Complex A",
+                                StreetNumber = "123",
+                                SuburbOrDistrict = "Suburb",
+                                City = "City",
+                                Country = "Country",
+                                Province = "Province",
+                                PostalCode = "12345"
+                             },
+
+                    new EmployeeAddressDto
+                    {
+                        Id = 2,
+                        UnitNumber = "P.O. Box 123",
+                        StreetNumber = "456",
+                        SuburbOrDistrict = "Suburb",
+                        City = "City",
+                        Country = "Country",
+                        Province = "Province",
+                        PostalCode = "54321"
+                    }, "123 Main St",
+                            "Emergency Contact", "+9876543210"),
+                        Subject = "Subject1",
+                        StartDate = DateOnly.FromDateTime(DateTime.Now),
+                        EndDate = null
+                    },
+                    Employee = new EmployeeDto(1, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
+                        "No disability",
+                        2, new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
+                        "John Doe", "JD",
+                        "Doe", DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
+                        "PP789012",
+                        DateTime.Now.AddYears(5), "South Africa", Race.Black, Gender.Male, "photo.jpg",
+                        "john.doe@example.com", "john.doe.personal@example.com", "+1234567890", 3, 2,
+                       new EmployeeAddressDto
+                       {
+                            Id = 1,
+                            UnitNumber = "Unit 1",
+                            ComplexName = "Complex A",
+                            StreetNumber = "123",
+                            SuburbOrDistrict = "Suburb",
+                            City = "City",
+                            Country = "Country",
+                            Province = "Province",
+                            PostalCode = "12345"
+                       },
+
+                    new EmployeeAddressDto
+                    {
+                        Id = 2,
+                        UnitNumber = "P.O. Box 123",
+                        StreetNumber = "456",
+                        SuburbOrDistrict = "Suburb",
+                        City = "City",
+                        Country = "Country",
+                        Province = "Province",
+                        PostalCode = "54321"
+                    }, "123 Main St", "Emergency Contact",
+                        "+9876543210"),
+                    Description = "exampleDescription",
+                    Score = 4.5f,
+                    Comment = "exampleComment"
+                }
         };
+
 
         serviceMock.Setup(x => x.GetAllByEvaluation(evaluationInput)).ReturnsAsync(expectedRatings);
 
@@ -96,8 +163,14 @@ public class EmployeeEvaluationRatingControllerUnitTests
     public async Task GetAllEmployeeEvaluationRatingsExceptionThrownReturnsNotFoundResult()
     {
         var evaluationInput =
-            new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@test.com", "Template 1",
-                                        "Subject 1");
+            new EmployeeEvaluationInput
+            {
+                Id = null,
+                OwnerEmail = "owner@retrorabbit.co.za",
+                EmployeeEmail = "employee@test.com",
+                Template = "Template 1",
+                Subject = "Subject 1"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
         var exceptionMessage = "An error occurred while fetching employee evaluation ratings.";
@@ -115,8 +188,14 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task SaveEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(null, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = null,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
 
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
@@ -125,28 +204,59 @@ public class EmployeeEvaluationRatingControllerUnitTests
 
         var employeeDto = new EmployeeDto(201, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
                                           "No disability", 2,
-                                          new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
+                                          new EmployeeTypeDto { Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                           "John Doe", "JD", "Doe",
                                           DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
                                           "PP789012",
                                           DateTime.Now.AddYears(5), "South Africa", Race.Black, Gender.Male,
                                           "photo.jpg",
                                           "john.doe@example.com", "john.doe.personal@example.com", "+1234567890", 3, 2,
-                                          new EmployeeAddressDto(401, "Unit123", "ComplexXYZ", "1234", "SuburbABC",
-                                                                 "City123", "South Africa",
-                                                                 "ProvinceXYZ", "12345"),
-                                          new EmployeeAddressDto(402, "Unit456", "Complex123", "5678", "SuburbXYZ",
-                                                                 "City456", "South Africa",
-                                                                 "ProvinceABC", "67890"), "123 Main St",
+                                          new EmployeeAddressDto
+                                          {
+                                              Id = 1,
+                                              UnitNumber = "Unit 1",
+                                              ComplexName = "Complex A",
+                                              StreetNumber = "123",
+                                              SuburbOrDistrict = "Suburb",
+                                              City = "City",
+                                              Country = "Country",
+                                              Province = "Province",
+                                              PostalCode = "12345"
+                                          },
+
+                                        new EmployeeAddressDto
+                                        {
+                                            Id = 2,
+                                            UnitNumber = "P.O. Box 123",
+                                            StreetNumber = "456",
+                                            SuburbOrDistrict = "Suburb",
+                                            City = "City",
+                                            Country = "Country",
+                                            Province = "Province",
+                                            PostalCode = "54321"
+                                        }, "123 Main St",
                                           "Emergency Contact", "+9876543210");
 
-        var templateDto = new EmployeeEvaluationTemplateDto(301, "Template 1");
+        var templateDto = new EmployeeEvaluationTemplateDto { Id = 301, Description = "Template 1" };
 
-        var savedRating = new EmployeeEvaluationRatingDto(1,
-                                                          new EmployeeEvaluationDto(201, employeeDto, templateDto,
-                                                           employeeDto, "Subject 1",
-                                                           DateOnly.FromDateTime(DateTime.Now), null),
-                                                          employeeDto, "Test Description", 5.0f, "Test Comment");
+        var savedRating = new EmployeeEvaluationRatingDto
+        {
+            Id = 1,
+            Evaluation = new EmployeeEvaluationDto
+            {
+                Id = 201,
+                Employee = employeeDto,
+                Template = templateDto,
+                Owner = employeeDto,
+                Subject = "Subject 1",
+                StartDate = DateOnly.FromDateTime(DateTime.Now),
+                EndDate = null
+            },
+            Employee = employeeDto,
+            Description = "Test Description",
+            Score = 5.0f,
+            Comment = "Test Comment"
+        };
 
         serviceMock.Setup(x => x.Save(ratingInput)).ReturnsAsync(savedRating);
 
@@ -191,8 +301,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Updated Description",
                                                     4.5f, "Updated Comment");
 
@@ -200,27 +317,46 @@ public class EmployeeEvaluationRatingControllerUnitTests
 
         var employeeDto = new EmployeeDto(201, "EMP123", "123456", DateTime.Now, DateTime.Now.AddMonths(6), 1, false,
                                           "No disability", 2,
-                                          new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
+                                          new EmployeeTypeDto { Id = 1, Name = "Regular" }, "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                           "John Doe", "JD", "Doe",
                                           DateTime.Parse("1990-01-01"), "South Africa", "South African", "ID123456",
                                           "PP789012",
                                           DateTime.Now.AddYears(5), "South Africa", Race.Black, Gender.Male,
                                           "photo.jpg",
                                           "john.doe@example.com", "john.doe.personal@example.com", "+1234567890", 3, 2,
-                                          new EmployeeAddressDto(401, "Unit123", "ComplexXYZ", "1234", "SuburbABC",
-                                                                 "City123", "South Africa",
-                                                                 "ProvinceXYZ", "12345"),
-                                          new EmployeeAddressDto(402, "Unit456", "Complex123", "5678", "SuburbXYZ",
-                                                                 "City456", "South Africa",
-                                                                 "ProvinceABC", "67890"), "123 Main St",
+                                          new EmployeeAddressDto
+                                          {
+                                              Id = 1,
+                                              UnitNumber = "Unit 1",
+                                              ComplexName = "Complex A",
+                                              StreetNumber = "123",
+                                              SuburbOrDistrict = "Suburb",
+                                              City = "City",
+                                              Country = "Country",
+                                              Province = "Province",
+                                              PostalCode = "12345"
+                                          },
+
+                                        new EmployeeAddressDto
+                                        {
+                                            Id = 2,
+                                            UnitNumber = "P.O. Box 123",
+                                            StreetNumber = "456",
+                                            SuburbOrDistrict = "Suburb",
+                                            City = "City",
+                                            Country = "Country",
+                                            Province = "Province",
+                                            PostalCode = "54321"
+                                        }, "123 Main St",
                                           "Emergency Contact", "+9876543210");
 
-        var evaluationDto = new EmployeeEvaluationDto(
-                                                      101,
-                                                      new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
+        var evaluationDto = new EmployeeEvaluationDto
+        {
+            Id = 101,
+            Employee = new EmployeeDto(201, "EMP123", "123456", DateTime.Now,
                                                                       DateTime.Now.AddMonths(6), 1, false,
                                                                       "No disability", 2,
-                                                                      new EmployeeTypeDto{ Id = 1, Name = "Regular" }, "Some notes",
+                                                                      new EmployeeTypeDto { Id = 1, Name = "Regular" }, "Some notes",
                                                                       25.0f, 20.0f, 50.0f, 50000, "John Doe", "JD",
                                                                       "Doe",
                                                                       DateTime.Parse("1990-01-01"), "South Africa",
@@ -230,20 +366,36 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                       "john.doe@example.com",
                                                                       "john.doe.personal@example.com", "+1234567890", 3,
                                                                       2,
-                                                                      new EmployeeAddressDto(401, "Unit123",
-                                                                       "ComplexXYZ", "1234", "SuburbABC", "City123",
-                                                                       "South Africa",
-                                                                       "ProvinceXYZ", "12345"),
-                                                                      new EmployeeAddressDto(402, "Unit456",
-                                                                       "Complex123", "5678", "SuburbXYZ", "City456",
-                                                                       "South Africa",
-                                                                       "ProvinceABC", "67890"), "123 Main St",
+                                                                       new EmployeeAddressDto
+                                                                       {
+                                                                           Id = 1,
+                                                                           UnitNumber = "Unit 1",
+                                                                           ComplexName = "Complex A",
+                                                                           StreetNumber = "123",
+                                                                           SuburbOrDistrict = "Suburb",
+                                                                           City = "City",
+                                                                           Country = "Country",
+                                                                           Province = "Province",
+                                                                           PostalCode = "12345"
+                                                                       },
+
+                                                                        new EmployeeAddressDto
+                                                                        {
+                                                                            Id = 2,
+                                                                            UnitNumber = "P.O. Box 123",
+                                                                            StreetNumber = "456",
+                                                                            SuburbOrDistrict = "Suburb",
+                                                                            City = "City",
+                                                                            Country = "Country",
+                                                                            Province = "Province",
+                                                                            PostalCode = "54321"
+                                                                        }, "123 Main St",
                                                                       "Emergency Contact", "+9876543210"),
-                                                      new EmployeeEvaluationTemplateDto(301, "Template1"),
-                                                      new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
+            Template = new EmployeeEvaluationTemplateDto { Id = 301, Description = "Template1" },
+            Owner = new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
                                                                       DateTime.Now.AddMonths(6), 1, false,
                                                                       "No disability", 2,
-                                                                      new EmployeeTypeDto{ Id = 1, Name = "Regular" },
+                                                                      new EmployeeTypeDto { Id = 1, Name = "Regular" },
                                                                       "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                                                       "John Doe", "JD", "Doe",
                                                                       DateTime.Parse("1990-01-01"),
@@ -254,25 +406,46 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                       "john.doe@example.com",
                                                                       "john.doe.personal@example.com",
                                                                       "+1234567890", 3, 2,
-                                                                      new EmployeeAddressDto(401, "Unit123",
-                                                                       "ComplexXYZ", "1234", "SuburbABC",
-                                                                       "City123", "South Africa", "ProvinceXYZ",
-                                                                       "12345"),
-                                                                      new EmployeeAddressDto(402, "Unit456",
-                                                                       "Complex123", "5678", "SuburbXYZ", "City456",
-                                                                       "South Africa",
-                                                                       "ProvinceABC", "67890"), "123 Main St",
-                                                                      "Emergency Contact", "+9876543210"), "Subject1",
-                                                      DateOnly.FromDateTime(DateTime.Now), null);
+                                                                     new EmployeeAddressDto
+                                                                     {
+                                                                         Id = 1,
+                                                                         UnitNumber = "Unit 1",
+                                                                         ComplexName = "Complex A",
+                                                                         StreetNumber = "123",
+                                                                         SuburbOrDistrict = "Suburb",
+                                                                         City = "City",
+                                                                         Country = "Country",
+                                                                         Province = "Province",
+                                                                         PostalCode = "12345"
+                                                                     },
 
-        var originalRatingDto = new EmployeeEvaluationRatingDto(
-                                                                1,
-                                                                new EmployeeEvaluationDto(
-                                                                 101,
-                                                                 new EmployeeDto(201, "EMP123", "123456",
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    }, "123 Main St",
+                                                                      "Emergency Contact", "+9876543210"),
+            Subject = "Subject1",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null
+        };
+
+        var originalRatingDto = new EmployeeEvaluationRatingDto
+        {
+            Id = 1,
+            Evaluation = new EmployeeEvaluationDto
+            {
+                Id = 101,
+                Employee = new EmployeeDto(201, "EMP123", "123456",
                                                                   DateTime.Now, DateTime.Now.AddMonths(6), 1,
                                                                   false, "No disability", 2,
-                                                                  new EmployeeTypeDto{ Id = 1, Name = "Regular" },
+                                                                  new EmployeeTypeDto { Id = 1, Name = "Regular" },
                                                                   "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                                                   "John Doe", "JD", "Doe",
                                                                   DateTime.Parse("1990-01-01"), "South Africa",
@@ -282,22 +455,41 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                   "john.doe@example.com",
                                                                   "john.doe.personal@example.com",
                                                                   "+1234567890", 3, 2,
-                                                                  new EmployeeAddressDto(401, "Unit123",
-                                                                   "ComplexXYZ", "1234", "SuburbABC",
-                                                                   "City123", "South Africa",
-                                                                   "ProvinceXYZ", "12345"),
-                                                                  new EmployeeAddressDto(402, "Unit456",
-                                                                   "Complex123", "5678", "SuburbXYZ",
-                                                                   "City456", "South Africa",
-                                                                   "ProvinceABC", "67890"), "123 Main St",
+                                                                  new EmployeeAddressDto
+                                                                  {
+                                                                      Id = 1,
+                                                                      UnitNumber = "Unit 1",
+                                                                      ComplexName = "Complex A",
+                                                                      StreetNumber = "123",
+                                                                      SuburbOrDistrict = "Suburb",
+                                                                      City = "City",
+                                                                      Country = "Country",
+                                                                      Province = "Province",
+                                                                      PostalCode = "12345"
+                                                                  },
+
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    }, "123 Main St",
                                                                   "Emergency Contact", "+9876543210"),
-                                                                 new EmployeeEvaluationTemplateDto(301,
-                                                                  "Template1"),
-                                                                 new EmployeeDto(1, "EMP123", "123456",
+                Template = new EmployeeEvaluationTemplateDto
+                {
+                    Id = 301,
+                    Description = "Template1"
+                },
+                Owner = new EmployeeDto(1, "EMP123", "123456",
                                                                   DateTime.Now,
                                                                   DateTime.Now.AddMonths(6), 1, false,
                                                                   "No disability", 2,
-                                                                  new EmployeeTypeDto{ Id = 1, Name = "Regular" },
+                                                                  new EmployeeTypeDto { Id = 1, Name = "Regular" },
                                                                   "Some notes", 25.0f, 20.0f, 50.0f, 50000,
                                                                   "John Doe", "JD", "Doe",
                                                                   DateTime.Parse("1990-01-01"),
@@ -308,21 +500,40 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                   "john.doe@example.com",
                                                                   "john.doe.personal@example.com",
                                                                   "+1234567890", 3, 2,
-                                                                  new EmployeeAddressDto(401, "Unit123",
-                                                                   "ComplexXYZ", "1234", "SuburbABC",
-                                                                   "City123", "South Africa", "ProvinceXYZ",
-                                                                   "12345"),
-                                                                  new EmployeeAddressDto(402, "Unit456",
-                                                                   "Complex123", "5678", "SuburbXYZ",
-                                                                   "City456", "South Africa",
-                                                                   "ProvinceABC", "67890"), "123 Main St",
+                                                                  new EmployeeAddressDto
+                                                                  {
+                                                                      Id = 1,
+                                                                      UnitNumber = "Unit 1",
+                                                                      ComplexName = "Complex A",
+                                                                      StreetNumber = "123",
+                                                                      SuburbOrDistrict = "Suburb",
+                                                                      City = "City",
+                                                                      Country = "Country",
+                                                                      Province = "Province",
+                                                                      PostalCode = "12345"
+                                                                  },
+
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    }, "123 Main St",
                                                                   "Emergency Contact", "+9876543210"),
-                                                                 "Subject1",
-                                                                 DateOnly.FromDateTime(DateTime.Now), null),
-                                                                new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
+                Subject = "Subject1",
+                StartDate = DateOnly.FromDateTime(DateTime.Now),
+                EndDate = null
+            },
+
+            Employee = new EmployeeDto(1, "EMP123", "123456", DateTime.Now,
                                                                                 DateTime.Now.AddMonths(6), 1, false,
                                                                                 "No disability",
-                                                                                2, new EmployeeTypeDto{ Id = 1, Name = "Regular" },
+                                                                                2, new EmployeeTypeDto { Id = 1, Name = "Regular" },
                                                                                 "Some notes", 25.0f, 20.0f, 50.0f,
                                                                                 50000, "John Doe", "JD",
                                                                                 "Doe", DateTime.Parse("1990-01-01"),
@@ -334,19 +545,36 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                                                                 "john.doe@example.com",
                                                                                 "john.doe.personal@example.com",
                                                                                 "+1234567890", 3, 2,
-                                                                                new EmployeeAddressDto(401, "Unit123",
-                                                                                 "ComplexXYZ", "1234", "SuburbABC",
-                                                                                 "City123", "South Africa",
-                                                                                 "ProvinceXYZ", "12345"),
-                                                                                new EmployeeAddressDto(402, "Unit456",
-                                                                                 "Complex123", "5678", "SuburbXYZ",
-                                                                                 "City456", "South Africa",
-                                                                                 "ProvinceABC", "67890"),
+                                                                                new EmployeeAddressDto
+                                                                                {
+                                                                                    Id = 1,
+                                                                                    UnitNumber = "Unit 1",
+                                                                                    ComplexName = "Complex A",
+                                                                                    StreetNumber = "123",
+                                                                                    SuburbOrDistrict = "Suburb",
+                                                                                    City = "City",
+                                                                                    Country = "Country",
+                                                                                    Province = "Province",
+                                                                                    PostalCode = "12345"
+                                                                                },
+
+                                                                                new EmployeeAddressDto
+                                                                                {
+                                                                                    Id = 2,
+                                                                                    UnitNumber = "P.O. Box 123",
+                                                                                    StreetNumber = "456",
+                                                                                    SuburbOrDistrict = "Suburb",
+                                                                                    City = "City",
+                                                                                    Country = "Country",
+                                                                                    Province = "Province",
+                                                                                    PostalCode = "54321"
+                                                                                },
                                                                                 "123 Main St", "Emergency Contact",
                                                                                 "+9876543210"),
-                                                                "exampleDescription",
-                                                                4.5f,
-                                                                "exampleComment");
+            Description = "exampleDescription",
+            Score = 4.5f,
+            Comment = "exampleComment"
+        };
 
         serviceMock.Setup(x => x.Update(ratingInput)).ReturnsAsync(originalRatingDto);
 
@@ -363,8 +591,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeEvaluationRatingExceptionThrownReturnsNotFoundResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Updated Description",
                                                     4.5f, "Updated Comment");
 
@@ -383,8 +618,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationRatingValidInputReturnsOkResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
 
@@ -397,23 +639,53 @@ public class EmployeeEvaluationRatingControllerUnitTests
                                           DateTime.Now.AddYears(5), "South Africa", Race.Black, Gender.Male,
                                           "photo.jpg",
                                           "john.doe@example.com", "john.doe.personal@example.com", "+1234567890", 3, 2,
-                                          new EmployeeAddressDto(401, "Unit123", "ComplexXYZ", "1234", "SuburbABC",
-                                                                 "City123", "South Africa",
-                                                                 "ProvinceXYZ", "12345"),
-                                          new EmployeeAddressDto(402, "Unit456", "Complex123", "5678", "SuburbXYZ",
-                                                                 "City456", "South Africa",
-                                                                 "ProvinceABC", "67890"), "123 Main St",
+                                          new EmployeeAddressDto
+                                          {
+                                              Id = 1,
+                                              UnitNumber = "Unit 1",
+                                              ComplexName = "Complex A",
+                                              StreetNumber = "123",
+                                              SuburbOrDistrict = "Suburb",
+                                              City = "City",
+                                              Country = "Country",
+                                              Province = "Province",
+                                              PostalCode = "12345"
+                                          },
+
+                                            new EmployeeAddressDto
+                                            {
+                                                Id = 2,
+                                                UnitNumber = "P.O. Box 123",
+                                                StreetNumber = "456",
+                                                SuburbOrDistrict = "Suburb",
+                                                City = "City",
+                                                Country = "Country",
+                                                Province = "Province",
+                                                PostalCode = "54321"
+                                            }, "123 Main St",
                                           "Emergency Contact", "+9876543210");
 
-        var templateDto = new EmployeeEvaluationTemplateDto(301, "Template 1");
+        var templateDto = new EmployeeEvaluationTemplateDto { Id = 301, Description = "Template 1" };
 
         var serviceMock = new Mock<IEmployeeEvaluationRatingService>();
-        serviceMock.Setup(x => x.Delete(ratingInput)).ReturnsAsync(new EmployeeEvaluationRatingDto(1,
-                                                                    new EmployeeEvaluationDto(201, employeeDto,
-                                                                     templateDto, employeeDto, "Subject 1",
-                                                                     DateOnly.FromDateTime(DateTime.Now), null),
-                                                                    employeeDto, "Test Description", 5.0f,
-                                                                    "Test Comment"));
+        serviceMock.Setup(x => x.Delete(ratingInput)).ReturnsAsync(new EmployeeEvaluationRatingDto
+        {
+            Id = 1,
+            Evaluation = new EmployeeEvaluationDto
+            {
+                Id = 201,
+                Employee = employeeDto,
+                Template = templateDto,
+                Owner = employeeDto,
+                Subject = "Subject 1",
+                StartDate = DateOnly.FromDateTime(DateTime.Now),
+                EndDate = null
+            },
+            Employee = employeeDto,
+            Description = "Test Description",
+            Score = 5.0f,
+            Comment = "Test Comment"
+        });
 
         var controller = new EmployeeEvaluationRatingController(serviceMock.Object);
 
@@ -426,8 +698,15 @@ public class EmployeeEvaluationRatingControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationRatingExceptionThrownReturnsNotFoundResult()
     {
-        var evaluationInput = new EmployeeEvaluationInput(101, "owner@retrorabbit.co.za", "employee@retrorabbit.co.za",
-                                                          "Template 1", "Subject 1");
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 101,
+            OwnerEmail = "owner@retrorabbit.co.za",
+            EmployeeEmail = "employee@retrorabbit.co.za",
+            Template = "Template 1",
+            Subject = "Subject 1"
+        };
+
         var ratingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", evaluationInput, "Test Description",
                                                     5.0f, "Test Comment");
 

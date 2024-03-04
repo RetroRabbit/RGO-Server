@@ -15,7 +15,7 @@ public class EmployeeEvaluationRatingUnitTests
     {
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                                     null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy",
@@ -25,10 +25,19 @@ public class EmployeeEvaluationRatingUnitTests
                                     "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
                                     employeeAddressDto, employeeAddressDto, null, null, null);
 
-        _template = new EmployeeEvaluationTemplateDto(1, "Template");
+        _template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Template" };
 
-        _evaluation = new EmployeeEvaluationDto(0, _employee, _template, _employee, "Subject",
-                                                DateOnly.FromDateTime(DateTime.Now), null);
+        _evaluation = new EmployeeEvaluationDto
+        {
+            Id = 0,
+            Employee = _employee,
+            Template = _template,
+            Owner = _employee,
+            Subject = "Subject",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = null
+        };
+
     }
 
     private EmployeeEvaluationRatingDto CreateEmployeeEvaluationRating(

@@ -32,14 +32,14 @@ public class EmployeeEvaluationServiceUnitTests
 
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                                     null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
                                     "Missile", new DateTime(), "South Africa", "South African", "1234457899", " ",
                                     new DateTime(), null, Race.Black, Gender.Female, null!,
                                     "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
                                     employeeAddressDto, employeeAddressDto, null, null, null);
-        _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto(1, "template");
+        _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "template" };
     }
 
     private EmployeeEvaluation CreateEmployeeEvaluation(
@@ -73,7 +73,7 @@ public class EmployeeEvaluationServiceUnitTests
     [Fact]
     public async Task CheckIfExistsTest()
     {
-        var evaluationInput = new EmployeeEvaluationInput(0, "owner", "employee", "template", "subject");
+        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" };
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(true);
@@ -87,12 +87,14 @@ public class EmployeeEvaluationServiceUnitTests
     public async Task GetFailTest()
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          evaluation.Id,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = evaluation.Id,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(false);
@@ -108,12 +110,14 @@ public class EmployeeEvaluationServiceUnitTests
     public async Task GetPassTest()
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationInput = new EmployeeEvaluationInput(
-                                                          evaluation.Id,
-                                                          evaluation.Owner.Email!,
-                                                          evaluation.Employee.Email!,
-                                                          evaluation.Template.Description,
-                                                          evaluation.Subject);
+        var evaluationInput = new EmployeeEvaluationInput
+        {
+            Id = evaluation.Id,
+            OwnerEmail = evaluation.Owner.Email!,
+            EmployeeEmail = evaluation.Employee.Email!,
+            Template = evaluation.Template.Description,
+            Subject = evaluation.Subject
+        };                                                
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(true);
@@ -133,7 +137,7 @@ public class EmployeeEvaluationServiceUnitTests
     [Fact]
     public async Task DeleteFailTest()
     {
-        var evaluationInput = new EmployeeEvaluationInput(0, "owner", "employee", "template", "subject");
+        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" };
         _ = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
@@ -145,7 +149,7 @@ public class EmployeeEvaluationServiceUnitTests
     [Fact]
     public async Task DeletePassTest()
     {
-        var evaluationInput = new EmployeeEvaluationInput(0, "owner", "employee", "template", "subject");
+        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" };
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
@@ -165,7 +169,7 @@ public class EmployeeEvaluationServiceUnitTests
     [Fact]
     public async Task SaveFailTest()
     {
-        var evaluationInput = new EmployeeEvaluationInput(0, "owner", "employee", "template", "subject");
+        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" }; ;
         _ = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.SetupSequence(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
@@ -177,7 +181,7 @@ public class EmployeeEvaluationServiceUnitTests
     [Fact]
     public async Task SavePassTest()
     {
-        var evaluationInput = new EmployeeEvaluationInput(0, "owner", "employee", "template", "subject");
+        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" }; ;
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
@@ -203,19 +207,23 @@ public class EmployeeEvaluationServiceUnitTests
     {
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
-        var oldEvaluationInput = new EmployeeEvaluationInput(
-                                                             0,
-                                                             employeeEvaluation.Owner.Email!,
-                                                             employeeEvaluation.Employee.Email!,
-                                                             employeeEvaluation.Template.Description,
-                                                             employeeEvaluation.Subject);
+        var oldEvaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
 
-        var newEvaluationInput = new EmployeeEvaluationInput(
-                                                             0,
-                                                             employeeEvaluation.Owner.Email!,
-                                                             employeeEvaluation.Employee.Email!,
-                                                             employeeEvaluation.Template.Description,
-                                                             "new subject");
+        var newEvaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = "new subject"
+        };
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(false);
@@ -232,19 +240,24 @@ public class EmployeeEvaluationServiceUnitTests
         var newEmployeeEvaluation =
             CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate, "new subject");
 
-        var oldEvaluationInput = new EmployeeEvaluationInput(
-                                                             0,
-                                                             employeeEvaluation.Owner.Email!,
-                                                             employeeEvaluation.Employee.Email!,
-                                                             employeeEvaluation.Template.Description,
-                                                             employeeEvaluation.Subject);
-        var newEvaluationInput = new EmployeeEvaluationInput(
-                                                             0,
-                                                             newEmployeeEvaluation.Owner.Email!,
-                                                             newEmployeeEvaluation.Employee.Email!,
-                                                             newEmployeeEvaluation.Template.Description,
-                                                             newEmployeeEvaluation.Subject);
-
+        var oldEvaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
+                                                             
+        var newEvaluationInput = new EmployeeEvaluationInput
+        {
+            Id = 0,
+            OwnerEmail = employeeEvaluation.Owner.Email!,
+            EmployeeEmail = employeeEvaluation.Employee.Email!,
+            Template = employeeEvaluation.Template.Description,
+            Subject = employeeEvaluation.Subject
+        };
+                                                             
         _dbMock.SetupSequence(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(true)
                .ReturnsAsync(true);

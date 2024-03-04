@@ -23,16 +23,18 @@ public class EmployeeAddressServiceUnitTest
 
     private EmployeeAddressDto CreateAddress(int id = 0)
     {
-        return new EmployeeAddressDto(
-                                      id,
-                                      "1",
-                                      "Complex",
-                                      "1",
-                                      "Suburb/District",
-                                      "City",
-                                      "Country",
-                                      "Province",
-                                      "1620");
+        return new EmployeeAddressDto
+        {
+            Id = id,
+            UnitNumber = "1",
+            ComplexName = "Complex",
+            StreetNumber = "1",
+            SuburbOrDistrict = "Suburb/District",
+            City = "City",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
+        };
     }
 
     [Fact]

@@ -34,19 +34,19 @@ public class PropertyAccessService : IPropertyAccessService
         foreach (var access in properties.Where(a => a.Condition != 0))
         {
             var value = await GetSqlValues(access.FieldCode!, employee!);
-
-            var dto = new EmployeeAccessDto(
-                                            access.FieldCode!.Id,
-                                            access.Condition,
-                                            access.FieldCode.Internal,
-                                            access.FieldCode.Code!,
-                                            access.FieldCode.Name!,
-                                            access.FieldCode.Type.ToString().ToLower(),
-                                            value,
-                                            access.FieldCode.Description,
-                                            access.FieldCode.Regex,
-                                            access.FieldCode.Options?.Select(x => x.Option).ToList() ?? null
-                                           );
+            var dto = new EmployeeAccessDto
+            {
+                Id = access.FieldCode!.Id,
+                Condition = access.Condition,
+                Internal = access.FieldCode.Internal,
+                PropName = access.FieldCode.Code!,
+                Label = access.FieldCode.Name!,
+                Type = access.FieldCode.Type.ToString().ToLower(),
+                Value = value,
+                Description = access.FieldCode.Description,
+                Regex = access.FieldCode.Regex,
+                Options = access.FieldCode.Options?.Select(x => x.Option).ToList()
+            };
 
             result.Add(dto);
         }
