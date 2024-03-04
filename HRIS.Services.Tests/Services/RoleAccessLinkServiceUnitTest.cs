@@ -28,7 +28,7 @@ public class RoleAccessLinkServiceUnitTest
         _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object);
         _roleDto = new RoleDto {Id = 1, Description = "Employee"};
         _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
-        _roleAccessLinkDto = new RoleAccessLinkDto(1, _roleDto, _roleAccessDto);
+        _roleAccessLinkDto = new RoleAccessLinkDto { Id = 1, Role = _roleDto, RoleAccess = _roleAccessDto };
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public class RoleAccessLinkServiceUnitTest
 
         var malformed = await roleAccessLinks
                               .Where(criteria)
-                              .Select(r => new RoleAccessLinkDto(r.Id, null, null))
+                              .Select(r => new RoleAccessLinkDto { Id = r.Id, Role = null, RoleAccess = null })
                               .FirstAsync();
 
         _dbMock
@@ -372,10 +372,12 @@ public class RoleAccessLinkServiceUnitTest
     [Fact]
     public async Task Update()
     {
-        var roleAccessLinkToUpdate = new RoleAccessLinkDto(
-                                                           _roleAccessLinkDto.Id,
-                                                           new RoleDto { Id = 1, Description = "Employee"},
-                                                           new RoleAccessDto { Id = 2, Permission = "EditEmployee", Grouping = "Employee Data" });
+        var roleAccessLinkToUpdate = new RoleAccessLinkDto
+        {
+            Id = _roleAccessLinkDto.Id,
+            Role = new RoleDto { Id = 1, Description = "Employee" },
+            RoleAccess = new RoleAccessDto { Id = 2, Permission = "EditEmployee", Grouping = "Employee Data" }
+        };
 
         _dbMock
             .Setup(r => r.RoleAccessLink.Update(It.IsAny<RoleAccessLink>()))
