@@ -63,10 +63,29 @@ public class AuthenticationControllerUnitTests
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",
              "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-             new EmployeeAddressDto
-                 (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-             new EmployeeAddressDto
-                 (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+            new EmployeeAddressDto
+            {
+                Id = 1,
+                UnitNumber = "Unit 1",
+                ComplexName = "Complex A",
+                StreetNumber = "123",
+                SuburbOrDistrict = "Suburb",
+                City = "City",
+                Country = "Country",
+                Province = "Province",
+                PostalCode = "12345"
+            },
+            new EmployeeAddressDto
+            {
+                Id = 2,
+                UnitNumber = "P.O. Box 123",
+                StreetNumber = "456",
+                SuburbOrDistrict = "Suburb",
+                City = "City",
+                Country = "Country",
+                Province = "Province",
+                PostalCode = "54321"
+            },
              "12",
              "Emergency Contact",
              "987654321"
@@ -96,10 +115,29 @@ public class AuthenticationControllerUnitTests
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",
              "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-             new EmployeeAddressDto
-                 (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-             new EmployeeAddressDto
-                 (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+            new EmployeeAddressDto
+            {
+                Id = 1,
+                UnitNumber = "Unit 1",
+                ComplexName = "Complex A",
+                StreetNumber = "123",
+                SuburbOrDistrict = "Suburb",
+                City = "City",
+                Country = "Country",
+                Province = "Province",
+                PostalCode = "12345"
+            },
+            new EmployeeAddressDto
+            {
+                Id = 2,
+                UnitNumber = "P.O. Box 123",
+                StreetNumber = "456",
+                SuburbOrDistrict = "Suburb",
+                City = "City",
+                Country = "Country",
+                Province = "Province",
+                PostalCode = "54321"
+            },
              "12",
              "Emergency Contact",
              "987654321"

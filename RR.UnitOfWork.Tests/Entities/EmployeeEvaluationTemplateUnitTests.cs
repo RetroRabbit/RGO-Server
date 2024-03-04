@@ -16,7 +16,7 @@ public class EmployeeEvaluationTemplateUnitTests
     [Fact]
     public void InitialoizationWithDtoTest()
     {
-        var employeeEvaluationTemplateDto = new EmployeeEvaluationTemplateDto(1, "Template");
+        var employeeEvaluationTemplateDto = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Template" };
         var employeeEvaluationTemplate = new EmployeeEvaluationTemplate(employeeEvaluationTemplateDto);
         var dto = employeeEvaluationTemplate.ToDto();
 

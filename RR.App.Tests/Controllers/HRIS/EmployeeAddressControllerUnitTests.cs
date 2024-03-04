@@ -85,9 +85,18 @@ public class EmployeeAddressControllerUnitTests
     public async Task UpdateEmployeeAddressReturnsOkResultWithUpdatedAddress()
     {
         var addressToUpdate = EmployeeAddressTestData.EmployeeAddressDto2;
-        var updatedAddress = new EmployeeAddressDto(1, "Updated 1", "Updated Complex Name 1", "Updated Street Number 1",
-                                                    "Updated Suburb or District 1", "Updated City 1",
-                                                    "Updated Country 1", "Updated Province 1", "0002");
+        var updatedAddress = new EmployeeAddressDto
+        {
+            Id = 1,
+            UnitNumber = "Updated 1",
+            ComplexName = "Updated Complex Name 1",
+            StreetNumber = "Updated Street Number 1",
+            SuburbOrDistrict = "Updated Suburb or District 1",
+            City = "Updated City 1",
+            Country = "Updated Country 1",
+            Province = "Updated Province 1",
+            PostalCode = "0002"
+        };
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
         mockEmployeeAddressService.Setup(s => s.Update(addressToUpdate)).ReturnsAsync(updatedAddress);
@@ -122,9 +131,18 @@ public class EmployeeAddressControllerUnitTests
     public async Task DeleteEmployeeAddressReturnsOkResultWithDeletedAddress()
     {
         var addressToDelete = EmployeeAddressTestData.EmployeeAddressDto2;
-        var deletedAddress = new EmployeeAddressDto(1, "Deleted 1", "Deleted Complex Name 1", "Deleted Street Number 1",
-                                                    "Deleted Suburb or District 1", "Deleted City 1",
-                                                    "Deleted Country 1", "Deleted Province 1", "0002");
+        var deletedAddress = new EmployeeAddressDto
+        {
+            Id = 1,
+            UnitNumber = "Deleted 1",
+            ComplexName = "Deleted Complex Name 1",
+            StreetNumber = "Deleted Street Number 1",
+            SuburbOrDistrict = "Deleted Suburb or District 1",
+            City = "Deleted City 1",
+            Country = "Deleted Country 1",
+            Province = "Deleted Province 1",
+            PostalCode = "0002"
+        };
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
         mockEmployeeAddressService.Setup(s => s.Delete(addressToDelete.Id)).ReturnsAsync(deletedAddress);

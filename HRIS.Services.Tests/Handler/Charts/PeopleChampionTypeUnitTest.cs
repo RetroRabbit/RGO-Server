@@ -37,7 +37,7 @@ public class PeopleChampionTypeUnitTest
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
     private EmployeeDto CreateEmployee(int id, int? peopleChampionType, string? employeeName, string? employeeSurname,

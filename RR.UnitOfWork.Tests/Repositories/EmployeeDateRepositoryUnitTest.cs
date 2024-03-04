@@ -33,7 +33,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         employee = new Employee();
         employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),

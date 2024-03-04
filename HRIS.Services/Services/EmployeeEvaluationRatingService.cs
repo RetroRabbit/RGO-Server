@@ -92,13 +92,15 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
 
         if (exists) throw new Exception("Employee Evaluation Rating already exists");
 
-        var evaluationRating = new EmployeeEvaluationRatingDto(
-                                                               0,
-                                                               evaluation,
-                                                               employee,
-                                                               rating.Description,
-                                                               rating.Score,
-                                                               rating.Comment);
+        var evaluationRating = new EmployeeEvaluationRatingDto
+        {
+            Id = 0,
+            Evaluation = evaluation,
+            Employee = employee,
+            Description = rating.Description,
+            Score = rating.Score,
+            Comment = rating.Comment
+        };
 
         var savedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
                                                      .Add(new EmployeeEvaluationRating(evaluationRating));
@@ -113,13 +115,15 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         if (!exists) throw new Exception("Employee Evaluation Rating not found");
 
         var ratingDto = await Get(rating);
-        var ratingDtoToUpdate = new EmployeeEvaluationRatingDto(
-                                                                ratingDto.Id,
-                                                                ratingDto.Evaluation,
-                                                                ratingDto.Employee,
-                                                                rating.Description,
-                                                                rating.Score,
-                                                                rating.Comment);
+        var ratingDtoToUpdate = new EmployeeEvaluationRatingDto
+        {
+            Id = ratingDto.Id,
+            Evaluation = ratingDto.Evaluation,
+            Employee = ratingDto.Employee,
+            Description = rating.Description,
+            Score = rating.Score,
+            Comment = rating.Comment
+        };
 
         var updatedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
                                                        .Update(new EmployeeEvaluationRating(ratingDtoToUpdate));

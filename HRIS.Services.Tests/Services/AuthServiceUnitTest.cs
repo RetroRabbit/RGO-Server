@@ -54,7 +54,7 @@ public class AuthServiceUnitTest
                                 .Returns(Task.FromResult(employeeTypeDto2));
 
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
         _authService = new AuthService(_configuration.Object, _employeeService.Object, _roleAccessLinkService.Object);
     }
 
@@ -64,7 +64,7 @@ public class AuthServiceUnitTest
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                                           null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
@@ -96,7 +96,7 @@ public class AuthServiceUnitTest
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
         var roleDto = new RoleDto { Id = 1, Description = "Developer" };
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
@@ -143,7 +143,7 @@ public class AuthServiceUnitTest
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(employeeTypeDto);
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                                           null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,

@@ -13,8 +13,7 @@ public class EmployeeEvaluationTemplateControllerUnitTests
     public async Task GetEmployeeEvaluationTemplateValidInputReturnsOkResult()
     {
         var templateName = "Template 1";
-        var expectedTemplate = new EmployeeEvaluationTemplateDto
-            (1, "Test Template Description");
+        var expectedTemplate = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Test Template Description" };
 
         var mockService = new Mock<IEmployeeEvaluationTemplateService>();
         mockService.Setup(x => x.Get(templateName)).ReturnsAsync(expectedTemplate);
@@ -55,9 +54,9 @@ public class EmployeeEvaluationTemplateControllerUnitTests
     {
         var expectedTemplates = new List<EmployeeEvaluationTemplateDto>
         {
-            new(1, "Template 1"),
-            new(2, "Template 2"),
-            new(2, "Template 3")
+            new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Template 1" },
+            new EmployeeEvaluationTemplateDto { Id = 2, Description = "Template 2" },
+            new EmployeeEvaluationTemplateDto { Id = 2, Description = "Template 3" }
         };
 
         var mockService = new Mock<IEmployeeEvaluationTemplateService>();
@@ -100,10 +99,10 @@ public class EmployeeEvaluationTemplateControllerUnitTests
 
         mockService.Setup(x => x.Save(templateName))
                    .ReturnsAsync(new EmployeeEvaluationTemplateDto
-                                     (
-                                      1,
-                                      "Template Test 123"
-                                     ));
+                   {
+                    Id = 1,
+                    Description =  "Template Test 123"
+                   });
 
         var result = await controller.SaveEmployeeEvaluationTemplate(templateName);
 
@@ -136,7 +135,7 @@ public class EmployeeEvaluationTemplateControllerUnitTests
         var controller = new EmployeeEvaluationTemplateController(mockService.Object);
 
         var templateDto = new EmployeeEvaluationTemplateDto
-            (1, "Updated Template");
+        { Id = 1, Description = "Updated Template" };
 
         mockService.Setup(x => x.Update(It.IsAny<EmployeeEvaluationTemplateDto>()))
                    .ReturnsAsync(templateDto);
@@ -153,7 +152,7 @@ public class EmployeeEvaluationTemplateControllerUnitTests
         var controller = new EmployeeEvaluationTemplateController(mockService.Object);
 
         var templateDto = new EmployeeEvaluationTemplateDto
-            (1, "Updated Template");
+        { Id = 1, Description = "Updated Template" };
 
         mockService.Setup(x => x.Update(It.IsAny<EmployeeEvaluationTemplateDto>()))
                    .ThrowsAsync(new Exception("Error updating evaluation template"));
@@ -175,7 +174,7 @@ public class EmployeeEvaluationTemplateControllerUnitTests
         var template = "Template To Delete";
 
         mockService.Setup(x => x.Delete(template)).ReturnsAsync(new EmployeeEvaluationTemplateDto
-                                                                    (1, "Deleted Template"));
+        { Id = 1, Description = "Deleted Template" });
 
         var result = await controller.DeleteEmployeeEvaluationTemplate(template);
 
