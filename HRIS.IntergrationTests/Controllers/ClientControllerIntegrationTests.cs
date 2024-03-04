@@ -20,10 +20,21 @@ namespace RR.App.Tests.Controllers
     public class ClientControllerIntegrationTests : IClassFixture<WebApplicationFactory<RR.App.Program>>
     {
         private readonly WebApplicationFactory<RR.App.Program> _factory;
+        private readonly HttpClient _client;
+        private readonly Mock<IClientService> _mockClientService;
+
 
         public ClientControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
         {
             _factory = factory;
+            _mockClientService = new Mock<IClientService>();
+            _client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddScoped<IClientService>(_ => _mockClientService.Object);
+                });
+            }).CreateClient();
         }
 
         [Fact]
@@ -35,18 +46,9 @@ namespace RR.App.Tests.Controllers
                 new ClientDto { Id = 2, Name = "Client2"}
             };
 
-            var mockClientService = new Mock<IClientService>();
-            mockClientService.Setup(service => service.GetAllClients()).ReturnsAsync(clients);
+            _mockClientService.Setup(service => service.GetAllClients()).ReturnsAsync(clients);
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddScoped<IClientService>(_ => mockClientService.Object);
-                });
-            }).CreateClient();
-
-            var response = await client.GetAsync("/clients");
+            var response = await _client.GetAsync("/clients");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -55,18 +57,9 @@ namespace RR.App.Tests.Controllers
         [Fact]
         public async Task GetAllClients_ReturnsNotFoundResultOnException()
         {
-            var mockClientService = new Mock<IClientService>();
-            mockClientService.Setup(service => service.GetAllClients()).ThrowsAsync(new Exception("An error occurred"));
+            _mockClientService.Setup(service => service.GetAllClients()).ThrowsAsync(new Exception("An error occurred"));
 
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddScoped<IClientService>(_ => mockClientService.Object);
-                });
-            }).CreateClient();
-
-            var response = await client.GetAsync("/clients");
+            var response = await _client.GetAsync("/clients");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
