@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Entities.ATS;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using RR.UnitOfWork.Entities;
 
 namespace RR.UnitOfWork;
 
@@ -33,6 +34,7 @@ public interface IDatabaseContext
     DbSet<Client> clients { get; set; }
     DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     DbSet<Applicant> applicant { get; set; }
+    DbSet<ErrorLogging> errorLogging { get; set; }
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
@@ -70,6 +72,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<Client> clients { get; set; }
     public DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     public DbSet<Applicant> applicant { get; set; }
+    public DbSet<ErrorLogging> errorLogging { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
