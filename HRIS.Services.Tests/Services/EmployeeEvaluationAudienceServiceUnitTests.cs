@@ -36,14 +36,14 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Name = "Developer"
         };
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
         _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
                                     null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
                                     "Missile", new DateTime(), "South Africa", "South African", "1234457899", " ",
                                     new DateTime(), null, Race.Black, Gender.Female, null!,
                                     "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
                                     employeeAddressDto, employeeAddressDto, null, null, null);
-        _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto(1, "template");
+        _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto { Id = 1, Description = "template" };
     }
 
     private EmployeeEvaluation CreateEmployeeEvaluation(

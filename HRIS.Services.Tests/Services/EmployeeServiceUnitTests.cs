@@ -708,7 +708,7 @@ public class EmployeeServiceUnitTests
     {
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Developer" };
         EmployeeType employeeType = new(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
            null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",

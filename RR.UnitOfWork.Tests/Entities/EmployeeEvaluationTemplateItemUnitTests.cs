@@ -10,7 +10,7 @@ public class EmployeeEvaluationTemplateItemUnitTests
 
     public EmployeeEvaluationTemplateItemUnitTests()
     {
-        _template = new EmployeeEvaluationTemplateDto(1, "Template");
+        _template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Template" };
     }
 
     [Fact]

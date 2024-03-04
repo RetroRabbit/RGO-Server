@@ -39,7 +39,18 @@ public class ChartServiceUnitTests
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+           new EmployeeAddressDto
+           {
+               Id = 1,
+               UnitNumber = "2",
+               ComplexName = "Complex",
+               StreetNumber = "2",
+               SuburbOrDistrict = "Suburb/District",
+               City = "City",
+               Country = "Country",
+               Province = "Province",
+               PostalCode = "1620"
+           };
     }
 
     [Fact]
@@ -68,7 +79,18 @@ public class ChartServiceUnitTests
         EmployeeTypeDto designerEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
 
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto
+            {
+                Id = 1,
+                UnitNumber = "2",
+                ComplexName = "Complex",
+                StreetNumber = "2",
+                SuburbOrDistrict = "Suburb/District",
+                City = "City",
+                Country = "Country",
+                Province = "Province",
+                PostalCode = "1620"
+            };
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
                                       null, false, "None", 4, developerEmployeeTypeDto, "Notes", 1, 28, 128, 100000,
@@ -138,7 +160,7 @@ public class ChartServiceUnitTests
         EmployeeTypeDto desEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
 
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
                                       null, false, "None", 4, devEmployeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
@@ -204,7 +226,7 @@ public class ChartServiceUnitTests
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         EmployeeType employeeType = new(employeeTypeDto);
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",

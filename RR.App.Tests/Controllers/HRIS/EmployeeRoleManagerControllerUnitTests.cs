@@ -21,18 +21,34 @@ public class EmployeeRoleManagerControllerUnitTests
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",
              email, "john.doe.personal@example.com", "1234567890", 1, 1,
-             new EmployeeAddressDto
-                 (
-                  1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"
-                 ),
-             new EmployeeAddressDto
-                 (
-                  2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"
-                 ),
-             "12",
-             "Emergency Contact",
-             "987654321"
-            );
+            new EmployeeAddressDto
+            {
+                 Id = 1,
+                 UnitNumber = "Unit 1",
+                 ComplexName = "Complex A",
+                 StreetNumber = "123",
+                 SuburbOrDistrict = "Suburb",
+                 City = "City",
+                 Country = "Country",
+                 Province = "Province",
+                 PostalCode = "12345"
+             },
+
+            new EmployeeAddressDto
+            {
+                Id = 2,
+                UnitNumber = "P.O. Box 123",
+                StreetNumber = "456",
+                SuburbOrDistrict = "Suburb",
+                City = "City",
+                Country = "Country",
+                Province = "Province",
+                PostalCode = "54321"
+            },
+            "12",
+                 "Emergency Contact",
+                 "987654321"
+                );
     }
 
     [Fact]
@@ -68,11 +84,29 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "john.doe.personal@example.com", "1234567890", 1,
                                                                   1,
                                                                   new EmployeeAddressDto
-                                                                      (1, "Unit 1", "Complex A", "123", "Suburb",
-                                                                       "City", "Country", "Province", "12345"),
+                                                                  {
+                                                                      Id = 1,
+                                                                      UnitNumber = "Unit 1",
+                                                                      ComplexName = "Complex A",
+                                                                      StreetNumber = "123",
+                                                                      SuburbOrDistrict = "Suburb",
+                                                                      City = "City",
+                                                                      Country = "Country",
+                                                                      Province = "Province",
+                                                                      PostalCode = "12345"
+                                                                  },
                                                                   new EmployeeAddressDto
-                                                                      (2, "P.O. Box 123", "", "456", "Suburb",
-                                                                       "City", "Country", "Province", "54321"),
+                                                                  {
+                                                                      Id = 2,
+                                                                      UnitNumber = "P.O. Box 123",
+                                                                      ComplexName = "",
+                                                                      StreetNumber = "456",
+                                                                      SuburbOrDistrict = "Suburb",
+                                                                      City = "City",
+                                                                      Country = "Country",
+                                                                      Province = "Province",
+                                                                      PostalCode = "54321"
+                                                                  },
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
@@ -126,12 +160,30 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "john.doe.personal@example.com", "1234567890", 1,
                                                                   1,
                                                                   new EmployeeAddressDto
-                                                                      (1, "Unit 1", "Complex A", "123", "Suburb",
-                                                                       "City", "Country", "Province", "12345"),
-                                                                  new EmployeeAddressDto
-                                                                      (2, "P.O. Box 123", "", "456", "Suburb",
-                                                                       "City", "Country", "Province", "54321"),
-                                                                  "12",
+                                                                 {
+                                                                     Id = 1,
+                                                                     UnitNumber = "Unit 1",
+                                                                     ComplexName = "Complex A",
+                                                                     StreetNumber = "123",
+                                                                     SuburbOrDistrict = "Suburb",
+                                                                     City = "City",
+                                                                     Country = "Country",
+                                                                     Province = "Province",
+                                                                     PostalCode = "12345"
+                                                                 },
+
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    },
+                                                                "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
                                    Role = new RoleDto { Id = 1, Description = "Super Admin" }
@@ -181,12 +233,30 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "test@retrorabbit.co.za",
                                                                   "john.doe.personal@example.com", "1234567890", 1,
                                                                   1,
-                                                                  new EmployeeAddressDto
-                                                                      (1, "Unit 1", "Complex A", "123", "Suburb",
-                                                                       "City", "Country", "Province", "12345"),
-                                                                  new EmployeeAddressDto
-                                                                      (2, "P.O. Box 123", "", "456", "Suburb",
-                                                                       "City", "Country", "Province", "54321"),
+                                                                   new EmployeeAddressDto
+                                                                   {
+                                                                       Id = 1,
+                                                                       UnitNumber = "Unit 1",
+                                                                       ComplexName = "Complex A",
+                                                                       StreetNumber = "123",
+                                                                       SuburbOrDistrict = "Suburb",
+                                                                       City = "City",
+                                                                       Country = "Country",
+                                                                       Province = "Province",
+                                                                       PostalCode = "12345"
+                                                                   },
+
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    },
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
@@ -274,29 +344,46 @@ public class EmployeeRoleManagerControllerUnitTests
         {
             Id = 1,
             Employee = new EmployeeDto(1, "Emp123", "Tax123",
-                                                                          new DateTime(2022, 1, 1), null, 1, false,
-                                                                          "No disability", 2,
-                                                                          new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes",
-                                                                          20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD",
-                                                                          "Doe", new DateTime(1990, 1, 1),
-                                                                          "South Africa", "South African", "123456789",
-                                                                          "AB123456", new DateTime(2025, 1, 1),
-                                                                          "South Africa", Race.White, Gender.Male,
-                                                                          "photo.jpg",
-                                                                          "test@retrorabbit.co.za",
-                                                                          "john.doe.personal@example.com", "1234567890",
-                                                                          1, 1,
-                                                                          new EmployeeAddressDto
-                                                                              (1, "Unit 1", "Complex A", "123",
-                                                                               "Suburb", "City", "Country", "Province",
-                                                                               "12345"),
-                                                                          new EmployeeAddressDto
-                                                                              (2, "P.O. Box 123", "", "456", "Suburb",
-                                                                               "City", "Country", "Province", "54321"),
-                                                                          "12",
-                                                                          "Emergency Contact",
-                                                                          "987654321"),
-                                                                          Role = new RoleDto { Id = 1, Description = "Employee" }
+                                                                  new DateTime(2022, 1, 1), null, 1, false,
+                                                                  "No disability", 2,
+                                                                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes",
+                                                                  20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD",
+                                                                  "Doe", new DateTime(1990, 1, 1),
+                                                                  "South Africa", "South African", "123456789",
+                                                                  "AB123456", new DateTime(2025, 1, 1),
+                                                                  "South Africa", Race.White, Gender.Male,
+                                                                  "photo.jpg",
+                                                                  "test@retrorabbit.co.za",
+                                                                  "john.doe.personal@example.com", "1234567890", 1,
+                                                                  1,
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 1,
+                                                                        UnitNumber = "Unit 1",
+                                                                        ComplexName = "Complex A",
+                                                                        StreetNumber = "123",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "12345"
+                                                                    },
+
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    },
+                                                                  "12",
+                                                                  "Emergency Contact",
+                                                                  "987654321"),
+            Role = new RoleDto { Id = 1, Description = "Employee Role" }
         };
 
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
@@ -363,10 +450,30 @@ public class EmployeeRoleManagerControllerUnitTests
              "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
              Race.White, Gender.Male, "photo.jpg",
              "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-             new EmployeeAddressDto
-                 (1, "Unit 1", "Complex A", "123", "Suburb", "City", "Country", "Province", "12345"),
-             new EmployeeAddressDto
-                 (2, "P.O. Box 123", "", "456", "Suburb", "City", "Country", "Province", "54321"),
+               new EmployeeAddressDto
+               {
+                   Id = 1,
+                   UnitNumber = "Unit 1",
+                   ComplexName = "Complex A",
+                   StreetNumber = "123",
+                   SuburbOrDistrict = "Suburb",
+                   City = "City",
+                   Country = "Country",
+                   Province = "Province",
+                   PostalCode = "12345"
+               },
+
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    },
              "12",
              "Emergency Contact",
              "987654321"
@@ -441,12 +548,30 @@ public class EmployeeRoleManagerControllerUnitTests
                                                                   "test@retrorabbit.co.za",
                                                                   "john.doe.personal@example.com", "1234567890", 1,
                                                                   1,
-                                                                  new EmployeeAddressDto
-                                                                      (1, "Unit 1", "Complex A", "123", "Suburb",
-                                                                       "City", "Country", "Province", "12345"),
-                                                                  new EmployeeAddressDto
-                                                                      (2, "P.O. Box 123", "", "456", "Suburb",
-                                                                       "City", "Country", "Province", "54321"),
+                                                                    new EmployeeAddressDto
+                                                                 {
+                                                                     Id = 1,
+                                                                     UnitNumber = "Unit 1",
+                                                                     ComplexName = "Complex A",
+                                                                     StreetNumber = "123",
+                                                                     SuburbOrDistrict = "Suburb",
+                                                                     City = "City",
+                                                                     Country = "Country",
+                                                                     Province = "Province",
+                                                                     PostalCode = "12345"
+                                                                 },
+
+                                                                    new EmployeeAddressDto
+                                                                    {
+                                                                        Id = 2,
+                                                                        UnitNumber = "P.O. Box 123",
+                                                                        StreetNumber = "456",
+                                                                        SuburbOrDistrict = "Suburb",
+                                                                        City = "City",
+                                                                        Country = "Country",
+                                                                        Province = "Province",
+                                                                        PostalCode = "54321"
+                                                                    },
                                                                   "12",
                                                                   "Emergency Contact",
                                                                   "987654321"),
