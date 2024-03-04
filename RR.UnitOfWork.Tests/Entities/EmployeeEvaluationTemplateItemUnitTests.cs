@@ -24,7 +24,7 @@ public class EmployeeEvaluationTemplateItemUnitTests
     public void InitialoizationWithDtoTest()
     {
         var employeeEvaluationTemplateItemDto =
-            new EmployeeEvaluationTemplateItemDto(1, _template, "Section", "Question");
+            new EmployeeEvaluationTemplateItemDto { Id = 1, Template = _template, Section = "Section", Question = "Question"};
         var employeeEvaluationTemplateItem = new EmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto);
         var dto = employeeEvaluationTemplateItem.ToDto();
 

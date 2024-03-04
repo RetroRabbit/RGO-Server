@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using Xunit;
+using static System.Collections.Specialized.BitVector32;
 
 namespace RR.App.Tests.Controllers.HRIS;
 
@@ -15,8 +16,8 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var section = "Example Test Section";
         var expectedTemplateItems = new List<EmployeeEvaluationTemplateItemDto>
         {
-            new(1, new EmployeeEvaluationTemplateDto{Id = 101, Description = "Template 1" }, section, "Question 1"),
-            new(2, new EmployeeEvaluationTemplateDto{ Id = 102, Description = "Template 2" }, section, "Question 2")
+            new EmployeeEvaluationTemplateItemDto{Id = 1, Template = new EmployeeEvaluationTemplateDto{Id = 101, Description = "Template 1" }, Section = "Example Test Section", Question = "Question 1" },
+            new EmployeeEvaluationTemplateItemDto{Id = 2, Template = new EmployeeEvaluationTemplateDto{ Id = 102, Description = "Template 2" }, Section = "Example Test Section", Question = "Question 2" },
         };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
@@ -38,8 +39,8 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var template = "Example Test Template";
         var expectedTemplateItems = new List<EmployeeEvaluationTemplateItemDto>
         {
-            new(1, new EmployeeEvaluationTemplateDto{ Id = 101, Description = template }, "Section 1", "Question 1"),
-            new(2, new EmployeeEvaluationTemplateDto{ Id = 102, Description = template }, "Section 2", "Question 2")
+            new EmployeeEvaluationTemplateItemDto{Id = 1, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = template }, Section = "Section 1", Question = "Question 1" },
+            new EmployeeEvaluationTemplateItemDto{Id = 2, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = template }, Section = "Section 1", Question = "Question 1" }
         };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
@@ -60,8 +61,8 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
     {
         var expectedTemplateItems = new List<EmployeeEvaluationTemplateItemDto>
         {
-            new(1, new EmployeeEvaluationTemplateDto{ Id = 101, Description = "Template 1" }, "Section 1", "Question 1"),
-            new(2, new EmployeeEvaluationTemplateDto{ Id = 102, Description = "Template 2" }, "Section 2", "Question 2")
+            new EmployeeEvaluationTemplateItemDto{Id = 1, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = "Example Test Template" }, Section = "Section 1", Question = "Question 1" },
+            new EmployeeEvaluationTemplateItemDto{Id = 2, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = "Example Test Template" }, Section = "Section 1", Question = "Question 1" },
         };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
@@ -99,8 +100,9 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var section = "Example Test Section";
         var question = "Example Test Question";
         var savedEmployeeEvaluationTemplateItem =
-            new EmployeeEvaluationTemplateItemDto(1, new EmployeeEvaluationTemplateDto{ Id = 101, Description = template }, section,
-                                                  question);
+            new EmployeeEvaluationTemplateItemDto { Id = 1, Template = new EmployeeEvaluationTemplateDto { Id = 101, Description = template }, Section = "Example Test Section",
+                Question = "Example Test Question"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
         serviceMock.Setup(x => x.Save(template, section, question)).ReturnsAsync(savedEmployeeEvaluationTemplateItem);
@@ -138,8 +140,13 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
     public async Task UpdateEmployeeEvaluationTemplateItemValidDtoReturnsOkResult()
     {
         var validDto =
-            new EmployeeEvaluationTemplateItemDto(1, new EmployeeEvaluationTemplateDto{ Id = 101, Description = "Example Test Template" },
-                                                  "Example Section", "Example Question");
+            new EmployeeEvaluationTemplateItemDto
+            {
+                Id = 1,
+                Template = new EmployeeEvaluationTemplateDto { Id = 101, Description = "Example Test Template" },
+                Section = "Example Section",
+                Question = "Example Question"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
         serviceMock.Setup(x => x.Update(validDto)).ReturnsAsync(validDto);
@@ -156,8 +163,13 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
     public async Task UpdateEmployeeEvaluationTemplateItemExceptionThrownReturnsNotFoundResult()
     {
         var invalidDto =
-            new EmployeeEvaluationTemplateItemDto(1, new EmployeeEvaluationTemplateDto{ Id = 101, Description = "Example Test Template" },
-                                                  "Example Section", "Example Question");
+            new EmployeeEvaluationTemplateItemDto
+            {
+                Id = 1,
+                Template = new EmployeeEvaluationTemplateDto { Id = 101, Description = "Example Test Template" },
+                Section = "Example Section",
+                Question = "Example Question"
+            };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
         var exceptionMessage = "An error occurred while updating the employee evaluation template item.";
@@ -181,13 +193,17 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
         serviceMock.Setup(x => x.Delete(template, section, question))
-                   .ReturnsAsync(new EmployeeEvaluationTemplateItemDto(1,
-                                                                       new EmployeeEvaluationTemplateDto
-                                                                       {
-                                                                           Id = 101,
-                                                                           Description = "Example Test Template"
-                                                                       }, "Example Section",
-                                                                       "Example Question"));
+                   .ReturnsAsync(new EmployeeEvaluationTemplateItemDto
+                   {
+                       Id = 1,
+                       Template = new EmployeeEvaluationTemplateDto
+                       {
+                           Id = 101,
+                           Description = "Example Test Template"
+                       },
+                       Section = " Example Section",
+                       Question = "Example Question"
+                   });
 
         var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
 
