@@ -21,7 +21,7 @@ namespace HRIS.Services.Interfaces
         /// </summary>
         /// <param name="errorLoggingDto"></param>
         /// <returns>The new ErrorLoggingDto</returns>
-        Task<ErrorLoggingDto> SaveErrorLog(ErrorLoggingDto errorLoggingDto);
+        void SaveErrorLog(ErrorLoggingDto errorLoggingDto);
 
         /// <summary>
         ///     Returns a list of all errorlogs
@@ -42,5 +42,12 @@ namespace HRIS.Services.Interfaces
         /// <param name="id"></param>
         /// <returns>The deleted ErrorLoggingDto</returns>
         Task<ErrorLoggingDto> DeleteErrorLog(int id);
+
+        /// <summary>
+        ///     This Logs an exception
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <returns>A logged exception</returns>
+        void LogException(Exception exception);
     }
 }

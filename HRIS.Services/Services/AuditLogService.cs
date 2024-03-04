@@ -1,4 +1,5 @@
-﻿using HRIS.Models;
+﻿using ATS.Models;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -39,7 +40,12 @@ public class AuditLogService : IAuditLogService
     public async Task<AuditLogDto> UpdateAuditLog(AuditLogDto auditLogDto)
     {
         var ifAuditLog = await CheckAuditLog(auditLogDto.Id);
-        if (!ifAuditLog) throw new Exception("Audit Log not found");
+        if (!ifAuditLog)
+        {
+            var exception = new Exception("Audit Log not found");
+            var log = exception.Message;
+            throw exception;
+        }                                                            
 
         var auditLog = new AuditLog(auditLogDto);
         var updatedAuditLog = await _db.AuditLog.Update(auditLog);

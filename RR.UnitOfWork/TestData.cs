@@ -1049,11 +1049,13 @@ public static class TestData
     public static ErrorLogging[] ErrorLoggingList()
     {
         var id = 1;
+        DateTime localDateTime = DateTime.Now;
+        DateTime utcDateTime = localDateTime.ToUniversalTime();
         return new ErrorLogging[]
         {
-            new(){Id = id++, dateOfIncident = DateOnly.FromDateTime(DateTime.Now), exceptionType = "errortype 1", message = "this is a new error"},
-            new(){Id = id++, dateOfIncident = DateOnly.FromDateTime(DateTime.Now), exceptionType = "errortype 3", message = "this is a new error 3"},
-            new(){Id = id++, dateOfIncident = DateOnly.FromDateTime(DateTime.Now), exceptionType = "errortype 5", message = "this is a new error 5"}
+            new(){Id = id++, dateOfIncident = utcDateTime, exceptionType = "errortype 1", message = "this is a new error"},
+            new(){Id = id++, dateOfIncident = utcDateTime, exceptionType = "errortype 3", message = "this is a new error 3"},
+            new(){Id = id++, dateOfIncident = utcDateTime, exceptionType = "errortype 5", message = "this is a new error 5"}
         };
     }
 }

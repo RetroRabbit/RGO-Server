@@ -3,16 +3,11 @@ using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities;
-using RR.UnitOfWork.Entities.ATS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HRIS.Services.Services;
 
-internal class ErrorLoggingService : IErrorLoggingService
+public class ErrorLoggingService : IErrorLoggingService
 {
     private readonly IUnitOfWork _db;
 
@@ -38,12 +33,24 @@ internal class ErrorLoggingService : IErrorLoggingService
         .Select(errorLog => errorLog.ToDto())
         .FirstAsync();
 
-    public async Task<ErrorLoggingDto> SaveErrorLog(ErrorLoggingDto errorLog)
+    public async void SaveErrorLog(ErrorLoggingDto errorLog)
     {
-        if (await CheckErrorLogExists(errorLog.Id))
-            throw new Exception("Error Log Already exists");
-
         ErrorLogging newErroLog = new ErrorLogging(errorLog);
-        return await _db.ErrorLogging.Add(newErroLog);
+        await _db.ErrorLogging.Add(newErroLog);
+    }
+
+    public void LogException(Exception exception)
+    {
+        DateTime localDateTime = DateTime.Now;
+        DateTime utcDateTime = localDateTime.ToUniversalTime();
+
+        ErrorLoggingDto errorLog = new ErrorLoggingDto
+        {
+            dateOfIncident = utcDateTime,
+            message = exception.Message,
+            exceptionType = exception.GetType().FullName,
+        };
+        SaveErrorLog(errorLog);
+        throw exception;
     }
 }

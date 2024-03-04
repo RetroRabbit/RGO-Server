@@ -20,7 +20,7 @@ public class ErrorLogging: IModel<ErrorLoggingDto>
     }
 
     [Key][Column("id")] public int Id { get; set; }
-    [Column("dateOfIncident")] public DateOnly dateOfIncident { get; set; }
+    [Column("dateOfIncident")] public DateTime dateOfIncident { get; set; }
     [Column("exceptionType")] public string exceptionType { get; set; }
     [Column("message")] public string message { get; set; }
 

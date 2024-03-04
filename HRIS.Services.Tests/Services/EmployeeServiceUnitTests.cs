@@ -29,6 +29,7 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IEmployeeAddressService> employeeAddressServiceMock;
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private readonly Mock<IRoleService> roleServiceMock;
+    private readonly Mock<IErrorLoggingService> errorLoggingServiceMock;
 
     private readonly EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto
     {
@@ -44,9 +45,10 @@ public class EmployeeServiceUnitTests
         _dbMock = new Mock<IUnitOfWork>();
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
+        errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
         employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-                                              employeeAddressServiceMock.Object, roleServiceMock.Object);
+                                              employeeAddressServiceMock.Object, roleServiceMock.Object,errorLoggingServiceMock.Object);
     }
 
     [Fact]

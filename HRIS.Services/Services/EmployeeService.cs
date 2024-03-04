@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
+using ATS.Models;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,25 +19,33 @@ public class EmployeeService : IEmployeeService
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IRoleService _roleService;
+    private readonly IErrorLoggingService _errorLoggingService;
 
     public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
-                           IEmployeeAddressService employeeAddressService, IRoleService roleService)
+                           IEmployeeAddressService employeeAddressService, IRoleService roleService, IErrorLoggingService errorLoggingService)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
         _employeeAddressService = employeeAddressService;
         _roleService = roleService;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
     {
         var exists = await CheckUserExist(employeeDto.Email);
         if (exists)
-            throw new Exception("User already exists");
+        {
+            var exception = new Exception("User already exists");
+            _errorLoggingService.LogException(exception);
+        }
 
         // TODO: After new employee bug is fixed, test if this condition can ever be reached and update accordingly
         if (employeeDto.EmployeeType == null)
-            throw new Exception("Employee type missing");
+        {
+            var exception = new Exception("Employee type missing");
+            _errorLoggingService.LogException(exception);
+        }
 
         Employee employee;
 
@@ -52,14 +62,16 @@ public class EmployeeService : IEmployeeService
             }
             catch (Exception ex)
             {
+                _errorLoggingService.LogException(ex);
                 Console.WriteLine(ex.Message);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             var newEmployeeType = await _employeeTypeService
                 .SaveEmployeeType(new EmployeeTypeDto { Id = 0, Name = employeeDto.EmployeeType!.Name });
 
+            _errorLoggingService.LogException(ex);
             employee = new Employee(employeeDto, newEmployeeType);
         }
 
@@ -150,7 +162,11 @@ public class EmployeeService : IEmployeeService
                                 .FirstOrDefaultAsync();
 
         if (employee == null)
-            throw new Exception("Employee not found");
+        {
+            var exception = new Exception("Employee not found");
+            _errorLoggingService.LogException(exception);
+            throw exception;
+        }
 
         return employee;
     }
@@ -167,7 +183,11 @@ public class EmployeeService : IEmployeeService
                                 .FirstOrDefaultAsync();
 
         if (employee == null)
-            throw new Exception("Employee not found");
+        {
+            var exception = new Exception("Employee not found");
+            _errorLoggingService.LogException(exception);
+            throw exception;
+        }
 
         return employee;
     }
@@ -188,11 +208,18 @@ public class EmployeeService : IEmployeeService
                 if (await IsAdmin(userEmail))
                     employee = CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
                 else
-                    throw new Exception("Unauthorized action");
+                {
+                    var exception = new Exception("Unauthorized action: You are not an Admin");
+                    _errorLoggingService.LogException(exception);
+                    throw exception;
+                }
+
             }
             else
             {
-                throw new Exception("Unauthorized action");
+                var exception = new Exception("User already exists");
+                _errorLoggingService.LogException(exception);
+                throw exception;
             }
         }
 

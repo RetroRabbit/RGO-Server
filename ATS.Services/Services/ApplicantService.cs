@@ -24,7 +24,7 @@ public class ApplicantService : IApplicantService
     public async Task<ApplicantDto> SaveApplicant(ApplicantDto applicant)
     {
         if (await CheckApplicantExists(applicant.PersonalEmail))
-            throw new Exception("Applicant already exists");
+             throw new Exception("Applicant already exists");
 
         Applicant newApplicant = new Applicant(applicant);
         return await _db.Applicant.Add(newApplicant);
