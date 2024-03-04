@@ -21,10 +21,13 @@ public class RoleAccessLinkUnitTests
         var roleDto = new RoleDto { Id = 0, Description = "Employee" };
         var roleAccessDto = new RoleAccessDto{Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data"};
 
-        var roleAccessLinkDto = new RoleAccessLinkDto(
-                                                      1,
-                                                      roleDto,
-                                                      roleAccessDto);
+        var roleAccessLinkDto = new RoleAccessLinkDto
+        {
+            Id = 1,
+            Role = roleDto,
+            RoleAccess = roleAccessDto
+        };
+
         var roleAccessLink = new RoleAccessLink(roleAccessLinkDto);
 
         roleAccessLink.Role = new Role(roleDto);
@@ -40,10 +43,14 @@ public class RoleAccessLinkUnitTests
         var roleDto = new RoleDto { Id = 0, Description = "Employee" };
         var roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
 
-        var roleAccessLinkDto = new RoleAccessLinkDto(
-                                                      1,
-                                                      roleDto,
-                                                      roleAccessDto);
+        var roleAccessLinkDto = new RoleAccessLinkDto
+        {
+            Id = 1,
+            Role = roleDto,
+            RoleAccess = roleAccessDto
+        };
+                                                     
+
         var roleAccessLink = new RoleAccessLink(roleAccessLinkDto);
 
         Assert.Null(roleAccessLink.Role);

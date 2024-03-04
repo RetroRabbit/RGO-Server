@@ -32,7 +32,7 @@ public class RoleManageControllerUnitTests
 
     public static RoleAccessLinkDto CreateRoleAccessLinkDto()
     {
-        return new RoleAccessLinkDto(1, CreateRoleDto(), CreateRoleAccessDto());
+        return new RoleAccessLinkDto { Id = 1, Role = CreateRoleDto(), RoleAccess = CreateRoleAccessDto()};
     }
 
     [Fact]
