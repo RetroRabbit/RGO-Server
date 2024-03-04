@@ -39,8 +39,8 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var template = "Example Test Template";
         var expectedTemplateItems = new List<EmployeeEvaluationTemplateItemDto>
         {
-            new EmployeeEvaluationTemplateItemDto{Id = 1, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = template }, Section = "Section 1", Question = "Question 1" },
-            new EmployeeEvaluationTemplateItemDto{Id = 2, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = template }, Section = "Section 1", Question = "Question 1" }
+            new EmployeeEvaluationTemplateItemDto{Id = 1, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = "Example Test Template" }, Section = "Section 1", Question = "Question 1" },
+            new EmployeeEvaluationTemplateItemDto{Id = 2, Template = new EmployeeEvaluationTemplateDto{ Id = 101, Description = "Example Test Template" }, Section = "Section 1", Question = "Question 1" }
         };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
