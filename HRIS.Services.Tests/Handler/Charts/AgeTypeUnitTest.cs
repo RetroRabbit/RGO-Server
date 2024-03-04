@@ -31,8 +31,19 @@ public class AgeTypeUnitTest
         roleDto = new RoleDto{ Id = 3, Description = "Employee" };
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+        employeeAddressDto =  new EmployeeAddressDto
+        {
+            Id = 1,
+            UnitNumber = "2",
+            ComplexName = "Complex",
+            StreetNumber = "2",
+            SuburbOrDistrict = "Suburb/District",
+            City = "City",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
+        };
     }
 
     private EmployeeDto CreateEmployee(DateTime dob)
