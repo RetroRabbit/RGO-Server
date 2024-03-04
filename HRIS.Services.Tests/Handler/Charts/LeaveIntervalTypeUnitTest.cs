@@ -29,19 +29,19 @@ public class LeaveIntervalTypeUnitTest
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        employeeAddressDto =
-          new EmployeeAddressDto
-          {
-               Id = 1,
-               UnitNumber = "2",
-               ComplexName = "Complex",
-               StreetNumber = "2",
-               SuburbOrDistrict = "Suburb/District",
-               City = "City",
-               Country = "Country",
-               Province = "Province",
-               PostalCode = "1620"
-          };
+
+        employeeAddressDto = new EmployeeAddressDto
+        {
+            Id = 1,
+            UnitNumber = "2",
+            ComplexName = "Complex",
+            StreetNumber = "2",
+            SuburbOrDistrict = "Suburb/District",
+            City = "City",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
+        };
     }
 
     private EmployeeDto CreateEmployee(float? leaveInterval)
