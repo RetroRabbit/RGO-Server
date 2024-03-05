@@ -43,13 +43,41 @@ public class PeopleChampionTypeUnitTest
     private EmployeeDto CreateEmployee(int id, int? peopleChampionType, string? employeeName, string? employeeSurname,
                                        EmployeeTypeDto employeeType)
     {
-        return new EmployeeDto(id, "001", "34434434", new DateTime(), new DateTime(),
-                               peopleChampionType, false, "None", 3, employeeType, "Notes", 1, 28, 128, 100000,
-                               employeeName, "MT",
-                               employeeSurname, new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                               new DateTime(), null, Race.Black, Gender.Male, null,
-                               $"test{id}@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                               employeeAddressDto, employeeAddressDto, null, null, null);
+        return new EmployeeDto
+        {
+            Id = id,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = peopleChampionType,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 3,
+            EmployeeType = employeeType,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = employeeName,
+            Initials = "MT",
+            Surname = employeeSurname,
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Email = $"test{id}@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
     }
 
     [Fact]

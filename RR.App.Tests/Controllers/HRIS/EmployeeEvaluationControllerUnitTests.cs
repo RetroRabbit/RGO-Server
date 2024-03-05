@@ -17,53 +17,110 @@ public class EmployeeEvaluationControllerUnitTests
         var email = "test@retrorabbit.co.za";
         var expectedEvaluations = new List<EmployeeEvaluationDto>
         {
-            new EmployeeEvaluationDto{
+        new EmployeeEvaluationDto
+        {
+            Id = 1,
+            Employee = new EmployeeDto
+            {
                 Id = 1,
-                Employee = new EmployeeDto
-                    (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                     new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-                     new DateTime(1990, 1, 1),
-                     "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-                     Race.White, Gender.Male, "photo.jpg",
-                     "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                   new EmployeeAddressDto
-                    {
-                        Id = 1,
-                        UnitNumber = "Unit 1",
-                        ComplexName = "Complex A",
-                        StreetNumber = "123",
-                        SuburbOrDistrict = "Suburb",
-                        City = "City",
-                        Country = "Country",
-                        Province = "Province",
-                        PostalCode = "12345"
-                    },
+                EmployeeNumber = "Emp123",
+                TaxNumber = "Tax123",
+                EngagementDate = new DateTime(2022, 1, 1),
+                TerminationDate = null,
+                PeopleChampion = 1,
+                Disability = false,
+                DisabilityNotes = "No disability",
+                Level = 2,
+                EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                Notes = "Notes",
+                LeaveInterval = 20.0f,
+                SalaryDays = 15.0f,
+                PayRate = 50.0f,
+                Salary = 50000,
+                Name = "John Doe",
+                Initials = "JD",
+                Surname = "Doe",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                CountryOfBirth = "South Africa",
+                Nationality = "South African",
+                IdNumber = "123456789",
+                PassportNumber = "AB123456",
+                PassportExpirationDate = new DateTime(2025, 1, 1),
+                PassportCountryIssue = "South Africa",
+                Race = Race.White,
+                Gender = Gender.Male,
+                Photo = "photo.jpg",
+                Email = "test@retrorabbit.co.za",
+                PersonalEmail = "john.doe.personal@example.com",
+                CellphoneNo = "1234567890",
+                ClientAllocated = 1,
+                TeamLead = 1,
+                PhysicalAddress = new EmployeeAddressDto
+                {
+                    Id = 1,
+                    UnitNumber = "Unit 1",
+                    ComplexName = "Complex A",
+                    StreetNumber = "123",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "12345"
+                },
+                PostalAddress = new EmployeeAddressDto
+                {
+                    Id = 2,
+                    UnitNumber = "P.O. Box 123",
+                    StreetNumber = "456",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "54321"
+                },
+                HouseNo = "12",
+                EmergencyContactName = "Emergency Contact",
+                EmergencyContactNo = "987654321"
+            },
 
-                    new EmployeeAddressDto
-                    {
-                        Id = 2,
-                        UnitNumber = "P.O. Box 123",
-                        StreetNumber = "456",
-                        SuburbOrDistrict = "Suburb",
-                        City = "City",
-                        Country = "Country",
-                        Province = "Province",
-                        PostalCode = "54321"
-                    },
-                     "12",
-                     "Emergency Contact",
-                     "987654321"
-                    ),
 
-                Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
+        Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
                 Owner = new EmployeeDto
-                    (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                     new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-                     new DateTime(1990, 1, 1),
-                     "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-                     Race.White, Gender.Male, "photo.jpg",
-                     "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                    new EmployeeAddressDto
+                {
+                    Id = 2,
+                    EmployeeNumber = "Emp124",
+                    TaxNumber = "Tax124",
+                    EngagementDate = new DateTime(2022, 1, 1),
+                    TerminationDate = null,
+                    PeopleChampion = 1,
+                    Disability = false,
+                    DisabilityNotes = "No disability",
+                    Level = 2,
+                    EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                    Notes = "Notes",
+                    LeaveInterval = 20.0f,
+                    SalaryDays = 15.0f,
+                    PayRate = 50.0f,
+                    Salary = 50000,
+                    Name = "John Doe",
+                    Initials = "JD",
+                    Surname = "Doe",
+                    DateOfBirth = new DateTime(1990, 1, 1),
+                    CountryOfBirth = "South Africa",
+                    Nationality = "South African",
+                    IdNumber = "123456789",
+                    PassportNumber = "AB123456",
+                    PassportExpirationDate = new DateTime(2025, 1, 1),
+                    PassportCountryIssue = "South Africa",
+                    Race = Race.White,
+                    Gender = Gender.Male,
+                    Photo = "photo.jpg",
+                    Email = "john.doe@example.com",
+                    PersonalEmail = "john.doe.personal@example.com",
+                    CellphoneNo = "1234567890",
+                    ClientAllocated = 1,
+                    TeamLead = 1,
+                    PhysicalAddress = new EmployeeAddressDto
                     {
                         Id = 1,
                         UnitNumber = "Unit 1",
@@ -76,7 +133,7 @@ public class EmployeeEvaluationControllerUnitTests
                         PostalCode = "12345"
                     },
 
-                    new EmployeeAddressDto
+                    PostalAddress = new EmployeeAddressDto
                     {
                         Id = 2,
                         UnitNumber = "P.O. Box 123",
@@ -87,10 +144,10 @@ public class EmployeeEvaluationControllerUnitTests
                         Province = "Province",
                         PostalCode = "54321"
                     },
-                     "12",
-                     "Emergency Contact",
-                     "987654321"
-                    ),
+                     HouseNo = "12",
+                     EmergencyContactName = "Emergency Contact",
+                     EmergencyContactNo = "987654321"
+                    },
                 Subject = "Employee Evaluation Subject",
                 StartDate = new DateOnly(2022, 1, 1),
                 EndDate = new DateOnly(2022, 2, 1),
@@ -141,80 +198,136 @@ public class EmployeeEvaluationControllerUnitTests
         {
             Id = 1,
             Employee = new EmployeeDto
-                 (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-                  new DateTime(1990, 1, 1),
-                  "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-                  Race.White, Gender.Male, "photo.jpg",
-                  "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                  new EmployeeAddressDto
-                  {
-                      Id = 1,
-                      UnitNumber = "Unit 1",
-                      ComplexName = "Complex A",
-                      StreetNumber = "123",
-                      SuburbOrDistrict = "Suburb",
-                      City = "City",
-                      Country = "Country",
-                      Province = "Province",
-                      PostalCode = "12345"
-                  },
+            {
+                Id = 1,
+                EmployeeNumber = "Emp123",
+                TaxNumber = "Tax123",
+                EngagementDate = new DateTime(2022, 1, 1),
+                TerminationDate = null,
+                PeopleChampion = 1,
+                Disability = false,
+                DisabilityNotes = "No disability",
+                Level = 2,
+                EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                Notes = "Notes",
+                LeaveInterval = 20.0f,
+                SalaryDays = 15.0f,
+                PayRate = 50.0f,
+                Salary = 50000,
+                Name = "John Doe",
+                Initials = "JD",
+                Surname = "Doe",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                CountryOfBirth = "South Africa",
+                Nationality = "South African",
+                IdNumber = "123456789",
+                PassportNumber = "AB123456",
+                PassportExpirationDate = new DateTime(2025, 1, 1),
+                PassportCountryIssue = "South Africa",
+                Race = Race.White,
+                Gender = Gender.Male,
+                Photo = "photo.jpg",
+                Email = "test@retrorabbit.co.za",
+                PersonalEmail = "john.doe.personal@example.com",
+                CellphoneNo = "1234567890",
+                ClientAllocated = 1,
+                TeamLead = 1,
 
-                    new EmployeeAddressDto
-                    {
-                        Id = 2,
-                        UnitNumber = "P.O. Box 123",
-                        StreetNumber = "456",
-                        SuburbOrDistrict = "Suburb",
-                        City = "City",
-                        Country = "Country",
-                        Province = "Province",
-                        PostalCode = "54321"
-                    },
-                  "12",
-                  "Emergency Contact",
-                  "987654321"
-                 ),
+                PhysicalAddress = new EmployeeAddressDto
+                {
+                    Id = 1,
+                    UnitNumber = "Unit 1",
+                    ComplexName = "Complex A",
+                    StreetNumber = "123",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "12345"
+                },
+
+                PostalAddress = new EmployeeAddressDto
+                {
+                    Id = 2,
+                    UnitNumber = "P.O. Box 123",
+                    StreetNumber = "456",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "54321"
+                },
+                HouseNo = "12",
+                EmergencyContactName = "Emergency Contact",
+                EmergencyContactNo = "987654321"
+            },
             Template = new EmployeeEvaluationTemplateDto
             {
                 Id = 1,
                 Description = "Sample Description"
             },
             Owner = new EmployeeDto
-                 (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-                  new DateTime(1990, 1, 1),
-                  "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-                  Race.White, Gender.Male, "photo.jpg",
-                  "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                 new EmployeeAddressDto
-                 {
-                     Id = 1,
-                     UnitNumber = "Unit 1",
-                     ComplexName = "Complex A",
-                     StreetNumber = "123",
-                     SuburbOrDistrict = "Suburb",
-                     City = "City",
-                     Country = "Country",
-                     Province = "Province",
-                     PostalCode = "12345"
-                 },
-
-                    new EmployeeAddressDto
-                    {
-                        Id = 2,
-                        UnitNumber = "P.O. Box 123",
-                        StreetNumber = "456",
-                        SuburbOrDistrict = "Suburb",
-                        City = "City",
-                        Country = "Country",
-                        Province = "Province",
-                        PostalCode = "54321"
-                    },
-                  "12",
-                  "Emergency Contact",
-                  "987654321"
-                 ),
+            {
+                Id = 2,
+                EmployeeNumber = "Emp124",
+                TaxNumber = "Tax124",
+                EngagementDate = new DateTime(2022, 1, 1),
+                TerminationDate = null,
+                PeopleChampion = 1,
+                Disability = false,
+                DisabilityNotes = "No disability",
+                Level = 2,
+                EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                Notes = "Notes",
+                LeaveInterval = 20.0f,
+                SalaryDays = 15.0f,
+                PayRate = 50.0f,
+                Salary = 50000,
+                Name = "John Doe",
+                Initials = "JD",
+                Surname = "Doe",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                CountryOfBirth = "South Africa",
+                Nationality = "South African",
+                IdNumber = "123456789",
+                PassportNumber = "AB123456",
+                PassportExpirationDate = new DateTime(2025, 1, 1),
+                PassportCountryIssue = "South Africa",
+                Race = Race.White,
+                Gender = Gender.Male,
+                Photo = "photo.jpg",
+                Email = "john.doe@example.com",
+                PersonalEmail = "john.doe.personal@example.com",
+                CellphoneNo = "1234567890",
+                ClientAllocated = 1,
+                TeamLead = 1,
+                PhysicalAddress = new EmployeeAddressDto
+                {
+                    Id = 1,
+                    UnitNumber = "Unit 1",
+                    ComplexName = "Complex A",
+                    StreetNumber = "123",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "12345"
+                },
+                PostalAddress = new EmployeeAddressDto
+                {
+                    Id = 2,
+                    UnitNumber = "P.O. Box 123",
+                    StreetNumber = "456",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "54321"
+                },
+                HouseNo = "12",
+                EmergencyContactName = "Emergency Contact",
+                EmergencyContactNo = "987654321"
+            },
             Subject = "Employee Evaluation Subject",
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2022, 2, 1)
@@ -282,80 +395,136 @@ public class EmployeeEvaluationControllerUnitTests
         { 
             Id = 1,
             Employee = new EmployeeDto
-                 (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-                  new DateTime(1990, 1, 1),
-                  "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-                  Race.White, Gender.Male, "photo.jpg",
-                  "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-                 new EmployeeAddressDto
-                 {
-                     Id = 1,
-                     UnitNumber = "Unit 1",
-                     ComplexName = "Complex A",
-                     StreetNumber = "123",
-                     SuburbOrDistrict = "Suburb",
-                     City = "City",
-                     Country = "Country",
-                     Province = "Province",
-                     PostalCode = "12345"
-                 },
+            {
+                Id = 1,
+                EmployeeNumber = "Emp123",
+                TaxNumber = "Tax123",
+                EngagementDate = new DateTime(2022, 1, 1),
+                TerminationDate = null,
+                PeopleChampion = 1,
+                Disability = false,
+                DisabilityNotes = "No disability",
+                Level = 2,
+                EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                Notes = "Notes",
+                LeaveInterval = 20.0f,
+                SalaryDays = 15.0f,
+                PayRate = 50.0f,
+                Salary = 50000,
+                Name = "John Doe",
+                Initials = "JD",
+                Surname = "Doe",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                CountryOfBirth = "South Africa",
+                Nationality = "South African",
+                IdNumber = "123456789",
+                PassportNumber = "AB123456",
+                PassportExpirationDate = new DateTime(2025, 1, 1),
+                PassportCountryIssue = "South Africa",
+                Race = Race.White,
+                Gender = Gender.Male,
+                Photo = "photo.jpg",
+                Email = "test@retrorabbit.co.za",
+                PersonalEmail = "john.doe.personal@example.com",
+                CellphoneNo = "1234567890",
+                ClientAllocated = 1,
+                TeamLead = 1,
 
-                    new EmployeeAddressDto
-                    {
-                        Id = 2,
-                        UnitNumber = "P.O. Box 123",
-                        StreetNumber = "456",
-                        SuburbOrDistrict = "Suburb",
-                        City = "City",
-                        Country = "Country",
-                        Province = "Province",
-                        PostalCode = "54321"
-                    },
-                  "12",
-                  "Emergency Contact",
-                  "987654321"
-                 ),
+                PhysicalAddress = new EmployeeAddressDto
+                {
+                    Id = 1,
+                    UnitNumber = "Unit 1",
+                    ComplexName = "Complex A",
+                    StreetNumber = "123",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "12345"
+                },
+
+                PostalAddress = new EmployeeAddressDto
+                {
+                    Id = 2,
+                    UnitNumber = "P.O. Box 123",
+                    StreetNumber = "456",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "54321"
+                },
+                HouseNo = "12",
+                EmergencyContactName = "Emergency Contact",
+                EmergencyContactNo = "987654321"
+            },
             Template = new EmployeeEvaluationTemplateDto
             {
                 Id = 1,
                 Description = "Sample Description"
             },
             Owner = new EmployeeDto
-                 (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-                  new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-                  new DateTime(1990, 1, 1),
-                  "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-                  Race.White, Gender.Male, "photo.jpg",
-                  "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                 new EmployeeAddressDto
-                 {
-                     Id = 1,
-                     UnitNumber = "Unit 1",
-                     ComplexName = "Complex A",
-                     StreetNumber = "123",
-                     SuburbOrDistrict = "Suburb",
-                     City = "City",
-                     Country = "Country",
-                     Province = "Province",
-                     PostalCode = "12345"
-                 },
-
-                    new EmployeeAddressDto
-                    {
-                        Id = 2,
-                        UnitNumber = "P.O. Box 123",
-                        StreetNumber = "456",
-                        SuburbOrDistrict = "Suburb",
-                        City = "City",
-                        Country = "Country",
-                        Province = "Province",
-                        PostalCode = "54321"
-                    },
-                  "12",
-                  "Emergency Contact",
-                  "987654321"
-                 ),
+            {
+                Id = 2,
+                EmployeeNumber = "Emp124",
+                TaxNumber = "Tax124",
+                EngagementDate = new DateTime(2022, 1, 1),
+                TerminationDate = null,
+                PeopleChampion = 1,
+                Disability = false,
+                DisabilityNotes = "No disability",
+                Level = 2,
+                EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                Notes = "Notes",
+                LeaveInterval = 20.0f,
+                SalaryDays = 15.0f,
+                PayRate = 50.0f,
+                Salary = 50000,
+                Name = "John Doe",
+                Initials = "JD",
+                Surname = "Doe",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                CountryOfBirth = "South Africa",
+                Nationality = "South African",
+                IdNumber = "123456789",
+                PassportNumber = "AB123456",
+                PassportExpirationDate = new DateTime(2025, 1, 1),
+                PassportCountryIssue = "South Africa",
+                Race = Race.White,
+                Gender = Gender.Male,
+                Photo = "photo.jpg",
+                Email = "john.doe@example.com",
+                PersonalEmail = "john.doe.personal@example.com",
+                CellphoneNo = "1234567890",
+                ClientAllocated = 1,
+                TeamLead = 1,
+                PhysicalAddress = new EmployeeAddressDto
+                {
+                    Id = 1,
+                    UnitNumber = "Unit 1",
+                    ComplexName = "Complex A",
+                    StreetNumber = "123",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "12345"
+                },
+                PostalAddress = new EmployeeAddressDto
+                {
+                    Id = 2,
+                    UnitNumber = "P.O. Box 123",
+                    StreetNumber = "456",
+                    SuburbOrDistrict = "Suburb",
+                    City = "City",
+                    Country = "Country",
+                    Province = "Province",
+                    PostalCode = "54321"
+                },
+                HouseNo = "12",
+                EmergencyContactName = "Emergency Contact",
+                EmergencyContactNo = "987654321"
+            },
             Subject = "Employee Evaluation Subject",
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2022, 2, 1)
@@ -436,86 +605,137 @@ public class EmployeeEvaluationControllerUnitTests
                    {
                        Id = 1,
                        Employee = new EmployeeDto
-                                          (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
-                                           "No disability", 2,
-                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
-                                           "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                                           "South Africa", "South African", "123456789", "AB123456",
-                                           new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
-                                           "photo.jpg",
-                                           "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1,
-                                           1,
-                                           new EmployeeAddressDto
-                                           {
-                                               Id = 1,
-                                               UnitNumber = "Unit 1",
-                                               ComplexName = "Complex A",
-                                               StreetNumber = "123",
-                                               SuburbOrDistrict = "Suburb",
-                                               City = "City",
-                                               Country = "Country",
-                                               Province = "Province",
-                                               PostalCode = "12345"
-                                           },
+                       {
+                           Id = 1,
+                           EmployeeNumber = "Emp123",
+                           TaxNumber = "Tax123",
+                           EngagementDate = new DateTime(2022, 1, 1),
+                           TerminationDate = null,
+                           PeopleChampion = 1,
+                           Disability = false,
+                           DisabilityNotes = "No disability",
+                           Level = 2,
+                           EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                           Notes = "Notes",
+                           LeaveInterval = 20.0f,
+                           SalaryDays = 15.0f,
+                           PayRate = 50.0f,
+                           Salary = 50000,
+                           Name = "John Doe",
+                           Initials = "JD",
+                           Surname = "Doe",
+                           DateOfBirth = new DateTime(1990, 1, 1),
+                           CountryOfBirth = "South Africa",
+                           Nationality = "South African",
+                           IdNumber = "123456789",
+                           PassportNumber = "AB123456",
+                           PassportExpirationDate = new DateTime(2025, 1, 1),
+                           PassportCountryIssue = "South Africa",
+                           Race = Race.White,
+                           Gender = Gender.Male,
+                           Photo = "photo.jpg",
+                           Email = "test@retrorabbit.co.za",
+                           PersonalEmail = "john.doe.personal@example.com",
+                           CellphoneNo = "1234567890",
+                           ClientAllocated = 1,
+                           TeamLead = 1,
 
-                                            new EmployeeAddressDto
-                                            {
-                                                Id = 2,
-                                                UnitNumber = "P.O. Box 123",
-                                                StreetNumber = "456",
-                                                SuburbOrDistrict = "Suburb",
-                                                City = "City",
-                                                Country = "Country",
-                                                Province = "Province",
-                                                PostalCode = "54321"
-                                            },
-                                               "12",
-                                               "Emergency Contact",
-                                               "987654321"
-                                              ),
-                                           Template = new EmployeeEvaluationTemplateDto
+                           PhysicalAddress = new EmployeeAddressDto
+                           {
+                               Id = 1,
+                               UnitNumber = "Unit 1",
+                               ComplexName = "Complex A",
+                               StreetNumber = "123",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "12345"
+                           },
+
+                           PostalAddress = new EmployeeAddressDto
+                           {
+                               Id = 2,
+                               UnitNumber = "P.O. Box 123",
+                               StreetNumber = "456",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "54321"
+                           },
+                           HouseNo = "12",
+                           EmergencyContactName = "Emergency Contact",
+                           EmergencyContactNo = "987654321"
+                       },
+                       Template = new EmployeeEvaluationTemplateDto
                                            { 
                                               Id = 1,
                                               Description = "Sample Description"
                                            },
                        Owner = new EmployeeDto
-                                          (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
-                                           "No disability", 2,
-                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
-                                           "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                                           "South Africa", "South African", "123456789", "AB123456",
-                                           new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
-                                           "photo.jpg",
-                                           "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                                          new EmployeeAddressDto
-                                          {
-                                              Id = 1,
-                                              UnitNumber = "Unit 1",
-                                              ComplexName = "Complex A",
-                                              StreetNumber = "123",
-                                              SuburbOrDistrict = "Suburb",
-                                              City = "City",
-                                              Country = "Country",
-                                              Province = "Province",
-                                              PostalCode = "12345"
-                                          },
-
-                                        new EmployeeAddressDto
-                                        {
-                                            Id = 2,
-                                            UnitNumber = "P.O. Box 123",
-                                            StreetNumber = "456",
-                                            SuburbOrDistrict = "Suburb",
-                                            City = "City",
-                                            Country = "Country",
-                                            Province = "Province",
-                                            PostalCode = "54321"
-                                        },
-                                           "12",
-                                           "Emergency Contact",
-                                           "987654321"
-                                          ),
-                       Subject = "Subject 1",
+                       {
+                           Id = 2,
+                           EmployeeNumber = "Emp124",
+                           TaxNumber = "Tax124",
+                           EngagementDate = new DateTime(2022, 1, 1),
+                           TerminationDate = null,
+                           PeopleChampion = 1,
+                           Disability = false,
+                           DisabilityNotes = "No disability",
+                           Level = 2,
+                           EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                           Notes = "Notes",
+                           LeaveInterval = 20.0f,
+                           SalaryDays = 15.0f,
+                           PayRate = 50.0f,
+                           Salary = 50000,
+                           Name = "John Doe",
+                           Initials = "JD",
+                           Surname = "Doe",
+                           DateOfBirth = new DateTime(1990, 1, 1),
+                           CountryOfBirth = "South Africa",
+                           Nationality = "South African",
+                           IdNumber = "123456789",
+                           PassportNumber = "AB123456",
+                           PassportExpirationDate = new DateTime(2025, 1, 1),
+                           PassportCountryIssue = "South Africa",
+                           Race = Race.White,
+                           Gender = Gender.Male,
+                           Photo = "photo.jpg",
+                           Email = "john.doe@example.com",
+                           PersonalEmail = "john.doe.personal@example.com",
+                           CellphoneNo = "1234567890",
+                           ClientAllocated = 1,
+                           TeamLead = 1,
+                           PhysicalAddress = new EmployeeAddressDto
+                           {
+                               Id = 1,
+                               UnitNumber = "Unit 1",
+                               ComplexName = "Complex A",
+                               StreetNumber = "123",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "12345"
+                           },
+                           PostalAddress = new EmployeeAddressDto
+                           {
+                               Id = 2,
+                               UnitNumber = "P.O. Box 123",
+                               StreetNumber = "456",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "54321"
+                           },
+                           HouseNo = "12",
+                           EmergencyContactName = "Emergency Contact",
+                           EmergencyContactNo = "987654321"
+                       },
+                       Subject = "Employee Evaluation Subject",
                        StartDate = new DateOnly(2022, 1, 1),
                        EndDate = new DateOnly(2022, 2, 1)
                    });
@@ -563,86 +783,137 @@ public class EmployeeEvaluationControllerUnitTests
                    {
                        Id = 1,
                        Employee = new EmployeeDto
-                                          (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false,
-                                           "No disability", 2,
-                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
-                                           "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                                           "South Africa", "South African", "123456789", "AB123456",
-                                           new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
-                                           "photo.jpg",
-                                           "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1,
-                                           1,
-                                           new EmployeeAddressDto
-                                           {
-                                               Id = 1,
-                                               UnitNumber = "Unit 1",
-                                               ComplexName = "Complex A",
-                                               StreetNumber = "123",
-                                               SuburbOrDistrict = "Suburb",
-                                               City = "City",
-                                               Country = "Country",
-                                               Province = "Province",
-                                               PostalCode = "12345"
-                                           },
+                       {
+                           Id = 1,
+                           EmployeeNumber = "Emp123",
+                           TaxNumber = "Tax123",
+                           EngagementDate = new DateTime(2022, 1, 1),
+                           TerminationDate = null,
+                           PeopleChampion = 1,
+                           Disability = false,
+                           DisabilityNotes = "No disability",
+                           Level = 2,
+                           EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                           Notes = "Notes",
+                           LeaveInterval = 20.0f,
+                           SalaryDays = 15.0f,
+                           PayRate = 50.0f,
+                           Salary = 50000,
+                           Name = "John Doe",
+                           Initials = "JD",
+                           Surname = "Doe",
+                           DateOfBirth = new DateTime(1990, 1, 1),
+                           CountryOfBirth = "South Africa",
+                           Nationality = "South African",
+                           IdNumber = "123456789",
+                           PassportNumber = "AB123456",
+                           PassportExpirationDate = new DateTime(2025, 1, 1),
+                           PassportCountryIssue = "South Africa",
+                           Race = Race.White,
+                           Gender = Gender.Male,
+                           Photo = "photo.jpg",
+                           Email = "test@retrorabbit.co.za",
+                           PersonalEmail = "john.doe.personal@example.com",
+                           CellphoneNo = "1234567890",
+                           ClientAllocated = 1,
+                           TeamLead = 1,
 
-                                            new EmployeeAddressDto
-                                            {
-                                                Id = 2,
-                                                UnitNumber = "P.O. Box 123",
-                                                StreetNumber = "456",
-                                                SuburbOrDistrict = "Suburb",
-                                                City = "City",
-                                                Country = "Country",
-                                                Province = "Province",
-                                                PostalCode = "54321"
-                                            },
-                                           "12",
-                                           "Emergency Contact",
-                                           "987654321"
-                                          ),
+                           PhysicalAddress = new EmployeeAddressDto
+                           {
+                               Id = 1,
+                               UnitNumber = "Unit 1",
+                               ComplexName = "Complex A",
+                               StreetNumber = "123",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "12345"
+                           },
+
+                           PostalAddress = new EmployeeAddressDto
+                           {
+                               Id = 2,
+                               UnitNumber = "P.O. Box 123",
+                               StreetNumber = "456",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "54321"
+                           },
+                           HouseNo = "12",
+                           EmergencyContactName = "Emergency Contact",
+                           EmergencyContactNo = "987654321"
+                       },
                        Template = new EmployeeEvaluationTemplateDto
                        {
                           Id =  1,
                           Description = "Sample Description"
                        },
                        Owner = new EmployeeDto
-                                          (2, "Emp124", "Tax124", new DateTime(2022, 1, 1), null, 1, false,
-                                           "No disability", 2,
-                                           new EmployeeTypeDto { Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000,
-                                           "John Doe", "JD", "Doe", new DateTime(1990, 1, 1),
-                                           "South Africa", "South African", "123456789", "AB123456",
-                                           new DateTime(2025, 1, 1), "South Africa", Race.White, Gender.Male,
-                                           "photo.jpg",
-                                           "john.doe@example.com", "john.doe.personal@example.com", "1234567890", 1, 1,
-                                           new EmployeeAddressDto
-                                           {
-                                               Id = 1,
-                                               UnitNumber = "Unit 1",
-                                               ComplexName = "Complex A",
-                                               StreetNumber = "123",
-                                               SuburbOrDistrict = "Suburb",
-                                               City = "City",
-                                               Country = "Country",
-                                               Province = "Province",
-                                               PostalCode = "12345"
-                                           },
-
-                                            new EmployeeAddressDto
-                                            {
-                                                Id = 2,
-                                                UnitNumber = "P.O. Box 123",
-                                                StreetNumber = "456",
-                                                SuburbOrDistrict = "Suburb",
-                                                City = "City",
-                                                Country = "Country",
-                                                Province = "Province",
-                                                PostalCode = "54321"
-                                            },
-                                           "12",
-                                           "Emergency Contact",
-                                           "987654321"
-                                          ),
-                       Subject = "Subject 1",
+                       {
+                           Id = 2,
+                           EmployeeNumber = "Emp124",
+                           TaxNumber = "Tax124",
+                           EngagementDate = new DateTime(2022, 1, 1),
+                           TerminationDate = null,
+                           PeopleChampion = 1,
+                           Disability = false,
+                           DisabilityNotes = "No disability",
+                           Level = 2,
+                           EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+                           Notes = "Notes",
+                           LeaveInterval = 20.0f,
+                           SalaryDays = 15.0f,
+                           PayRate = 50.0f,
+                           Salary = 50000,
+                           Name = "John Doe",
+                           Initials = "JD",
+                           Surname = "Doe",
+                           DateOfBirth = new DateTime(1990, 1, 1),
+                           CountryOfBirth = "South Africa",
+                           Nationality = "South African",
+                           IdNumber = "123456789",
+                           PassportNumber = "AB123456",
+                           PassportExpirationDate = new DateTime(2025, 1, 1),
+                           PassportCountryIssue = "South Africa",
+                           Race = Race.White,
+                           Gender = Gender.Male,
+                           Photo = "photo.jpg",
+                           Email = "john.doe@example.com",
+                           PersonalEmail = "john.doe.personal@example.com",
+                           CellphoneNo = "1234567890",
+                           ClientAllocated = 1,
+                           TeamLead = 1,
+                           PhysicalAddress = new EmployeeAddressDto
+                           {
+                               Id = 1,
+                               UnitNumber = "Unit 1",
+                               ComplexName = "Complex A",
+                               StreetNumber = "123",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "12345"
+                           },
+                           PostalAddress = new EmployeeAddressDto
+                           {
+                               Id = 2,
+                               UnitNumber = "P.O. Box 123",
+                               StreetNumber = "456",
+                               SuburbOrDistrict = "Suburb",
+                               City = "City",
+                               Country = "Country",
+                               Province = "Province",
+                               PostalCode = "54321"
+                           },
+                           HouseNo = "12",
+                           EmergencyContactName = "Emergency Contact",
+                           EmergencyContactNo = "987654321"
+                       },
+                       Subject = "Employee Evaluation Subject",
                        StartDate = new DateOnly(2022, 1, 1),
                        EndDate = new DateOnly(2022, 2, 1)
                    });
