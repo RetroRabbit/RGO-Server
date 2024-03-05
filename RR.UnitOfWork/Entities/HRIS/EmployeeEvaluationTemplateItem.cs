@@ -34,10 +34,12 @@ public class EmployeeEvaluationTemplateItem : IModel<EmployeeEvaluationTemplateI
 
     public EmployeeEvaluationTemplateItemDto ToDto()
     {
-        return new EmployeeEvaluationTemplateItemDto(
-                                                     Id,
-                                                     Template?.ToDto(),
-                                                     Section,
-                                                     Question);
+        return new EmployeeEvaluationTemplateItemDto
+        {
+            Id = Id,
+            Template = Template?.ToDto(),
+            Section = Section,
+            Question = Question
+        };
     }
 }
