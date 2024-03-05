@@ -15,13 +15,13 @@ public class ErrorLogging: IModel<ErrorLoggingDto>
     {   
         Id = errorLoggingDto.Id;
         dateOfIncident = errorLoggingDto.dateOfIncident;
-        exceptionType = errorLoggingDto.exceptionType;
+        stackTrace = errorLoggingDto.stackTrace;
         message = errorLoggingDto.message;
     }
 
     [Key][Column("id")] public int Id { get; set; }
     [Column("dateOfIncident")] public DateTime dateOfIncident { get; set; }
-    [Column("exceptionType")] public string exceptionType { get; set; }
+    [Column("stackTrace")] public string stackTrace { get; set; }
     [Column("message")] public string message { get; set; }
 
     public ErrorLoggingDto ToDto()
@@ -30,7 +30,7 @@ public class ErrorLogging: IModel<ErrorLoggingDto>
         {
             Id = this.Id,
             dateOfIncident = this.dateOfIncident,
-            exceptionType = this.exceptionType,
+            stackTrace = this.stackTrace,
             message = this.message
         };
     }

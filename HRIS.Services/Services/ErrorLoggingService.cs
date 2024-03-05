@@ -39,7 +39,7 @@ public class ErrorLoggingService : IErrorLoggingService
         await _db.ErrorLogging.Add(newErroLog);
     }
 
-    public void LogException(Exception exception)
+    public Exception LogException(Exception exception)
     {
         DateTime localDateTime = DateTime.Now;
         DateTime utcDateTime = localDateTime.ToUniversalTime();
@@ -48,9 +48,9 @@ public class ErrorLoggingService : IErrorLoggingService
         {
             dateOfIncident = utcDateTime,
             message = exception.Message,
-            exceptionType = exception.GetType().FullName,
+            stackTrace = exception.ToString(),
         };
         SaveErrorLog(errorLog);
-        throw exception;
+        return exception;
     }
 }

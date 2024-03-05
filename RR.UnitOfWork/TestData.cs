@@ -1053,9 +1053,9 @@ public static class TestData
         DateTime utcDateTime = localDateTime.ToUniversalTime();
         return new ErrorLogging[]
         {
-            new(){Id = id++, dateOfIncident = utcDateTime, exceptionType = "errortype 1", message = "this is a new error"},
-            new(){Id = id++, dateOfIncident = utcDateTime, exceptionType = "errortype 3", message = "this is a new error 3"},
-            new(){Id = id++, dateOfIncident = utcDateTime, exceptionType = "errortype 5", message = "this is a new error 5"}
+            new(){Id = id++, dateOfIncident = utcDateTime, stackTrace = "errortype 1", message = "this is a new error"},
+            new(){Id = id++, dateOfIncident = utcDateTime, stackTrace = "errortype 3", message = "this is a new error 3"},
+            new(){Id = id++, dateOfIncident = utcDateTime, stackTrace = "errortype 5", message = "this is a new error 5"}
         };
     }
 }

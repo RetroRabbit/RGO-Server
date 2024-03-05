@@ -37,14 +37,14 @@ public class EmployeeService : IEmployeeService
         if (exists)
         {
             var exception = new Exception("User already exists");
-            _errorLoggingService.LogException(exception);
+            throw _errorLoggingService.LogException(exception);
         }
 
         // TODO: After new employee bug is fixed, test if this condition can ever be reached and update accordingly
         if (employeeDto.EmployeeType == null)
         {
             var exception = new Exception("Employee type missing");
-            _errorLoggingService.LogException(exception);
+            throw _errorLoggingService.LogException(exception);
         }
 
         Employee employee;
@@ -62,8 +62,7 @@ public class EmployeeService : IEmployeeService
             }
             catch (Exception ex)
             {
-                _errorLoggingService.LogException(ex);
-                Console.WriteLine(ex.Message);
+               _errorLoggingService.LogException(ex);
             }
         }
         catch (Exception ex)
@@ -164,8 +163,7 @@ public class EmployeeService : IEmployeeService
         if (employee == null)
         {
             var exception = new Exception("Employee not found");
-            _errorLoggingService.LogException(exception);
-            throw exception;
+            throw _errorLoggingService.LogException(exception);
         }
 
         return employee;
@@ -185,8 +183,7 @@ public class EmployeeService : IEmployeeService
         if (employee == null)
         {
             var exception = new Exception("Employee not found");
-            _errorLoggingService.LogException(exception);
-            throw exception;
+            throw _errorLoggingService.LogException(exception);
         }
 
         return employee;
@@ -210,16 +207,14 @@ public class EmployeeService : IEmployeeService
                 else
                 {
                     var exception = new Exception("Unauthorized action: You are not an Admin");
-                    _errorLoggingService.LogException(exception);
-                    throw exception;
+                    throw _errorLoggingService.LogException(exception);
                 }
 
             }
             else
             {
                 var exception = new Exception("User already exists");
-                _errorLoggingService.LogException(exception);
-                throw exception;
+                throw _errorLoggingService.LogException(exception);
             }
         }
 
@@ -478,7 +473,7 @@ public class EmployeeService : IEmployeeService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            _errorLoggingService.LogException(ex);
         }
     }
 
