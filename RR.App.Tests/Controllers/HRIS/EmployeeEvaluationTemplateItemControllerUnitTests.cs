@@ -7,7 +7,6 @@ using RR.Tests.Data.Models.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
-
 public class EmployeeEvaluationTemplateItemControllerUnitTests
 {
     [Fact]
@@ -44,16 +43,21 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         };
 
         var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.GetAllByTemplate(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description)).ReturnsAsync(expectedTemplateItems);
+        serviceMock.Setup(x => x.GetAllByTemplate(
+            EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description))
+            .ReturnsAsync(expectedTemplateItems);
 
         var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
 
-        var result = await controller.GetAllEmployeeEvaluationTemplateItems(null, EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description);
+        var result = await controller.GetAllEmployeeEvaluationTemplateItems(null,
+            EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualTemplateItems = Assert.IsAssignableFrom<List<EmployeeEvaluationTemplateItemDto>>(okResult.Value);
         Assert.Equal(expectedTemplateItems.Count, actualTemplateItems.Count);
-        Assert.All(actualTemplateItems, item => { Assert.Equal(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description, item.Template?.Description); });
+        Assert.All(actualTemplateItems, item => { Assert.Equal(
+            EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description, 
+            item.Template?.Description); });
     }
 
     [Fact]
