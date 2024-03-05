@@ -2,7 +2,7 @@
 
 ### NB!!! Make sure you're checked out on the develop branch
 
-This system is an employee management system for Retro Rabbit Specificaly this is the back end for said system and works in conjuncture with the Front End repo
+This system is an employee management system for Retro Rabbit Enterprise Services. This is the back end for said system and works in conjuncture with the Front End repository
 
 # Getting Started
 
@@ -32,6 +32,15 @@ Runs on(.NET Web API):
 ```powershell
 wsl --install
 ```
+
+# Environment Variables
+Add system environments as follows 
+
+![Image of System Environment Variables](./EnvironmentVariables.png)
+
+With the respective values in the redacted spaces 
+(please note that the dashes in between the variable names are double dashes)
+
 # User Secrets
 Right Click RGO.App and Click on **Mange User Secrets**
 
@@ -86,6 +95,15 @@ docker pull rabbitmq:3-management
 docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
 
+### Add new user
+
+- To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
+- Add new Migration for your user
+
+```powershell
+add-migration newMigrationYouCanChooseName
+```
+
 ### Run migration
 
 Open Visual Studio 2022 and open the RGO-Server project file. Pull up the nuget package manager console:
@@ -95,15 +113,6 @@ Make sure the **Default project** is **_RGO.UnitOfWork_**.
 ---
 
 ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
-
-### Add new user
-
-- To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
-- Add new Migration for your user
-
-```powershell
-add-migration newMigrationYouCanChooseName
-```
 
 ```powershell
 Update-Database
@@ -133,8 +142,6 @@ Update-Database
 ![PgAdmin Employee Table Navigation](./EmployeeTable-Example.png)
 
 - Check if your new user is added
-
-![PgAdmin new user check](./EmployeeTableCheckUpdate-Example.png)
 
 ### Unit Test Coverage
 
