@@ -15,11 +15,15 @@ public class AuditLogServiceUnitTest
     private readonly AuditLogService _auditLogService;
     private readonly EmployeeDto _employee;
     private readonly Mock<IUnitOfWork> _unitOfWork;
+    private readonly Mock<ErrorLoggingService> _errorLoggingService;
+    private readonly ErrorLoggingService errorLoggingService;
 
     public AuditLogServiceUnitTest()
     {
         _unitOfWork = new Mock<IUnitOfWork>();
-        _auditLogService = new AuditLogService(_unitOfWork.Object);
+        _auditLogService = new AuditLogService(_unitOfWork.Object,_errorLoggingService.Object);
+        _errorLoggingService = new Mock<ErrorLoggingService>();
+        errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
