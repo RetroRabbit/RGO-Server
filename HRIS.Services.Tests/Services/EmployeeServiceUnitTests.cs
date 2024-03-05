@@ -29,7 +29,7 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IEmployeeAddressService> employeeAddressServiceMock;
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private readonly Mock<IRoleService> roleServiceMock;
-    private readonly Mock<IErrorLoggingService> errorLoggingServiceMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
 
 
     private readonly EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto
@@ -47,10 +47,10 @@ public class EmployeeServiceUnitTests
         _dbMock = new Mock<IUnitOfWork>();
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
-        errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
         employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-                                              employeeAddressServiceMock.Object, roleServiceMock.Object,errorLoggingServiceMock.Object);
+                                              employeeAddressServiceMock.Object, roleServiceMock.Object,_errorLoggingServiceMock.Object);
         errorLoggingService = new ErrorLoggingService(_dbMock.Object);
 
     }
@@ -59,7 +59,7 @@ public class EmployeeServiceUnitTests
     public async Task SaveEmployeeFailTest1()
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(true));
-        errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => employeeService.SaveEmployee(EmployeeTestData.EmployeeDto));
     }
@@ -356,7 +356,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
                .Returns(roles.AsQueryable().BuildMock());
 
-        errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized action: You are not an Admin"));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized action: You are not an Admin"));
 
         var exception = await Assert.ThrowsAsync<Exception>(
                                                     async () =>
@@ -387,7 +387,7 @@ public class EmployeeServiceUnitTests
                .Returns(employees.AsQueryable().BuildMock());
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
 
-        errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("User already exists"));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("User already exists"));
 
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
@@ -465,7 +465,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(mockEmployees.AsQueryable().BuildMock());
 
-        errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => employeeService.GetEmployeeById(2));
     }
