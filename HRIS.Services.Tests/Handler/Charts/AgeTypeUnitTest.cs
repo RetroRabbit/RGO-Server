@@ -48,12 +48,47 @@ public class AgeTypeUnitTest
 
     private EmployeeDto CreateEmployee(DateTime dob)
     {
-        return new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                               null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Juanro", "JM",
-                               "MInne", dob, "South Africa", "South African", "0000080000000", " ",
-                               new DateTime(), null, Race.Black, Gender.Male, null,
-                               "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                               employeeAddressDto, employeeAddressDto, null, null, null);
+        return new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = new DateTime(),
+            TerminationDate = new DateTime(),
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Juanro",
+            Initials = "JM",
+            Surname = "MInne",
+            DateOfBirth = dob,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = new DateTime(),
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Photo = null,
+            Email = "test@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
     }
 
     [Fact]

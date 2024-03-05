@@ -57,13 +57,41 @@ public class AuthenticationControllerUnitTests
         var controller = new AuthenticationController(authServiceMock.Object);
 
         var newEmployee = new EmployeeDto
-            (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-             new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-             new DateTime(1990, 1, 1),
-             "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-             Race.White, Gender.Male, "photo.jpg",
-             "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-            new EmployeeAddressDto
+        {
+            Id = 1,
+            EmployeeNumber = "Emp123",
+            TaxNumber = "Tax123",
+            EngagementDate = new DateTime(2022, 1, 1),
+            TerminationDate = null,
+            PeopleChampion = 1,
+            Disability = false,
+            DisabilityNotes = "No disability",
+            Level = 2,
+            EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+            Notes = "Notes",
+            LeaveInterval = 20.0f,
+            SalaryDays = 15.0f,
+            PayRate = 50.0f,
+            Salary = 50000,
+            Name = "John Doe",
+            Initials = "JD",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(1990, 1, 1),
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "123456789",
+            PassportNumber = "AB123456",
+            PassportExpirationDate = new DateTime(2025, 1, 1),
+            PassportCountryIssue = "South Africa",
+            Race = Race.White,
+            Gender = Gender.Male,
+            Photo = "photo.jpg",
+            Email = "test@retrorabbit.co.za",
+            PersonalEmail = "john.doe.personal@example.com",
+            CellphoneNo = "1234567890",
+            ClientAllocated = 1,
+            TeamLead = 1,
+            PhysicalAddress = new EmployeeAddressDto
             {
                 Id = 1,
                 UnitNumber = "Unit 1",
@@ -75,7 +103,7 @@ public class AuthenticationControllerUnitTests
                 Province = "Province",
                 PostalCode = "12345"
             },
-            new EmployeeAddressDto
+            PostalAddress = new EmployeeAddressDto
             {
                 Id = 2,
                 UnitNumber = "P.O. Box 123",
@@ -86,10 +114,10 @@ public class AuthenticationControllerUnitTests
                 Province = "Province",
                 PostalCode = "54321"
             },
-             "12",
-             "Emergency Contact",
-             "987654321"
-            );
+            HouseNo = "12",
+            EmergencyContactName = "Emergency Contact",
+            EmergencyContactNo = "987654321"
+        };
 
         authServiceMock.Setup(x => x.CheckUserExist(newEmployee.Email!)).ReturnsAsync(false);
         authServiceMock.Setup(x => x.RegisterEmployee(newEmployee))
@@ -109,13 +137,41 @@ public class AuthenticationControllerUnitTests
         var controller = new AuthenticationController(authServiceMock.Object);
 
         var existingEmployee = new EmployeeDto
-            (1, "Emp123", "Tax123", new DateTime(2022, 1, 1), null, 1, false, "No disability", 2,
-             new EmployeeTypeDto{ Id = 1, Name = "Full Time" }, "Notes", 20.0f, 15.0f, 50.0f, 50000, "John Doe", "JD", "Doe",
-             new DateTime(1990, 1, 1),
-             "South Africa", "South African", "123456789", "AB123456", new DateTime(2025, 1, 1), "South Africa",
-             Race.White, Gender.Male, "photo.jpg",
-             "test@retrorabbit.co.za", "john.doe.personal@example.com", "1234567890", 1, 1,
-            new EmployeeAddressDto
+        {
+            Id = 1,
+            EmployeeNumber = "Emp123",
+            TaxNumber = "Tax123",
+            EngagementDate = new DateTime(2022, 1, 1),
+            TerminationDate = null,
+            PeopleChampion = 1,
+            Disability = false,
+            DisabilityNotes = "No disability",
+            Level = 2,
+            EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
+            Notes = "Notes",
+            LeaveInterval = 20.0f,
+            SalaryDays = 15.0f,
+            PayRate = 50.0f,
+            Salary = 50000,
+            Name = "John Doe",
+            Initials = "JD",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(1990, 1, 1),
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "123456789",
+            PassportNumber = "AB123456",
+            PassportExpirationDate = new DateTime(2025, 1, 1),
+            PassportCountryIssue = "South Africa",
+            Race = Race.White,
+            Gender = Gender.Male,
+            Photo = "photo.jpg",
+            Email = "test@retrorabbit.co.za",
+            PersonalEmail = "john.doe.personal@example.com",
+            CellphoneNo = "1234567890",
+            ClientAllocated = 1,
+            TeamLead = 1,
+            PhysicalAddress = new EmployeeAddressDto
             {
                 Id = 1,
                 UnitNumber = "Unit 1",
@@ -127,7 +183,7 @@ public class AuthenticationControllerUnitTests
                 Province = "Province",
                 PostalCode = "12345"
             },
-            new EmployeeAddressDto
+            PostalAddress = new EmployeeAddressDto
             {
                 Id = 2,
                 UnitNumber = "P.O. Box 123",
@@ -138,10 +194,10 @@ public class AuthenticationControllerUnitTests
                 Province = "Province",
                 PostalCode = "54321"
             },
-             "12",
-             "Emergency Contact",
-             "987654321"
-            );
+            HouseNo = "12",
+            EmergencyContactName = "Emergency Contact",
+            EmergencyContactNo = "987654321"
+        };
 
         authServiceMock.Setup(x => x.CheckUserExist(existingEmployee.Email!)).ReturnsAsync(true);
 
