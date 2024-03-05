@@ -114,7 +114,8 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
          Id = 0,
          Template = await _employeeEvaluationTemplateService.Get(template),
          Section = section,
-         Question = question};
+         Question = question
+         };
 
         var savedEmployeeEvaluationTemplateItem = await _db.EmployeeEvaluationTemplateItem
                                                            .Add(new
