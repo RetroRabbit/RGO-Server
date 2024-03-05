@@ -23,7 +23,6 @@ namespace RR.App.Tests.Controllers
         private readonly HttpClient _client;
         private readonly Mock<IClientService> _mockClientService;
 
-
         public ClientControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
         {
             _factory = factory;
