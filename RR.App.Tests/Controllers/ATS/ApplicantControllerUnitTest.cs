@@ -64,7 +64,7 @@ public class ApplicantControllerUnitTest
         var controllerResult = await _controller
             .AddApplicant(ApplicantDtoTestData.ApplicantDto);
 
-        var objectResult = Assert.IsType<ObjectResult>(controllerResult);
+        var objectResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
         Assert.Equal(objectResult.StatusCode, 400);
     }
 
