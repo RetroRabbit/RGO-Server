@@ -93,6 +93,20 @@ public class ApplicantControllerUnitTest
     }
 
     [Fact]
+    public async Task GetAllApplicantsFail()
+    {
+        _mockApplicantService
+            .Setup(service => service.GetAllApplicants())
+        .ThrowsAsync(new Exception());
+
+        var controllerResult = await _controller.GetAll();
+
+        var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
+
+        Assert.Equal(400, actionResult.StatusCode);
+    }
+
+    [Fact]
     public async Task GetApplicantByIdPass()
     {
         _mockApplicantService
@@ -143,7 +157,7 @@ public class ApplicantControllerUnitTest
     }
 
     [Fact]
-    public async Task GetApplicantByIdEmailNotFound()
+    public async Task GetApplicantByIdEmaiFaillNotFound()
     {
         _mockApplicantService
            .Setup(service => service
@@ -156,6 +170,73 @@ public class ApplicantControllerUnitTest
         var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
 
         Assert.Equal(404, actionResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateApplicantPass()
+    {
+        _mockApplicantService
+           .Setup(service => service
+                .UpdateApplicant(ApplicantDtoTestData.ApplicantDto))
+           .ReturnsAsync(ApplicantDtoTestData.ApplicantDtoTwo);
+
+        var controllerResult = await _controller
+            .UpdateApplicant(ApplicantDtoTestData.ApplicantDto);
+
+        var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(ApplicantDtoTestData.ApplicantDtoTwo, actionResult.Value);
+    }
+
+    [Fact]
+    public async Task UpdateApplicantFail()
+    {
+        _mockApplicantService
+           .Setup(service => service
+               .UpdateApplicant(ApplicantDtoTestData.ApplicantDto))
+           .ThrowsAsync(new Exception());
+
+        var controllerResult = await _controller
+            .UpdateApplicant(ApplicantDtoTestData.ApplicantDto);
+
+        var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
+
+        Assert.Equal(400, actionResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteApplicantPass()
+    {
+        _mockApplicantService
+           .Setup(service => service
+                .DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id))
+           .ReturnsAsync(ApplicantDtoTestData.ApplicantDto);
+
+        var controllerResult = await _controller
+            .DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id);
+
+        var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(ApplicantDtoTestData.ApplicantDto, actionResult.Value);
+    }
+
+    [Fact]
+    public async Task DeleteApplicantFail()
+    {
+        _mockApplicantService
+            .Setup(service =>
+                service.DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id))
+            .ThrowsAsync(new Exception());
+
+        var controllerResult = await _controller
+            .DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id);
+
+        var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
+
+        Assert.Equal(400, actionResult.StatusCode);
+            
     }
 }
 

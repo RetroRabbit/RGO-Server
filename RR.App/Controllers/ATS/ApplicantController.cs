@@ -73,7 +73,7 @@ public class ApplicantController : ControllerBase
             ApplicantDto applicant = await _applicantService.GetApplicantByEmail(email);
             return Ok(applicant);
         }
-        catch (Exception ex)
+       catch (Exception ex)
         {
             return NotFound(ex.Message);
         }
