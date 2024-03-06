@@ -110,11 +110,13 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         if (exists)
             throw new Exception("Employee Evaluation Template Item already exists");
 
-        var employeeEvaluationTemplateItemDto = new EmployeeEvaluationTemplateItemDto(
-         0,
-         await _employeeEvaluationTemplateService.Get(template),
-         section,
-         question);
+        var employeeEvaluationTemplateItemDto = new EmployeeEvaluationTemplateItemDto
+        {
+         Id = 0,
+         Template = await _employeeEvaluationTemplateService.Get(template),
+         Section = section,
+         Question = question
+         };
 
         var savedEmployeeEvaluationTemplateItem = await _db.EmployeeEvaluationTemplateItem
                                                            .Add(new
