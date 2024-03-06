@@ -27,10 +27,10 @@ public class ApplicantController : ControllerBase
         }
         catch (Exception ex)
         {
-            if (ex.Message.Contains("exists"))
-                return Problem("Unexceptable", "Unexceptable", 406, "User Exists");
+            if (ex.Message.Contains("Exists"))
+                return Conflict("User Exists");
 
-            return NotFound(ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 
@@ -45,7 +45,7 @@ public class ApplicantController : ControllerBase
         }
         catch (Exception ex)
         {
-            return Problem("Unexceptable", "Unexceptable", 500, "Something went wrong");
+            return BadRequest(ex.Message);
         }
     }
 
