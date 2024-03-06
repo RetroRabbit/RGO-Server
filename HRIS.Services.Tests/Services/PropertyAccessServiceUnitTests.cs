@@ -15,6 +15,7 @@ namespace RGO.Tests.Services;
 public class PropertyAccessServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly Mock<IEmployeeDataService> _employeeDataService;
     private readonly Mock<IEmployeeRoleService> _employeeRoleService;
     private readonly Mock<IEmployeeService> _employeeService;
@@ -25,6 +26,7 @@ public class PropertyAccessServiceUnitTests
         _employeeDataService = new Mock<IEmployeeDataService>();
         _employeeRoleService = new Mock<IEmployeeRoleService>();
         _employeeService = new Mock<IEmployeeService>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
     }
 
     [Fact]
@@ -132,7 +134,7 @@ public class PropertyAccessServiceUnitTests
         };
 
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
-                                                _employeeDataService.Object, _employeeService.Object);
+                                                _employeeDataService.Object, _employeeService.Object,_errorLoggingServiceMock.Object);
 
         _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>()))
                         .Returns(Task.FromResult(employee.ToDto())!);
@@ -261,7 +263,7 @@ public class PropertyAccessServiceUnitTests
         };
 
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
-                                                _employeeDataService.Object, _employeeService.Object);
+                                                _employeeDataService.Object, _employeeService.Object, _errorLoggingServiceMock.Object);
 
         _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
@@ -374,7 +376,7 @@ public class PropertyAccessServiceUnitTests
         };
 
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
-                                                _employeeDataService.Object, _employeeService.Object);
+                                                _employeeDataService.Object, _employeeService.Object, _errorLoggingServiceMock.Object);
 
         _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
@@ -411,6 +413,8 @@ public class PropertyAccessServiceUnitTests
         _dbMock
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
@@ -507,7 +511,7 @@ public class PropertyAccessServiceUnitTests
         };
 
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
-                                                _employeeDataService.Object, _employeeService.Object);
+                                                _employeeDataService.Object, _employeeService.Object, _errorLoggingServiceMock.Object);
 
         _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
@@ -544,6 +548,8 @@ public class PropertyAccessServiceUnitTests
         _dbMock
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
@@ -658,7 +664,7 @@ public class PropertyAccessServiceUnitTests
         };
 
         var service = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object,
-                                                _employeeDataService.Object, _employeeService.Object);
+                                                _employeeDataService.Object, _employeeService.Object, _errorLoggingServiceMock.Object);
 
         _employeeService.Setup(x => x.GetEmployee(It.IsAny<string>())).Returns(Task.FromResult(employee.ToDto())!);
 
@@ -697,6 +703,8 @@ public class PropertyAccessServiceUnitTests
         _dbMock
             .Setup(r => r.RawSql(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => service.UpdatePropertiesWithAccess(new List<UpdateFieldValueDto>
         {
