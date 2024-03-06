@@ -30,18 +30,52 @@ public class PayRateTypeUnitTest
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
         employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
     private EmployeeDto CreateEmployee(float? payRateType)
     {
-        return new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                               null, false, "None", 3, employeeTypeDto, "Notes", 1, 28, payRateType, 100000, "Matt",
-                               "MT",
-                               "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                               new DateTime(), null, Race.Black, Gender.Male, null,
-                               "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                               employeeAddressDto, employeeAddressDto, null, null, null);
+        return new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = null,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 3,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = payRateType,
+            Salary = 100000,
+            Name = "Matt",
+            Initials = "MT",
+            Surname = "Schoeman",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Photo = null,
+            Email = "test@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
     }
 
     [Fact]

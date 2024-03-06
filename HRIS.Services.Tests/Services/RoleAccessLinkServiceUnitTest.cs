@@ -6,6 +6,7 @@ using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -28,7 +29,7 @@ public class RoleAccessLinkServiceUnitTest
         _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object);
         _roleDto = new RoleDto {Id = 1, Description = "Employee"};
         _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
-        _roleAccessLinkDto = new RoleAccessLinkDto(1, _roleDto, _roleAccessDto);
+        _roleAccessLinkDto = new RoleAccessLinkDto { Id = 1, Role = _roleDto, RoleAccess = _roleAccessDto };
     }
 
     [Fact]
@@ -88,7 +89,7 @@ public class RoleAccessLinkServiceUnitTest
 
         var malformed = await roleAccessLinks
                               .Where(criteria)
-                              .Select(r => new RoleAccessLinkDto(r.Id, null, null))
+                              .Select(r => new RoleAccessLinkDto { Id = r.Id, Role = null, RoleAccess = null })
                               .FirstAsync();
 
         _dbMock
@@ -272,15 +273,9 @@ public class RoleAccessLinkServiceUnitTest
         var email = "test@retrorabbit.co.za";
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
-        var testEmployee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                           null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Test",
-                                           "TD",
-                                           "Dummy", new DateTime(), "South Africa", "South African", "0000000000000",
-                                           " ",
-                                           new DateTime(), null, Race.Black, Gender.Female, null,
-                                           email, "tdummy@gmail.com", "0123456789", null, null, employeeAddressDto,
-                                           employeeAddressDto, null, null, null);
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+
+        var testEmployee =  EmployeeTestData.EmployeeDto;
 
         var employeeRoleDtos = new List<EmployeeRoleDto>
         {
@@ -372,10 +367,12 @@ public class RoleAccessLinkServiceUnitTest
     [Fact]
     public async Task Update()
     {
-        var roleAccessLinkToUpdate = new RoleAccessLinkDto(
-                                                           _roleAccessLinkDto.Id,
-                                                           new RoleDto { Id = 1, Description = "Employee"},
-                                                           new RoleAccessDto { Id = 2, Permission = "EditEmployee", Grouping = "Employee Data" });
+        var roleAccessLinkToUpdate = new RoleAccessLinkDto
+        {
+            Id = _roleAccessLinkDto.Id,
+            Role = new RoleDto { Id = 1, Description = "Employee" },
+            RoleAccess = new RoleAccessDto { Id = 2, Permission = "EditEmployee", Grouping = "Employee Data" }
+        };
 
         _dbMock
             .Setup(r => r.RoleAccessLink.Update(It.IsAny<RoleAccessLink>()))

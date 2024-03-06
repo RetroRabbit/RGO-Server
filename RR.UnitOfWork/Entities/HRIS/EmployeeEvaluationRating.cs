@@ -43,12 +43,14 @@ public class EmployeeEvaluationRating : IModel<EmployeeEvaluationRatingDto>
 
     public EmployeeEvaluationRatingDto ToDto()
     {
-        return new EmployeeEvaluationRatingDto(
-                                               Id,
-                                               Evaluation?.ToDto(),
-                                               Employee?.ToDto(),
-                                               Description,
-                                               Score,
-                                               Comment);
+        return new EmployeeEvaluationRatingDto
+        {
+            Id = Id,
+            Evaluation = Evaluation?.ToDto(),
+            Employee = Employee?.ToDto(),
+            Description = Description,
+            Score = Score,
+            Comment = Comment
+        };
     }
 }

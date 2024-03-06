@@ -29,19 +29,64 @@ public class LeaveIntervalTypeUnitTest
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+
+        employeeAddressDto = new EmployeeAddressDto
+        {
+            Id = 1,
+            UnitNumber = "2",
+            ComplexName = "Complex",
+            StreetNumber = "2",
+            SuburbOrDistrict = "Suburb/District",
+            City = "City",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
+        };
     }
 
     private EmployeeDto CreateEmployee(float? leaveInterval)
     {
-        return new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                               null, false, "None", 4, employeeTypeDto, "Notes", leaveInterval, 28, 128, 100000, "Matt",
-                               "MT",
-                               "Schoeman", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                               new DateTime(), null, Race.Black, Gender.Male, null,
-                               "test@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                               employeeAddressDto, employeeAddressDto, null, null, null);
+        return new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = new DateTime(),
+            TerminationDate = new DateTime(),
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = leaveInterval,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Matt",
+            Initials = "MT",
+            Surname = "Schoeman",
+            DateOfBirth = new DateTime(),
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = new DateTime(),
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Photo = null,
+            Email = "test@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
     }
 
     [Fact]

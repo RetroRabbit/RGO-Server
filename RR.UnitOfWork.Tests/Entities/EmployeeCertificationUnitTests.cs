@@ -14,16 +14,49 @@ public class EmployeeCertificationUnitTests
     {
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                    null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dorothy",
-                                    "D",
-                                    "Mahoko", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                    new DateTime(), null, Race.Black, Gender.Male, null,
-                                    "texample@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                                    employeeAddressDto, employeeAddressDto, null, null, null);
-
+        _employee = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = null,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dorothy",
+            Initials = "D",
+            Surname = "Mahoko",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Photo = null,
+            Email = "texample@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
 
         _employeeDocument = new EmployeeDocumentDto
         {

@@ -24,16 +24,43 @@ public class EmployeeCertificationServiceUnitTests
     {
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
-            new EmployeeAddressDto(1, "2", "Complex", "2", "Suburb/District", "City", "Country", "Province", "1620");
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(2020, 1, 1), new DateTime(2020, 1, 1),
-                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
-                                          128, 100000, "Dotty", "D",
-                                          "Missile", new DateTime(1990, 1, 1), "South Africa", "South African",
-                                          "5522522655", " ",
-                                          new DateTime(2020, 1, 1), null, Race.Black, Gender.Female, null,
-                                          "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                          employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dorothy",
+            Initials = "D",
+            Surname = "Mahoko",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Email = "texample@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         var employeeDocumentDto = new EmployeeDocumentDto
         {
