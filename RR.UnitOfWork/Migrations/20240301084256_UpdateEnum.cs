@@ -16,7 +16,7 @@ namespace RR.UnitOfWork.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Applicant",
+                name: "Candidate",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -31,7 +31,7 @@ namespace RR.UnitOfWork.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Applicant", x => x.id);
+                    table.PrimaryKey("PK_Candidate", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -1130,7 +1130,7 @@ namespace RR.UnitOfWork.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Applicant");
+                name: "Candidate");
 
             migrationBuilder.DropTable(
                 name: "AuditLogs");

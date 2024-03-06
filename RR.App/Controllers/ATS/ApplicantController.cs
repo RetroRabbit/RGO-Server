@@ -5,25 +5,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.ATS;
 
-[Route("applicants")]
+[Route("candidates")]
 [ApiController]
-public class ApplicantController : ControllerBase
+public class CandidateController : ControllerBase
 {
-    private readonly IApplicantService _applicantService;
+    private readonly ICandidateService _candidateService;
 
-    public ApplicantController(IApplicantService applicantService)
+    public CandidateController(ICandidateService candidateService)
     {
-        _applicantService = applicantService;
+        _candidateService = candidateService;
     }
 
     [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpPost]
-    public async Task<IActionResult> AddApplicant([FromBody] ApplicantDto applicant)
+    public async Task<IActionResult> AddCandidate([FromBody] CandidateDto candidate)
     {
         try
         {
-            var newApplicant = await _applicantService.SaveApplicant(applicant);
-            return Ok(newApplicant);
+            var newCandidate = await _candidateService.SaveCandidate(candidate);
+            return Ok(newCandidate);
         }
         catch (Exception ex)
         {
@@ -40,8 +40,8 @@ public class ApplicantController : ControllerBase
     {
         try
         {
-            List<ApplicantDto> applicantList = await _applicantService.GetAllApplicants();
-            return Ok(applicantList);
+            List<CandidateDto> candidateList = await _candidateService.GetAllCandidates();
+            return Ok(candidateList);
         }
         catch (Exception ex)
         {
@@ -55,8 +55,8 @@ public class ApplicantController : ControllerBase
     {
         try
         {
-            ApplicantDto applicant = await _applicantService.GetApplicantById(id);
-            return Ok(applicant);
+            CandidateDto candidate = await _candidateService.GetCandidateById(id);
+            return Ok(candidate);
         }
         catch(Exception ex) 
         {
@@ -70,8 +70,8 @@ public class ApplicantController : ControllerBase
     {
         try
         {
-            ApplicantDto applicant = await _applicantService.GetApplicantByEmail(email);
-            return Ok(applicant);
+            CandidateDto candidate = await _candidateService.GetCandidateByEmail(email);
+            return Ok(candidate);
         }
        catch (Exception ex)
         {
@@ -81,12 +81,12 @@ public class ApplicantController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpPut]
-    public async Task<IActionResult> UpdateApplicant([FromBody] ApplicantDto applicant)
+    public async Task<IActionResult> UpdateCandidate([FromBody] CandidateDto candidate)
     {
         try
         {
-            ApplicantDto applicantDto = await _applicantService.UpdateApplicant(applicant);
-            return Ok(applicantDto);
+            CandidateDto candidateDto = await _candidateService.UpdateCandidate(candidate);
+            return Ok(candidateDto);
         }
         catch(Exception ex)
         {
@@ -96,12 +96,12 @@ public class ApplicantController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpDelete]
-    public async Task<IActionResult> DeleteApplicant([FromQuery] int id)
+    public async Task<IActionResult> DeleteCandidate([FromQuery] int id)
     {
         try
         {
-            ApplicantDto applicant = await _applicantService.DeleteApplicant(id);
-            return Ok(applicant);
+            CandidateDto candidate = await _candidateService.DeleteCandidate(id);
+            return Ok(candidate);
         }
         catch(Exception ex)
         {

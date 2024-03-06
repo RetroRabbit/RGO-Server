@@ -23,7 +23,7 @@ namespace RR.UnitOfWork.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("RR.UnitOfWork.Entities.ATS.Applicant", b =>
+            modelBuilder.Entity("RR.UnitOfWork.Entities.ATS.Candidate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Applicant");
+                    b.ToTable("Candidate");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.AuditLog", b =>

@@ -3,6 +3,6 @@ using RR.UnitOfWork.Entities.ATS;
 
 namespace RR.UnitOfWork.Interfaces.ATS;
 
-public interface IApplicantRepository : IRepository<Applicant, ApplicantDto>
+public interface ICandidateRepository : IRepository<Candidate, CandidateDto>
 {
 }

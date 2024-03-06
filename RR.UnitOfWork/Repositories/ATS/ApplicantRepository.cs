@@ -4,8 +4,8 @@ using RR.UnitOfWork.Interfaces.ATS;
 
 namespace RR.UnitOfWork.Repositories.ATS;
 
-public  class ApplicantRepository : BaseRepository<Applicant, ApplicantDto>, IApplicantRepository
+public  class CandidateRepository : BaseRepository<Candidate, CandidateDto>, ICandidateRepository
 {
-    public ApplicantRepository(DatabaseContext db) : base(db) 
+    public CandidateRepository(DatabaseContext db) : base(db) 
     { }
 }

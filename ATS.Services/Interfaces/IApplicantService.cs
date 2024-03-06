@@ -2,53 +2,53 @@
 
 namespace ATS.Services.Interfaces;
 
-public interface IApplicantService
+public interface ICandidateService
 {
     /// <summary>
-    ///     Check if the applicant exists in the system
+    ///     Check if the candidate exists in the system
     /// </summary>
-    /// <param name="applicantEmail"></param>
+    /// <param name="candidateEmail"></param>
     /// <returns>Bool depending on they exists or not</returns>
-    Task<bool> CheckApplicantExists(string applicantEmail);
+    Task<bool> CheckCandidateExists(string candidateEmail);
 
     /// <summary>
-    ///     Takes in an applicant and adds it to the database
+    ///     Takes in an candidate and adds it to the database
     /// </summary>
-    /// <param name="applicantDto"></param>
-    /// <returns>The new ApplicantDto</returns>
-    Task<ApplicantDto> SaveApplicant(ApplicantDto applicantDto);
+    /// <param name="candidateDto"></param>
+    /// <returns>The new CandidateDto</returns>
+    Task<CandidateDto> SaveCandidate(CandidateDto candidateDto);
 
     /// <summary>
-    ///     Returns a list of all applicants
+    ///     Returns a list of all candidates
     /// </summary>
-    /// <returns>List<ApplicantDto</returns>
-    Task<List<ApplicantDto>> GetAllApplicants();
+    /// <returns>List<CandidateDto</returns>
+    Task<List<CandidateDto>> GetAllCandidates();
 
     /// <summary>
-    ///     Fetches a single applicant by id
+    ///     Fetches a single candidate by id
     /// </summary>
     /// <param name="id"></param>
-    /// <returns>Single ApplicantDto</returns>
-    Task<ApplicantDto> GetApplicantById(int id);
+    /// <returns>Single CandidateDto</returns>
+    Task<CandidateDto> GetCandidateById(int id);
 
     /// <summary>
-    ///     Fetches a single applicant by email
+    ///     Fetches a single candidate by email
     /// </summary>
     /// <param name="email"></param>
-    /// <returns>Single ApplicantDto</returns>
-    Task<ApplicantDto> GetApplicantByEmail(string email);
+    /// <returns>Single CandidateDto</returns>
+    Task<CandidateDto> GetCandidateByEmail(string email);
 
     /// <summary>
-    ///     Updates an applicant
+    ///     Updates an candidate
     /// </summary>
-    /// <param name="applicantDto"></param>
-    /// <returns>The updated applicantDto</returns>
-    Task<ApplicantDto> UpdateApplicant(ApplicantDto applicantDto);
+    /// <param name="candidateDto"></param>
+    /// <returns>The updated candidateDto</returns>
+    Task<CandidateDto> UpdateCandidate(CandidateDto candidateDto);
 
     /// <summary>
-    ///     Deletes an applicant
+    ///     Deletes an candidate
     /// </summary>
     /// <param name="id"></param>
-    /// <returns>The deleted applicantDto</returns>
-    Task<ApplicantDto> DeleteApplicant(int id);
+    /// <returns>The deleted candidateDto</returns>
+    Task<CandidateDto> DeleteCandidate(int id);
 }

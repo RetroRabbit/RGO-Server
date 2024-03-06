@@ -3,9 +3,9 @@ using ATS.Models.Enums;
 
 namespace RR.Tests.Data.Models.ATS;
 
-public class ApplicantDtoTestData
+public class CandidateDtoTestData
 {
-    public static ApplicantDto ApplicantDto = new ApplicantDto
+    public static CandidateDto CandidateDto = new CandidateDto
     {
         Id = 1,
         Name = "Jane",
@@ -17,7 +17,7 @@ public class ApplicantDtoTestData
         ProfilePicture = ""
     };
     
-    public static ApplicantDto ApplicantDtoTwo = new ApplicantDto
+    public static CandidateDto CandidateDtoTwo = new CandidateDto
     {
         Id = 1,
         Name = "Joe",

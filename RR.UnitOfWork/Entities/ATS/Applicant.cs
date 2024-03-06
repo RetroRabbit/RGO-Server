@@ -6,21 +6,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RR.UnitOfWork.Entities.ATS;
 
-[Table("Applicant")]
-public class Applicant : IModel<ApplicantDto>
+[Table("Candidate")]
+public class Candidate : IModel<CandidateDto>
 {
-    public Applicant() { }
+    public Candidate() { }
 
-    public Applicant(ApplicantDto applicantDto)
+    public Candidate(CandidateDto candidateDto)
     {
-        Id = applicantDto.Id;
-        Name = applicantDto.Name;
-        Surname = applicantDto.Surname;
-        PersonalEmail = applicantDto.PersonalEmail;
-        PotentialLevel = applicantDto.PotentialLevel;
-        JobPosition = applicantDto.JobPosition;
-        LinkedIn = applicantDto.LinkedIn;
-        ProfilePicture = applicantDto.ProfilePicture;
+        Id = candidateDto.Id;
+        Name = candidateDto.Name;
+        Surname = candidateDto.Surname;
+        PersonalEmail = candidateDto.PersonalEmail;
+        PotentialLevel = candidateDto.PotentialLevel;
+        JobPosition = candidateDto.JobPosition;
+        LinkedIn = candidateDto.LinkedIn;
+        ProfilePicture = candidateDto.ProfilePicture;
     }
 
     [Key][Column("id")] public int Id { get; set; }
@@ -39,9 +39,9 @@ public class Applicant : IModel<ApplicantDto>
 
     [Column("profilePicture")] public string? ProfilePicture { get; set; }
 
-    public ApplicantDto ToDto()
+    public CandidateDto ToDto()
     {
-        return new ApplicantDto
+        return new CandidateDto
         {
             Id = this.Id,
             Name = this.Name,

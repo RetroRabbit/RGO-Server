@@ -10,46 +10,46 @@ using Xunit;
 
 namespace RR.App.Tests.Controllers.ATS;
 
-public class ApplicantControllerUnitTest
+public class CandidateControllerUnitTest
 {
-    private readonly Mock<IApplicantService> _mockApplicantService;
-    private readonly ApplicantController _controller;
+    private readonly Mock<ICandidateService> _mockCandidateService;
+    private readonly CandidateController _controller;
     private readonly Mock<IUnitOfWork> _dbMock;
 
-    public ApplicantControllerUnitTest()
+    public CandidateControllerUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _mockApplicantService = new Mock<IApplicantService>();
-        _controller = new ApplicantController(_mockApplicantService.Object);
+        _mockCandidateService = new Mock<ICandidateService>();
+        _controller = new CandidateController(_mockCandidateService.Object);
     }
 
     [Fact]
     public async Task AddAppliantPass()
     {
-        _mockApplicantService
+        _mockCandidateService
             .Setup(service => service
-                .SaveApplicant(ApplicantDtoTestData.ApplicantDto))
-            .ReturnsAsync(ApplicantDtoTestData.ApplicantDto);
+                .SaveCandidate(CandidateDtoTestData.CandidateDto))
+            .ReturnsAsync(CandidateDtoTestData.CandidateDto);
 
-        var controllerResult = await _controller.AddApplicant(ApplicantDtoTestData.ApplicantDto);
+        var controllerResult = await _controller.AddCandidate(CandidateDtoTestData.CandidateDto);
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
-        ApplicantDto? newApplicant = actionResult.Value as ApplicantDto;
+        CandidateDto? newCandidate = actionResult.Value as CandidateDto;
 
-        Assert.NotNull(newApplicant);
-        Assert.Equal(ApplicantDtoTestData.ApplicantDto, newApplicant);
+        Assert.NotNull(newCandidate);
+        Assert.Equal(CandidateDtoTestData.CandidateDto, newCandidate);
     }
 
     [Fact]
-    public async Task AddApplicantFailUserExists()
+    public async Task AddCandidateFailUserExists()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-               .SaveApplicant(ApplicantDtoTestData.ApplicantDto))
+               .SaveCandidate(CandidateDtoTestData.CandidateDto))
            .ThrowsAsync(new Exception("User Exists"));
 
         var controllerResult = await _controller
-            .AddApplicant(ApplicantDtoTestData.ApplicantDto);
+            .AddCandidate(CandidateDtoTestData.CandidateDto);
 
         var objectResult = Assert.IsType<ConflictObjectResult>(controllerResult);
 
@@ -58,15 +58,15 @@ public class ApplicantControllerUnitTest
     }
     
     [Fact]
-    public async Task AddApplicantFailUserInternalError()
+    public async Task AddCandidateFailUserInternalError()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-               .SaveApplicant(ApplicantDtoTestData.ApplicantDto))
+               .SaveCandidate(CandidateDtoTestData.CandidateDto))
            .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller
-            .AddApplicant(ApplicantDtoTestData.ApplicantDto);
+            .AddCandidate(CandidateDtoTestData.CandidateDto);
 
         var objectResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
 
@@ -74,29 +74,29 @@ public class ApplicantControllerUnitTest
     }
 
     [Fact]
-    public async Task GetAllApplicantsPass()
+    public async Task GetAllCandidatesPass()
     {
-        _mockApplicantService
-            .Setup(service => service.GetAllApplicants())
-        .ReturnsAsync(new List<ApplicantDto> { 
-            ApplicantDtoTestData.ApplicantDto,
-            ApplicantDtoTestData.ApplicantDtoTwo
+        _mockCandidateService
+            .Setup(service => service.GetAllCandidates())
+        .ReturnsAsync(new List<CandidateDto> { 
+            CandidateDtoTestData.CandidateDto,
+            CandidateDtoTestData.CandidateDtoTwo
         });
 
         var controllerResult = await _controller.GetAll();
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
-        List<ApplicantDto>? fetchedApplicants = actionResult.Value as List<ApplicantDto>;
+        List<CandidateDto>? fetchedCandidates = actionResult.Value as List<CandidateDto>;
 
-        Assert.NotNull(fetchedApplicants);
-        Assert.Equal(2, fetchedApplicants.Count);
+        Assert.NotNull(fetchedCandidates);
+        Assert.Equal(2, fetchedCandidates.Count);
     }
 
     [Fact]
-    public async Task GetAllApplicantsFail()
+    public async Task GetAllCandidatesFail()
     {
-        _mockApplicantService
-            .Setup(service => service.GetAllApplicants())
+        _mockCandidateService
+            .Setup(service => service.GetAllCandidates())
         .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller.GetAll();
@@ -107,32 +107,32 @@ public class ApplicantControllerUnitTest
     }
 
     [Fact]
-    public async Task GetApplicantByIdPass()
+    public async Task GetCandidateByIdPass()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-               .GetApplicantById(ApplicantDtoTestData.ApplicantDto.Id))
-           .ReturnsAsync(ApplicantDtoTestData.ApplicantDto);
+               .GetCandidateById(CandidateDtoTestData.CandidateDto.Id))
+           .ReturnsAsync(CandidateDtoTestData.CandidateDto);
         
         var controllerResult = await _controller
-            .GetById(ApplicantDtoTestData.ApplicantDto.Id);
+            .GetById(CandidateDtoTestData.CandidateDto.Id);
 
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
         Assert.NotNull(actionResult.Value);
-        Assert.Equal(ApplicantDtoTestData.ApplicantDto, actionResult.Value);
+        Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
     }
 
     [Fact]
-    public async Task GetApplicantByIdFailNotFound()
+    public async Task GetCandidateByIdFailNotFound()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-               .GetApplicantById(ApplicantDtoTestData.ApplicantDto.Id))
+               .GetCandidateById(CandidateDtoTestData.CandidateDto.Id))
            .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller
-            .GetById(ApplicantDtoTestData.ApplicantDto.Id);
+            .GetById(CandidateDtoTestData.CandidateDto.Id);
 
         var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
 
@@ -140,32 +140,32 @@ public class ApplicantControllerUnitTest
     }
     
     [Fact]
-    public async Task GetApplicantByEmailPass()
+    public async Task GetCandidateByEmailPass()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-               .GetApplicantByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail))
-           .ReturnsAsync(ApplicantDtoTestData.ApplicantDto);
+               .GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail))
+           .ReturnsAsync(CandidateDtoTestData.CandidateDto);
         
         var controllerResult = await _controller
-            .GetByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail);
+            .GetByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
 
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
         Assert.NotNull(actionResult.Value);
-        Assert.Equal(ApplicantDtoTestData.ApplicantDto, actionResult.Value);
+        Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
     }
 
     [Fact]
-    public async Task GetApplicantByIdEmaiFaillNotFound()
+    public async Task GetCandidateByIdEmaiFaillNotFound()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-               .GetApplicantByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail))
+               .GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail))
            .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller
-            .GetByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail);
+            .GetByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
 
         var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
 
@@ -173,32 +173,32 @@ public class ApplicantControllerUnitTest
     }
 
     [Fact]
-    public async Task UpdateApplicantPass()
+    public async Task UpdateCandidatePass()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-                .UpdateApplicant(ApplicantDtoTestData.ApplicantDto))
-           .ReturnsAsync(ApplicantDtoTestData.ApplicantDtoTwo);
+                .UpdateCandidate(CandidateDtoTestData.CandidateDto))
+           .ReturnsAsync(CandidateDtoTestData.CandidateDtoTwo);
 
         var controllerResult = await _controller
-            .UpdateApplicant(ApplicantDtoTestData.ApplicantDto);
+            .UpdateCandidate(CandidateDtoTestData.CandidateDto);
 
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
         Assert.NotNull(actionResult.Value);
-        Assert.Equal(ApplicantDtoTestData.ApplicantDtoTwo, actionResult.Value);
+        Assert.Equal(CandidateDtoTestData.CandidateDtoTwo, actionResult.Value);
     }
 
     [Fact]
-    public async Task UpdateApplicantFail()
+    public async Task UpdateCandidateFail()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-               .UpdateApplicant(ApplicantDtoTestData.ApplicantDto))
+               .UpdateCandidate(CandidateDtoTestData.CandidateDto))
            .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller
-            .UpdateApplicant(ApplicantDtoTestData.ApplicantDto);
+            .UpdateCandidate(CandidateDtoTestData.CandidateDto);
 
         var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
 
@@ -206,32 +206,32 @@ public class ApplicantControllerUnitTest
     }
 
     [Fact]
-    public async Task DeleteApplicantPass()
+    public async Task DeleteCandidatePass()
     {
-        _mockApplicantService
+        _mockCandidateService
            .Setup(service => service
-                .DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id))
-           .ReturnsAsync(ApplicantDtoTestData.ApplicantDto);
+                .DeleteCandidate(CandidateDtoTestData.CandidateDto.Id))
+           .ReturnsAsync(CandidateDtoTestData.CandidateDto);
 
         var controllerResult = await _controller
-            .DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id);
+            .DeleteCandidate(CandidateDtoTestData.CandidateDto.Id);
 
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
         Assert.NotNull(actionResult.Value);
-        Assert.Equal(ApplicantDtoTestData.ApplicantDto, actionResult.Value);
+        Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
     }
 
     [Fact]
-    public async Task DeleteApplicantFail()
+    public async Task DeleteCandidateFail()
     {
-        _mockApplicantService
+        _mockCandidateService
             .Setup(service =>
-                service.DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id))
+                service.DeleteCandidate(CandidateDtoTestData.CandidateDto.Id))
             .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller
-            .DeleteApplicant(ApplicantDtoTestData.ApplicantDto.Id);
+            .DeleteCandidate(CandidateDtoTestData.CandidateDto.Id);
 
         var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
 

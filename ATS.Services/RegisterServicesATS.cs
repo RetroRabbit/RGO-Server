@@ -8,6 +8,6 @@ public static class RegisterServicesATSExtension
 {
     public static void RegisterServicesATS(this IServiceCollection services)
     {
-        services.AddScoped<IApplicantService, ApplicantService>();
+        services.AddScoped<ICandidateService, CandidateService>();
     }
 }
