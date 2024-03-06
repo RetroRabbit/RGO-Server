@@ -33,7 +33,9 @@ public class ApplicantControllerUnitTest
 
         var controllerResult = await _controller.AddApplicant(ApplicantDtoTestData.ApplicantDto);
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+
         ApplicantDto? newApplicant = actionResult.Value as ApplicantDto;
+
         Assert.NotNull(newApplicant);
         Assert.Equal(ApplicantDtoTestData.ApplicantDto, newApplicant);
     }
@@ -48,7 +50,9 @@ public class ApplicantControllerUnitTest
 
         var controllerResult = await _controller
             .AddApplicant(ApplicantDtoTestData.ApplicantDto);
+
         var objectResult = Assert.IsType<ConflictObjectResult>(controllerResult);
+
         Assert.Equal(objectResult.StatusCode, 409);
         Assert.Equal(objectResult.Value, "User Exists");
     }
@@ -65,6 +69,7 @@ public class ApplicantControllerUnitTest
             .AddApplicant(ApplicantDtoTestData.ApplicantDto);
 
         var objectResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
+
         Assert.Equal(objectResult.StatusCode, 400);
     }
 
@@ -80,9 +85,77 @@ public class ApplicantControllerUnitTest
 
         var controllerResult = await _controller.GetAll();
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+
         List<ApplicantDto>? fetchedApplicants = actionResult.Value as List<ApplicantDto>;
+
         Assert.NotNull(fetchedApplicants);
         Assert.Equal(2, fetchedApplicants.Count);
+    }
+
+    [Fact]
+    public async Task GetApplicantByIdPass()
+    {
+        _mockApplicantService
+           .Setup(service => service
+               .GetApplicantById(ApplicantDtoTestData.ApplicantDto.Id))
+           .ReturnsAsync(ApplicantDtoTestData.ApplicantDto);
+        
+        var controllerResult = await _controller
+            .GetById(ApplicantDtoTestData.ApplicantDto.Id);
+
+        var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(ApplicantDtoTestData.ApplicantDto, actionResult.Value);
+    }
+
+    [Fact]
+    public async Task GetApplicantByIdFailNotFound()
+    {
+        _mockApplicantService
+           .Setup(service => service
+               .GetApplicantById(ApplicantDtoTestData.ApplicantDto.Id))
+           .ThrowsAsync(new Exception());
+
+        var controllerResult = await _controller
+            .GetById(ApplicantDtoTestData.ApplicantDto.Id);
+
+        var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
+
+        Assert.Equal(404, actionResult.StatusCode);
+    }
+    
+    [Fact]
+    public async Task GetApplicantByEmailPass()
+    {
+        _mockApplicantService
+           .Setup(service => service
+               .GetApplicantByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail))
+           .ReturnsAsync(ApplicantDtoTestData.ApplicantDto);
+        
+        var controllerResult = await _controller
+            .GetByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail);
+
+        var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(ApplicantDtoTestData.ApplicantDto, actionResult.Value);
+    }
+
+    [Fact]
+    public async Task GetApplicantByIdEmailNotFound()
+    {
+        _mockApplicantService
+           .Setup(service => service
+               .GetApplicantByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail))
+           .ThrowsAsync(new Exception());
+
+        var controllerResult = await _controller
+            .GetByEmail(ApplicantDtoTestData.ApplicantDto.PersonalEmail);
+
+        var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
+
+        Assert.Equal(404, actionResult.StatusCode);
     }
 }
 
