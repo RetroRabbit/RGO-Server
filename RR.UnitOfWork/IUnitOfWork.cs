@@ -1,5 +1,6 @@
 using Npgsql;
 using RR.UnitOfWork.Interfaces;
+using RR.UnitOfWork.Interfaces.ATS;
 using RR.UnitOfWork.Interfaces.HRIS;
 
 namespace RR.UnitOfWork;

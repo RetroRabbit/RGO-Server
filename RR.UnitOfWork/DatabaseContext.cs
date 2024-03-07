@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork.Entities.HRIS;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using RR.UnitOfWork.Entities;
+using RR.UnitOfWork.Entities.ATS;
 
 namespace RR.UnitOfWork;
 
