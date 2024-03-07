@@ -55,7 +55,49 @@ namespace RR.App.Tests.Controllers
                     services.AddScoped<IClientService, ClientService>();
                 });
             }).CreateClient();
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<DatabaseContext>();
+
+                // Add sample data
+                context.clients.Add(new Client { Id = 1, Name = "Client1" });
+                context.clients.Add(new Client { Id = 2, Name = "Client2" });
+                context.SaveChanges();
+            }
+
+            //SeedDatabase();
         }
+        /*private void SeedDatabase()
+        {
+            using var scope = _factory.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<DatabaseContext>();
+
+            // Add some sample data to the in-memory database
+            *//*context.clients.Add(new Client { Id = 1, Name = "Client1" });*//*
+
+            var clients = new List<ClientDto>
+            {
+                new ClientDto { Id = 1, Name = "Client1"},
+                new ClientDto { Id = 2, Name = "Client2"}
+            };
+
+            foreach (var clientDto in clients)
+            {
+                var client = new Client
+                {
+                    Id = clientDto.Id,
+                    Name = clientDto.Name
+                };
+
+                context.clients.Add(client);
+            }
+
+            context.SaveChanges();
+
+        }*/
 
         [Fact(Skip = "Fixing this test")]
         public async Task GetAllClients_ReturnsOkResult()
