@@ -586,4 +586,4 @@ FodyWeavers.xsd
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
-RGO.UnitOfWork/Migrations/*
+RR.UnitOfWork/Migrations/*
