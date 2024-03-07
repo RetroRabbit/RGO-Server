@@ -64,8 +64,8 @@ public class PropertyAccessController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("test-prop")]
-    public async Task<IActionResult> test()
+    [HttpGet("seed-prop")]
+    public async Task<IActionResult> Seed()
     {
         try
         {

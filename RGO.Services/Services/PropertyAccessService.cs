@@ -44,7 +44,7 @@ public class PropertyAccessService : IPropertyAccessService
 
     public async Task<List<PropertyAccessDto>> GetAll()
     {
-        return await _db.PropertyAccess.GetAll();
+        return await _db.PropertyAccess.Get().Include(p => p.Role).Select(p => p.ToDto()).ToListAsync();
     }
 
     public async Task UpdatePropertyAccess(int propertyId, PropertyAccessLevel propertyAccess)
@@ -81,7 +81,7 @@ public class PropertyAccessService : IPropertyAccessService
                             Role = role,
                             Table = table,
                             Field = column,
-                            AccessLevel = PropertyAccessLevel.read
+                            AccessLevel = PropertyAccessLevel.write
                         };
                         properties.Add(new PropertyAccess(propertyAccess));
                     }
