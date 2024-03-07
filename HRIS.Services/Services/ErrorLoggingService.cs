@@ -34,7 +34,7 @@ public class ErrorLoggingService : IErrorLoggingService
         .Select(errorLog => errorLog.ToDto())
         .FirstAsync();
 
-    public async void SaveErrorLog(ErrorLoggingDto errorLog)
+    public async Task SaveErrorLog(ErrorLoggingDto errorLog)
     {
         ErrorLogging newErroLog = new ErrorLogging(errorLog);
         await _db.ErrorLogging.Add(newErroLog);
@@ -42,15 +42,19 @@ public class ErrorLoggingService : IErrorLoggingService
 
     public Exception LogException(Exception exception)
     {
+        DateTime utcNow = DateTime.UtcNow;
+        TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+        DateTime targetLocalTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, targetTimeZone);
         DateTime localDateTime = DateTime.Now;
         DateTime utcDateTime = localDateTime.ToUniversalTime();
 
         ErrorLoggingDto errorLog = new ErrorLoggingDto
         {
-            dateOfIncident = utcDateTime,
+            dateOfIncident = targetLocalTime,
             message = exception.Message,
             stackTrace = JsonConvert.SerializeObject(exception)!
-    };
+        };
+
         SaveErrorLog(errorLog);
         return exception;
     }

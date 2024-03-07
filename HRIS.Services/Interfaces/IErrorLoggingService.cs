@@ -21,7 +21,7 @@ namespace HRIS.Services.Interfaces
         /// </summary>
         /// <param name="errorLoggingDto"></param>
         /// <returns>The new ErrorLoggingDto</returns>
-        void SaveErrorLog(ErrorLoggingDto errorLoggingDto);
+        Task SaveErrorLog(ErrorLoggingDto errorLoggingDto);
 
         /// <summary>
         ///     Returns a list of all errorlogs
