@@ -42,7 +42,7 @@ namespace RR.App.Tests.Controllers
             {
                 builder.ConfigureAppConfiguration((context, config) =>
                 {
-                    config.AddJsonFile("secrets.json", optional: false, reloadOnChange: true);
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                 });
                 builder.ConfigureTestServices(services =>
                 {
@@ -57,7 +57,7 @@ namespace RR.App.Tests.Controllers
             }).CreateClient();
         }
 
-        /*[Fact]
+        [Fact(Skip = "Fixing this test")]
         public async Task GetAllClients_ReturnsOkResult()
         {
             var response = await _client.GetAsync("/clients");
@@ -72,6 +72,6 @@ namespace RR.App.Tests.Controllers
             var response = await _client.GetAsync("/clients");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }*/
+        }
     }
 }
