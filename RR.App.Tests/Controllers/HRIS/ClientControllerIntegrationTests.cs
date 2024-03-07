@@ -56,7 +56,7 @@ namespace RR.App.Tests.Controllers
                 });
             }).CreateClient();
 
-            using (var scope = _factory.Services.CreateScope())
+            /*using (var scope = _factory.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<DatabaseContext>();
@@ -65,7 +65,7 @@ namespace RR.App.Tests.Controllers
                 context.clients.Add(new Client { Id = 1, Name = "Client1" });
                 context.clients.Add(new Client { Id = 2, Name = "Client2" });
                 context.SaveChanges();
-            }
+            }*/
 
             //SeedDatabase();
         }
