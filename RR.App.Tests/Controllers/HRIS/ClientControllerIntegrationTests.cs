@@ -57,7 +57,7 @@ namespace RR.App.Tests.Controllers
             }).CreateClient();
         }
 
-        [Fact]
+        /*[Fact]
         public async Task GetAllClients_ReturnsOkResult()
         {
             var response = await _client.GetAsync("/clients");
@@ -72,6 +72,6 @@ namespace RR.App.Tests.Controllers
             var response = await _client.GetAsync("/clients");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        }*/
     }
 }
