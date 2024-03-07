@@ -1,6 +1,7 @@
 ﻿using ATS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities;
 
@@ -48,8 +49,8 @@ public class ErrorLoggingService : IErrorLoggingService
         {
             dateOfIncident = utcDateTime,
             message = exception.Message,
-            stackTrace = exception.ToString(),
-        };
+            stackTrace = JsonConvert.SerializeObject(exception)!
+    };
         SaveErrorLog(errorLog);
         return exception;
     }
