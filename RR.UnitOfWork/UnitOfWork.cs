@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Interfaces;
+using RR.UnitOfWork.Interfaces.ATS;
 using RR.UnitOfWork.Interfaces.HRIS;
 using RR.UnitOfWork.Repositories;
+using RR.UnitOfWork.Repositories.ATS;
 using RR.UnitOfWork.Repositories.HRIS;
 
 namespace RR.UnitOfWork;
