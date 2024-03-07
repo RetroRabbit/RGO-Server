@@ -1,4 +1,4 @@
-﻿namespace RR.UnitOfWork.Interfaces.HRIS;
+﻿namespace RR.UnitOfWork.Interfaces;
 
 public interface IModel<T>
 {
