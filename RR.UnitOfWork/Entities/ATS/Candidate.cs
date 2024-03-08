@@ -39,13 +39,13 @@ public class Candidate : IModel<CandidateDto>
         QualificationEndDate = candidateDto.QualificationEndDate;
     }
 
-    [Key][Column("id")] public required int Id { get; set; }
+    [Key][Column("id")] public int Id { get; set; }
 
-    [Column("name")] public required string Name { get; set; }
+    [Column("name")] public string Name { get; set; }
 
-    [Column("surname")] public required string Surname { get; set; }
+    [Column("surname")] public string Surname { get; set; }
 
-    [Column("personalEmail")] public required string PersonalEmail { get; set; }
+    [Column("personalEmail")] public string PersonalEmail { get; set; }
 
     [Column("potentialLevel")] public int PotentialLevel { get; set; }
 
@@ -55,11 +55,11 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("profilePicture")] public string? ProfilePicture { get; set; }
 
-    [Column("cellphone")] public required string CellphoneNumber {  get; set; }
+    [Column("cellphone")] public string CellphoneNumber {  get; set; }
 
     [Column("location")] public string? Location { get; set; }
 
-    [Column("cv")] public required string CV { get; set; }
+    [Column("cv")] public string CV { get; set; }
 
     [Column("portfolioLink")] public string? PortfolioLink { get; set; }
 
