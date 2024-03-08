@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
@@ -14,12 +15,14 @@ namespace RGO.Tests.Services;
 public class EmployeeRoleServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeRoleService _employeeRoleService;
 
     public EmployeeRoleServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeRoleService = new EmployeeRoleService(_dbMock.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _employeeRoleService = new EmployeeRoleService(_dbMock.Object, _errorLoggingServiceMock.Object);
     }
 
     [Fact]
@@ -101,6 +104,8 @@ public class EmployeeRoleServiceUnitTest
                .Returns(Task.FromResult(employeeRoleList[1].ToDto())!)
                .Returns(Task.FromResult(employeeRoleList[2].ToDto())!)
                .Returns(Task.FromResult(employeeRoleList[3].ToDto())!);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
         {
@@ -185,6 +190,8 @@ public class EmployeeRoleServiceUnitTest
                                                         .Select(e => e.ToDto()).FirstOrDefault())!)
                .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role!.Description == roleList[1].Description)
                                                         .Select(e => e.ToDto()).FirstOrDefault())!);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         var result1 = await _employeeRoleService.DeleteEmployeeRole(Email, roleList[0].Description!);
 

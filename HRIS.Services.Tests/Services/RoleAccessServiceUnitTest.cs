@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
@@ -13,13 +14,15 @@ namespace RGO.Tests.Services;
 public class RoleAccessServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly RoleAccessDto _roleAccessDto;
     private readonly RoleAccessService _roleAccessService;
 
     public RoleAccessServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _roleAccessService = new RoleAccessService(_dbMock.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _roleAccessService = new RoleAccessService(_dbMock.Object, _errorLoggingServiceMock.Object);
         _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmplopyee", Grouping = "Employee Data" };
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
@@ -12,13 +13,17 @@ namespace HRIS.Services.Tests.Services;
 public class EmployeeAddressServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeAddressService _employeeAddressService;
     //private readonly EmployeeDto? _employeeDto;
+    private readonly IErrorLoggingService _errorLoggingService;
 
     public EmployeeAddressServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeAddressService = new EmployeeAddressService(_dbMock.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _employeeAddressService = new EmployeeAddressService(_dbMock.Object, _errorLoggingServiceMock.Object);
+        _errorLoggingService = new ErrorLoggingService(_dbMock.Object);
     }
 
     private EmployeeAddressDto CreateAddress(int id = 0)
@@ -78,6 +83,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(1);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
         _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(false);
 
@@ -128,6 +134,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(1);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
         _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
         _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(true);
@@ -152,6 +159,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(1);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
         _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddressDto?)null);
 
         await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Update(address));
