@@ -3,6 +3,7 @@ using ATS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using MockQueryable.Moq;
 using Moq;
+using Newtonsoft.Json;
 using RR.Tests.Data.Models.ATS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.ATS;
@@ -79,54 +80,53 @@ namespace ATS.Services.Tests.Services
             .Returns(candidates.AsQueryable().BuildMock());
 
              var serviceResult = await _applicantService.GetCandidateById(CandidateDtoTestData.CandidateDto.Id);
-              //var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
 
              Assert.NotNull(serviceResult);
              Assert.Equivalent(CandidateDtoTestData.CandidateDto, serviceResult);
          }
 
-        /* [Fact]
-         public async Task GetCandidateByEmailPass()
-         {
-             var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
-
+        [Fact]
+        public async Task GetCandidateByEmailPass()
+        {
+            var candidates = new List<Candidate> {
+                 new Candidate(CandidateDtoTestData.CandidateDto)
+             };
+            
              _mockUnitOfWork
-                 .Setup(u => u.Candidate.GetAll(null))
-            .Returns(Task.FromResult(candidates));
+                 .Setup(u => u.Candidate.Get(It.IsAny<Expression<Func<Candidate, bool>>>()))
+            .Returns(candidates.AsQueryable().BuildMock());
 
-             var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
-             var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
+            var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
 
-             Xunit.Assert.NotNull(actionResult.Value);
-             Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
-         }*/
+            Assert.NotNull(serviceResult); 
+            var object1Json = JsonConvert.SerializeObject(serviceResult);
+            var object2Json = JsonConvert.SerializeObject(CandidateDtoTestData.CandidateDto);
 
-        //[Fact]
-        //public async Task UpdateCandidatePass()
-        //{
-        //    _mockUnitOfWork
-        //        .Setup(u => u.Candidate.Update(new Candidate(CandidateDtoTestData.CandidateDto)))
-        //    .ReturnsAsync(CandidateDtoTestData.CandidateDto);
+            Assert.Equal(object1Json, object2Json);
+        }
 
-        //    var serviceResult = await _applicantService.UpdateCandidate(CandidateDtoTestData.CandidateDto);
-        //    var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
+        [Fact]
+        public async Task UpdateCandidatePass()
+        {
+            _mockUnitOfWork.Setup(x => x.Candidate.Update(It.IsAny<Candidate>()))
+                   .Returns(Task.FromResult(CandidateDtoTestData.CandidateDto));
 
-        //    Xunit.Assert.NotNull(actionResult.Value);
-        //    Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
-        //}
+            var serviceResult = await _applicantService.UpdateCandidate(CandidateDtoTestData.CandidateDto);
+            var actionResult = Assert.IsType<CandidateDto>(serviceResult);
 
-        //[Fact]
-        //public async Task DeleteCandidatePass()
-        //{
-        //    _mockUnitOfWork
-        //        .Setup(u => u.Candidate.Add(new Candidate(CandidateDtoTestData.CandidateDto)))
-        //   .ThrowsAsync(new Exception("User Does not Exist"));
+            Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult);
+        }
 
-        //    var serviceResult = await _applicantService.DeleteCandidate(CandidateDtoTestData.CandidateDto.Id);
-        //    var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
+        [Fact]
+        public async Task DeleteCandidatePass()
+        {
+            _mockUnitOfWork.Setup(x => x.Candidate.Delete(It.IsAny<int>()))
+                   .Returns(Task.FromResult(CandidateDtoTestData.CandidateDto));
 
-        //    Xunit.Assert.NotNull(actionResult.Value);
-        //    Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
-        //}
+            var serviceResult = await _applicantService.DeleteCandidate(CandidateDtoTestData.CandidateDto.Id);
+            var actionResult = Assert.IsType<CandidateDto>(serviceResult);
+
+            Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult);
+        }
     }
 }
