@@ -10,6 +10,7 @@ using System.Text;
 using HRIS.Models;
 using HRIS.Services.Services;
 using RabbitMQ.Client;
+using ATS.Services;
 
 namespace RR.App
 {
@@ -64,6 +65,7 @@ namespace RR.App
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(configuration["ConnectionStrings:Default"]));
             builder.Services.RegisterRepository();
             builder.Services.RegisterServicesHRIS();
+            builder.Services.RegisterServicesATS();
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
