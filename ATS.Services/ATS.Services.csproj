@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ATS.Models\ATS.Models.csproj" />
+    <ProjectReference Include="..\RR.UnitOfWork\RR.UnitOfWork.csproj" />
+  </ItemGroup>
+
 </Project>

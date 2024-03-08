@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace RR.UnitOfWork.Interfaces.HRIS;
+namespace RR.UnitOfWork.Interfaces;
 
 public interface IRepository<TK, T> where TK : IModel<T>
 {

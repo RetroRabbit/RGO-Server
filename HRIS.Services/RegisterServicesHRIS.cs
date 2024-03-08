@@ -6,7 +6,7 @@ namespace HRIS.Services;
 
 public static class RegisterServicesExtension
 {
-    public static void RegisterServices(this IServiceCollection services)
+    public static void RegisterServicesHRIS(this IServiceCollection services)
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
