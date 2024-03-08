@@ -12,9 +12,9 @@ public class PropertyAccessUnitTests
 
     public PropertyAccessUnitTests()
     {
-        _role = new RoleDto(0, "Role");
-        _fieldCode = new FieldCodeDto(0, "email01", "Email", "desciption", "@(\\w+).co.za", FieldCodeType.String,
-                                      ItemStatus.Active, true, "Employee", 0, false);
+        //_role = new RoleDto(0, "Role");
+        //_fieldCode = new FieldCodeDto(0, "email01", "Email", "desciption", "@(\\w+).co.za", FieldCodeType.String,
+        //                              ItemStatus.Active, true, "Employee", 0, false);
     }
 
     //public PropertyAccess CreatePropertyAccess(RoleDto? role = null, FieldCodeDto? fieldCode = null)

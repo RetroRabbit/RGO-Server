@@ -5,5 +5,4 @@ namespace RR.UnitOfWork.Interfaces.HRIS;
 
 public interface IPropertyAccessRepository : IRepository<PropertyAccess, PropertyAccessDto>
 {
-    //Task<List<PropertyAccessDto>> GetForEmployee(string email);
 }
