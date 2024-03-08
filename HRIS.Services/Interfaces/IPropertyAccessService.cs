@@ -10,32 +10,33 @@ public interface IPropertyAccessService
     ///// <summary>
     /////     Get's all the Property that a user has access to
     ///// </summary>
-    ///// <param name="email"></param>
+    ///// <param name="employeeId"></param>
     ///// <returns>dictionary of properties with the access level for selected user</returns>
     Task<List<PropertyAccessDto>> GetAccessListByEmployeeId(int employeeId);
     ///// <summary>
-    /////     Get's all the Property that a user has access to
+    /////     Get's all the Property that a user has access to based on role
     ///// </summary>
     ///// <param name="email"></param>
     ///// <returns>dictionary of properties with the access level for selected user</returns>
     Task<List<PropertyAccessDto>> GetAccessListByRoleId(int roleId);
     ///// <summary>
-    /////     Get's all the Property that a user has access to
+    /////     Get's all the Properties
     ///// </summary>
-    ///// <param name="email"></param>
-    ///// <returns>dictionary of properties with the access level for selected user</returns>
+    ///// <param name=""></param>
+    ///// <returns>dictionary of properties with the access level for all user</returns>
     Task<List<PropertyAccessDto>> GetAll();
     ///// <summary>
-    /////     Get's all the Property that a user has access to
+    /////     updates a single properties access level
     ///// </summary>
-    ///// <param name="email"></param>
-    ///// <returns>dictionary of properties with the access level for selected user</returns>
+    ///// <param name="propertyId"></param>
+    ///// <param name="propertyAccess"></param>
+    ///// <returns></returns>
     Task UpdatePropertyAccess(int propertyId, PropertyAccessLevel propertyAccess);
     ///// <summary>
-    /////     Get's all the Property that a user has access to
+    /////    Creates all properties and updates if a new table is added to the list
     ///// </summary>
     ///// <param name="email"></param>
-    ///// <returns>dictionary of properties with the access level for selected user</returns>
+    ///// <returns></returns>
     Task CreatePropertyAccessEntries();
 
 }
