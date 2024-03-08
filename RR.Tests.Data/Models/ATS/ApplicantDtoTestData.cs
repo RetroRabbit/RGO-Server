@@ -19,7 +19,7 @@ public class CandidateDtoTestData
     
     public static CandidateDto CandidateDtoTwo = new CandidateDto
     {
-        Id = 1,
+        Id = 2,
         Name = "Joe",
         Surname = "Doe",
         PersonalEmail = "example.joe@gmail.com",
