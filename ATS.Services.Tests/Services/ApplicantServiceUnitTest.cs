@@ -96,21 +96,21 @@ namespace ATS.Services.Tests.Services
              Assert.Equivalent(CandidateDtoTestData.CandidateDto, serviceResult);
          }
 
-        //[Fact]
-        //public async Task GetCandidateByEmailPass()
-        //{
-        //    var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
+         [Fact]
+         public async Task GetCandidateByEmailPass()
+         {
+             var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
 
-        //    _mockUnitOfWork
-        //        .Setup(u => u.Candidate.GetAll(null))
-        //   .Returns(Task.FromResult(candidates));
+             _mockUnitOfWork
+                 .Setup(u => u.Candidate.GetAll(null))
+            .Returns(Task.FromResult(candidates));
 
-        //    var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
-        //    var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
+             var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
+             var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
 
-        //    Xunit.Assert.NotNull(actionResult.Value);
-        //    Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
-        //}
+             Xunit.Assert.NotNull(actionResult.Value);
+             Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
+         }
 
         //[Fact]
         //public async Task UpdateCandidatePass()
