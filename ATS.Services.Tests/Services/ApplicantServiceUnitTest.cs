@@ -1,14 +1,13 @@
-﻿using ATS.Services.Services;
+﻿using ATS.Models;
+using ATS.Services.Services;
+using Microsoft.AspNetCore.Mvc;
+using MockQueryable.Moq;
 using Moq;
 using RR.Tests.Data.Models.ATS;
 using RR.UnitOfWork;
-using Xunit;
 using RR.UnitOfWork.Entities.ATS;
-using ATS.Models;
-using Microsoft.AspNetCore.Mvc;
-using HRIS.Models;
 using System.Linq.Expressions;
-using RR.UnitOfWork.Entities.HRIS;
+using Xunit;
 
 namespace ATS.Services.Tests.Services
 {
@@ -68,37 +67,39 @@ namespace ATS.Services.Tests.Services
             Xunit.Assert.Equal(2, fetchedCandidates.Count);
         }
 
-        //[Fact]
-        //public async Task GetCandidateByIdPass()
-        //{
-        //    var candidates = new List<Candidate> { new Candidate(CandidateDtoTestData.CandidateDto) };
+         [Fact]
+         public async Task GetCandidateByIdPass()
+         {
+             var candidates = new List<Candidate> { 
+                 new Candidate(CandidateDtoTestData.CandidateDto)
+             };
 
-        //    _mockUnitOfWork
-        //        .Setup(u => u.Candidate.Get(It.IsAny<Expression<Func<Candidate, bool>>>()))
-        //       .Returns(Task.FromResult(candidates));
+             _mockUnitOfWork
+                 .Setup(u => u.Candidate.Get(It.IsAny<Expression<Func<Candidate, bool>>>()))
+            .Returns(candidates.AsQueryable().BuildMock());
 
-        //    var serviceResult = await _applicantService.GetCandidateById(CandidateDtoTestData.CandidateDto.Id);
-        //    //var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
+             var serviceResult = await _applicantService.GetCandidateById(CandidateDtoTestData.CandidateDto.Id);
+              //var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
 
-        //    Xunit.Assert.NotNull(serviceResult);
-        //    Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, serviceResult);
-        //}
+             Assert.NotNull(serviceResult);
+             Assert.Equivalent(CandidateDtoTestData.CandidateDto, serviceResult);
+         }
 
-        //[Fact]
-        //public async Task GetCandidateByEmailPass()
-        //{
-        //    var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
+        /* [Fact]
+         public async Task GetCandidateByEmailPass()
+         {
+             var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
 
-        //    _mockUnitOfWork
-        //        .Setup(u => u.Candidate.GetAll(null))
-        //   .Returns(Task.FromResult(candidates));
+             _mockUnitOfWork
+                 .Setup(u => u.Candidate.GetAll(null))
+            .Returns(Task.FromResult(candidates));
 
-        //    var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
-        //    var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
+             var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
+             var actionResult = Xunit.Assert.IsType<OkObjectResult>(serviceResult);
 
-        //    Xunit.Assert.NotNull(actionResult.Value);
-        //    Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
-        //}
+             Xunit.Assert.NotNull(actionResult.Value);
+             Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
+         }*/
 
         //[Fact]
         //public async Task UpdateCandidatePass()
