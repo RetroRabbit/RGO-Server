@@ -29,7 +29,7 @@ public class Candidate : IModel<CandidateDto>
         PortfolioPdf = candidateDto.PortfolioPdf;
         Gender = candidateDto.Gender;
         Race = candidateDto.Race;
-        ID = candidateDto.ID;
+        IdNumber = candidateDto.IdNumber;
         Referral = candidateDto.Referral;
         HighestQualification = candidateDto.HighestQualification;
         School = candidateDto.School;
@@ -69,7 +69,7 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("race")] public Race Race { get; set; }
 
-    [Column("id")] public string? ID { get; set; }
+    [Column("idNumber")] public string? IdNumber { get; set; }
 
     [Column("referral")] public int Referral {  get; set; }
 
@@ -105,7 +105,7 @@ public class Candidate : IModel<CandidateDto>
             PortfolioPdf = this.PortfolioPdf,
             Gender = this.Gender,
             Race = this.Race,
-            ID = this.ID,
+            IdNumber = this.IdNumber,
             Referral = this.Referral,
             HighestQualification = this.HighestQualification,
             School = this.School,

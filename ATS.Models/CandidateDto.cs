@@ -20,7 +20,7 @@ public class CandidateDto
     public string? PortfolioPdf { get; set; }
     public Gender Gender { get; set; }
     public Race Race { get; set; }
-    public string? ID { get; set; }
+    public string? IdNumber { get; set; }
     public int Referral { get; set; }
     public string? HighestQualification { set; get; }
     public string? School { get; set; }
