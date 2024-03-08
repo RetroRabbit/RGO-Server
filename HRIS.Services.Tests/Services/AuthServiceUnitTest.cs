@@ -29,7 +29,7 @@ public class AuthServiceUnitTest
     private readonly EmployeeType? employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto? employeeTypeDto2;
-    private readonly ErrorLoggingService errorLoggingService;
+    private readonly ErrorLoggingService _errorLoggingService;
 
     private EmployeeTypeService? employeeTypeService;
     
@@ -42,7 +42,7 @@ public class AuthServiceUnitTest
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         _authServiceMock = new Mock<IAuthService>();
-        errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
+        _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
         employeeTypeService = new EmployeeTypeService(_unitOfWork.Object);
         employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
@@ -57,7 +57,7 @@ public class AuthServiceUnitTest
 
         employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
-        _authService = new AuthService(_configuration.Object, _employeeService.Object, _roleAccessLinkService.Object, errorLoggingService);
+        _authService = new AuthService(_configuration.Object, _employeeService.Object, _roleAccessLinkService.Object, _errorLoggingService);
     }
 
     [Fact]
