@@ -41,10 +41,6 @@
     <ProjectReference Include="..\RR.UnitOfWork\RR.UnitOfWork.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\ATS\" />
-  </ItemGroup>
-
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(ConfigurationName) == Debug">
     <Exec Command="node ../Scripts/init.js" />
   </Target>
