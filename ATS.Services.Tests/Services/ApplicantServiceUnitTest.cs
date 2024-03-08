@@ -115,6 +115,8 @@ namespace ATS.Services.Tests.Services
             var actionResult = Assert.IsType<CandidateDto>(serviceResult);
 
             Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult);
+
+            _mockUnitOfWork.Verify(x => x.Candidate.Update(It.IsAny<Candidate>()), Times.Once);
         }
 
         [Fact]
@@ -127,6 +129,8 @@ namespace ATS.Services.Tests.Services
             var actionResult = Assert.IsType<CandidateDto>(serviceResult);
 
             Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult);
+
+            _mockUnitOfWork.Verify(x => x.Candidate.Delete(It.IsAny<int>()), Times.Once);
         }
     }
 }
