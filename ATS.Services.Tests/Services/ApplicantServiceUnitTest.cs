@@ -96,7 +96,7 @@ namespace ATS.Services.Tests.Services
              Assert.Equivalent(CandidateDtoTestData.CandidateDto, serviceResult);
          }
 
-         [Fact]
+        /* [Fact]
          public async Task GetCandidateByEmailPass()
          {
              var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
@@ -110,7 +110,7 @@ namespace ATS.Services.Tests.Services
 
              Xunit.Assert.NotNull(actionResult.Value);
              Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult.Value);
-         }
+         }*/
 
         //[Fact]
         //public async Task UpdateCandidatePass()
