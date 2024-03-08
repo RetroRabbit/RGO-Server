@@ -16,11 +16,12 @@ public class EmployeeBankingServiceTest
     private readonly EmployeeBankingService _employeeBankingService;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     public EmployeeBankingServiceTest()
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
-        _employeeBankingService = new EmployeeBankingService(_mockUnitOfWork.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _employeeBankingService = new EmployeeBankingService(_mockUnitOfWork.Object,_errorLoggingServiceMock.Object);
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
     }
 
@@ -223,6 +224,8 @@ public class EmployeeBankingServiceTest
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roles.AsQueryable().BuildMock());
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized access"));
+
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await _employeeBankingService
@@ -356,6 +359,8 @@ public class EmployeeBankingServiceTest
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roles.AsQueryable().BuildMock());
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized access"));
+
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await _employeeBankingService
@@ -385,6 +390,7 @@ public class EmployeeBankingServiceTest
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.FirstOrDefault(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Throws<Exception>();
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(async () => await _employeeBankingService.GetBanking(2));
     }

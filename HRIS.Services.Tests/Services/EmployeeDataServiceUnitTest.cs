@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
 using RR.UnitOfWork;
@@ -10,6 +11,8 @@ namespace RGO.Tests.Services;
 public class EmployeeDataServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
+
     private readonly EmployeeDataDto _employeeDataDto;
     private readonly EmployeeDataDto _employeeDataDto2;
     private readonly EmployeeDataService _employeeDataService;
@@ -17,7 +20,8 @@ public class EmployeeDataServiceUnitTest
     public EmployeeDataServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeDataService = new EmployeeDataService(_dbMock.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _employeeDataService = new EmployeeDataService(_dbMock.Object, _errorLoggingServiceMock.Object);
         _employeeDataDto = new EmployeeDataDto
         {
             Id = 0,
@@ -33,6 +37,8 @@ public class EmployeeDataServiceUnitTest
             FieldCodeId = 1,
             Value = "string"
         };
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+
     }
 
     [Fact]

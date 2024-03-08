@@ -14,6 +14,7 @@ namespace RGO.Tests.Services;
 public class EmployeeEvaluationAudienceServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeDto _employee;
     private readonly EmployeeEvaluationAudienceService _employeeEvaluationAudienceService;
     private readonly Mock<IEmployeeEvaluationService> _employeeEvaluationServiceMock;
@@ -25,10 +26,11 @@ public class EmployeeEvaluationAudienceServiceUnitTests
         _dbMock = new Mock<IUnitOfWork>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _employeeEvaluationServiceMock = new Mock<IEmployeeEvaluationService>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _employeeEvaluationAudienceService = new EmployeeEvaluationAudienceService(
          _dbMock.Object,
          _employeeServiceMock.Object,
-         _employeeEvaluationServiceMock.Object);
+         _employeeEvaluationServiceMock.Object,_errorLoggingServiceMock.Object);
 
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto
         {
@@ -153,6 +155,8 @@ public class EmployeeEvaluationAudienceServiceUnitTests
                        x.EmployeeEvaluationAudience.Any(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
             .ReturnsAsync(false);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationAudienceService.Get(evaluation.ToDto(), "email"));
     }
 
@@ -196,10 +200,14 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Subject = evaluation.Subject
         };
 
+        
+
         _dbMock
             .Setup(x =>
                        x.EmployeeEvaluationAudience.Any(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
             .ReturnsAsync(false);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationAudienceService.Delete("email", evaluationInput));
     }
@@ -267,6 +275,8 @@ public class EmployeeEvaluationAudienceServiceUnitTests
                        x.EmployeeEvaluationAudience.Any(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
             .ReturnsAsync(true);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationAudienceService.Save(_employee.Email!,
                                              evaluationInput));
     }
@@ -319,6 +329,8 @@ public class EmployeeEvaluationAudienceServiceUnitTests
                        x.EmployeeEvaluationAudience.Any(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
             .ReturnsAsync(false);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationAudienceService
                                                 .Update(evaluationAudience.ToDto()));
     }
@@ -363,6 +375,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     {
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
                             .ReturnsAsync(false);
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationAudienceService.GetAllbyEmployee("email"));
     }
@@ -403,9 +416,9 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Subject = evaluation.Subject
         };
                                                           
-
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(false);
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationAudienceService
                                                 .GetAllbyEvaluation(evaluationInput));
@@ -425,7 +438,6 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Subject = evaluation.Subject
         };
                                                           
-
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(true);
 

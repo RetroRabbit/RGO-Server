@@ -9,10 +9,12 @@ namespace HRIS.Services.Services;
 public class EmployeeCertificationService : IEmployeeCertificationService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeCertificationService(IUnitOfWork db)
+    public EmployeeCertificationService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<EmployeeCertificationDto> SaveEmployeeCertification(
@@ -20,7 +22,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     {
         var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
 
-        if (!ifEmployee) throw new Exception("Employee not found");
+        if (!ifEmployee) 
+        { 
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        } 
 
         var employeeCertification = new EmployeeCertification(employeeCertificationDto);
         var existingCertification = await _db.EmployeeCertification
@@ -33,7 +39,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
                                              .Take(1)
                                              .FirstOrDefaultAsync();
 
-        if (existingCertification != null) throw new Exception("Existing employee certification record found");
+        if (existingCertification != null)
+        {
+            var exception = new Exception("Existing employee certification record found");
+            throw _errorLoggingService.LogException(exception);
+        }
         var newEmployeeCertification = await _db.EmployeeCertification.Add(employeeCertification);
 
         return newEmployeeCertification;
@@ -43,7 +53,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     {
         var ifEmployee = await CheckEmployee(employeeId);
 
-        if (!ifEmployee) throw new Exception("Employee not found");
+        if (!ifEmployee)
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeCertification = await _db.EmployeeCertification
                                              .Get(employeeCertification =>
@@ -55,7 +69,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
                                              .Take(1)
                                              .FirstOrDefaultAsync();
 
-        if (employeeCertification == null) throw new Exception("Employee certification record not found");
+        if (employeeCertification == null)
+        {
+            var exception = new Exception("Employee certification record not found");
+            throw _errorLoggingService.LogException(exception);
+        }
         return employeeCertification;
     }
 
@@ -63,7 +81,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     {
         var ifEmployee = await CheckEmployee(employeeId);
 
-        if (!ifEmployee) throw new Exception("Employee not found");
+        if (!ifEmployee)
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeCertifications = await _db.EmployeeCertification
                                               .Get(employeeCertification =>
@@ -73,7 +95,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
                                               .Select(employeeCertification => employeeCertification.ToDto())
                                               .ToListAsync();
 
-        if (employeeCertifications == null) throw new Exception("Employee certification records not found");
+        if (employeeCertifications == null)
+        {
+            var exception = new Exception("Employee certification records not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         return employeeCertifications;
     }
@@ -83,7 +109,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     {
         var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
 
-        if (!ifEmployee) throw new Exception("Employee not found");
+        if (!ifEmployee)
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
         var employeeCertification = new EmployeeCertification(employeeCertificationDto);
         var updatedEmployeeCertification = await _db.EmployeeCertification.Update(employeeCertification);
 
@@ -95,7 +125,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     {
         var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
 
-        if (!ifEmployee) throw new Exception("Employee not found");
+        if (!ifEmployee)
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeCertification = new EmployeeCertification(employeeCertificationDto);
         var deletedEmployeeCertification = await _db.EmployeeCertification.Delete(employeeCertification.Id);

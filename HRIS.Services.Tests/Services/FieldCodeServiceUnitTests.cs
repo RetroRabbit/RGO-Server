@@ -14,6 +14,7 @@ namespace RGO.Tests.Services;
 public class FieldCodeServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly FieldCodeDto _fieldCodeDto;
     private readonly FieldCodeDto _fieldCodeDto2;
     private readonly FieldCodeDto _fieldCodeDto3;
@@ -26,6 +27,7 @@ public class FieldCodeServiceUnitTests
     public FieldCodeServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _fieldCodeOptionsService = new Mock<IFieldCodeOptionsService>();
 
         _fieldCodeDto = new FieldCodeDto
@@ -90,7 +92,7 @@ public class FieldCodeServiceUnitTests
 
         _fieldCodeOptionsDto = new FieldCodeOptionsDto{ Id = 1, FieldCodeId = 1, Option = "string" };
         _fieldCodeOptionsDto2 = new FieldCodeOptionsDto{ Id = 2, FieldCodeId = 1, Option = "string" };
-        _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object);
+        _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object, _errorLoggingServiceMock.Object);
     }
 
     [Fact]
@@ -223,6 +225,8 @@ public class FieldCodeServiceUnitTests
     [Fact]
     public async Task GetByCategoryFail()
     {
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         var invalid = 3;
         await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.GetByCategory(invalid));
 
