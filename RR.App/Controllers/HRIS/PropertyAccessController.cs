@@ -11,15 +11,17 @@ namespace RR.App.Controllers.HRIS;
 public class PropertyAccessController : ControllerBase
 {
     private readonly IPropertyAccessService _propertyAccessService;
+    private readonly IEmployeeService _employeeService;
 
-    public PropertyAccessController(IPropertyAccessService propertyAccessService)
+    public PropertyAccessController(IPropertyAccessService propertyAccessService,IEmployeeService employeeService)
     {
         _propertyAccessService = propertyAccessService;
+        _employeeService = employeeService;
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("role-access")]
-    public async Task<IActionResult> GetPropertyWithAccess(int employeeId)
+    public async Task<IActionResult> GetPropertiesWithAccess(int employeeId)
     {
         try
         {
@@ -64,13 +66,28 @@ public class PropertyAccessController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("seed-prop")]
+    [HttpGet("seed-properties")]
     public async Task<IActionResult> Seed()
     {
         try
         {
             await _propertyAccessService.CreatePropertyAccessEntries();
             return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet("user-id")]
+    public async Task<IActionResult> GetUserId(string email)
+    {
+        try
+        {
+            var employee = await _employeeService.GetEmployee(email);
+            return Ok(employee.Id);
         }
         catch (Exception ex)
         {

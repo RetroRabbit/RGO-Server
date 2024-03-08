@@ -10,7 +10,6 @@ namespace HRIS.Services.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IConfiguration _configuration;
     private readonly IEmployeeService _employeeService;
     private readonly IRoleAccessLinkService _roleAccessLinkService;
 
@@ -19,7 +18,6 @@ public class AuthService : IAuthService
         IEmployeeService employeeService,
         IRoleAccessLinkService roleAccessLinkService)
     {
-        _configuration = configuration;
         _employeeService = employeeService;
         _roleAccessLinkService = roleAccessLinkService;
     }
