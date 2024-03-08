@@ -7,6 +7,6 @@ public enum PositionType
     ScrumMaster,
     CAM,
     PeopleChampion,
-    Excutive,
+    Executive,
     BusinessSupport
 }
