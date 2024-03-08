@@ -46,74 +46,25 @@ namespace RR.App.Tests.Controllers
                 });
                 builder.ConfigureTestServices(services =>
                 {
-                    services.AddDbContext<DatabaseContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("TestDatabase");
-                    });
-
                     services.AddScoped<IUnitOfWork, RR.UnitOfWork.UnitOfWork>();
                     services.AddScoped<IClientService, ClientService>();
                 });
             }).CreateClient();
 
-            /*using (var scope = _factory.Services.CreateScope())
+            using (var scope = _factory.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<DatabaseContext>();
-
-                // Add sample data
-                context.clients.Add(new Client { Id = 1, Name = "Client1" });
-                context.clients.Add(new Client { Id = 2, Name = "Client2" });
-                context.SaveChanges();
-            }*/
-
-            //SeedDatabase();
-        }
-        /*private void SeedDatabase()
-        {
-            using var scope = _factory.Services.CreateScope();
-            var services = scope.ServiceProvider;
-            var context = services.GetRequiredService<DatabaseContext>();
-
-            // Add some sample data to the in-memory database
-            *//*context.clients.Add(new Client { Id = 1, Name = "Client1" });*//*
-
-            var clients = new List<ClientDto>
-            {
-                new ClientDto { Id = 1, Name = "Client1"},
-                new ClientDto { Id = 2, Name = "Client2"}
-            };
-
-            foreach (var clientDto in clients)
-            {
-                var client = new Client
-                {
-                    Id = clientDto.Id,
-                    Name = clientDto.Name
-                };
-
-                context.clients.Add(client);
             }
+        }
 
-            context.SaveChanges();
-
-        }*/
-
-        [Fact(Skip = "Fixing this test")]
+        [Fact]
         public async Task GetAllClients_ReturnsOkResult()
         {
             var response = await _client.GetAsync("/clients");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task GetAllClients_ReturnsNotFoundResultOnException()
-        {
-            var response = await _client.GetAsync("/clients");
-
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }
