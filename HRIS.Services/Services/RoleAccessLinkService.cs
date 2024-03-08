@@ -9,12 +9,14 @@ namespace HRIS.Services.Services;
 public class RoleAccessLinkService : IRoleAccessLinkService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmployeeRoleService _employeeRoleService;
 
-    public RoleAccessLinkService(IUnitOfWork db, IEmployeeRoleService employeeRoleService)
+    public RoleAccessLinkService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, IErrorLoggingService errorLoggingService)
     {
         _db = db;
         _employeeRoleService = employeeRoleService;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<RoleAccessLinkDto> Save(RoleAccessLinkDto roleAccessLinkDto)
@@ -37,7 +39,10 @@ public class RoleAccessLinkService : IRoleAccessLinkService
                                       .FirstOrDefaultAsync();
 
         if (roleAccessLink == null)
-            throw new Exception($"Role Access Link not found(Role:{role},Permission:{permission})");
+        {
+            var exception = new Exception($"Role Access Link not found(Role:{role},Permission:{permission})");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id);
 

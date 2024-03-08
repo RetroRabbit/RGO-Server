@@ -12,12 +12,14 @@ public class ChartService : IChartService
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
     private readonly IServiceProvider _services;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services)
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, IErrorLoggingService errorLoggingService)
     {
         _db = db;
         _employeeService = employeeService;
         _services = services;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<List<ChartDto>> GetAllCharts()
@@ -139,7 +141,11 @@ public class ChartService : IChartService
                         .Where(chartData => chartData.Id == chartDto.Id)
                         .Select(chartData => chartData)
                         .FirstOrDefault();
-        if (chartData == null) throw new Exception("No chart data record found");
+        if (chartData == null) 
+        {
+            var exception = new Exception("No chart data record found");
+            throw _errorLoggingService.LogException(exception);
+        } 
         var updatedChart = await _db.Chart.Update(new Chart(chartDto));
 
         return updatedChart;
@@ -180,8 +186,11 @@ public class ChartService : IChartService
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
 
             if (propertyInfo == null)
-                throw new Exception($"Invalid property name: {typeName}");
-
+            {
+                var exception = new Exception($"Invalid property name: {typeName}");
+                throw _errorLoggingService.LogException(exception);
+            }
+                
             propertyNames.Add(typeName);
         }
 

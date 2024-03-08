@@ -9,10 +9,12 @@ namespace HRIS.Services.Services;
 public class RoleService : IRoleService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public RoleService(IUnitOfWork db)
+    public RoleService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<RoleDto> SaveRole(RoleDto roleDto)
@@ -42,7 +44,11 @@ public class RoleService : IRoleService
                                     .Select(role => role.ToDto())
                                     .FirstOrDefaultAsync();
 
-        if (existingRole == null) throw new Exception($"Role not found({name})");
+        if (existingRole == null)
+        {
+            var exception = new Exception($"Role not found({name})");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         return existingRole;
     }

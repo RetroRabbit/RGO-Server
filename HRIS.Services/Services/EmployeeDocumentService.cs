@@ -11,11 +11,13 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService)
+    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService, IErrorLoggingService errorLoggingService)
     {
         _db = db;
         _employeeService = employeeService;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email)
@@ -24,7 +26,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         if (employee == null)
         {
-            throw new Exception("employee not found");
+            var exception = new Exception("employee not found");
+            throw _errorLoggingService.LogException(exception);
         }
 
         bool sameEmail = email.Equals(employee.Email);
@@ -52,7 +55,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
-        if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+        if (!ifEmployeeExists) 
+        { 
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeDocument = await _db.EmployeeDocument
             .Get(employeeDocument =>
@@ -64,7 +71,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .Take(1)
             .FirstOrDefaultAsync();
 
-        if (employeeDocument == null) { throw new Exception("Employee certification record not found"); }
+        if (employeeDocument == null) 
+        { 
+            var exception = new Exception("Employee certification record not found");
+            throw _errorLoggingService.LogException(exception);
+        }
         return employeeDocument;
     }
 
@@ -72,7 +83,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
-        if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+        if (!ifEmployeeExists) 
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeDocuments = await _db.EmployeeDocument
             .Get(employeeDocument => employeeDocument.EmployeeId == employeeId)
@@ -88,7 +103,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
-        if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+        if (!ifEmployeeExists) 
+        { 
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
         var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
@@ -107,7 +126,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
-        if (!ifEmployeeExists) { throw new Exception("Employee not found"); }
+        if (!ifEmployeeExists) 
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeDocuments = await _db.EmployeeDocument
             .Get(employeeDocument => employeeDocument.EmployeeId == employeeId &&

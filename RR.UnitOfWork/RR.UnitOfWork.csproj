@@ -29,7 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Entities\ATS\" />
+    <Folder Include="Interfaces\ATS\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Repositories\ATS\" />
   </ItemGroup>
 
   <ItemGroup>

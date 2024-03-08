@@ -22,12 +22,14 @@ public class ChartServiceUnitTests
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto employeeTypeDto2;
+    private readonly IErrorLoggingService _errorLoggingService;
 
     public ChartServiceUnitTests()
     {
         _unitOfWork = new Mock<IUnitOfWork>();
         _employeeService = new Mock<IEmployeeService>();
         _services = new Mock<IServiceProvider>();
+        _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
@@ -56,7 +58,7 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task GetAllChartsTest()
     {
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         _unitOfWork.Setup(u => u.Chart.GetAll(null)).ReturnsAsync(new List<ChartDto>());
 
@@ -208,7 +210,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(chartDto);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
 
@@ -346,7 +348,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(chartDto);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
 
@@ -414,7 +416,7 @@ public class ChartServiceUnitTests
 
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeList);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.GetChartData(dataType);
 
@@ -439,7 +441,7 @@ public class ChartServiceUnitTests
 
         _unitOfWork.Setup(u => u.Chart.Delete(chartId)).ReturnsAsync(expectedChartDto);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.DeleteChart(chartId);
 
@@ -480,7 +482,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(x => x.Chart.Update(It.IsAny<Chart>()))
                    .Returns(Task.FromResult(chartDtoToUpdate));
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.UpdateChart(chartDtoToUpdate);
 
@@ -492,7 +494,7 @@ public class ChartServiceUnitTests
     [Fact]
     public void GetColumnsFromTableTest()
     {
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var columnNames = chartService.GetColumnsFromTable();
 
@@ -556,7 +558,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(Task.FromResult(employeeDtoList));
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
         var result = await chartService.ExportCsvAsync(dataTypeList);
         var expectedResult = new byte[]
         {
@@ -628,7 +630,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(Task.FromResult(employeeDtoList));
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await chartService.ExportCsvAsync(dataTypeList));
