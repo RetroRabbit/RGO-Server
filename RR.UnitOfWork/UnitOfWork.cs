@@ -102,4 +102,10 @@ public class UnitOfWork : IUnitOfWork
             return null!;
         }
     }
+
+    public Task<List<string>> GetColumnNames(string tableName)
+    {
+        var columnsFunc = _db.GetColumnNames(tableName);
+        return Task.FromResult(columnsFunc);
+    }
 }
