@@ -5,6 +5,8 @@ using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
+using System.Collections.Generic;
 
 namespace HRIS.Services.Services;
 
@@ -26,147 +28,68 @@ public class PropertyAccessService : IPropertyAccessService
         _errorLoggingService = errorLoggingService;
     }
 
-    public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
+    public async Task<List<PropertyAccessDto>> GetAccessListByEmployeeId(int employeeId)
     {
-        var employee = await _employeeService.GetEmployee(email);
-        var properties = await _db.PropertyAccess.GetForEmployee(email);
+        var employeeRole = _db.EmployeeRole.Get(e => e.Id == employeeId).Select(e => e.Role).FirstOrDefault();
 
-        var result = new List<EmployeeAccessDto>();
-
-        foreach (var access in properties.Where(a => a.Condition != 0))
-        {
-            var value = await GetSqlValues(access.FieldCode!, employee!);
-            var dto = new EmployeeAccessDto
-            {
-                Id = access.FieldCode!.Id,
-                Condition = access.Condition,
-                Internal = access.FieldCode.Internal,
-                PropName = access.FieldCode.Code!,
-                Label = access.FieldCode.Name!,
-                Type = access.FieldCode.Type.ToString().ToLower(),
-                Value = value,
-                Description = access.FieldCode.Description,
-                Regex = access.FieldCode.Regex,
-                Options = access.FieldCode.Options?.Select(x => x.Option).ToList()
-            };
-
-            result.Add(dto);
-        }
-
-        return result;
+        if (employeeRole == null) 
+            return new List<PropertyAccessDto>();
+        else
+            return await _db.PropertyAccess.GetAll(p => p.RoleId == employeeRole.Id);
     }
 
-    public async Task UpdatePropertiesWithAccess(List<UpdateFieldValueDto> fields, string email)
+    public async Task<List<PropertyAccessDto>> GetAccessListByRoleId(int roleId)
     {
-        var employee = await _db.Employee.Get(e => e.Email == email)
-                                .Select(e => e.ToDto())
-                                .FirstOrDefaultAsync();
+        return await _db.PropertyAccess.GetAll(p => p.RoleId == roleId);
+    }
 
-        if (employee == null)
+
+    public async Task<List<PropertyAccessDto>> GetAll()
+    {
+        return await _db.PropertyAccess.Get().Include(p => p.Role).Select(p => p.ToDto()).ToListAsync();
+    }
+
+    public async Task UpdatePropertyAccess(int propertyId, PropertyAccessLevel propertyAccess)
+    {
+        var updatedProperty = _db.PropertyAccess.Get(p => p.Id == propertyId).FirstOrDefault();
+        if (updatedProperty != null)
         {
-            var exception = new Exception("Employee not found.");
-            throw _errorLoggingService.LogException(exception);
-        }
-
-        var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
-                            .Select(r => r.Role!.Id)
-                            .ToList();
-
-        var get = _db.PropertyAccess.Get(access => employeeRoles.Contains(access.RoleId));
-
-        var canEdit = get
-                      .Where(access => access.Condition == 2).Any();
-
-        if (!canEdit)
-        {
-            var exception = new Exception("No edit access");
-            throw _errorLoggingService.LogException(exception);
-        }
-
-        foreach (var fieldValue in fields)
-        {
-            var field = await _db.FieldCode.GetById(fieldValue.fieldId);
-            if (field!.Internal)
-            {
-                var table = field.InternalTable;
-                var employeeFilterByColumn = table == "Employee" ? "id" : "employeeId";
-                var query =
-                    $"UPDATE \"{field.InternalTable}\" SET \"{field.Code}\" = @value WHERE {employeeFilterByColumn} = @id";
-                NpgsqlParameter valueParam;
-
-                switch (field.Type)
-                {
-                    case FieldCodeType.Date:
-                        valueParam = new NpgsqlParameter("value", DateOnly.Parse(fieldValue.value.ToString()!));
-                        break;
-
-                    case FieldCodeType.String:
-                        valueParam = new NpgsqlParameter("value", fieldValue.value.ToString());
-                        break;
-
-                    case FieldCodeType.Int:
-                        int.TryParse(fieldValue.value.ToString(), out var intValue);
-                        valueParam = new NpgsqlParameter("value", intValue);
-                        break;
-
-                    case FieldCodeType.Float:
-                        valueParam = new NpgsqlParameter("value", float.Parse(fieldValue.value.ToString()!));
-                        break;
-
-                    default:
-                        var exception = new Exception("Format Invalid");
-                        throw _errorLoggingService.LogException(exception);
-                }
-
-                var idParam = new NpgsqlParameter("id", employee.Id);
-                await _db.RawSql(query, valueParam, idParam);
-            }
-            else
-            {
-                var data = await _db.EmployeeData
-                                    .Get(ed => ed.EmployeeId == employee.Id && ed.FieldCodeId == fieldValue.fieldId)
-                                    .AsNoTracking()
-                                    .Include(ed => ed.FieldCode)
-                                    .Select(ed => ed.ToDto())
-                                    .FirstOrDefaultAsync();
-
-                if (data != null)
-                {
-                    var updateEmployeeData = new EmployeeDataDto
-                    {
-                        Id = data.Id,
-                        EmployeeId = data.EmployeeId,
-                        FieldCodeId = data.FieldCodeId,
-                        Value = fieldValue.value.ToString()
-                    };
-
-
-                    await _employeeDataService.UpdateEmployeeData(updateEmployeeData);
-                }
-                else
-                {
-                    var updateEmployeeData = new EmployeeDataDto
-                    {
-                        Id = 0,
-                        EmployeeId = employee.Id,
-                        FieldCodeId = field.Id,
-                        Value = fieldValue.value.ToString()
-                    };
-
-                    await _employeeDataService.SaveEmployeeData(updateEmployeeData);
-                }
-            }
+            updatedProperty.AccessLevel = propertyAccess;
+            _ = await _db.PropertyAccess.Update(updatedProperty);
         }
     }
 
-    public async Task<string> GetSqlValues(FieldCodeDto fieldCode, EmployeeDto employee)
+    public async Task CreatePropertyAccessEntries()
     {
-        var employeeFilterByColumn = fieldCode.InternalTable == "Employee" ? "id" : "employeeId";
+        var currentAccessProperties = await _db.PropertyAccess.GetAll();
+        var tables = new List<string> { "Employee", "EmployeeData", "EmployeeRole", "EmployeeAddress", "EmployeeBanking" };
+        var roles = await _db.Role.GetAll();
+        var properties = new List<PropertyAccess>();
 
-        if (fieldCode.Internal)
-            return await
-                _db.RawSqlGet($"SELECT \"{fieldCode.Code}\" FROM \"{fieldCode.InternalTable}\" WHERE {employeeFilterByColumn} = {employee.Id}");
-        return await
-            _db.RawSqlGet($"SELECT \"value\" FROM \"EmployeeData\" WHERE \"employeeId\" = {employee.Id} AND \"fieldCodeId\" = {fieldCode.Id}");
+        await Task.WhenAll(tables.Select(async table =>
+        {
+            var columns = await _db.GetColumnNames(table);
+
+            foreach (var role in roles)
+            {
+                foreach (var column in columns)
+                {
+                    var exists = currentAccessProperties.Exists(p => p.Table == table && p.Field == column && p.RoleId == role.Id);
+                    if (!exists)
+                    {
+                        var propertyAccess = new PropertyAccessDto
+                        {
+                            Id = 0,
+                            Role = role,
+                            Table = table,
+                            Field = column,
+                            AccessLevel = PropertyAccessLevel.write
+                        };
+                        properties.Add(new PropertyAccess(propertyAccess));
+                    }
+                }
+            }
+        }));
+        await _db.PropertyAccess.AddRange(properties);
     }
 }
