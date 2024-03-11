@@ -143,6 +143,10 @@ Update-Database
 
 - Check if your new user is added
 
+### Running Unit Tests
+
+When running unit tests make sure that the database is running to accomodate for integration tests
+
 ### Unit Test Coverage
 
 With every pull request, there is a requirement to prove coverage of your code. Attached a screen shot of your code coverage to your PR description
