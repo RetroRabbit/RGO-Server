@@ -1,4 +1,6 @@
 using Npgsql;
+using RR.UnitOfWork.Interfaces;
+using RR.UnitOfWork.Interfaces.ATS;
 using RR.UnitOfWork.Interfaces.HRIS;
 
 namespace RR.UnitOfWork;
@@ -31,7 +33,8 @@ public interface IUnitOfWork
     IEmployeeBankingRepository EmployeeBanking { get; }
     IClientRepository Client { get; }
     IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
-
+    IErrorLoggingRepository ErrorLogging { get; }
+    ICandidateRepository Candidate { get; }
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
 }

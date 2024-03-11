@@ -34,8 +34,4 @@
     <ProjectReference Include="..\RR.Tests.Data\RR.Tests.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\ATS\" />
-  </ItemGroup>
-
 </Project>

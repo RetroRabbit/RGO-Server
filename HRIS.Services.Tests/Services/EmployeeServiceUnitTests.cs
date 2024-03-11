@@ -29,6 +29,8 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IEmployeeAddressService> employeeAddressServiceMock;
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private readonly Mock<IRoleService> roleServiceMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
+
 
     private readonly EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto
     {
@@ -38,21 +40,26 @@ public class EmployeeServiceUnitTests
     };
 
     private readonly EmployeeService employeeService;
+    private readonly ErrorLoggingService errorLoggingService;
 
     public EmployeeServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
         employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-                                              employeeAddressServiceMock.Object, roleServiceMock.Object);
+                                              employeeAddressServiceMock.Object, roleServiceMock.Object,_errorLoggingServiceMock.Object);
+        errorLoggingService = new ErrorLoggingService(_dbMock.Object);
+
     }
 
     [Fact]
     public async Task SaveEmployeeFailTest1()
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(true));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => employeeService.SaveEmployee(EmployeeTestData.EmployeeDto));
     }
@@ -349,13 +356,15 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
                .Returns(roles.AsQueryable().BuildMock());
 
-        var exception = await Assert.ThrowsAsync<Exception>(
-                                                            async () =>
-                                                                await employeeService
-                                                                    .UpdateEmployee(EmployeeTestData.EmployeeDto,
-                                                                     "unauthorized.email@retrorabbit.co.za"));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized action: You are not an Admin"));
 
-        Assert.Equal("Unauthorized action", exception.Message);
+        var exception = await Assert.ThrowsAsync<Exception>(
+                                                    async () =>
+                                                        await employeeService
+                                                            .UpdateEmployee(EmployeeTestData.EmployeeDto,
+                                                             "unauthorized.email@retrorabbit.co.za"));
+
+        Assert.Equal("Unauthorized action: You are not an Admin", exception.Message);
     }
 
     [Fact]
@@ -378,13 +387,15 @@ public class EmployeeServiceUnitTests
                .Returns(employees.AsQueryable().BuildMock());
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("User already exists"));
+
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await employeeService
                                                                     .UpdateEmployee(EmployeeTestData.EmployeeDto,
                                                                      "unauthorized.email@retrorabbit.co.za"));
 
-        Assert.Equal("Unauthorized action", exception.Message);
+        Assert.Equal("User already exists", exception.Message);
     }
 
     [Fact]
@@ -453,6 +464,8 @@ public class EmployeeServiceUnitTests
 
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(mockEmployees.AsQueryable().BuildMock());
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => employeeService.GetEmployeeById(2));
     }

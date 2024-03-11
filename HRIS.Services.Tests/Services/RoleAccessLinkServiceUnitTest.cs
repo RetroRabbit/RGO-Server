@@ -16,6 +16,7 @@ namespace RGO.Tests.Services;
 public class RoleAccessLinkServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly Mock<IEmployeeRoleService> _employeeRoleServiceMock;
     private readonly RoleAccessDto _roleAccessDto;
     private readonly RoleAccessLinkDto _roleAccessLinkDto;
@@ -26,7 +27,8 @@ public class RoleAccessLinkServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object, _errorLoggingServiceMock.Object);
         _roleDto = new RoleDto {Id = 1, Description = "Employee"};
         _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
         _roleAccessLinkDto = new RoleAccessLinkDto { Id = 1, Role = _roleDto, RoleAccess = _roleAccessDto };

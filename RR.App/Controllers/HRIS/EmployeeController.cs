@@ -111,7 +111,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("count")]
     public async Task<IActionResult> CountAllEmployees()
     {

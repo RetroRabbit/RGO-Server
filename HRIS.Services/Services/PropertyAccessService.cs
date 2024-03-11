@@ -11,17 +11,19 @@ namespace HRIS.Services.Services;
 public class PropertyAccessService : IPropertyAccessService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmployeeDataService _employeeDataService;
     private readonly IEmployeeRoleService _employeeRoleService;
     private readonly IEmployeeService _employeeService;
 
     public PropertyAccessService(IUnitOfWork db, IEmployeeRoleService employeeRoleService,
-                                 IEmployeeDataService employeeDataService, IEmployeeService employeeService)
+                                 IEmployeeDataService employeeDataService, IEmployeeService employeeService, IErrorLoggingService errorLoggingService)
     {
         _db = db;
         _employeeRoleService = employeeRoleService;
         _employeeDataService = employeeDataService;
         _employeeService = employeeService;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<List<EmployeeAccessDto>> GetPropertiesWithAccess(string email)
@@ -60,7 +62,11 @@ public class PropertyAccessService : IPropertyAccessService
                                 .Select(e => e.ToDto())
                                 .FirstOrDefaultAsync();
 
-        if (employee == null) throw new Exception("Employee not found.");
+        if (employee == null)
+        {
+            var exception = new Exception("Employee not found.");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
                             .Select(r => r.Role!.Id)
@@ -71,7 +77,11 @@ public class PropertyAccessService : IPropertyAccessService
         var canEdit = get
                       .Where(access => access.Condition == 2).Any();
 
-        if (!canEdit) throw new Exception("No edit access");
+        if (!canEdit)
+        {
+            var exception = new Exception("No edit access");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         foreach (var fieldValue in fields)
         {
@@ -104,7 +114,8 @@ public class PropertyAccessService : IPropertyAccessService
                         break;
 
                     default:
-                        throw new Exception("Format Invalid");
+                        var exception = new Exception("Format Invalid");
+                        throw _errorLoggingService.LogException(exception);
                 }
 
                 var idParam = new NpgsqlParameter("id", employee.Id);

@@ -6,7 +6,7 @@ namespace HRIS.Services;
 
 public static class RegisterServicesExtension
 {
-    public static void RegisterServices(this IServiceCollection services)
+    public static void RegisterServicesHRIS(this IServiceCollection services)
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
@@ -31,5 +31,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IFieldCodeOptionsService, FieldCodeOptionsService>();
         services.AddScoped<IEmployeeBankingService, EmployeeBankingService>();
         services.AddScoped<IClientService, ClientService>();
+        services.AddScoped<IErrorLoggingService, ErrorLoggingService>();
     }
 }

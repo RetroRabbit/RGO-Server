@@ -8,10 +8,12 @@ namespace HRIS.Services.Services;
 public class EmployeeAddressService : IEmployeeAddressService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeAddressService(IUnitOfWork db)
+    public EmployeeAddressService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<bool> CheckIfExists(EmployeeAddressDto employeeAddressDto)
@@ -33,7 +35,11 @@ public class EmployeeAddressService : IEmployeeAddressService
     {
         var exists = await CheckIfExists(employeeAddressDto);
 
-        if (!exists) throw new Exception("Employee Address does not exist");
+        if (!exists) 
+        {
+            var exception = new Exception("Employee Address does not exist");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         return await _db.EmployeeAddress.FirstOrDefault(address =>
                                                             address.UnitNumber == employeeAddressDto.UnitNumber &&
@@ -56,7 +62,11 @@ public class EmployeeAddressService : IEmployeeAddressService
     {
         var exists = await CheckIfExists(employeeAddressDto);
 
-        if (exists) throw new Exception("Employee Address already exists");
+        if (exists)
+        {
+            var exception = new Exception("Employee Address already exists");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var address = await _db.EmployeeAddress.Add(new EmployeeAddress(employeeAddressDto));
 
@@ -67,7 +77,11 @@ public class EmployeeAddressService : IEmployeeAddressService
     {
         var exists = await CheckIfExists(employeeAddressDto);
 
-        if (!exists) throw new Exception("Employee Address does not exist");
+        if (!exists)
+        {
+            var exception = new Exception("Employee Address does not exist");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var address = await _db.EmployeeAddress.Update(new EmployeeAddress(employeeAddressDto));
 

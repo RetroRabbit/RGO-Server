@@ -11,15 +11,18 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
     private readonly IUnitOfWork _db;
     private readonly IEmployeeEvaluationService _employeeEvaluationService;
     private readonly IEmployeeService _employeeService;
+    private readonly IErrorLoggingService _errorLoggingService;
 
     public EmployeeEvaluationAudienceService(
         IUnitOfWork db,
         IEmployeeService employeeService,
-        IEmployeeEvaluationService employeeEvaluationService)
+        IEmployeeEvaluationService employeeEvaluationService,
+        IErrorLoggingService errorLoggingService)
     {
         _db = db;
         _employeeService = employeeService;
         _employeeEvaluationService = employeeEvaluationService;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<bool> CheckIfExists(EmployeeEvaluationDto evaluation, string email)
@@ -42,7 +45,10 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         var exists = await CheckIfExists(evaluationDto, email);
 
         if (!exists)
-            throw new Exception("Employee Evaluation Audience not found");
+        {
+            var exception = new Exception("Employee Evaluation Audience not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeEvaluationAudience = await Get(evaluationDto, email);
 
@@ -57,7 +63,10 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         var exists = await CheckIfExists(evaluation, email);
 
         if (!exists)
-            throw new Exception("Employee Evaluation Audience not found");
+        {
+            var exception = new Exception("Employee Evaluation Audience not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeEvaluationAudience = await _db.EmployeeEvaluationAudience
                                                   .Get(x => x.Employee.Email == email
@@ -96,7 +105,10 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         var employeeExists = await _employeeService.CheckUserExist(email);
 
         if (!employeeExists)
-            throw new Exception($"Employee with {email} not found");
+        {
+            var exception = new Exception($"Employee with {email} not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
                                                    .Get(x => x.Employee.Email == email)
@@ -118,7 +130,10 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         var evaluationExists = await _employeeEvaluationService.CheckIfExists(evaluation);
 
         if (!evaluationExists)
-            throw new Exception("Employee Evaluation not found");
+        {
+            var exception = new Exception("Employee Evaluation not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeEvaluationAudiences = await _db.EmployeeEvaluationAudience
                                                    .Get(x => x.Evaluation.Owner.Email == evaluation.OwnerEmail
@@ -150,7 +165,11 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
 
         var exists = await CheckIfExists(evaluationDto, email);
 
-        if (exists) throw new Exception("Employee Evaluation Audience not found");
+        if (exists)
+        {
+            var exception = new Exception("Employee Evaluation Audience not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeEvaluationAudienceDto = new EmployeeEvaluationAudienceDto { Id = 0,  Evaluation = evaluationDto, Employee = employeeDto };
         var savedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
@@ -165,7 +184,11 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         var exists = await CheckIfExists(employeeEvaluationAudienceDto.Evaluation!,
                                          employeeEvaluationAudienceDto.Employee!.Email!);
 
-        if (!exists) throw new Exception("Employee Evaluation Audience not found");
+        if (!exists)
+        {
+            var exception = new Exception("Employee Evaluation Audience not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeEvaluationAudience = new EmployeeEvaluationAudience(employeeEvaluationAudienceDto);
 

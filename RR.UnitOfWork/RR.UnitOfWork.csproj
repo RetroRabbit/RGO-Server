@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ATS.Models\ATS.Models.csproj" />
     <ProjectReference Include="..\HRIS.Models\HRIS.Models.csproj" />
   </ItemGroup>
 
