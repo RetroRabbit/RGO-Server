@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HRIS.Models\HRIS.Models.csproj" />
     <Folder Include="Enums\" />
   </ItemGroup>
 
