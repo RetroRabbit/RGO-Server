@@ -15,6 +15,7 @@ namespace RGO.Tests.Services;
 public class PropertyAccessServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly Mock<IEmployeeDataService> _employeeDataService;
     private readonly Mock<IEmployeeRoleService> _employeeRoleService;
     private readonly Mock<IEmployeeService> _employeeService;
@@ -25,6 +26,7 @@ public class PropertyAccessServiceUnitTests
         _employeeDataService = new Mock<IEmployeeDataService>();
         _employeeRoleService = new Mock<IEmployeeRoleService>();
         _employeeService = new Mock<IEmployeeService>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
     }
 
     //[Fact]

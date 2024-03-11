@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using HRIS.Models;
@@ -12,14 +13,16 @@ public class AuthService : IAuthService
 {
     private readonly IEmployeeService _employeeService;
     private readonly IRoleAccessLinkService _roleAccessLinkService;
+    private readonly IErrorLoggingService _errorLoggingService;
 
     public AuthService(
         IConfiguration configuration,
         IEmployeeService employeeService,
-        IRoleAccessLinkService roleAccessLinkService)
+        IRoleAccessLinkService roleAccessLinkService,IErrorLoggingService errorLoggingService)
     {
         _employeeService = employeeService;
         _roleAccessLinkService = roleAccessLinkService;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<bool> CheckUserExist(string email)

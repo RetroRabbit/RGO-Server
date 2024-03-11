@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
@@ -14,10 +15,12 @@ public class EmployeeCertificationServiceUnitTests
 {
     private readonly EmployeeCertificationService _employeeCertificationService;
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
 
     public EmployeeCertificationServiceUnitTests()
     {
-        _employeeCertificationService = new EmployeeCertificationService(_unitOfWork.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _employeeCertificationService = new EmployeeCertificationService(_unitOfWork.Object, _errorLoggingServiceMock.Object);
     }
 
     private EmployeeCertificationDto CreateEmployeeCertificationDto()
@@ -183,6 +186,8 @@ public class EmployeeCertificationServiceUnitTests
 
         var employeeCertificationDto = CreateEmployeeCertificationDto();
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         await Assert.ThrowsAsync<Exception>(() =>
                                                 _employeeCertificationService
                                                     .SaveEmployeeCertification(employeeCertificationDto));
@@ -194,6 +199,8 @@ public class EmployeeCertificationServiceUnitTests
         var employeeCertificationDto = CreateEmployeeCertificationDto();
         MockEmployeeRepositorySetup(employeeCertificationDto.Employee!);
         MockEmployeeCertificationRepositorySetup(employeeCertificationDto);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() =>
                                                 _employeeCertificationService
