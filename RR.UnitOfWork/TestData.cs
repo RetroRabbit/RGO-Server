@@ -936,18 +936,6 @@ public static class TestData
         };
     }
 
-    public static PropertyAccess[] PropertyAccessSet()
-    {
-        var id = 1;
-        return new PropertyAccess[]
-        {
-            //new() { Id = id++, RoleId = 1, Condition = 0, FieldCodeId = 9 },
-            //new() { Id = id++, RoleId = 1, Condition = 1, FieldCodeId = 1 },
-            //new() { Id = id++, RoleId = 1, Condition = 1, FieldCodeId = 8 },
-            //new() { Id = id++, RoleId = 1, Condition = 2, FieldCodeId = 14 }
-        };
-    }
-
     public static EmployeeData[] EmployeeDataSet()
     {
         var id = 1;

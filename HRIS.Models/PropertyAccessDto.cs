@@ -8,8 +8,6 @@ public class PropertyAccessDto
     public int RoleId { get; set; }
     public RoleDto? Role { get; set; }
     public string? Table { get; set; }
-
     public string? Field { get; set; }
-
     public PropertyAccessLevel AccessLevel { get; set; }
 }

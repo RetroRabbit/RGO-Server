@@ -91,7 +91,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
         modelBuilder.Entity<EmployeeRole>().HasData(TestData.EmployeeRole());
         modelBuilder.Entity<FieldCode>().HasData(TestData.FieldCodeSet());
         modelBuilder.Entity<FieldCodeOptions>().HasData(TestData.FieldCodeOptionSet());
-        modelBuilder.Entity<PropertyAccess>().HasData(TestData.PropertyAccessSet());
+        modelBuilder.Entity<PropertyAccess>();
         modelBuilder.Entity<EmployeeEvaluation>().HasData(TestData.EmployeeEvaluationSet());
         modelBuilder.Entity<EmployeeEvaluationAudience>().HasData(TestData.EmployeeEvaluationAudienceSet());
         modelBuilder.Entity<EmployeeEvaluationRating>().HasData(TestData.EmployeeEvaluationRatingSet());
