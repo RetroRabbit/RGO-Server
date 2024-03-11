@@ -112,7 +112,7 @@ add-migration newMigrationYouCanChooseName
 - Refresh your explorer, click on the RGO database inside the explorer.
 - Once again, right-click on the database and select the CREATE script option
 - Copy the scripts inside SEED_RGO.sql and run it
-- 
+
 Congrats! Your DB is populated with data!
 
 ---
