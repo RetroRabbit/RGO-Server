@@ -115,14 +115,6 @@ add-migration newMigrationYouCanChooseName
 
 Congrats! Your DB is populated with data!
 
----
-
-![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
-
-```powershell
-Update-Database
-```
-
 ### Checking new user added to the DB you made
 
 - Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
