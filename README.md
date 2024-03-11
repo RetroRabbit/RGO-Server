@@ -104,11 +104,16 @@ docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672
 add-migration newMigrationYouCanChooseName
 ```
 
-### Run migration
+### Populate DB with seeding data
 
-Open Visual Studio 2022 and open the RGO-Server project file. Pull up the nuget package manager console:
-**_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
-Make sure the **Default project** is **_RGO.UnitOfWork_**.
+- Drop your current RGO DB in pgAdmin
+- Right-click on the postgres db in your explorer, and select the CREATE script option
+- Copy the scripts inside CREATE_RGO.sql and run it
+- Refresh your explorer, click on the RGO database inside the explorer.
+- Once again, right-click on the database and select the CREATE script option
+- Copy the scripts inside SEED_RGO.sql and run it
+- 
+Congrats! Your DB is populated with data!
 
 ---
 
