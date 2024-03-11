@@ -29,6 +29,7 @@ namespace RR.Tests.Data.Models.HRIS
             Field = "surname",
             AccessLevel = PropertyAccessLevel.write
         };
+        
         public static PropertyAccess EmployeeTable3 = new PropertyAccess
         {
             Id = 3,
