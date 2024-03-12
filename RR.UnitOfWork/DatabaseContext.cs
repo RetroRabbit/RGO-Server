@@ -94,7 +94,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
         modelBuilder.Entity<EmployeeRole>().HasData(TestData.EmployeeRole());
         modelBuilder.Entity<FieldCode>().HasData(TestData.FieldCodeSet());
         modelBuilder.Entity<FieldCodeOptions>().HasData(TestData.FieldCodeOptionSet());
-        modelBuilder.Entity<PropertyAccess>().HasData(TestData.PropertyAccessSet());
+        modelBuilder.Entity<PropertyAccess>();
         modelBuilder.Entity<EmployeeEvaluation>().HasData(TestData.EmployeeEvaluationSet());
         modelBuilder.Entity<EmployeeEvaluationAudience>().HasData(TestData.EmployeeEvaluationAudienceSet());
         modelBuilder.Entity<EmployeeEvaluationRating>().HasData(TestData.EmployeeEvaluationRatingSet());
@@ -103,5 +103,22 @@ public class DatabaseContext : DbContext, IDatabaseContext
         modelBuilder.Entity<EmployeeAddress>().HasData(TestData.EmployeeAddressSet());
         modelBuilder.Entity<Employee>().HasData(TestData.EmployeeSet());
         modelBuilder.Entity<EmployeeData>().HasData(TestData.EmployeeDataSet());
+    }
+
+    public List<string> GetColumnNames(string tableName)
+    {
+        var dbSetProperty = GetType().GetProperties()
+            .FirstOrDefault(p => p.PropertyType.IsGenericType &&
+                                 p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>) &&
+                                 p.PropertyType.GenericTypeArguments[0].Name == tableName);
+
+        if (dbSetProperty == null)
+        {
+            throw new ArgumentException($"Table '{tableName}' not found in the DbContext.");
+        }
+
+        var entityType = Model.FindEntityType(dbSetProperty.PropertyType.GenericTypeArguments[0]);
+        var columns = entityType.GetProperties().Select(p => p.GetColumnName()).ToList();
+        return columns;
     }
 }
