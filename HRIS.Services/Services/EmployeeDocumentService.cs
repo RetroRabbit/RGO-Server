@@ -168,7 +168,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         return role.Description is "Admin" or "SuperAdmin";
     }
 
-    public async Task<List<EmployeeDocumentDto>> GetAllDocuments()
+    public async Task<List<SimpleEmployeeDocumentGetAllDto>> GetAllDocuments()
     {
         return await _db.EmployeeDocument
             .Get(EmployeeDocument => true)
@@ -176,7 +176,12 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .Include(entry => entry.Employee)
             .Include(entry => entry.Employee.EmployeeType)
             .OrderBy(EmployeeDocument => EmployeeDocument.EmployeeId)
-            .Select(EmployeeDocument => EmployeeDocument.ToDto())
+            .Select(EmployeeDocument => new SimpleEmployeeDocumentGetAllDto
+            {
+                EmployeeDocumentDto = EmployeeDocument.ToDto(),
+                Name = EmployeeDocument.Employee.Name,
+                Surname = EmployeeDocument.Employee.Surname
+            })
             .ToListAsync();
     }
 }

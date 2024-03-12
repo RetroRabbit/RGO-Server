@@ -53,5 +53,5 @@ public interface IEmployeeDocumentService
     /// 
     /// </summary>
     /// <returns></returns>
-    Task<List<EmployeeDocumentDto>> GetAllDocuments();
+    Task<List<SimpleEmployeeDocumentGetAllDto>> GetAllDocuments();
 }
