@@ -179,21 +179,4 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .Select(EmployeeDocument => EmployeeDocument.ToDto())
             .ToListAsync();
     }
-
-    //GetAllDocuments() Should include Employee.Name
-    /*public async Task<List<EmployeeDocumentDto>> GetAllDocuments()
-    {
-        var allDocuments = await _db.EmployeeDocument
-            .Get(document => true)
-            .AsNoTracking()
-            .Include(document => document.Employee)
-            .Include(document => document.Employee.EmployeeType)
-            .Include(document => document.Employee.EmployeeTypeId)
-            .Include(document => document.Employee.Name)
-            .OrderBy(document => document.EmployeeId)
-            .Select(document => document.ToDto())
-            .ToListAsync();
-
-        return allDocuments;
-    }*/
 }
