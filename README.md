@@ -94,51 +94,48 @@ For RabbitMQ
 docker pull rabbitmq:3-management
 docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
+### Creating Database Tables:
 
-### Add new user
-
-- To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
-- Add new Migration for your user
-
+1. Open Visual Studio and go to the package manager.
+2. Change the default project to RR.UnitOfWork.
+3. Run the following commands:
+   
 ```powershell
-add-migration newMigrationYouCanChooseName
+add-migration migrationName
+update-database
 ```
 
-### Populate DB with seeding data
+Congratulations! You have now successfully created a database with tables.
 
-- Drop your current RGO DB in pgAdmin
-- Right-click on the postgres db in your explorer, and select the CREATE script option
-- Copy the scripts inside CREATE_RGO.sql and run it
-- Refresh your explorer, click on the RGO database inside the explorer.
-- Once again, right-click on the database and select the CREATE script option
-- Copy the scripts inside SEED_RGO.sql and run it
+### Populating Database with Dummy Data:
 
-Congrats! Your DB is populated with data!
+1. Make a local copy of the DummyData.sql file In the RR.UnitOfWork Project.
 
-### Checking new user added to the DB you made
+   ![Screenshot 2024-03-12 130755](https://github.com/RetroRabbit/RGO-Server/assets/82169901/178d5ba8-160e-4b28-b280-2b6a08fb02da)
 
-- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
-- https://www.pgadmin.org/download/pgadmin-4-windows/
+3. Copy one of the ``INSERT INTO 'Employee,`` statements in the script.
+   
+   ![Screenshot 2024-03-12 130900](https://github.com/RetroRabbit/RGO-Server/assets/82169901/73545f25-ab5f-4e60-b929-6cd6d0fa781a)
+   
+4. Paste a new INSERT statement and populate it with your information such as your email, name, and surname.
+   
+5. Copy the SQL in the locally created script.
+   
+6. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
 
----
+   ![Screenshot 2024-03-12 131219](https://github.com/RetroRabbit/RGO-Server/assets/82169901/5b0fa31a-9e90-4337-8896-fa3d355a5d77)
 
-- Register new RGO server
+7. Paste the locally created script in the query screen that pops up.
 
-![Register service](./Screenshot%202023-08-02%20173735.png)
+   ![Screenshot 2024-03-12 131332](https://github.com/RetroRabbit/RGO-Server/assets/82169901/87eabaab-4856-4adc-ba54-feb1c6e47512)
 
----
+8. Click on ``Execute Script``.
+  
+   ![Screenshot 2024-03-12 131356](https://github.com/RetroRabbit/RGO-Server/assets/82169901/69c52269-e074-487e-b489-53ac9c41a5ff)
 
-- Update Information and save
+Once the query is completed successfully, you can go to the employee table and view all rows to see if you have data in the database.
 
-![Register service - connection](./Screenshot%202023-08-02%20173613.png)
-
----
-
-- Navigate to Employee table
-
-![PgAdmin Employee Table Navigation](./EmployeeTable-Example.png)
-
-- Check if your new user is added
+Congratulations you have a fully populated database!
 
 ### Running Unit Tests
 
