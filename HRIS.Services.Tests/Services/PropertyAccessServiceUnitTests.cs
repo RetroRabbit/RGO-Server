@@ -17,21 +17,13 @@ namespace RGO.Tests.Services;
 public class PropertyAccessServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
-    private readonly Mock<IEmployeeDataService> _employeeDataService;
-    private readonly Mock<IEmployeeRoleService> _employeeRoleService;
     private readonly Mock<IPropertyAccessService> _propertyAccessService;
-    private readonly Mock<IEmployeeService> _employeeService;
 
     public PropertyAccessServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeDataService = new Mock<IEmployeeDataService>();
-        _employeeRoleService = new Mock<IEmployeeRoleService>();
         _propertyAccessService = new Mock<IPropertyAccessService>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeService = new Mock<IEmployeeService>();
-        propertyAccessService = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object, _errorLoggingServiceMock.Object);
+        propertyAccessService = new PropertyAccessService(_dbMock.Object);
 
     }
 

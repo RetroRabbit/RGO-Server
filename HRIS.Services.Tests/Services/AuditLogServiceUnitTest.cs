@@ -4,7 +4,7 @@ using HRIS.Models.Enums;
 using HRIS.Services.Services;
 using Moq;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Entities;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -65,10 +65,11 @@ public class AuditLogServiceUnitTest
         _auditLogDto = new AuditLogDto
         {
             Id = 1,
-            EditBy = _employee,
-            EditFor = _employee,
-            EditDate = new DateTime(),
-            Description = "Test Description"
+            CreatedBy = _employee,
+            CRUDOperation = CRUDOperations.Update,
+            Table = "Table",
+            Date = DateTime.Now,
+            Data = "Test Description"
         };
     }
 

@@ -6,6 +6,7 @@ using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using RR.UnitOfWork;
 
 namespace HRIS.Services.Services;
 
@@ -33,6 +34,7 @@ public class AuthService : IAuthService
     public async Task<string> Login(string email)
     {
         var employee = await _employeeService.GetEmployee(email);
+        GlobalVariables.SetUserId(employee!.Id);
 
         return await GenerateToken(employee!);
     }

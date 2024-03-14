@@ -1,4 +1,6 @@
-﻿using HRIS.Models;
+﻿// Ignore Spelling: Dto
+
+using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
 using HRIS.Models.Enums;
 using Xunit;
@@ -17,12 +19,12 @@ public class PropertyAccessUnitTests
     }
 
     [Fact]
-    public void toDtoTest()
+    public void PropertyAccessToDtoTest()
     {
-        var propertyAccess = new Employee();
+        var propertyAccess = new PropertyAccess();
         var propertyAccessDto = propertyAccess.ToDto();
 
-        Assert.IsType<EmployeeDto>(propertyAccessDto);
+        Assert.IsType<PropertyAccessDto>(propertyAccessDto);
         Assert.NotNull(propertyAccessDto);
     }
 }

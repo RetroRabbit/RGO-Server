@@ -13,19 +13,10 @@ namespace HRIS.Services.Services;
 public class PropertyAccessService : IPropertyAccessService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
-    private readonly IEmployeeDataService _employeeDataService;
-    private readonly IEmployeeRoleService _employeeRoleService;
-    private readonly IEmployeeService _employeeService;
 
-    public PropertyAccessService(IUnitOfWork db, IEmployeeRoleService employeeRoleService,
-                                 IEmployeeDataService employeeDataService, IEmployeeService employeeService, IErrorLoggingService errorLoggingService)
+    public PropertyAccessService(IUnitOfWork db)
     {
         _db = db;
-        _employeeRoleService = employeeRoleService;
-        _employeeDataService = employeeDataService;
-        _employeeService = employeeService;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<List<PropertyAccessDto>> GetAccessListByEmployeeId(int employeeId)
