@@ -33,7 +33,7 @@ public class EmployeeData : IModel<EmployeeDataDto>
     public virtual Employee? Employee { get; set; }
     public virtual FieldCode? FieldCode { get; set; }
 
-    [Key] [Column("Id")] public int Id { get; set; }
+    [Key] [Column("id")] public int Id { get; set; }
 
     public EmployeeDataDto ToDto()
     {
