@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATS.Models", "ATS.Models\AT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATS.Services", "ATS.Services\ATS.Services.csproj", "{117730C3-BDAF-4E3E-88CD-9E729BBE95FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATS.Services.Tests", "ATS.Services.Tests\ATS.Services.Tests.csproj", "{70A30316-316E-4636-98B3-27B191378F63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATS.Services.Tests", "ATS.Services.Tests\ATS.Services.Tests.csproj", "{70A30316-316E-4636-98B3-27B191378F63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
