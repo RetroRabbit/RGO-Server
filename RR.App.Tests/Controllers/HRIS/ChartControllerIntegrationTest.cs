@@ -39,11 +39,40 @@ namespace RR.App.Tests.Controllers.HRIS
         {
             var client = _factory.CreateClient();
             var requestContent = new StringContent(
-                JsonSerializer.Serialize(new { /* chart data */ }),
+                "dataType=Type1&dataType=Type2&roles=Role1&chartName=SampleChart&chartType=Bar",
+                Encoding.UTF8,
+                "application/x-www-form-urlencoded");
+
+            var response = await client.PostAsync("/charts", requestContent);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteChart_ReturnsOk_WithDeletedChart()
+        {
+        
+            var client = _factory.CreateClient();
+            var url = "/charts?chartId=1";
+            var response = await client.DeleteAsync(url);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
+        {
+   
+            var client = _factory.CreateClient();
+            var chartDto = new ChartDto(); // Create a chart DTO object with necessary data
+            var requestContent = new StringContent(
+                JsonSerializer.Serialize(chartDto),
                 Encoding.UTF8,
                 "application/json");
 
-            var response = await client.PostAsync("/charts", requestContent);
+            var response = await client.PutAsync("/charts", requestContent);
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
