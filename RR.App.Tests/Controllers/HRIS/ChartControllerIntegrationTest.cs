@@ -43,7 +43,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 Encoding.UTF8,
                 "application/x-www-form-urlencoded");
 
-            var response = await client.PostAsync("/charts", requestContent);
+            var response = await client.PostAsync("/charts/data", requestContent);
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -64,7 +64,7 @@ namespace RR.App.Tests.Controllers.HRIS
         [Fact]
         public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
         {
-   
+      
             var client = _factory.CreateClient();
             var chartDto = new ChartDto();
             var requestContent = new StringContent(
@@ -73,10 +73,10 @@ namespace RR.App.Tests.Controllers.HRIS
                 "application/json");
 
             var response = await client.PutAsync("/charts", requestContent);
+
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
-
 
         [Fact]
         public async Task GetColumns_ReturnsOk_WithColumns()
