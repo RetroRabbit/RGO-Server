@@ -22,7 +22,7 @@ public class EmployeeDocumentTestData
 
     public static EmployeeDocumentDto EmployeeDocumentApproved = new EmployeeDocumentDto
     {
-        Id = 1,
+        Id = 2,
         EmployeeId = EmployeeTestData.EmployeeDto.Id,
         Reference = null,
         FileName = "TestFile.pdf",
@@ -36,7 +36,7 @@ public class EmployeeDocumentTestData
 
     public static EmployeeDocumentDto EmployeeDocumentRejected = new EmployeeDocumentDto
     {
-        Id = 1,
+        Id = 3,
         EmployeeId = EmployeeTestData.EmployeeDto.Id,
         Reference = null,
         FileName = "TestFile.pdf",
@@ -50,7 +50,7 @@ public class EmployeeDocumentTestData
 
     public static EmployeeDocumentDto EmployeeDocumentActionRequired = new EmployeeDocumentDto
     {
-        Id = 1,
+        Id = 4,
         EmployeeId = EmployeeTestData.EmployeeDto.Id,
         Reference = null,
         FileName = "TestFile.pdf",
