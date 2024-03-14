@@ -66,7 +66,7 @@ namespace RR.App.Tests.Controllers.HRIS
         {
    
             var client = _factory.CreateClient();
-            var chartDto = new ChartDto(); // Create a chart DTO object with necessary data
+            var chartDto = new ChartDto();
             var requestContent = new StringContent(
                 JsonSerializer.Serialize(chartDto),
                 Encoding.UTF8,
@@ -76,5 +76,37 @@ namespace RR.App.Tests.Controllers.HRIS
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
+
+
+        [Fact]
+        public async Task GetColumns_ReturnsOk_WithColumns()
+        {
+       
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/charts/column");
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var content = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async Task ExportCsv_ReturnsFileResult_WithData()
+        {
+   
+            var client = _factory.CreateClient();
+            var url = "/charts/report/export?dataTypes=Type1&dataTypes=Type2";
+
+            var response = await client.GetAsync(url);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            Assert.Equal("text/csv", response.Content.Headers.ContentType.MediaType);
+            Assert.Equal("Report.csv", response.Content.Headers.ContentDisposition.FileNameStar);
+        }
     }
+
 }
