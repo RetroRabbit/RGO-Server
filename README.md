@@ -120,11 +120,12 @@ Congratulations! You have now successfully created a database with tables.
 
 - Register new RGO server in PgAdmin
 
+![Register service](./Screenshot%202023-08-02%20173735.png)
 
 - Update Information and save
 
 ![Register service - connection](./Screenshot%202023-08-02%20173613.png)
-![Register service](./Screenshot%202023-08-02%20173735.png)
+
 
 1. Make a local copy of the DummyData.sql file In the RR.UnitOfWork Project.
 
