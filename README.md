@@ -96,7 +96,16 @@ docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672
 ```
 ### Creating Database Tables:
 
-1. Open Visual Studio and go to the package manager.
+1. Open Visual Studio 2022 and open the RGO-Server project file. 
+   Pull up the nuget package manager console:
+    
+   **_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
+   Make sure the **Default project** is **_RGO.UnitOfWork_**.
+    
+   ----
+    
+   ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
+
 2. Change the default project to RR.UnitOfWork.
 3. Run the following commands:
    
@@ -109,6 +118,10 @@ Congratulations! You have now successfully created a database with tables.
 
 ### Populating Database with Dummy Data:
 
+- Register new RGO server
+
+![Register service](./Screenshot%202023-08-02%20173735.png)
+
 1. Make a local copy of the DummyData.sql file In the RR.UnitOfWork Project.
 
    ![Screenshot 2024-03-12 130755](https://github.com/RetroRabbit/RGO-Server/assets/82169901/178d5ba8-160e-4b28-b280-2b6a08fb02da)
@@ -117,7 +130,11 @@ Congratulations! You have now successfully created a database with tables.
    
    ![Screenshot 2024-03-12 130900](https://github.com/RetroRabbit/RGO-Server/assets/82169901/73545f25-ab5f-4e60-b929-6cd6d0fa781a)
    
-4. Paste a new INSERT statement and populate it with your information such as your email, name, and surname.
+4. Paste a new INSERT statement and populate it with your information such as your email, 
+   name, and surname. It is important to note that the first email field should be populated 
+   with a personal or work email you're going to use to log into the RGO system, otherwise 
+   you won't have access to the system. The second email field can just be a dummy or
+   additional email you'll make use of.
    
 5. Copy the SQL in the locally created script.
    
@@ -133,10 +150,14 @@ Congratulations! You have now successfully created a database with tables.
   
    ![Screenshot 2024-03-12 131356](https://github.com/RetroRabbit/RGO-Server/assets/82169901/69c52269-e074-487e-b489-53ac9c41a5ff)
 
-Once the query is completed successfully, you can go to the employee table and view all rows to see if you have data in the database.
 
 Congratulations you have a fully populated database!
 
+### Checking new user added to the DB you made
+
+- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
+
+Once the query is completed successfully, you can go to the employee table and view all rows to see if you have data in the database.
 ### Running Unit Tests
 
 When running unit tests make sure that the database is running to accomodate for integration tests
