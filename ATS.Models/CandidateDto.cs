@@ -26,6 +26,7 @@ public class CandidateDto
     public string? School { get; set; }
     public string? Degree { get; set; }
     public string? FieldOfStudy { get; set; }
-    public DateOnly? QualificationStartDate { get; set; }
     public DateOnly? QualificationEndDate { get; set; }
+    public bool Blacklisted { get; set;}
+    public string BlacklistedReason { get; set; }
 }

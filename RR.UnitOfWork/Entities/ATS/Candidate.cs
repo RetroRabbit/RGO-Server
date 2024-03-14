@@ -35,8 +35,9 @@ public class Candidate : IModel<CandidateDto>
         School = candidateDto.School;
         Degree = candidateDto.Degree;
         FieldOfStufy = candidateDto.FieldOfStudy;
-        QualificationStartDate = candidateDto.QualificationStartDate;
         QualificationEndDate = candidateDto.QualificationEndDate;
+        Blacklisted = candidateDto.Blacklisted;
+        BlacklistedReason = candidateDto.BlacklistedReason;
     }
 
     [Key][Column("id")] public int Id { get; set; }
@@ -81,9 +82,11 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("fieldOfStudy")] public string? FieldOfStufy { get; set; }
 
-    [Column("qualificationStartDate")] public DateOnly? QualificationStartDate { get; set; }
-
     [Column("qualificationEndDate")] public DateOnly? QualificationEndDate { get; set; }
+
+    [Column("blacklisted")] public bool Blacklisted { get; set; }
+
+    [Column("blacklistedReason")] public string BlacklistedReason { get; set; }
 
 
     public CandidateDto ToDto()
@@ -111,8 +114,9 @@ public class Candidate : IModel<CandidateDto>
             School = this.School,
             Degree = this.Degree,
             FieldOfStudy = this.FieldOfStufy,
-            QualificationStartDate = this.QualificationStartDate,
-            QualificationEndDate = this.QualificationEndDate
+            QualificationEndDate = this.QualificationEndDate,
+            Blacklisted = this.Blacklisted,
+            BlacklistedReason = this.BlacklistedReason
         };
     }
 }
