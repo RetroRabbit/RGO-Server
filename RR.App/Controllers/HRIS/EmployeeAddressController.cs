@@ -17,7 +17,7 @@ public class EmployeeAddressController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet]
+    [HttpGet()]
     public async Task<IActionResult> GetAll()
     {
         try
