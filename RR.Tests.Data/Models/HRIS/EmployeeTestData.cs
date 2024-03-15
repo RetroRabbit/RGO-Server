@@ -172,4 +172,46 @@ public class EmployeeTestData
         EmergencyContactName = null,
         EmergencyContactNo = null
     };
+
+    public static EmployeeDto TestEmployeeDto = new EmployeeDto
+    {
+        Id = 1,
+        EmployeeNumber = "001",
+        TaxNumber = "34434434",
+        EngagementDate = new DateTime(),
+        TerminationDate = new DateTime(),
+        PeopleChampion = null,
+        Disability = false,
+        DisabilityNotes = "None",
+        Level = 4,
+        EmployeeType = EmployeeTypeTestData.DeveloperType,
+        Notes = "Notes",
+        LeaveInterval = 1,
+        SalaryDays = 28,
+        PayRate = 128,
+        Salary = 100000,
+        Name = "Matt",
+        Initials = "MT",
+        Surname = "Smith",
+        DateOfBirth = new DateTime(),
+        CountryOfBirth = "South Africa",
+        Nationality = "South African",
+        IdNumber = "0301015000187",
+        PassportNumber = " ",
+        PassportExpirationDate = new DateTime(),
+        PassportCountryIssue = "South Africa",
+        Race = Race.Black,
+        Gender = Gender.Male,
+        Photo = null,
+        Email = "test@retrorabbit.co.za",
+        PersonalEmail = "test.example@gmail.com",
+        CellphoneNo = "0765477814",
+        ClientAllocated = 1,
+        TeamLead = 4,
+        PhysicalAddress = EmployeeAddressTestData.EmployeeAddressDto,
+        PostalAddress = EmployeeAddressTestData.EmployeeAddressDto,
+        HouseNo = null,
+        EmergencyContactName = "name",
+        EmergencyContactNo = "0765477814"
+    };
 }
