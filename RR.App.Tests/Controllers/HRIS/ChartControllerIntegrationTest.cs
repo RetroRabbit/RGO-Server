@@ -86,7 +86,7 @@ namespace RR.App.Tests.Controllers.HRIS
         [Fact]
         public async Task DeleteChart_ReturnsOk_WithDeletedChart()
         {
-            var response = await _client.DeleteAsync("/charts");
+            var response = await _client.DeleteAsync($"/charts?chartId={1}");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -95,17 +95,18 @@ namespace RR.App.Tests.Controllers.HRIS
         [Fact]
         public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
         {
-            var chartDto = new ChartDto();
-            var requestContent = new StringContent(
-                JsonSerializer.Serialize(chartDto),
-                Encoding.UTF8,
-                "application/json");
+            var chartDto = new ChartDto
+            {
+         
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto));
 
-            var response = await _client.PutAsync("/charts", requestContent);
+            var response = await _client.PutAsync("/charts", jsonContent);
 
             response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var content = await response.Content.ReadAsStringAsync();
+            var updatedChart = JsonSerializer.Deserialize<ChartDto>(content);
+            Assert.Equal(chartDto, updatedChart);
         }
 
         [Fact]
@@ -123,7 +124,7 @@ namespace RR.App.Tests.Controllers.HRIS
         [Fact]
         public async Task ExportCsv_ReturnsFileResult_WithData()
         {
-            var response = await _client.GetAsync("/charts/report/export?dataTypes=Type1&dataTypes=Type2");
+            var response = await _client.GetAsync("/charts/report/export");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
