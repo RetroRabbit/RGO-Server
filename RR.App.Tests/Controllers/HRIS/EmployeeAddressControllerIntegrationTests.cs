@@ -37,6 +37,8 @@ using System.Security.Claims;
 using Org.BouncyCastle.Utilities.Net;
 using Newtonsoft.Json;
 using System.Text;
+using System.Text.Json;
+using System.Net.Http.Json;
 
 namespace RR.App.Tests.Controllers
 {
@@ -123,36 +125,42 @@ namespace RR.App.Tests.Controllers
         public async Task SaveUpdateDeleteEmployeeAddress_ReturnsOkResult()
         {
             var addressDto = EmployeeAddressTestData.EmployeeAddressDtoNew;
-            var content = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
 
-            var response = await _client.PostAsync("/employee-address", content);
+            var response = await _client.PostAsync("/employee-address", jsonContent);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+
+            var content = await response.Content.ReadAsStringAsync();
+            var jsonDoc = JsonDocument.Parse(content);
+            var addressId = jsonDoc.RootElement.GetProperty("id").GetInt32();
+
+            var updatedDto = new EmployeeAddressDto
+            {
+                Id = addressId,
+                UnitNumber = "56",
+                ComplexName = "Complex72",
+                StreetNumber = "8",
+                SuburbOrDistrict = "Suburb/District",
+                City = "City",
+                Country = "Country",
+                Province = "Province",
+                PostalCode = "1620"
+            };
+
+            var updatedJsonContent = new StringContent(JsonConvert.SerializeObject(updatedDto), Encoding.UTF8, "application/json");
+
+            response = await _client.PutAsync("/employee-address", updatedJsonContent);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            response = await _client.DeleteAsync($"/employee-address?addressId={addressId}");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
-
-        [Fact]
-        public async Task DeleteEmployeeAddress_ReturnsOkResult()
-        {
-            int adressId = 1;
-            var response = await _client.DeleteAsync($"/employee-address?addressId={adressId}");
-
-            response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
-
-        [Fact]
-        public async Task UpdateEmployeeAddress_ReturnsOkResult()
-        {
-            var addressDto = EmployeeAddressTestData.EmployeeAddressDto;
-            var content = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
-
-            var response = await _client.PutAsync("/employee-address", content);
-
-            response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
     }
 }
