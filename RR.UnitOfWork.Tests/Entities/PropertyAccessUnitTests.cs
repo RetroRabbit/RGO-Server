@@ -1,8 +1,5 @@
-﻿// Ignore Spelling: Dto
-
-using HRIS.Models;
+﻿using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
-using HRIS.Models.Enums;
 using Xunit;
 
 namespace RR.UnitOfWork.Tests.Entities;

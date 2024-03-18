@@ -47,7 +47,6 @@ public class AuditLog : IModel<AuditLogDto>
 
     public virtual Employee? CreatedBy { get; set; }
 
-
     public AuditLogDto ToDto()
     {
         return new AuditLogDto

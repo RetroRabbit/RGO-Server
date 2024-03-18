@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
-using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
@@ -9,7 +8,6 @@ using Moq;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
 using Xunit;
 
 namespace RGO.Tests.Services;
