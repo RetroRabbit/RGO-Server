@@ -58,8 +58,6 @@ namespace RR.App.Tests.Controllers.HRIS
         [Fact]
         public async Task GetAllCharts_ReturnsOk_WithCharts()
         {
-            
-
             var response = await _client.GetAsync("/charts");
 
             response.EnsureSuccessStatusCode();
@@ -67,7 +65,6 @@ namespace RR.App.Tests.Controllers.HRIS
 
             var content = await response.Content.ReadAsStringAsync();
             var charts = JsonSerializer.Deserialize<List<ChartDto>>(content);
-            var test = 1;
         }
 
         [Fact]
@@ -87,11 +84,13 @@ namespace RR.App.Tests.Controllers.HRIS
             var content = await response.Content.ReadAsStringAsync();
             var jsonDoc = JsonDocument.Parse(content);
             var chartId = jsonDoc.RootElement.GetProperty("id").GetInt32();
-
-
             var chartDto = new ChartDto
             {
-                Id = chartId
+                Id = chartId,
+                Name = chartName,
+                Type = chartType,
+                DataTypes = dataType,
+                Labels = roles,
             };
             var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto), Encoding.UTF8, "application/json");
 
@@ -105,16 +104,12 @@ namespace RR.App.Tests.Controllers.HRIS
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-
         [Fact]
         public async Task GetColumns_ReturnsOk_WithColumns()
         {
-
             var response = await _client.GetAsync("/charts/column");
-
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
             var content = await response.Content.ReadAsStringAsync();
         }
 
@@ -133,12 +128,9 @@ namespace RR.App.Tests.Controllers.HRIS
             Assert.Equal("Report.csv", response.Content.Headers.ContentDisposition.FileNameStar);
         }
 
-
         [Fact]
         public async Task GetChartData_ReturnsOk_WithData()
         {
-  
-
             var dataTypes = new List<string> { "Type1", "Type2", "Type3" };
             var queryString = new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -146,7 +138,6 @@ namespace RR.App.Tests.Controllers.HRIS
             });
 
             var response = await _client.GetAsync("/charts/data?" + queryString.ReadAsStringAsync().Result);
-
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 

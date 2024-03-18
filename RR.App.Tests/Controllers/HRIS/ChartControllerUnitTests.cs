@@ -30,14 +30,14 @@ public class ChartControllerUnitTests
         {
            new ChartDto
             {
-            Id = 1,
-            Name = "Disabilities",
-            Type = "bar",
-            DataTypes = dataTypes,
-            Labels = labels,
-            Data = data
+              Id = 1,
+              Name = "Disabilities",
+              Type = "bar",
+              DataTypes = dataTypes,
+              Labels = labels,
+              Data = data
            }
-    };
+        };
 
         _chartServiceMock.Setup(service => service.GetAllCharts())
                          .ReturnsAsync(mockCharts);
