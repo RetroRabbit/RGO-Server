@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HRIS.Models;
-using RR.UnitOfWork.Interfaces.HRIS;
+using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
@@ -33,7 +33,7 @@ public class EmployeeData : IModel<EmployeeDataDto>
     public virtual Employee? Employee { get; set; }
     public virtual FieldCode? FieldCode { get; set; }
 
-    [Key] [Column("Id")] public int Id { get; set; }
+    [Key] [Column("id")] public int Id { get; set; }
 
     public EmployeeDataDto ToDto()
     {

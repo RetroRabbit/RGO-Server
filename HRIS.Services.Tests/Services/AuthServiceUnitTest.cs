@@ -29,9 +29,10 @@ public class AuthServiceUnitTest
     private readonly EmployeeType? employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto? employeeTypeDto2;
+    private readonly ErrorLoggingService _errorLoggingService;
 
     private EmployeeTypeService? employeeTypeService;
-
+    
     public AuthServiceUnitTest()
     {
         _unitOfWork = new Mock<IUnitOfWork>();
@@ -41,6 +42,7 @@ public class AuthServiceUnitTest
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         _authServiceMock = new Mock<IAuthService>();
+        _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
         employeeTypeService = new EmployeeTypeService(_unitOfWork.Object);
         employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
@@ -55,7 +57,7 @@ public class AuthServiceUnitTest
 
         employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
-        _authService = new AuthService(_configuration.Object, _employeeService.Object, _roleAccessLinkService.Object);
+        _authService = new AuthService(_configuration.Object, _employeeService.Object, _roleAccessLinkService.Object, _errorLoggingService);
     }
 
     [Fact]
@@ -66,13 +68,47 @@ public class AuthServiceUnitTest
         employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
-                                          128, 100000, "Dotty", "D",
-                                          "Missile", new DateTime(), "South Africa", "South African", "5522522655", " ",
-                                          new DateTime(), null, Race.Black, Gender.Female, null,
-                                          "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                          employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Developer" },
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "5522522655",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Photo = null,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
 
         var employeeDtoList = new List<Employee>
         {
@@ -85,7 +121,6 @@ public class AuthServiceUnitTest
 
         var result = await _authService.CheckUserExist("dm@retrorabbit.co.za");
 
-        //Assert.NotNull(result);
         Assert.IsType<bool>(result);
         Assert.True(result);
     }
@@ -99,13 +134,41 @@ public class AuthServiceUnitTest
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
         var roleDto = new RoleDto { Id = 1, Description = "Developer" };
 
-        var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
-                                          128, 100000, "Dotty", "D",
-                                          "Missile", new DateTime(), "South Africa", "South African", "5522522655", " ",
-                                          new DateTime(), null, Race.Black, Gender.Female, null,
-                                          "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                          employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = new DateTime(),
+            TerminationDate = new DateTime(),
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Developer" },
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = new DateTime(),
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "5522522655",
+            PassportNumber = " ",
+            PassportExpirationDate = new DateTime(),
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         var email = "dm@retrorabbit.co.za";
 
@@ -145,13 +208,41 @@ public class AuthServiceUnitTest
         employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          null, false, "None", 4, new EmployeeTypeDto{ Id = 1, Name = "Developer" }, "Notes", 1, 28,
-                                          128, 100000, "Dotty", "D",
-                                          "Missile", new DateTime(), "South Africa", "South African", "5522522655", " ",
-                                          new DateTime(), null, Race.Black, Gender.Female, null,
-                                          "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                          employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = new DateTime(),
+            TerminationDate = new DateTime(),
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Developer" },
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = new DateTime(),
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "5522522655",
+            PassportNumber = " ",
+            PassportExpirationDate = new DateTime(),
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         var email = "dm@retrorabbit.co.za";
 

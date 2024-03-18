@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using RR.UnitOfWork.Interfaces.HRIS;
+using RR.UnitOfWork.Interfaces;
 
-namespace RR.UnitOfWork.Repositories.HRIS;
+namespace RR.UnitOfWork.Repositories;
 
 public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel<T>
 {
@@ -79,5 +79,6 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
     public async Task AddRange(List<TK> entities)
     {
         await _entity.AddRangeAsync(entities);
+        await _db.SaveChangesAsync();
     }
 }

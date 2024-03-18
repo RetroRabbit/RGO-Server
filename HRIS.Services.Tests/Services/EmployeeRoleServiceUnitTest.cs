@@ -1,9 +1,11 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -13,12 +15,14 @@ namespace RGO.Tests.Services;
 public class EmployeeRoleServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeRoleService _employeeRoleService;
 
     public EmployeeRoleServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeRoleService = new EmployeeRoleService(_dbMock.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _employeeRoleService = new EmployeeRoleService(_dbMock.Object, _errorLoggingServiceMock.Object);
     }
 
     [Fact]
@@ -30,13 +34,7 @@ public class EmployeeRoleServiceUnitTest
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                       new DateTime(), null, Race.Black, Gender.Male, null,
-                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
-                                       employeeAddressDto, null, null, null);
+        EmployeeDto testEmployee = EmployeeTestData.EmployeeDto;
 
         var roleList = new List<RoleDto>
         {
@@ -107,6 +105,8 @@ public class EmployeeRoleServiceUnitTest
                .Returns(Task.FromResult(employeeRoleList[2].ToDto())!)
                .Returns(Task.FromResult(employeeRoleList[3].ToDto())!);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         await Assert.ThrowsAsync<Exception>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
         {
             Id = employeeRoleList[0].Id,
@@ -131,13 +131,7 @@ public class EmployeeRoleServiceUnitTest
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                       new DateTime(), null, Race.Black, Gender.Male, null,
-                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
-                                       employeeAddressDto, null, null, null);
+        EmployeeDto testEmployee =  EmployeeTestData.EmployeeDto;
 
         var roleList = new List<RoleDto>
         {
@@ -197,6 +191,8 @@ public class EmployeeRoleServiceUnitTest
                .Returns(Task.FromResult(employeeRoleList.Where(e => e.Role!.Description == roleList[1].Description)
                                                         .Select(e => e.ToDto()).FirstOrDefault())!);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         var result1 = await _employeeRoleService.DeleteEmployeeRole(Email, roleList[0].Description!);
 
         Assert.NotNull(result1);
@@ -212,14 +208,7 @@ public class EmployeeRoleServiceUnitTest
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                       new DateTime(), null, Race.Black, Gender.Male, null,
-                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
-                                       employeeAddressDto, null, null, null);
-
+        EmployeeDto testEmployee =  EmployeeTestData.EmployeeDto;
         var roleList = new List<RoleDto>
         {
             new RoleDto{Id = 1, Description = "Admin" },
@@ -300,13 +289,7 @@ public class EmployeeRoleServiceUnitTest
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                       new DateTime(), null, Race.Black, Gender.Male, null,
-                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
-                                       employeeAddressDto, null, null, null);
+        EmployeeDto testEmployee = EmployeeTestData.EmployeeDto;
 
         var roleList = new List<RoleDto>
         {
@@ -370,13 +353,7 @@ public class EmployeeRoleServiceUnitTest
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 10000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                       new DateTime(), null, Race.Black, Gender.Male, null,
-                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
-                                       employeeAddressDto, null, null, null);
+        EmployeeDto testEmployee = EmployeeTestData.EmployeeDto;
 
         var roleList = new List<RoleDto>
         {
@@ -424,13 +401,7 @@ public class EmployeeRoleServiceUnitTest
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                       new DateTime(), null, Race.Black, Gender.Male, null,
-                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
-                                       employeeAddressDto, null, null, null);
+        EmployeeDto testEmployee = EmployeeTestData.EmployeeDto;
 
         var roleList = new List<RoleDto>
         {
@@ -502,13 +473,7 @@ public class EmployeeRoleServiceUnitTest
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto testEmployee = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "0000080000000", " ",
-                                       new DateTime(), null, Race.Black, Gender.Male, null,
-                                       Email, "test.example@gmail.com", "0000000000", null, null, employeeAddressDto,
-                                       employeeAddressDto, null, null, null);
+        EmployeeDto testEmployee = EmployeeTestData.EmployeeDto;
 
         var roleList = new List<RoleDto>
         {

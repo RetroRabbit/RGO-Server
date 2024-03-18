@@ -15,20 +15,12 @@ namespace RGO.Tests.Services;
 
 public class EmployeeServiceUnitTests
 {
-    private List<EmployeeDto> employeeList = new List<EmployeeDto>
-        {
-            EmployeeTestData.EmployeeDto
-        };
-
-    private List<Employee> employee = new List<Employee>
-        {
-            new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-        };
-
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeAddressService> employeeAddressServiceMock;
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
     private readonly Mock<IRoleService> roleServiceMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
+
 
     private readonly EmployeeRoleDto employeeRoleDto = new EmployeeRoleDto
     {
@@ -38,21 +30,26 @@ public class EmployeeServiceUnitTests
     };
 
     private readonly EmployeeService employeeService;
+    private readonly ErrorLoggingService errorLoggingService;
 
     public EmployeeServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
         employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-                                              employeeAddressServiceMock.Object, roleServiceMock.Object);
+                                              employeeAddressServiceMock.Object, roleServiceMock.Object,_errorLoggingServiceMock.Object);
+        errorLoggingService = new ErrorLoggingService(_dbMock.Object);
+
     }
 
     [Fact]
     public async Task SaveEmployeeFailTest1()
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(true));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => employeeService.SaveEmployee(EmployeeTestData.EmployeeDto));
     }
@@ -168,10 +165,6 @@ public class EmployeeServiceUnitTests
     [Fact]
     public void GetEmployeeTest()
     {
-        var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        var _dbMock = new Mock<IUnitOfWork>();
-        var employeeRepositoryMock = new Mock<IEmployeeRepository>();
-
         var employeeList = new List<Employee>
         {
             new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
@@ -269,10 +262,6 @@ public class EmployeeServiceUnitTests
     [Fact]
     public void CheckEmployeeExistsTest()
     {
-        var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        var _dbMock = new Mock<IUnitOfWork>();
-        var employeeRepositoryMock = new Mock<IEmployeeRepository>();
-
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(true));
 
         var result = employeeService.CheckUserExist("dm@retrorabbit.co.za");
@@ -349,13 +338,15 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
                .Returns(roles.AsQueryable().BuildMock());
 
-        var exception = await Assert.ThrowsAsync<Exception>(
-                                                            async () =>
-                                                                await employeeService
-                                                                    .UpdateEmployee(EmployeeTestData.EmployeeDto,
-                                                                     "unauthorized.email@retrorabbit.co.za"));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized action: You are not an Admin"));
 
-        Assert.Equal("Unauthorized action", exception.Message);
+        var exception = await Assert.ThrowsAsync<Exception>(
+                                                    async () =>
+                                                        await employeeService
+                                                            .UpdateEmployee(EmployeeTestData.EmployeeDto,
+                                                             "unauthorized.email@retrorabbit.co.za"));
+
+        Assert.Equal("Unauthorized action: You are not an Admin", exception.Message);
     }
 
     [Fact]
@@ -378,13 +369,15 @@ public class EmployeeServiceUnitTests
                .Returns(employees.AsQueryable().BuildMock());
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("User already exists"));
+
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await employeeService
                                                                     .UpdateEmployee(EmployeeTestData.EmployeeDto,
                                                                      "unauthorized.email@retrorabbit.co.za"));
 
-        Assert.Equal("Unauthorized action", exception.Message);
+        Assert.Equal("User already exists", exception.Message);
     }
 
     [Fact]
@@ -453,6 +446,8 @@ public class EmployeeServiceUnitTests
 
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(mockEmployees.AsQueryable().BuildMock());
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => employeeService.GetEmployeeById(2));
     }
@@ -710,11 +705,41 @@ public class EmployeeServiceUnitTests
         EmployeeType employeeType = new(employeeTypeDto);
         EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-           null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty", "D",
-           "Missile", new DateTime(), "South Africa", "South African", "0000000000000", " ",
-           new DateTime(), null,HRIS.Models.Enums.Race.Black, HRIS.Models.Enums.Gender.Female, null,
-           "dm@.co.za", "test@gmail.com", "0123456789", null, null, employeeAddressDto, employeeAddressDto, null, null, null);
+        EmployeeDto employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dorothy",
+            Initials = "D",
+            Surname = "Mahoko",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Email = "texample@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         var employeeList = new List<EmployeeDto>
             {

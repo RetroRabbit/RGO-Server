@@ -9,10 +9,12 @@ namespace HRIS.Services.Services;
 public class EmployeeDateService : IEmployeeDateService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeDateService(IUnitOfWork db)
+    public EmployeeDateService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<bool> CheckIfExists(EmployeeDateDto employeeDate)
@@ -28,7 +30,11 @@ public class EmployeeDateService : IEmployeeDateService
     {
         var exists = await CheckIfExists(employeeDate);
 
-        if (exists) throw new Exception("Employee Date already exists");
+        if (exists)
+        {
+            var exception = new Exception("Employee Date already exists");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         await _db.EmployeeDate.Add(new EmployeeDate(employeeDate));
     }
@@ -37,7 +43,11 @@ public class EmployeeDateService : IEmployeeDateService
     {
         var exists = await CheckIfExists(newEmployeeDate);
 
-        if (!exists) throw new Exception("Employee Date does not exist");
+        if (!exists)
+        {
+            var exception = new Exception("Employee Date does not exist");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var employeeDateToUpdate = new EmployeeDateDto
         {
@@ -68,7 +78,11 @@ public class EmployeeDateService : IEmployeeDateService
                                        .Select(x => x.ToDto())
                                        .FirstOrDefaultAsync();
 
-        if (employeeDateDto == null) throw new Exception("Employee Data does not exist");
+        if (employeeDateDto == null)
+        {
+            var exception = new Exception("Employee Data does not exist");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         return employeeDateDto;
     }

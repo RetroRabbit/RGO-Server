@@ -15,22 +15,52 @@ public class AuditLogServiceUnitTest
     private readonly AuditLogService _auditLogService;
     private readonly EmployeeDto _employee;
     private readonly Mock<IUnitOfWork> _unitOfWork;
+    private readonly ErrorLoggingService _errorLoggingService;
 
     public AuditLogServiceUnitTest()
     {
         _unitOfWork = new Mock<IUnitOfWork>();
-        _auditLogService = new AuditLogService(_unitOfWork.Object);
+        _auditLogService = new AuditLogService(_unitOfWork.Object,_errorLoggingService);
+        _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
-        _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                    null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Kamo",
-                                    "K.G.",
-                                    "Smith", new DateTime(), "South Africa", "South African", "1234457899", " ",
-                                    new DateTime(), null, Race.Black, Gender.Female, null!,
-                                    "ksmith@retrorabbit.co.za", "kmaosmith@gmail.com", "0123456789", null, null,
-                                    employeeAddressDto, employeeAddressDto, null, null, null);
+        _employee = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dorothy",
+            Initials = "D",
+            Surname = "Mahoko",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Email = "texample@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         _auditLogDto = new AuditLogDto
         {

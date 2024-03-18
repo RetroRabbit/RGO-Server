@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HRIS.Models;
-using RR.UnitOfWork.Interfaces.HRIS;
+using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
@@ -34,10 +34,12 @@ public class EmployeeEvaluationTemplateItem : IModel<EmployeeEvaluationTemplateI
 
     public EmployeeEvaluationTemplateItemDto ToDto()
     {
-        return new EmployeeEvaluationTemplateItemDto(
-                                                     Id,
-                                                     Template?.ToDto(),
-                                                     Section,
-                                                     Question);
+        return new EmployeeEvaluationTemplateItemDto
+        {
+            Id = Id,
+            Template = Template?.ToDto(),
+            Section = Section,
+            Question = Question
+        };
     }
 }

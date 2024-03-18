@@ -8,10 +8,12 @@ namespace HRIS.Services.Services;
 public class FieldCodeOptionsService : IFieldCodeOptionsService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public FieldCodeOptionsService(IUnitOfWork db)
+    public FieldCodeOptionsService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
@@ -25,7 +27,11 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
                         .FirstOrDefault();
 
 
-        if (fieldCode != null) throw new Exception("Field option with that name found");
+        if (fieldCode != null)
+        {
+            var exception = new Exception("Field option with that name found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var newFieldCodeOption = await _db.FieldCodeOptions.Add(new FieldCodeOptions(fieldCodeOptionsDto));
         return newFieldCodeOption;
@@ -89,7 +95,11 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
     public async Task<FieldCodeOptionsDto> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
     {
         var ifFieldCodeOption = await GetFieldCodeOptions(fieldCodeOptionsDto.Id);
-        if (ifFieldCodeOption == null) throw new Exception("No field with that name found");
+        if (ifFieldCodeOption == null)
+        {
+            var exception = new Exception("No field with that name found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         var deleteFieldCodeOptions = await _db.FieldCodeOptions.Delete(new FieldCodeOptions(fieldCodeOptionsDto).Id);
         return deleteFieldCodeOptions;

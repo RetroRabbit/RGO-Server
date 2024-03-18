@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
@@ -15,21 +16,51 @@ public class EmployeeDateServiceUnitTests
     private readonly EmployeeDateService _employeeDateService;
     private readonly EmployeeDto _employeeDto;
     private readonly Mock<IUnitOfWork> _mockDb;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
 
     public EmployeeDateServiceUnitTests()
     {
         _mockDb = new Mock<IUnitOfWork>();
-        _employeeDateService = new EmployeeDateService(_mockDb.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _employeeDateService = new EmployeeDateService(_mockDb.Object,_errorLoggingServiceMock.Object);
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Employee" };
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
-        _employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                       null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                       "D",
-                                       "Missile", new DateTime(), "South Africa", "South African", "1234457899", " ",
-                                       new DateTime(), null, Race.Black, Gender.Female, null!,
-                                       "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                       employeeAddressDto, employeeAddressDto, null, null, null);
+        _employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dorothy",
+            Initials = "D",
+            Surname = "Mahoko",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = null,
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Email = "texample@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
     }
 
     [Fact]
@@ -76,6 +107,8 @@ public class EmployeeDateServiceUnitTests
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .ReturnsAsync(true);
 
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
         await Assert.ThrowsAsync<Exception>(() => _employeeDateService.Save(new EmployeeDateDto
                                                   {
                                                     Id = 1,
@@ -102,6 +135,8 @@ public class EmployeeDateServiceUnitTests
     {
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .ReturnsAsync(false);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => _employeeDateService.Update(new EmployeeDateDto
                                                   {   
@@ -147,6 +182,7 @@ public class EmployeeDateServiceUnitTests
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .Returns(new List<EmployeeDate>().AsQueryable().BuildMock());
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => _employeeDateService.Get(employeeDate));
     }

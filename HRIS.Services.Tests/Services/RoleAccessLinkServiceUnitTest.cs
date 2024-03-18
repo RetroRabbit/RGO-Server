@@ -6,6 +6,7 @@ using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -15,6 +16,7 @@ namespace RGO.Tests.Services;
 public class RoleAccessLinkServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly Mock<IEmployeeRoleService> _employeeRoleServiceMock;
     private readonly RoleAccessDto _roleAccessDto;
     private readonly RoleAccessLinkDto _roleAccessLinkDto;
@@ -25,7 +27,8 @@ public class RoleAccessLinkServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object);
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object, _errorLoggingServiceMock.Object);
         _roleDto = new RoleDto {Id = 1, Description = "Employee"};
         _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
         _roleAccessLinkDto = new RoleAccessLinkDto { Id = 1, Role = _roleDto, RoleAccess = _roleAccessDto };
@@ -273,14 +276,8 @@ public class RoleAccessLinkServiceUnitTest
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
-        var testEmployee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                           null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Test",
-                                           "TD",
-                                           "Dummy", new DateTime(), "South Africa", "South African", "0000000000000",
-                                           " ",
-                                           new DateTime(), null, Race.Black, Gender.Female, null,
-                                           email, "tdummy@gmail.com", "0123456789", null, null, employeeAddressDto,
-                                           employeeAddressDto, null, null, null);
+
+        var testEmployee =  EmployeeTestData.EmployeeDto;
 
         var employeeRoleDtos = new List<EmployeeRoleDto>
         {

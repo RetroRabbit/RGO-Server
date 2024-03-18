@@ -45,13 +45,41 @@ public class EmployeeControllerUnitTests
         _chartMockService = new Mock<IChartService>();
         _controller = new EmployeeController(_employeeMockService.Object, _chartMockService.Object);
 
-        _employee = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                    null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Kamo",
-                                    "K.G.",
-                                    "Smith", new DateTime(), "South Africa", "South African", "1234457899", " ",
-                                    new DateTime(), null, Race.Black, Gender.Female, null!,
-                                    "ksmith@retrorabbit.co.za", "kmaosmith@gmail.com", "0123456789", null, null,
-                                    employeeAddressDto, employeeAddressDto, null, null, null);
+        _employee = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = new DateTime(),
+            TerminationDate = new DateTime(),
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Kamo",
+            Initials = "K.G.",
+            Surname = "Smith",
+            DateOfBirth = new DateTime(),
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "1234457899",
+            PassportNumber = " ",
+            PassportExpirationDate = new DateTime(),
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Email = "ksmith@retrorabbit.co.za",
+            PersonalEmail = "kmaosmith@gmail.com",
+            CellphoneNo = "0123456789",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
 
         claims = new List<Claim>
         {

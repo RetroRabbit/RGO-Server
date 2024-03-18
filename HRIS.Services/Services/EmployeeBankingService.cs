@@ -10,10 +10,12 @@ namespace HRIS.Services.Services;
 public class EmployeeBankingService : IEmployeeBankingService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeBankingService(IUnitOfWork db)
+    public EmployeeBankingService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
+        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<List<EmployeeBanking>> Get(int approvalStatus)
@@ -55,7 +57,10 @@ public class EmployeeBankingService : IEmployeeBankingService
             if (await IsAdmin(userEmail))
                 bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
             else
-                throw new Exception("Unauthorized access");
+            {
+                var exception = new Exception("Unauthorized access");
+                throw _errorLoggingService.LogException(exception);
+            }
         }
 
         var newEmployee = new Employee(empDto, empDto.EmployeeType!);
@@ -82,7 +87,8 @@ public class EmployeeBankingService : IEmployeeBankingService
         }
         catch (Exception)
         {
-            throw new Exception("Employee banking details not found");
+            var exception = new Exception("Employee banking details not found");
+            throw _errorLoggingService.LogException(exception);
         }
     }
 
@@ -109,7 +115,11 @@ public class EmployeeBankingService : IEmployeeBankingService
             if (await IsAdmin(userEmail))
                 newEntryDto = await _db.EmployeeBanking.Add(bankingDetails);
             else
-                throw new Exception("Unauthorized access");
+            {
+                var exception = new Exception("Unauthorized access");
+                throw _errorLoggingService.LogException(exception);
+            }
+
         }
 
         bankingDetails.Employee = employee;

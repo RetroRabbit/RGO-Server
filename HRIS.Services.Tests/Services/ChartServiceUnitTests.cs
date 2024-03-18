@@ -22,12 +22,14 @@ public class ChartServiceUnitTests
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto employeeTypeDto2;
+    private readonly IErrorLoggingService _errorLoggingService;
 
     public ChartServiceUnitTests()
     {
         _unitOfWork = new Mock<IUnitOfWork>();
         _employeeService = new Mock<IEmployeeService>();
         _services = new Mock<IServiceProvider>();
+        _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
@@ -56,7 +58,7 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task GetAllChartsTest()
     {
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         _unitOfWork.Setup(u => u.Chart.GetAll(null)).ReturnsAsync(new List<ChartDto>());
 
@@ -92,21 +94,90 @@ public class ChartServiceUnitTests
                 PostalCode = "1620"
             };
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                      null, false, "None", 4, developerEmployeeTypeDto, "Notes", 1, 28, 128, 100000,
-                                      "Dotty", "D",
-                                      "Missile", new DateTime(), "South Africa", "South African", "0000000000000", " ",
-                                      new DateTime(), null, Race.Black, Gender.Female, null,
-                                      "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                      employeeAddressDto, employeeAddressDto, null, null, null);
-        EmployeeDto desEmployeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                         null, false, "None", 4, designerEmployeeTypeDto, "Notes", 1, 28, 128, 100000,
-                                         "Dotty", "D",
-                                         "Missile", new DateTime(), "South Africa", "South African", "0000000000000",
-                                         " ",
-                                         new DateTime(), null, Race.Black, Gender.Female, null,
-                                         "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                         employeeAddressDto, employeeAddressDto, null, null, null);
+        EmployeeDto employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = developerEmployeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000000000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Photo = null,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
+
+        EmployeeDto desEmployeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = designerEmployeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000000000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Photo = null,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
+
 
         var employeeList = new List<Employee>
         {
@@ -139,7 +210,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(chartDto);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
 
@@ -162,21 +233,89 @@ public class ChartServiceUnitTests
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                      null, false, "None", 4, devEmployeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                      "D",
-                                      "Missile", new DateTime(), "South Africa", "South African", "0000000000000", " ",
-                                      new DateTime(), null, Race.Black, Gender.Female, null,
-                                      "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                      employeeAddressDto, employeeAddressDto, null, null, null);
-        EmployeeDto desEmployeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                         null, false, "None", 4, desEmployeeTypeDto, "Notes", 1, 28, 128, 100000,
-                                         "Dotty", "D",
-                                         "Missile", new DateTime(), "South Africa", "South African", "0000000000000",
-                                         " ",
-                                         new DateTime(), null, Race.Black, Gender.Female, null,
-                                         "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                         employeeAddressDto, employeeAddressDto, null, null, null);
+        EmployeeDto employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = devEmployeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000000000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Photo = null,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
+
+        EmployeeDto desEmployeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = desEmployeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000000000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Photo = null,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
 
         var employeeList = new List<Employee>
         {
@@ -209,7 +348,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(chartDto);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
 
@@ -228,13 +367,47 @@ public class ChartServiceUnitTests
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
-        EmployeeDto employeeDto = new(1, "001", "34434434", new DateTime(), new DateTime(),
-                                      null, false, "None", 4, employeeTypeDto, "Notes", 1, 28, 128, 100000, "Dotty",
-                                      "D",
-                                      "Missile", new DateTime(), "South Africa", "South African", "0000000000000", " ",
-                                      new DateTime(), null, Race.Black, Gender.Female, null,
-                                      "dm@retrorabbit.co.za", "test@gmail.com", "0123456789", null, null,
-                                      employeeAddressDto, employeeAddressDto, null, null, null);
+        EmployeeDto employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = null,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 4,
+            EmployeeType = employeeTypeDto,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Dotty",
+            Initials = "D",
+            Surname = "Missile",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000000000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Female,
+            Photo = null,
+            Email = "dm@retrorabbit.co.za",
+            PersonalEmail = "test@gmail.com",
+            CellphoneNo = "0123456789",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
 
         var employeeList = new List<EmployeeDto>
         {
@@ -243,7 +416,7 @@ public class ChartServiceUnitTests
 
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeList);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.GetChartData(dataType);
 
@@ -268,7 +441,7 @@ public class ChartServiceUnitTests
 
         _unitOfWork.Setup(u => u.Chart.Delete(chartId)).ReturnsAsync(expectedChartDto);
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.DeleteChart(chartId);
 
@@ -309,7 +482,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(x => x.Chart.Update(It.IsAny<Chart>()))
                    .Returns(Task.FromResult(chartDtoToUpdate));
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.UpdateChart(chartDtoToUpdate);
 
@@ -321,7 +494,7 @@ public class ChartServiceUnitTests
     [Fact]
     public void GetColumnsFromTableTest()
     {
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var columnNames = chartService.GetColumnsFromTable();
 
@@ -332,14 +505,47 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task ExportCsvAsyncTest()
     {
-        var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          1, false, "None", 3, employeeTypeDto1, "Notes", 1, 28, 128, 100000, "Estiaan",
-                                          "MT",
-                                          "Britz", new DateTime(), "South Africa", "South African", "0000080000000",
-                                          " ",
-                                          new DateTime(), null, Race.Black, Gender.Male, null,
-                                          "test1@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                                          employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = 1,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 3,
+            EmployeeType = employeeTypeDto1,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Estiaan",
+            Initials = "MT",
+            Surname = "Britz",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Photo = null,
+            Email = "test1@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -352,15 +558,17 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(Task.FromResult(employeeDtoList));
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
         var result = await chartService.ExportCsvAsync(dataTypeList);
         var expectedResult = new byte[]
         {
             70, 105, 114, 115, 116, 32, 78, 97, 109, 101, 44, 76, 97, 115, 116, 32, 78, 97, 109, 101,
-            44, 65, 103, 101, 44, 71, 101, 110, 100, 101, 114, 44, 82, 97, 99, 101, 13, 10, 69, 115, 116, 105, 97, 97,
-            110, 44, 66, 114, 105,
-            116, 122, 44, 65, 103, 101, 32, 50, 48, 50, 51, 44, 77, 97, 108, 101, 44, 66, 108, 97, 99, 107, 13, 10
+            44, 65, 103, 101, 44, 71, 101, 110, 100, 101, 114, 44, 82, 97, 99, 101, 13, 10, 69, 115, 116, 105, 97, 97, 110,
+            44, 66, 114, 105, 116, 122, 44, 65, 103, 101, 32, 48, 44, 77, 97, 108, 101, 44, 66, 108, 97, 99, 107,
+            13, 10
         };
+
+
 
         Assert.NotNull(result);
         Assert.IsType<byte[]>(result);
@@ -372,14 +580,47 @@ public class ChartServiceUnitTests
     {
         var dataTypeList = new List<string> { "", "" };
 
-        var employeeDto = new EmployeeDto(1, "001", "34434434", new DateTime(), new DateTime(),
-                                          1, false, "None", 3, employeeTypeDto1, "Notes", 1, 28, 128, 100000, "Estiaan",
-                                          "MT",
-                                          "Britz", new DateTime(), "South Africa", "South African", "0000080000000",
-                                          " ",
-                                          new DateTime(), null, Race.Black, Gender.Male, null,
-                                          "test1@retrorabbit.co.za", "test.example@gmail.com", "0000000000", null, null,
-                                          employeeAddressDto, employeeAddressDto, null, null, null);
+        var employeeDto = new EmployeeDto
+        {
+            Id = 1,
+            EmployeeNumber = "001",
+            TaxNumber = "34434434",
+            EngagementDate = DateTime.Now,
+            TerminationDate = DateTime.Now,
+            PeopleChampion = 1,
+            Disability = false,
+            DisabilityNotes = "None",
+            Level = 3,
+            EmployeeType = employeeTypeDto1,
+            Notes = "Notes",
+            LeaveInterval = 1,
+            SalaryDays = 28,
+            PayRate = 128,
+            Salary = 100000,
+            Name = "Estiaan",
+            Initials = "MT",
+            Surname = "Britz",
+            DateOfBirth = DateTime.Now,
+            CountryOfBirth = "South Africa",
+            Nationality = "South African",
+            IdNumber = "0000080000000",
+            PassportNumber = " ",
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
+            Race = Race.Black,
+            Gender = Gender.Male,
+            Photo = null,
+            Email = "test1@retrorabbit.co.za",
+            PersonalEmail = "test.example@gmail.com",
+            CellphoneNo = "0000000000",
+            ClientAllocated = null,
+            TeamLead = null,
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto,
+            HouseNo = null,
+            EmergencyContactName = null,
+            EmergencyContactNo = null
+        };
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -389,7 +630,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(Task.FromResult(employeeDtoList));
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await chartService.ExportCsvAsync(dataTypeList));

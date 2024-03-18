@@ -9,10 +9,12 @@ namespace HRIS.Services.Services;
 public class RoleAccessService : IRoleAccessService
 {
     private readonly IUnitOfWork _db;
+    private readonly IErrorLoggingService _errorLoggingService;
 
-    public RoleAccessService(IUnitOfWork db)
+    public RoleAccessService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
+        _errorLoggingService = errorLoggingService;
     }
 
     public Task<bool> CheckRoleAccess(string permission)
@@ -42,7 +44,11 @@ public class RoleAccessService : IRoleAccessService
                                   .Select(r => r.ToDto())
                                   .FirstOrDefaultAsync();
 
-        if (roleAccess == null) throw new Exception($"RoleAccess not found({permission})");
+        if (roleAccess == null)
+        {
+            var exception = new Exception($"RoleAccess not found({permission})");
+            throw _errorLoggingService.LogException(exception);
+        }
 
         return roleAccess;
     }
