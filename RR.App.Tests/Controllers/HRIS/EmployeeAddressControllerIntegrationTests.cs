@@ -16,6 +16,7 @@ using IEmployeeService = HRIS.Services.Interfaces.IEmployeeService;
 using IAuthService = HRIS.Services.Interfaces.IAuthService;
 using IEmployeeTypeService = HRIS.Services.Interfaces.IEmployeeTypeService;
 using IRoleAccessLinkService = HRIS.Services.Interfaces.IRoleAccessLinkService;
+using IEmployeeRoleService = HRIS.Services.Interfaces.IEmployeeRoleService;
 using IUnitOfWork = RR.UnitOfWork.IUnitOfWork;
 using HRIS.Services.Services;
 using Microsoft.Extensions.Configuration;
@@ -27,9 +28,41 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Principal;
 using System.Net.Http.Headers;
 using RR.Tests.Data.Models.HRIS;
+using RR.Tests.Data.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Org.BouncyCastle.Utilities.Net;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace RR.App.Tests.Controllers
 {
+    public class FakePolicyEvaluator : IPolicyEvaluator
+    {
+        public virtual async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
+        {
+            var principal = new ClaimsPrincipal();
+
+            principal.AddIdentity(new ClaimsIdentity(new[]
+            {
+                new Claim("Name", "AdminOrEmployeePolicy"),
+                new Claim("Permissions", "ViewEmployee", "EditEmployee" ),
+                new Claim(ClaimTypes.Role, "SuperAdmin", "Admin", "Employee" ),
+            }, "FakeScheme"));
+
+            return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal,
+             new AuthenticationProperties(), "FakeScheme")));
+        }
+
+        public virtual async Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy,
+         AuthenticateResult authenticationResult, HttpContext context, object resource)
+        {
+            return await Task.FromResult(PolicyAuthorizationResult.Success());
+        }
+    }
 
     public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplicationFactory<RR.App.Program>>
     {
@@ -40,6 +73,7 @@ namespace RR.App.Tests.Controllers
         private readonly IAuthService _authService;
         private readonly IEmployeeTypeService _employeeTypeService;
         private readonly IRoleAccessLinkService _roleAccessLinkService;
+        private readonly IEmployeeRoleService _employeeRoleService;
         private readonly IUnitOfWork _unitOfWork;
 
         public EmployeeAddressControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
@@ -63,11 +97,8 @@ namespace RR.App.Tests.Controllers
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddScoped<IUnitOfWork, RR.UnitOfWork.UnitOfWork>();
-                    services.AddScoped<IEmployeeAddressService,EmployeeAddressService>();
-                    services.AddScoped<IEmployeeService, EmployeeService>();
-                    services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
-                    services.AddScoped<IAuthService, AuthService>();
-                    services.AddScoped<IRoleAccessLinkService, RoleAccessLinkService>();
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                    services.AddScoped<IEmployeeAddressService, EmployeeAddressService>();
                 });
             }).CreateClient();
 
@@ -76,22 +107,7 @@ namespace RR.App.Tests.Controllers
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<DatabaseContext>();
-                _unitOfWork = services.GetRequiredService<IUnitOfWork>();
-                _employeeAddressService = services.GetRequiredService<IEmployeeAddressService>();
-                _employeeService = services.GetRequiredService<IEmployeeService>();
-                _employeeTypeService = services.GetRequiredService<IEmployeeTypeService>();
-                _authService = services.GetRequiredService<IAuthService>();
             }
-
-            _employeeAddressService.Save(EmployeeAddressTestData.EmployeeAddressDto);
-
-            _employeeTypeService.SaveEmployeeType(EmployeeTypeTestData.DeveloperType);
-
-            _employeeService.SaveEmployee(EmployeeTestData.EmployeeDto);
-
-            var token = _authService.GenerateToken(EmployeeTestData.EmployeeDto);
-
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token.Result);
         }
 
         [Fact]
@@ -103,5 +119,40 @@ namespace RR.App.Tests.Controllers
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
+        [Fact]
+        public async Task SaveUpdateDeleteEmployeeAddress_ReturnsOkResult()
+        {
+            var addressDto = EmployeeAddressTestData.EmployeeAddressDtoNew;
+            var content = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
+
+            var response = await _client.PostAsync("/employee-address", content);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeAddress_ReturnsOkResult()
+        {
+            int adressId = 1;
+            var response = await _client.DeleteAsync($"/employee-address?addressId={adressId}");
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task UpdateEmployeeAddress_ReturnsOkResult()
+        {
+            var addressDto = EmployeeAddressTestData.EmployeeAddressDto;
+            var content = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("/employee-address", content);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
     }
 }
