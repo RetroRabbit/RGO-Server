@@ -18,4 +18,10 @@ public class EmployeeRoleTestData
             new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = EmployeeRoleTestData.RoleDtoAdmin }
         )
     };
+    static public EmployeeRoleDto EmployeeRoleDto = new EmployeeRoleDto
+    {
+        Id = 1,
+        Employee = EmployeeTestData.EmployeeDto,
+        Role = EmployeeRoleTestData.RoleDtoAdmin
+    };
 }
