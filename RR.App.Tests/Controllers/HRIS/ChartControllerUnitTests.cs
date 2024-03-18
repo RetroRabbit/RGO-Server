@@ -70,7 +70,7 @@ public class ChartControllerUnitTests
 
         var result = await _chartsController.CreateChart(dataTypes, roles, chartName, chartType);
 
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<OkObjectResult>(result);
     }
 
     [Fact]
