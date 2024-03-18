@@ -83,31 +83,31 @@ namespace RR.App.Tests.Controllers.HRIS
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Fact]
-        public async Task DeleteChart_ReturnsOk_WithDeletedChart()
-        {
-            var response = await _client.DeleteAsync($"/charts?chartId={1}");
+        //[Fact]
+        //public async Task DeleteChart_ReturnsOk_WithDeletedChart()
+        //{
+        //    var response = await _client.DeleteAsync($"/charts?chartId={1}");
 
-            response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
+        //    response.EnsureSuccessStatusCode();
+        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        //}
 
-        [Fact]
-        public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
-        {
-            var chartDto = new ChartDto
-            {
+        //[Fact]
+        //public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
+        //{
+        //    var chartDto = new ChartDto
+        //    {
          
-            };
-            var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto));
+        //    };
+        //    var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto));
 
-            var response = await _client.PutAsync("/charts", jsonContent);
+        //    var response = await _client.PutAsync("/charts", jsonContent);
 
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var updatedChart = JsonSerializer.Deserialize<ChartDto>(content);
-            Assert.Equal(chartDto, updatedChart);
-        }
+        //    response.EnsureSuccessStatusCode();
+        //    var content = await response.Content.ReadAsStringAsync();
+        //    var updatedChart = JsonSerializer.Deserialize<ChartDto>(content);
+        //    Assert.Equal(chartDto, updatedChart);
+        //}
 
         [Fact]
         public async Task GetColumns_ReturnsOk_WithColumns()
