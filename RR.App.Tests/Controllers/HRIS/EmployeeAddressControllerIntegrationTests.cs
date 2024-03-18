@@ -126,12 +126,11 @@ namespace RR.App.Tests.Controllers
         {
             var addressDto = EmployeeAddressTestData.EmployeeAddressDtoNew;
             var jsonContent = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
-
+            
             var response = await _client.PostAsync("/employee-address", jsonContent);
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
 
             var content = await response.Content.ReadAsStringAsync();
             var jsonDoc = JsonDocument.Parse(content);
