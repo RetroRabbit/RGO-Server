@@ -15,6 +15,7 @@ using IEmployeeAddressService = HRIS.Services.Interfaces.IEmployeeAddressService
 using IEmployeeService = HRIS.Services.Interfaces.IEmployeeService;
 using IAuthService = HRIS.Services.Interfaces.IAuthService;
 using IEmployeeTypeService = HRIS.Services.Interfaces.IEmployeeTypeService;
+using IRoleAccessLinkService = HRIS.Services.Interfaces.IRoleAccessLinkService;
 using IUnitOfWork = RR.UnitOfWork.IUnitOfWork;
 using HRIS.Services.Services;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +39,7 @@ namespace RR.App.Tests.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly IAuthService _authService;
         private readonly IEmployeeTypeService _employeeTypeService;
+        private readonly IRoleAccessLinkService _roleAccessLinkService;
         private readonly IUnitOfWork _unitOfWork;
 
         public EmployeeAddressControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
@@ -65,6 +67,7 @@ namespace RR.App.Tests.Controllers
                     services.AddScoped<IEmployeeService, EmployeeService>();
                     services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
                     services.AddScoped<IAuthService, AuthService>();
+                    services.AddScoped<IRoleAccessLinkService, RoleAccessLinkService>();
                 });
             }).CreateClient();
 
@@ -88,7 +91,7 @@ namespace RR.App.Tests.Controllers
 
             var token = _authService.GenerateToken(EmployeeTestData.EmployeeDto);
 
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer","token here");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token.Result);
         }
 
         [Fact]
