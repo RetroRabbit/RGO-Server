@@ -29,7 +29,6 @@ public class CandidateDtoTestData
         School = "University of California, Berkeley",
         Degree = "Computer Science",
         FieldOfStudy = "Software Engineering",
-        QualificationStartDate = new DateOnly(2018, 09, 01),
         QualificationEndDate = new DateOnly(2020, 06, 30),
     };
 
@@ -56,7 +55,6 @@ public class CandidateDtoTestData
         School = "University of California, Berkeley",
         Degree = "Computer Science",
         FieldOfStudy = "Software Engineering",
-        QualificationStartDate = new DateOnly(2018, 09, 01),
         QualificationEndDate = new DateOnly(2020, 06, 30),
     };
 }
