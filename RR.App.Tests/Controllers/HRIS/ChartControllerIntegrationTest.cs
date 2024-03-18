@@ -24,7 +24,6 @@ namespace RR.App.Tests.Controllers.HRIS
 
         public ChartControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
-
             _factory = factory;
 
             var configBuilder = new ConfigurationBuilder()
@@ -68,7 +67,7 @@ namespace RR.App.Tests.Controllers.HRIS
         }
 
         [Fact]
-        public async Task CreateChart_ReturnsOk_OnSuccess()
+        public async Task Create_Update_Delte_Chart_ReturnsOK_OnSuccess()
         {
             var dataType = new List<string> { "Type1", "Type2", "Type3" };
             var roles = new List<string> { "Role1", "Role2" };
