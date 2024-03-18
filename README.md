@@ -96,6 +96,8 @@ docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672
 ```
 ### Creating Database Tables:
 
+**NB!!!** If you already have a RGO database, you'll need to drop it in pgAdmin and run the migrations again.
+
 1. Open Visual Studio 2022 and open the RGO-Server project file. 
    Pull up the nuget package manager console:
     
@@ -136,22 +138,28 @@ Congratulations! You have now successfully created a database with tables.
    ![Screenshot 2024-03-12 130900](https://github.com/RetroRabbit/RGO-Server/assets/82169901/73545f25-ab5f-4e60-b929-6cd6d0fa781a)
    
 4. Paste a new INSERT statement and populate it with your information such as your email, 
-   name, and surname. It is important to note that the first email field should be populated 
+   name, and surname. Also change the id of the record. 
+   It is important to note that the first email field should be populated
    with a personal or work email you're going to use to log into the RGO system, otherwise 
    you won't have access to the system. The second email field can just be a dummy or
    additional email you'll make use of.
+
+5. Copy one of the ``INSERT INTO 'RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
+   to assign to yourself.
    
-5. Copy the SQL in the locally created script.
+   ![RoleAccess Link Statement](image.png)
    
-6. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
+6. Copy the SQL in the locally created script.
+   
+7. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
 
    ![Screenshot 2024-03-12 131219](https://github.com/RetroRabbit/RGO-Server/assets/82169901/5b0fa31a-9e90-4337-8896-fa3d355a5d77)
 
-7. Paste the locally created script in the query screen that pops up.
+8. Paste the locally created script in the query screen that pops up.
 
    ![Screenshot 2024-03-12 131332](https://github.com/RetroRabbit/RGO-Server/assets/82169901/87eabaab-4856-4adc-ba54-feb1c6e47512)
 
-8. Click on ``Execute Script``.
+9.  Click on ``Execute Script``.
   
    ![Screenshot 2024-03-12 131356](https://github.com/RetroRabbit/RGO-Server/assets/82169901/69c52269-e074-487e-b489-53ac9c41a5ff)
 
@@ -160,7 +168,7 @@ Congratulations you have a fully populated database!
 
 ### Checking new user added to the DB you made
 
-- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
+- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfere with your attempts to connect to the database(Docker).
 
 Once the query is completed successfully, you can go to the employee table and view all rows to see if you have data in the database.
 ### Running Unit Tests
