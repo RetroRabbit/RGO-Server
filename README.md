@@ -109,6 +109,7 @@ docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672
    ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
 
 2. Change the default project to RR.UnitOfWork.
+   
 3. Run the following commands:
    
 ```powershell
@@ -133,7 +134,7 @@ Congratulations! You have now successfully created a database with tables.
 
    ![Screenshot 2024-03-12 130755](https://github.com/RetroRabbit/RGO-Server/assets/82169901/178d5ba8-160e-4b28-b280-2b6a08fb02da)
 
-3. Copy one of the ``INSERT INTO 'Employee,`` statements in the script.
+3. Copy one of the ``INSERT INTO Employee,`` statements in the script.
    
    ![Screenshot 2024-03-12 130900](https://github.com/RetroRabbit/RGO-Server/assets/82169901/73545f25-ab5f-4e60-b929-6cd6d0fa781a)
    
@@ -144,7 +145,7 @@ Congratulations! You have now successfully created a database with tables.
    you won't have access to the system. The second email field can just be a dummy or
    additional email you'll make use of.
 
-5. Copy one of the ``INSERT INTO 'RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
+5. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
    to assign to yourself.
    
    ![RoleAccess Link Statement](image.png)
