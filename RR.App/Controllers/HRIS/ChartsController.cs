@@ -35,9 +35,9 @@ public class ChartsController : ControllerBase
     {
         try
         {
-            await _chartService.CreateChart(dataType, roles, chartName, chartType);
+            var response = await _chartService.CreateChart(dataType, roles, chartName, chartType);
 
-            return Ok();
+            return Ok(response);
         }
         catch (Exception ex)
         {

@@ -67,6 +67,7 @@ namespace RR.App.Tests.Controllers.HRIS
 
             var content = await response.Content.ReadAsStringAsync();
             var charts = JsonSerializer.Deserialize<List<ChartDto>>(content);
+            var test = 1;
         }
 
         [Fact]
@@ -80,34 +81,55 @@ namespace RR.App.Tests.Controllers.HRIS
                                                    $"&roles={string.Join("&roles=", roles)}" +
                                                    $"&chartName={chartName}&chartType={chartType}",
                                                    content: null);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var jsonDoc = JsonDocument.Parse(content);
+            var chartId = jsonDoc.RootElement.GetProperty("id").GetInt32();
+
+
+            var chartDto = new ChartDto
+            {
+                Id = chartId
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto), Encoding.UTF8, "application/json");
+
+            response = await _client.PutAsync($"/charts", jsonContent);
+
+            response.EnsureSuccessStatusCode();
+
+            response = await _client.DeleteAsync($"/charts?chartId={chartId}");
+
+            response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        //[Fact]
-        //public async Task DeleteChart_ReturnsOk_WithDeletedChart()
-        //{
-        //    var response = await _client.DeleteAsync($"/charts?chartId={1}");
+        [Fact]
+        public async Task DeleteChart_ReturnsOk_WithDeletedChart()
+        {
+            var response = await _client.DeleteAsync($"/charts?chartId={1}");
 
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        //}
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
 
-        //[Fact]
-        //public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
-        //{
-        //    var chartDto = new ChartDto
-        //    {
-         
-        //    };
-        //    var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto));
+        [Fact]
+        public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
+        {
+            var chartDto = new ChartDto
+            {
 
-        //    var response = await _client.PutAsync("/charts", jsonContent);
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto));
 
-        //    response.EnsureSuccessStatusCode();
-        //    var content = await response.Content.ReadAsStringAsync();
-        //    var updatedChart = JsonSerializer.Deserialize<ChartDto>(content);
-        //    Assert.Equal(chartDto, updatedChart);
-        //}
+            var response = await _client.PutAsync("/charts", jsonContent);
+
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            var updatedChart = JsonSerializer.Deserialize<ChartDto>(content);
+            Assert.Equal(chartDto, updatedChart);
+        }
 
         [Fact]
         public async Task GetColumns_ReturnsOk_WithColumns()
