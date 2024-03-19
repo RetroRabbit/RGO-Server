@@ -39,7 +39,7 @@ public class FakePolicyEvaluatorAllRolesPolicy : IPolicyEvaluator
             new Claim(ClaimTypes.Role, "Admin"),
             new Claim(ClaimTypes.Role, "Employee"),
             new Claim(ClaimTypes.Email,"testintegration2@retrorabbit.co.za"),
-                        new Claim("Permissions", "ViewEmployee", "EditEmployee" ),
+new Claim("Permissions", "ViewEmployee", "EditEmployee" ),
         }, "FakeScheme"));
 
         principal.AddIdentity(new ClaimsIdentity(new[]
