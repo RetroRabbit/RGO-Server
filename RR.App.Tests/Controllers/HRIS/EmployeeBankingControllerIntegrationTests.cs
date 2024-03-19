@@ -23,7 +23,6 @@ using HRIS.Models.Enums;
 using RR.UnitOfWork.Entities.HRIS;
 using static Google.Apis.Requests.BatchRequest;
 
-
 namespace RR.App.Tests.Controllers;
 
 public class FakePolicyEvaluatorAllRolesPolicy : IPolicyEvaluator
@@ -39,7 +38,7 @@ public class FakePolicyEvaluatorAllRolesPolicy : IPolicyEvaluator
             new Claim(ClaimTypes.Role, "Admin"),
             new Claim(ClaimTypes.Role, "Employee"),
             new Claim(ClaimTypes.Email,"testintegration2@retrorabbit.co.za"),
-new Claim("Permissions", "ViewEmployee", "EditEmployee" ),
+            new Claim("Permissions", "ViewEmployee", "EditEmployee" ),
         }, "FakeScheme"));
 
         principal.AddIdentity(new ClaimsIdentity(new[]
