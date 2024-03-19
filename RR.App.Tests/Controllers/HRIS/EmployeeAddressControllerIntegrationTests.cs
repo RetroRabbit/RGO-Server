@@ -109,18 +109,7 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
         var jsonDoc = JsonDocument.Parse(content);
         var addressId = jsonDoc.RootElement.GetProperty("id").GetInt32();
 
-        var updatedDto = new EmployeeAddressDto
-        {
-            Id = addressId,
-            UnitNumber = "56",
-            ComplexName = "Complex72",
-            StreetNumber = "8",
-            SuburbOrDistrict = "Suburb/District",
-            City = "City",
-            Country = "Country",
-            Province = "Province",
-            PostalCode = "1620"
-        };
+        var updatedDto = EmployeeAddressTestData.GetModifiedEmployeeAdressDtoWithAddressId(addressId);
 
         var updatedJsonContent = new StringContent(JsonConvert.SerializeObject(updatedDto), Encoding.UTF8, "application/json");
 

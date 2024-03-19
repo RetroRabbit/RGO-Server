@@ -186,21 +186,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        var bankingDto = new EmployeeBankingDto
-        {
-            Id = 0,
-            EmployeeId = employeeId,
-            BankName = "FNB",
-            Branch = "Not Sure",
-            AccountNo = "120",
-            AccountType = EmployeeBankingAccountType.Savings,
-            AccountHolderName = "Name1",
-            Status = BankApprovalStatus.PendingApproval,
-            DeclineReason = "",
-            File = "asd",
-            LastUpdateDate = new DateOnly(),
-            PendingUpdateDate = new DateOnly()
-        };
+        var bankingDto = EmployeeBankingTestData.GetModifiedEmployeeBankingDtoWithEmployeeId(employeeId);
 
         var jsonContentBanking = new StringContent(JsonConvert.SerializeObject(bankingDto), Encoding.UTF8, "application/json");
 
@@ -218,21 +204,8 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var updatedBankingDto = new EmployeeBankingDto
-        {
-            Id = bankingId,
-            EmployeeId = employeeId,
-            BankName = "FNB",
-            Branch = "Not Sure",
-            AccountNo = "120",
-            AccountType = EmployeeBankingAccountType.Savings,
-            AccountHolderName = "Name1",
-            Status = BankApprovalStatus.PendingApproval,
-            DeclineReason = "",
-            File = "asd",
-            LastUpdateDate = new DateOnly(),
-            PendingUpdateDate = new DateOnly()
-        };
+        var updatedBankingDto = EmployeeBankingTestData.GetModifiedEmployeeBankingDtoWithEmployeeIdAndBankingId(bankingId, employeeId);
+
         var jsonContentUpdatedBanking = new StringContent(JsonConvert.SerializeObject(updatedBankingDto), Encoding.UTF8, "application/json");
 
         response = await _client.PutAsync("/employee-banking", jsonContentUpdatedBanking);
