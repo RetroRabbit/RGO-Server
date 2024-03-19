@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +24,7 @@ public class EmployeeBankingController : ControllerBase
     {
         try
         {
-            var Bankingdto = new EmployeeBankingDto
+            var BankingDto = new EmployeeBankingDto
             {
                 Id = newEntry.Id,
                 EmployeeId = newEntry.EmployeeId,
@@ -40,9 +41,9 @@ public class EmployeeBankingController : ControllerBase
             };
 
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            var employee =
-                await _employeeBankingService.Save(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
-            return Ok(Bankingdto);
+            var employeeBankingDto =
+                await _employeeBankingService.Save(BankingDto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
+            return Ok(employeeBankingDto);
         }
         catch (Exception ex)
         {
@@ -61,6 +62,21 @@ public class EmployeeBankingController : ControllerBase
         {
             var entries = await _employeeBankingService.Get(status);
             return Ok(entries);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteBankingInfo([FromQuery] int addressId)
+    {
+        try
+        {
+            var deletedBanking = await _employeeBankingService.Delete(addressId);
+            return Ok(deletedBanking);
         }
         catch (Exception ex)
         {
