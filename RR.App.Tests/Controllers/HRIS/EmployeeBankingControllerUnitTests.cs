@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
@@ -138,6 +139,24 @@ public class EmployeeBankingControllerUnitTests
         var errorMessage = (string)notFoundResult.Value;
 
         Assert.Equal("Banking information Not Found", errorMessage);
+    }
+
+    [Fact]
+    public async Task DeleteBankingInfoExceptionNotFound()
+    {
+        var bankingInfoToDelete = EmployeeBankingTestData.EmployeeBankingDto3;
+        var exceptionMessage = "Banking information Not Found";
+
+        var mockEmployeeBankingService = new Mock<IEmployeeBankingService>();
+        mockEmployeeBankingService.Setup(s => s.Delete(bankingInfoToDelete.Id))
+                                  .ThrowsAsync(new Exception(exceptionMessage));
+
+        var controller = new EmployeeBankingController(mockEmployeeBankingService.Object);
+
+        var result = await controller.DeleteBankingInfo(bankingInfoToDelete.Id);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(exceptionMessage, notFoundResult.Value);
     }
 
     [Fact]

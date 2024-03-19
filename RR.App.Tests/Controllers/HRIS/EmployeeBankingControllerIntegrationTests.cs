@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Entities.HRIS;
+using static Google.Apis.Requests.BatchRequest;
 
 
 namespace RR.App.Tests.Controllers;
@@ -248,5 +249,14 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteEmployeeBanking_ReturnsOkResult()
+    {
+        var employeeEmail = "test@gmail.com";
+        var response = await _client.DeleteAsync($"/employees?email={employeeEmail}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }
