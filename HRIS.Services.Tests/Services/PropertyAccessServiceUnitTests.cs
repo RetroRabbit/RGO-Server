@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
-using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
@@ -9,7 +8,6 @@ using Moq;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
 using Xunit;
 
 namespace RGO.Tests.Services;
@@ -17,21 +15,13 @@ namespace RGO.Tests.Services;
 public class PropertyAccessServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
-    private readonly Mock<IEmployeeDataService> _employeeDataService;
-    private readonly Mock<IEmployeeRoleService> _employeeRoleService;
     private readonly Mock<IPropertyAccessService> _propertyAccessService;
-    private readonly Mock<IEmployeeService> _employeeService;
 
     public PropertyAccessServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeDataService = new Mock<IEmployeeDataService>();
-        _employeeRoleService = new Mock<IEmployeeRoleService>();
         _propertyAccessService = new Mock<IPropertyAccessService>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeService = new Mock<IEmployeeService>();
-        propertyAccessService = new PropertyAccessService(_dbMock.Object, _employeeRoleService.Object, _employeeDataService.Object, _employeeService.Object, _errorLoggingServiceMock.Object);
+        propertyAccessService = new PropertyAccessService(_dbMock.Object);
 
     }
 
