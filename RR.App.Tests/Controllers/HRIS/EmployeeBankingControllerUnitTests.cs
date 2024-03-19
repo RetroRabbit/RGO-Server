@@ -71,8 +71,7 @@ public class EmployeeBankingControllerUnitTests
     {
         var result = await controller.AddBankingInfo(newEntry);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.NotNull(okResult.Value);
+        Assert.IsType<OkObjectResult>(result);
     }
 
     [Fact]

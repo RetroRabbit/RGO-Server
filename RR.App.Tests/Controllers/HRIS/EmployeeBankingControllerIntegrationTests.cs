@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 
 
 namespace RR.App.Tests.Controllers;
@@ -33,9 +34,17 @@ public class FakePolicyEvaluatorAllRolesPolicy : IPolicyEvaluator
         principal.AddIdentity(new ClaimsIdentity(new[]
         {
             new Claim("Name", "AdminOrEmployeePolicy"),
-            new Claim("Permissions", "ViewEmployee", "EditEmployee" ),
-            new Claim(ClaimTypes.Role, "SuperAdmin", "Admin", "Employee" ),
-            new Claim(ClaimTypes.Email,"testintegration2@retrorabbit.co.za")
+            new Claim(ClaimTypes.Role, "SuperAdmin"),
+            new Claim(ClaimTypes.Role, "Admin"),
+            new Claim(ClaimTypes.Role, "Employee"),
+            new Claim(ClaimTypes.Email,"testintegration2@retrorabbit.co.za"),
+                        new Claim("Permissions", "ViewEmployee", "EditEmployee" ),
+        }, "FakeScheme"));
+
+        principal.AddIdentity(new ClaimsIdentity(new[]
+        {
+            new Claim("Permission", "ViewEmployee"),
+            new Claim("Permission", "EditEmployee"),
         }, "FakeScheme"));
 
         return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal,
@@ -58,7 +67,8 @@ public class FakePolicyEvaluatorAdminSuperAdminPolicy : IPolicyEvaluator
         principal.AddIdentity(new ClaimsIdentity(new[]
         {
             new Claim("Name", "AdminOrSuperAdminPolicy"),
-            new Claim(ClaimTypes.Role,"Admin", "SuperAdmin"),
+            new Claim(ClaimTypes.Role,"Admin"),
+            new Claim(ClaimTypes.Role, "SuperAdmin")
         }, "FakeScheme"));
 
         return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal,
@@ -80,8 +90,22 @@ public class FakePolicyEvaluatorAdminOrTalentOrSuperAdminPolicy : IPolicyEvaluat
         principal.AddIdentity(new ClaimsIdentity(new[]
         {
             new Claim("Name", "AdminOrTalentOrSuperAdminPolicy"),
-            new Claim("Permissions", "Admin", "SuperAdmin", "Talent" ),
-            new Claim(ClaimTypes.Role, "ViewEmployee", "EditEmployee", "ViewOwnInfo", "EditOwnInfo" ),
+            new Claim(ClaimTypes.Role, "Admin"),
+            new Claim(ClaimTypes.Role, "SuperAdmin"),
+            new Claim(ClaimTypes.Role, "Talent"),
+        }, "FakeScheme"));
+
+        principal.AddIdentity(new ClaimsIdentity(new[]
+{
+            new Claim("Permission", "ViewChart"),
+            new Claim("Permission", "AddChart"),
+            new Claim("Permission", "EditChart"),
+            new Claim("Permission", "DeleteChart"),
+            new Claim("Permission", "ViewEmployee"),
+            new Claim("Permission", "EditEmployee"),
+            new Claim("Permission", "ViewOwnInfo"),
+            new Claim("Permission", "EditOwnInfo"),
+            new Claim("Permission", "GetAllFieldCodes")
         }, "FakeScheme"));
 
         return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal,
@@ -146,17 +170,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
     }
 
     [Fact]
-    public async Task GetBankingDetails_ReturnsOkResult()
-    {
-        var idhere = 1;
-        var response = await _client.GetAsync($"/employee-banking/details?id={idhere}");
-
-        response.EnsureSuccessStatusCode();
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task SaveUpdateDeleteEmployeeBanking_ReturnsOkResult()
+    public async Task CreateReadUpdateDeleteEmployeeBanking_ReturnsOkResult()
     {
         var employeeDto = EmployeeTestData.EmployeeDtoNew;
         var jsonContentEmployee = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
@@ -166,6 +180,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         var content = await response.Content.ReadAsStringAsync();
         var jsonDoc = JsonDocument.Parse(content);
         var employeeId = jsonDoc.RootElement.GetProperty("id").GetInt32();
+        var employeeEmail = jsonDoc.RootElement.GetProperty("email").GetString();
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -190,41 +205,48 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
 
         response = await _client.PostAsync("/employee-banking", jsonContentBanking);
 
-        response.EnsureSuccessStatusCode();
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
         content = await response.Content.ReadAsStringAsync();
         jsonDoc = JsonDocument.Parse(content);
         var bankingId = jsonDoc.RootElement.GetProperty("id").GetInt32();
 
-        response = await _client.GetAsync($"/employee-banking/details?id={bankingId}");
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        response = await _client.GetAsync($"/employee-banking/details?id={employeeId}");
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //var updatedDto = new EmployeeAddressDto
-        //{
-        //    Id = addressId,
-        //    UnitNumber = "56",
-        //    ComplexName = "Complex72",
-        //    StreetNumber = "8",
-        //    SuburbOrDistrict = "Suburb/District",
-        //    City = "City",
-        //    Country = "Country",
-        //    Province = "Province",
-        //    PostalCode = "1620"
-        //};
+        var updatedBankingDto = new EmployeeBankingDto
+        {
+            Id = bankingId,
+            EmployeeId = employeeId,
+            BankName = "FNB",
+            Branch = "Not Sure",
+            AccountNo = "120",
+            AccountType = EmployeeBankingAccountType.Savings,
+            AccountHolderName = "Name1",
+            Status = BankApprovalStatus.PendingApproval,
+            DeclineReason = "",
+            File = "asd",
+            LastUpdateDate = new DateOnly(),
+            PendingUpdateDate = new DateOnly()
+        };
+        var jsonContentUpdatedBanking = new StringContent(JsonConvert.SerializeObject(updatedBankingDto), Encoding.UTF8, "application/json");
 
-        //var updatedJsonContent = new StringContent(JsonConvert.SerializeObject(updatedDto), Encoding.UTF8, "application/json");
+        response = await _client.PutAsync("/employee-banking", jsonContentUpdatedBanking);
 
-        //response = await _client.PutAsync("/employee-address", updatedJsonContent);
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //response.EnsureSuccessStatusCode();
-        //Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response = await _client.DeleteAsync($"/employee-banking?addressId={bankingId}");
 
-        //response = await _client.DeleteAsync($"/employee-address?addressId={addressId}");
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //response.EnsureSuccessStatusCode();
-        //Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response = await _client.DeleteAsync($"/employees?email={employeeEmail}");
+
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }
