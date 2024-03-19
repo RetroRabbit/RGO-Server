@@ -153,7 +153,6 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
             });
         }).CreateClient();
 
-
         using (var scope = _factory.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
