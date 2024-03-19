@@ -94,6 +94,7 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
+
     [Fact]
     public async Task SaveUpdateDeleteEmployeeAddress_ReturnsOkResult()
     {

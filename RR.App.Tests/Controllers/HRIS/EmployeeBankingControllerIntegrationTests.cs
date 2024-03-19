@@ -82,6 +82,7 @@ public class FakePolicyEvaluatorAdminSuperAdminPolicy : IPolicyEvaluator
         return await Task.FromResult(PolicyAuthorizationResult.Success());
     }
 }
+
 public class FakePolicyEvaluatorAdminOrTalentOrSuperAdminPolicy : IPolicyEvaluator
 {
     public virtual async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
@@ -152,7 +153,6 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
                 services.AddScoped<IEmployeeBankingService, EmployeeBankingService>();
             });
         }).CreateClient();
-
 
         using (var scope = _factory.Services.CreateScope())
         {
