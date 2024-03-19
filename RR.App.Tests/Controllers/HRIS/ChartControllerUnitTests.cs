@@ -30,14 +30,14 @@ public class ChartControllerUnitTests
         {
            new ChartDto
             {
-            Id = 1,
-            Name = "Disabilities",
-            Type = "bar",
-            DataTypes = dataTypes,
-            Labels = labels,
-            Data = data
+              Id = 1,
+              Name = "Disabilities",
+              Type = "bar",
+              DataTypes = dataTypes,
+              Labels = labels,
+              Data = data
            }
-    };
+        };
 
         _chartServiceMock.Setup(service => service.GetAllCharts())
                          .ReturnsAsync(mockCharts);
@@ -70,7 +70,7 @@ public class ChartControllerUnitTests
 
         var result = await _chartsController.CreateChart(dataTypes, roles, chartName, chartType);
 
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<OkObjectResult>(result);
     }
 
     [Fact]
