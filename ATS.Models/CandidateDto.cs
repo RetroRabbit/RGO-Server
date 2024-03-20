@@ -24,8 +24,6 @@ public class CandidateDto
     public int Referral { get; set; }
     public string? HighestQualification { set; get; }
     public string? School { get; set; }
-    public string? Degree { get; set; }
-    public string? FieldOfStudy { get; set; }
     public int? QualificationEndDate { get; set; }
     public bool Blacklisted { get; set;}
     public string BlacklistedReason { get; set; }

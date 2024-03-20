@@ -33,8 +33,6 @@ public class Candidate : IModel<CandidateDto>
         Referral = candidateDto.Referral;
         HighestQualification = candidateDto.HighestQualification;
         School = candidateDto.School;
-        Degree = candidateDto.Degree;
-        FieldOfStufy = candidateDto.FieldOfStudy;
         QualificationEndDate = candidateDto.QualificationEndDate;
         Blacklisted = candidateDto.Blacklisted;
         BlacklistedReason = candidateDto.BlacklistedReason;
@@ -78,10 +76,6 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("school")] public string? School { get; set; }
 
-    [Column("degree")] public string? Degree { get; set; }
-
-    [Column("fieldOfStudy")] public string? FieldOfStufy { get; set; }
-
     [Column("qualificationEndDate")] public int? QualificationEndDate { get; set; }
 
     [Column("blacklisted")] public bool Blacklisted { get; set; }
@@ -112,8 +106,6 @@ public class Candidate : IModel<CandidateDto>
             Referral = this.Referral,
             HighestQualification = this.HighestQualification,
             School = this.School,
-            Degree = this.Degree,
-            FieldOfStudy = this.FieldOfStufy,
             QualificationEndDate = this.QualificationEndDate,
             Blacklisted = this.Blacklisted,
             BlacklistedReason = this.BlacklistedReason
