@@ -82,7 +82,7 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("fieldOfStudy")] public string? FieldOfStufy { get; set; }
 
-    [Column("qualificationEndDate")] public DateOnly? QualificationEndDate { get; set; }
+    [Column("qualificationEndDate")] public int? QualificationEndDate { get; set; }
 
     [Column("blacklisted")] public bool Blacklisted { get; set; }
 
