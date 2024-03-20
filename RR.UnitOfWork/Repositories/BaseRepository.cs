@@ -99,8 +99,6 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
                 Table = entity.GetType().Name,
                 Data = Newtonsoft.Json.JsonConvert.SerializeObject(entity)
             };
-            var result = await _db.auditLogs.AddAsync(log);
-            var test = 1;
         }
     }
 }
