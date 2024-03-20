@@ -78,7 +78,7 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("qualificationEndDate")] public int? QualificationEndDate { get; set; }
 
-    [Column("blacklisted")] public bool Blacklisted { get; set; }
+    [Column("blacklisted")] public BlacklistStatus Blacklisted { get; set; }
 
     [Column("blacklistedReason")] public string BlacklistedReason { get; set; }
 
