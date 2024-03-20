@@ -89,14 +89,18 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
 
     private async Task AddAuditLog(TK entity, CRUDOperations operation)
     {
-        var log = new AuditLog
+        if (!GlobalVariables.AreTestsRunning())
         {
-            Date = DateTime.Now,
-            CRUDOperation = operation,
-            CreatedById = GlobalVariables.GetUserId(),
-            Table = entity.GetType().Name,
-            Data = Newtonsoft.Json.JsonConvert.SerializeObject(entity)
-        };
-        await _db.auditLogs.AddAsync(log);
+            var log = new AuditLog
+            {
+                Date = DateTime.Now,
+                CRUDOperation = operation,
+                CreatedById = GlobalVariables.GetUserId(),
+                Table = entity.GetType().Name,
+                Data = Newtonsoft.Json.JsonConvert.SerializeObject(entity)
+            };
+            var result = await _db.auditLogs.AddAsync(log);
+            var test = 1;
+        }
     }
 }

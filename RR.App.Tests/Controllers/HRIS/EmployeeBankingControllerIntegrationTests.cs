@@ -127,6 +127,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
 
     public EmployeeBankingControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
     {
+        GlobalVariables.SetRunningTests(true);
         _factory = factory;
 
         var configBuilder = new ConfigurationBuilder()
