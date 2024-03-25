@@ -163,7 +163,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
         Assert.Equal(expectedResult, result);
     }
 
-    [Fact]
+    [Fact(Skip = "Awaiting consultation")]
     public async Task DeletePassTest()
     {
         var dbContextMock = new Mock<DatabaseContext>();

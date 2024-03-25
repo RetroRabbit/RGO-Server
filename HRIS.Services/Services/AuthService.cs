@@ -6,12 +6,12 @@ using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using RR.UnitOfWork;
 
 namespace HRIS.Services.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IConfiguration _configuration;
     private readonly IEmployeeService _employeeService;
     private readonly IRoleAccessLinkService _roleAccessLinkService;
     private readonly IErrorLoggingService _errorLoggingService;
@@ -21,7 +21,6 @@ public class AuthService : IAuthService
         IEmployeeService employeeService,
         IRoleAccessLinkService roleAccessLinkService,IErrorLoggingService errorLoggingService)
     {
-        _configuration = configuration;
         _employeeService = employeeService;
         _roleAccessLinkService = roleAccessLinkService;
         _errorLoggingService = errorLoggingService;
@@ -35,6 +34,7 @@ public class AuthService : IAuthService
     public async Task<string> Login(string email)
     {
         var employee = await _employeeService.GetEmployee(email);
+        GlobalVariables.SetUserId(employee!.Id);
 
         return await GenerateToken(employee!);
     }

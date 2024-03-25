@@ -1,10 +1,12 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Entities;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -20,11 +22,11 @@ public class AuditLogServiceUnitTest
     public AuditLogServiceUnitTest()
     {
         _unitOfWork = new Mock<IUnitOfWork>();
-        _auditLogService = new AuditLogService(_unitOfWork.Object,_errorLoggingService);
         _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
+        _auditLogService = new AuditLogService(_unitOfWork.Object, _errorLoggingService);
 
         var employeeAddressDto =
-            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+            new EmployeeAddressDto { Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         _employee = new EmployeeDto
         {
@@ -65,10 +67,11 @@ public class AuditLogServiceUnitTest
         _auditLogDto = new AuditLogDto
         {
             Id = 1,
-            EditBy = _employee,
-            EditFor = _employee,
-            EditDate = new DateTime(),
-            Description = "Test Description"
+            CreatedBy = _employee,
+            CRUDOperation = CRUDOperations.Update,
+            Table = "Table",
+            Date = DateTime.Now,
+            Data = "Test Description"
         };
     }
 
@@ -134,7 +137,7 @@ public class AuditLogServiceUnitTest
     }
 
     [Fact]
-    public async Task UpdateAuditLogTest()
+    public async Task UpdateAuditLogSuccessTest()
     {
         _unitOfWork.SetupSequence(a => a.AuditLog.GetById(It.IsAny<int>())).ReturnsAsync(_auditLogDto);
         _unitOfWork.Setup(a => a.AuditLog.Any(It.IsAny<Expression<Func<AuditLog, bool>>>())).ReturnsAsync(true);
@@ -149,7 +152,19 @@ public class AuditLogServiceUnitTest
     }
 
     [Fact]
-    public async Task DeleteAuditLogTest()
+    public async Task UpdateAuditLogFailTest()
+    {
+        _unitOfWork.SetupSequence(a => a.AuditLog.GetById(It.IsAny<int>())).ReturnsAsync((AuditLogDto)null);
+        _unitOfWork.Setup(a => a.AuditLog.Any(It.IsAny<Expression<Func<AuditLog, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(a => a.AuditLog.Update(It.IsAny<AuditLog>())).Throws(new Exception());
+        _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
+
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await _auditLogService.UpdateAuditLog(_auditLogDto));
+        Assert.Equal("Audit Log not found", exception.Message);
+    }
+
+    [Fact]
+    public async Task DeleteAuditLogTestSuccess()
     {
         _unitOfWork.Setup(a => a.AuditLog.GetById(It.IsAny<int>())).ReturnsAsync(_auditLogDto);
         _unitOfWork.Setup(x => x.AuditLog.Delete(It.IsAny<int>()))
@@ -161,5 +176,17 @@ public class AuditLogServiceUnitTest
         Assert.Equal(_auditLogDto, result);
 
         _unitOfWork.Verify(x => x.AuditLog.Delete(It.IsAny<int>()));
+    }
+
+    [Fact]
+    public async Task DeleteAuditLogTestFail()
+    {
+        _unitOfWork.SetupSequence(a => a.AuditLog.GetById(It.IsAny<int>())).ReturnsAsync((AuditLogDto)null);
+        _unitOfWork.Setup(x => x.AuditLog.Delete(It.IsAny<int>()))
+                   .Returns(Task.FromResult(_auditLogDto));
+
+
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await _auditLogService.DeleteAuditLog(_auditLogDto));
+        Assert.Equal("Audit Log not found", exception.Message);
     }
 }

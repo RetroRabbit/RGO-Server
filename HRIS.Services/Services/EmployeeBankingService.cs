@@ -31,6 +31,11 @@ public class EmployeeBankingService : IEmployeeBankingService
         return pendingBankEntries;
     }
 
+    public async Task<EmployeeBankingDto> Delete(int addressId)
+    {
+        var address = await _db.EmployeeBanking.Delete(addressId);
+        return address;
+    }
 
     public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail)
     {

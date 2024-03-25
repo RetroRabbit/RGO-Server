@@ -94,54 +94,87 @@ For RabbitMQ
 docker pull rabbitmq:3-management
 docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
+### Creating Database Tables:
 
-### Add new user
+**NB!!!** If you already have a RGO database, you'll need to drop it in pgAdmin and run the migrations again.
 
-- To be able to log in add new Employee with your Retro Rabbit email to the TestData.cs
-- Add new Migration for your user
+1. Open Visual Studio 2022 and open the RGO-Server project file. 
+   Pull up the nuget package manager console:
+    
+   **_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
+   Make sure the **Default project** is **_RGO.UnitOfWork_**.
+    
+   ----
+    
+   ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
 
+2. Change the default project to RR.UnitOfWork.
+   
+3. Run the following commands:
+   
 ```powershell
-add-migration newMigrationYouCanChooseName
+add-migration migrationName
+update-database
 ```
 
-### Run migration
+Congratulations! You have now successfully created a database with tables.
 
-Open Visual Studio 2022 and open the RGO-Server project file. Pull up the nuget package manager console:
-**_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
-Make sure the **Default project** is **_RGO.UnitOfWork_**.
+### Populating Database with Dummy Data:
 
----
-
-![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
-
-```powershell
-Update-Database
-```
-
-### Checking new user added to the DB you made
-
-- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfear with your attempts to connect to the database(Docker).
-- https://www.pgadmin.org/download/pgadmin-4-windows/
-
----
-
-- Register new RGO server
+- Register new RGO server in PgAdmin
 
 ![Register service](./Screenshot%202023-08-02%20173735.png)
-
----
 
 - Update Information and save
 
 ![Register service - connection](./Screenshot%202023-08-02%20173613.png)
 
----
 
-- Navigate to Employee table
+1. Make a local copy of the DummyData.sql file In the RR.UnitOfWork Project.
 
-![PgAdmin Employee Table Navigation](./EmployeeTable-Example.png)
+   ![Screenshot 2024-03-12 130755](https://github.com/RetroRabbit/RGO-Server/assets/82169901/178d5ba8-160e-4b28-b280-2b6a08fb02da)
 
-- Check if your new user is added
+3. Copy one of the ``INSERT INTO Employee,`` statements in the script.
+   
+   ![Screenshot 2024-03-12 130900](https://github.com/RetroRabbit/RGO-Server/assets/82169901/73545f25-ab5f-4e60-b929-6cd6d0fa781a)
+   
+4. Paste a new INSERT statement and populate it with your information such as your email, 
+   name, and surname. Also change the id of the record. 
+   It is important to note that the first email field should be populated
+   with a personal or work email you're going to use to log into the RGO system, otherwise 
+   you won't have access to the system. The second email field can just be a dummy or
+   additional email you'll make use of.
+
+5. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
+   to assign to yourself.
+   
+   ![RoleAccess Link Statement](image.png)
+   
+6. Copy the SQL in the locally created script.
+   
+7. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
+
+   ![Screenshot 2024-03-12 131219](https://github.com/RetroRabbit/RGO-Server/assets/82169901/5b0fa31a-9e90-4337-8896-fa3d355a5d77)
+
+8. Paste the locally created script in the query screen that pops up.
+
+   ![Screenshot 2024-03-12 131332](https://github.com/RetroRabbit/RGO-Server/assets/82169901/87eabaab-4856-4adc-ba54-feb1c6e47512)
+
+9.  Click on ``Execute Script``.
+  
+   ![Screenshot 2024-03-12 131356](https://github.com/RetroRabbit/RGO-Server/assets/82169901/69c52269-e074-487e-b489-53ac9c41a5ff)
+
+
+Congratulations you have a fully populated database!
+
+### Checking new user added to the DB you made
+
+- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfere with your attempts to connect to the database(Docker).
+
+Once the query is completed successfully, you can go to the employee table and view all rows to see if you have data in the database.
+### Running Unit Tests
+
+When running unit tests make sure that the database is running to accomodate for integration tests
 
 ### Unit Test Coverage
 

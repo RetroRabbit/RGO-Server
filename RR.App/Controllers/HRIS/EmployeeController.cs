@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,21 @@ public class EmployeeController : ControllerBase
             if (ex.Message.Contains("exists"))
                 return Problem("Unexceptable", "Unexceptable", 406, "User Exists");
 
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteEmployee([FromQuery] String email)
+    {
+        try
+        {
+            var deletedEmployee = await _employeeService.DeleteEmployee(email);
+            return Ok(deletedEmployee);
+        }
+        catch (Exception ex)
+        {
             return NotFound(ex.Message);
         }
     }

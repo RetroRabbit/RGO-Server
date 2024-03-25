@@ -1,7 +1,10 @@
-﻿using HRIS.Models.Update;
+﻿using HRIS.Models;
+using HRIS.Models.Enums;
+using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -9,20 +12,53 @@ namespace RR.App.Controllers.HRIS;
 public class PropertyAccessController : ControllerBase
 {
     private readonly IPropertyAccessService _propertyAccessService;
+    private readonly IEmployeeService _employeeService;
 
-    public PropertyAccessController(IPropertyAccessService propertyAccessService)
+    public PropertyAccessController(IPropertyAccessService propertyAccessService,IEmployeeService employeeService)
     {
         _propertyAccessService = propertyAccessService;
+        _employeeService = employeeService;
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet]
-    public async Task<IActionResult> GetPropertyWithAccess([FromQuery] string email)
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet("role-access")]
+    public async Task<IActionResult> GetPropertiesWithAccess(int employeeId)
     {
         try
         {
-            var access = await _propertyAccessService.GetPropertiesWithAccess(email);
-            return Ok(access);
+            var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
+            return Ok(accessList);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllPropertyAccess()
+    {
+        try
+        {
+            var accessList = await _propertyAccessService.GetAll();
+            return Ok(accessList);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [HttpPut]
+    public async Task<IActionResult> UpdatePropertyRoleAccess(int propertyId,[FromBody] PropertyAccessLevel propertyAccess)
+    {
+        try
+        {
+            await _propertyAccessService.UpdatePropertyAccess(propertyId, propertyAccess);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -31,14 +67,28 @@ public class PropertyAccessController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpPut]
-    public async Task<IActionResult> UpdatePropertyWithAccess([FromBody] List<UpdateFieldValueDto> fields,
-                                                              [FromQuery] string email)
+    [HttpGet("seed-properties")]
+    public async Task<IActionResult> Seed()
     {
         try
         {
-            await _propertyAccessService.UpdatePropertiesWithAccess(fields, email);
+            await _propertyAccessService.CreatePropertyAccessEntries();
             return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet("user-id")]
+    public async Task<IActionResult> GetUserId(string email)
+    {
+        try
+        {
+            var employee = await _employeeService.GetEmployee(email);
+            return Ok(employee.Id);
         }
         catch (Exception ex)
         {

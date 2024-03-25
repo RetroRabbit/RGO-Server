@@ -15,16 +15,6 @@ namespace RGO.Tests.Services;
 
 public class EmployeeServiceUnitTests
 {
-    private List<EmployeeDto> employeeList = new List<EmployeeDto>
-        {
-            EmployeeTestData.EmployeeDto
-        };
-
-    private List<Employee> employee = new List<Employee>
-        {
-            new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-        };
-
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeAddressService> employeeAddressServiceMock;
     private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
@@ -175,10 +165,6 @@ public class EmployeeServiceUnitTests
     [Fact]
     public void GetEmployeeTest()
     {
-        var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        var _dbMock = new Mock<IUnitOfWork>();
-        var employeeRepositoryMock = new Mock<IEmployeeRepository>();
-
         var employeeList = new List<Employee>
         {
             new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
@@ -276,10 +262,6 @@ public class EmployeeServiceUnitTests
     [Fact]
     public void CheckEmployeeExistsTest()
     {
-        var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        var _dbMock = new Mock<IUnitOfWork>();
-        var employeeRepositoryMock = new Mock<IEmployeeRepository>();
-
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(true));
 
         var result = employeeService.CheckUserExist("dm@retrorabbit.co.za");
