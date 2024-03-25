@@ -99,10 +99,10 @@ namespace ATS.Services.Tests.Services
             var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
 
             Assert.NotNull(serviceResult); 
-            var object1Json = JsonConvert.SerializeObject(serviceResult);
-            var object2Json = JsonConvert.SerializeObject(CandidateDtoTestData.CandidateDto);
+            var actualResult = JsonConvert.SerializeObject(serviceResult);
+            var expectedResult = JsonConvert.SerializeObject(CandidateDtoTestData.CandidateDto);
 
-            Assert.Equal(object1Json, object2Json);
+            Assert.Equal(actualResult, expectedResult);
         }
 
         [Fact]
