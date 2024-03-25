@@ -34,7 +34,7 @@ public class Candidate : IModel<CandidateDto>
         HighestQualification = candidateDto.HighestQualification;
         School = candidateDto.School;
         QualificationEndDate = candidateDto.QualificationEndDate;
-        Blacklisted = candidateDto.Blacklisted;
+        BlacklistedStatus = candidateDto.BlacklistedStatus;
         BlacklistedReason = candidateDto.BlacklistedReason;
     }
 
@@ -78,7 +78,7 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("qualificationEndDate")] public int? QualificationEndDate { get; set; }
 
-    [Column("blacklisted")] public BlacklistStatus Blacklisted { get; set; }
+    [Column("blacklisted")] public BlacklistStatus BlacklistedStatus { get; set; }
 
     [Column("blacklistedReason")] public string BlacklistedReason { get; set; }
 
@@ -107,7 +107,7 @@ public class Candidate : IModel<CandidateDto>
             HighestQualification = this.HighestQualification,
             School = this.School,
             QualificationEndDate = this.QualificationEndDate,
-            Blacklisted = this.Blacklisted,
+            BlacklistedStatus = this.BlacklistedStatus,
             BlacklistedReason = this.BlacklistedReason
         };
     }
