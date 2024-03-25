@@ -29,6 +29,7 @@ public class FakePolicyEvaluatorAllRolesPolicy : IPolicyEvaluator
 {
     public virtual async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
     {
+        GlobalVariables.SetRunningTests(true);
         var principal = new ClaimsPrincipal();
 
         principal.AddIdentity(new ClaimsIdentity(new[]
