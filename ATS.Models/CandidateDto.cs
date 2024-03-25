@@ -10,7 +10,7 @@ public class CandidateDto
     public required string Surname {  get; set; }
     public required string PersonalEmail { get; set; }
     public required int PotentialLevel { get; set; }
-    public required PositionType JobPosition {  get; set; }
+    public  PositionType JobPosition {  get; set; }
     public string? LinkedIn { get; set; }
     public string? ProfilePicture { get; set; }
     public required string CellphoneNumber { get; set; }
@@ -24,9 +24,7 @@ public class CandidateDto
     public int Referral { get; set; }
     public string? HighestQualification { set; get; }
     public string? School { get; set; }
-    public string? Degree { get; set; }
-    public string? FieldOfStudy { get; set; }
-    public DateOnly? QualificationEndDate { get; set; }
-    public bool Blacklisted { get; set;}
+    public int? QualificationEndDate { get; set; }
+    public BlacklistStatus BlacklistedStatus { get; set;}
     public string BlacklistedReason { get; set; }
 }
