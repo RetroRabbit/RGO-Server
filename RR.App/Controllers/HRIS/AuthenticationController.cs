@@ -18,6 +18,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [AllowAnonymous]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost("login")]
     public async Task<IActionResult> LoginUser([FromQuery] string email)
     {
@@ -37,25 +38,6 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
-    [ApiExplorerSettings (IgnoreApi = true)]
-    [HttpGet("config")]
-    public async Task<IActionResult> Auth0Config()
-    {
-        try
-        {
-            return Ok(new
-            {
-                clientId = Environment.GetEnvironmentVariable("CLIENT_ID"),
-                domainKey = Environment.GetEnvironmentVariable("DOMAIN_KEY")
-            }) ;
-        }
-
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
 
     [AllowAnonymous]
     [HttpPost("register")]
