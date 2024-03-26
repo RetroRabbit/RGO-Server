@@ -62,13 +62,6 @@ namespace RR.App
 
             var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Default");
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(connectionString), ServiceLifetime.Transient);
-            builder.Services.AddTransient<DatabaseContext>(serviceProvider =>
-            {
-                var defaultConnectionString = serviceProvider.GetRequiredService<IConfiguration>()["ConnectionStrings:Default"];
-                var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
-                optionsBuilder.UseNpgsql(defaultConnectionString);
-                return new DatabaseContext(optionsBuilder.Options);
-            });
             builder.Services.RegisterRepository();
             builder.Services.RegisterServicesHRIS();
             builder.Services.RegisterServicesATS();
