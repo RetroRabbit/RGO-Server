@@ -64,7 +64,6 @@ namespace RR.App
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(connectionString), ServiceLifetime.Transient);
             builder.Services.AddTransient<DatabaseContext>(serviceProvider =>
             {
-
                 var defaultConnectionString = serviceProvider.GetRequiredService<IConfiguration>()["ConnectionStrings:Default"];
                 var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
                 optionsBuilder.UseNpgsql(defaultConnectionString);
