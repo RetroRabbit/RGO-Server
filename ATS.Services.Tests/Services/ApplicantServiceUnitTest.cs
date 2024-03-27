@@ -52,6 +52,18 @@ namespace ATS.Services.Tests.Services
         }
 
         [Fact]
+        public async Task SaveCandidateFail()
+        {
+            var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
+            _mockUnitOfWork.Setup(x => x.Candidate.GetAll(null)).Returns(Task.FromResult(candidates));
+
+            _mockUnitOfWork.Setup(x => x.Candidate.Any(It.IsAny<Expression<Func<Candidate, bool>>>()))
+                   .ReturnsAsync(true);
+
+            await Assert.ThrowsAsync<Exception>(() => _applicantService.SaveCandidate(CandidateDtoTestData.CandidateDto));
+        }
+
+        [Fact]
         public async Task GetAllCandidatesPass()
         {
             var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
