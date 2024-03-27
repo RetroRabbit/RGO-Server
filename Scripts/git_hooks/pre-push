@@ -1,6 +1,6 @@
 #!/bin/sh
 
-exec dotnet test --filter "Category!=Integration"
+exec dotnet test --filter "FullyQualifiedName!~Integration"
 
 if [ $? -ne 0 ]; then
 echo "Thou shall not pass with failing unit tests!"
