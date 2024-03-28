@@ -22,9 +22,16 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto)
     {
+        if (fieldCodeDto.Id != 0)
+        {
+            return await UpdateFieldCode(fieldCodeDto);
+        }
+
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
 
+
         if (ifFieldCode != null) throw new Exception("Field with that name found");
+
 
         var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
         if (newFieldCode != null && fieldCodeDto.Options!.Count > 0)
