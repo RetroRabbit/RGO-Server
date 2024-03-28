@@ -1,12 +1,14 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace RR.App.Controllers.HRIS;
 
 [Route("charts")]
 [ApiController]
-public class ChartsController : ControllerBase
+public partial class ChartsController : ControllerBase
 {
     private readonly IChartService _chartService;
 
@@ -21,6 +23,15 @@ public class ChartsController : ControllerBase
         try
         {
             var chart = await _chartService.GetAllCharts();
+
+            for(int i = 0; i < chart.Count; i++)
+            {
+                for(int j = 0; j < chart[i].DataTypes!.Count; j++)
+                {
+                    chart[i].DataTypes![j] = CapitalLetters().Replace(chart[i].DataTypes![j], "$1 $2");
+                }
+            }
+
             return Ok(chart);
         }
         catch (Exception ex)
@@ -95,6 +106,12 @@ public class ChartsController : ControllerBase
         try
         {
             var columns = _chartService.GetColumnsFromTable();
+
+            for(int i = 0; i < columns.Length;  i++)
+            {
+                columns[i] = CapitalLetters().Replace(columns[i], "$1 $2");
+            }
+
             return Ok(columns);
         }
         catch (Exception ex)
@@ -122,4 +139,7 @@ public class ChartsController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [GeneratedRegex("([a-z])([A-Z])")]
+    private static partial Regex CapitalLetters();
 }
