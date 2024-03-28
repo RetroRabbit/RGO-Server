@@ -127,6 +127,21 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [HttpGet("id-number")]
+    public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber)
+    {
+        try
+        {
+            var isExisting = await _employeeService.CheckIdNumber(idNumber);
+
+            return Ok(isExisting);
+        }
+        catch (Exception ex) 
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("count")]
     public async Task<IActionResult> CountAllEmployees()

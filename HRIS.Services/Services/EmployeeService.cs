@@ -477,6 +477,23 @@ public class EmployeeService : IEmployeeService
         }
     }
 
+    public async Task<bool> CheckIdNumber(string idNumber)
+    {
+        var employee = await _db.Employee
+                                .Get(employee => employee.IdNumber == idNumber)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync();
+
+        if (employee == null) 
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
     {
         var devsTotal = _db.Employee.Get()

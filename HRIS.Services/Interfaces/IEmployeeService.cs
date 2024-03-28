@@ -32,6 +32,13 @@ public interface IEmployeeService
     Task<EmployeeDto> GetEmployeeById(int id);
 
     /// <summary>
+    ///     Checks for any existing id numbers
+    /// </summary>
+    /// <param name="idNumber"></param>
+    /// <returns></returns>
+    Task<bool> CheckIdNumber(string idNumber);
+
+    /// <summary>
     ///     Save employee
     /// </summary>
     /// <param name="employeeDto"></param>
