@@ -523,7 +523,6 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(a => a.Chart.Update(It.IsAny<Chart>())).Throws(new Exception());
         _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
 
-
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var exception = await Assert.ThrowsAsync<Exception>(async () => await chartService.UpdateChart(nonExistingCharts));
