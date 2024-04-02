@@ -17,6 +17,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
         Id = dto.Id;
         UnitNumber = dto.UnitNumber;
         ComplexName = dto.ComplexName;
+        StreetName = dto.StreetName;
         StreetNumber = dto.StreetNumber;
         SuburbOrDistrict = dto.SuburbOrDistrict;
         City = dto.City;
@@ -28,6 +29,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     [Column("unitNumber")] public string? UnitNumber { get; set; }
 
     [Column("complexName")] public string? ComplexName { get; set; }
+    [Column("streetName")] public string? StreetName { get; set; }
 
     [Column("streetNumber")] public string? StreetNumber { get; set; }
 
@@ -50,6 +52,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
             Id = Id,
             UnitNumber = UnitNumber,
             ComplexName = ComplexName,
+            StreetName = StreetName,
             StreetNumber = StreetNumber,
             SuburbOrDistrict = SuburbOrDistrict,
             City = City,
