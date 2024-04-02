@@ -6,6 +6,7 @@ using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
 using RR.UnitOfWork;
+using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
@@ -489,6 +490,44 @@ public class ChartServiceUnitTests
         Assert.NotNull(result);
         Assert.Equal(chartDtoToUpdate, result);
         _unitOfWork.Verify(x => x.Chart.Update(It.IsAny<Chart>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateChartTestFail()
+    {
+        var existingCharts = new List<ChartDto>
+        {
+            new ChartDto
+            {
+                Id = 1,
+                Name = "Existing Chart",
+                Type = "Existing Type",
+                DataTypes = new List<string> { "Gender", "Race" },
+                Labels = new List<string> { "Male", "Female" },
+                Data = new List<int> { 1, 1 }
+            }
+        };
+
+        var nonExistingCharts = new ChartDto
+        {
+            Id = 2,
+            Name = "Non Existing Chart",
+            Type = "Non Existing Type",
+            DataTypes = new List<string> { "Gender", "Race" },
+            Labels = new List<string> { "Male", "Female" },
+            Data = new List<int> { 1, 1 }
+        };
+
+        _unitOfWork.SetupSequence(a => a.Chart.GetAll(null)).Returns(Task.FromResult(existingCharts));
+        _unitOfWork.Setup(a => a.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(a => a.Chart.Update(It.IsAny<Chart>())).Throws(new Exception());
+        _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
+
+
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
+
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await chartService.UpdateChart(nonExistingCharts));
+        Assert.Equal("No chart data record found", exception.Message);
     }
 
     [Fact]
