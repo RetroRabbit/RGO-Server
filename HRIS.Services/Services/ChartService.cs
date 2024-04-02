@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Text.RegularExpressions;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +9,7 @@ using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Services;
 
-public class ChartService : IChartService
+public partial class ChartService : IChartService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
@@ -43,6 +45,11 @@ public class ChartService : IChartService
                                  .Select(employee => employee.ToDto())
                                  .AsNoTracking()
                                  .ToListAsync();
+
+        for(int i = 0; i < dataTypes.Count; i++)
+        {
+            dataTypes[i] = AllSpaces().Replace(dataTypes[i], "");
+        }
 
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
 
@@ -136,6 +143,11 @@ public class ChartService : IChartService
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
     {
+        for (int i = 0; i < chartDto.DataTypes!.Count; i++)
+        {
+            chartDto.DataTypes![i] = AllSpaces().Replace(chartDto.DataTypes![i], "");
+        }
+
         var charts = await _db.Chart.GetAll();
         var chartData = charts
                         .Where(chartData => chartData.Id == chartDto.Id)
@@ -162,7 +174,14 @@ public class ChartService : IChartService
                                                             !p.Name.Equals("PostalAddressId") &&
                                                             !p.Name.Equals("ClientAllocated") &&
                                                             !p.Name.Equals("TeamLead") &&
-                                                            !p.Name.Equals("SalaryDays"))
+                                                            !p.Name.Equals("SalaryDays") &&
+                                                            !p.Name.Equals("DateOfBirth") &&
+                                                            !p.Name.Equals("EngagementDate") &&
+                                                            !p.Name.Equals("LeaveInterval") &&
+                                                            !p.Name.Equals("PassportExpirationDate") &&
+                                                            !p.Name.Equals("PayRate") &&
+                                                            !p.Name.Equals("Salary") &&
+                                                            !p.Name.Equals("TerminationDate"))
                                                 .Select(p => p.Name)
                                                 .ToArray();
         quantifiableColumnNames = quantifiableColumnNames.Concat(new[] { "Age" }).ToArray();
@@ -237,4 +256,7 @@ public class ChartService : IChartService
         var isQuantifiable = typeof(IConvertible).IsAssignableFrom(actualType) && actualType != typeof(string);
         return isQuantifiable;
     }
+
+    [GeneratedRegex("\\s+")]
+    private static partial Regex AllSpaces();
 }
