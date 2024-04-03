@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Entities;
+
 
 namespace RR.UnitOfWork.Interfaces.HRIS;
 

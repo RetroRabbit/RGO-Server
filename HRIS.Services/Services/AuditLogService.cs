@@ -2,7 +2,7 @@
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Entities;
 
 namespace HRIS.Services.Services;
 
@@ -26,12 +26,12 @@ public class AuditLogService : IAuditLogService
 
     public async Task<List<AuditLogDto>> GetAuditLogByEditedById(int editedById)
     {
-        return await _db.AuditLog.GetAll(auditLog => auditLog.EditBy == editedById);
+        return await _db.AuditLog.GetAll(auditLog => auditLog.CreatedById == editedById);
     }
 
     public async Task<List<AuditLogDto>> GetAuditLogByEditedForId(int editedForId)
     {
-        return await _db.AuditLog.GetAll(auditLog => auditLog.EditFor == editedForId);
+        return await _db.AuditLog.GetAll(auditLog => auditLog.CreatedById == editedForId);
     }
 
     public async Task<List<AuditLogDto>> GetAllAuditLogs()

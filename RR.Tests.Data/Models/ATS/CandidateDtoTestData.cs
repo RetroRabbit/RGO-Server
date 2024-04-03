@@ -27,10 +27,7 @@ public class CandidateDtoTestData
         Referral = 123,
         HighestQualification = "Master's Degree",
         School = "University of California, Berkeley",
-        Degree = "Computer Science",
-        FieldOfStudy = "Software Engineering",
-        QualificationStartDate = new DateOnly(2018, 09, 01),
-        QualificationEndDate = new DateOnly(2020, 06, 30),
+        QualificationEndDate = 2020,
     };
 
     public static CandidateDto CandidateDtoTwo = new CandidateDto
@@ -54,9 +51,6 @@ public class CandidateDtoTestData
         Referral = 123,
         HighestQualification = "Master's Degree",
         School = "University of California, Berkeley",
-        Degree = "Computer Science",
-        FieldOfStudy = "Software Engineering",
-        QualificationStartDate = new DateOnly(2018, 09, 01),
-        QualificationEndDate = new DateOnly(2020, 06, 30),
+        QualificationEndDate = 2020,
     };
 }

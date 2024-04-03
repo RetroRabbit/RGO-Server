@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using HRIS.Models.Enums;
 
 namespace RR.Tests.Data.Models.HRIS;
 
@@ -42,4 +43,31 @@ public class EmployeeAddressTestData
         Province = "Province 2",
         PostalCode = "0002"
     };
+    public static EmployeeAddressDto EmployeeAddressDtoNew = new EmployeeAddressDto
+    {
+        Id = 0,
+        UnitNumber = "56",
+        ComplexName = "Complex72",
+        StreetNumber = "8",
+        SuburbOrDistrict = "Suburb/District",
+        City = "City",
+        Country = "Country",
+        Province = "Province",
+        PostalCode = "1620"
+    };
+    public static EmployeeAddressDto GetModifiedEmployeeAdressDtoWithAddressId(int addressId)
+    {
+        return new EmployeeAddressDto
+        {
+            Id = addressId,
+            UnitNumber = "56",
+            ComplexName = "Complex72",
+            StreetNumber = "8",
+            SuburbOrDistrict = "Suburb/District",
+            City = "City",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
+        };
+    }
 }

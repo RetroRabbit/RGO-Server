@@ -12,6 +12,12 @@ public interface IEmployeeBankingService
     /// <returns>List of pending EmployeeBanking objects</returns>
     Task<List<EmployeeBanking>> Get(int approvalStatus);
 
+    /// <summary>
+    ///     Delete Employee Banking
+    /// </summary>
+    /// <param name="employeeBankingDto"></param>
+    /// <returns>Employee Banking</returns>
+    Task<EmployeeBankingDto> Delete(int addressId);
 
     /// <summary>
     ///     Updates a banking entry
