@@ -29,6 +29,7 @@ public class EmployeeAddress : IModel<EmployeeAddressDto>
     [Column("unitNumber")] public string? UnitNumber { get; set; }
 
     [Column("complexName")] public string? ComplexName { get; set; }
+
     [Column("streetName")] public string? StreetName { get; set; }
 
     [Column("streetNumber")] public string? StreetNumber { get; set; }
