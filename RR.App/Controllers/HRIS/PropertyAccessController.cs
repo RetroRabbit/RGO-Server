@@ -4,6 +4,7 @@ using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork;
 
 namespace RR.App.Controllers.HRIS;
 

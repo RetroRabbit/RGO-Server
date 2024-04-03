@@ -33,10 +33,9 @@ public class Candidate : IModel<CandidateDto>
         Referral = candidateDto.Referral;
         HighestQualification = candidateDto.HighestQualification;
         School = candidateDto.School;
-        Degree = candidateDto.Degree;
-        FieldOfStufy = candidateDto.FieldOfStudy;
-        QualificationStartDate = candidateDto.QualificationStartDate;
         QualificationEndDate = candidateDto.QualificationEndDate;
+        BlacklistedStatus = candidateDto.BlacklistedStatus;
+        BlacklistedReason = candidateDto.BlacklistedReason;
     }
 
     [Key][Column("id")] public int Id { get; set; }
@@ -77,13 +76,11 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("school")] public string? School { get; set; }
 
-    [Column("degree")] public string? Degree { get; set; }
+    [Column("qualificationEndDate")] public int? QualificationEndDate { get; set; }
 
-    [Column("fieldOfStudy")] public string? FieldOfStufy { get; set; }
+    [Column("blacklisted")] public BlacklistStatus BlacklistedStatus { get; set; }
 
-    [Column("qualificationStartDate")] public DateOnly? QualificationStartDate { get; set; }
-
-    [Column("qualificationEndDate")] public DateOnly? QualificationEndDate { get; set; }
+    [Column("blacklistedReason")] public string BlacklistedReason { get; set; }
 
 
     public CandidateDto ToDto()
@@ -109,10 +106,9 @@ public class Candidate : IModel<CandidateDto>
             Referral = this.Referral,
             HighestQualification = this.HighestQualification,
             School = this.School,
-            Degree = this.Degree,
-            FieldOfStudy = this.FieldOfStufy,
-            QualificationStartDate = this.QualificationStartDate,
-            QualificationEndDate = this.QualificationEndDate
+            QualificationEndDate = this.QualificationEndDate,
+            BlacklistedStatus = this.BlacklistedStatus,
+            BlacklistedReason = this.BlacklistedReason
         };
     }
 }

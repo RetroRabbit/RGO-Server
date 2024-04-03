@@ -41,16 +41,7 @@ public class EmployeeAddressService : IEmployeeAddressService
             throw _errorLoggingService.LogException(exception);
         }
 
-        return await _db.EmployeeAddress.FirstOrDefault(address =>
-                                                            address.UnitNumber == employeeAddressDto.UnitNumber &&
-                                                            address.ComplexName == employeeAddressDto.ComplexName &&
-                                                            address.StreetNumber == employeeAddressDto.StreetNumber &&
-                                                            address.SuburbOrDistrict ==
-                                                            employeeAddressDto.SuburbOrDistrict &&
-                                                            address.City == employeeAddressDto.City &&
-                                                            address.Country == employeeAddressDto.Country &&
-                                                            address.Province == employeeAddressDto.Province &&
-                                                            address.PostalCode == employeeAddressDto.PostalCode);
+        return await _db.EmployeeAddress.FirstOrDefault(address => address.Id == employeeAddressDto.Id);
     }
 
     public async Task<List<EmployeeAddressDto>> GetAll()

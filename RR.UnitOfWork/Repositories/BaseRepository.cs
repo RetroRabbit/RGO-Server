@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
+using HRIS.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork.Repositories;
@@ -52,6 +54,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
     public async Task<T> Add(TK entity)
     {
         var obj = await _entity.AddAsync(entity);
+        await AddAuditLog(entity, CRUDOperations.Create);
         await _db.SaveChangesAsync();
         return obj.Entity.ToDto();
     }
@@ -61,6 +64,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
         var obj = await _entity.FindAsync(id);
         if (obj == null) throw new KeyNotFoundException($"Unable to find object of type {typeof(TK)} with id {id}");
         _entity.Remove(obj);
+        await AddAuditLog(obj, CRUDOperations.Delete);
         await _db.SaveChangesAsync();
         return obj.ToDto();
     }
@@ -72,6 +76,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
                    throw new Exception($"Unable to find object of type {typeof(TK)} with id {entity.Id}"));
 
         obj.CurrentValues.SetValues(entity);
+        await AddAuditLog(entity, CRUDOperations.Update);
         await _db.SaveChangesAsync();
         return obj.Entity.ToDto();
     }
@@ -80,5 +85,20 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
     {
         await _entity.AddRangeAsync(entities);
         await _db.SaveChangesAsync();
+    }
+
+    private async Task AddAuditLog(TK entity, CRUDOperations operation)
+    {
+        if (!GlobalVariables.AreTestsRunning())
+        {
+            var log = new AuditLog
+            {
+                Date = DateTime.Now,
+                CRUDOperation = operation,
+                CreatedById = GlobalVariables.GetUserId(),
+                Table = entity.GetType().Name,
+                Data = Newtonsoft.Json.JsonConvert.SerializeObject(entity)
+            };
+        }
     }
 }
