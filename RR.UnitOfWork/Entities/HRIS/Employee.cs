@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.Design;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
@@ -145,8 +146,8 @@ public class Employee : IModel<EmployeeDto>
     [Column("emergencyContactNo")] public string? EmergencyContactNo { get; set; }
 
     [Column("active")] public bool Active { get; set; }
-   
-    [Column("inactiveReason")] public string? InactiveReason{ get; set; }
+
+    [Column("inactiveReason")] public string? InactiveReason { get; set; }
 
     public virtual EmployeeType? EmployeeType { get; set; }
     public virtual Employee? ChampionEmployee { get; set; }
