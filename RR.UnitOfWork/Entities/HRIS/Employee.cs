@@ -55,6 +55,7 @@ public class Employee : IModel<EmployeeDto>
         EmergencyContactName = employeeDto.EmergencyContactName;
         EmergencyContactNo = employeeDto.EmergencyContactNo;
         Active = employeeDto.Active;
+        InactiveReason = employeeDto.InactiveReason;
     }
 
     [Column("employeeNumber")] public string? EmployeeNumber { get; set; }
@@ -199,6 +200,7 @@ public class Employee : IModel<EmployeeDto>
             EmergencyContactName = EmergencyContactName,
             EmergencyContactNo = EmergencyContactNo,
             Active = Active,
+            InactiveReason = InactiveReason
         };
     }
 }
