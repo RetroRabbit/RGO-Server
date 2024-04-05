@@ -42,4 +42,6 @@ public class EmployeeDto
     public string? HouseNo { get; set; }
     public string? EmergencyContactName { get; set; }
     public string? EmergencyContactNo { get; set; }
+    public bool Active { get; set; }
+    public string? InActiveReason { get; set; }
 }
