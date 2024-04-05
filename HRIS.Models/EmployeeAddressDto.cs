@@ -5,6 +5,7 @@ public class EmployeeAddressDto
     public int Id { get; set; }
     public string? UnitNumber { get; set; }
     public string? ComplexName { get; set; }
+    public string? StreetName { get; set; }
     public string? StreetNumber { get; set; }
     public string? SuburbOrDistrict { get; set; }
     public string? City { get; set; }
