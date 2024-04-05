@@ -43,5 +43,5 @@ public class EmployeeDto
     public string? EmergencyContactName { get; set; }
     public string? EmergencyContactNo { get; set; }
     public bool Active { get; set; }
-    public string? InActiveReason { get; set; }
+    public string? InactiveReason { get; set; }
 }

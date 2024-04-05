@@ -55,7 +55,7 @@ public class Employee : IModel<EmployeeDto>
         EmergencyContactName = employeeDto.EmergencyContactName;
         EmergencyContactNo = employeeDto.EmergencyContactNo;
         Active = employeeDto.Active;
-        InActiveReason = employeeDto.InActiveReason;
+        InactiveReason = employeeDto.InactiveReason;
     }
 
     [Column("employeeNumber")] public string? EmployeeNumber { get; set; }
@@ -146,7 +146,7 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("active")] public bool Active { get; set; }
    
-    [Column("inActive")] public string? InActiveReason{ get; set; }
+    [Column("inactiveReason")] public string? InactiveReason{ get; set; }
 
     public virtual EmployeeType? EmployeeType { get; set; }
     public virtual Employee? ChampionEmployee { get; set; }
@@ -200,7 +200,7 @@ public class Employee : IModel<EmployeeDto>
             EmergencyContactName = EmergencyContactName,
             EmergencyContactNo = EmergencyContactNo,
             Active = Active,
-            InActiveReason = InActiveReason
+            InactiveReason = InactiveReason
         };
     }
 }
