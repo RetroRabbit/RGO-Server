@@ -23,31 +23,39 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
     }
     public async Task<List<BankingAndStarterKitDto>> GetBankingAndStarterKitAsync()
     {
-        var employeeDocumentQuery = _db.EmployeeDocument
-            .Get(EmployeeDocument => true)
+        var employeeDocumentQuery = await _db.EmployeeDocument
+            .Get()
+            .Include(doc => doc.Employee)
+            .ThenInclude(emp => emp.EmployeeType)
+            .OrderBy(doc => doc.EmployeeId)
             .AsNoTracking()
-            .Include(entry => entry.Employee)
+            .ToListAsync();
+
+        var mostRecentEmployeeBankings = await _db.EmployeeBanking
+            .Get(banking => true)
+            .Include(banking => banking.Employee)
                 .ThenInclude(employee => employee.EmployeeType)
-            .OrderBy(EmployeeDocument => EmployeeDocument.EmployeeId);
+            .GroupBy(banking => banking.EmployeeId)
+            .Select(group => group.OrderByDescending(banking => banking).FirstOrDefault())
+            .ToListAsync();
 
-        var employeeBankingQuery = _db.EmployeeBanking
-             .Get(EmployeeBanking => true)
-             .AsNoTracking()
-             .Include(entry => entry.Employee)
-                .ThenInclude(employee => employee.EmployeeType);
+        var combinedResults =new List<BankingAndStarterKitDto>();
+        combinedResults.AddRange(employeeDocumentQuery.Select(document => new BankingAndStarterKitDto
+        {
+            EmployeeDocumentDto = document.ToDto(),
+            Name = document.Employee?.Name,
+            Surname = document.Employee.Surname,
+            EmployeeId = document.EmployeeId
+        }));
 
-        var result = await employeeDocumentQuery.Join(employeeBankingQuery,
-                                      document => document.EmployeeId,
-                                      banking => banking.EmployeeId,
-                                      (document, banking) => new BankingAndStarterKitDto
-                                      {
-                                          EmployeeDocumentDto = document.ToDto(),
-                                          EmployeeBankingDto = banking.ToDto(),
-                                          Name = document.Employee.Name,
-                                          Surname = document.Employee.Surname
-                                      })
-                                 .ToListAsync();
-
-        return result;
+        combinedResults.AddRange(mostRecentEmployeeBankings.Select(banking => new BankingAndStarterKitDto
+        {
+            EmployeeBankingDto = banking.ToDto(),
+            Name = banking.Employee?.Name,
+            Surname = banking?.Employee?.Surname,
+            EmployeeId = banking.EmployeeId
+        }));
+        
+        return combinedResults;
     }
 }

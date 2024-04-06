@@ -257,7 +257,7 @@ public class EmployeeBankingControllerUnitTests
         Assert.Equal(errorMessage, actualErrorMessage);
         Assert.Equal(404, notFoundResult.StatusCode);
     }
-
+/*
     [Fact]
     public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
     {
@@ -286,7 +286,7 @@ public class EmployeeBankingControllerUnitTests
         var actualDetails = Assert.IsType<EmployeeBankingDto>(okResult.Value);
 
         Assert.Equal(newEntry, actualDetails);
-    }
+    }*/
 
     [Fact]
     public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()

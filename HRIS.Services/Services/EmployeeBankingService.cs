@@ -68,16 +68,39 @@ public class EmployeeBankingService : IEmployeeBankingService
             }
         }
 
-        var newEmployee = new Employee(empDto, empDto.EmployeeType!);
-        var entry = new EmployeeBanking(bankingDto);
-        entry.Employee = newEmployee;
+        var existingBankingRecords = await _db.EmployeeBanking
+            .Get(b => b.EmployeeId == newEntry.EmployeeId)
+            .OrderBy(b => b.LastUpdateDate)
+            .ToListAsync();
 
-        await _db.EmployeeBanking.Update(entry);
+        if (existingBankingRecords.Count > 2)
+        {
+            var oldestRecord = existingBankingRecords.First();
+            _db.EmployeeBanking.Delete(oldestRecord.Id);
+            // add log
+        }
+
+        var newBankingDetails = new EmployeeBanking
+        {
+            EmployeeId = newEntry.EmployeeId,
+            BankName = newEntry.BankName,
+            Branch = newEntry.Branch,
+            AccountNo = newEntry.AccountNo,
+            AccountType = newEntry.AccountType,
+            AccountHolderName = newEntry.AccountHolderName,
+            Status = newEntry.Status,
+            DeclineReason = newEntry.DeclineReason,
+            File = newEntry.File,
+            LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
+            PendingUpdateDate = newEntry.PendingUpdateDate
+        };
+
+        await _db.EmployeeBanking.Add(newBankingDetails); 
 
         return newEntry;
     }
 
-    public async Task<EmployeeBankingDto> GetBanking(int employeeId)
+    public async Task<List<EmployeeBankingDto>> GetBanking(int employeeId)
     {
         try
         {
@@ -86,9 +109,9 @@ public class EmployeeBankingService : IEmployeeBankingService
                                            .AsNoTracking()
                                            .Include(employeeBanking => employeeBanking.Employee)
                                            .Select(employeeBanking => employeeBanking.ToDto())
-                                           .FirstOrDefaultAsync();
+                                           .ToListAsync();
 
-            return employeeBanking!;
+            return employeeBanking;
         }
         catch (Exception)
         {
