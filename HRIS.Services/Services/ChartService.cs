@@ -87,13 +87,18 @@ public partial class ChartService : IChartService
         var labels = dataDictionary.Keys.ToList();
         var data = dataDictionary.Values.ToList();
 
+        var chartDataSet = new ChartDataSet
+        {
+            Labels = labels,
+            Data = data
+        };
+
         var chart = new Chart
         {
             Name = chartName,
             Type = chartType,
             DataTypes = dataTypes,
-            Labels = labels,
-            Data = data
+            DataSets = new List<ChartDataSet> { chartDataSet }
         };
 
         return await _db.Chart.Add(chart);

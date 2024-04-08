@@ -18,8 +18,6 @@ public class Chart : IModel<ChartDto>
         Name = chartDto.Name;
         Type = chartDto.Type;
         DataTypes = chartDto.DataTypes;
-        Labels = chartDto.Labels;
-        Data = chartDto.Data;
     }
 
     [Column("name")] public string? Name { get; set; }
@@ -28,20 +26,20 @@ public class Chart : IModel<ChartDto>
 
     [Column("dataTypes")] public List<string>? DataTypes { get; set; }
 
-    [Column("labels")] public List<string>? Labels { get; set; }
+    public virtual List<ChartDataSet> DataSets { get; set; }
 
-    [Column("data")] public List<int>? Data { get; set; }
 
-    [Key] [Column("id")] public int Id { get; set; }
+
+    [Key][Column("id")] public int Id { get; set; }
 
     public ChartDto ToDto()
     {
-        return new ChartDto { 
-            Id=Id,
-            Name=Name,
-            Type=Type,
-            DataTypes=DataTypes,
-            Labels=Labels,
-            Data=Data};                      
-        }
+        return new ChartDto
+        {
+            Id = Id,
+            Name = Name,
+            Type = Type,
+            DataTypes = DataTypes
+        };
     }
+}
