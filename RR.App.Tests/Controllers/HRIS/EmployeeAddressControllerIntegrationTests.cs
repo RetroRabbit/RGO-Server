@@ -1,5 +1,4 @@
-﻿using HRIS.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -86,7 +85,7 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
         }
     }
 
-   /* [Fact]
+   [Fact]
     public async Task GetAll_ReturnsOkResult()
     {
 
@@ -101,7 +100,7 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
     {
         var addressDto = EmployeeAddressTestData.EmployeeAddressDtoNew;
         var jsonContent = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
-        
+
         var response = await _client.PostAsync("/employee-address", jsonContent);
 
         response.EnsureSuccessStatusCode();
@@ -124,5 +123,5 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }*/
+    }
 }

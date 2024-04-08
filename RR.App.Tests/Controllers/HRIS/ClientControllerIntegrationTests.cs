@@ -1,23 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Google.Apis.Services;
-using HRIS.Models;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Xunit;
-using RR.App.Controllers.HRIS;
-using RR.UnitOfWork.Entities.HRIS;
-using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using IClientService = HRIS.Services.Interfaces.IClientService;
 using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace RR.App.Tests.Controllers
 {
@@ -58,13 +48,13 @@ namespace RR.App.Tests.Controllers
             }
         }
 
-        /*[Fact]
+        [Fact]
         public async Task GetAllClients_ReturnsOkResult()
         {
             var response = await _client.GetAsync("/clients");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }*/
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using HRIS.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -19,9 +18,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using HRIS.Models.Enums;
-using RR.UnitOfWork.Entities.HRIS;
-using static Google.Apis.Requests.BatchRequest;
 
 namespace RR.App.Tests.Controllers;
 
@@ -162,7 +158,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         }
     }
 
-   /* [Fact]
+    [Fact]
     public async Task Get_ReturnsOkResult()
     {
         var response = await _client.GetAsync("/employee-banking");
@@ -170,7 +166,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
-
+    
     [Fact]
     public async Task CreateReadUpdateDeleteEmployeeBanking_ReturnsOkResult()
     {
@@ -223,7 +219,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }*/
+    }
 
     [Fact]
     public async Task DeleteEmployeeBanking_ReturnsOkResult()
