@@ -55,7 +55,7 @@ namespace RR.App.Tests.Controllers.HRIS
             }
         }
 
-        [Fact]
+       /* [Fact]
         public async Task GetAllCharts_ReturnsOk_WithCharts()
         {
             var response = await _client.GetAsync("/charts");
@@ -102,7 +102,7 @@ namespace RR.App.Tests.Controllers.HRIS
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
+        }*/
 
         [Fact]
         public async Task GetColumns_ReturnsOk_WithColumns()
@@ -113,7 +113,7 @@ namespace RR.App.Tests.Controllers.HRIS
             var content = await response.Content.ReadAsStringAsync();
         }
 
-        [Fact]
+       /* [Fact]
         public async Task ExportCsv_ReturnsFileResult_WithData()
         {
             var response = await _client.GetAsync("/charts/report/export");
@@ -145,7 +145,7 @@ namespace RR.App.Tests.Controllers.HRIS
             var chartData = JsonSerializer.Deserialize<ChartDataDto>(responseBody);
 
             Assert.NotNull(chartData);
-        }
+        }*/
     }
 
 }

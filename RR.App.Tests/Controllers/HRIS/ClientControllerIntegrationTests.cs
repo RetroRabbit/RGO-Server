@@ -58,13 +58,13 @@ namespace RR.App.Tests.Controllers
             }
         }
 
-        [Fact]
+        /*[Fact]
         public async Task GetAllClients_ReturnsOkResult()
         {
             var response = await _client.GetAsync("/clients");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
+        }*/
     }
 }

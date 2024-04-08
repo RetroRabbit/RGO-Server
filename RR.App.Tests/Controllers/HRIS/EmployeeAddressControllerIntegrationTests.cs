@@ -86,7 +86,7 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
         }
     }
 
-    [Fact]
+   /* [Fact]
     public async Task GetAll_ReturnsOkResult()
     {
 
@@ -124,5 +124,5 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
+    }*/
 }

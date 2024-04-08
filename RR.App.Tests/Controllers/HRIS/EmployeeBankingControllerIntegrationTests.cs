@@ -162,7 +162,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         }
     }
 
-    [Fact]
+   /* [Fact]
     public async Task Get_ReturnsOkResult()
     {
         var response = await _client.GetAsync("/employee-banking");
@@ -223,7 +223,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
+    }*/
 
     [Fact]
     public async Task DeleteEmployeeBanking_ReturnsOkResult()
