@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.Design;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
@@ -53,6 +55,8 @@ public class Employee : IModel<EmployeeDto>
         HouseNo = employeeDto.HouseNo;
         EmergencyContactName = employeeDto.EmergencyContactName;
         EmergencyContactNo = employeeDto.EmergencyContactNo;
+        Active = employeeDto.Active;
+        InactiveReason = employeeDto.InactiveReason;
     }
 
     [Column("employeeNumber")] public string? EmployeeNumber { get; set; }
@@ -141,6 +145,10 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("emergencyContactNo")] public string? EmergencyContactNo { get; set; }
 
+    [Column("active")] public bool Active { get; set; }
+
+    [Column("inactiveReason")] public string? InactiveReason { get; set; }
+
     public virtual EmployeeType? EmployeeType { get; set; }
     public virtual Employee? ChampionEmployee { get; set; }
     public virtual Employee? TeamLeadAssigned { get; set; }
@@ -191,7 +199,9 @@ public class Employee : IModel<EmployeeDto>
             PostalAddress = PostalAddress?.ToDto(),
             HouseNo = HouseNo,
             EmergencyContactName = EmergencyContactName,
-            EmergencyContactNo = EmergencyContactNo
+            EmergencyContactNo = EmergencyContactNo,
+            Active = Active,
+            InactiveReason = InactiveReason
         };
     }
 }
