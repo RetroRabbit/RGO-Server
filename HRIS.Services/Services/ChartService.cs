@@ -54,6 +54,7 @@ public partial class ChartService : IChartService
             Datasets = new List<ChartDataSet>()
         };
 
+        //this is the line that you are asking about
         if (chartType.ToUpper() == "STACKED")
         {
 
