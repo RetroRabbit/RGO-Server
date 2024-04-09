@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
@@ -23,7 +24,7 @@ public class ChartUnitTests
             Type = "Type",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
-            Data = new List<int> { 1, 2 }
+            DataSets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         return new Chart(chartDto);
@@ -39,7 +40,7 @@ public class ChartUnitTests
             Type = "Type",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
-            Data = new List<int> { 1, 2 }
+            DataSets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         var chart = new Chart(chartDto);

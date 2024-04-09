@@ -25,10 +25,9 @@ public class Chart : IModel<ChartDto>
     [Column("type")] public string? Type { get; set; }
 
     [Column("dataTypes")] public List<string>? DataTypes { get; set; }
+    [Column("labels")] public List<string>? Labels { get; set; }
 
-    public virtual List<ChartDataSet> DataSets { get; set; }
-
-
+    public virtual List<ChartDataSet> Datasets { get; set; }
 
     [Key][Column("id")] public int Id { get; set; }
 
@@ -39,7 +38,9 @@ public class Chart : IModel<ChartDto>
             Id = Id,
             Name = Name,
             Type = Type,
-            DataTypes = DataTypes
+            DataTypes = DataTypes,
+            Labels = Labels,
+            Datasets = Datasets.Select(x => x.ToDto()).ToList(),
         };
     }
 }

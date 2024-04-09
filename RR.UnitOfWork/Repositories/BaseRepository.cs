@@ -3,6 +3,7 @@ using HRIS.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RR.UnitOfWork.Repositories;
 
@@ -90,7 +91,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
     private async Task AddAuditLog(TK entity, CRUDOperations operation)
     {
         if (!GlobalVariables.AreTestsRunning())
-        {
+        {          
             var log = new AuditLog
             {
                 Date = DateTime.Now,
@@ -99,6 +100,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
                 Table = entity.GetType().Name,
                 Data = Newtonsoft.Json.JsonConvert.SerializeObject(entity)
             };
+            await _db.auditLogs.AddAsync(log);
         }
     }
 }

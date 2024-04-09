@@ -16,13 +16,12 @@ public class ChartDataSet : IModel<ChartDataSetDto>
     public ChartDataSet() { }
     public ChartDataSet(ChartDataSetDto chartDataSetDto)
     {
-        Id = chartDataSetDto.Id;
-        Labels = chartDataSetDto.Labels;
+        Label = chartDataSetDto.Label;
         Data = chartDataSetDto.Data;
     }
     [Key][Column("id")] public int Id { get; set; }
 
-    [Column("labels")] public List<string>? Labels { get; set; }
+    [Column("label")] public string? Label { get; set; }
 
     [Column("data")] public List<int>? Data { get; set; }
 
@@ -31,14 +30,11 @@ public class ChartDataSet : IModel<ChartDataSetDto>
     [ForeignKey("Chart")]
     public int ChartId { get; set; }
 
-    public virtual Chart Chart { get; set; }
-
     public ChartDataSetDto ToDto()
     {
         return new ChartDataSetDto
         {
-            Id = Id,
-            Labels = Labels,
+            Label = Label,
             Data = Data
         };
     }

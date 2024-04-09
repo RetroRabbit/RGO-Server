@@ -5,6 +5,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.HRIS;
@@ -199,7 +200,7 @@ public class ChartServiceUnitTests
             Type = chartType,
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            DataSets = ChartDataSetTestData.chartDataSetDtoList
         };
 
 
@@ -337,7 +338,7 @@ public class ChartServiceUnitTests
             Type = chartType,
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            DataSets = ChartDataSetTestData.chartDataSetDtoList
         };
 
 
@@ -436,7 +437,7 @@ public class ChartServiceUnitTests
             Type = "Pie",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            DataSets = ChartDataSetTestData.chartDataSetDtoList
         };
 
 
@@ -462,7 +463,7 @@ public class ChartServiceUnitTests
             Type = "Pie",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            DataSets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         var existingCharts = new List<ChartDto>
@@ -474,7 +475,7 @@ public class ChartServiceUnitTests
                 Type = "Existing Type",
                 DataTypes = chartDtoToUpdate.DataTypes,
                 Labels = chartDtoToUpdate.Labels,
-                Data = chartDtoToUpdate.Data
+                DataSets = ChartDataSetTestData.chartDataSetDtoList
             }
         };
 
@@ -504,7 +505,7 @@ public class ChartServiceUnitTests
                 Type = "Existing Type",
                 DataTypes = new List<string> { "Gender", "Race" },
                 Labels = new List<string> { "Male", "Female" },
-                Data = new List<int> { 1, 1 }
+                DataSets = ChartDataSetTestData.chartDataSetDtoList
             }
         };
 
@@ -515,7 +516,7 @@ public class ChartServiceUnitTests
             Type = "Non Existing Type",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            DataSets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         _unitOfWork.SetupSequence(a => a.Chart.GetAll(null)).Returns(Task.FromResult(existingCharts));

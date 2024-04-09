@@ -7,5 +7,5 @@ public class ChartDto
     public string? Type { get; set; }
     public List<string>? DataTypes { get; set; }
     public List<string>? Labels { get; set; }
-    public List<int>? Data { get; set; }
+    public List<ChartDataSetDto>? Datasets { get; set; }
 }
