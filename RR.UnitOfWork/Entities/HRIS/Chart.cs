@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using HRIS.Models;
 using RR.UnitOfWork.Interfaces;
 
@@ -17,7 +18,9 @@ public class Chart : IModel<ChartDto>
         Id = chartDto.Id;
         Name = chartDto.Name;
         Type = chartDto.Type;
+        Labels = chartDto.Labels;
         DataTypes = chartDto.DataTypes;
+        Datasets = chartDto.Datasets?.Select(datasetDto => new ChartDataSet(datasetDto)).ToList() ?? new List<ChartDataSet>();
     }
 
     [Column("name")] public string? Name { get; set; }

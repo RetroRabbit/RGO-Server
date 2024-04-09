@@ -24,7 +24,7 @@ public class ChartUnitTests
             Type = "Type",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
-            DataSets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         return new Chart(chartDto);
@@ -40,7 +40,7 @@ public class ChartUnitTests
             Type = "Type",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
-            DataSets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         var chart = new Chart(chartDto);
