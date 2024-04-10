@@ -54,14 +54,9 @@ public partial class ChartService : IChartService
             Datasets = new List<ChartDataSet>()
         };
 
-        //this is the line that you are asking about
         if (chartType.ToUpper() == "STACKED")
         {
 
-            var developers = new List<EmployeeDto>();
-            var designers = new List<EmployeeDto>();
-            var scrumMasters = new List<EmployeeDto>(); 
-            var supportStaff = new List<EmployeeDto>();
             employees = await _db.Employee
                                      .Get(employee => roleList.Contains(employee.EmployeeType!.Name!))
                                      .Include(employee => employee.EmployeeType)
@@ -69,93 +64,61 @@ public partial class ChartService : IChartService
                                      .AsNoTracking()
                                      .ToListAsync();
 
-            foreach (EmployeeDto employee in employees)
+            var allRoleNames = new[] { "Developer", "Designer", "Scrum Master", "Support Staff" };
+
+            var employeeGroups = allRoleNames.ToDictionary(
+                roleName => roleName,
+                _ => new List<EmployeeDto>()
+            );
+
+            foreach (var employee in employees)
             {
-                switch (employee.EmployeeType!.Name.ToUpper())
+                var roleName = employee.EmployeeType!.Name.ToUpper();
+                switch (roleName)
                 {
                     case "DEVELOPER":
-                        developers.Add(employee);
+                        employeeGroups["Developer"].Add(employee);
                         break;
                     case "DESIGNER":
-                        designers.Add(employee);
+                        employeeGroups["Designer"].Add(employee);
                         break;
                     case "SCRUM MASTER":
-                        scrumMasters.Add(employee);
+                        employeeGroups["Scrum Master"].Add(employee);
                         break;
-                    default :
-                        employee.EmployeeType.Name = "Support";
-                        supportStaff.Add(employee);
+                    default:
+                        employeeGroups["Support Staff"].Add(employee);
                         break;
                 }
             }
 
-            var developerDictionary = CreateGraphDataDictionary(developers, dataTypeList);
-            var designersDictionary = CreateGraphDataDictionary(designers, dataTypeList);
-            var scrumMastersDictionary = CreateGraphDataDictionary(scrumMasters, dataTypeList);
-            var supportStaffDictionary = CreateGraphDataDictionary(supportStaff, dataTypeList);
+            var roleDictionaries = employeeGroups.ToDictionary(
+                pair => pair.Key,
+                pair => CreateGraphDataDictionary(pair.Value, dataTypeList)
+            );
 
-            var labels = developerDictionary.Keys
-                         .Union(designersDictionary.Keys)
-                         .Union(scrumMastersDictionary.Keys)
-                         .Union(supportStaffDictionary.Keys)
-                         .OrderBy(label => label)
-                         .ToList();
-
+            var labels = roleDictionaries.Values.SelectMany(dict => dict.Keys).Distinct().OrderBy(label => label).ToList();
             chart.Labels = labels;
 
-            foreach (var key in labels)
+            foreach (var dictionary in roleDictionaries.Values)
             {
-                if (!developerDictionary.ContainsKey(key))
+                foreach (var label in labels)
                 {
-                    developerDictionary.Add(key, 0);
-                }
-                if (!designersDictionary.ContainsKey(key))
-                {
-                    designersDictionary.Add(key, 0);
-                }
-                if (!scrumMastersDictionary.ContainsKey(key))
-                {
-                    scrumMastersDictionary.Add(key, 0);
-                }
-                if (!supportStaffDictionary.ContainsKey(key))
-                {
-                    supportStaffDictionary.Add(key, 0);
+                    if (!dictionary.ContainsKey(label))
+                    {
+                        dictionary[label] = 0;
+                    }
                 }
             }
-            
 
-            developerDictionary =developerDictionary.OrderBy(x => x.Key).ToDictionary(x => x.Key, x=>x.Value);
-            var dataSet = new ChartDataSet
+            foreach (var rolePair in roleDictionaries)
             {
-                Label = "Developer",
-                Data = developerDictionary.Values.ToList(),
-            };
-            chart.Datasets.Add(dataSet);
-
-            designersDictionary =designersDictionary.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
-            dataSet = new ChartDataSet
-            {
-                Label = "Designer",
-                Data = designersDictionary.Values.ToList(),
-            };
-            chart.Datasets.Add(dataSet);
-
-            scrumMastersDictionary =scrumMastersDictionary.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
-            dataSet = new ChartDataSet
-            {
-                Label = "Scrum Master",
-                Data = scrumMastersDictionary.Values.ToList(),
-            };
-            chart.Datasets.Add(dataSet);
-
-            supportStaffDictionary = supportStaffDictionary.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
-            dataSet = new ChartDataSet
-            {
-                Label = "Support",
-                Data = supportStaffDictionary.Values.ToList(),
-            };
-            chart.Datasets.Add(dataSet);
-
+                var dataSet = new ChartDataSet
+                {
+                    Label = rolePair.Key,
+                    Data = labels.Select(label => rolePair.Value.ContainsKey(label) ? rolePair.Value[label] : 0).ToList()
+                };
+                chart.Datasets.Add(dataSet);
+            }
         }
         else
         {
@@ -183,7 +146,7 @@ public partial class ChartService : IChartService
 
             chart.Labels = labels;
             chart.Datasets = new List<ChartDataSet> { chartDataSet };
-            
+
         }
         return await _db.Chart.Add(chart);
     }
