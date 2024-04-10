@@ -49,7 +49,6 @@ public partial class ChartService : IChartService
         var chart = new Chart
         {
             Name = chartName,
-            Type = chartType,
             DataTypes = dataTypes,
             Datasets = new List<ChartDataSet>()
         };
@@ -97,7 +96,7 @@ public partial class ChartService : IChartService
             );
 
             var labels = roleDictionaries.Values.SelectMany(dict => dict.Keys).Distinct().OrderBy(label => label).ToList();
-            chart.Labels = labels;
+            
 
             foreach (var dictionary in roleDictionaries.Values)
             {
@@ -119,6 +118,11 @@ public partial class ChartService : IChartService
                 };
                 chart.Datasets.Add(dataSet);
             }
+
+            chart.Labels = labels;
+            chart.Type = "bar";
+            chart.Subtype = "stacked";
+
         }
         else
         {
@@ -132,21 +136,20 @@ public partial class ChartService : IChartService
                                      .AsNoTracking()
                                      .ToListAsync();
 
-
             var dataDictionary = CreateGraphDataDictionary(employees, dataTypeList);
-
             var labels = dataDictionary.Keys.ToList();
             var data = dataDictionary.Values.ToList();
 
             var chartDataSet = new ChartDataSet
             {
-                Label = "",
+                Label = dataTypes[0],
                 Data = data
             };
 
             chart.Labels = labels;
+            chart.Type = chartType;
+            chart.Subtype = "standard";
             chart.Datasets = new List<ChartDataSet> { chartDataSet };
-
         }
         return await _db.Chart.Add(chart);
     }
