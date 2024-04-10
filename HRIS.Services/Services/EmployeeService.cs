@@ -191,7 +191,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
-        EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
+        EmployeeTypeDto employeeTypeDto = await _employeeTypeService
             .GetEmployeeType(employeeDto.EmployeeType!.Name);
         Employee? employee = null;
         if (employeeDto.Email == userEmail)
