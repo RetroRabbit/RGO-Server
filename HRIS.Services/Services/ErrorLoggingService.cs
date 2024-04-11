@@ -55,7 +55,11 @@ public class ErrorLoggingService : IErrorLoggingService
             stackTrace = JsonConvert.SerializeObject(exception)!
         };
 
-        SaveErrorLog(errorLog);
+        Task.Run(async () =>
+        {
+            await SaveErrorLog(errorLog);
+        }).GetAwaiter().GetResult();
+
         return exception;
     }
 }
