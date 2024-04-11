@@ -191,7 +191,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
-        EmployeeTypeDto employeeTypeDto = employeeTypeDto = await _employeeTypeService
+        EmployeeTypeDto employeeTypeDto = await _employeeTypeService
             .GetEmployeeType(employeeDto.EmployeeType!.Name);
         Employee? employee = null;
         if (employeeDto.Email == userEmail)
@@ -492,7 +492,7 @@ public class EmployeeService : IEmployeeService
                                    .ToList().Count;
 
         var businessSupportTotal = _db.Employee.Get()
-                                      .Where(e => e.EmployeeTypeId == 5)
+                                      .Where(e => e.EmployeeTypeId > 4)
                                       .ToList().Count;
 
         return new EmployeeCountByRoleDataCard

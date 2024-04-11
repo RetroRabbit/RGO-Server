@@ -51,6 +51,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
         return await _entity.AnyAsync(criteria);
     }
 
+
     public async Task<T> Add(TK entity)
     {
         var obj = await _entity.AddAsync(entity);
