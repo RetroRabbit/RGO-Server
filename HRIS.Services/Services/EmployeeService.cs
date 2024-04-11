@@ -492,7 +492,7 @@ public class EmployeeService : IEmployeeService
                                    .ToList().Count;
 
         var businessSupportTotal = _db.Employee.Get()
-                                      .Where(e => e.EmployeeTypeId == 5)
+                                      .Where(e => e.EmployeeTypeId > 4)
                                       .ToList().Count;
 
         return new EmployeeCountByRoleDataCard
