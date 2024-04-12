@@ -595,4 +595,22 @@ public class EmployeeService : IEmployeeService
 
         return employee;
     }
+
+    public async Task<bool> CheckDuplicateIdNumber(string idNumber)
+    {
+        var duplicateId = await _db.Employee
+                                .Get(employee => employee.IdNumber == idNumber)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(employee => employee.IdNumber == idNumber);
+
+
+        if (duplicateId == null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
