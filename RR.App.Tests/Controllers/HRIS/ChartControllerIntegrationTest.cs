@@ -67,7 +67,7 @@ namespace RR.App.Tests.Controllers.HRIS
             var charts = JsonSerializer.Deserialize<List<ChartDto>>(content);
         }
 
-        [Fact(Skip = "Need to fix for new charts")]
+        [Fact]
         public async Task Create_Update_Delte_Chart_ReturnsOK_OnSuccess()
         {
             var dataType = new List<string> { "Type1", "Type2", "Type3" };
