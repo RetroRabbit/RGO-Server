@@ -5,6 +5,7 @@ using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Expressions.Internal;
 using RabbitMQ.Client;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -596,21 +597,34 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
-    public async Task<bool> CheckDuplicateIdNumber(string idNumber)
+    public async Task<bool> CheckDuplicateIdNumber(string idNumber, string email)
     {
-        var duplicateId = await _db.Employee
-                                .Get(employee => employee.IdNumber == idNumber)
-                                .AsNoTracking()
-                                .FirstOrDefaultAsync(employee => employee.IdNumber == idNumber);
+        //var currentEmployee = await _db.Employee
+        //                        .Get(employee => employee.IdNumber == idNumber)
+        //                        .Include(employee => employee.EmployeeType)
+        //                        .Select(employee => employee.ToDto())
+        //                        .AsNoTracking()
+        //                        .FirstOrDefaultAsync();
+
+        var allEmployees = await _db.Employee
+                          .Get(employee => employee.IdNumber == idNumber)
+                          .Include(employee => employee.EmployeeType)
+                          .Select(employee => employee.ToDto())  // Modify if needed
+                          .AsNoTracking()
+                          .ToListAsync();
 
 
-        if (duplicateId == null)
+        if (allEmployees == null)
         {
             return false;
         }
-        else
+        else if (allEmployees.Count > 1)
         {
             return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }

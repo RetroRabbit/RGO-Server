@@ -204,11 +204,11 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet("id-number")]
-    public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber)
+    public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] string email)
     {
         try
         {
-            var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber);
+            var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber,email);
 
             return Ok(isExisting);
         }
