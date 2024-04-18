@@ -5,6 +5,7 @@ using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Expressions.Internal;
 using RabbitMQ.Client;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -594,5 +595,14 @@ public class EmployeeService : IEmployeeService
         employee.Email = employeeDto.Email;
 
         return employee;
+    }
+
+    public async Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId)
+    {
+        var duplicateExists = await _db.Employee
+                          .Get(employee => employee.IdNumber == idNumber && (employeeId == 0 || employee.Id != employeeId))
+                          .AnyAsync();
+
+        return duplicateExists;
     }
 }
