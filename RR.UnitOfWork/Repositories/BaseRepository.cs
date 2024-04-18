@@ -51,11 +51,11 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
         return await _entity.AnyAsync(criteria);
     }
 
-    //TODO:ANdrew Must FIx is BRoken 
+
     public async Task<T> Add(TK entity)
     {
         var obj = await _entity.AddAsync(entity);
-        //await AddAuditLog(entity, CRUDOperations.Create);
+        await AddAuditLog(entity, CRUDOperations.Create);
         await _db.SaveChangesAsync();
         return obj.Entity.ToDto();
     }
