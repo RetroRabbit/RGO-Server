@@ -202,4 +202,19 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [HttpGet("id-number")]
+    public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int employeeId)
+    {
+        try
+        {
+            var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber,employeeId);
+
+            return Ok(isExisting);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }
