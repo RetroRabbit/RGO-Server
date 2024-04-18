@@ -13,9 +13,9 @@ public class CandidateDto
     public  PositionType JobPosition {  get; set; }
     public string? LinkedIn { get; set; }
     public string? ProfilePicture { get; set; }
-    public required string CellphoneNumber { get; set; }
+    public string? CellphoneNumber { get; set; }
     public string? Location { get; set; }
-    public required string CV { get; set; }
+    public string? CV { get; set; }
     public string? PortfolioLink { get; set; }
     public string? PortfolioPdf { get; set; }
     public Gender Gender { get; set; }
@@ -26,5 +26,5 @@ public class CandidateDto
     public string? School { get; set; }
     public int? QualificationEndDate { get; set; }
     public BlacklistStatus BlacklistedStatus { get; set;}
-    public string BlacklistedReason { get; set; }
+    public string? BlacklistedReason { get; set; }
 }
