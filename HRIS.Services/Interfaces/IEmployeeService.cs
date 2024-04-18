@@ -99,7 +99,7 @@ public interface IEmployeeService
     ///     Checks for any existing id numbers that does not exist on the current employee
     /// </summary>
     /// <param name="idNumber"></param>
-    /// <param name="email"></param>
+    /// <param name="employeeId"></param>
     /// <returns></returns>
-    Task<bool> CheckDuplicateIdNumber(string idNumber, string email);
+    Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId);
 }

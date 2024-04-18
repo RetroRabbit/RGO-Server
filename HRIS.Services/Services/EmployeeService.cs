@@ -597,34 +597,12 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
-    public async Task<bool> CheckDuplicateIdNumber(string idNumber, string email)
+    public async Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId)
     {
-        //var currentEmployee = await _db.Employee
-        //                        .Get(employee => employee.IdNumber == idNumber)
-        //                        .Include(employee => employee.EmployeeType)
-        //                        .Select(employee => employee.ToDto())
-        //                        .AsNoTracking()
-        //                        .FirstOrDefaultAsync();
+        var duplicateExists = await _db.Employee
+                          .Get(employee => employee.IdNumber == idNumber && (employeeId == 0 || employee.Id != employeeId))
+                          .AnyAsync();
 
-        var allEmployees = await _db.Employee
-                          .Get(employee => employee.IdNumber == idNumber)
-                          .Include(employee => employee.EmployeeType)
-                          .Select(employee => employee.ToDto())  // Modify if needed
-                          .AsNoTracking()
-                          .ToListAsync();
-
-
-        if (allEmployees == null)
-        {
-            return false;
-        }
-        else if (allEmployees.Count > 1)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return duplicateExists;
     }
 }
