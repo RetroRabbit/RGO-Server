@@ -79,7 +79,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         return employeeDocument;
     }
 
-    public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId)
+    public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId, int documentType)
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
@@ -90,11 +90,14 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         }
 
         var employeeDocuments = await _db.EmployeeDocument
-            .Get(employeeDocument => employeeDocument.EmployeeId == employeeId)
-            .AsNoTracking()
-            .Include(employeeDocument => employeeDocument.Employee)
-            .Select(employeeDocument => employeeDocument.ToDto())
-            .ToListAsync();
+               .Get(employeeDocument => true)
+               .Where(employeeDocument =>
+                                      (employeeId == 0 || employeeDocument.EmployeeId == employeeId)
+                                      && (documentType == 0 || employeeDocument.DocumentType!.Value == (DocumentType)documentType))
+               .AsNoTracking()
+               .Include(employeeDocument => employeeDocument.Employee)
+               .Select(employeeDocument => employeeDocument.ToDto())
+               .ToListAsync();
 
         return employeeDocuments;
     }

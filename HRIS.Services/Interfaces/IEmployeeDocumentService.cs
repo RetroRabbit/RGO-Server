@@ -25,7 +25,7 @@ public interface IEmployeeDocumentService
     /// </summary>
     /// <param name="employeeId"></param>
     /// <returns>List of Employee Document</returns>
-    Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId);
+    Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId, int documentType);
 
     /// <summary>
     /// Update Employee Document

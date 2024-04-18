@@ -18,13 +18,13 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet("{employeeId}")]
-    public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
+    [HttpGet("all/{employeeId}/{documentType}")]
+    public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId, int documentType)
     {
         try
         {
-            var employeeDocuments = await _employeeDocumentService.GetAllEmployeeDocuments(employeeId);
-            return Ok(employeeDocuments);
+                var employeeDocuments = await _employeeDocumentService.GetAllEmployeeDocuments(employeeId, documentType);
+                return Ok(employeeDocuments);
         }
         catch (Exception)
         {

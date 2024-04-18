@@ -25,6 +25,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
         UploadDate = employeeDocumentsDto.UploadDate;
         Reason = employeeDocumentsDto.Reason;
         CounterSign = employeeDocumentsDto.CounterSign;
+        DocumentType = employeeDocumentsDto?.DocumentType;
     }
 
     [Column("employeeId")]
@@ -46,6 +47,8 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     [Column("reason")] public string? Reason { get; set; }
 
     [Column("counterSign")] public bool CounterSign { get; set; }
+
+    [Column("documentType")] public DocumentType? DocumentType { get; set; }
 
     public virtual Employee? Employee { get; set; }
 

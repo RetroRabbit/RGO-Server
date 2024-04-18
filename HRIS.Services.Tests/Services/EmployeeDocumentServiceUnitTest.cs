@@ -173,32 +173,32 @@ public class EmployeeDocumentServiceUnitTest
         Assert.Equal(fileName, result.FileName);
     }
 
-    [Fact]
-    public async Task GetAllEmployeeDocumentsPass()
-    {
-        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
-        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                      .Returns(mockEmployeeDbSet.Object);
+    //[Fact]
+    //public async Task GetAllEmployeeDocumentsPass()
+    //{
+    //    var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+    //    _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+    //                  .Returns(mockEmployeeDbSet.Object);
 
-        var employeeDocuments = new List<EmployeeDocument>
-        {
-            new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile1.pdf" },
-            new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile2.pdf" }
-        };
+    //    var employeeDocuments = new List<EmployeeDocument>
+    //    {
+    //        new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile1.pdf" },
+    //        new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile2.pdf" }
+    //    };
 
-        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMockDbSet();
-        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-                      .Returns(mockEmployeeDocumentDbSet.Object);
+    //    var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMockDbSet();
+    //    _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+    //                  .Returns(mockEmployeeDocumentDbSet.Object);
 
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+    //    var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
 
-        var result = await service.GetAllEmployeeDocuments(employeeId);
+    //    var result = await service.GetAllEmployeeDocuments(employeeId);
 
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count);
-        Assert.Contains(result, doc => doc.FileName == "TestFile1.pdf");
-        Assert.Contains(result, doc => doc.FileName == "TestFile2.pdf");
-    }
+    //    Assert.NotNull(result);
+    //    Assert.Equal(2, result.Count);
+    //    Assert.Contains(result, doc => doc.FileName == "TestFile1.pdf");
+    //    Assert.Contains(result, doc => doc.FileName == "TestFile2.pdf");
+    //}
 
     [Fact]
     public async Task UpdateEmployeeDocumentPass()

@@ -5,5 +5,5 @@ public enum FileCategory
     FixedTerm,
     Retirement,
     Medical,
-    MIE
+    Other
 }

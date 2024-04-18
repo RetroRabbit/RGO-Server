@@ -13,8 +13,8 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240408073144_init")]
-    partial class init
+    [Migration("20240417112730_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -643,6 +643,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<bool>("CounterSign")
                         .HasColumnType("boolean")
                         .HasColumnName("counterSign");
+
+                    b.Property<int?>("DocumentType")
+                        .HasColumnType("integer")
+                        .HasColumnName("documentType");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")

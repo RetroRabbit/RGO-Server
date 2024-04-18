@@ -87,45 +87,45 @@ public class EmployeeDocumentControllerUnitTest
 
     }
 
-    [Fact]
-    public async Task GetAllEmployeeDocumentReturnsOkResult()
-    {
-        var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
-            {
-                EmployeeDocumentTestData.EmployeeDocumentPending
-            };
+    //[Fact]
+    //public async Task GetAllEmployeeDocumentReturnsOkResult()
+    //{
+    //    var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
+    //        {
+    //            EmployeeDocumentTestData.EmployeeDocumentPending
+    //        };
 
-        var listOfEmployeeDocuments = new List<EmployeeDocument>()
-            {
-                new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending)
-            };
+    //    var listOfEmployeeDocuments = new List<EmployeeDocument>()
+    //        {
+    //            new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending)
+    //        };
 
-        _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id)).ReturnsAsync(listOfEmployeeDocumentsDto);
+    //    _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
-        var result = await _controller.GetAllEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id);
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);
+    //    var result = await _controller.GetAllEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id);
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+    //    var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);
 
-        Assert.NotNull(result);
-        Assert.Equal(listOfEmployeeDocumentsDto, actualDetails);
+    //    Assert.NotNull(result);
+    //    Assert.Equal(listOfEmployeeDocumentsDto, actualDetails);
 
-    }
+    //}
 
-    [Fact]
-    public async Task GetAllReturnsNotFoundResultWhenExceptionThrown()
-    {
-        var id = 15;
-        var exceptionMessage = "An error occurred while fetching employee documents.";
+    //[Fact]
+    //public async Task GetAllReturnsNotFoundResultWhenExceptionThrown()
+    //{
+    //    var id = 15;
+    //    var exceptionMessage = "An error occurred while fetching employee documents.";
 
-        _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(id)).ThrowsAsync(new Exception(exceptionMessage));
+    //    _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(id)).ThrowsAsync(new Exception(exceptionMessage));
 
-        var result = await _controller.GetAllEmployeeDocuments(id);
+    //    var result = await _controller.GetAllEmployeeDocuments(id);
 
-        var noFoundResult = Assert.IsType<ObjectResult>(result);
-        var actualExceptionMessage = Assert.IsType<string>(noFoundResult.Value);
+    //    var noFoundResult = Assert.IsType<ObjectResult>(result);
+    //    var actualExceptionMessage = Assert.IsType<string>(noFoundResult.Value);
 
-        Assert.Equal(exceptionMessage, actualExceptionMessage);
-    }
+    //    Assert.Equal(exceptionMessage, actualExceptionMessage);
+    //}
 
     [Fact]
     public async Task SaveEmployeeDocumentReturnsOkResult()

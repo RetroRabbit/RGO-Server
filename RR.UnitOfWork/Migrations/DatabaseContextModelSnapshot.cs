@@ -641,6 +641,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("counterSign");
 
+                    b.Property<int?>("DocumentType")
+                        .HasColumnType("integer")
+                        .HasColumnName("documentType");
+
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
