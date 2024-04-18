@@ -257,7 +257,7 @@ public class EmployeeBankingControllerUnitTests
         Assert.Equal(errorMessage, actualErrorMessage);
         Assert.Equal(404, notFoundResult.StatusCode);
     }
-/*
+
     [Fact]
     public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
     {
@@ -278,15 +278,15 @@ public class EmployeeBankingControllerUnitTests
             LastUpdateDate = new DateOnly(),
             PendingUpdateDate = new DateOnly()
         };
-        mockService.Setup(x => x.GetBanking(id)).ReturnsAsync(newEntry);
+        mockService.Setup(x => x.GetBanking(id)).ReturnsAsync(new List<EmployeeBankingDto> { newEntry });
 
         var result = await controller.GetBankingDetails(id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualDetails = Assert.IsType<EmployeeBankingDto>(okResult.Value);
+        var actualDetails = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
 
-        Assert.Equal(newEntry, actualDetails);
-    }*/
+        Assert.Contains(newEntry, actualDetails);
+    }
 
     [Fact]
     public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()

@@ -77,7 +77,6 @@ public class EmployeeBankingService : IEmployeeBankingService
         {
             var oldestRecord = existingBankingRecords.First();
             _db.EmployeeBanking.Delete(oldestRecord.Id);
-            // add log
         }
 
         var newBankingDetails = new EmployeeBanking
