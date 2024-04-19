@@ -11,7 +11,6 @@ public class BankingAndStarterKitController : ControllerBase
 {
     private readonly IBankingAndStarterKitService _bankingAndStarterKitService;
 
-
     public BankingAndStarterKitController(IBankingAndStarterKitService bankingAndStarterKitService)
     {
         _bankingAndStarterKitService = bankingAndStarterKitService ;
@@ -31,6 +30,4 @@ public class BankingAndStarterKitController : ControllerBase
             return StatusCode(500, "An error occurred while fetching the employee documents.");
         }
     }
-
 }
-
