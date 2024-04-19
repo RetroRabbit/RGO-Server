@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using HRIS.Models;
 using RR.UnitOfWork.Interfaces;
 
@@ -17,9 +18,10 @@ public class Chart : IModel<ChartDto>
         Id = chartDto.Id;
         Name = chartDto.Name;
         Type = chartDto.Type;
-        DataTypes = chartDto.DataTypes;
+        Subtype = chartDto.Subtype;
         Labels = chartDto.Labels;
-        Data = chartDto.Data;
+        DataTypes = chartDto.DataTypes;
+        Datasets = chartDto.Datasets?.Select(datasetDto => new ChartDataSet(datasetDto)).ToList() ?? new List<ChartDataSet>();
     }
 
     [Column("name")] public string? Name { get; set; }
@@ -27,21 +29,24 @@ public class Chart : IModel<ChartDto>
     [Column("type")] public string? Type { get; set; }
 
     [Column("dataTypes")] public List<string>? DataTypes { get; set; }
-
     [Column("labels")] public List<string>? Labels { get; set; }
+    [Column("subType")]public string? Subtype { get; set; }
 
-    [Column("data")] public List<int>? Data { get; set; }
+    public virtual List<ChartDataSet> Datasets { get; set; }
 
-    [Key] [Column("id")] public int Id { get; set; }
+    [Key][Column("id")] public int Id { get; set; }
 
     public ChartDto ToDto()
     {
-        return new ChartDto { 
-            Id=Id,
-            Name=Name,
-            Type=Type,
-            DataTypes=DataTypes,
-            Labels=Labels,
-            Data=Data};                      
-        }
+        return new ChartDto
+        {
+            Id = Id,
+            Name = Name,
+            Type = Type,
+            Subtype = Subtype,
+            DataTypes = DataTypes,
+            Labels = Labels,
+            Datasets = Datasets != null ? Datasets.Select(x => x.ToDto()).ToList() : new List<ChartDataSetDto>()
+        };
     }
+}
