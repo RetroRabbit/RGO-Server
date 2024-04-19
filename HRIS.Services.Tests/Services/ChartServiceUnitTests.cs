@@ -96,7 +96,7 @@ public class ChartServiceUnitTests
                 PostalCode = "1620"
             };
 
-        EmployeeDto employeeDto = new EmployeeDto
+        EmployeeDto developerEmployeeDto = new EmployeeDto
         {
             Id = 1,
             EmployeeNumber = "001",
@@ -138,7 +138,7 @@ public class ChartServiceUnitTests
             EmergencyContactNo = null
         };
 
-        EmployeeDto desEmployeeDto = new EmployeeDto
+        EmployeeDto designerEmployeeDto = new EmployeeDto
         {
             Id = 1,
             EmployeeNumber = "001",
@@ -177,20 +177,20 @@ public class ChartServiceUnitTests
             PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
-            EmergencyContactNo = null
+            EmergencyContactNo = null,
         };
-
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, developerEmployeeTypeDto),
-            new(desEmployeeDto, designerEmployeeTypeDto)
+            new(developerEmployeeDto, developerEmployeeTypeDto),
+            new(designerEmployeeDto, designerEmployeeTypeDto)
         };
+
 
         var employeeDtoList = new List<EmployeeDto>
         {
-            employeeDto,
-            desEmployeeDto
+            developerEmployeeDto,
+            designerEmployeeDto
         };
 
         var chartDto = new ChartDto
@@ -215,6 +215,18 @@ public class ChartServiceUnitTests
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal(chartType, result.Type);
+
+        chartDto.Type = "stacked";
+
+        _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
+                   .ReturnsAsync(chartDto);
+
+        chartType = "stacked";
+        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
