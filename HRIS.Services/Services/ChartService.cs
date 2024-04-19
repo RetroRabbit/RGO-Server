@@ -97,7 +97,6 @@ public partial class ChartService : IChartService
 
             var labels = roleDictionaries.Values.SelectMany(dict => dict.Keys).Distinct().OrderBy(label => label).ToList();
             
-
             foreach (var dictionary in roleDictionaries.Values)
             {
                 foreach (var label in labels)

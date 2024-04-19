@@ -25,7 +25,6 @@ public class ChartDataSet : IModel<ChartDataSetDto>
 
     [Column("data")] public List<int>? Data { get; set; }
 
-
     [Column("chartId")]
     [ForeignKey("Chart")]
     public int ChartId { get; set; }
