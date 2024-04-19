@@ -25,6 +25,11 @@ public class ChartControllerUnitTests
         var dataTypes = new List<string> { "Type1", "Type2", "Type3" };
         var labels = new List<string> { "Label1", "Label2", "Label3" };
         var data = new List<int> { 10, 20, 30 };
+        ChartDataSetDto chartData = new ChartDataSetDto
+        {
+            Label = "Lable 1",
+            Data = data
+        };
 
         var mockCharts = new List<ChartDto>
         {
@@ -35,7 +40,7 @@ public class ChartControllerUnitTests
               Type = "bar",
               DataTypes = dataTypes,
               Labels = labels,
-              Data = data
+              Datasets = new List<ChartDataSetDto>{ chartData }
            }
         };
 
@@ -129,6 +134,12 @@ public class ChartControllerUnitTests
         var labels = new List<string> { "Label1", "Label2", "Label3" };
         var data = new List<int> { 10, 20, 30 };
 
+        ChartDataSetDto chartData = new ChartDataSetDto
+        {
+            Label = "Lable 1",
+            Data = data
+        };
+
         var mockChartDto = new ChartDto
         {
             Id = 1,
@@ -136,7 +147,7 @@ public class ChartControllerUnitTests
             Type = "bar",
             DataTypes = dataTypes,
             Labels = labels,
-            Data = data
+            Datasets = new List<ChartDataSetDto> { chartData }
         };
 
         _chartServiceMock.Setup(service => service.UpdateChart(It.IsAny<ChartDto>()))
@@ -155,6 +166,12 @@ public class ChartControllerUnitTests
         var labels = new List<string> { "Label1", "Label2", "Label3" };
         var data = new List<int> { 10, 20, 30 };
 
+        ChartDataSetDto chartData = new ChartDataSetDto
+        {
+            Label = "Lable 1",
+            Data = data
+        };
+
         var mockChartDto = new  ChartDto
                             {
                                 Id = 1,
@@ -162,7 +179,7 @@ public class ChartControllerUnitTests
                                 Type = "bar",
                                 DataTypes = dataTypes,
                                 Labels = labels,
-                                Data = data
+                                Datasets = new List<ChartDataSetDto> { chartData }
                             };
         var exceptionMessage = "An error occurred";
 
@@ -182,6 +199,13 @@ public class ChartControllerUnitTests
         var labels = new List<string> { "Label1", "Label2", "Label3" };
         var data = new List<int> { 10, 20, 30 };
         var chartId = 1;
+
+        ChartDataSetDto chartData = new ChartDataSetDto
+        {
+            Label = "Lable 1",
+            Data = data
+        };
+
         var mockDeletedChart = new ChartDto
                                 {
                                     Id = 1,
@@ -189,7 +213,7 @@ public class ChartControllerUnitTests
                                     Type = "bar",
                                     DataTypes = dataTypes,
                                     Labels = labels,
-                                    Data = data
+                                    Datasets = new List<ChartDataSetDto> { chartData }
                                 };
         _chartServiceMock.Setup(service => service.DeleteChart(chartId))
                          .ReturnsAsync(mockDeletedChart);

@@ -184,7 +184,7 @@ public class AuditLogServiceUnitTest
         _unitOfWork.SetupSequence(a => a.AuditLog.GetById(It.IsAny<int>())).ReturnsAsync((AuditLogDto)null);
         _unitOfWork.Setup(x => x.AuditLog.Delete(It.IsAny<int>()))
                    .Returns(Task.FromResult(_auditLogDto));
-
+        _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
 
         var exception = await Assert.ThrowsAsync<Exception>(async () => await _auditLogService.DeleteAuditLog(_auditLogDto));
         Assert.Equal("Audit Log not found", exception.Message);
