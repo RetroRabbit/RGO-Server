@@ -57,18 +57,18 @@ public class ChartServiceUnitTests
            };
     }
 
-    [Fact(Skip ="Need to fix for new chart structure")]
+    [Fact]
     public async Task GetAllChartsTest()
     {
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        _unitOfWork.Setup(u => u.Chart.GetAll(null)).ReturnsAsync(new List<ChartDto>());
+        _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().AsQueryable().BuildMock());
 
         var result = await chartService.GetAllCharts();
 
         Assert.NotNull(result);
         Assert.IsType<List<ChartDto>>(result);
-        _unitOfWork.Verify(u => u.Chart.GetAll(null), Times.Once);
+        _unitOfWork.Verify(u => u.Chart.Get(null), Times.Once);
     }
 
     [Fact]
