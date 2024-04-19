@@ -74,13 +74,15 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task CreateChartTest()
     {
-        var roles = new List<string> { "Developer, Designer" };
+        var roles = new List<string> { "Developer, Designer, Scrum Master, Support Staff" };
         var dataTypes = new List<string> { "Gender, Race, Age" };
         var chartName = "TestChart";
         var chartType = "Pie";
 
         EmployeeTypeDto developerEmployeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         EmployeeTypeDto designerEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
+        EmployeeTypeDto scrumMasterEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Scrum Master" };
+        EmployeeTypeDto otherEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Other" };
 
         var employeeAddressDto =
             new EmployeeAddressDto
@@ -183,7 +185,9 @@ public class ChartServiceUnitTests
         var employeeList = new List<Employee>
         {
             new(developerEmployeeDto, developerEmployeeTypeDto),
-            new(designerEmployeeDto, designerEmployeeTypeDto)
+            new(designerEmployeeDto, designerEmployeeTypeDto),
+            new(developerEmployeeDto, scrumMasterEmployeeTypeDto),
+            new(designerEmployeeDto, otherEmployeeTypeDto)
         };
 
 
@@ -626,7 +630,7 @@ public class ChartServiceUnitTests
         Assert.Equal(expectedResult, result);
     }
 
-    [Fact(Skip ="I will fix with rest of chart fixes")]
+    [Fact]
     public async Task ExportCsvAsyncTestFail()
     {
         var dataTypeList = new List<string> { "", "" };
@@ -682,6 +686,7 @@ public class ChartServiceUnitTests
                    .Returns(Task.FromResult(employeeDtoList));
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
+        _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await chartService.ExportCsvAsync(dataTypeList));
