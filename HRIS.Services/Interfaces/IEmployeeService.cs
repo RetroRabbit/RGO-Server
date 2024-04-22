@@ -94,4 +94,12 @@ public interface IEmployeeService
     ///     will ignore the filter
     /// </returns>
     Task<List<EmployeeDto>> FillerEmployees(int peopleChampId = 0, int employeeType = 0);
+
+    /// <summary>
+    ///     Checks for any existing id numbers that does not exist on the current employee
+    /// </summary>
+    /// <param name="idNumber"></param>
+    /// <param name="employeeId"></param>
+    /// <returns></returns>
+    Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId);
 }

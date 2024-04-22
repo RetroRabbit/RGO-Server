@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240408145908_ChartDataSetAlteration")]
+    partial class ChartDataSetAlteration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,6 +36,7 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BlacklistedReason")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("blacklistedReason");
 
@@ -41,10 +45,12 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("blacklisted");
 
                     b.Property<string>("CV")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cv");
 
                     b.Property<string>("CellphoneNumber")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cellphone");
 
@@ -208,10 +214,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<string>("Subtype")
-                        .HasColumnType("text")
-                        .HasColumnName("subType");
 
                     b.Property<string>("Type")
                         .HasColumnType("text")
@@ -1176,7 +1178,7 @@ namespace RR.UnitOfWork.Migrations
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartDataSet", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Chart", null)
-                        .WithMany("Datasets")
+                        .WithMany("DataSets")
                         .HasForeignKey("ChartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1443,7 +1445,7 @@ namespace RR.UnitOfWork.Migrations
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Chart", b =>
                 {
-                    b.Navigation("Datasets");
+                    b.Navigation("DataSets");
                 });
 #pragma warning restore 612, 618
         }

@@ -375,13 +375,13 @@ public class EmployeeBankingServiceTest
     {
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
-            .Returns(new List<EmployeeBanking> { new(EmployeeBankingTestData.EmployeeBankingDto) }.AsQueryable()
+            .Returns( new List<EmployeeBanking> { new(EmployeeBankingTestData.EmployeeBankingDto) }.AsQueryable()
                          .BuildMock());
 
         var result = await _employeeBankingService.GetBanking(1);
 
         Assert.NotNull(result);
-        Assert.Equivalent(EmployeeBankingTestData.EmployeeBankingDto, result);
+        Assert.Equivalent(EmployeeBankingTestData.EmployeeBankingDto, result[0]);
     }
 
     [Fact]
