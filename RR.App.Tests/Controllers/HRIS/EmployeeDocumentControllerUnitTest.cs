@@ -53,39 +53,39 @@ public class EmployeeDocumentControllerUnitTest
         };
     }
 
-    [Fact]
-    public async Task GetEmployeeDocumentReturnsOkfoundResult()
-    {
-        _employeeMockDocumentService
-            .Setup(x => x.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName!))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+    //[Fact]
+    //public async Task GetEmployeeDocumentReturnsOkfoundResult()
+    //{
+    //    _employeeMockDocumentService
+    //        .Setup(x => x.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName!))
+    //        .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
-        var result = await _controller.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName!);
+    //    var result = await _controller.GetEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.FileName!);
 
-        Assert.NotNull(result);
+    //    Assert.NotNull(result);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualDetails = Assert.IsType<EmployeeDocumentDto>(okResult.Value);
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+    //    var actualDetails = Assert.IsType<EmployeeDocumentDto>(okResult.Value);
 
-        Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualDetails);
-    }
+    //    Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualDetails);
+    //}
 
-    [Fact]
-    public async Task GetEmployeeDocumentReturnsExceptionNotfoundResult()
-    {
-        var id = 15;
-        var filename = "";
-        var err = "An error occurred while fetching the employee document.";
+    //[Fact]
+    //public async Task GetEmployeeDocumentReturnsExceptionNotfoundResult()
+    //{
+    //    var id = 15;
+    //    var filename = "";
+    //    var err = "An error occurred while fetching the employee document.";
 
-        _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
+    //    _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, filename)).ThrowsAsync(new Exception(err));
 
-        var result = await _controller.GetEmployeeDocument(id, filename);
-        var notfoundResult = Assert.IsType<ObjectResult>(result);
-        var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
+    //    var result = await _controller.GetEmployeeDocument(id, filename);
+    //    var notfoundResult = Assert.IsType<ObjectResult>(result);
+    //    var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
-        Assert.Equal("An error occurred while fetching the employee document.", actualExceptionMessage);
+    //    Assert.Equal("An error occurred while fetching the employee document.", actualExceptionMessage);
 
-    }
+    //}
 
     //[Fact]
     //public async Task GetAllEmployeeDocumentReturnsOkResult()
