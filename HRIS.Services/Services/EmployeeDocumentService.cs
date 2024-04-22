@@ -20,7 +20,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         _errorLoggingService = errorLoggingService;
     }
 
-    public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email)
+    public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
         var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
 
@@ -33,6 +33,41 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         bool sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
+        var docType = documentType == 0? DocumentType.starterKit : DocumentType.additional;
+
+        var employeeDocument = new EmployeeDocumentDto
+        {
+            Id = employeeDocDto.Id,
+            EmployeeId = employee.Id,
+            Reference = employeeDocDto.Reference,
+            FileName = employeeDocDto.FileName,
+            FileCategory = employeeDocDto.FileCategory,
+            Blob = employeeDocDto.Blob,
+            Status = status,
+            UploadDate = DateTime.Now,
+            CounterSign = false, 
+            DocumentType = docType,
+        };
+
+        var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
+
+        return newEmployeeDocument;
+    }
+
+    public async Task<EmployeeDocumentDto> addNewAdditionalDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
+    {
+        var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
+
+        if (employee == null)
+        {
+            var exception = new Exception("employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
+
+        bool sameEmail = email.Equals(employee.Email);
+        var isAdmin = await IsAdmin(email);
+        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
+        var docType = documentType == 0 ? DocumentType.starterKit : DocumentType.additional;
 
         var employeeDocument = new EmployeeDocumentDto
         {
@@ -43,7 +78,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             Blob = employeeDocDto.Blob,
             Status = status,
             UploadDate = DateTime.Now,
-            CounterSign = false, 
+            CounterSign = false,
+            DocumentType = docType,
         };
 
         var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
@@ -51,7 +87,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         return newEmployeeDocument;
     }
 
-    public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename)
+    public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename, DocumentType documentType)
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
@@ -64,7 +100,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var employeeDocument = await _db.EmployeeDocument
             .Get(employeeDocument =>
                 employeeDocument.EmployeeId == employeeId &&
-                employeeDocument.FileName!.Equals(filename, StringComparison.CurrentCultureIgnoreCase))
+                employeeDocument.FileName!.Equals(filename, StringComparison.CurrentCultureIgnoreCase) &&
+                employeeDocument.DocumentType == documentType)
             .AsNoTracking()
             .Include(employeeDocument => employeeDocument.Employee)
             .Select(employeeDocument => employeeDocument.ToDto())
@@ -79,7 +116,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         return employeeDocument;
     }
 
-    public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId, int documentType)
+    public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId, DocumentType documentType)
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
@@ -93,7 +130,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                .Get(employeeDocument => true)
                .Where(employeeDocument =>
                                       (employeeId == 0 || employeeDocument.EmployeeId == employeeId)
-                                      && (documentType == 0 || employeeDocument.DocumentType!.Value == (DocumentType)documentType))
+                                      && (employeeDocument.DocumentType! == documentType))
                .AsNoTracking()
                .Include(employeeDocument => employeeDocument.Employee)
                .Select(employeeDocument => employeeDocument.ToDto())

@@ -13,7 +13,7 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240417112730_new")]
+    [Migration("20240418071025_new")]
     partial class @new
     {
         /// <inheritdoc />

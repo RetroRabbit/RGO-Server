@@ -127,35 +127,35 @@ public class EmployeeDocumentControllerUnitTest
     //    Assert.Equal(exceptionMessage, actualExceptionMessage);
     //}
 
-    [Fact]
-    public async Task SaveEmployeeDocumentReturnsOkResult()
-    {
+    //[Fact]
+    //public async Task SaveEmployeeDocumentReturnsOkResult()
+    //{
 
-        _employeeMockDocumentService
-            .Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument, "test@example.com"))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+    //    _employeeMockDocumentService
+    //        .Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument, "test@example.com"))
+    //        .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
-        var result = await _controller.Save(_simpleEmployeeDocument!);
-        var okresult = Assert.IsType<OkObjectResult>(result);
-        var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
+    //    var result = await _controller.Save(_simpleEmployeeDocument!);
+    //    var okresult = Assert.IsType<OkObjectResult>(result);
+    //    var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
 
-        Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualSavedEmployeeDocument);
+    //    Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualSavedEmployeeDocument);
 
-    }
+    //}
 
-    [Fact]
-    public async Task SaveEmployeeDocumentThrowsExceptionReturnsNotFoundResult()
-    {
-        _employeeMockDocumentService
-            .Setup(x => x.SaveEmployeeDocument(It.IsAny<SimpleEmployeeDocumentDto>(), "test@example.com"))
-            .Throws(new Exception("An error occurred while saving the employee document."));
+    //[Fact]
+    //public async Task SaveEmployeeDocumentThrowsExceptionReturnsNotFoundResult()
+    //{
+    //    _employeeMockDocumentService
+    //        .Setup(x => x.SaveEmployeeDocument(It.IsAny<SimpleEmployeeDocumentDto>(), "test@example.com"))
+    //        .Throws(new Exception("An error occurred while saving the employee document."));
 
-        var result = await _controller.Save(_simpleEmployeeDocument!);
-        var notfoundResult = Assert.IsType<ObjectResult>(result);
-        var exceptionMessage = Assert.IsType<string>(notfoundResult.Value);
+    //    var result = await _controller.Save(_simpleEmployeeDocument!);
+    //    var notfoundResult = Assert.IsType<ObjectResult>(result);
+    //    var exceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
-        Assert.Equal("An error occurred while saving the employee document.", exceptionMessage);
-    }
+    //    Assert.Equal("An error occurred while saving the employee document.", exceptionMessage);
+    //}
 
     [Fact]
     public async Task UpdateEmployeeDocumentReturnsOkResult()

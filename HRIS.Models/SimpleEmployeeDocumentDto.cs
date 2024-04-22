@@ -10,4 +10,5 @@ public class SimpleEmployeeDocumentDto
     public FileCategory FileCategory { get; set; }
     public string Blob { get; set; }
     public DateTime UploadDate { get; set; }
+    public string ?Reference { get; set; }
 }
