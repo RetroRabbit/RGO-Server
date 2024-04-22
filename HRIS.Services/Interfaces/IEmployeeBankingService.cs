@@ -31,7 +31,7 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <param id="employeeId"></param>
     /// <returns>EmployeeBankingDto</returns>
-    Task<EmployeeBankingDto> GetBanking(int id);
+    Task<List<EmployeeBankingDto>> GetBanking(int id);
 
     /// <summary>
     ///     Save a new EmployeeBankingDto for an Employee

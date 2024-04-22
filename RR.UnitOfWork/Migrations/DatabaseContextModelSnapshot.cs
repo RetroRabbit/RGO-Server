@@ -33,7 +33,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BlacklistedReason")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("blacklistedReason");
 
@@ -42,12 +41,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("blacklisted");
 
                     b.Property<string>("CV")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cv");
 
                     b.Property<string>("CellphoneNumber")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cellphone");
 

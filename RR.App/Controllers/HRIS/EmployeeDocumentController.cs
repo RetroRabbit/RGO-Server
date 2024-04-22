@@ -107,4 +107,19 @@ public class EmployeeDocumentController : ControllerBase
             return StatusCode(500, "An error occurred while fetching the employee documents.");
         }
     }
+
+    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [HttpGet()]
+    public async Task<IActionResult> GetAllDocuments()
+    {
+        try
+        {
+            var employeeDocuments = await _employeeDocumentService.GetAllDocuments();
+            return Ok(employeeDocuments);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching the employee documents.");
+        }
+    }
 }
