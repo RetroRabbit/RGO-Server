@@ -91,8 +91,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
-        if (!ifEmployeeExists) 
-        { 
+        if (!ifEmployeeExists)
+        {
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
         }
@@ -108,8 +108,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .Take(1)
             .FirstOrDefaultAsync();
 
-        if (employeeDocument == null) 
-        { 
+        if (employeeDocument == null)
+        {
             var exception = new Exception("Employee certification record not found");
             throw _errorLoggingService.LogException(exception);
         }
@@ -120,7 +120,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
-        if (!ifEmployeeExists) 
+        if (!ifEmployeeExists)
         {
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
@@ -143,8 +143,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
-        if (!ifEmployeeExists) 
-        { 
+        if (!ifEmployeeExists)
+        {
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
         }
@@ -166,7 +166,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
-        if (!ifEmployeeExists) 
+        if (!ifEmployeeExists)
         {
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
@@ -206,5 +206,22 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .FirstOrDefaultAsync())!;
 
         return role.Description is "Admin" or "SuperAdmin";
+    }
+
+    public async Task<List<SimpleEmployeeDocumentGetAllDto>> GetAllDocuments()
+    {
+        return await _db.EmployeeDocument
+            .Get(EmployeeDocument => true)
+            .AsNoTracking()
+            .Include(entry => entry.Employee)
+            .Include(entry => entry.Employee.EmployeeType)
+            .OrderBy(EmployeeDocument => EmployeeDocument.EmployeeId)
+            .Select(EmployeeDocument => new SimpleEmployeeDocumentGetAllDto
+            {
+                EmployeeDocumentDto = EmployeeDocument.ToDto(),
+                Name = EmployeeDocument.Employee.Name,
+                Surname = EmployeeDocument.Employee.Surname
+            })
+            .ToListAsync();
     }
 }

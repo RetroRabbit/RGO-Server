@@ -5,6 +5,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.HRIS;
@@ -61,25 +62,27 @@ public class ChartServiceUnitTests
     {
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        _unitOfWork.Setup(u => u.Chart.GetAll(null)).ReturnsAsync(new List<ChartDto>());
+        _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().AsQueryable().BuildMock());
 
         var result = await chartService.GetAllCharts();
 
         Assert.NotNull(result);
         Assert.IsType<List<ChartDto>>(result);
-        _unitOfWork.Verify(u => u.Chart.GetAll(null), Times.Once);
+        _unitOfWork.Verify(u => u.Chart.Get(null), Times.Once);
     }
 
     [Fact]
     public async Task CreateChartTest()
     {
-        var roles = new List<string> { "Developer, Designer" };
+        var roles = new List<string> { "Developer, Designer, Scrum Master, Support Staff" };
         var dataTypes = new List<string> { "Gender, Race, Age" };
         var chartName = "TestChart";
         var chartType = "Pie";
 
         EmployeeTypeDto developerEmployeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         EmployeeTypeDto designerEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
+        EmployeeTypeDto scrumMasterEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Scrum Master" };
+        EmployeeTypeDto otherEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Other" };
 
         var employeeAddressDto =
             new EmployeeAddressDto
@@ -95,7 +98,7 @@ public class ChartServiceUnitTests
                 PostalCode = "1620"
             };
 
-        EmployeeDto employeeDto = new EmployeeDto
+        EmployeeDto developerEmployeeDto = new EmployeeDto
         {
             Id = 1,
             EmployeeNumber = "001",
@@ -137,7 +140,7 @@ public class ChartServiceUnitTests
             EmergencyContactNo = null
         };
 
-        EmployeeDto desEmployeeDto = new EmployeeDto
+        EmployeeDto designerEmployeeDto = new EmployeeDto
         {
             Id = 1,
             EmployeeNumber = "001",
@@ -176,20 +179,22 @@ public class ChartServiceUnitTests
             PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
-            EmergencyContactNo = null
+            EmergencyContactNo = null,
         };
-
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, developerEmployeeTypeDto),
-            new(desEmployeeDto, designerEmployeeTypeDto)
+            new(developerEmployeeDto, developerEmployeeTypeDto),
+            new(designerEmployeeDto, designerEmployeeTypeDto),
+            new(developerEmployeeDto, scrumMasterEmployeeTypeDto),
+            new(designerEmployeeDto, otherEmployeeTypeDto)
         };
+
 
         var employeeDtoList = new List<EmployeeDto>
         {
-            employeeDto,
-            desEmployeeDto
+            developerEmployeeDto,
+            designerEmployeeDto
         };
 
         var chartDto = new ChartDto
@@ -199,7 +204,7 @@ public class ChartServiceUnitTests
             Type = chartType,
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
 
@@ -214,6 +219,18 @@ public class ChartServiceUnitTests
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
         var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal(chartType, result.Type);
+
+        chartDto.Type = "stacked";
+
+        _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
+                   .ReturnsAsync(chartDto);
+
+        chartType = "stacked";
+        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
@@ -337,7 +354,7 @@ public class ChartServiceUnitTests
             Type = chartType,
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
 
@@ -436,7 +453,7 @@ public class ChartServiceUnitTests
             Type = "Pie",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
 
@@ -462,7 +479,7 @@ public class ChartServiceUnitTests
             Type = "Pie",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         var existingCharts = new List<ChartDto>
@@ -474,7 +491,7 @@ public class ChartServiceUnitTests
                 Type = "Existing Type",
                 DataTypes = chartDtoToUpdate.DataTypes,
                 Labels = chartDtoToUpdate.Labels,
-                Data = chartDtoToUpdate.Data
+                Datasets = ChartDataSetTestData.chartDataSetDtoList
             }
         };
 
@@ -504,7 +521,7 @@ public class ChartServiceUnitTests
                 Type = "Existing Type",
                 DataTypes = new List<string> { "Gender", "Race" },
                 Labels = new List<string> { "Male", "Female" },
-                Data = new List<int> { 1, 1 }
+                Datasets = ChartDataSetTestData.chartDataSetDtoList
             }
         };
 
@@ -515,7 +532,7 @@ public class ChartServiceUnitTests
             Type = "Non Existing Type",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
-            Data = new List<int> { 1, 1 }
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         _unitOfWork.SetupSequence(a => a.Chart.GetAll(null)).Returns(Task.FromResult(existingCharts));
@@ -613,7 +630,7 @@ public class ChartServiceUnitTests
         Assert.Equal(expectedResult, result);
     }
 
-    [Fact(Skip ="I will fix with rest of chart fixes")]
+    [Fact]
     public async Task ExportCsvAsyncTestFail()
     {
         var dataTypeList = new List<string> { "", "" };
@@ -669,6 +686,7 @@ public class ChartServiceUnitTests
                    .Returns(Task.FromResult(employeeDtoList));
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
+        _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
                                                                 await chartService.ExportCsvAsync(dataTypeList));

@@ -54,11 +54,11 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("profilePicture")] public string? ProfilePicture { get; set; }
 
-    [Column("cellphone")] public string CellphoneNumber {  get; set; }
+    [Column("cellphone")] public string? CellphoneNumber {  get; set; }
 
     [Column("location")] public string? Location { get; set; }
 
-    [Column("cv")] public string CV { get; set; }
+    [Column("cv")] public string? CV { get; set; }
 
     [Column("portfolioLink")] public string? PortfolioLink { get; set; }
 
@@ -80,7 +80,7 @@ public class Candidate : IModel<CandidateDto>
 
     [Column("blacklisted")] public BlacklistStatus BlacklistedStatus { get; set; }
 
-    [Column("blacklistedReason")] public string BlacklistedReason { get; set; }
+    [Column("blacklistedReason")] public string? BlacklistedReason { get; set; }
 
 
     public CandidateDto ToDto()

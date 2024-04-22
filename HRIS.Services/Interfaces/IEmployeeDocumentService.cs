@@ -56,4 +56,10 @@ public interface IEmployeeDocumentService
     /// <param name="status"></param>
     /// <returns>Employee Document</returns>
     Task<List<EmployeeDocumentDto>> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status);
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    Task<List<SimpleEmployeeDocumentGetAllDto>> GetAllDocuments();
 }

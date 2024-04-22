@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
@@ -18,7 +19,7 @@ public class ChartRoleLinkUnitTest
             Type = "type 1",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "label 1", "label 2" },
-            Data = new List<int> { 1, 2 }
+            Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
         _role = new RoleDto { Id = 1, Description = "Description" };

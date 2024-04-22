@@ -18,14 +18,20 @@ public class EmployeeDocumentServiceUnitTest
     private readonly Mock<IEmployeeService> _employeeServiceMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
+    private readonly Mock<IEmployeeDocumentService> _employeeDocumentServiceMock;
+    private readonly Mock<SimpleEmployeeDocumentGetAllDto> _simpleEmployeeDocumentGetAllDtoMock;
+    private readonly Mock<EmployeeDocument> _employeeDocumentMock;
     private readonly EmployeeDocumentService _employeeDocumentService;
 
     public EmployeeDocumentServiceUnitTest()
     {
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _employeeServiceMock = new Mock<IEmployeeService>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService>(); 
+        _employeeDocumentMock = new Mock<EmployeeDocument>();
+        _employeeDocumentServiceMock = new Mock<IEmployeeDocumentService>();
         _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+        _simpleEmployeeDocumentGetAllDtoMock = new Mock<SimpleEmployeeDocumentGetAllDto>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
     }
 
@@ -316,5 +322,31 @@ public class EmployeeDocumentServiceUnitTest
         var result = await _employeeDocumentService.CheckEmployee(employeeId);
         Assert.False(result);
         
+    }
+
+    [Fact]
+    public async Task GetAllEmployeeDocumentsWithEmployee()
+     {
+        _unitOfWorkMock
+            .Setup(x =>
+                       x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+            .Returns(new List<EmployeeDocument> {
+                new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved){Employee = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)},
+                new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved){Employee = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)}
+            }
+            .AsQueryable().BuildMock());
+
+        var employeeDocumentGetAllList = new List<SimpleEmployeeDocumentGetAllDto>
+        {
+            new SimpleEmployeeDocumentGetAllDto { EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved, Name = "Pieter", Surname = "Pietersen" },
+            new SimpleEmployeeDocumentGetAllDto { EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved, Name = "Pieter1", Surname = "Pietersen2"}
+        };
+
+        _employeeDocumentServiceMock.Setup(x => x.GetAllDocuments()).Returns(Task.FromResult(employeeDocumentGetAllList));
+
+        var result = await _employeeDocumentService.GetAllDocuments();
+
+        Assert.NotNull(result);
+        Assert.IsType<List<SimpleEmployeeDocumentGetAllDto>>(result);
     }
 }
