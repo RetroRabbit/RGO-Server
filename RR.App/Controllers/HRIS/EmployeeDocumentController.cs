@@ -95,7 +95,7 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpDelete]
+    [HttpDelete("{documentId}")]
     public async Task<IActionResult> Delete(int documentId)
     {
         try
