@@ -26,7 +26,7 @@ public class Employee : IModel<EmployeeDto>
         Disability = employeeDto.Disability;
         DisabilityNotes = employeeDto.DisabilityNotes;
         Level = employeeDto.Level;
-        EmployeeTypeId = employeeDto.EmployeeType?.Id;
+        EmployeeTypeId = employeeType.Id;
         Notes = employeeDto.Notes;
         LeaveInterval = employeeDto.LeaveInterval;
         SalaryDays = employeeDto.SalaryDays;

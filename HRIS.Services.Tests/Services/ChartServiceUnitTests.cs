@@ -189,8 +189,9 @@ public class ChartServiceUnitTests
             new(developerEmployeeDto, scrumMasterEmployeeTypeDto),
             new(designerEmployeeDto, otherEmployeeTypeDto)
         };
-
-
+        _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                 .Returns(employeeList.AsQueryable().BuildMock()); 
+        
         var employeeDtoList = new List<EmployeeDto>
         {
             developerEmployeeDto,
@@ -210,9 +211,6 @@ public class ChartServiceUnitTests
 
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
 
-        _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(employeeList.AsQueryable().BuildMock());
-
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(chartDto);
 
@@ -224,6 +222,26 @@ public class ChartServiceUnitTests
         Assert.Equal(chartName, result.Name);
         Assert.Equal(chartType, result.Type);
 
+        chartDto.Type = "stacked";
+
+        _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
+                   .ReturnsAsync(chartDto);
+        
+        chartType = "stacked";
+
+        employeeList[0].EmployeeType = new EmployeeType(developerEmployeeTypeDto);
+        employeeList[1].EmployeeType = new EmployeeType(designerEmployeeTypeDto);
+        employeeList[2].EmployeeType = new EmployeeType(scrumMasterEmployeeTypeDto);
+        employeeList[3].EmployeeType = new EmployeeType(otherEmployeeTypeDto);
+
+        _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                 .Returns(employeeList.AsQueryable().BuildMock());
+
+        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal(chartType, result.Type);
     }
 
     [Fact]
@@ -362,6 +380,8 @@ public class ChartServiceUnitTests
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
         Assert.Equal(chartType, result.Type);
+
+       
     }
 
     [Fact]
