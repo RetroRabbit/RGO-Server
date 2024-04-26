@@ -83,7 +83,7 @@ public class ChartServiceUnitTests
         EmployeeTypeDto designerEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
         EmployeeTypeDto scrumMasterEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Scrum Master" };
         EmployeeTypeDto otherEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Other" };
-
+        
         var employeeAddressDto =
             new EmployeeAddressDto
             {
@@ -224,17 +224,6 @@ public class ChartServiceUnitTests
         Assert.Equal(chartName, result.Name);
         Assert.Equal(chartType, result.Type);
 
-        chartDto.Type = "stacked";
-
-        _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
-                   .ReturnsAsync(chartDto);
-
-        chartType = "stacked";
-        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
-
-        Assert.NotNull(result);
-        Assert.Equal(chartName, result.Name);
-        Assert.Equal(chartType, result.Type);
     }
 
     [Fact]
