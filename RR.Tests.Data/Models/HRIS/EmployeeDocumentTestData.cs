@@ -17,7 +17,8 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.ActionRequired,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
+        CounterSign = false,
+        DocumentType = DocumentType.starterKit
     };
 
     public static EmployeeDocumentDto EmployeeDocumentApproved = new EmployeeDocumentDto
@@ -32,6 +33,8 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false
+        ,
+        DocumentType = DocumentType.starterKit
     };
 
     public static EmployeeDocumentDto EmployeeDocumentRejected = new EmployeeDocumentDto
@@ -45,7 +48,8 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.Rejected,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
+        CounterSign = false,
+        DocumentType = DocumentType.starterKit
     };
 
     public static EmployeeDocumentDto EmployeeDocumentActionRequired = new EmployeeDocumentDto
@@ -59,10 +63,17 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.ActionRequired,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
+        CounterSign = false,
+        DocumentType = DocumentType.starterKit
     };
-    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto {
-           Id = 1, EmployeeId = EmployeeTestData.EmployeeDto.Id,
-           FileName = "TestFile.pdf", FileCategory = FileCategory.FixedTerm,
-           Blob = "TestFileContent", UploadDate = DateTime.Now};
+    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto
+    {
+        Id = 1,
+        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        FileName = "TestFile.pdf",
+        FileCategory = FileCategory.FixedTerm,
+        Blob = "TestFileContent",
+        UploadDate = DateTime.Now,
+        Reference = null,
+    };
 }
