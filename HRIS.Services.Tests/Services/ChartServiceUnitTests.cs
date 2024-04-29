@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
@@ -182,6 +184,7 @@ public class ChartServiceUnitTests
             EmergencyContactNo = null,
         };
 
+        
         var employeeList = new List<Employee>
         {
             new(developerEmployeeDto, developerEmployeeTypeDto),
@@ -189,6 +192,8 @@ public class ChartServiceUnitTests
             new(developerEmployeeDto, scrumMasterEmployeeTypeDto),
             new(designerEmployeeDto, otherEmployeeTypeDto)
         };
+
+
         _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                  .Returns(employeeList.AsQueryable().BuildMock()); 
         
@@ -208,6 +213,7 @@ public class ChartServiceUnitTests
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
+       
 
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
 
@@ -242,6 +248,24 @@ public class ChartServiceUnitTests
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
         Assert.Equal(chartType, result.Type);
+
+        var label = "Female, Black, Age 0";
+
+        Dictionary<string, int> myDictionary = new Dictionary<string, int>
+        {
+            { "testFemale, testRace, testAge 0", 1 },
+        };
+
+        ICollection<string> keys = myDictionary.Keys;
+
+
+        var containsKey = myDictionary.ContainsKey(label);
+        if (!containsKey)
+        {
+            myDictionary[label] = 0;
+            //Assert.NotEqual("key", designerEmployeeDto.);
+        }
+
     }
 
     [Fact]
@@ -382,7 +406,9 @@ public class ChartServiceUnitTests
         Assert.Equal(chartType, result.Type);
 
        
+
     }
+
 
     [Fact]
     public async Task GetChartDataTest()
