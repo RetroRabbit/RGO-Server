@@ -10,7 +10,6 @@ public class EmployeeBankingDto
     public string? Branch { get; set; }
     public string? AccountNo { get; set; }
     public EmployeeBankingAccountType AccountType { get; set; }
-    public string? AccountHolderName { get; set; }
     public BankApprovalStatus Status { get; set; }
     public string? DeclineReason { get; set; }
     public string? File { get; set; }

@@ -29,7 +29,6 @@ public class EmployeeBankingControllerUnitTests
         Branch = "Branch",
         AccountNo = "AccountNo",
         AccountType = EmployeeBankingAccountType.Savings,
-        AccountHolderName = "AccountHolderName",
         Status = BankApprovalStatus.Approved,
         DeclineReason = "DeclineReason",
         File = "File.pdf"
@@ -43,7 +42,6 @@ public class EmployeeBankingControllerUnitTests
         Branch = "Test Branch",
         AccountNo = "123456789",
         AccountType = EmployeeBankingAccountType.Savings,
-        AccountHolderName = "John Doe",
         Status = BankApprovalStatus.Approved,
         DeclineReason = null,
         File = "file.pdf"
@@ -86,7 +84,6 @@ public class EmployeeBankingControllerUnitTests
             Branch = "Branch",
             AccountNo = "AccountNo",
             AccountType = EmployeeBankingAccountType.Savings,
-            AccountHolderName = "",
             Status = BankApprovalStatus.Approved,
             DeclineReason = "DeclineReason",
             File = "File.pdf"
@@ -182,8 +179,7 @@ public class EmployeeBankingControllerUnitTests
             new()
             {
                 Id = 1, EmployeeId = 123, BankName = "Test Bank", Branch = "Test Branch",
-                AccountNo = "123456789", AccountType = EmployeeBankingAccountType.Savings,
-                AccountHolderName = "John Doe", Status = BankApprovalStatus.Approved,
+                AccountNo = "123456789", AccountType = EmployeeBankingAccountType.Savings, Status = BankApprovalStatus.Approved,
                 DeclineReason = string.Empty, File = "file.pdf",
                 LastUpdateDate = new DateOnly(2023, 11, 28), PendingUpdateDate = new DateOnly(2023, 11, 29)
             }
@@ -228,7 +224,6 @@ public class EmployeeBankingControllerUnitTests
                        Branch = "Test Branch",
                        AccountNo = "123456789",
                        AccountType = EmployeeBankingAccountType.Savings,
-                       AccountHolderName = "John Doe",
                        Status = BankApprovalStatus.Approved,
                        DeclineReason = null,
                        File = "file.pdf",
@@ -271,7 +266,6 @@ public class EmployeeBankingControllerUnitTests
             Branch = "Test Branch",
             AccountNo = "123456789",
             AccountType = EmployeeBankingAccountType.Savings,
-            AccountHolderName = "John Doe",
             Status = BankApprovalStatus.Approved,
             DeclineReason = null,
             File = "file.pdf",

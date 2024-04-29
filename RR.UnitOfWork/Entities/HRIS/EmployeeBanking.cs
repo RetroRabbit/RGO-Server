@@ -21,7 +21,7 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
         Branch = employeeBankingDto.Branch;
         AccountNo = employeeBankingDto.AccountNo;
         AccountType = employeeBankingDto.AccountType;
-        AccountHolderName = employeeBankingDto.AccountHolderName;
+        
         Status = employeeBankingDto.Status;
         DeclineReason = employeeBankingDto.DeclineReason;
         File = employeeBankingDto.File;
@@ -40,8 +40,6 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
     [Column("accountNo")] public string? AccountNo { get; set; }
 
     [Column("accountType")] public EmployeeBankingAccountType AccountType { get; set; }
-
-    [Column("accountHolderName")] public string? AccountHolderName { get; set; }
 
     [Column("status")] public BankApprovalStatus Status { get; set; }
 
@@ -67,7 +65,7 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
             Branch = Branch,
             AccountNo = AccountNo,
             AccountType = AccountType,
-            AccountHolderName = AccountHolderName,
+           
             Status = Status,
             DeclineReason = DeclineReason,
             File = File,

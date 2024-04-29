@@ -86,7 +86,7 @@ public class EmployeeBankingService : IEmployeeBankingService
             Branch = newEntry.Branch,
             AccountNo = newEntry.AccountNo,
             AccountType = newEntry.AccountType,
-            AccountHolderName = newEntry.AccountHolderName,
+            
             Status = newEntry.Status,
             DeclineReason = newEntry.DeclineReason,
             File = newEntry.File,
@@ -183,7 +183,6 @@ public class EmployeeBankingService : IEmployeeBankingService
             Branch = newEntry.Branch,
             AccountNo = newEntry.AccountNo,
             AccountType = newEntry.AccountType,
-            AccountHolderName = newEntry.AccountHolderName,
             Status = newEntry.Status,
             DeclineReason = newEntry.DeclineReason,
             File = newEntry.File,
