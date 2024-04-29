@@ -1,4 +1,4 @@
-﻿namespace ATS.Models.Enums;
+﻿namespace HRIS.Models.Enums;
 
 public enum PositionType
 {

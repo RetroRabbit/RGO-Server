@@ -129,7 +129,7 @@ public class EmployeeService : IEmployeeService
             var peopleChampion = await GetEmployee(userEmail);
 
             return await _db.Employee
-                            .Get(employee => employee.PeopleChampion == peopleChampion!.Id)
+                            .Get(employee => employee.PeopleChampion == peopleChampion!.Id && !employee.IsCandidate)
                             .Include(employee => employee.EmployeeType)
                             .Include(employee => employee.PhysicalAddress)
                             .Include(employee => employee.PostalAddress)
@@ -139,7 +139,7 @@ public class EmployeeService : IEmployeeService
         }
 
         return await _db.Employee
-                        .Get(employee => true)
+                        .Get(employee => !employee.IsCandidate)
                         .AsNoTracking()
                         .Include(employee => employee.EmployeeType)
                         .Include(employee => employee.PhysicalAddress)

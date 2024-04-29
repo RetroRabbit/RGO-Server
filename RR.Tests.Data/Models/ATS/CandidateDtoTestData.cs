@@ -1,5 +1,4 @@
 ﻿using ATS.Models;
-using ATS.Models.Enums;
 using HRIS.Models.Enums;
 
 namespace RR.Tests.Data.Models.ATS;

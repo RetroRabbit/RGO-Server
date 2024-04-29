@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATS.Models.Enums;
+namespace HRIS.Models.Enums;
 
 public enum BlacklistStatus
 {

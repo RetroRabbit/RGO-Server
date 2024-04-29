@@ -10,4 +10,8 @@
     <ProjectReference Include="..\HRIS.Models\HRIS.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+
 </Project>

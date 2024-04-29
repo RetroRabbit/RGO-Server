@@ -14,39 +14,6 @@ namespace RR.UnitOfWork.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Candidate",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    surname = table.Column<string>(type: "text", nullable: false),
-                    personalEmail = table.Column<string>(type: "text", nullable: false),
-                    potentialLevel = table.Column<int>(type: "integer", nullable: false),
-                    jobPosition = table.Column<int>(type: "integer", nullable: false),
-                    linkedIn = table.Column<string>(type: "text", nullable: true),
-                    profilePicture = table.Column<string>(type: "text", nullable: true),
-                    cellphone = table.Column<string>(type: "text", nullable: false),
-                    location = table.Column<string>(type: "text", nullable: true),
-                    cv = table.Column<string>(type: "text", nullable: false),
-                    portfolioLink = table.Column<string>(type: "text", nullable: true),
-                    portfolioPdf = table.Column<string>(type: "text", nullable: true),
-                    gender = table.Column<int>(type: "integer", nullable: false),
-                    race = table.Column<int>(type: "integer", nullable: false),
-                    idNumber = table.Column<string>(type: "text", nullable: true),
-                    referral = table.Column<int>(type: "integer", nullable: false),
-                    highestQualification = table.Column<string>(type: "text", nullable: true),
-                    school = table.Column<string>(type: "text", nullable: true),
-                    qualificationEndDate = table.Column<int>(type: "integer", nullable: true),
-                    blacklisted = table.Column<int>(type: "integer", nullable: false),
-                    blacklistedReason = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Candidate", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Chart",
                 columns: table => new
                 {
@@ -271,7 +238,18 @@ namespace RR.UnitOfWork.Migrations
                     emergencyContactName = table.Column<string>(type: "text", nullable: true),
                     emergencyContactNo = table.Column<string>(type: "text", nullable: true),
                     active = table.Column<bool>(type: "boolean", nullable: false),
-                    inactiveReason = table.Column<string>(type: "text", nullable: true)
+                    inactiveReason = table.Column<string>(type: "text", nullable: true),
+                    linkedIn = table.Column<string>(type: "text", nullable: true),
+                    cv = table.Column<string>(type: "text", nullable: true),
+                    portfolioLink = table.Column<string>(type: "text", nullable: true),
+                    portfoloioPDF = table.Column<string>(type: "text", nullable: true),
+                    Referral = table.Column<int>(type: "integer", nullable: true),
+                    HighestQualification = table.Column<string>(type: "text", nullable: true),
+                    School = table.Column<string>(type: "text", nullable: true),
+                    QualificationEndDate = table.Column<int>(type: "integer", nullable: true),
+                    BlackListStatus = table.Column<string>(type: "text", nullable: true),
+                    BlackListReason = table.Column<string>(type: "text", nullable: true),
+                    IsCandidate = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -823,9 +801,6 @@ namespace RR.UnitOfWork.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AuditLogs");
-
-            migrationBuilder.DropTable(
-                name: "Candidate");
 
             migrationBuilder.DropTable(
                 name: "ChartRoleLink");

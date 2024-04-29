@@ -24,6 +24,7 @@ public class EmployeeController : ControllerBase
     {
         try
         {
+            newEmployee.IsCandidate = false;
             var employee = await _employeeService.SaveEmployee(newEmployee);
             return CreatedAtAction(nameof(AddEmployee), new { email = employee.Email }, employee);
         }

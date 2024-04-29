@@ -1,4 +1,5 @@
 ﻿using HRIS.Models.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRIS.Models;
 
@@ -44,4 +45,15 @@ public class EmployeeDto
     public string? EmergencyContactNo { get; set; }
     public bool Active { get; set; }
     public string? InactiveReason { get;set; }
+    public string? LinkedIn { get; set; }
+    public string? CV { get; set; }
+    public string? PortfolioLink { get; set; }
+    public string? PortfolioPDF { get; set; }
+    public int? Referral { get; set; }
+    public string? HighestQualification { get; set; }
+    public string? School { get; set; }
+    public int? QualificationEndDate { get; set; }
+    public BlacklistStatus BlackListStatus { get; set; }
+    public string? BlackListReason { get; set; }
+    public bool IsCandidate { get; set; }
 }

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.Design;
+using ATS.Models;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
@@ -58,6 +59,44 @@ public class Employee : IModel<EmployeeDto>
         Active = employeeDto.Active;
         InactiveReason = employeeDto.InactiveReason;
         EmployeeType = new EmployeeType(employeeType);
+        LinkedIn = employeeDto.LinkedIn;
+        CV = employeeDto.CV;
+        PortfolioLink = employeeDto.PortfolioLink;
+        PortfolioPDF = employeeDto.PortfolioPDF;
+        Referral = employeeDto.Referral;
+        HighestQualification = employeeDto.HighestQualification;
+        School = employeeDto.School;
+        QualificationEndDate = employeeDto.QualificationEndDate;
+        BlackListStatus = employeeDto.BlackListStatus;
+        BlackListReason = employeeDto.BlackListReason;
+        IsCandidate = employeeDto.IsCandidate;
+    }
+
+    public Employee(CandidateDto candidateDto)
+    {
+        Id = candidateDto.Id;
+        Name = candidateDto.Name;
+        Surname = candidateDto.Surname;
+        PersonalEmail = candidateDto.PersonalEmail;
+        Level = candidateDto.PotentialLevel;
+        EmployeeTypeId = (int)candidateDto.JobPosition;
+        LinkedIn = candidateDto.LinkedIn;
+        Photo = candidateDto.ProfilePicture;
+        CellphoneNo = candidateDto.CellphoneNumber;
+        HouseNo = candidateDto.Location;
+        CV = candidateDto.CV;
+        PortfolioLink = candidateDto.PortfolioLink;
+        PortfolioPDF = candidateDto.PortfolioPdf;
+        Gender = candidateDto.Gender;
+        Race = candidateDto.Race;
+        IdNumber = candidateDto.IdNumber;
+        Referral = candidateDto.Referral;
+        HighestQualification = candidateDto.HighestQualification;
+        School = candidateDto.School;
+        QualificationEndDate = candidateDto.QualificationEndDate;
+        BlackListStatus = candidateDto.BlacklistedStatus;
+        BlackListReason = candidateDto.BlacklistedReason;
+        IsCandidate = true;
     }
 
     [Column("employeeNumber")] public string? EmployeeNumber { get; set; }
@@ -149,6 +188,17 @@ public class Employee : IModel<EmployeeDto>
     [Column("active")] public bool Active { get; set; }
 
     [Column("inactiveReason")] public string? InactiveReason { get; set; }
+    [Column("linkedIn")] public string? LinkedIn { get; set; }
+    [Column("cv")] public string? CV { get; set; }
+    [Column("portfolioLink")] public string? PortfolioLink { get; set; }
+    [Column("portfolioPdf")] public string? PortfolioPDF { get; set; }
+    [Column("referal")] public int? Referral { get; set; }
+    [Column("highestQualification")] public string? HighestQualification { get; set; }
+    [Column("school")] public string? School { get; set; }
+    [Column("qualificationObtainedDate")] public int? QualificationEndDate { get; set; }
+    [Column("blackListStatus")] public BlacklistStatus BlackListStatus { get; set; }
+    [Column("blackListReason")] public string? BlackListReason { get; set; }
+    [Column("isCandidate")] public bool IsCandidate { get; set; }
 
     public virtual EmployeeType? EmployeeType { get; set; }
     public virtual Employee? ChampionEmployee { get; set; }
@@ -202,7 +252,47 @@ public class Employee : IModel<EmployeeDto>
             EmergencyContactName = EmergencyContactName,
             EmergencyContactNo = EmergencyContactNo,
             Active = Active,
-            InactiveReason = InactiveReason
+            InactiveReason = InactiveReason,
+            LinkedIn = LinkedIn,
+            CV = CV,
+            PortfolioLink = PortfolioLink,
+            PortfolioPDF = PortfolioPDF,
+            Referral = Referral,
+            HighestQualification = HighestQualification,
+            School = School,
+            QualificationEndDate = QualificationEndDate,
+            BlackListStatus = BlackListStatus,
+            BlackListReason = BlackListReason,
+            IsCandidate = IsCandidate
+    };
+    }
+
+    public CandidateDto ToCandidateDto()
+    {
+        return new CandidateDto
+        {
+            Id = this.Id,
+            Name = this.Name!,
+            Surname = this.Surname!,
+            PersonalEmail = this.PersonalEmail!,
+            PotentialLevel = this.Level!.Value,
+            JobPosition = (PositionType)this.EmployeeTypeId,
+            LinkedIn = this.LinkedIn,
+            ProfilePicture = this.Photo,
+            CellphoneNumber = this.CellphoneNo,
+            Location = this.HouseNo,
+            CV = this.CV,
+            PortfolioLink = this.PortfolioLink,
+            PortfolioPdf = this.PortfolioPDF,
+            Gender = this.Gender!.Value,
+            Race = this.Race!.Value,
+            IdNumber = this.IdNumber,
+            Referral = this.Referral!.Value,
+            HighestQualification = this.HighestQualification,
+            School = this.School,
+            QualificationEndDate = this.QualificationEndDate,
+            BlacklistedStatus = this.BlackListStatus,
+            BlacklistedReason = this.BlackListReason
         };
     }
 }

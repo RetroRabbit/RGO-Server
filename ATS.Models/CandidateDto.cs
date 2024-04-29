@@ -1,5 +1,4 @@
-﻿using ATS.Models.Enums;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
 
 namespace ATS.Models;
 

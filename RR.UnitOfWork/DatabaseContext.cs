@@ -34,7 +34,6 @@ public interface IDatabaseContext
     DbSet<Client> clients { get; set; }
     DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     DbSet<ErrorLogging> errorLogging { get; set; }
-    DbSet<Candidate> candidate { get; set; }
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
@@ -72,7 +71,6 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<Client> clients { get; set; }
     public DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     public DbSet<ErrorLogging> errorLogging { get; set; }
-    public DbSet<Candidate> candidate { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
