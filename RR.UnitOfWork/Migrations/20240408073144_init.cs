@@ -243,13 +243,13 @@ namespace RR.UnitOfWork.Migrations
                     cv = table.Column<string>(type: "text", nullable: true),
                     portfolioLink = table.Column<string>(type: "text", nullable: true),
                     portfoloioPDF = table.Column<string>(type: "text", nullable: true),
-                    Referral = table.Column<int>(type: "integer", nullable: true),
-                    HighestQualification = table.Column<string>(type: "text", nullable: true),
-                    School = table.Column<string>(type: "text", nullable: true),
-                    QualificationEndDate = table.Column<int>(type: "integer", nullable: true),
-                    BlackListStatus = table.Column<string>(type: "text", nullable: true),
-                    BlackListReason = table.Column<string>(type: "text", nullable: true),
-                    IsCandidate = table.Column<bool>(type: "boolean", nullable: false)
+                    referral = table.Column<int>(type: "integer", nullable: true),
+                    highestQualification = table.Column<string>(type: "text", nullable: true),
+                    school = table.Column<string>(type: "text", nullable: true),
+                    qualificationEndDate = table.Column<int>(type: "integer", nullable: true),
+                    blackListStatus = table.Column<string>(type: "text", nullable: true),
+                    blackListReason = table.Column<string>(type: "text", nullable: true),
+                    isCandidate = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
