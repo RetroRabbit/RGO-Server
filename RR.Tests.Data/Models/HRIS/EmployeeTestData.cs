@@ -215,7 +215,7 @@ public class EmployeeTestData
         EmergencyContactNo = "0765477814"
     };
 
-    public static EmployeeDto EmployeeDto6 = new EmployeeDto
+    public static EmployeeDto EmployeeDtoNew = new EmployeeDto
     {
         Id = 0,
         EmployeeNumber = "001",
@@ -257,7 +257,7 @@ public class EmployeeTestData
         EmergencyContactNo = null
     };
 
-    public static EmployeeDto EmployeeDto7 = new EmployeeDto
+    public static EmployeeDto EmployeeDto6 = new EmployeeDto
     {
         Id = 1,
         EmployeeNumber = "001",

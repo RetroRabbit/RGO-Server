@@ -344,7 +344,7 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task ExportCsvAsyncTest()
     {
-        var employeeDto = EmployeeTestData.EmployeeDto7;
+        var employeeDto = EmployeeTestData.EmployeeDto6;
 
         var employeeDtoList = new List<EmployeeDto>
         {

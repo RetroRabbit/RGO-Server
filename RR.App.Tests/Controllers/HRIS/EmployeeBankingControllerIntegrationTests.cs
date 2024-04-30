@@ -170,7 +170,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
     [Fact]
     public async Task CreateReadUpdateDeleteEmployeeBanking_ReturnsOkResult()
     {
-        var employeeDto = EmployeeTestData.EmployeeDto6;
+        var employeeDto = EmployeeTestData.EmployeeDtoNew;
         var jsonContentEmployee = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
         var response = await _client.PostAsync("/employees", jsonContentEmployee);
