@@ -119,7 +119,7 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("employeeTypeId")]
     [ForeignKey("EmployeeType")]
-    public int EmployeeTypeId { get; set; }
+    public int? EmployeeTypeId { get; set; }
 
     [Column("notes")] public string? Notes { get; set; }
 
