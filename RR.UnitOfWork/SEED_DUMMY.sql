@@ -1,5 +1,5 @@
 INSERT INTO "Client" (id, name)
-VALUES (1, 'Bench');
+VALUES (1, 'WesBank');
 INSERT INTO "Client" (id, name)
 VALUES (2, 'GBZ GasLines');
 INSERT INTO "Client" (id, name)
