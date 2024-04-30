@@ -53,7 +53,7 @@ public class EmployeeDto
     public string? HighestQualification { get; set; }
     public string? School { get; set; }
     public int? QualificationEndDate { get; set; }
-    public BlacklistStatus BlackListStatus { get; set; }
+    public BlacklistStatus? BlackListStatus { get; set; }
     public string? BlackListReason { get; set; }
     public bool IsCandidate { get; set; }
 }

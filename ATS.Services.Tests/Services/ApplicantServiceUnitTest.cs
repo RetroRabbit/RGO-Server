@@ -7,7 +7,6 @@ using Moq;
 using Newtonsoft.Json;
 using RR.Tests.Data.Models.ATS;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.ATS;
 using RR.UnitOfWork.Entities.HRIS;
 using System.Linq.Expressions;
 using Xunit;

@@ -24,6 +24,6 @@ public class CandidateDto
     public string? HighestQualification { set; get; }
     public string? School { get; set; }
     public int? QualificationEndDate { get; set; }
-    public BlacklistStatus BlacklistedStatus { get; set;}
+    public BlacklistStatus? BlacklistedStatus { get; set;}
     public string? BlacklistedReason { get; set; }
 }

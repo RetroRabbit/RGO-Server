@@ -196,7 +196,7 @@ public class Employee : IModel<EmployeeDto>
     [Column("highestQualification")] public string? HighestQualification { get; set; }
     [Column("school")] public string? School { get; set; }
     [Column("qualificationEndDate")] public int? QualificationEndDate { get; set; }
-    [Column("blackListStatus")] public BlacklistStatus BlackListStatus { get; set; }
+    [Column("blackListStatus")] public BlacklistStatus? BlackListStatus { get; set; }
     [Column("blackListReason")] public string? BlackListReason { get; set; }
     [Column("isCandidate")] public bool IsCandidate { get; set; }
 

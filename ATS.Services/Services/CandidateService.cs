@@ -3,7 +3,6 @@ using ATS.Services.Interfaces;
 using HRIS.Models;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.ATS;
 using RR.UnitOfWork.Entities.HRIS;
 
 namespace ATS.Services.Services;

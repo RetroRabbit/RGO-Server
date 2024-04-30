@@ -23,107 +23,6 @@ namespace RR.UnitOfWork.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("RR.UnitOfWork.Entities.ATS.Candidate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BlacklistedReason")
-                        .HasColumnType("text")
-                        .HasColumnName("blacklistedReason");
-
-                    b.Property<int>("BlacklistedStatus")
-                        .HasColumnType("integer")
-                        .HasColumnName("blacklisted");
-
-                    b.Property<string>("CV")
-                        .HasColumnType("text")
-                        .HasColumnName("cv");
-
-                    b.Property<string>("CellphoneNumber")
-                        .HasColumnType("text")
-                        .HasColumnName("cellphone");
-
-                    b.Property<int>("Gender")
-                        .HasColumnType("integer")
-                        .HasColumnName("gender");
-
-                    b.Property<string>("HighestQualification")
-                        .HasColumnType("text")
-                        .HasColumnName("highestQualification");
-
-                    b.Property<string>("IdNumber")
-                        .HasColumnType("text")
-                        .HasColumnName("idNumber");
-
-                    b.Property<int>("JobPosition")
-                        .HasColumnType("integer")
-                        .HasColumnName("jobPosition");
-
-                    b.Property<string>("LinkedIn")
-                        .HasColumnType("text")
-                        .HasColumnName("linkedIn");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("text")
-                        .HasColumnName("location");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<string>("PersonalEmail")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("personalEmail");
-
-                    b.Property<string>("PortfolioLink")
-                        .HasColumnType("text")
-                        .HasColumnName("portfolioLink");
-
-                    b.Property<string>("PortfolioPdf")
-                        .HasColumnType("text")
-                        .HasColumnName("portfolioPdf");
-
-                    b.Property<int>("PotentialLevel")
-                        .HasColumnType("integer")
-                        .HasColumnName("potentialLevel");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("text")
-                        .HasColumnName("profilePicture");
-
-                    b.Property<int?>("QualificationEndDate")
-                        .HasColumnType("integer")
-                        .HasColumnName("qualificationEndDate");
-
-                    b.Property<int>("Race")
-                        .HasColumnType("integer")
-                        .HasColumnName("race");
-
-                    b.Property<int>("Referral")
-                        .HasColumnType("integer")
-                        .HasColumnName("referral");
-
-                    b.Property<string>("School")
-                        .HasColumnType("text")
-                        .HasColumnName("school");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("surname");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Candidate");
-                });
-
             modelBuilder.Entity("RR.UnitOfWork.Entities.AuditLog", b =>
                 {
                     b.Property<int>("Id")
@@ -307,6 +206,18 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("active");
 
+                    b.Property<string>("BlackListReason")
+                        .HasColumnType("text")
+                        .HasColumnName("blackListReason");
+
+                    b.Property<int?>("BlackListStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("blackListStatus");
+
+                    b.Property<string>("CV")
+                        .HasColumnType("text")
+                        .HasColumnName("cv");
+
                     b.Property<string>("CellphoneNo")
                         .HasColumnType("text")
                         .HasColumnName("cellphoneNo");
@@ -359,6 +270,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("gender");
 
+                    b.Property<string>("HighestQualification")
+                        .HasColumnType("text")
+                        .HasColumnName("highestQualification");
+
                     b.Property<string>("HouseNo")
                         .HasColumnType("text")
                         .HasColumnName("houseNo");
@@ -375,6 +290,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("initials");
 
+                    b.Property<bool>("IsCandidate")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isCandidate");
+
                     b.Property<float?>("LeaveInterval")
                         .HasColumnType("real")
                         .HasColumnName("leaveInterval");
@@ -382,6 +301,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<int?>("Level")
                         .HasColumnType("integer")
                         .HasColumnName("level");
+
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("text")
+                        .HasColumnName("linkedIn");
 
                     b.Property<string>("Name")
                         .HasColumnType("text")
@@ -427,13 +350,29 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("physicalAddress");
 
+                    b.Property<string>("PortfolioLink")
+                        .HasColumnType("text")
+                        .HasColumnName("portfolioLink");
+
+                    b.Property<string>("PortfolioPDF")
+                        .HasColumnType("text")
+                        .HasColumnName("portfolioPdf");
+
                     b.Property<int?>("PostalAddressId")
                         .HasColumnType("integer")
                         .HasColumnName("postalAddress");
 
+                    b.Property<int?>("QualificationEndDate")
+                        .HasColumnType("integer")
+                        .HasColumnName("qualificationEndDate");
+
                     b.Property<int?>("Race")
                         .HasColumnType("integer")
                         .HasColumnName("race");
+
+                    b.Property<int?>("Referral")
+                        .HasColumnType("integer")
+                        .HasColumnName("referal");
 
                     b.Property<int?>("Salary")
                         .HasColumnType("integer")
@@ -442,6 +381,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<float?>("SalaryDays")
                         .HasColumnType("real")
                         .HasColumnName("salaryDays");
+
+                    b.Property<string>("School")
+                        .HasColumnType("text")
+                        .HasColumnName("school");
 
                     b.Property<string>("Surname")
                         .HasColumnType("text")

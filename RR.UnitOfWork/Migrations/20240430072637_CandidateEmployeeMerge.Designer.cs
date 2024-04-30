@@ -13,8 +13,8 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240408145908_ChartDataSetAlteration")]
-    partial class ChartDataSetAlteration
+    [Migration("20240430072637_CandidateEmployeeMerge")]
+    partial class CandidateEmployeeMerge
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,6 +111,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<string>("Subtype")
+                        .HasColumnType("text")
+                        .HasColumnName("subType");
+
                     b.Property<string>("Type")
                         .HasColumnType("text")
                         .HasColumnName("type");
@@ -205,6 +209,18 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("active");
 
+                    b.Property<string>("BlackListReason")
+                        .HasColumnType("text")
+                        .HasColumnName("blackListReason");
+
+                    b.Property<int?>("BlackListStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("blackListStatus");
+
+                    b.Property<string>("CV")
+                        .HasColumnType("text")
+                        .HasColumnName("cv");
+
                     b.Property<string>("CellphoneNo")
                         .HasColumnType("text")
                         .HasColumnName("cellphoneNo");
@@ -257,6 +273,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("gender");
 
+                    b.Property<string>("HighestQualification")
+                        .HasColumnType("text")
+                        .HasColumnName("highestQualification");
+
                     b.Property<string>("HouseNo")
                         .HasColumnType("text")
                         .HasColumnName("houseNo");
@@ -273,6 +293,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("initials");
 
+                    b.Property<bool>("IsCandidate")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isCandidate");
+
                     b.Property<float?>("LeaveInterval")
                         .HasColumnType("real")
                         .HasColumnName("leaveInterval");
@@ -280,6 +304,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<int?>("Level")
                         .HasColumnType("integer")
                         .HasColumnName("level");
+
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("text")
+                        .HasColumnName("linkedIn");
 
                     b.Property<string>("Name")
                         .HasColumnType("text")
@@ -325,13 +353,29 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("physicalAddress");
 
+                    b.Property<string>("PortfolioLink")
+                        .HasColumnType("text")
+                        .HasColumnName("portfolioLink");
+
+                    b.Property<string>("PortfolioPDF")
+                        .HasColumnType("text")
+                        .HasColumnName("portfolioPdf");
+
                     b.Property<int?>("PostalAddressId")
                         .HasColumnType("integer")
                         .HasColumnName("postalAddress");
 
+                    b.Property<int?>("QualificationEndDate")
+                        .HasColumnType("integer")
+                        .HasColumnName("qualificationEndDate");
+
                     b.Property<int?>("Race")
                         .HasColumnType("integer")
                         .HasColumnName("race");
+
+                    b.Property<int?>("Referral")
+                        .HasColumnType("integer")
+                        .HasColumnName("referal");
 
                     b.Property<int?>("Salary")
                         .HasColumnType("integer")
@@ -340,6 +384,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<float?>("SalaryDays")
                         .HasColumnType("real")
                         .HasColumnName("salaryDays");
+
+                    b.Property<string>("School")
+                        .HasColumnType("text")
+                        .HasColumnName("school");
 
                     b.Property<string>("Surname")
                         .HasColumnType("text")
@@ -1074,7 +1122,7 @@ namespace RR.UnitOfWork.Migrations
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartDataSet", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Chart", null)
-                        .WithMany("DataSets")
+                        .WithMany("Datasets")
                         .HasForeignKey("ChartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1341,7 +1389,7 @@ namespace RR.UnitOfWork.Migrations
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Chart", b =>
                 {
-                    b.Navigation("DataSets");
+                    b.Navigation("Datasets");
                 });
 #pragma warning restore 612, 618
         }
