@@ -16,7 +16,6 @@ namespace RR.App.Tests.Controllers.HRIS;
 public class EmployeeDocumentControllerUnitTest
 {
     private readonly Mock<IEmployeeDocumentService> _employeeMockDocumentService;
-    //private readonly EmployeeDocumentDto _employeeDocument;
     private readonly SimpleEmployeeDocumentDto _simpleEmployeeDocument;
     private readonly EmployeeDocumentController _controller;
 
@@ -84,7 +83,6 @@ public class EmployeeDocumentControllerUnitTest
         var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
         Assert.Equal("An error occurred while fetching the employee document.", actualExceptionMessage);
-
     }
 
     [Fact]
@@ -108,7 +106,6 @@ public class EmployeeDocumentControllerUnitTest
 
         Assert.NotNull(result);
         Assert.Equal(listOfEmployeeDocumentsDto, actualDetails);
-
     }
 
     [Fact]
@@ -140,7 +137,6 @@ public class EmployeeDocumentControllerUnitTest
         var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
 
         Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualSavedEmployeeDocument);
-
     }
 
     [Fact]
@@ -184,7 +180,6 @@ public class EmployeeDocumentControllerUnitTest
 
         Assert.Equal(errorMessage, actualErrorMessage);
         Assert.Equal(500, notFoundResult.StatusCode);
-
     }
 
     [Fact]
@@ -199,7 +194,6 @@ public class EmployeeDocumentControllerUnitTest
         var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
         Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualemployeeDocument);
-
     }
 
     [Fact]
@@ -213,13 +207,11 @@ public class EmployeeDocumentControllerUnitTest
         var notFoundResult = Assert.IsType<ObjectResult>(result);
 
         Assert.Equal(exceptionMessage, notFoundResult.Value);
-
     }
 
     [Fact]
     public async Task GetEmployeeDocumentByStatusReturnsOkResult()
     {
-        //var status = DocumentStatus.Rejected;
 
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
             {
@@ -254,6 +246,5 @@ public class EmployeeDocumentControllerUnitTest
         var notfoundResult = Assert.IsType<ObjectResult>(result);
 
         Assert.Equal("An error occurred while fetching the employee documents.", notfoundResult.Value);
-
     }
 }
