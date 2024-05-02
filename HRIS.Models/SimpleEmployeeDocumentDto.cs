@@ -11,4 +11,5 @@ public class SimpleEmployeeDocumentDto
     public string Blob { get; set; }
     public DateTime UploadDate { get; set; }
     public string ?Reference { get; set; }
+    public DateTime? LastUpdatedDate { get; set; }
 }
