@@ -82,7 +82,7 @@ public interface IEmployeeService
     ///     Calculates employee chrunRate over a month
     /// </summary>
     /// <returns>ChurnRateDataCard</returns>
-    Task<ChurnRateDataCard> CalculateEmployeeChurnRate();
+    Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate();
 
     /// <summary>
     ///     Get Employees filtered by Peoples champion or employee type
