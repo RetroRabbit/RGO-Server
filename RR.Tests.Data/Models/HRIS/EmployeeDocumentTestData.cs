@@ -19,6 +19,7 @@ public class EmployeeDocumentTestData
         Reason = null,
         CounterSign = false,
         DocumentType = DocumentType.starterKit
+        LastUpdatedDate = DateTime.Now
     };
 
     public static EmployeeDocumentDto EmployeeDocumentApproved = new EmployeeDocumentDto
@@ -32,9 +33,9 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.Approved,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
-        ,
-        DocumentType = DocumentType.starterKit
+        CounterSign = false,
+        DocumentType = DocumentType.starterKit,
+        LastUpdatedDate = DateTime.Now
     };
 
     public static EmployeeDocumentDto EmployeeDocumentRejected = new EmployeeDocumentDto
@@ -50,6 +51,7 @@ public class EmployeeDocumentTestData
         Reason = null,
         CounterSign = false,
         DocumentType = DocumentType.starterKit
+        LastUpdatedDate = DateTime.Now
     };
 
     public static EmployeeDocumentDto EmployeeDocumentActionRequired = new EmployeeDocumentDto
@@ -75,5 +77,6 @@ public class EmployeeDocumentTestData
         Blob = "TestFileContent",
         UploadDate = DateTime.Now,
         Reference = null,
+        LastUpdatedDate = DateTime.Now
     };
 }

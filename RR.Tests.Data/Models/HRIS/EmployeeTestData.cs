@@ -58,7 +58,7 @@ public class EmployeeTestData
         Disability = false,
         DisabilityNotes = "None",
         Level = 4,
-        EmployeeType = EmployeeTypeTestData.DeveloperType,
+        EmployeeType = EmployeeTypeTestData.DesignerType,
         Notes = "Notes",
         LeaveInterval = 1,
         SalaryDays = 28,
@@ -100,7 +100,7 @@ public class EmployeeTestData
         Disability = false,
         DisabilityNotes = "None",
         Level = 4,
-        EmployeeType = EmployeeTypeTestData.DeveloperType,
+        EmployeeType = EmployeeTypeTestData.ScrumType,
         Notes = "Notes",
         LeaveInterval = 1,
         SalaryDays = 28,
@@ -142,7 +142,7 @@ public class EmployeeTestData
         Disability = false,
         DisabilityNotes = "None",
         Level = 4,
-        EmployeeType = EmployeeTypeTestData.DeveloperType,
+        EmployeeType = EmployeeTypeTestData.OtherType,
         Notes = "Notes",
         LeaveInterval = 1,
         SalaryDays = 28,
@@ -173,7 +173,7 @@ public class EmployeeTestData
         EmergencyContactNo = null
     };
 
-    public static EmployeeDto TestEmployeeDto = new EmployeeDto
+    public static EmployeeDto EmployeeDto5 = new EmployeeDto
     {
         Id = 1,
         EmployeeNumber = "001",
@@ -184,7 +184,7 @@ public class EmployeeTestData
         Disability = false,
         DisabilityNotes = "None",
         Level = 4,
-        EmployeeType = EmployeeTypeTestData.DeveloperType,
+        EmployeeType = EmployeeTypeTestData.ScrumType,
         Notes = "Notes",
         LeaveInterval = 1,
         SalaryDays = 28,
@@ -256,4 +256,48 @@ public class EmployeeTestData
         EmergencyContactName = null,
         EmergencyContactNo = null
     };
+
+    public static EmployeeDto EmployeeDto6 = new EmployeeDto
+    {
+        Id = 1,
+        EmployeeNumber = "001",
+        TaxNumber = "34434434",
+        EngagementDate = DateTime.Now,
+        TerminationDate = DateTime.Now,
+        PeopleChampion = 1,
+        Disability = false,
+        DisabilityNotes = "None",
+        Level = 3,
+        EmployeeType = EmployeeTypeTestData.PeopleChampionType,
+        Notes = "Notes",
+        LeaveInterval = 1,
+        SalaryDays = 28,
+        PayRate = 128,
+        Salary = 100000,
+        Name = "Estiaan",
+        Initials = "MT",
+        Surname = "Britz",
+        DateOfBirth = DateTime.Now,
+        CountryOfBirth = "South Africa",
+        Nationality = "South African",
+        IdNumber = "0000080000000",
+        PassportNumber = " ",
+        PassportExpirationDate = DateTime.Now,
+        PassportCountryIssue = "South Africa",
+        Race = Race.Black,
+        Gender = Gender.Male,
+        Photo = null,
+        Email = "test1@retrorabbit.co.za",
+        PersonalEmail = "test.example@gmail.com",
+        CellphoneNo = "0000000000",
+        ClientAllocated = null,
+        TeamLead = null,
+        PhysicalAddress = EmployeeAddressTestData.EmployeeAddressDto,
+        PostalAddress = EmployeeAddressTestData.EmployeeAddressDto,
+        HouseNo = null,
+        EmergencyContactName = null,
+        EmergencyContactNo = null,
+
+    };
+
 }

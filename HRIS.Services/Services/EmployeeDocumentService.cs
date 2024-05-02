@@ -80,6 +80,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             UploadDate = DateTime.Now,
             CounterSign = false,
             DocumentType = docType,
+            LastUpdatedDate = DateTime.Now,
         };
 
         var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));

@@ -15,4 +15,5 @@ public class EmployeeDocumentDto
     public string? Reason { get; set; }
     public bool CounterSign { get; set; }
     public DocumentType? DocumentType { get; set; }
+    public DateTime LastUpdatedDate { get; set; }
 }
