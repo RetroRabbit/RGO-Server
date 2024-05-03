@@ -93,7 +93,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             var existingEmployeeQualification = await GetEmployeeQualification(employeeQualificationDto.Id);
 
             var updatedEmployeeQualification = await _db.EmployeeQualification
-                    .Update(new EmployeeQualification(existingEmployeeQualification));
+                .Update(new EmployeeQualification(existingEmployeeQualification));
 
             return updatedEmployeeQualification;
         }
