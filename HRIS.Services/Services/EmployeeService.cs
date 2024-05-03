@@ -534,15 +534,15 @@ public class EmployeeService : IEmployeeService
     public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
     {
         var totalNumberOfDevsOnBench = _db.Employee.Get()
-                                          .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 2)
+                                          .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 2)
                                           .ToList().Count;
 
         var totalNumberOfDesignersOnBench = _db.Employee.Get()
-                                               .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 3)
+                                               .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 3)
                                                .ToList().Count;
 
         var totalNumberOfScrumMastersOnBench = _db.Employee.Get()
-                                                  .Where(c => c.ClientAllocated == 1 && c.EmployeeTypeId == 4)
+                                                  .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 4)
                                                   .ToList().Count;
 
         var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
