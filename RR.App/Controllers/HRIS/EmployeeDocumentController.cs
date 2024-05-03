@@ -117,7 +117,7 @@ public class EmployeeDocumentController : ControllerBase
             var employeeDocuments = await _employeeDocumentService.GetAllDocuments();
             return Ok(employeeDocuments);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching the employee documents.");
         }
