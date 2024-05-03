@@ -11,13 +11,55 @@ using HRIS.Models;
 using HRIS.Services.Services;
 using RabbitMQ.Client;
 using ATS.Services;
+using Azure.Messaging.ServiceBus;
+using Azure.Identity;
 
 namespace RR.App
 {
     public class Program
     {
-        public static void Main(params string[] args)
+        public static async Task Main(params string[] args)
         {
+
+            ServiceBusClient client;
+            ServiceBusSender sender;
+            const int numOfMessages = 3;
+
+            var clientOptions = new ServiceBusClientOptions
+            {
+                TransportType = ServiceBusTransportType.AmqpWebSockets
+            };
+
+            client = new ServiceBusClient("hrisats.servicebus.windows.net", new DefaultAzureCredential(), clientOptions);
+            sender = client.CreateSender("new-employee");
+            using ServiceBusMessageBatch messageBatch = await sender.CreateMessageBatchAsync();
+
+            for (int i = 1; i <= numOfMessages; i++)
+            {
+                if (!messageBatch.TryAddMessage(new ServiceBusMessage($"Message {i}")))
+                {
+                    throw new Exception($"The message {i} is too large to fit in the batch.");
+                }
+            }
+            try
+            {
+                await sender.SendMessagesAsync(messageBatch);
+                Console.WriteLine($"A batch of {numOfMessages} messages has been published to the queue.");
+            }
+            finally
+            {
+                await sender.DisposeAsync();
+                await client.DisposeAsync();
+            }
+
+            Console.WriteLine("Press any key to end the application");
+            Console.ReadKey();
+
+
+
+
+
+
             ConnectionFactory _factory;
             _factory = new ConnectionFactory();
             _factory.UserName = "my-rabbit";
