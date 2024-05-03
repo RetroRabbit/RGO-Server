@@ -12,17 +12,17 @@ public interface IEmployeeQualificationService
     Task<EmployeeQualificationDto> SaveEmployeeQualification(EmployeeQualificationDto employeeQualificationDto);
 
     /// <summary>
-    /// Get Employee Qualification
+    /// Get Employee Qualifications
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     Task<EmployeeQualificationDto> GetEmployeeQualification(string name);
 
     /// <summary>
-    /// Get All Employee Qualifications
+    ///     Get All Employee Qualifications
     /// </summary>
     /// <returns></returns>
-    Task<EmployeeQualificationDto> GetAllEmployeeQualifications();
+    Task<List<EmployeeQualificationDto>> GetAllEmployeeQualifications();
 
     /// <summary>
     /// Update Employee Qualification
