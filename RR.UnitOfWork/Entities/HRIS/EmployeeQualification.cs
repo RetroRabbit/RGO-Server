@@ -17,7 +17,7 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     {
         Id = employeeQualificationDto.Id;
         EmployeeId = employeeQualificationDto.EmployeeId;
-        HighestQualification = employeeQualificationDto.HighestQualification;
+        Qualification = employeeQualificationDto.
         School = employeeQualificationDto.School;
         Degree = employeeQualificationDto.Degree;
         FieldOfStudy = employeeQualificationDto.FieldOfStudy;
@@ -30,7 +30,7 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("qualification")] public string? HighestQualification { get; set; }
+    [Column("qualification")] public string? Qualification { get; set; }
 
     [Column("school")] public string? School { get; set; }
 
@@ -54,7 +54,7 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
         {
             Id = Id,
             EmployeeId = EmployeeId,
-            HighestQualification = HighestQualification,
+            Qualification = Qualification,
             School = School,
             Degree = Degree,
             FieldOfStudy = FieldOfStudy,
