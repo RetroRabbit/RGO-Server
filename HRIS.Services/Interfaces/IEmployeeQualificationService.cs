@@ -14,9 +14,9 @@ public interface IEmployeeQualificationService
     /// <summary>
     /// Get Employee Qualifications
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    Task<EmployeeQualificationDto> GetEmployeeQualification(string name);
+    Task<EmployeeQualificationDto> GetEmployeeQualification(int id);
 
     /// <summary>
     ///     Get All Employee Qualifications
@@ -36,6 +36,6 @@ public interface IEmployeeQualificationService
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<EmployeeQualificationDto> DeleteEmployeeQualification(string name);
+    Task<EmployeeQualificationDto> DeleteEmployeeQualification(int id);
 }
 
