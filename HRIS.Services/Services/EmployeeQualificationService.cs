@@ -12,49 +12,94 @@ public class EmployeeQualificationService : IEmployeeQualificationService
 
     public EmployeeQualificationService(IUnitOfWork db)
     {
-        _db = db;
+        _db = db ?? throw new ArgumentNullException(nameof(db));
     }
 
     public async Task<EmployeeQualificationDto> SaveEmployeeQualification(EmployeeQualificationDto employeeQualificationDto)
     {
-        var newEmployeeQualification = await _db.EmployeeQualification
-            .Add(new EmployeeQualification(employeeQualificationDto));
+        if (employeeQualificationDto == null)
+        {
+            throw new ArgumentNullException(nameof(employeeQualificationDto), "Employee qualification data is null.");
+        }
 
-        return newEmployeeQualification;
+        try
+        {
+            var newEmployeeQualification = await _db.EmployeeQualification.Add(new EmployeeQualification(employeeQualificationDto));
+            return newEmployeeQualification;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task<EmployeeQualificationDto> DeleteEmployeeQualification(int id)
     {
-        var existsingEmployeeQualification = await GetEmployeeQualification(id);
-
-        var employeeQualificationDto = await _db.EmployeeQualification
-            .Delete(existsingEmployeeQualification.Id);
-
-        return employeeQualificationDto;
+        try
+        {
+            var existsingEmployeeQualification = await GetEmployeeQualification(id);
+            var deleteEmployeeQualification = await _db.EmployeeQualification.Delete(existsingEmployeeQualification.Id);
+            return deleteEmployeeQualification;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task<List<EmployeeQualificationDto>> GetAllEmployeeQualifications()
     {
-        return await _db.EmployeeQualification.GetAll();
+        try
+        {
+            return await _db.EmployeeQualification.GetAll();
+        }
+        catch (Exception)
+        {
+            throw;
+        }   
     }
 
     public async Task<EmployeeQualificationDto> GetEmployeeQualification(int id)
     {
-        var existingEmployeeQualification = await _db.EmployeeQualification
-            .Get(employeeQualification => employeeQualification.Id == id)
-            .Select(employeeQualification => employeeQualification.ToDto())
-            .FirstAsync();
+        try
+        {
+            var existingEmployeeQualification = await _db.EmployeeQualification
+             .Get(employeeQualification => employeeQualification.Id == id)
+             .Select(employeeQualification => employeeQualification.ToDto())
+             .FirstAsync();
 
-        return existingEmployeeQualification;
+            if(existingEmployeeQualification == null)
+            {
+                throw new KeyNotFoundException($"Employee qualification with ID {id} not f0und...");
+            }
+
+            return existingEmployeeQualification;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(EmployeeQualificationDto employeeQualificationDto)
     {
-        var existingEmployeeQualification = await GetEmployeeQualification(employeeQualificationDto.Id!);
+        if (employeeQualificationDto == null)
+        {
+            throw new ArgumentNullException(nameof(employeeQualificationDto), "Employee qualification data is null.");
+        }
 
-        var updatedEmployeeQualification = await _db.EmployeeQualification
-                .Update(new EmployeeQualification(existingEmployeeQualification));
+        try
+        {
+            var existingEmployeeQualification = await GetEmployeeQualification(employeeQualificationDto.Id);
 
-        return updatedEmployeeQualification;
+            var updatedEmployeeQualification = await _db.EmployeeQualification
+                    .Update(new EmployeeQualification(existingEmployeeQualification));
+
+            return updatedEmployeeQualification;
+        }
+        catch (Exception)
+        {
+            throw;
+        } 
     }
 }
