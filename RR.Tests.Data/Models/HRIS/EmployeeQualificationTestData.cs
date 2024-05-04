@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
-using RR.Tests.Data.Models.HRIS;
+using System;
+using System.Collections.Generic;
 
 namespace RGO.Tests.Data.Models;
 
@@ -37,4 +38,3 @@ public static class EmployeeQualificationTestData
         MasterQualification
     };
 }
-
