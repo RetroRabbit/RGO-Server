@@ -65,8 +65,11 @@ public class EmployeeDocumentTestData
         CounterSign = false,
         LastUpdatedDate = DateTime.Now
     };
-    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto {
-           Id = 1, EmployeeId = EmployeeTestData.EmployeeDto.Id,
-           FileName = "TestFile.pdf", FileCategory = FileCategory.FixedTerm,
-           Blob = "TestFileContent", UploadDate = DateTime.Now};
+
+    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto 
+    {
+        Id = 1, EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        FileName = "TestFile.pdf", FileCategory = FileCategory.FixedTerm,
+        Blob = "TestFileContent", UploadDate = DateTime.Now
+    };
 }
