@@ -69,5 +69,17 @@ public class WorkExperienceService : IWorkExperienceService
     {
         throw new NotImplementedException();
     }
+
+    //public async Task<WorkExperienceDto> Get(WorkExperienceDto workExperience)
+    //{
+    //    var workExperienceDto = await _db.WorkExperience.Get(x => x.Id == workExperience.Id).Select(x=> .ToDto());
+
+    //    if (workExperienceDto == null)
+    //    {
+    //        var exception = new Exception("Employee work experience data does not exist");
+    //        throw _errorLoggingService.LogException(exception);
+    //    }
+    //    return workExperienceDto;
+    //}
 }
 
