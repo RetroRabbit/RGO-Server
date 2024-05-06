@@ -13,7 +13,38 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
     {
     }
 
-    public EmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
+    public EmployeeCertification(EmployeeCertificationDto certificateDto)
+    {
+        Id = certificateDto.Id;
+        EmployeeId = certificateDto.EmployeeId;
+        CertificateName = certificateDto.CertificateName;
+        CertificateDocument = certificateDto.CertificateDocument;
+        IssueOrganization = certificateDto.IssueOrganization;
+        IssueDate = certificateDto.IssueDate;
+    }
+
+    [Column("id")] public int Id { get; set; }
+    [Column("employeeId")][ForeignKey("Employee")] public int EmployeeId { get; set; }
+    [Column("certificateName")] public string CertificateName { get; set; }
+    [Column("certificateName")] public string CertificateDocument { get; set; }
+    [Column("issueOrganization")] public string IssueOrganization { get; set; }
+    [Column("issueDate")] public DateTime IssueDate { get; set; }
+
+
+    public EmployeeCertificationDto ToDto()
+    {
+        return new EmployeeCertificationDto
+        {
+            Id = Id,
+            EmployeeId = EmployeeId,
+            CertificateName = CertificateName,
+            CertificateDocument = CertificateDocument,
+            IssueDate = IssueDate,
+            IssueOrganization = IssueOrganization
+        };
+    }
+
+    /*public EmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
     {
         Id = employeeCertificationDto.Id;
         EmployeeId = employeeCertificationDto.Employee!.Id;
@@ -68,5 +99,5 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
             AuditDate = AuditDate,
             AuditNote = AuditNote
         };
-    }
+    }*/
 }
