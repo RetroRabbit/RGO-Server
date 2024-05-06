@@ -19,24 +19,21 @@ public class WorkExperienceService : IWorkExperienceService
 
     public async Task<bool> CheckIfExists(WorkExperienceDto workExperience)
     {
-        var exists = await _db.WorkExperience.Any(x =>  x.Id == workExperience.Id);
-
-        return exists;
+        return await _db.WorkExperience.Any(x => x.Id == workExperience.Id);
     }
 
-    public async Task Save(WorkExperienceDto workExperience)
+    public async Task<WorkExperienceDto> Save(WorkExperienceDto workExperience)
     {
-        var exists = await CheckIfExists(workExperience);
 
-        if (exists)
+        if (await CheckIfExists(workExperience))
         {
             var exception = new Exception("Work experience already exists");
             throw _errorLoggingService.LogException(exception);
         }
-        await _db.WorkExperience.Add(new WorkExperience(workExperience));
+        return await _db.WorkExperience.Add(new WorkExperience(workExperience));
     }
 
-    public async Task Update(WorkExperienceDto workExperience)
+    public async Task<WorkExperienceDto> Update(WorkExperienceDto workExperience)
     {
         var exists = await CheckIfExists(workExperience);
 
@@ -53,11 +50,11 @@ public class WorkExperienceService : IWorkExperienceService
             EmploymentType = workExperience.EmploymentType,
             CompanyName = workExperience.CompanyName,
             Location = workExperience.Location,
+            EmployeeId = workExperience.EmployeeId,
             StartDate = workExperience.StartDate,
             EndDate = workExperience.EndDate,
         };
-
-        await _db.WorkExperience.Update(new WorkExperience(workExperienceToUpdate));
+        return await _db.WorkExperience.Update(new WorkExperience(workExperienceToUpdate));
     }
 
     public async Task Delete(int workExperienceId)
@@ -65,21 +62,12 @@ public class WorkExperienceService : IWorkExperienceService
         await _db.WorkExperience.Delete(workExperienceId);
     }
 
-    public Task<WorkExperienceDto> Get(WorkExperienceDto workExperience)
+    public async Task<WorkExperienceDto> GetEmployeeById(int id )
     {
-        throw new NotImplementedException();
+        return await _db.WorkExperience
+             .Get(x => x.Id == id)
+             .Select(x => x.ToDto())
+             .FirstAsync();
     }
-
-    //public async Task<WorkExperienceDto> Get(WorkExperienceDto workExperience)
-    //{
-    //    var workExperienceDto = await _db.WorkExperience.Get(x => x.Id == workExperience.Id).Select(x=> .ToDto());
-
-    //    if (workExperienceDto == null)
-    //    {
-    //        var exception = new Exception("Employee work experience data does not exist");
-    //        throw _errorLoggingService.LogException(exception);
-    //    }
-    //    return workExperienceDto;
-    //}
 }
 

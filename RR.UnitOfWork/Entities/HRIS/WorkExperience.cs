@@ -12,18 +12,18 @@ public class WorkExperience : IModel<WorkExperienceDto>
 
     public WorkExperience(WorkExperienceDto workExperienceDto)
     {
+        Id = workExperienceDto.Id;
         Title = workExperienceDto.Title;
         EmploymentType = workExperienceDto.EmploymentType;
         CompanyName = workExperienceDto.CompanyName;
         Location = workExperienceDto.Location;
         StartDate = workExperienceDto.StartDate;
         EndDate = workExperienceDto.EndDate;
+        EmployeeId = workExperienceDto.EmployeeId;
     }
 
-    [Column("workExperience")]
-    [ForeignKey("Employee")]
+    [Key][Column("id")] public int Id { get; set; }
 
-    public int WorkExperienceId { get; set; }
     [Column("title")] public string Title { get; set; }
 
     [Column("employmentType")] public string? EmploymentType { get; set; }
@@ -36,7 +36,11 @@ public class WorkExperience : IModel<WorkExperienceDto>
 
     [Column("endDate")] public DateOnly EndDate { get; set; }
 
-    [Key][Column("id")] public int Id { get; set; }
+    [ForeignKey("Employee")]
+
+    [Column("employeeId")] public int EmployeeId {  get; set; }
+
+    public virtual Employee? Employee { get; set; }
 
     public WorkExperienceDto ToDto()
     {
@@ -46,8 +50,10 @@ public class WorkExperience : IModel<WorkExperienceDto>
             Title = Title,
             EmploymentType = EmploymentType,
             CompanyName = CompanyName,
+            Location = Location,
+            EmployeeId = EmployeeId,
             StartDate = StartDate,
-            EndDate = EndDate
+            EndDate = EndDate,
         };
     }
 }
