@@ -7,5 +7,5 @@ public interface IWorkExperienceService
     Task<WorkExperienceDto> Save(WorkExperienceDto workExperience);
     Task Delete(int workExperienceId);
     Task<WorkExperienceDto> Update(WorkExperienceDto workExperience);
-    Task<WorkExperienceDto> GetEmployeeById(int id);
+    Task<WorkExperienceDto> GetWorkExperienceById(int id);
 }
