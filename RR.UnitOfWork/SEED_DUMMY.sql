@@ -1,5 +1,5 @@
 INSERT INTO "Client" (id, name)
-VALUES (1, 'Bench');
+VALUES (1, 'WesBank');
 INSERT INTO "Client" (id, name)
 VALUES (2, 'GBZ GasLines');
 INSERT INTO "Client" (id, name)
@@ -10,8 +10,6 @@ INSERT INTO "Client" (id, name)
 VALUES (5, 'ABC Enterprises');
 INSERT INTO "Client" (id, name)
 VALUES (6, 'Company XYZ');
-INSERT INTO "Client" (id, name)
-VALUES (7, 'WesBank');
 INSERT INTO "EmployeeAddress" (id, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (1, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 INSERT INTO "EmployeeAddress" (id, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
