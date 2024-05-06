@@ -194,7 +194,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         else { return true; }
     }
 
-    private async Task<bool> IsAdmin(string email)
+    public async Task<bool> IsAdmin(string email)
     {
         EmployeeDto checkingEmployee = (await _employeeService.GetEmployee(email))!;
 

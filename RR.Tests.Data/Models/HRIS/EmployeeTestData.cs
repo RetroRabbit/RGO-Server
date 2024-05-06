@@ -77,7 +77,7 @@ public class EmployeeTestData
         Race = Race.Black,
         Gender = Gender.Male,
         Photo = null,
-        Email = "test@retrorabbit.co.za",
+        Email = "test1@retrorabbit.co.za",
         PersonalEmail = "test.example@gmail.com",
         CellphoneNo = "0000000000",
         ClientAllocated = null,

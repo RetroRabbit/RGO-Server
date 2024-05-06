@@ -38,6 +38,21 @@ public class EmployeeDocumentServiceUnitTest
     int employeeId = 1;
     static Employee testEmployee = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType);
 
+    private List<EmployeeDocument> GetEmployeeDocumentsByStatus(DocumentStatus status)
+    {
+        var documents = new List<EmployeeDocument>();
+
+        for (int i = 0; i < 2; i++)
+        {
+            documents.Add(new EmployeeDocument()
+            {
+                Status = status
+            });
+        }
+
+        return documents;
+    }
+
     [Fact]
     public async Task SaveEmployeeDocumentPass()
     {
@@ -144,7 +159,85 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Once);
     }
 
-    [Fact]
+    //[Theory]
+    //[InlineData(true, true, 0, DocumentStatus.PendingApproval, DocumentType.starterKit, "test@retrorabbit.co.za", 1)]
+    //[InlineData(true, false, 1, DocumentStatus.PendingApproval, DocumentType.additional, "test@retrorabbit.co.za", 1)]
+    //[InlineData(false, true, 0, DocumentStatus.ActionRequired, DocumentType.starterKit, "test1@retrorabbit.co.za", 0)]
+    //[InlineData(false, false, 1, DocumentStatus.PendingApproval, DocumentType.additional, "test1@retrorabbit.co.za", 1)]
+    //public async Task addNewAdditionalDocumentSetsStatusAndDocType(
+    //bool emailMatches, bool isAdmin, int documentType,
+    //DocumentStatus expectedStatus, DocumentType expectedDocType, String email, int docStatus)
+    //{
+    //    var employeeDocDto = EmployeeDocumentTestData.SimpleDocumentDto;
+
+    //    _employeeTypeServiceMock
+    //       .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+    //       .ReturnsAsync(EmployeeTypeTestData.DeveloperType);
+
+    //    _unitOfWorkMock
+    //        .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+    //        .Returns(
+    //            new List<Employee>
+    //            {
+    //                new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+    //                {
+    //                    Email = email,
+    //                    EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+    //                    PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+    //                    PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+    //                }
+    //            }.AsQueryable().BuildMock());
+
+    //    _unitOfWorkMock
+    //        .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
+    //        .Returns(
+    //            new List<EmployeeBanking>
+    //            {
+    //                new(EmployeeBankingTestData.EmployeeBankingDto)
+    //            }.AsQueryable().BuildMock());
+
+
+
+    //    List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
+    //    _employeeServiceMock.Setup(x => x.GetById(employeeId))
+    //        .ReturnsAsync(EmployeeTestData.EmployeeDto);
+
+    //    _unitOfWorkMock
+    //        .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+    //        .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
+
+    //    _unitOfWorkMock
+    //        .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+    //        .Returns(roles.AsQueryable().BuildMock());
+
+    //    EmployeeDocumentDto employeeDocument = null;
+    //    if(docStatus == 0)
+    //    {
+    //        employeeDocument = EmployeeDocumentTestData.EmployeeDocumentActionRequired;
+    //    }
+    //    else
+    //    {
+    //        employeeDocument = EmployeeDocumentTestData.EmployeeDocumentPending;
+    //    }
+
+
+    //    _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
+    //        .ReturnsAsync(employeeDocument);
+
+    //    _employeeDocumentServiceMock.Setup(x => x.IsAdmin(email)).ReturnsAsync(isAdmin);
+
+    //    var result = await _employeeDocumentService.addNewAdditionalDocument(employeeDocDto, email, documentType);
+
+    //    Assert.Equal(expectedStatus, result.Status);
+    //    Assert.Equal(expectedDocType, result.DocumentType);
+    //}
+
+    public async Task addNewAdditionalDocumentStatus()
+    {
+
+    }
+
+  [Fact]
     public async Task SaveEmployeeAdminDocumentPass()
     {
         _employeeTypeServiceMock
@@ -200,7 +293,8 @@ public class EmployeeDocumentServiceUnitTest
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
                             .ReturnsAsync((EmployeeDto?)null);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("employee not found"));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+            .Throws(new Exception("employee not found"));
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _employeeDocumentService
             .SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
@@ -233,6 +327,61 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
+    public async Task GetEmployeeDocumentEmployeeNotFoundFail()
+    {
+        var employeeId = 1;
+        var filename = "sample_certification.pdf";
+        var documentType = DocumentType.starterKit;
+
+        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+                        .ReturnsAsync((EmployeeDto)null);
+
+        _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);
+
+        _unitOfWorkMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func <Employee, bool>>>()))
+            .Returns(Enumerable.Empty<Employee>().AsQueryable().BuildMock());
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                       .Returns(Enumerable.Empty<EmployeeDocument>().AsQueryable().BuildMock());
+
+        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found")); 
+
+        var exception = await Assert.ThrowsAsync<Exception>(() =>
+                        _employeeDocumentService.GetEmployeeDocument(employeeId, filename, documentType));
+
+        Assert.Equal("Employee not found", exception.Message);
+
+        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetEmployeeDocumentRecordNotFoundFail()
+    {
+        var employeeId = 1;
+        var filename = "sample_certification.pdf";
+        var documentType = DocumentType.starterKit;
+
+        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                      .Returns(mockEmployeeDbSet.Object);
+
+        _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(true);
+
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+            .Returns(new List<EmployeeDocument>().AsQueryable().BuildMock());
+
+        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
+            .Throws(new Exception("Employee certification record not found"));
+
+        var exception = await Assert.ThrowsAsync<Exception>(() =>
+                    _employeeDocumentService.GetEmployeeDocument(employeeId, filename, documentType));
+
+        Assert.Equal("Employee certification record not found", exception.Message);
+        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
+    }
+
+    [Fact]
     public async Task GetAllEmployeeDocumentsPass()
     {
         var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
@@ -260,6 +409,33 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
+    public async Task GetAllEmployeeDocumentsFail()
+    {
+        var employeeId = 1;
+        var documentType = DocumentType.starterKit;
+
+        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+                        .ReturnsAsync((EmployeeDto)null);
+
+        _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);
+
+        _unitOfWorkMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(Enumerable.Empty<Employee>().AsQueryable().BuildMock());
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                       .Returns(Enumerable.Empty<EmployeeDocument>().AsQueryable().BuildMock());
+
+        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
+
+        var exception = await Assert.ThrowsAsync<Exception>(() =>
+                        _employeeDocumentService.GetAllEmployeeDocuments(employeeId, documentType));
+
+        Assert.Equal("Employee not found", exception.Message);
+
+        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
+    }
+
+    [Fact]
     public async Task UpdateEmployeeDocumentPass()
     {
         var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
@@ -275,6 +451,32 @@ public class EmployeeDocumentServiceUnitTest
         var result = await service.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending);
 
         Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeDocumentFail()
+    {
+        var employeeId = 1;
+
+        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+                        .ReturnsAsync((EmployeeDto)null);
+
+        _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);
+
+        _unitOfWorkMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(Enumerable.Empty<Employee>().AsQueryable().BuildMock());
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                       .Returns(Enumerable.Empty<EmployeeDocument>().AsQueryable().BuildMock());
+
+        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
+
+        var exception = await Assert.ThrowsAsync<Exception>(() =>
+                        _employeeDocumentService.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved));
+
+        Assert.Equal("Employee not found", exception.Message);
+
+        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]
@@ -296,73 +498,52 @@ public class EmployeeDocumentServiceUnitTest
         Assert.NotNull(result);
     }
 
-    [Fact]
-    public async Task GetEmployeeDocumentsByStatusPendingPass()
+    [Theory]
+    [InlineData(DocumentStatus.PendingApproval)]
+    [InlineData(DocumentStatus.Approved)]
+    [InlineData(DocumentStatus.Rejected)]
+    public async Task GetEmployeeDocumentsByStatusPass(DocumentStatus status)
     {
         var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMock();
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                      .Returns(mockEmployeeDbSet);
+                       .Returns(mockEmployeeDbSet);
 
-        var employeeDocuments = new List<EmployeeDocument>
-        {
-            new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending),
-            new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending)
-        };
-
+        var employeeDocuments = GetEmployeeDocumentsByStatus(status);
         var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
-        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-                      .Returns(mockEmployeeDocumentDbSet);
 
-        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.PendingApproval);
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                       .Returns(mockEmployeeDocumentDbSet);
+
+        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, status);
 
         Assert.NotNull(result);
         Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public async Task GetEmployeeDocumentsByStatusApprovedPass()
+    public async Task GetEmployeeDocumentsByStatusFail()
     {
-        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMock();
-        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                      .Returns(mockEmployeeDbSet);
+        var employeeId = 1;
 
-        var employeeDocuments = new List<EmployeeDocument>
-        {
-            new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved),
-            new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved)
-        };
+        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+                        .ReturnsAsync((EmployeeDto)null);
 
-        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
-        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-                      .Returns(mockEmployeeDocumentDbSet);
+        _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);
 
-        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.Approved);
+        _unitOfWorkMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(Enumerable.Empty<Employee>().AsQueryable().BuildMock());
 
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count);
-    }
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                       .Returns(Enumerable.Empty<EmployeeDocument>().AsQueryable().BuildMock());
 
-    [Fact]
-    public async Task GetEmployeeDocumentsByStatusRejectedPass()
-    {
-        var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMock();
-        _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                      .Returns(mockEmployeeDbSet);
+        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
 
-        var employeeDocuments = new List<EmployeeDocument>
-        {
-            new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentRejected),
-            new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentRejected)
-        };
+        var exception = await Assert.ThrowsAsync<Exception>(() =>
+                        _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId,DocumentStatus.Approved));
 
-        var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMock();
-        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-                      .Returns(mockEmployeeDocumentDbSet);
+        Assert.Equal("Employee not found", exception.Message);
 
-        var result = await _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.Rejected);
-
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count);
+        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]

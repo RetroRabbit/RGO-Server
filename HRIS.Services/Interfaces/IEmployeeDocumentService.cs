@@ -62,4 +62,8 @@ public interface IEmployeeDocumentService
     /// </summary>
     /// <returns></returns>
     Task<List<SimpleEmployeeDocumentGetAllDto>> GetAllDocuments();
+
+    Task<bool> CheckEmployee(int employeeId);
+
+    Task<bool> IsAdmin(string email);
 }
