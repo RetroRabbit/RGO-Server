@@ -2,10 +2,12 @@
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
+using System;
+using HRIS.Models.Enums.QualificationEnums;
 
 
 namespace RR.UnitOfWork.Entities.HRIS;
+
 [Table("EmployeeQualifications")]
 public class EmployeeQualification : IModel<EmployeeQualificationDto>
 {
@@ -30,23 +32,32 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("qualification")] public string? Qualification { get; set; }
+    [Column("qualification")] 
+    public string? Qualification { get; set; }
 
-    [Column("school")] public string? School { get; set; }
+    [Column("school")] 
+    public string? School { get; set; }
 
-    [Column("degree")] public string? Degree { get; set; }
+    [Column("degree")] 
+    public DegreeType Degree { get; set; }
 
-    [Column("field")] public string? FieldOfStudy { get; set; }
+    [Column("field")] 
+    public FieldOfStudy FieldOfStudy { get; set; }
 
-    [Column("nqf")] public string? NQF { get; set; }
+    [Column("nqf")] 
+    public NQFLevel NQF { get; set; }
 
-    [Column("startDate")] public DateTime StartDate { get; set; }
+    [Column("startDate")] 
+    public DateTime StartDate { get; set; }
 
-    [Column("endDate")] public DateTime? EndDate { get; set; }
+    [Column("endDate")] 
+    public DateTime? EndDate { get; set; }
 
     public virtual Employee? Employee { get; set; }
 
-    [Key][Column("id")] public int Id { get; set; }
+    [Key]
+    [Column("id")] 
+    public int Id { get; set; }
 
     public EmployeeQualificationDto ToDto()
     {
