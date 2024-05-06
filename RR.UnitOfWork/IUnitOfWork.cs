@@ -35,6 +35,7 @@ public interface IUnitOfWork
     IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     IErrorLoggingRepository ErrorLogging { get; }
     ICandidateRepository Candidate { get; }
+    IWorkExperienceRepository WorkExperience { get; }
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
 
