@@ -7,7 +7,7 @@ public enum FileCategory
     Medical,
     MIE,
     PaySlip,
-    ID,
+    IdentityDocument,
     IdVerification,
     CopyCV,
     QualificationCheck,
