@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using HRIS.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using RR.UnitOfWork.Entities;
@@ -46,6 +47,7 @@ public class UnitOfWork : IUnitOfWork
         MonthlyEmployeeTotal = new MonthlyEmployeeTotalRepository(_db);
         ErrorLogging = new ErrorLoggingRepository(_db);
         Candidate = new CandidateRepository(_db);
+        ClientProject = new ClientProjectRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -76,6 +78,8 @@ public class UnitOfWork : IUnitOfWork
     public IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     public IErrorLoggingRepository ErrorLogging { get; }
     public ICandidateRepository Candidate { get; }
+
+    public IClientProjectRepository ClientProject { get; }
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
         await _db.Database.ExecuteSqlRawAsync(sql, parameters);

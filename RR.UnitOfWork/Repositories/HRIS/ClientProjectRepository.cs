@@ -1,14 +1,14 @@
-﻿using RR.UnitOfWork.Interfaces.HRIS;
-using RR.UnitOfWork.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Interfaces.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS
 {
-    public interface IClientProjectRepository : IRepository<ClientProject, ClientProjectsDto>
+    public class ClientProjectRepository : BaseRepository<ClientProject, ClientProjectsDto>, IClientProjectRepository
     {
+        public ClientProjectRepository(DatabaseContext db) : base(db)
+        {
+
+        }
     }
 }

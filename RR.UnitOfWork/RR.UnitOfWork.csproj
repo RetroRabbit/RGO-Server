@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Entities\HRIS\ClientProject.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.62.0.3105" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
@@ -37,10 +33,6 @@
     <Folder Include="Interfaces\ATS\" />
     <Folder Include="Migrations\" />
     <Folder Include="Repositories\ATS\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Entities\HRIS\ClientProject.cs" />
   </ItemGroup>
 
   <ItemGroup>

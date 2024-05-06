@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HRIS.Models
+﻿namespace HRIS.Models
 {
-    public class ClientProject
+    public class ClientProjectsDto
     {
         public int Id { get; set; }
         public string NameOfClient { get; set; }
@@ -16,4 +10,3 @@ namespace HRIS.Models
         public string UploadProjectUrl { get; set; }
     }
 }
-

@@ -1,47 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HRIS.Models;
+using RR.UnitOfWork.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RR.UnitOfWork.Entities.HRIS
 {
-    [Table("ClientProject")]
-
-    public class ClientProject : <ClientProjectsDto>
+    public class ClientProject : IModel<ClientProjectsDto>
     {
         public ClientProject()
         {
         }
 
-        public ClientProject(ClientProjectsDto clientProjectsDto)
+        public ClientProject(ClientProjectsDto dto)
         {
-            Id = clientProjectsDto.Id;
-            NameOfClient = clientProjectsDto.NameOfClient;
-            ProjectName = clientProjectsDto.ProjectName;
-            StartDate = clientProjectsDto.StartDate;
-            EndDate = clientProjectsDto.EndDate;
-            UploadProjectUrl = clientProjectsDto.UploadProjectUrl;
+            Id = dto.Id;
+            NameOfClient = dto.NameOfClient;
+            ProjectName = dto.ProjectName;
+            StartDate = dto.StartDate;
+            EndDate = dto.EndDate;
+            UploadProjectUrl = dto.UploadProjectUrl;
         }
 
-        [key] [colum("id")] public int Id { get; set; }
-        [colum("nameOfClient")] public string? NameOfClient {  get; set; }
-		[colum("projectName")] public string? ProjectName { get; set; }
-		[colum("startDate")] public string? StartDate { get; set; }
-		[colum("endDate")] public string? EndDate { get; set; }
-		[colum("uploadProjectUrl")] public string? UploadProjectUrl { get; set; }
-	}
+        [Key]
+        [Column("id")]
+        public int Id { get; set; }
 
-	public  ToDto()
-	{
-		return new clientProjectsDto
-		{
-			Id = clientProjectsDto.Id;
-		    NameOfClient = NameOfClient;
-		    ProjectName = ProjectName;
-		    StartDate = StartDate;
-		    EndDate = EndDate;
-		    UploadProjectUrl = UploadProjectUrl
-		};
-	}
+        [Column("nameOfClient")]
+        public string? NameOfClient { get; set; }
+
+        [Column("projectName")]
+        public string? ProjectName { get; set; }
+
+        [Column("startDate")]
+        public DateTime StartDate { get; set; }
+
+        [Column("endDate")]
+        public DateTime EndDate { get; set; }
+
+        [Column("uploadProjectUrl")]
+        public string? UploadProjectUrl { get; set; }
+
+        [Column("employeeId")]
+        public int EmployeeId { get; set; }
+
+        [ForeignKey("EmployeeId")]
+        public Employee Employee { get; set; }
+
+        public ClientProjectsDto ToDto()
+        {
+            return new ClientProjectsDto
+            {
+                Id = Id,
+                NameOfClient = NameOfClient,
+                ProjectName = ProjectName,
+                StartDate = StartDate,
+                EndDate = EndDate,
+                UploadProjectUrl = UploadProjectUrl
+            };
+        }
+    }
 }

@@ -2,6 +2,7 @@
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS
 {
@@ -10,13 +11,12 @@ namespace RR.App.Controllers.HRIS
     public class ClientProjectsController : ControllerBase
     {
         private readonly IClientProjectService _clientProjectService;
-
         public ClientProjectsController(IClientProjectService clientProjectService)
         {
             _clientProjectService = clientProjectService;
         }
 
-        // GET: api
+        // GET
         [HttpGet]
         public async Task<IActionResult> GetAllClientProjects()
         {
@@ -24,7 +24,7 @@ namespace RR.App.Controllers.HRIS
             return Ok(clientProjects);
         }
 
-        // GET: api/id
+        // GET
         [HttpGet("{id}")]
         public async Task<ActionResult<ClientProject>> GetClientProject(int id)
         {
@@ -38,7 +38,7 @@ namespace RR.App.Controllers.HRIS
             return clientProject;
         }
 
-        // POST: api
+        // POST
         [HttpPost]
         public async Task<ActionResult<ClientProject>> PostClientProject(ClientProject clientProject)
         {
@@ -46,7 +46,7 @@ namespace RR.App.Controllers.HRIS
             return CreatedAtAction(nameof(GetClientProject), new { id = createdClientProject.Id }, createdClientProject);
         }
 
-        // PUT: api
+        // PUT
         [HttpPut("{id}")]
         public async Task<IActionResult> PutClientProject(int id, ClientProject clientProject)
         {
@@ -59,7 +59,7 @@ namespace RR.App.Controllers.HRIS
             return NoContent();
         }
 
-        // DELETE: api
+        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClientProject(int id)
         {

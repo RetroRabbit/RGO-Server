@@ -1,24 +1,60 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Interfaces.HRIS;
 
 namespace HRIS.Services.Services
 {
-    internal class ClientProjectService : IClientProjectService
+    public class ClientProjectService : IClientProjectService
     {
-        private readonly IUnitOfWork _db;
+        private readonly IClientProjectRepository _clientProjectRepository;
 
-        public ClientProjectService(IUnitOfWork db)
+        public ClientProjectService(IClientProjectRepository clientProjectRepository)
         {
-            _db = db;
+            _clientProjectRepository = clientProjectRepository;
         }
-        public async Task<List<ClientProjectsDto>?> GetAllClientProject()
+
+        public Task<ClientProject> CreateClientProject(ClientProject clientProject)
         {
-            var clients = await _db.Client.GetAll();
-            var allClients = clients
-                             .Select(client => client)
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteClientProject(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ClientProject>> GetAllClientProject()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClientProject?> GetClientProject(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<ClientProjectsDto>> GetClientProjectsDtos()
+        {
+            var dtos = await _clientProjectRepository.GetAll();
+            var allClientProjects = dtos
+                             .Select(dto => new ClientProjectsDto
+                             {
+                                 Id = dto.Id,
+                                 NameOfClient = dto.NameOfClient,
+                                 ProjectName = dto.ProjectName,
+                                 StartDate = dto.StartDate,
+                                 EndDate = dto.EndDate,
+                                 UploadProjectUrl = dto.UploadProjectUrl
+                             })
                              .ToList();
-            return allClients;
+            return allClientProjects;
+        }
+
+        public Task UpdateClientProject(ClientProject clientProject)
+        {
+            throw new NotImplementedException();
         }
     }
 }
+
