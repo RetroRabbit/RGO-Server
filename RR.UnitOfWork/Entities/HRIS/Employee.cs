@@ -276,7 +276,7 @@ public class Employee : IModel<EmployeeDto>
             Surname = this.Surname!,
             PersonalEmail = this.PersonalEmail!,
             PotentialLevel = this.Level!.Value,
-            JobPosition = (PositionType)this.EmployeeTypeId,
+            JobPosition = (PositionType)this.EmployeeTypeId!,
             LinkedIn = this.LinkedIn,
             ProfilePicture = this.Photo,
             CellphoneNumber = this.CellphoneNo,
