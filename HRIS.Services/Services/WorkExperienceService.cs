@@ -62,7 +62,7 @@ public class WorkExperienceService : IWorkExperienceService
         await _db.WorkExperience.Delete(workExperienceId);
     }
 
-    public async Task<WorkExperienceDto> GetEmployeeById(int id )
+    public async Task<WorkExperienceDto> GetWorkExperienceById(int id )
     {
         return await _db.WorkExperience
              .Get(x => x.Id == id)

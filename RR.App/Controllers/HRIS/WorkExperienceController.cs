@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace RR.App.Controllers.HRIS;
 
 
-[Route("employee-date")]
+[Route("work-experience")]
 [ApiController]
 public class WorkExperienceController : ControllerBase
 {
@@ -23,7 +23,7 @@ public class WorkExperienceController : ControllerBase
         try
         {
             var workExperience = await _workExperienceService.Save(newWorkExperience);
-            return CreatedAtAction(nameof(workExperience), workExperience);
+            return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
         }
         catch (Exception ex)
         {
@@ -54,8 +54,8 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var deletedWorkExperience = await _workExperienceService.Delete(id);
-            return Ok(deletedWorkExperience);
+           await _workExperienceService.Delete(id);
+           return Ok();
         }
         catch (Exception ex)
         {
