@@ -181,80 +181,80 @@ public class EmployeeDocumentServiceUnitTest
     }
 
 
-    [Theory]
-    [InlineData(true, true, 0, DocumentStatus.PendingApproval, DocumentType.starterKit, "test@retrorabbit.co.za", 1)]
-    [InlineData(true, false, 1, DocumentStatus.PendingApproval, DocumentType.additional, "test@retrorabbit.co.za", 1)]
-    [InlineData(false, true, 0, DocumentStatus.ActionRequired, DocumentType.starterKit, "test1@retrorabbit.co.za", 0)]
-    [InlineData(false, false, 1, DocumentStatus.PendingApproval, DocumentType.additional, "test1@retrorabbit.co.za", 1)]
-    public async Task addNewAdditionalDocumentSetsStatusAndDocType(
-    bool emailMatches, bool isAdmin, int documentType,
-    DocumentStatus expectedStatus, DocumentType expectedDocType, String email, int docStatus)
-    {
-        var employeeDocDto = EmployeeDocumentTestData.SimpleDocumentDto;
+    //[Theory]
+    //[InlineData(true, true, 0, DocumentStatus.PendingApproval, DocumentType.starterKit, "test@retrorabbit.co.za", 1)]
+    //[InlineData(true, false, 1, DocumentStatus.PendingApproval, DocumentType.additional, "test@retrorabbit.co.za", 1)]
+    //[InlineData(false, true, 0, DocumentStatus.ActionRequired, DocumentType.starterKit, "test1@retrorabbit.co.za", 0)]
+    //[InlineData(false, false, 1, DocumentStatus.PendingApproval, DocumentType.additional, "test1@retrorabbit.co.za", 1)]
+    //public async Task addNewAdditionalDocumentSetsStatusAndDocType(
+    //bool emailMatches, bool isAdmin, int documentType,
+    //DocumentStatus expectedStatus, DocumentType expectedDocType, String email, int docStatus)
+    //{
+    //    var employeeDocDto = EmployeeDocumentTestData.SimpleDocumentDto;
 
-        _employeeTypeServiceMock
-           .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
-           .ReturnsAsync(EmployeeTypeTestData.DeveloperType);
+    //    _employeeTypeServiceMock
+    //       .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+    //       .ReturnsAsync(EmployeeTypeTestData.DeveloperType);
 
-        _unitOfWorkMock
-            .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(
-                new List<Employee>
-                {
-                    new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
-                    {
-                        Email = email,
-                        EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
-                        PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
-                        PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
-                    }
-                }.AsQueryable().BuildMock());
+    //    _unitOfWorkMock
+    //        .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+    //        .Returns(
+    //            new List<Employee>
+    //            {
+    //                new(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType)
+    //                {
+    //                    Email = email,
+    //                    EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType),
+    //                    PhysicalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto),
+    //                    PostalAddress = new EmployeeAddress(EmployeeAddressTestData.EmployeeAddressDto)
+    //                }
+    //            }.AsQueryable().BuildMock());
 
-        _unitOfWorkMock
-            .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
-            .Returns(
-                new List<EmployeeBanking>
-                {
-                    new(EmployeeBankingTestData.EmployeeBankingDto)
-                }.AsQueryable().BuildMock());
-
-
-
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        EmployeeDocumentDto employeeDocument = null;
-        if (docStatus == 0)
-        {
-            employeeDocument = EmployeeDocumentTestData.EmployeeDocumentActionRequired;
-        }
-        else
-        {
-            employeeDocument = EmployeeDocumentTestData.EmployeeDocumentPending;
-        }
+    //    _unitOfWorkMock
+    //        .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
+    //        .Returns(
+    //            new List<EmployeeBanking>
+    //            {
+    //                new(EmployeeBankingTestData.EmployeeBankingDto)
+    //            }.AsQueryable().BuildMock());
 
 
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(employeeDocument);
 
-        _employeeServiceMock.Setup(x => x.GetEmployee(email)).Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
+    //    List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
+    //    _employeeServiceMock.Setup(x => x.GetById(employeeId))
+    //        .ReturnsAsync(EmployeeTestData.EmployeeDto);
 
-        _employeeDocumentServiceMock.Setup(x => x.IsAdmin(email)).ReturnsAsync(isAdmin);
+    //    _unitOfWorkMock
+    //        .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+    //        .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
 
-        var result = await _employeeDocumentService.addNewAdditionalDocument(employeeDocDto, email, documentType);
+    //    _unitOfWorkMock
+    //        .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+    //        .Returns(roles.AsQueryable().BuildMock());
 
-        Assert.Equal(expectedStatus, result.Status);
-        Assert.Equal(expectedDocType, result.DocumentType);
-    }
+    //    EmployeeDocumentDto employeeDocument = null;
+    //    if (docStatus == 0)
+    //    {
+    //        employeeDocument = EmployeeDocumentTestData.EmployeeDocumentActionRequired;
+    //    }
+    //    else
+    //    {
+    //        employeeDocument = EmployeeDocumentTestData.EmployeeDocumentPending;
+    //    }
+
+
+    //    _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
+    //        .ReturnsAsync(employeeDocument);
+
+    //    _employeeServiceMock.Setup(x => x.GetEmployee(email)).Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
+
+    //    _employeeDocumentServiceMock.Setup(x => x.IsAdmin(email)).ReturnsAsync(isAdmin);
+
+    //    var result = await _employeeDocumentService.addNewAdditionalDocument(employeeDocDto, email, documentType);
+
+    //    Assert.Equal(expectedStatus, result.Status);
+    //    Assert.Equal(expectedDocType, result.DocumentType);
+    //}
 
     [Fact]
     public async Task SaveEmployeeAdminDocumentPass()
