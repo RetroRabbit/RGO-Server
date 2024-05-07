@@ -294,6 +294,46 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("Client");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("endDate");
+
+                    b.Property<string>("NameOfClient")
+                        .HasColumnType("text")
+                        .HasColumnName("nameOfClient");
+
+                    b.Property<string>("ProjectName")
+                        .HasColumnType("text")
+                        .HasColumnName("projectName");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("startDate");
+
+                    b.Property<string>("UploadProjectUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("uploadProjectUrl");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("ClientProject");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -347,7 +387,7 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("employeeNumber");
 
-                    b.Property<int>("EmployeeTypeId")
+                    b.Property<int?>("EmployeeTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeTypeId");
 
@@ -1205,6 +1245,17 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Client", "ClientAssigned")
@@ -1213,9 +1264,7 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeType", "EmployeeType")
                         .WithMany()
-                        .HasForeignKey("EmployeeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeTypeId");
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "ChampionEmployee")
                         .WithMany()

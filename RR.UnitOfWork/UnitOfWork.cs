@@ -78,7 +78,6 @@ public class UnitOfWork : IUnitOfWork
     public IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     public IErrorLoggingRepository ErrorLogging { get; }
     public ICandidateRepository Candidate { get; }
-
     public IClientProjectRepository ClientProject { get; }
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {

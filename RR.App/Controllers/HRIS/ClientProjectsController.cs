@@ -1,12 +1,10 @@
-﻿using System.Threading.Tasks;
-using HRIS.Models;
-using HRIS.Services.Interfaces;
+﻿using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS
 {
-    [Route("api/[controller]")]
+    [Route("ClienteProject")]
     [ApiController]
     public class ClientProjectsController : ControllerBase
     {
