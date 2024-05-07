@@ -154,7 +154,8 @@ public class EmployeeDateServiceUnitTests
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .ReturnsAsync(true);
 
-        await _employeeDateService.Update(new EmployeeDateDto{ Id = 1, Employee = _employeeDto, Subject = "Subject", Note = "Note", Date = new DateOnly()});
+        await _employeeDateService.Update(new EmployeeDateDto{ 
+            Id = 1, Employee = _employeeDto, Subject = "Subject", Note = "Note", Date = new DateOnly()});
 
         _mockDb.Verify(x => x.EmployeeDate.Update(It.IsAny<EmployeeDate>()), Times.Once);
     }
