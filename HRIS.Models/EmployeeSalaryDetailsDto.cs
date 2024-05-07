@@ -10,7 +10,8 @@ namespace HRIS.Models;
 public class EmployeeSalaryDetailsDto
 {
     public int Id { get; set; }
-    public EmployeeDto? Employee { get; set; }
+    //public EmployeeDto? Employee { get; set; }
+    public int EmployeeId { get; set; }
     public float? Salary { get; set; }
     public float? MinSalary { get; set; }
     public float? MaxSalary { get; set; }
