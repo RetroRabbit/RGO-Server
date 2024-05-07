@@ -5,5 +5,15 @@ public enum FileCategory
     FixedTerm,
     Retirement,
     Medical,
-    Other
+    MIE,
+    PaySlip,
+    IdentityDocument,
+    IdVerification,
+    CopyCV,
+    QualificationCheck,
+    CriminalCheck,
+    ReferenceList,
+    ApprovalOfOffer,
+    ConfirmationOfOffer,
+    CostToCompany
 }

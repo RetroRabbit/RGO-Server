@@ -464,7 +464,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetChurnRateSuccessTest()
     {
-        var expectedChurnRate = new ChurnRateDataCard { ChurnRate = 0.15 };
+        var expectedChurnRate = new ChurnRateDataCardDto { ChurnRate = 0.15 };
         _employeeMockService.Setup(service => service.CalculateEmployeeChurnRate())
                             .ReturnsAsync(expectedChurnRate);
 
@@ -472,7 +472,7 @@ public class EmployeeControllerUnitTests
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(expectedChurnRate.ChurnRate, ((ChurnRateDataCard)okObjectResult.Value!).ChurnRate);
+        Assert.Equal(expectedChurnRate.ChurnRate, ((ChurnRateDataCardDto)okObjectResult.Value!).ChurnRate);
     }
 
     [Fact]
