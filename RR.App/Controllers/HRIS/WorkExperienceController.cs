@@ -1,6 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -17,6 +18,7 @@ public class WorkExperienceController : ControllerBase
         _workExperienceService = workExperienceService;
     }
 
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveWorkExperience([FromBody] WorkExperienceDto newWorkExperience)
     {
@@ -34,6 +36,7 @@ public class WorkExperienceController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetWorkExperienceById([FromQuery] int id)
     {
@@ -49,13 +52,14 @@ public class WorkExperienceController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteWorkExperience([FromQuery] int id)
     {
         try
         {
-           await _workExperienceService.Delete(id);
-           return Ok();
+            await _workExperienceService.Delete(id);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -63,6 +67,7 @@ public class WorkExperienceController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateWorkExperience([FromBody] WorkExperienceDto workExperience)
     {
@@ -78,7 +83,7 @@ public class WorkExperienceController : ControllerBase
                 Location = workExperience.Location,
                 EmployeeId = workExperience.EmployeeId,
                 StartDate = workExperience.StartDate,
-                EndDate =workExperience.EndDate,
+                EndDate = workExperience.EndDate,
             };
 
             await _workExperienceService.Update(workExperienceData);
