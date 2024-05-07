@@ -347,7 +347,7 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("employeeNumber");
 
-                    b.Property<int>("EmployeeTypeId")
+                    b.Property<int?>("EmployeeTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeTypeId");
 
@@ -584,6 +584,45 @@ namespace RR.UnitOfWork.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeeBanking");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeCertification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CertificateDocument")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("certificateDocument");
+
+                    b.Property<string>("CertificateName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("certificateName");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issueDate");
+
+                    b.Property<string>("IssueOrganization")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("issueOrganization");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeCertification");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeData", b =>
@@ -1213,9 +1252,7 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeType", "EmployeeType")
                         .WithMany()
-                        .HasForeignKey("EmployeeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeTypeId");
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "ChampionEmployee")
                         .WithMany()
@@ -1247,6 +1284,17 @@ namespace RR.UnitOfWork.Migrations
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeBanking", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeCertification", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
                         .WithMany()

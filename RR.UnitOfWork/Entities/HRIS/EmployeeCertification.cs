@@ -8,9 +8,9 @@ namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeCertification")]
 public class EmployeeCertification : IModel<EmployeeCertificationDto>
-{
-    public EmployeeCertification()
-    {
+{ 
+    public EmployeeCertification() 
+    { 
     }
 
     public EmployeeCertification(EmployeeCertificationDto certificateDto)
@@ -23,13 +23,19 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
         IssueDate = certificateDto.IssueDate;
     }
 
-    [Column("id")] public int Id { get; set; }
+    [Key][Column("id")] public int Id { get; set; }
+
     [Column("employeeId")][ForeignKey("Employee")] public int EmployeeId { get; set; }
+
     [Column("certificateName")] public string CertificateName { get; set; }
-    [Column("certificateName")] public string CertificateDocument { get; set; }
+
+    [Column("certificateDocument")] public string CertificateDocument { get; set; }
+
     [Column("issueOrganization")] public string IssueOrganization { get; set; }
+
     [Column("issueDate")] public DateTime IssueDate { get; set; }
 
+    public virtual Employee? Employee { get; set; }
 
     public EmployeeCertificationDto ToDto()
     {

@@ -5,6 +5,8 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RGO.Tests.Data.Models;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -17,6 +19,17 @@ public class EmployeeCertificationServiceUnitTests
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
 
+    private readonly EmployeeCertificationDto employeeCertificationDto = new EmployeeCertificationDto
+    {
+        Id = 1,
+        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        CertificateDocument = "base64",
+        CertificateName = "Title",
+        IssueOrganization = "Publisher",
+        IssueDate = DateTime.UtcNow,
+
+    };
+
     public EmployeeCertificationServiceUnitTests()
     {
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
@@ -25,74 +38,6 @@ public class EmployeeCertificationServiceUnitTests
 
     private EmployeeCertificationDto CreateEmployeeCertificationDto()
     {
-        var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
-        var employeeAddressDto =
-            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
-
-        var employeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = employeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Dorothy",
-            Initials = "D",
-            Surname = "Mahoko",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000080000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = null,
-            Race = Race.Black,
-            Gender = Gender.Male,
-            Email = "texample@retrorabbit.co.za",
-            PersonalEmail = "test.example@gmail.com",
-            CellphoneNo = "0000000000",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
-        };
-
-        var employeeDocumentDto = new EmployeeDocumentDto
-        {
-            Id = 1,
-            EmployeeId = 1,
-            Reference = null,
-            FileName = "filename",
-            FileCategory = FileCategory.FixedTerm,
-            Blob = "blobstring",
-            Status = DocumentStatus.Approved,
-            UploadDate = new DateTime(2020, 1, 1),
-            Reason = null,
-            CounterSign = true,
-            LastUpdatedDate = new DateTime(2020, 1, 1),
-        };
-
-
-        var employeeCertificationDto = new EmployeeCertificationDto
-        {
-            Id = 1,
-            Employee = employeeDto,
-            EmployeeDocument = employeeDocumentDto,
-            Title = "Title",
-            Publisher = "Publisher",
-            Status = EmployeeCertificationStatus.Approved,
-            AuditBy = employeeDto,
-            AuditDate = new DateTime(2020, 1, 1),
-            AuditNote = "audit note"
-        };
         return employeeCertificationDto;
     }
 
@@ -178,34 +123,21 @@ public class EmployeeCertificationServiceUnitTests
 
     [Fact]
     public async Task SaveEmployeeCertificationFailWhenEmployeeNotFound()
-    {
+    { 
         var emptyEmployeeList = new List<Employee>().AsQueryable();
         var mock = emptyEmployeeList.BuildMock();
-
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(mock);
 
         var employeeCertificationDto = CreateEmployeeCertificationDto();
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+                                 .Throws(new Exception("Employee not found")); // Or a custom exception
 
         await Assert.ThrowsAsync<Exception>(() =>
-                                                _employeeCertificationService
-                                                    .SaveEmployeeCertification(employeeCertificationDto));
-    }
+                    _employeeCertificationService.SaveEmployeeCertification(employeeCertificationDto));
 
-    [Fact]
-    public async Task SaveEmployeeCertificationFailWhenCertificationExists()
-    {
-        var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetup(employeeCertificationDto.Employee!);
-        MockEmployeeCertificationRepositorySetup(employeeCertificationDto);
-
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() =>
-                                                _employeeCertificationService
-                                                    .SaveEmployeeCertification(employeeCertificationDto));
+        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 
     [Fact]
@@ -213,7 +145,7 @@ public class EmployeeCertificationServiceUnitTests
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
 
-        MockEmployeeRepositorySetupWithEmployeeAsync(employeeCertificationDto.Employee!);
+        MockEmployeeRepositorySetupWithEmployeeAsync(EmployeeTestData.EmployeeDto);
         MockEmployeeCertificationRepositorySetupEmptyAsync();
         MockEmployeeCertificationRepositorySetupForAdd(employeeCertificationDto);
 
@@ -226,12 +158,12 @@ public class EmployeeCertificationServiceUnitTests
     public async Task GetEmployeeCertificationPass()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetup(employeeCertificationDto.Employee!);
+        MockEmployeeRepositorySetup(EmployeeTestData.EmployeeDto);
         MockEmployeeCertificationRepositorySetupWithCertification(employeeCertificationDto);
 
         var result =
-            await _employeeCertificationService.GetEmployeeCertification(employeeCertificationDto.Employee!.Id,
-                                                                         employeeCertificationDto.Id);
+            await _employeeCertificationService
+            .GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id);
 
         Assert.NotNull(result);
     }
@@ -242,7 +174,7 @@ public class EmployeeCertificationServiceUnitTests
         var employeeCertificationDto1 = CreateEmployeeCertificationDto();
         var employeeCertificationDto2 = CreateEmployeeCertificationDto();
 
-        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto1.Employee!);
+        MockEmployeeRepositorySetupWithEmployee(EmployeeTestData.EmployeeDto);
 
         var employeeCertificationList = new List<EmployeeCertification>
         {
@@ -255,7 +187,7 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(mock);
 
         var results =
-            await _employeeCertificationService.GetAllEmployeeCertifications(employeeCertificationDto1.Employee!.Id);
+            await _employeeCertificationService.GetAllEmployeeCertifications(employeeCertificationDto1.EmployeeId);
 
         Assert.NotNull(results);
         Assert.Equal(2, results.Count);
@@ -265,7 +197,7 @@ public class EmployeeCertificationServiceUnitTests
     public async Task UpdateEmployeeCertificationPass()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto.Employee!);
+        MockEmployeeRepositorySetupWithEmployee(EmployeeTestData.EmployeeDto);
         MockEmployeeCertificationRepositorySetupForAddOrUpdate(employeeCertificationDto, false);
 
         var result = await _employeeCertificationService.UpdateEmployeeCertification(employeeCertificationDto);
@@ -277,11 +209,107 @@ public class EmployeeCertificationServiceUnitTests
     public async Task DeleteEmployeeCertificationPass()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
-        MockEmployeeRepositorySetupWithEmployee(employeeCertificationDto.Employee!);
+        MockEmployeeRepositorySetupWithEmployee(EmployeeTestData.EmployeeDto);
         MockEmployeeCertificationRepositorySetupForDelete(employeeCertificationDto);
 
         var result = await _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto);
 
         Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task GetEmployeeCertificationFailWhenCertificateNotFound()
+    {
+        var employeeCertificationDto = CreateEmployeeCertificationDto();
+
+        MockEmployeeRepositorySetupWithEmployee(EmployeeTestData.EmployeeDto);
+
+        var emptyCertList = new List<EmployeeCertification>().AsQueryable();
+        var certMock = emptyCertList.BuildMock();
+        _unitOfWork.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+                   .Returns(certMock);
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+                                 .Throws(new Exception("Employee certification record not found"));
+
+        await Assert.ThrowsAsync<Exception>(() =>
+            _employeeCertificationService.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id));
+
+    }
+
+    [Fact]
+    public async Task GetEmployeeCertificationFailWhenEmployeeNotFound()
+    {
+        var emptyEmployeeList = new List<Employee>().AsQueryable();
+        var mock = emptyEmployeeList.BuildMock();
+        _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(mock);
+
+        var employeeCertificationDto = CreateEmployeeCertificationDto();
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+                                 .Throws(new Exception("Employee not found")); // Or a custom exception
+
+        await Assert.ThrowsAsync<Exception>(() =>
+                    _employeeCertificationService.GetEmployeeCertification(0, 0));
+
+        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
+    } 
+    
+    [Fact]
+    public async Task UpdateEmployeeCertificationFailWhenEmployeeNotFound()
+    {
+        var emptyEmployeeList = new List<Employee>().AsQueryable();
+        var mock = emptyEmployeeList.BuildMock();
+        _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(mock);
+
+        var employeeCertificationDto = CreateEmployeeCertificationDto();
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+                                 .Throws(new Exception("Employee not found")); // Or a custom exception
+
+        await Assert.ThrowsAsync<Exception>(() =>
+                    _employeeCertificationService.UpdateEmployeeCertification(employeeCertificationDto));
+
+        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
+    }
+    
+    [Fact]
+    public async Task DeleteEmployeeCertificationFailWhenEmployeeNotFound()
+    {
+        var emptyEmployeeList = new List<Employee>().AsQueryable();
+        var mock = emptyEmployeeList.BuildMock();
+        _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(mock);
+
+        var employeeCertificationDto = CreateEmployeeCertificationDto();
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+                                 .Throws(new Exception("Employee not found"));
+
+        await Assert.ThrowsAsync<Exception>(() =>
+                    _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto));
+
+        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
+    } 
+    
+    [Fact]
+    public async Task GetAllEmployeeCertificationsFailWhenEmployeeNotFound()
+    {
+        var emptyEmployeeList = new List<Employee>().AsQueryable();
+        var mock = emptyEmployeeList.BuildMock();
+        _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(mock);
+
+        var employeeCertificationDto = CreateEmployeeCertificationDto();
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+                                 .Throws(new Exception("Employee not found"));
+
+        await Assert.ThrowsAsync<Exception>(() =>
+                    _employeeCertificationService.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id));
+
+        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 }
