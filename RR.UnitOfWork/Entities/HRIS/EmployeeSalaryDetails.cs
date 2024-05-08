@@ -40,9 +40,9 @@ public class EmployeeSalaryDetails : IModel<EmployeeSalaryDetailsDto>
 
     [Key][Column("id")] public int Id { get; set; }
 
-    public EmployeeDocumentDto ToDto()
+    public EmployeeSalaryDetailsDto ToDto()
     {
-        return new EmployeeDocumentDto
+        return new EmployeeSalaryDetailsDto
         {
             Id = Id,
             EmployeeId = EmployeeId,

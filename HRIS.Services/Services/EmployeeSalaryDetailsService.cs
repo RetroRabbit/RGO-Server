@@ -24,6 +24,29 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 
     public async Task<EmployeeSalaryDetailsDto> GetAllEmployeeSalaries()
     {
+        
+
+        try
+        {
+            var employeeSalary = await _db.EmployeeSalaryDetails
+                                           .Get(employeeSalary => employeeSalary.EmployeeId == employeeId)
+                                           .AsNoTracking()
+                                           .Include(employeeSalary => employeeSalary.Employee)
+                                           .Select(employeeSalary => employeeSalary.ToDto())
+                                           .ToListAsync();
+
+            return employeeSalary;
+        }
+        catch (Exception)
+        {
+            var exception = new Exception("Employee banking details not found");
+            throw _errorLoggingService.LogException(exception);
+        }
+        //throw new NotImplementedException();
+    }
+
+    public async Task<EmployeeSalaryDetailsDto> GetEmployeeSalary(int employeeId)
+    {
         //var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
 
         //if (!ifEmployee)
@@ -32,23 +55,6 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         //    throw _errorLoggingService.LogException(exception);
         //}
 
-        return await _db.EmployeeDocument
-            .Get(EmployeeDocument => true)
-            .AsNoTracking()
-            .Include(entry => entry.Employee)
-            .Include(entry => entry.Employee.EmployeeType)
-            .OrderBy(EmployeeDocument => EmployeeDocument.EmployeeId)
-            .Select(EmployeeDocument => new SimpleEmployeeDocumentGetAllDto
-            {
-                EmployeeDocumentDto = EmployeeDocument.ToDto(),
-                Name = EmployeeDocument.Employee.Name,
-                Surname = EmployeeDocument.Employee.Surname
-            })
-            .ToListAsync();
-    }
-
-    public async Task<EmployeeSalaryDetailsDto> GetEmployeeSalary(int employeeId)
-    {
         throw new NotImplementedException();
     }
 
