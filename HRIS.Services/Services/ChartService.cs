@@ -136,6 +136,7 @@ public partial class ChartService : IChartService
             };
 
             chart.Labels = labels;
+            chart.Roles = roleList;
             chart.Type = chartType;
             chart.Subtype = "standard";
             chart.Datasets = new List<ChartDataSet> { chartDataSet };

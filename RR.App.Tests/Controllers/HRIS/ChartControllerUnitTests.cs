@@ -40,6 +40,7 @@ public class ChartControllerUnitTests
               Type = "bar",
               DataTypes = dataTypes,
               Labels = labels,
+              Roles = new List<string> { "All" },
               Datasets = new List<ChartDataSetDto>{ chartData }
            }
         };
@@ -213,6 +214,7 @@ public class ChartControllerUnitTests
                                     Type = "bar",
                                     DataTypes = dataTypes,
                                     Labels = labels,
+                                    Roles = new List<string> { "All" },
                                     Datasets = new List<ChartDataSetDto> { chartData }
                                 };
         _chartServiceMock.Setup(service => service.DeleteChart(chartId))

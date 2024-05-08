@@ -86,6 +86,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 Name = chartName,
                 Type = chartType,
                 DataTypes = dataType,
+                Roles = roles,
                 Labels = roles,
             };
             var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto), Encoding.UTF8, "application/json");

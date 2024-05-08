@@ -8,5 +8,6 @@ public class ChartDto
     public string? Subtype { get; set; }
     public List<string>? DataTypes { get; set; }
     public List<string>? Labels { get; set; }
+    public List<string>? Roles { get; set; }
     public List<ChartDataSetDto>? Datasets { get; set; }
 }
