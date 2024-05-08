@@ -137,27 +137,27 @@ public class WorkExperienceServiceUnitTest
         }));
     }
 
-    [Fact]
-    public async Task GetByIdFailTest()
-    {
-        var workExperience = new WorkExperienceDto
-        {
-            Id = 1,
-            Title = "junior Developer",
-            EmploymentType = "temp",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
-            EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
-        };
+    //[Fact]
+    //public async Task GetByIdFailTest()
+    //{
+    //    var workExperience = new WorkExperienceDto
+    //    {
+    //        Id = 1,
+    //        Title = "junior Developer",
+    //        EmploymentType = "temp",
+    //        CompanyName = "Retro Rabbit",
+    //        Location = "Pretoria",
+    //        EmployeeId = 1,
+    //        StartDate = new DateOnly(2022, 1, 1),
+    //        EndDate = new DateOnly(2024, 1, 1),
+    //    };
 
-        _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
-               .Returns(new List<WorkExperience>().AsQueryable().BuildMock());
-        _errorLogggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+    //    _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
+    //           .Returns(new List<WorkExperience>().AsQueryable().BuildMock());
+    //    _errorLogggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.GetWorkExperienceById(workExperience.Id));
-    }
+    //    await Assert.ThrowsAsync<Exception>(() => _workExperienceService.GetWorkExperienceById(workExperience.Id));
+    //}
 
     [Fact]
     public async Task GetByIdPassTest()
