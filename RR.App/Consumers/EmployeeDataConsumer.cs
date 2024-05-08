@@ -76,7 +76,7 @@ public class EmployeeDataConsumer
     {
         string landingPage = Environment.GetEnvironmentVariable("hris-landing-url");
         var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress("Retro Rabbit", "test@"));
+        emailMessage.From.Add(new MailboxAddress("Retro Rabbit", "EMAIL-ADDRESS-HERE"));
         emailMessage.To.Add(new MailboxAddress(employee.Name, employee.Email));
         emailMessage.Subject = $"Welcome to Retro Rabbit, {employee.Name}!";
         var body = $@"
