@@ -29,7 +29,7 @@ public class WorkExperienceController : ControllerBase
         }
         catch (Exception ex)
         {
-            if (ex.Message.Contains("exists"))
+            if (ex.Message.Contains("work experience exists"))
                 return Problem("Unexceptable", "Unexceptable", 406, "Data already Exists");
 
             return NotFound(ex.Message);

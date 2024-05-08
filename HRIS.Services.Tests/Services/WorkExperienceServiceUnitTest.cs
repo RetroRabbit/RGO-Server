@@ -81,6 +81,48 @@ public class WorkExperienceServiceUnitTest
     }
 
     [Fact]
+    public async Task SaveFailTest()
+    {
+        _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
+            .ReturnsAsync(true);
+
+        _errorLogggingServiceMock.Setup(err => err.LogException(It.IsAny<Exception>())).Throws(new Exception());
+
+        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Save(new WorkExperienceDto
+        {
+            Id = 1,
+            Title = "Senior Developer",
+            EmploymentType = "Permanent",
+            CompanyName = "Retro Rabbit",
+            Location = "Pretoria",
+            EmployeeId = 1,
+            StartDate = new DateOnly(2022, 1, 1),
+            EndDate = new DateOnly(2024, 1, 1),
+        }));
+    }
+
+    [Fact]
+    public async Task SavePasstest()
+    {
+        _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
+             .ReturnsAsync(false);
+
+        await _workExperienceService.Save(new WorkExperienceDto
+        {
+            Id = 1,
+            Title = "Senior Developer",
+            EmploymentType = "Permanent",
+            CompanyName = "Retro Rabbit",
+            Location = "Pretoria",
+            EmployeeId = 1,
+            StartDate = new DateOnly(2022, 1, 1),
+            EndDate = new DateOnly(2024, 1, 1),
+        });
+
+        _mockDb.Verify(x => x.WorkExperience.Add(It.IsAny<WorkExperience>()), Times.Once);
+    }
+
+    [Fact]
     public async Task DeleteWorkExperiencePassTest()
     {
 
