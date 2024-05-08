@@ -13,8 +13,8 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240502052557_new")]
-    partial class @new
+    [Migration("20240410114050_addingSubtype")]
+    partial class addingSubtype
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,7 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BlacklistedReason")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("blacklistedReason");
 
@@ -44,10 +45,12 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("blacklisted");
 
                     b.Property<string>("CV")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cv");
 
                     b.Property<string>("CellphoneNumber")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cellphone");
 
@@ -350,7 +353,7 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("employeeNumber");
 
-                    b.Property<int?>("EmployeeTypeId")
+                    b.Property<int>("EmployeeTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeTypeId");
 
@@ -669,10 +672,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("counterSign");
 
-                    b.Property<int?>("DocumentType")
-                        .HasColumnType("integer")
-                        .HasColumnName("documentType");
-
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
@@ -684,10 +683,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("text")
                         .HasColumnName("fileName");
-
-                    b.Property<DateTime>("LastUpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("lastUpdatedDate");
 
                     b.Property<string>("Reason")
                         .HasColumnType("text")
@@ -1220,7 +1215,9 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeType", "EmployeeType")
                         .WithMany()
-                        .HasForeignKey("EmployeeTypeId");
+                        .HasForeignKey("EmployeeTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "ChampionEmployee")
                         .WithMany()

@@ -26,9 +26,9 @@ namespace RR.UnitOfWork.Migrations
                     jobPosition = table.Column<int>(type: "integer", nullable: false),
                     linkedIn = table.Column<string>(type: "text", nullable: true),
                     profilePicture = table.Column<string>(type: "text", nullable: true),
-                    cellphone = table.Column<string>(type: "text", nullable: true),
+                    cellphone = table.Column<string>(type: "text", nullable: false),
                     location = table.Column<string>(type: "text", nullable: true),
-                    cv = table.Column<string>(type: "text", nullable: true),
+                    cv = table.Column<string>(type: "text", nullable: false),
                     portfolioLink = table.Column<string>(type: "text", nullable: true),
                     portfolioPdf = table.Column<string>(type: "text", nullable: true),
                     gender = table.Column<int>(type: "integer", nullable: false),
@@ -39,7 +39,7 @@ namespace RR.UnitOfWork.Migrations
                     school = table.Column<string>(type: "text", nullable: true),
                     qualificationEndDate = table.Column<int>(type: "integer", nullable: true),
                     blacklisted = table.Column<int>(type: "integer", nullable: false),
-                    blacklistedReason = table.Column<string>(type: "text", nullable: true)
+                    blacklistedReason = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace RR.UnitOfWork.Migrations
                     type = table.Column<string>(type: "text", nullable: true),
                     dataTypes = table.Column<List<string>>(type: "text[]", nullable: true),
                     labels = table.Column<List<string>>(type: "text[]", nullable: true),
-                    subType = table.Column<string>(type: "text", nullable: true)
+                    data = table.Column<List<int>>(type: "integer[]", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -207,27 +207,6 @@ namespace RR.UnitOfWork.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChartDataSet",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    label = table.Column<string>(type: "text", nullable: true),
-                    data = table.Column<List<int>>(type: "integer[]", nullable: true),
-                    chartId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChartDataSet", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_ChartDataSet_Chart_chartId",
-                        column: x => x.chartId,
-                        principalTable: "Chart",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EmployeeEvaluationTemplateItem",
                 columns: table => new
                 {
@@ -262,7 +241,7 @@ namespace RR.UnitOfWork.Migrations
                     disability = table.Column<bool>(type: "boolean", nullable: false),
                     disabilityNotes = table.Column<string>(type: "text", nullable: true),
                     level = table.Column<int>(type: "integer", nullable: true),
-                    employeeTypeId = table.Column<int>(type: "integer", nullable: true),
+                    employeeTypeId = table.Column<int>(type: "integer", nullable: false),
                     notes = table.Column<string>(type: "text", nullable: true),
                     leaveInterval = table.Column<float>(type: "real", nullable: true),
                     salaryDays = table.Column<float>(type: "real", nullable: true),
@@ -316,7 +295,8 @@ namespace RR.UnitOfWork.Migrations
                         name: "FK_Employee_EmployeeType_employeeTypeId",
                         column: x => x.employeeTypeId,
                         principalTable: "EmployeeType",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Employee_Employee_peopleChampion",
                         column: x => x.peopleChampion,
@@ -539,8 +519,7 @@ namespace RR.UnitOfWork.Migrations
                     uploadDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     reason = table.Column<string>(type: "text", nullable: true),
                     counterSign = table.Column<bool>(type: "boolean", nullable: false),
-                    documentType = table.Column<int>(type: "integer", nullable: true),
-                    lastUpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    documentType = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -700,11 +679,6 @@ namespace RR.UnitOfWork.Migrations
                 column: "createdById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChartDataSet_chartId",
-                table: "ChartDataSet",
-                column: "chartId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ChartRoleLink_chartId",
                 table: "ChartRoleLink",
                 column: "chartId");
@@ -853,9 +827,6 @@ namespace RR.UnitOfWork.Migrations
 
             migrationBuilder.DropTable(
                 name: "Candidate");
-
-            migrationBuilder.DropTable(
-                name: "ChartDataSet");
 
             migrationBuilder.DropTable(
                 name: "ChartRoleLink");

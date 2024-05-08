@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240418071025_new")]
+    partial class @new
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,6 +36,7 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BlacklistedReason")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("blacklistedReason");
 
@@ -41,10 +45,12 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("blacklisted");
 
                     b.Property<string>("CV")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cv");
 
                     b.Property<string>("CellphoneNumber")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cellphone");
 
@@ -197,6 +203,10 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<List<int>>("Data")
+                        .HasColumnType("integer[]")
+                        .HasColumnName("data");
+
                     b.Property<List<string>>("DataTypes")
                         .HasColumnType("text[]")
                         .HasColumnName("dataTypes");
@@ -209,10 +219,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<string>("Subtype")
-                        .HasColumnType("text")
-                        .HasColumnName("subType");
-
                     b.Property<string>("Type")
                         .HasColumnType("text")
                         .HasColumnName("type");
@@ -220,34 +226,6 @@ namespace RR.UnitOfWork.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Chart");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartDataSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChartId")
-                        .HasColumnType("integer")
-                        .HasColumnName("chartId");
-
-                    b.Property<List<int>>("Data")
-                        .HasColumnType("integer[]")
-                        .HasColumnName("data");
-
-                    b.Property<string>("Label")
-                        .HasColumnType("text")
-                        .HasColumnName("label");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChartId");
-
-                    b.ToTable("ChartDataSet");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartRoleLink", b =>
@@ -681,10 +659,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("text")
                         .HasColumnName("fileName");
-
-                    b.Property<DateTime>("LastUpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("lastUpdatedDate");
 
                     b.Property<string>("Reason")
                         .HasColumnType("text")
@@ -1181,15 +1155,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("CreatedBy");
                 });
 
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartDataSet", b =>
-                {
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Chart", null)
-                        .WithMany("Datasets")
-                        .HasForeignKey("ChartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartRoleLink", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Chart", "Chart")
@@ -1447,11 +1412,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("RoleAccess");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Chart", b =>
-                {
-                    b.Navigation("Datasets");
                 });
 #pragma warning restore 612, 618
         }
