@@ -1,6 +1,6 @@
 ﻿namespace HRIS.Models;
 
-public class ChurnRateDataCard
+public class ChurnRateDataCardDto
 {
     public double ChurnRate { get; set; }
 

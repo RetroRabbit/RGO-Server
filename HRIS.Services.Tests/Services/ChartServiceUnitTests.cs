@@ -1,8 +1,13 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
+using Microsoft.AspNetCore.Mvc;
 using MockQueryable.Moq;
 using Moq;
 using RR.Tests.Data.Models.HRIS;
@@ -24,6 +29,7 @@ public class ChartServiceUnitTests
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto employeeTypeDto2;
+    private readonly EmployeeTypeTestData employeeTypeTestData;
     private readonly IErrorLoggingService _errorLoggingService;
 
     public ChartServiceUnitTests()
@@ -34,27 +40,15 @@ public class ChartServiceUnitTests
         _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
-        employeeTypeDto2 = new EmployeeTypeDto{ Id = 7, Name = "People Champion" };
+        employeeTypeDto1 = EmployeeTypeTestData.DeveloperType;
+        employeeTypeDto2 = EmployeeTypeTestData.PeopleChampionType;
         employeeType1 = new EmployeeType(employeeTypeDto1);
         employeeType2 = new EmployeeType(employeeTypeDto2);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto1));
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
-        employeeAddressDto =
-           new EmployeeAddressDto
-           {
-               Id = 1,
-               UnitNumber = "2",
-               ComplexName = "Complex",
-               StreetNumber = "2",
-               SuburbOrDistrict = "Suburb/District",
-               City = "City",
-               Country = "Country",
-               Province = "Province",
-               PostalCode = "1620"
-           };
+        employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
     }
 
     [Fact]
@@ -79,109 +73,15 @@ public class ChartServiceUnitTests
         var chartName = "TestChart";
         var chartType = "Pie";
 
-        EmployeeTypeDto developerEmployeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
-        EmployeeTypeDto designerEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
-        EmployeeTypeDto scrumMasterEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Scrum Master" };
-        EmployeeTypeDto otherEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Other" };
+        EmployeeTypeDto developerEmployeeTypeDto =EmployeeTypeTestData.DeveloperType;
+        EmployeeTypeDto designerEmployeeTypeDto = EmployeeTypeTestData.DesignerType;
+        EmployeeTypeDto scrumMasterEmployeeTypeDto = EmployeeTypeTestData.ScrumType;
+        EmployeeTypeDto otherEmployeeTypeDto = EmployeeTypeTestData.OtherType;
 
-        var employeeAddressDto =
-            new EmployeeAddressDto
-            {
-                Id = 1,
-                UnitNumber = "2",
-                ComplexName = "Complex",
-                StreetNumber = "2",
-                SuburbOrDistrict = "Suburb/District",
-                City = "City",
-                Country = "Country",
-                Province = "Province",
-                PostalCode = "1620"
-            };
-
-        EmployeeDto developerEmployeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = developerEmployeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Dotty",
-            Initials = "D",
-            Surname = "Missile",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000000000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Female,
-            Photo = null,
-            Email = "dm@retrorabbit.co.za",
-            PersonalEmail = "test@gmail.com",
-            CellphoneNo = "0123456789",
-            ClientAllocated = null,
-            TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
-            HouseNo = null,
-            EmergencyContactName = null,
-            EmergencyContactNo = null
-        };
-
-        EmployeeDto designerEmployeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = designerEmployeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Dotty",
-            Initials = "D",
-            Surname = "Missile",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000000000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Female,
-            Photo = null,
-            Email = "dm@retrorabbit.co.za",
-            PersonalEmail = "test@gmail.com",
-            CellphoneNo = "0123456789",
-            ClientAllocated = null,
-            TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
-            HouseNo = null,
-            EmergencyContactName = null,
-            EmergencyContactNo = null,
-        };
-
+        EmployeeDto developerEmployeeDto = EmployeeTestData.EmployeeDto;
+        EmployeeDto developerEmployeeDto1 = EmployeeTestData.EmployeeDto2;
+        EmployeeDto designerEmployeeDto = EmployeeTestData.EmployeeDto3;
+      
         var employeeList = new List<Employee>
         {
             new(developerEmployeeDto, developerEmployeeTypeDto),
@@ -191,6 +91,9 @@ public class ChartServiceUnitTests
         };
 
 
+        _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                 .Returns(employeeList.AsQueryable().BuildMock()); 
+        
         var employeeDtoList = new List<EmployeeDto>
         {
             developerEmployeeDto,
@@ -207,11 +110,7 @@ public class ChartServiceUnitTests
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
-
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
-
-        _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(employeeList.AsQueryable().BuildMock());
 
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(chartDto);
@@ -228,8 +127,17 @@ public class ChartServiceUnitTests
 
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(chartDto);
-
+        
         chartType = "stacked";
+
+        employeeList[0].EmployeeType = new EmployeeType(developerEmployeeTypeDto);
+        employeeList[1].EmployeeType = new EmployeeType(designerEmployeeTypeDto);
+        employeeList[2].EmployeeType = new EmployeeType(scrumMasterEmployeeTypeDto);
+        employeeList[3].EmployeeType = new EmployeeType(otherEmployeeTypeDto);
+
+        _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                 .Returns(employeeList.AsQueryable().BuildMock());
+
         result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
 
         Assert.NotNull(result);
@@ -245,95 +153,14 @@ public class ChartServiceUnitTests
         var chartName = "TestChart";
         var chartType = "Pie";
 
-        EmployeeTypeDto devEmployeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
-        EmployeeTypeDto desEmployeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Designer" };
+        EmployeeTypeDto devEmployeeTypeDto = EmployeeTypeTestData.DeveloperType;
+        EmployeeTypeDto desEmployeeTypeDto = EmployeeTypeTestData.DesignerType;
 
-        var employeeAddressDto =
-            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+        var employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
+           
+        EmployeeDto employeeDto = EmployeeTestData.EmployeeDto;
 
-        EmployeeDto employeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = devEmployeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Dotty",
-            Initials = "D",
-            Surname = "Missile",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000000000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Female,
-            Photo = null,
-            Email = "dm@retrorabbit.co.za",
-            PersonalEmail = "test@gmail.com",
-            CellphoneNo = "0123456789",
-            ClientAllocated = null,
-            TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
-            HouseNo = null,
-            EmergencyContactName = null,
-            EmergencyContactNo = null
-        };
-
-        EmployeeDto desEmployeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = desEmployeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Dotty",
-            Initials = "D",
-            Surname = "Missile",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000000000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Female,
-            Photo = null,
-            Email = "dm@retrorabbit.co.za",
-            PersonalEmail = "test@gmail.com",
-            CellphoneNo = "0123456789",
-            ClientAllocated = null,
-            TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
-            HouseNo = null,
-            EmergencyContactName = null,
-            EmergencyContactNo = null
-        };
+        EmployeeDto desEmployeeDto = EmployeeTestData.EmployeeDto2;
 
         var employeeList = new List<Employee>
         {
@@ -357,7 +184,6 @@ public class ChartServiceUnitTests
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
-
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
 
         _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -380,52 +206,11 @@ public class ChartServiceUnitTests
     {
         var dataType = new List<string> { "Gender", "Race" };
 
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
+        EmployeeTypeDto employeeTypeDto = EmployeeTypeTestData.DeveloperType;
         EmployeeType employeeType = new(employeeTypeDto);
-        var employeeAddressDto =
-            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+        var employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
 
-        EmployeeDto employeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = employeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Dotty",
-            Initials = "D",
-            Surname = "Missile",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000000000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Female,
-            Photo = null,
-            Email = "dm@retrorabbit.co.za",
-            PersonalEmail = "test@gmail.com",
-            CellphoneNo = "0123456789",
-            ClientAllocated = null,
-            TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
-            HouseNo = null,
-            EmergencyContactName = null,
-            EmergencyContactNo = null
-        };
+        EmployeeDto employeeDto = EmployeeTestData.EmployeeDto;
 
         var employeeList = new List<EmployeeDto>
         {
@@ -455,7 +240,6 @@ public class ChartServiceUnitTests
             Labels = new List<string> { "Male", "Female" },
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
-
 
         _unitOfWork.Setup(u => u.Chart.Delete(chartId)).ReturnsAsync(expectedChartDto);
 
@@ -560,47 +344,7 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task ExportCsvAsyncTest()
     {
-        var employeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = 1,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 3,
-            EmployeeType = employeeTypeDto1,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Estiaan",
-            Initials = "MT",
-            Surname = "Britz",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000080000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Male,
-            Photo = null,
-            Email = "test1@retrorabbit.co.za",
-            PersonalEmail = "test.example@gmail.com",
-            CellphoneNo = "0000000000",
-            ClientAllocated = null,
-            TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
-            HouseNo = null,
-            EmergencyContactName = null,
-            EmergencyContactNo = null
-        };
+        var employeeDto = EmployeeTestData.EmployeeDto6;
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -623,8 +367,6 @@ public class ChartServiceUnitTests
             13, 10
         };
 
-
-
         Assert.NotNull(result);
         Assert.IsType<byte[]>(result);
         Assert.Equal(expectedResult, result);
@@ -635,47 +377,7 @@ public class ChartServiceUnitTests
     {
         var dataTypeList = new List<string> { "", "" };
 
-        var employeeDto = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = 1,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 3,
-            EmployeeType = employeeTypeDto1,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Estiaan",
-            Initials = "MT",
-            Surname = "Britz",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000080000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Male,
-            Photo = null,
-            Email = "test1@retrorabbit.co.za",
-            PersonalEmail = "test.example@gmail.com",
-            CellphoneNo = "0000000000",
-            ClientAllocated = null,
-            TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
-            HouseNo = null,
-            EmergencyContactName = null,
-            EmergencyContactNo = null
-        };
+        var employeeDto = EmployeeTestData.EmployeeDto;
 
         var employeeDtoList = new List<EmployeeDto>
         {
@@ -687,10 +389,8 @@ public class ChartServiceUnitTests
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
         _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
-        var exception = await Assert.ThrowsAsync<Exception>(
-                                                            async () =>
-                                                                await chartService.ExportCsvAsync(dataTypeList));
-
+        var exception = await Assert.ThrowsAsync<Exception>( async () => await chartService.ExportCsvAsync(dataTypeList));
+                                                           
         Assert.Equal("Invalid property name: ", exception.Message);
     }
 }
