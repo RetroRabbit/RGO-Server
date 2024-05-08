@@ -88,7 +88,7 @@ public class WorkExperienceController : ControllerBase
 
             await _workExperienceService.Update(workExperienceData);
 
-            return Ok();
+            return Ok(workExperienceData);
         }
         catch (Exception ex)
         {
