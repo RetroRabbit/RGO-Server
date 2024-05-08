@@ -9,10 +9,10 @@ using System.Security.Claims;
 using System.Text;
 using HRIS.Models;
 using HRIS.Services.Services;
-using RabbitMQ.Client;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
 using Azure.Identity;
+using Microsoft.ServiceBus.Messaging;
 
 namespace RR.App
 {
@@ -20,59 +20,24 @@ namespace RR.App
     {
         public static async Task Main(params string[] args)
         {
-
-            ServiceBusClient client;
-            ServiceBusSender sender;
-            const int numOfMessages = 3;
-
-            var clientOptions = new ServiceBusClientOptions
-            {
-                TransportType = ServiceBusTransportType.AmqpWebSockets
-            };
-
-            client = new ServiceBusClient("hrisats.servicebus.windows.net", new DefaultAzureCredential(), clientOptions);
-            sender = client.CreateSender("new-employee");
-            using ServiceBusMessageBatch messageBatch = await sender.CreateMessageBatchAsync();
-
-            for (int i = 1; i <= numOfMessages; i++)
-            {
-                if (!messageBatch.TryAddMessage(new ServiceBusMessage($"Message {i}")))
-                {
-                    throw new Exception($"The message {i} is too large to fit in the batch.");
-                }
-            }
-            try
-            {
-                await sender.SendMessagesAsync(messageBatch);
-                Console.WriteLine($"A batch of {numOfMessages} messages has been published to the queue.");
-            }
-            finally
-            {
-                await sender.DisposeAsync();
-                await client.DisposeAsync();
-            }
-
-            Console.WriteLine("Press any key to end the application");
-            Console.ReadKey();
-
-
-
-
-
-
-            ConnectionFactory _factory;
-            _factory = new ConnectionFactory();
-            _factory.UserName = "my-rabbit";
-            _factory.UserName = "guest";
-            _factory.Password = "guest";
-            EmployeeDataConsumer emailer = new EmployeeDataConsumer(_factory);
-            EmployeeService._employeeFactory = _factory;
             var builder = WebApplication.CreateBuilder(args);
             ConfigurationManager configuration = builder.Configuration;
             configuration.AddJsonFile("appsettings.json");
             configuration.AddUserSecrets<Program>();
+
+
+
+            var serviceBusConnectionString = Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString");
+            var queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
+
+
+            //builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+
+
+
 
             /// <summary>
             /// Adds Swagger to the project and configures it to use JWT Bearer Authentication

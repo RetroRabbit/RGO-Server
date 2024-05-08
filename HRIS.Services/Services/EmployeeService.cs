@@ -1,12 +1,9 @@
-﻿using System;
-using System.Text;
-using ATS.Models;
+﻿using System.Text;
+using Azure.Messaging.ServiceBus;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Expressions.Internal;
-using RabbitMQ.Client;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -14,8 +11,9 @@ namespace HRIS.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private const string QueueName = "employee_data_queue";
-    public static ConnectionFactory? _employeeFactory;
+    static string serviceBusConnectionString = Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString");
+            string queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
+    ServiceBusClient serviceBusClient = new ServiceBusClient( serviceBusConnectionString);
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
@@ -59,7 +57,7 @@ public class EmployeeService : IEmployeeService
 
             try
             {
-                PushToProducer(employee);
+                PushToProducerAsync(employee);
             }
             catch (Exception ex)
             {
@@ -455,21 +453,16 @@ public class EmployeeService : IEmployeeService
                         .ToListAsync();
     }
 
-    public void PushToProducer(Employee employeeData)
+    public async Task PushToProducerAsync(Employee employeeData)
     {
         try
         {
-            using (var connection = _employeeFactory!.CreateConnection())
-            using (var channel = connection.CreateModel())
             {
                 var messageBody = JsonConvert.SerializeObject(employeeData);
                 var body = Encoding.UTF8.GetBytes(messageBody);
 
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
-
-                channel.QueueDeclare(QueueName, true, false, false, null);
-                channel.BasicPublish(string.Empty, QueueName, properties, body);
+                await using var sender = serviceBusClient.CreateSender(queueName);
+                await sender.SendMessageAsync(new ServiceBusMessage(body));
             }
         }
         catch (Exception ex)

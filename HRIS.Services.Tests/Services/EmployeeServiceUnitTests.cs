@@ -158,7 +158,7 @@ public class EmployeeServiceUnitTests
 
         var employeeData = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType);
 
-        employeeService.PushToProducer(employeeData);
+        employeeService.PushToProducerAsync(employeeData);
     }
 
 
