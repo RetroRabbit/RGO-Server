@@ -67,7 +67,39 @@ public class WorkExperienceControllerUnitTest
         var actionResult = Assert.IsType<ConflictObjectResult>(controllerResult);
 
 
-        Assert.Equal(409, actionResult.StatusCode) ;
+        Assert.Equal(409, actionResult.StatusCode);
         Assert.Equal("work experience exists", actionResult.Value);
+    }
+
+    [Fact]
+    public async Task DeleteWorkExperiencePass()
+    {
+        _workExperienceServiceMock
+           .Setup(x => x
+                .Delete(workExperience.Id))
+           .ReturnsAsync(workExperience);
+
+        var controllerResult = await _controller
+            .DeleteWorkExperience(workExperience.Id);
+
+        var actionResult = Assert.IsType<OkResult>(controllerResult);
+
+
+        Assert.NotNull(actionResult);
+        Assert.Equal(200, actionResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteWorkExperienceFail()
+    {
+        _workExperienceServiceMock.Setup(x => x.Delete(workExperience.Id))
+            .ThrowsAsync(new Exception());
+
+        var controllerResult = await _controller
+            .DeleteWorkExperience(workExperience.Id);
+
+        var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
+
+        Assert.Equal(404, actionResult.StatusCode);
     }
 }
