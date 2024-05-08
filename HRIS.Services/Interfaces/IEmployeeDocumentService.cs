@@ -33,7 +33,7 @@ public interface IEmployeeDocumentService
     /// </summary>
     /// <param name="employeeId"></param>
     /// <returns>List of Employee Document</returns>
-    Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId, DocumentType documentType);
+    Task<List<EmployeeDocumentDto>> GetEmployeeDocuments(int employeeId, DocumentType documentType);
 
     /// <summary>
     /// Update Employee Document

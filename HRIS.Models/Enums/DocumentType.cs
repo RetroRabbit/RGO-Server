@@ -8,6 +8,6 @@ namespace HRIS.Models.Enums;
 
 public enum DocumentType
 {
-    starterKit,
-    additional
+    StarterKit,
+    Additional
 }

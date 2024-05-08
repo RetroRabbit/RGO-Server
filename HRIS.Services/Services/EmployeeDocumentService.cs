@@ -33,7 +33,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         bool sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
-        var docType = documentType == 0? DocumentType.starterKit : DocumentType.additional;
+        var docType = documentType == 0? DocumentType.StarterKit : DocumentType.Additional;
 
         var employeeDocument = new EmployeeDocumentDto
         {
@@ -67,7 +67,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         bool sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
-        var docType = documentType == 0 ? DocumentType.starterKit : DocumentType.additional;
+        var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.Additional;
 
         var employeeDocument = new EmployeeDocumentDto
         {
@@ -117,7 +117,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         return employeeDocument;
     }
 
-    public async Task<List<EmployeeDocumentDto>> GetAllEmployeeDocuments(int employeeId, DocumentType documentType)
+    public async Task<List<EmployeeDocumentDto>> GetEmployeeDocuments(int employeeId, DocumentType documentType)
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 

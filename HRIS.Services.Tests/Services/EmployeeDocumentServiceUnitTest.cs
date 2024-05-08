@@ -339,7 +339,7 @@ public class EmployeeDocumentServiceUnitTest
 
         var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
 
-        var result = await service.GetEmployeeDocument(employeeId, fileName,DocumentType.starterKit);
+        var result = await service.GetEmployeeDocument(employeeId, fileName,DocumentType.StarterKit);
 
         Assert.NotNull(result);
         Assert.Equal(fileName, result.FileName);
@@ -350,7 +350,7 @@ public class EmployeeDocumentServiceUnitTest
     {
         var employeeId = 1;
         var filename = "sample_certification.pdf";
-        var documentType = DocumentType.starterKit;
+        var documentType = DocumentType.StarterKit;
 
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
                         .ReturnsAsync((EmployeeDto)null);
@@ -378,7 +378,7 @@ public class EmployeeDocumentServiceUnitTest
     {
         var employeeId = 1;
         var filename = "sample_certification.pdf";
-        var documentType = DocumentType.starterKit;
+        var documentType = DocumentType.StarterKit;
 
         var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -409,8 +409,8 @@ public class EmployeeDocumentServiceUnitTest
 
         var employeeDocuments = new List<EmployeeDocument>
         {
-            new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile1.pdf", DocumentType = DocumentType.starterKit },
-            new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile2.pdf", DocumentType = DocumentType.starterKit }
+            new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile1.pdf", DocumentType = DocumentType.StarterKit },
+            new EmployeeDocument { EmployeeId = employeeId, FileName = "TestFile2.pdf", DocumentType = DocumentType.StarterKit }
         };
 
         var mockEmployeeDocumentDbSet = employeeDocuments.AsQueryable().BuildMockDbSet();
@@ -419,7 +419,7 @@ public class EmployeeDocumentServiceUnitTest
 
         var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
 
-        var result = await service.GetAllEmployeeDocuments(employeeId, DocumentType.starterKit);
+        var result = await service.GetEmployeeDocuments(employeeId, DocumentType.StarterKit);
 
         Assert.NotNull(result);
         Assert.Equal(2, result.Count);
@@ -431,7 +431,7 @@ public class EmployeeDocumentServiceUnitTest
     public async Task GetAllEmployeeDocumentsFail()
     {
         var employeeId = 1;
-        var documentType = DocumentType.starterKit;
+        var documentType = DocumentType.StarterKit;
 
         _employeeServiceMock.Setup(x => x.GetById(employeeId))
                         .ReturnsAsync((EmployeeDto)null);
@@ -447,7 +447,7 @@ public class EmployeeDocumentServiceUnitTest
         _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
 
         var exception = await Assert.ThrowsAsync<Exception>(() =>
-                        _employeeDocumentService.GetAllEmployeeDocuments(employeeId, documentType));
+                        _employeeDocumentService.GetEmployeeDocuments(employeeId, documentType));
 
         Assert.Equal("Employee not found", exception.Message);
 

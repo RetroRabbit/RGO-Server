@@ -77,7 +77,7 @@ public class EmployeeDocumentControllerUnitTest
         var filename = "";
         var err = "An error occurred while fetching the employee document.";
 
-        _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, filename, DocumentType.starterKit)).ThrowsAsync(new Exception(err));
+        _employeeMockDocumentService.Setup(x => x.GetEmployeeDocument(id, filename, DocumentType.StarterKit)).ThrowsAsync(new Exception(err));
 
         var result = await _controller.GetEmployeeDocument(id, filename, 0);
         var notfoundResult = Assert.IsType<ObjectResult>(result);
@@ -100,9 +100,9 @@ public class EmployeeDocumentControllerUnitTest
                 new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending)
             };
 
-        _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.DocumentType!.Value)).ReturnsAsync(listOfEmployeeDocumentsDto);
+        _employeeMockDocumentService.Setup(x => x.GetEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.DocumentType!.Value)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
-        var result = await _controller.GetAllEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id,0);
+        var result = await _controller.GetEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id,0);
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualDetails = Assert.IsAssignableFrom<List<EmployeeDocumentDto>>(okResult.Value);
 
@@ -117,9 +117,9 @@ public class EmployeeDocumentControllerUnitTest
         var id = 15;
         var exceptionMessage = "An error occurred while fetching employee documents.";
 
-        _employeeMockDocumentService.Setup(x => x.GetAllEmployeeDocuments(id, DocumentType.starterKit)).ThrowsAsync(new Exception(exceptionMessage));
+        _employeeMockDocumentService.Setup(x => x.GetEmployeeDocuments(id, DocumentType.StarterKit)).ThrowsAsync(new Exception(exceptionMessage));
 
-        var result = await _controller.GetAllEmployeeDocuments(id,0);
+        var result = await _controller.GetEmployeeDocuments(id,0);
 
         var noFoundResult = Assert.IsType<ObjectResult>(result);
         var actualExceptionMessage = Assert.IsType<string>(noFoundResult.Value);

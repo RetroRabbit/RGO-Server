@@ -18,7 +18,7 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
-        DocumentType = DocumentType.starterKit,
+        DocumentType = DocumentType.StarterKit,
         LastUpdatedDate = DateTime.Now
     };
 
@@ -34,7 +34,7 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
-        DocumentType = DocumentType.starterKit,
+        DocumentType = DocumentType.StarterKit,
         LastUpdatedDate = DateTime.Now
     };
 
@@ -50,7 +50,7 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
-        DocumentType = DocumentType.starterKit,
+        DocumentType = DocumentType.StarterKit,
         LastUpdatedDate = DateTime.Now
     };
 
@@ -66,7 +66,7 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
-        DocumentType = DocumentType.starterKit,
+        DocumentType = DocumentType.StarterKit,
     };
     public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto
     {
