@@ -22,11 +22,9 @@ namespace RR.App
             configuration.AddJsonFile("appsettings.json");
             configuration.AddUserSecrets<Program>();
 
-
-
             var serviceBusConnectionString = Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString");
             var queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
-            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString); 
 
 
             //TODO: Bring back consumer once email service has been aquired and set up
