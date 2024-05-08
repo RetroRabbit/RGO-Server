@@ -31,7 +31,7 @@ public class EmployeeCertificationController : ControllerBase
         }
     }
     
-    [HttpPut]
+    [HttpPost]
     public async Task<IActionResult> SaveEmployeeCertificate(EmployeeCertificationDto employeeCertificationDto)
     {
         try
@@ -62,11 +62,11 @@ public class EmployeeCertificationController : ControllerBase
     }
     
     [HttpDelete]
-    public async Task<IActionResult> DeleteEmployeeCertificate(EmployeeCertificationDto employeeCertificationDto)
+    public async Task<IActionResult> DeleteEmployeeCertificate(int id)
     {
         try
         {
-            var certificate = await _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto);
+            var certificate = await _employeeCertificationService.DeleteEmployeeCertification(id);
             return Ok(certificate);
 
         }
@@ -76,7 +76,7 @@ public class EmployeeCertificationController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPut]
     public async Task<IActionResult> UpdateCertificate(EmployeeCertificationDto employeeCertificationDto)
     {
         try

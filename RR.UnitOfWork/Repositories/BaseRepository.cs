@@ -55,10 +55,25 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
 
     public async Task<T> Add(TK entity)
     {
-        var obj = await _entity.AddAsync(entity);
+        /*var obj = await _entity.AddAsync(entity);
         await AddAuditLog(entity, CRUDOperations.Create);
         await _db.SaveChangesAsync();
-        return obj.Entity.ToDto();
+        return obj.Entity.ToDto();*/
+        try
+        {
+            var obj = await _entity.AddAsync(entity);
+            await AddAuditLog(entity, CRUDOperations.Create);
+            await _db.SaveChangesAsync();
+            return obj.Entity.ToDto();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception with full details
+            //_logger.LogError(ex, "Error during Add operation");
+            Console.Write(ex.Message);
+            // Re-throw the exception (or handle it differently based on your requirements)
+            throw;
+        }
     }
 
     public async Task<T> Delete(int id)
