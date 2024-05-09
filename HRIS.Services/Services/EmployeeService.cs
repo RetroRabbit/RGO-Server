@@ -12,7 +12,11 @@ namespace HRIS.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private readonly ServiceBusClient serviceBusClient = new ServiceBusClient(Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
+    private readonly ServiceBusClient serviceBusClient = new("");
+        
+        
+        
+       // new ServiceBusClient(Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
     private readonly string queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;

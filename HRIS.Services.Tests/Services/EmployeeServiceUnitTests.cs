@@ -54,7 +54,7 @@ public class EmployeeServiceUnitTests
         await Assert.ThrowsAsync<Exception>(() => employeeService.SaveEmployee(EmployeeTestData.EmployeeDto));
     }
 
-    [Fact(Skip = "Testing skip")]
+    [Fact]
     public async Task SaveEmployeeFailTest2()
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(false));
@@ -144,7 +144,6 @@ public class EmployeeServiceUnitTests
         Assert.Equal(EmployeeTestData.EmployeeDto, result);
     }
 
-    //There is not PushToPreducerTestPass because we cannot mock the connection to RabbitMQ Docker Instance
 
     [Fact]
     public void PushToProducerTestFail()
@@ -162,7 +161,7 @@ public class EmployeeServiceUnitTests
     }
 
 
-    [Fact(Skip = "Testing something")]
+    [Fact]
     public void GetEmployeeTest()
     {
         var employeeList = new List<Employee>
@@ -172,7 +171,6 @@ public class EmployeeServiceUnitTests
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.AsQueryable().BuildMock());
-
 
         var result = employeeService.GetEmployee("dm@retrorabbit.co.za");
 
