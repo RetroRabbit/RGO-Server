@@ -32,7 +32,7 @@ public class WorkExperienceController : ControllerBase
             if (ex.Message.Contains("work experience exists"))
                 return BadRequest("work experience exists");
 
-            return Problem("An unexpected error occurred.", statusCode: 404);
+            return Problem("Could not save data.", statusCode: 500);
         }
 
     }

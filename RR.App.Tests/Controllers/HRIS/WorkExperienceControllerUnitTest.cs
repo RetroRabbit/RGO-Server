@@ -53,23 +53,41 @@ public class WorkExperienceControllerUnitTest
         Assert.NotNull(newWorkExperience);
         Assert.Equal(workExperience, newWorkExperience);
     }
-
     [Fact]
     public async Task saveWorkExperienceFail()
     {
         _workExperienceServiceMock
-           .Setup(x => x
-               .Save(workExperience))
-           .ThrowsAsync(new Exception("work experience exists"));
+           .Setup(x => x.Save(workExperience))
+           .ThrowsAsync(new Exception("unexpected error occurred"));
+
+        var controllerResult = await _controller.SaveWorkExperience(workExperience);
+
+
+        var actionResult = Assert.IsType<ObjectResult>(controllerResult);
+        Assert.Equal(500, actionResult.StatusCode);
+
+        var problemDetails = actionResult.Value as ProblemDetails;
+        Assert.NotNull(problemDetails);
+        Assert.Equal("Could not save data.", problemDetails.Detail);
+    }
+
+    [Fact]
+    public async Task saveWorkExperienceAlreadyExists()
+    {
+        _workExperienceServiceMock
+            .Setup(x => x.Save(workExperience))
+            .ThrowsAsync(new Exception("work experience exists"));
 
         var controllerResult = await _controller.SaveWorkExperience(workExperience);
 
         var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
-
-
         Assert.Equal(400, actionResult.StatusCode);
-        Assert.Equal("work experience exists", actionResult.Value);
+
+        var errorMessage = actionResult.Value as string;
+        Assert.NotNull(errorMessage);
+        Assert.Equal("work experience exists", errorMessage);
     }
+
 
     [Fact]
     public async Task GetWorkExperienceByIdPass()
