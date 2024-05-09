@@ -57,7 +57,6 @@ public class Employee : IModel<EmployeeDto>
         EmergencyContactNo = employeeDto.EmergencyContactNo;
         Active = employeeDto.Active;
         InactiveReason = employeeDto.InactiveReason;
-        EmployeeType = new EmployeeType(employeeType);
     }
 
     [Column("employeeNumber")] public string? EmployeeNumber { get; set; }
@@ -80,7 +79,7 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("employeeTypeId")]
     [ForeignKey("EmployeeType")]
-    public int EmployeeTypeId { get; set; }
+    public int? EmployeeTypeId { get; set; }
 
     [Column("notes")] public string? Notes { get; set; }
 

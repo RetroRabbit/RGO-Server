@@ -625,7 +625,7 @@ public class EmployeeServiceUnitTests
             new(monthlyEmployeeTotalDto)
         };
 
-        var churnRateDto = new ChurnRateDataCard
+        var churnRateDto = new ChurnRateDataCardDto
         {
             ChurnRate = Math.Round(0.0, 0),
             DeveloperChurnRate = Math.Round(0.0, 0),
@@ -675,7 +675,7 @@ public class EmployeeServiceUnitTests
             new(monthlyEmployeeTotalDto)
         };
 
-        var churnRateDto = new ChurnRateDataCard
+        var churnRateDto = new ChurnRateDataCardDto
         {
             ChurnRate = Math.Round(0.0, 0),
             DeveloperChurnRate = Math.Round(0.0, 0),
