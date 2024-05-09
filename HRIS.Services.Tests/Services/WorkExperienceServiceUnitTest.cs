@@ -186,7 +186,7 @@ public class WorkExperienceServiceUnitTest
 
         _errorLogggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()));
 
-        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.GetWorkExperienceById(1));
+        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.GetWorkExperienceByEmployeeId(1));
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public class WorkExperienceServiceUnitTest
         _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
                .Returns(new List<WorkExperience> { new(workExperience) }.AsQueryable().BuildMock());
 
-        await _workExperienceService.GetWorkExperienceById(1);
+        await _workExperienceService.GetWorkExperienceByEmployeeId(1);
 
         _mockDb.Verify(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()), Times.Once);
     }

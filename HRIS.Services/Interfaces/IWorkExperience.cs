@@ -30,5 +30,5 @@ public interface IWorkExperienceService
     /// <param name="employeeId"></param>
     /// <param name="status"></param>
     /// <returns>Employee Work experience</returns>
-    Task<WorkExperienceDto> GetWorkExperienceById(int id);
+    Task<WorkExperienceDto> GetWorkExperienceByEmployeeId(int id);
 }

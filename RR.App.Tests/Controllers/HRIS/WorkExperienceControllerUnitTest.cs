@@ -93,7 +93,7 @@ public class WorkExperienceControllerUnitTest
     {
         _workExperienceServiceMock
            .Setup(x => x
-               .GetWorkExperienceById(workExperience.Id))
+               .GetWorkExperienceByEmployeeId(workExperience.Id))
            .ReturnsAsync(workExperience);
 
         var controllerResult = await _controller
@@ -110,7 +110,7 @@ public class WorkExperienceControllerUnitTest
     {
         _workExperienceServiceMock
            .Setup(x => x
-               .GetWorkExperienceById(workExperience.Id))
+               .GetWorkExperienceByEmployeeId(workExperience.Id))
            .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller

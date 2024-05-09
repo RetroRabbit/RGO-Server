@@ -43,7 +43,7 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var workExperienceData = await _workExperienceService.GetWorkExperienceById(id);
+            var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
 
             return Ok(workExperienceData);
         }
