@@ -24,7 +24,6 @@ public class WorkExperienceServiceUnitTest
         _errorLogggingServiceMock = new Mock<IErrorLoggingService>();
         _workExperienceService = new WorkExperienceService(_mockDb.Object, _errorLogggingServiceMock.Object);
 
-
         _workExperienceDto = new WorkExperienceDto
         {
             Id = 1,
@@ -189,7 +188,6 @@ public class WorkExperienceServiceUnitTest
 
         await Assert.ThrowsAsync<Exception>(() => _workExperienceService.GetWorkExperienceById(1));
     }
-
 
     [Fact]
     public async Task GetByIdPassTest()
