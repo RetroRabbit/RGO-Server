@@ -78,7 +78,17 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 
     public async Task<EmployeeSalaryDetailsDto> SaveEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
     {
-        throw new NotImplementedException();
+        var exists = await CheckIfExists(employeeSalaryDto);
+
+        if (exists)
+        {
+            var exception = new Exception("Employee salary already exists");
+            throw _errorLoggingService.LogException(exception);
+        }
+
+        var employeeSalary = await _db.EmployeeSalaryDetails.Add(new EmployeeSalaryDetails(employeeSalaryDto));
+
+        return employeeSalary;
     }
 
     public async Task<EmployeeSalaryDetailsDto> UpdateEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
@@ -92,11 +102,11 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         }
 
         EmployeeSalaryDetails employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
-        //var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary.Id);
         var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary);
 
         return updatedEmployeeSalary;
     }
+
 
     public async Task<bool> CheckEmployee(int employeeId)
     {
@@ -106,5 +116,15 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 
         if (employee == null) { return false; }
         else { return true; }
+    }
+
+    public async Task<bool> CheckIfExists(EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
+    {
+        if (employeeSalaryDetailsDto.Id == 0)
+        {
+            return false;
+        }
+        var exists = await _db.EmployeeAddress.GetById(employeeSalaryDetailsDto.Id);
+        return exists != null;
     }
 }
