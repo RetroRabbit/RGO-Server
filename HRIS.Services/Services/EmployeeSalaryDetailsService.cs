@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,43 +20,60 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 
     public async Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
     {
-        throw new NotImplementedException();
+        var employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
+        var deletedEmployeeSalary = await _db.EmployeeSalaryDetails.Delete(employeeSalary.Id);
+
+        return deletedEmployeeSalary;
     }
 
     public async Task<EmployeeSalaryDetailsDto> GetAllEmployeeSalaries()
     {
-        
-
         try
         {
-            var employeeSalary = await _db.EmployeeSalaryDetails
-                                           .Get(employeeSalary => employeeSalary.EmployeeId == employeeId)
-                                           .AsNoTracking()
-                                           .Include(employeeSalary => employeeSalary.Employee)
-                                           .Select(employeeSalary => employeeSalary.ToDto())
-                                           .ToListAsync();
+            var employeeSalaries = await _db.EmployeeSalaryDetails
+                                            .Get(employeeSalary => true)
+                                            .AsNoTracking()
+                                            //.Include(employeeSalary => employeeSalary.Employee)
+                                            .OrderBy(employeeSalary => employeeSalary.EmployeeId)
+                                            .Select(employeeSalary => employeeSalary.ToDto())
+                                            .ToListAsync();
 
-            return employeeSalary;
+            return employeeSalaries.FirstOrDefault();
         }
         catch (Exception)
         {
-            var exception = new Exception("Employee banking details not found");
+            var exception = new Exception("Employee salary details not found");
             throw _errorLoggingService.LogException(exception);
         }
-        //throw new NotImplementedException();
     }
 
     public async Task<EmployeeSalaryDetailsDto> GetEmployeeSalary(int employeeId)
     {
-        //var ifEmployee = await CheckEmployee(employeeCertificationDto.Employee!.Id);
+        var ifEmployeeExists = await CheckEmployee(employeeId);
 
-        //if (!ifEmployee)
-        //{
-        //    var exception = new Exception("Employee not found");
-        //    throw _errorLoggingService.LogException(exception);
-        //}
+        if (!ifEmployeeExists)
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
 
-        throw new NotImplementedException();
+        try
+        {
+            var employeeSalaries = await _db.EmployeeSalaryDetails
+                                            .Get(employeeSalary => employeeSalary.EmployeeId == employeeId)
+                                            .AsNoTracking()
+                                            //.Include(employeeSalary => employeeSalary.Employee)
+                                            .OrderBy(employeeSalary => employeeSalary.EmployeeId)
+                                            .Select(employeeSalary => employeeSalary.ToDto())
+                                            .ToListAsync();
+
+            return employeeSalaries.FirstOrDefault();
+        }
+        catch (Exception)
+        {
+            var exception = new Exception("Employee salary details not found");
+            throw _errorLoggingService.LogException(exception);
+        }
     }
 
     public async Task<EmployeeSalaryDetailsDto> SaveEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
@@ -65,6 +83,27 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 
     public async Task<EmployeeSalaryDetailsDto> UpdateEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
     {
-        throw new NotImplementedException();
+        var ifEmployeeExists = await CheckEmployee(employeeSalaryDto.EmployeeId);
+
+        if (!ifEmployeeExists)
+        {
+            var exception = new Exception("Employee not found");
+            throw _errorLoggingService.LogException(exception);
+        }
+
+        EmployeeSalaryDetails employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
+        var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary.Id);
+
+        return updatedEmployeeSalary;
+    }
+
+    public async Task<bool> CheckEmployee(int employeeId)
+    {
+        var employee = await _db.Employee
+        .Get(employee => employee.Id == employeeId)
+        .FirstOrDefaultAsync();
+
+        if (employee == null) { return false; }
+        else { return true; }
     }
 }

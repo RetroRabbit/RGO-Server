@@ -76,6 +76,7 @@ public class UnitOfWork : IUnitOfWork
     public IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     public IErrorLoggingRepository ErrorLogging { get; }
     public ICandidateRepository Candidate { get; }
+    public IEmployeeSalaryDetails EmployeeSalaryDetails { get; }//Change if needed
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
         await _db.Database.ExecuteSqlRawAsync(sql, parameters);
