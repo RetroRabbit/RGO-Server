@@ -39,8 +39,9 @@ public class EmployeeServiceUnitTests
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
-        employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-                                              employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object);
+        Environment.SetEnvironmentVariable("NewEmployeeQueue__ConnectionString", "test");
+        Environment.SetEnvironmentVariable("ServiceBus__QueueName", "test-queue");
+        employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object, employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object);
         errorLoggingService = new ErrorLoggingService(_dbMock.Object);
 
     }

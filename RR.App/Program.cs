@@ -10,6 +10,7 @@ using System.Text;
 using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
+using HRIS.Services.Services;
 
 namespace RR.App
 {
@@ -28,7 +29,7 @@ namespace RR.App
 
 
             //TODO: Bring back consumer once email service has been aquired and set up
-            //builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
+            builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
