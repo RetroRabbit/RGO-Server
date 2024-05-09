@@ -48,22 +48,6 @@ public class EmployeeDocumentController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPost("additional-document/{documentType}")]
-    public async Task<IActionResult> addNewAdditionalDocument([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto, int documentType)
-    {
-        try
-        {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!, documentType);
-            return Ok(newEmployeeDocument);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "An error occurred while saving the employee document.");
-        }
-    }
-
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("{employeeId}/{filename}/{documentType}")]
     public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename, int documentType)
