@@ -34,6 +34,8 @@ public class EmployeeServiceUnitTests
 
     public EmployeeServiceUnitTests()
     {
+
+        Environment.SetEnvironmentVariable("NewEmployeeQueue__ConnectionString", "Endpoint=sb://blahblah.servicebus.windows.net/;SharedAccessKeyName=SomeKey;SharedAccessKey=etehtetjetjjrykrykry");
         _dbMock = new Mock<IUnitOfWork>();
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
