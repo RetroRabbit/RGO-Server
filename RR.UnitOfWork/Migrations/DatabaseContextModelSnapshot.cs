@@ -347,7 +347,7 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("employeeNumber");
 
-                    b.Property<int>("EmployeeTypeId")
+                    b.Property<int?>("EmployeeTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeTypeId");
 
@@ -1217,9 +1217,7 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeType", "EmployeeType")
                         .WithMany()
-                        .HasForeignKey("EmployeeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeTypeId");
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "ChampionEmployee")
                         .WithMany()

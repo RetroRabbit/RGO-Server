@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RR.UnitOfWork.Migrations
 {
     /// <inheritdoc />
-    public partial class @new : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -518,8 +518,7 @@ namespace RR.UnitOfWork.Migrations
                     status = table.Column<int>(type: "integer", nullable: true),
                     uploadDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     reason = table.Column<string>(type: "text", nullable: true),
-                    counterSign = table.Column<bool>(type: "boolean", nullable: false),
-                    documentType = table.Column<int>(type: "integer", nullable: true)
+                    counterSign = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
