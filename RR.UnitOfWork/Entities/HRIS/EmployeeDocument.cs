@@ -39,6 +39,8 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
 
     [Column("fileCategory")] public FileCategory FileCategory { get; set; }
 
+    [Column("employeeFileCategory")] public EmployeeFileCategory EmployeeFileCategory { get; set; }
+
     [Column("blob")] public string? Blob { get; set; }
 
     [Column("status")] public DocumentStatus? Status { get; set; }

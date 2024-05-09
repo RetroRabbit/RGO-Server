@@ -33,7 +33,22 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         bool sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
-        var docType = documentType == 0? DocumentType.StarterKit : DocumentType.Additional;
+        var docType = DocumentType.StarterKit;
+
+        switch (documentType)
+        {
+            case 0:
+                docType = DocumentType.StarterKit;
+                break;
+            case 1:
+                docType = DocumentType.Additional;
+                break;
+            case 2:
+                docType = DocumentType.EmployeeDocuments;
+                break;
+            default:
+                break;
+        }
 
         var employeeDocument = new EmployeeDocumentDto
         {
@@ -42,6 +57,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             Reference = employeeDocDto.Reference,
             FileName = employeeDocDto.FileName,
             FileCategory = employeeDocDto.FileCategory,
+            EmployeeFileCategory = employeeDocDto.EmployeeFileCategory,
             Blob = employeeDocDto.Blob,
             Status = status,
             UploadDate = DateTime.Now,
