@@ -18,13 +18,13 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet("{employeeId}")]
-    public async Task<IActionResult> GetAllEmployeeDocuments(int employeeId)
+    [HttpGet("all/{employeeId}/{documentType}")]
+    public async Task<IActionResult> GetEmployeeDocuments(int employeeId, int documentType)
     {
         try
         {
-            var employeeDocuments = await _employeeDocumentService.GetAllEmployeeDocuments(employeeId);
-            return Ok(employeeDocuments);
+                var employeeDocuments = await _employeeDocumentService.GetEmployeeDocuments(employeeId, (DocumentType)documentType);
+                return Ok(employeeDocuments);
         }
         catch (Exception)
         {
@@ -33,13 +33,13 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpPost()]
-    public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto)
+    [HttpPost("{documentType}")]
+    public async Task<IActionResult> Save([FromBody] SimpleEmployeeDocumentDto employeeDocumentDto, int documentType)
     {
         try
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+            var newEmployeeDocument = await _employeeDocumentService.SaveEmployeeDocument(employeeDocumentDto, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!, documentType);
             return Ok(newEmployeeDocument);
         }
         catch (Exception)
@@ -49,12 +49,12 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
-    [HttpGet("{employeeId}/{filename}")]
-    public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename)
+    [HttpGet("{employeeId}/{filename}/{documentType}")]
+    public async Task<IActionResult> GetEmployeeDocument(int employeeId, string filename, int documentType)
     {
         try
         {
-            var employeeDocument = await _employeeDocumentService.GetEmployeeDocument(employeeId, filename);
+            var employeeDocument = await _employeeDocumentService.GetEmployeeDocument(employeeId, filename, (DocumentType)documentType);
             return Ok(employeeDocument);
         }
         catch (Exception)
@@ -79,7 +79,7 @@ public class EmployeeDocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpDelete]
+    [HttpDelete("{documentId}")]
     public async Task<IActionResult> Delete(int documentId)
     {
         try
