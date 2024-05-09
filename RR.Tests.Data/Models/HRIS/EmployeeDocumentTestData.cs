@@ -17,7 +17,9 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.ActionRequired,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
+        CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
+        LastUpdatedDate = DateTime.Now
     };
 
     public static EmployeeDocumentDto EmployeeDocumentApproved = new EmployeeDocumentDto
@@ -31,7 +33,9 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.Approved,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
+        CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
+        LastUpdatedDate = DateTime.Now
     };
 
     public static EmployeeDocumentDto EmployeeDocumentRejected = new EmployeeDocumentDto
@@ -45,7 +49,9 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.Rejected,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
+        CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
+        LastUpdatedDate = DateTime.Now
     };
 
     public static EmployeeDocumentDto EmployeeDocumentActionRequired = new EmployeeDocumentDto
@@ -59,10 +65,18 @@ public class EmployeeDocumentTestData
         Status = DocumentStatus.ActionRequired,
         UploadDate = DateTime.Now,
         Reason = null,
-        CounterSign = false
+        CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
     };
-    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto {
-           Id = 1, EmployeeId = EmployeeTestData.EmployeeDto.Id,
-           FileName = "TestFile.pdf", FileCategory = FileCategory.FixedTerm,
-           Blob = "TestFileContent", UploadDate = DateTime.Now};
+    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto
+    {
+        Id = 1,
+        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        FileName = "TestFile.pdf",
+        FileCategory = FileCategory.FixedTerm,
+        Blob = "TestFileContent",
+        UploadDate = DateTime.Now,
+        Reference = null,
+        LastUpdatedDate = DateTime.Now
+    };
 }

@@ -76,7 +76,8 @@ public class EmployeeCertificationServiceUnitTests
             Status = DocumentStatus.Approved,
             UploadDate = new DateTime(2020, 1, 1),
             Reason = null,
-            CounterSign = true
+            CounterSign = true,
+            LastUpdatedDate = new DateTime(2020, 1, 1),
         };
 
 
