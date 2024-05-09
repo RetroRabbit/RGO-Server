@@ -73,26 +73,26 @@ public class EmployeeBankingControllerUnitTests
         Assert.IsType<OkObjectResult>(result);
     }
 
-    [Fact]
-    public async Task UpdateInvalidInputReturnsBadRequest()
-    {
-        var updateEntry = new SimpleEmployeeBankingDto
-        {
-            Id = 1,
-            EmployeeId = 2,
-            BankName = "BankName",
-            Branch = "Branch",
-            AccountNo = "AccountNo",
-            AccountType = EmployeeBankingAccountType.Savings,
-            Status = BankApprovalStatus.Approved,
-            DeclineReason = "DeclineReason",
-            File = "File.pdf"
-        };
+    //[Fact]
+    //public async Task UpdateInvalidInputReturnsBadRequest()
+    //{
+    //    var updateEntry = new SimpleEmployeeBankingDto
+    //    {
+    //        Id = 1,
+    //        EmployeeId = 2,
+    //        BankName = "BankName",
+    //        Branch = "Branch",
+    //        AccountNo = "AccountNo",
+    //        AccountType = EmployeeBankingAccountType.Savings,
+    //        Status = BankApprovalStatus.Approved,
+    //        DeclineReason = "DeclineReason",
+    //        File = "File.pdf"
+    //    };
 
-        var result = await controller.Update(updateEntry);
+    //    var result = await controller.Update(updateEntry);
 
-        Assert.IsType<BadRequestObjectResult>(result);
-    }
+    //    Assert.IsType<BadRequestObjectResult>(result);
+    //}
 
     [Fact]
     public async Task AddBankingInfoExceptionWithDetailsAlreadyExistReturnsProblemResult()

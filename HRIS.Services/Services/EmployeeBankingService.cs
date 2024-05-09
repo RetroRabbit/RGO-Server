@@ -73,7 +73,7 @@ public class EmployeeBankingService : IEmployeeBankingService
             .OrderBy(b => b.LastUpdateDate)
             .ToListAsync();
 
-        if (existingBankingRecords.Count > 2)
+        if (existingBankingRecords.Count > 1)
         {
             var oldestRecord = existingBankingRecords.First();
             _db.EmployeeBanking.Delete(oldestRecord.Id);

@@ -21,7 +21,6 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
         Branch = employeeBankingDto.Branch;
         AccountNo = employeeBankingDto.AccountNo;
         AccountType = employeeBankingDto.AccountType;
-        
         Status = employeeBankingDto.Status;
         DeclineReason = employeeBankingDto.DeclineReason;
         File = employeeBankingDto.File;
