@@ -30,10 +30,11 @@ public class WorkExperienceController : ControllerBase
         catch (Exception ex)
         {
             if (ex.Message.Contains("work experience exists"))
-                return Problem("Unexceptable", "Unexceptable", 406, "Data already Exists");
+                return BadRequest("work experience exists");
 
-            return NotFound(ex.Message);
+            return Problem("An unexpected error occurred.", statusCode: 404);
         }
+
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
@@ -66,33 +67,18 @@ public class WorkExperienceController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateWorkExperience([FromBody] WorkExperienceDto workExperience)
     {
         try
         {
-            var workExperience1 = await _workExperienceService.GetWorkExperienceById(workExperience.Id);
-            var workExperienceData = new WorkExperienceDto
-            {
-                Id = workExperience.Id,
-                Title = workExperience.Title,
-                EmploymentType = workExperience.EmploymentType,
-                CompanyName = workExperience.CompanyName,
-                Location = workExperience.Location,
-                EmployeeId = workExperience.EmployeeId,
-                StartDate = workExperience.StartDate,
-                EndDate = workExperience.EndDate,
-            };
-
-            await _workExperienceService.Update(workExperienceData);
-
-            return Ok(workExperienceData);
+            await _workExperienceService.Update(workExperience);
+            return Ok(workExperience);
         }
         catch (Exception ex)
-        {
-            return NotFound(ex.Message);
+        { 
+            return BadRequest("Work experience could not be updated");
         }
     }
 }

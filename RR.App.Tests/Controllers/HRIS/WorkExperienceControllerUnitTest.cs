@@ -54,22 +54,22 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal(workExperience, newWorkExperience);
     }
 
-    //[Fact]
-    //public async Task saveWorkExperienceFail()
-    //{
-    //    _workExperienceServiceMock
-    //       .Setup(x => x
-    //           .Save(workExperience))
-    //       .ThrowsAsync(new Exception("work experience exists"));
+    [Fact]
+    public async Task saveWorkExperienceFail()
+    {
+        _workExperienceServiceMock
+           .Setup(x => x
+               .Save(workExperience))
+           .ThrowsAsync(new Exception("work experience exists"));
 
-    //    var controllerResult = await _controller.SaveWorkExperience(workExperience);
+        var controllerResult = await _controller.SaveWorkExperience(workExperience);
 
-    //    var actionResult = Assert.IsType<ConflictObjectResult>(controllerResult);
+        var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
 
 
-    //    Assert.Equal(409, actionResult.StatusCode);
-    //    Assert.Equal("work experience exists", actionResult.Value);
-    //}
+        Assert.Equal(400, actionResult.StatusCode);
+        Assert.Equal("work experience exists", actionResult.Value);
+    }
 
     [Fact]
     public async Task GetWorkExperienceByIdPass()
@@ -121,22 +121,23 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal(200, actionResult.StatusCode);
     }
 
-    //[Fact]
-    //public async Task UpdateWorkExperienceFail()
-    //{
-    //    _workExperienceServiceMock
-    //       .Setup(x => x
-    //            .Update(workExperience))
-    //       .ThrowsAsync(new Exception());
+    [Fact]
+    public async Task UpdateWorkExperienceFail()
+    {
+        _workExperienceServiceMock
+           .Setup(x => x
+                .Update(workExperience))
+           .ThrowsAsync(new Exception());
 
-    //    var controllerResult = await _controller
-    //        .UpdateWorkExperience(workExperience);
+        var controllerResult = await _controller
+            .UpdateWorkExperience(workExperience);
 
-    //    var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
+        var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
 
-      
-    //    Assert.Equal(404, actionResult.StatusCode);
-    //}
+
+        Assert.Equal(400, actionResult.StatusCode);
+        Assert.Equal("Work experience could not be updated", actionResult.Value);
+    }
 
     [Fact]
     public async Task DeleteWorkExperiencePass()
