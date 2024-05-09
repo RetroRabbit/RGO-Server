@@ -19,9 +19,7 @@ public class WorkExperienceService : IWorkExperienceService
 
     public async Task<bool> CheckIfExists(WorkExperienceDto workExperience)
     {
-        var exists =  await _db.WorkExperience.Any(x => x.Id == workExperience.Id);
-
-        return exists;
+        return await _db.WorkExperience.Any(x => x.Id == workExperience.Id);
     }
 
     public async Task<WorkExperienceDto> Save(WorkExperienceDto workExperience)
@@ -30,8 +28,7 @@ public class WorkExperienceService : IWorkExperienceService
 
         if (exists)
         {
-            var exception = new Exception("Work experience already exists");
-            throw _errorLoggingService.LogException(exception);
+            throw _errorLoggingService.LogException(new Exception("Work experience already exists"));
         }
         return await _db.WorkExperience.Add(new WorkExperience(workExperience));
     }

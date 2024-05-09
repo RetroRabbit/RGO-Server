@@ -63,7 +63,6 @@ public class WorkExperienceControllerUnitTest
 
         var controllerResult = await _controller.SaveWorkExperience(workExperience);
 
-
         var actionResult = Assert.IsType<ObjectResult>(controllerResult);
         Assert.Equal(500, actionResult.StatusCode);
 
