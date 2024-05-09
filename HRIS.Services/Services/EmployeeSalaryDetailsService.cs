@@ -92,7 +92,8 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         }
 
         EmployeeSalaryDetails employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
-        var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary.Id);
+        //var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary.Id);
+        var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary);
 
         return updatedEmployeeSalary;
     }
