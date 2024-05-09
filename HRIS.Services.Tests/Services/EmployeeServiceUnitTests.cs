@@ -11,7 +11,7 @@ using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Interfaces.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeServiceUnitTests
 {
