@@ -8,7 +8,6 @@ using Moq;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -30,11 +29,9 @@ public class EmployeeServiceUnitTests
     };
 
     private readonly EmployeeService employeeService;
-   // private readonly ErrorLoggingService errorLoggingService;
 
     public EmployeeServiceUnitTests()
     {
-
         Environment.SetEnvironmentVariable("NewEmployeeQueue__ConnectionString", "Endpoint=sb://blahblah.servicebus.windows.net/;SharedAccessKeyName=SomeKey;SharedAccessKey=etehtetjetjjrykrykry");
         _dbMock = new Mock<IUnitOfWork>();
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
@@ -42,8 +39,6 @@ public class EmployeeServiceUnitTests
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
         employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object, employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object);
-        //errorLoggingService = new ErrorLoggingService(_dbMock.Object);
-
     }
 
     [Fact]
@@ -150,8 +145,6 @@ public class EmployeeServiceUnitTests
     public void PushToProducerTestFail()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var _dbMock = new Mock<IUnitOfWork>();
 
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .Returns(Task.FromResult(EmployeeTypeTestData.DeveloperType));
