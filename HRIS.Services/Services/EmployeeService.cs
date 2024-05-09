@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Azure.Messaging.ServiceBus;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
@@ -269,54 +270,25 @@ public class EmployeeService : IEmployeeService
 
         var employeePreviousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-        if (employeePreviousMonthTotal != null
-            && employeePreviousMonthTotal.EmployeeTotal > 0
-            && employeePreviousMonthTotal.DeveloperTotal > 0
-            && employeePreviousMonthTotal.DesignerTotal > 0
-            && employeePreviousMonthTotal.ScrumMasterTotal > 0
-            && employeePreviousMonthTotal.BusinessSupportTotal > 0)
-        {
-            var churnRate = (double)(employeeCurrentMonthTotal.EmployeeTotal - employeePreviousMonthTotal.EmployeeTotal)
-                / employeePreviousMonthTotal.EmployeeTotal * 100;
-
-            var devChurnRate =
-                (double)(employeeCurrentMonthTotal.DeveloperTotal - employeePreviousMonthTotal.DeveloperTotal)
-                / employeePreviousMonthTotal.DeveloperTotal * 100;
-
-            var designerChurnRate =
-                (double)(employeeCurrentMonthTotal.DesignerTotal - employeePreviousMonthTotal.DesignerTotal)
-                / employeePreviousMonthTotal.DesignerTotal * 100;
-
-            var scrumMasterChurnRate =
-                (double)(employeeCurrentMonthTotal.ScrumMasterTotal - employeePreviousMonthTotal.ScrumMasterTotal)
-                / employeePreviousMonthTotal.ScrumMasterTotal * 100;
-
-            var businessSupportChurnRate = (double)(employeeCurrentMonthTotal.BusinessSupportTotal -
-                                                    employeePreviousMonthTotal.BusinessSupportTotal)
-                / employeePreviousMonthTotal.BusinessSupportTotal * 100;
-
-            return new ChurnRateDataCardDto
-            {
-                ChurnRate = Math.Round(churnRate, 0),
-                DeveloperChurnRate = Math.Round(devChurnRate, 0),
-                DesignerChurnRate = Math.Round(designerChurnRate, 0),
-                ScrumMasterChurnRate = Math.Round(scrumMasterChurnRate, 0),
-                BusinessSupportChurnRate = Math.Round(businessSupportChurnRate, 0),
-                Month = employeePreviousMonthTotal.Month,
-                Year = employeePreviousMonthTotal.Year
-            };
-        }
-
         return new ChurnRateDataCardDto
         {
-            ChurnRate = 0,
-            DeveloperChurnRate = 0,
-            DesignerChurnRate = 0,
-            ScrumMasterChurnRate = 0,
-            BusinessSupportChurnRate = 0,
-            Month = DateTime.Now.AddMonths(-1).ToString("MMMM"),
-            Year = DateTime.Now.Year
+            ChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.EmployeeTotal ?? 0, employeePreviousMonthTotal?.EmployeeTotal ?? 0),
+            DeveloperChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.DeveloperTotal ?? 0, employeePreviousMonthTotal?.DeveloperTotal ?? 0),
+            DesignerChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.DesignerTotal ?? 0, employeePreviousMonthTotal?.DesignerTotal ?? 0),
+            ScrumMasterChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.ScrumMasterTotal ?? 0, employeePreviousMonthTotal?.ScrumMasterTotal ?? 0),
+            BusinessSupportChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.BusinessSupportTotal ?? 0, employeePreviousMonthTotal?.BusinessSupportTotal ?? 0),
+            Month = employeePreviousMonthTotal?.Month ?? DateTime.Now.AddMonths(-1).ToString("MMMM"),
+            Year = employeePreviousMonthTotal?.Year ?? DateTime.Now.Year
         };
+    }
+
+
+    private double CalculateChurnRate(int employeeCurrentMonthTotal, int employeePreviousMonthTotal)
+    {
+        return Math.Round((employeePreviousMonthTotal > 0)
+            ? (double)(employeeCurrentMonthTotal - employeePreviousMonthTotal)
+              / employeePreviousMonthTotal * 100
+            : 0, 0);
     }
 
     public async Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal()

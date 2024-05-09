@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Text;
 using System.Timers;
 using Azure.Messaging.ServiceBus;
@@ -18,7 +17,6 @@ namespace HRIS.Services.Services;
 public class EmployeeDataConsumer
 {
     private readonly Timer? _consumeTimer;
-
     private readonly string ApplicationName = "Retro HR";
 
     private readonly ServiceBusClient _serviceBusClient;
