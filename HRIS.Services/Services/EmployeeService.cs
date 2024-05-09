@@ -57,7 +57,7 @@ public class EmployeeService : IEmployeeService
 
             try
             {
-                await PushToProducerAsync(employee);
+                 PushToProducerAsync(employee);
             }
             catch (Exception ex)
             {

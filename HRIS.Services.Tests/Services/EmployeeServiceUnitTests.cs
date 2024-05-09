@@ -40,7 +40,7 @@ public class EmployeeServiceUnitTests
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
         employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-                                              employeeAddressServiceMock.Object, roleServiceMock.Object,_errorLoggingServiceMock.Object);
+                                              employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object);
         errorLoggingService = new ErrorLoggingService(_dbMock.Object);
 
     }
@@ -291,7 +291,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
 
         RoleDto roleDto = new RoleDto { Id = 2, Description = "Admin" };
-        EmployeeRoleDto empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = roleDto };
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto { Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = roleDto };
         EmployeeRole empRole = new EmployeeRole(empRoleDto);
 
         List<Employee> employees = new List<Employee> { emp };
@@ -319,7 +319,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
+        var empRoleDto = new EmployeeRoleDto { Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
         var empRole = new EmployeeRole(empRoleDto);
 
         var empRoles = new List<EmployeeRole> { empRole };
@@ -357,7 +357,7 @@ public class EmployeeServiceUnitTests
 
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
+        var empRoleDto = new EmployeeRoleDto { Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
 
         var roles = new List<Role> { new(EmployeeRoleTestData.RoleDtoEmployee) };
 
@@ -455,7 +455,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task GetCurrentMonthTotalReturnsExistingTotalTest()
     {
-        
+
         var employeeList = new List<EmployeeDto>
         {
             EmployeeTestData.EmployeeDto
@@ -494,7 +494,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task GetCurrentMonthTotalCreateNewTotalTest()
     {
-        
+
         var employeeList = new List<EmployeeDto>
         {
             EmployeeTestData.EmployeeDto
@@ -560,7 +560,7 @@ public class EmployeeServiceUnitTests
 
 
     [Fact]
-    public async Task GetPreviousMonthTotalreateNewTotalTest()
+    public async Task GetPreviousMonthTotalCreateNewTotalTest()
     {
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
@@ -703,7 +703,7 @@ public class EmployeeServiceUnitTests
     {
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Developer" };
         EmployeeType employeeType = new(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto { Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         EmployeeDto employeeDto = new EmployeeDto
         {
