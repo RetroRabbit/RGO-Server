@@ -424,7 +424,7 @@ public class EmployeeService : IEmployeeService
                         .ToListAsync();
     }
 
-    public async Task PushToProducerAsync(Employee employeeData)
+    public async void PushToProducerAsync(Employee employeeData)
     {
         try
         {
@@ -432,8 +432,8 @@ public class EmployeeService : IEmployeeService
                 var messageBody = JsonConvert.SerializeObject(employeeData);
                 var body = Encoding.UTF8.GetBytes(messageBody);
 
-                await using var sender = serviceBusClient.CreateSender(queueName);
-                await sender.SendMessageAsync(new ServiceBusMessage(body));
+                 await using var sender = serviceBusClient.CreateSender(queueName);
+                 await sender.SendMessageAsync(new ServiceBusMessage(body));
             }
         }
         catch (Exception ex)
