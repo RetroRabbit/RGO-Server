@@ -14,7 +14,7 @@ public class EmployeeService : IEmployeeService
 {
     private readonly ServiceBusClient serviceBusClient =
         new(
-            "");
+            "Endpoint=sb://blahblah.servicebus.windows.net/;SharedAccessKeyName=;SharedAccessKey=");
 
 
       //  new (Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
