@@ -12,8 +12,8 @@ namespace HRIS.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    ServiceBusClient serviceBusClient = new ServiceBusClient(Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
-    string queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
+    ServiceBusClient serviceBusClient = new(Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
+    readonly string queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
@@ -57,7 +57,7 @@ public class EmployeeService : IEmployeeService
 
             try
             {
-                PushToProducerAsync(employee);
+                await PushToProducerAsync(employee);
             }
             catch (Exception ex)
             {
@@ -553,10 +553,10 @@ public class EmployeeService : IEmployeeService
 
     private Employee CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
     {
-        var employee = new Employee();
-
-        employee = new Employee(employeeDto, employeeTypeDto);
-        employee.Email = employeeDto.Email;
+        var employee = new Employee(employeeDto, employeeTypeDto)
+        {
+            Email = employeeDto.Email
+        };
 
         return employee;
     }
