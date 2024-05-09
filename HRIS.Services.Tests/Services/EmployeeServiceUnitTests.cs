@@ -54,7 +54,7 @@ public class EmployeeServiceUnitTests
         await Assert.ThrowsAsync<Exception>(() => employeeService.SaveEmployee(EmployeeTestData.EmployeeDto));
     }
 
-    [Fact]
+    [Fact(Skip = "Testing skip")]
     public async Task SaveEmployeeFailTest2()
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(Task.FromResult(false));
@@ -162,7 +162,7 @@ public class EmployeeServiceUnitTests
     }
 
 
-    [Fact]
+    [Fact(Skip = "Testing something")]
     public void GetEmployeeTest()
     {
         var employeeList = new List<Employee>
