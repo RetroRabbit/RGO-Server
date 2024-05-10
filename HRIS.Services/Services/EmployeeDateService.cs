@@ -22,7 +22,6 @@ public class EmployeeDateService : IEmployeeDateService
         var exists = await _db.EmployeeDate.Any(x =>
                                                     x.Id == employeeDate.Id &&
                                                     x.Employee!.Email == employeeDate.Employee!.Email);
-
         return exists;
     }
 
