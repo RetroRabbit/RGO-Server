@@ -1,10 +1,11 @@
-﻿using HRIS.Services.Interfaces;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS
 {
-    [Route("ClienteProject")]
+    [Route("client-project")]
     [ApiController]
     public class ClientProjectsController : ControllerBase
     {
@@ -14,7 +15,6 @@ namespace RR.App.Controllers.HRIS
             _clientProjectService = clientProjectService;
         }
 
-        // GET
         [HttpGet]
         public async Task<IActionResult> GetAllClientProjects()
         {
@@ -22,21 +22,19 @@ namespace RR.App.Controllers.HRIS
             return Ok(clientProjects);
         }
 
-        // GET
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ClientProject>> GetClientProject(int id)
+        [HttpGet]
+        public async Task<ActionResult<ClientProjectsDto>> GetClientProject(int id)
         {
-            var clientProject = await _clientProjectService.GetClientProject(id);
+            var clientProjectDto = await _clientProjectService.GetClientProject(id);
 
-            if (clientProject == null)
+            if (clientProjectDto == null)
             {
                 return NotFound();
             }
 
-            return clientProject;
+            return Ok(clientProjectDto);
         }
 
-        // POST
         [HttpPost]
         public async Task<ActionResult<ClientProject>> PostClientProject(ClientProject clientProject)
         {
@@ -44,8 +42,7 @@ namespace RR.App.Controllers.HRIS
             return CreatedAtAction(nameof(GetClientProject), new { id = createdClientProject.Id }, createdClientProject);
         }
 
-        // PUT
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> PutClientProject(int id, ClientProject clientProject)
         {
             if (id != clientProject.Id)
@@ -57,8 +54,7 @@ namespace RR.App.Controllers.HRIS
             return NoContent();
         }
 
-        // DELETE
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteClientProject(int id)
         {
             var clientProject = await _clientProjectService.GetClientProject(id);
