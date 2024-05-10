@@ -2,15 +2,14 @@
 
 public enum EmployeeFileCategory
 {
-    MIE,
-    PaySlip,
-    IdentityDocument,
-    IdVerification,
-    CopyCV,
-    QualificationCheck,
-    CriminalCheck,
-    ReferenceList,
-    ApprovalOfOffer,
-    ConfirmationOfOffer,
-    CostToCompany
+  CriminalCheck,
+  IdentificationDocument,
+  Equipment,
+  MockPayslip,
+  MIE,
+  QualificationCheck,
+  RetroCV,
+  ApprovalOfOffer,
+  ConfirmationOfOffer,
+  CostToCompany
 }

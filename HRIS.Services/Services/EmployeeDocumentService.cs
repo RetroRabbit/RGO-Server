@@ -50,6 +50,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 break;
         }
 
+        if (docType == DocumentType.EmployeeDocuments)
+            employeeDocDto.FileCategory = 0;
+
         var employeeDocument = new EmployeeDocumentDto
         {
             Id = employeeDocDto.Id,
