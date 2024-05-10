@@ -25,7 +25,7 @@ namespace RR.App.Controllers.HRIS
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<ClientProjectsDto>> GetClientProject(int id)
         {
             var clientProjectDto = await _clientProjectService.GetClientProject(id);
