@@ -282,7 +282,6 @@ public class EmployeeService : IEmployeeService
         };
     }
 
-
     private double CalculateChurnRate(int employeeCurrentMonthTotal, int employeePreviousMonthTotal)
     {
         return Math.Round((employeePreviousMonthTotal > 0)
