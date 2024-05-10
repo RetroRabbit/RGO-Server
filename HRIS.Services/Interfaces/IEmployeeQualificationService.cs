@@ -1,41 +1,49 @@
 ﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Interfaces;
 
 public interface IEmployeeQualificationService
 {
     /// <summary>
-    /// Save Employee Qualification
+    /// Saves a new employee qualification.
     /// </summary>
-    /// <param name="employeeQualificationDto"></param>
-    /// <returns></returns>
-    Task<EmployeeQualificationDto> SaveEmployeeQualification(EmployeeQualificationDto employeeQualificationDto);
+    /// <param name="employeeQualificationDto">Qualification data to be saved.</param>
+    /// <param name="employeeId">ID of the employee to whom the qualification belongs.</param>
+    /// <returns>The saved employee qualification data transfer object.</returns>
+    Task<EmployeeQualificationDto> SaveEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId);
 
     /// <summary>
-    /// Get Employee Qualifications
+    /// Retrieves all employee qualifications.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    Task<EmployeeQualificationDto> GetEmployeeQualification(int id);
-
-    /// <summary>
-    /// Get All Employee Qualifications
-    /// </summary>
-    /// <returns></returns>
+    /// <returns>A list of employee qualification data transfer objects.</returns>
     Task<List<EmployeeQualificationDto>> GetAllEmployeeQualifications();
 
     /// <summary>
-    /// Update Employee Qualification
+    /// Retrieves a specific employee qualification by its ID.
     /// </summary>
-    /// <param name="employeeQualificationDto"></param>
-    /// <returns></returns>
+    /// <param name="id">The ID of the qualification to retrieve.</param>
+    /// <returns>The requested employee qualification data transfer object.</returns>
+    Task<EmployeeQualificationDto> GetEmployeeQualificationById(int id);
+
+    /// <summary>
+    /// Retrieves all qualifications associated with a specific employee.
+    /// </summary>
+    /// <param name="employeeId">The ID of the employee for whom to retrieve all qualifications.</param>
+    /// <returns>The requested employee qualification data transfer object.</returns>
+    Task<List<EmployeeQualificationDto>> GetAllEmployeeQualificationsByEmployeeId(int employeeId);
+
+    /// <summary>
+    /// Updates an existing employee qualification.
+    /// </summary>
+    /// <param name="employeeQualificationDto">Updated qualification data.</param>
+    /// <returns>The updated employee qualification data transfer object.</returns>
     Task<EmployeeQualificationDto> UpdateEmployeeQualification(EmployeeQualificationDto employeeQualificationDto);
 
     /// <summary>
-    /// Delete Employee Qualification
+    /// Deletes an employee qualification by its ID.
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="id">The ID of the qualification to delete.</param>
     /// <returns></returns>
     Task<EmployeeQualificationDto> DeleteEmployeeQualification(int id);
 }
-

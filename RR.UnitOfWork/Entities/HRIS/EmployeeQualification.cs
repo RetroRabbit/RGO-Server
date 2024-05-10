@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using HRIS.Models.Enums.QualificationEnums;
 
-
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeQualifications")]
@@ -19,39 +18,35 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     {
         Id = employeeQualificationDto.Id;
         EmployeeId = employeeQualificationDto.EmployeeId;
-        Qualification = employeeQualificationDto.
+        HighestQualification = employeeQualificationDto.HighestQualification;
         School = employeeQualificationDto.School;
         Degree = employeeQualificationDto.Degree;
         FieldOfStudy = employeeQualificationDto.FieldOfStudy;
-        NQF = employeeQualificationDto.NQF;
-        StartDate = employeeQualificationDto.StartDate;
-        EndDate = employeeQualificationDto.EndDate;
+        NQFLevel = employeeQualificationDto.NQFLevel;
+        Year = employeeQualificationDto.Year;
     }
 
     [Column("employeeId")]
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("qualification")] 
-    public string? Qualification { get; set; }
+    [Column("highestQualification")] 
+    public HighestQualification HighestQualification { get; set; }
 
     [Column("school")] 
     public string? School { get; set; }
 
     [Column("degree")] 
-    public DegreeType Degree { get; set; }
+    public string? Degree { get; set; }
 
-    [Column("field")] 
-    public FieldOfStudy FieldOfStudy { get; set; }
+    [Column("fieldOfStudy")] 
+    public string? FieldOfStudy { get; set; }
 
-    [Column("nqf")] 
-    public NQFLevel NQF { get; set; }
+    [Column("nqfLevel")] 
+    public NQFLevel NQFLevel { get; set; }
 
-    [Column("startDate")] 
-    public DateTime StartDate { get; set; }
-
-    [Column("endDate")] 
-    public DateTime? EndDate { get; set; }
+    [Column("year")] 
+    public DateOnly? Year { get; set; }
 
     public virtual Employee? Employee { get; set; }
 
@@ -65,13 +60,12 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
         {
             Id = Id,
             EmployeeId = EmployeeId,
-            Qualification = Qualification,
+            HighestQualification = HighestQualification,
             School = School,
             Degree = Degree,
             FieldOfStudy = FieldOfStudy,
-            NQF = NQF,
-            StartDate = StartDate,
-            EndDate = EndDate
+            NQFLevel = NQFLevel,
+            Year = Year
         };
     }
 }

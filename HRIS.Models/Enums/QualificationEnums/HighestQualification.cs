@@ -1,6 +1,6 @@
 ﻿namespace HRIS.Models.Enums.QualificationEnums;
 
-public enum DegreeType
+public enum HighestQualification
 {
     Bachelor,
     Master,

@@ -12,6 +12,7 @@ public static class RegisterServicesExtension
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IEmployeeAddressService, EmployeeAddressService>();
         services.AddScoped<IEmployeeCertificationService, EmployeeCertificationService>();
+        services.AddScoped<IEmployeeQualificationService, EmployeeQualificationService>();
         services.AddScoped<IEmployeeEvaluationService, EmployeeEvaluationService>();
         services.AddScoped<IEmployeeEvaluationAudienceService, EmployeeEvaluationAudienceService>();
         services.AddScoped<IEmployeeEvaluationRatingService, EmployeeEvaluationRatingService>();
