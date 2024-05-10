@@ -34,5 +34,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IErrorLoggingService, ErrorLoggingService>();
         services.AddScoped<IBankingAndStarterKitService, BankingAndStarterKitService>();
         services.AddScoped<IEmployeeQualificationService, EmployeeQualificationService>();
+        services.AddScoped<IWorkExperienceService, WorkExperienceService>();
     }
 }

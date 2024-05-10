@@ -47,6 +47,7 @@ public class UnitOfWork : IUnitOfWork
         MonthlyEmployeeTotal = new MonthlyEmployeeTotalRepository(_db);
         ErrorLogging = new ErrorLoggingRepository(_db);
         Candidate = new CandidateRepository(_db);
+        WorkExperience = new WorkExperienceRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -78,6 +79,8 @@ public class UnitOfWork : IUnitOfWork
     public IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     public IErrorLoggingRepository ErrorLogging { get; }
     public ICandidateRepository Candidate { get; }
+    public IWorkExperienceRepository WorkExperience { get; }
+
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
         await _db.Database.ExecuteSqlRawAsync(sql, parameters);
