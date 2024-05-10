@@ -32,7 +32,6 @@ namespace RR.App
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
-
             /// <summary>
             /// Adds Swagger to the project and configures it to use JWT Bearer Authentication
             /// </summary>
