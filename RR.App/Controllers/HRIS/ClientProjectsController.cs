@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -15,6 +16,7 @@ namespace RR.App.Controllers.HRIS
             _clientProjectService = clientProjectService;
         }
 
+        [Authorize(Policy ="AllRolesPolicy")]
         [HttpGet]
         public async Task<IActionResult> GetAllClientProjects()
         {
@@ -22,6 +24,7 @@ namespace RR.App.Controllers.HRIS
             return Ok(clientProjects);
         }
 
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpGet]
         public async Task<ActionResult<ClientProjectsDto>> GetClientProject(int id)
         {
@@ -35,6 +38,7 @@ namespace RR.App.Controllers.HRIS
             return Ok(clientProjectDto);
         }
 
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpPost]
         public async Task<ActionResult<ClientProject>> PostClientProject(ClientProject clientProject)
         {
@@ -42,6 +46,7 @@ namespace RR.App.Controllers.HRIS
             return CreatedAtAction(nameof(GetClientProject), new { id = createdClientProject.Id }, createdClientProject);
         }
 
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpPut]
         public async Task<IActionResult> PutClientProject(int id, ClientProject clientProject)
         {
@@ -54,6 +59,7 @@ namespace RR.App.Controllers.HRIS
             return NoContent();
         }
 
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpDelete]
         public async Task<IActionResult> DeleteClientProject(int id)
         {
