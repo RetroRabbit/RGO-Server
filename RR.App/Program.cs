@@ -8,27 +8,27 @@ using RR.UnitOfWork;
 using System.Security.Claims;
 using System.Text;
 using HRIS.Models;
-using HRIS.Services.Services;
-using RabbitMQ.Client;
 using ATS.Services;
+using Azure.Messaging.ServiceBus;
+using HRIS.Services.Services;
 
 namespace RR.App
 {
     public class Program
     {
-        public static void Main(params string[] args)
+        public static async Task Main(params string[] args)
         {
-            ConnectionFactory _factory;
-            _factory = new ConnectionFactory();
-            _factory.UserName = "my-rabbit";
-            _factory.UserName = "guest";
-            _factory.Password = "guest";
-            EmployeeDataConsumer emailer = new EmployeeDataConsumer(_factory);
-            EmployeeService._employeeFactory = _factory;
             var builder = WebApplication.CreateBuilder(args);
             ConfigurationManager configuration = builder.Configuration;
             configuration.AddJsonFile("appsettings.json");
             configuration.AddUserSecrets<Program>();
+
+            var serviceBusConnectionString = Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString");
+            var queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString); 
+
+            //TODO: Bring back consumer once email service has been aquired and set up
+            builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
