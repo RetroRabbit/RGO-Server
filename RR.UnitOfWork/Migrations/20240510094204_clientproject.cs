@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RR.UnitOfWork.Migrations
 {
     /// <inheritdoc />
-    public partial class ClientProject : Migration
+    public partial class clientproject : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -563,6 +563,7 @@ namespace RR.UnitOfWork.Migrations
                     uploadDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     reason = table.Column<string>(type: "text", nullable: true),
                     counterSign = table.Column<bool>(type: "boolean", nullable: false),
+                    documentType = table.Column<int>(type: "integer", nullable: true),
                     lastUpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -658,6 +659,31 @@ namespace RR.UnitOfWork.Migrations
                         name: "FK_EmployeeRole_Role_roleId",
                         column: x => x.roleId,
                         principalTable: "Role",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WorkExperience",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    title = table.Column<string>(type: "text", nullable: false),
+                    employmentType = table.Column<string>(type: "text", nullable: true),
+                    companyName = table.Column<string>(type: "text", nullable: true),
+                    location = table.Column<string>(type: "text", nullable: true),
+                    startDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    endDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    employeeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkExperience", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_WorkExperience_Employee_employeeId",
+                        column: x => x.employeeId,
+                        principalTable: "Employee",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -871,6 +897,11 @@ namespace RR.UnitOfWork.Migrations
                 name: "IX_RoleAccessLink_roleId",
                 table: "RoleAccessLink",
                 column: "roleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkExperience_employeeId",
+                table: "WorkExperience",
+                column: "employeeId");
         }
 
         /// <inheritdoc />
@@ -932,6 +963,9 @@ namespace RR.UnitOfWork.Migrations
 
             migrationBuilder.DropTable(
                 name: "RoleAccessLink");
+
+            migrationBuilder.DropTable(
+                name: "WorkExperience");
 
             migrationBuilder.DropTable(
                 name: "Chart");

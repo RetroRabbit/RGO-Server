@@ -40,7 +40,7 @@ namespace RR.App.Controllers.HRIS
 
         [Authorize(Policy = "AllRolesPolicy")]
         [HttpPost]
-        public async Task<ActionResult<ClientProject>> PostClientProject(ClientProject clientProject)
+        public async Task<ActionResult<ClientProjectsDto>> PostClientProject(ClientProject clientProject)
         {
             var createdClientProject = await _clientProjectService.CreateClientProject(clientProject);
             return CreatedAtAction(nameof(GetClientProject), new { id = createdClientProject.Id }, createdClientProject);

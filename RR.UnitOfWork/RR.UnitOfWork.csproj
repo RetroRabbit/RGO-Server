@@ -32,7 +32,6 @@
     <Folder Include="Entities\ATS\" />
     <Folder Include="Interfaces\ATS\" />
     <Folder Include="Repositories\ATS\" />
-	<Folder Include="Migrations\"/>
   </ItemGroup>
 
   <ItemGroup>
