@@ -1,4 +1,4 @@
-﻿/*using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
@@ -50,7 +50,7 @@ public class EmployeeCertificationServiceUnitTests
 
     private void MockEmployeeCertificationRepositorySetup(EmployeeCertificationDto employeeCertificationDto)
     {
-        var employeeCertificationList = new List<EmployeeCertification> { new(employeeCertificationDto) };
+        var employeeCertificationList = new List<EmployeeCertification> { new EmployeeCertification(employeeCertificationDto) };
         _unitOfWork.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
                    .Returns(employeeCertificationList.AsQueryable().BuildMock().Take(1));
     }
@@ -212,7 +212,7 @@ public class EmployeeCertificationServiceUnitTests
         MockEmployeeRepositorySetupWithEmployee(EmployeeTestData.EmployeeDto);
         MockEmployeeCertificationRepositorySetupForDelete(employeeCertificationDto);
 
-        var result = await _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto);
+        var result = await _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto.Id);
 
         Assert.NotNull(result);
     }
@@ -289,7 +289,7 @@ public class EmployeeCertificationServiceUnitTests
                                  .Throws(new Exception("Employee not found"));
 
         await Assert.ThrowsAsync<Exception>(() =>
-                    _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto));
+                    _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto.Id));
 
         _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     } 
@@ -313,4 +313,3 @@ public class EmployeeCertificationServiceUnitTests
         _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 }
-*/

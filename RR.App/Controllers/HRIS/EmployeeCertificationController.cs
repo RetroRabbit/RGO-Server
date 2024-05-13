@@ -17,7 +17,7 @@ public class EmployeeCertificationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAlEmployeelCertiificates(int employeeId)
+    public async Task<IActionResult> GetAllEmployeelCertiificates(int employeeId)
     {
         try
         {
