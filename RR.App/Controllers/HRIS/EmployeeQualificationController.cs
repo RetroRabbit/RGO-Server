@@ -4,123 +4,108 @@ using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace RR.App.Controllers.HRIS
+namespace RR.App.Controllers.HRIS;
+
+[Route("employee-qualifications")]
+[ApiController]
+public class EmployeeQualificationController : ControllerBase
 {
-    [Route("employee-qualifications")]
-    [ApiController]
-    public class EmployeeQualificationController : ControllerBase
+    private readonly IEmployeeQualificationService _employeeQualificationService;
+
+    public EmployeeQualificationController(IEmployeeQualificationService employeeQualificationService, IEmployeeService employeeService, IErrorLoggingService errorLoggingService)
     {
-        private readonly IEmployeeQualificationService _employeeQualificationService;
-        private readonly IEmployeeService _employeeService;
+        _employeeQualificationService = employeeQualificationService;
+    }
 
-        public EmployeeQualificationController(IEmployeeQualificationService employeeQualificationService, IEmployeeService employeeService, IErrorLoggingService errorLoggingService)
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpPost]
+    public async Task<IActionResult> SaveEmployeeQualification([FromBody] EmployeeQualificationDto employeeQualificationDto)
+    {
+        try
         {
-            _employeeQualificationService = employeeQualificationService;
-            _employeeService = employeeService;
+            var newQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
+            return Ok(newQualification);
         }
-
-        [Authorize(Policy = "AllRolesPolicy")]
-        [HttpPost]
-        public async Task<IActionResult> SaveEmployeeQualification([FromBody] EmployeeQualificationDto employeeQualificationDto, [FromQuery] int employeeId)
+        catch (Exception ex)
         {
-            if (employeeQualificationDto == null)
-            {
-                return BadRequest("Invalid qualification data provided.");
-            }
-
-            try
-            {
-                var newEmployeeQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeId);
-                return Ok(newEmployeeQualification);
-            }
-            catch (KeyNotFoundException knf)
-            {
-                return NotFound(knf.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while saving the qualification: " + ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
-        [Authorize(Policy = "AllRolesPolicy")]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteEmployeeQualification(int id)
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateEmployeeQualification(int id, [FromBody] EmployeeQualificationDto employeeQualificationDto)
+    {
+        try
         {
-            try
-            {
-                var deletedEmployeeQualification = await _employeeQualificationService.DeleteEmployeeQualification(id);
-                if (deletedEmployeeQualification == null)
-                {
-                    return NotFound($"No qualification found with ID {id}.");
-                }
-                return Ok(deletedEmployeeQualification);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while deleting the qualification: " + ex.Message);
-            }
+            employeeQualificationDto.Id = id;
+            var updatedQualification = await _employeeQualificationService.UpdateEmployeeQualification(employeeQualificationDto);
+            return Ok(updatedQualification);
         }
-
-        [Authorize(Policy = "AllRolesPolicy")]
-        [HttpGet("{employeeId}")]
-        public async Task<IActionResult> GetAllQualificationsByEmployee(int employeeId)
+        catch (KeyNotFoundException knf)
         {
-            try
-            {
-                var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
-                if (qualifications == null || qualifications.Count == 0)
-                {
-                    return NotFound($"No qualifications found for employee with ID {employeeId}.");
-                }
-                return Ok(qualifications);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while retrieving qualifications: " + ex.Message);
-            }
+            return NotFound(knf.Message);
         }
-
-        [Authorize(Policy = "AllRolesPolicy")]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeQualificationDto>> GetEmployeeQualificationById(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                var qualification = await _employeeQualificationService.GetEmployeeQualificationById(id);
-                if (qualification == null)
-                {
-                    return NotFound();
-                }
-                return qualification;
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
-        [Authorize(Policy = "AllRolesPolicy")]
-        [HttpGet("{employeeId}")]
-        public async Task<ActionResult<List<EmployeeQualificationDto>>> GetAllEmployeeQualificationsByEmployeeId(int employeeId)
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet]
+    public async Task<ActionResult<List<EmployeeQualificationDto>>> GetAllEmployeeQualifications()
+    {
+        try
         {
-            try
+            var qualifications = await _employeeQualificationService.GetAllEmployeeQualifications();
+            return Ok(qualifications);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("An error occurred while retrieving qualifications: " + ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet("by-employee/{employeeId}")]
+    public async Task<ActionResult<List<EmployeeQualificationDto>>> GetEmployeeQualificationByEmployeeId(int employeeId)
+    {
+        try
+        {
+            var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
+            return Ok(qualifications);
+        }
+        catch (KeyNotFoundException knf)
+        {
+            return NotFound(knf.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("An error occurred while retrieving qualifications: " + ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEmployeeQualification(int id)
+    {
+        try
+        {
+            var deletedQualification = await _employeeQualificationService.DeleteEmployeeQualification(id);
+            if (deletedQualification == null)
             {
-                var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
-                if (qualifications == null || qualifications.Count == 0)
-                {
-                    return NotFound("No qualifications found for this employee.");
-                }
-                return qualifications;
+                return NotFound($"No qualification found with ID {id}.");
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(deletedQualification);
+        }
+        catch (KeyNotFoundException knf)
+        {
+            return NotFound(knf.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while deleting the qualification: " + ex.Message);
         }
     }
 }

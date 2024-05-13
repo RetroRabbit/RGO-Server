@@ -10,13 +10,6 @@ namespace HRIS.Services.Tests.Services
 {
     public class EmployeeQualificationServiceUnitTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly IEmployeeQualificationService _employeeQualificationService;
 
-        public EmployeeQualificationServiceUnitTest()
-        {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _employeeQualificationService = new EmployeeQualificationService(_unitOfWorkMock.Object);
-        }
     }
 }
