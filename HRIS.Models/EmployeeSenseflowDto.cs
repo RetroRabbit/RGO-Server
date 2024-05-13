@@ -8,8 +8,8 @@ namespace HRIS.Models;
 public class EmployeeSenseflowDto
 {
     public string Fullname { get; set; }
-    public EmployeeRoleDto Role { get; set; }
-    public string Level { get; set; }
+    public EmployeeTypeDto Role { get; set; }
+    public EmployeeLevelDto Level { get; set; }
     public DateTime Start { get; set; }
     public string Email { get; set; }
 }

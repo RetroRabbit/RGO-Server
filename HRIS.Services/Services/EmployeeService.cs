@@ -107,6 +107,20 @@ public class EmployeeService : IEmployeeService
         return newEmployee;
     }
 
+    public async Task<EmployeeSenseflowDto> AddEmployeeToSenseflow(EmployeeDto employeeDto)
+    {
+        var employeeSenseflowDto = new EmployeeSenseflowDto
+        {
+            Fullname = employeeDto.Name,
+            Role = {Id = employeeDto.EmployeeType.Id, Name = employeeDto.EmployeeType.Name },
+            Level = { Id = employeeDto.Level, Value =  },
+            Start = employeeDto.EngagementDate,
+            Email = employeeDto.Email
+        };
+
+        return employeeSenseflowDto;
+    }
+
     public Task<EmployeeSenseflowDto> AddOrUpdateEmployeeToSenseflow(EmployeeSenseflowDto employeeSenseflowDto)
     {
         throw new NotImplementedException();
