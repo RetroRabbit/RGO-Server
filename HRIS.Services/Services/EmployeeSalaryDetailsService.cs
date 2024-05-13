@@ -18,10 +18,9 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
     private readonly IUnitOfWork _db;
     private readonly IErrorLoggingService _errorLoggingService;
 
-    public async Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
+    public async Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(int employeeId)
     {
-        var employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
-        var deletedEmployeeSalary = await _db.EmployeeSalaryDetails.Delete(employeeSalary.Id);
+        var deletedEmployeeSalary = await _db.EmployeeSalaryDetails.Delete(employeeId);
 
         return deletedEmployeeSalary;
     }

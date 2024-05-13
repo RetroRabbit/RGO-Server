@@ -32,5 +32,5 @@ public interface IEmployeeSalarayDetailsService
     /// </summary>
     /// <param name="employeeSalaryDto"></param>
     /// <returns></returns>
-    Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto);
+    Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(int employeeId);
 }

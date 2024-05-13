@@ -19,7 +19,22 @@ public class EmployeeSalaryDetailsController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet("")]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteSalary(int employeeId)
+    {
+        try
+        {
+            var deletedEmployeeSalary = await _employeeSalarayDetailsService.DeleteEmployeeSalary(employeeId);
+            return Ok(deletedEmployeeSalary);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while deleting the employee salary.");
+        }
+    }
+
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllEmployeeSalaries()
     {
         try
@@ -29,7 +44,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while fetching the employee documents.");
+            return StatusCode(500, "An error occurred while fetching the employee salaries.");
         }
     }
 
@@ -44,7 +59,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(500, "An error occurred while fetching employee documents.");
+            return StatusCode(500, "An error occurred while fetching employee salaries.");
         }
     }
 
@@ -63,6 +78,21 @@ public class EmployeeSalaryDetailsController : ControllerBase
                 return Problem("Unexceptable", "Unexceptable", 406, "User Salary Exists");
 
             return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpPut()]
+    public async Task<IActionResult> UpdateSalary([FromBody] EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
+    {
+        try
+        {
+            var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
+            return Ok(updatedEmployeeSalary);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while updating the employee salary.");
         }
     }
 }
