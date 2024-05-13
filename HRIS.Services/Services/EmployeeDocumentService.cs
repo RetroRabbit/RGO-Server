@@ -34,6 +34,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
         var docType = DocumentType.StarterKit;
+        var empFileCategory = employeeDocDto.EmployeeFileCategory;
 
         switch (documentType)
         {
@@ -60,7 +61,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             Reference = employeeDocDto.Reference,
             FileName = employeeDocDto.FileName,
             FileCategory = employeeDocDto.FileCategory,
-            EmployeeFileCategory = employeeDocDto.EmployeeFileCategory,
+            EmployeeFileCategory = (EmployeeFileCategory)employeeDocDto.EmployeeFileCategory,
             Blob = employeeDocDto.Blob,
             Status = status,
             UploadDate = DateTime.Now,
@@ -68,7 +69,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             DocumentType = docType,
         };
 
-        var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
+        var convertedDoc = new EmployeeDocument(employeeDocument);
+        var newEmployeeDocument = await _db.EmployeeDocument.Add(convertedDoc);
 
         return newEmployeeDocument;
     }

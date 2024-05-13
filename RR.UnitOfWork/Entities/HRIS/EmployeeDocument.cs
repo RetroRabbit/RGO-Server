@@ -20,6 +20,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
         Reference = employeeDocumentsDto.Reference;
         FileName = employeeDocumentsDto.FileName;
         FileCategory = employeeDocumentsDto.FileCategory;
+        EmployeeFileCategory = employeeDocumentsDto.EmployeeFileCategory;
         Blob = employeeDocumentsDto.Blob;
         Status = employeeDocumentsDto.Status;
         UploadDate = employeeDocumentsDto.UploadDate;
@@ -67,6 +68,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
                                        Reference = Reference,
                                        FileName = FileName,
                                        FileCategory = FileCategory,
+                                       EmployeeFileCategory = EmployeeFileCategory,
                                        Blob = Blob,
                                        Status = Status,
                                        UploadDate = UploadDate,
