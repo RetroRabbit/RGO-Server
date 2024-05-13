@@ -20,7 +20,7 @@ namespace RR.App.Controllers.HRIS
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
-        [HttpPost("Save")]
+        [HttpPost]
         public async Task<IActionResult> SaveEmployeeQualification([FromBody] EmployeeQualificationDto employeeQualificationDto, [FromQuery] int employeeId)
         {
             if (employeeQualificationDto == null)
