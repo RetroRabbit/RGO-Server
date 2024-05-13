@@ -8,10 +8,9 @@ using Moq;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeServiceUnitTests
 {
@@ -30,19 +29,16 @@ public class EmployeeServiceUnitTests
     };
 
     private readonly EmployeeService employeeService;
-    private readonly ErrorLoggingService errorLoggingService;
 
     public EmployeeServiceUnitTests()
     {
+        Environment.SetEnvironmentVariable("NewEmployeeQueue__ConnectionString", "Endpoint=sb://blahblah.servicebus.windows.net/;SharedAccessKeyName=SomeKey;SharedAccessKey=etehtetjetjjrykrykry");
         _dbMock = new Mock<IUnitOfWork>();
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         roleServiceMock = new Mock<IRoleService>();
-        employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-                                              employeeAddressServiceMock.Object, roleServiceMock.Object,_errorLoggingServiceMock.Object);
-        errorLoggingService = new ErrorLoggingService(_dbMock.Object);
-
+        employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object, employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object);
     }
 
     [Fact]
@@ -144,21 +140,18 @@ public class EmployeeServiceUnitTests
         Assert.Equal(EmployeeTestData.EmployeeDto, result);
     }
 
-    //There is not PushToPreducerTestPass because we cannot mock the connection to RabbitMQ Docker Instance
 
     [Fact]
     public void PushToProducerTestFail()
     {
         var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var _dbMock = new Mock<IUnitOfWork>();
 
         employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .Returns(Task.FromResult(EmployeeTypeTestData.DeveloperType));
 
         var employeeData = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType);
 
-        employeeService.PushToProducer(employeeData);
+        employeeService.PushToProducerAsync(employeeData);
     }
 
 
@@ -172,7 +165,6 @@ public class EmployeeServiceUnitTests
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.AsQueryable().BuildMock());
-
 
         var result = employeeService.GetEmployee("dm@retrorabbit.co.za");
 
@@ -291,7 +283,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
 
         RoleDto roleDto = new RoleDto { Id = 2, Description = "Admin" };
-        EmployeeRoleDto empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = roleDto };
+        EmployeeRoleDto empRoleDto = new EmployeeRoleDto { Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = roleDto };
         EmployeeRole empRole = new EmployeeRole(empRoleDto);
 
         List<Employee> employees = new List<Employee> { emp };
@@ -319,7 +311,7 @@ public class EmployeeServiceUnitTests
         emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
+        var empRoleDto = new EmployeeRoleDto { Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
         var empRole = new EmployeeRole(empRoleDto);
 
         var empRoles = new List<EmployeeRole> { empRole };
@@ -357,7 +349,7 @@ public class EmployeeServiceUnitTests
 
         var employees = new List<Employee> { emp };
 
-        var empRoleDto = new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
+        var empRoleDto = new EmployeeRoleDto { Id = 1, Employee = EmployeeTestData.EmployeeDto2, Role = EmployeeRoleTestData.RoleDtoEmployee };
 
         var roles = new List<Role> { new(EmployeeRoleTestData.RoleDtoEmployee) };
 
@@ -455,7 +447,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task GetCurrentMonthTotalReturnsExistingTotalTest()
     {
-        
+
         var employeeList = new List<EmployeeDto>
         {
             EmployeeTestData.EmployeeDto
@@ -494,7 +486,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task GetCurrentMonthTotalCreateNewTotalTest()
     {
-        
+
         var employeeList = new List<EmployeeDto>
         {
             EmployeeTestData.EmployeeDto
@@ -560,7 +552,7 @@ public class EmployeeServiceUnitTests
 
 
     [Fact]
-    public async Task GetPreviousMonthTotalreateNewTotalTest()
+    public async Task GetPreviousMonthTotalCreateNewTotalTest()
     {
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
@@ -703,7 +695,7 @@ public class EmployeeServiceUnitTests
     {
         EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 2, Name = "Developer" };
         EmployeeType employeeType = new(employeeTypeDto);
-        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+        EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto { Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
 
         EmployeeDto employeeDto = new EmployeeDto
         {
