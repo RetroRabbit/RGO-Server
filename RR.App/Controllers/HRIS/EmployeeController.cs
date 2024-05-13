@@ -36,6 +36,14 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
+    [HttpPost("Senseflow")]
+    public async Task<IActionResult> AddEmployeeSenseflow([FromBody] EmployeeSenseflowDto newEmployeeSenseflow)
+    {
+
+    }
+
+
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployee([FromQuery] String email)
     {

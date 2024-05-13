@@ -107,6 +107,11 @@ public class EmployeeService : IEmployeeService
         return newEmployee;
     }
 
+    public Task<EmployeeSenseflowDto> AddOrUpdateEmployeeToSenseflow(EmployeeSenseflowDto employeeSenseflowDto)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<bool> CheckUserExist(string? email)
     {
         return await _db.Employee
