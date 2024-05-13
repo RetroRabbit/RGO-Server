@@ -25,6 +25,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
         UploadDate = employeeDocumentsDto.UploadDate;
         Reason = employeeDocumentsDto.Reason;
         CounterSign = employeeDocumentsDto.CounterSign;
+        DocumentType = employeeDocumentsDto?.DocumentType;
         LastUpdatedDate = employeeDocumentsDto.LastUpdatedDate;
     }
 
@@ -48,6 +49,8 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
 
     [Column("counterSign")] public bool CounterSign { get; set; }
 
+    [Column("documentType")] public DocumentType? DocumentType { get; set; }
+    
     [Column("lastUpdatedDate")] public DateTime LastUpdatedDate { get; set; }
 
     public virtual Employee? Employee { get; set; }

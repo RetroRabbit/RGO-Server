@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240506122127_AddworkExperienceEntity")]
+    partial class AddworkExperienceEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -586,45 +589,6 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("EmployeeBanking");
                 });
 
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeCertification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CertificateDocument")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("certificateDocument");
-
-                    b.Property<string>("CertificateName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("certificateName");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employeeId");
-
-                    b.Property<DateTime>("IssueDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("issueDate");
-
-                    b.Property<string>("IssueOrganization")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("issueOrganization");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("EmployeeCertification");
-                });
-
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeData", b =>
                 {
                     b.Property<int>("Id")
@@ -704,10 +668,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<bool>("CounterSign")
                         .HasColumnType("boolean")
                         .HasColumnName("counterSign");
-
-                    b.Property<int?>("DocumentType")
-                        .HasColumnType("integer")
-                        .HasColumnName("documentType");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
@@ -1333,17 +1293,6 @@ namespace RR.UnitOfWork.Migrations
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeBanking", b =>
-                {
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeCertification", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
                         .WithMany()
