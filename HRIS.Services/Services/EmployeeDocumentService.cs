@@ -48,6 +48,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 docType = DocumentType.EmployeeDocuments;
                 break;
             default:
+                docType = DocumentType.StarterKit;
                 break;
         }
 
