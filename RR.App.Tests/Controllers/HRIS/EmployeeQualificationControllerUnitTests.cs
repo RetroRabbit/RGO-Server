@@ -3,11 +3,6 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -31,7 +26,7 @@ public class EmployeeQualificationControllerUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeQualification_ReturnsOkObjectResult_WithQualification()
+    public async Task SaveEmployeeQualificationReturnsOkObjectResultWithQualification()
     {
         var dto = new EmployeeQualificationDto { EmployeeId = 1 };
         _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(dto, dto.EmployeeId))
@@ -44,4 +39,64 @@ public class EmployeeQualificationControllerUnitTests
         Assert.Equal(dto, returnValue);
     }
 
+    [Fact]
+    public async Task SaveEmployeeQualificationReturnsInternalServerErrorOnException()
+    {
+        var dto = new EmployeeQualificationDto { EmployeeId = 1 };
+        var exceptionMessage = "Test Exception";
+
+        _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(dto, dto.EmployeeId))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        var result = await _employeeQualificationController.SaveEmployeeQualification(dto);
+
+        var statusCodeResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, statusCodeResult.StatusCode);
+        Assert.Equal(exceptionMessage, statusCodeResult.Value);
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeQualificationReturnsOkObjectResultWithUpdatedQualification()
+    {
+        var dto = new EmployeeQualificationDto { Id = 1, EmployeeId = 1 };
+        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(dto))
+            .ReturnsAsync(dto);
+
+        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, dto);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
+        Assert.Equal(dto, returnValue);
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeQualificationReturnsNotFoundOnKeyNotFoundException()
+    {
+        var dto = new EmployeeQualificationDto { Id = 1, EmployeeId = 1 };
+        var exceptionMessage = "Qualification not found";
+
+        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(dto))
+            .ThrowsAsync(new KeyNotFoundException(exceptionMessage));
+
+        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, dto);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(exceptionMessage, notFoundResult.Value);
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeQualificationReturnsInternalServerErrorOnException()
+    {
+        var dto = new EmployeeQualificationDto { Id = 1, EmployeeId = 1 };
+        var exceptionMessage = "Test Exception";
+
+        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(dto))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, dto);
+
+        var statusCodeResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, statusCodeResult.StatusCode);
+        Assert.Equal(exceptionMessage, statusCodeResult.Value);
+    }
 }
