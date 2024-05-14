@@ -78,6 +78,7 @@ public class EmployeeService : IEmployeeService
 
         EmployeeAddressDto physicalAddress;
 
+
         if (!physicalAddressExist)
             physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
         else
@@ -99,6 +100,7 @@ public class EmployeeService : IEmployeeService
 
         var roleDto = await _roleService.GetRole("Employee");
         var newEmployee = await _db.Employee.Add(employee);
+        AddEmployeeToSenseflow(employeeDto);
 
         var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee, Role = roleDto };
 
@@ -119,11 +121,26 @@ public class EmployeeService : IEmployeeService
             {6,"Level 5"},
             {7,"Level 6"},
             {8,"Level 7"},
+            {9,"Level 8"},
         };
+
+        Dictionary<int, string> roles = new Dictionary<int, string>
+        {
+            {1,"Unassigned"},
+            {2,"Developer"},
+            {3,"Designer"},
+            {4,"Scrum Master"},
+            {5,"Account Manager"},
+            {6,"Peoples Champion"},
+            {20,"Executive"},
+            {21,"Business Support"},
+        };
+
+        employeeDto.Level = (employeeDto.Level != 999) ? employeeDto.Level + 1 : 1;
 
         var employeeSenseflowDto = new EmployeeSenseflowDto
         {
-            Fullname = employeeDto.Name + employeeDto.Surname,
+            Fullname = employeeDto.Name + ' '+ employeeDto.Surname,
             Role = { Id = employeeDto.EmployeeType.Id, Name = employeeDto.EmployeeType.Name },
             Level = { Id = (int)employeeDto.Level, Value = levels[(int)employeeDto.Level] },
             Start = employeeDto.EngagementDate,

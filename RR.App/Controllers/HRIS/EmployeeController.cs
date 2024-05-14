@@ -39,7 +39,14 @@ public class EmployeeController : ControllerBase
     [HttpPost("AddToSenseflow")]
     public async Task<IActionResult> AddEmployeeSenseflow([FromBody] EmployeeSenseflowDto newEmployeeSenseflow)
     {
-        return Ok(newEmployeeSenseflow);
+        try
+        {
+            return Ok(newEmployeeSenseflow);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }  
     }
 
 
