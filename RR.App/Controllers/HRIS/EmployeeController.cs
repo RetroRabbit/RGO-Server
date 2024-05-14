@@ -36,10 +36,10 @@ public class EmployeeController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
-    [HttpPost("Senseflow")]
+    [HttpPost("AddToSenseflow")]
     public async Task<IActionResult> AddEmployeeSenseflow([FromBody] EmployeeSenseflowDto newEmployeeSenseflow)
     {
-
+        return Ok(newEmployeeSenseflow);
     }
 
 

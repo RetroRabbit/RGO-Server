@@ -45,9 +45,14 @@ public interface IEmployeeService
     /// <param name="email"></param>
     /// <returns>EmployeeDto</returns>
     /// 
-    Task<EmployeeSenseflowDto> AddEmployeeToSenseflow(EmployeeDto employeeDto);
-
     Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email);
+
+    /// <summary>
+    ///     Send employee to senseflow endpoint.
+    /// </summary>
+    /// <param name="employeeDto"></param>
+    /// <returns>EmployeeDto</returns>
+    Task<EmployeeSenseflowDto> AddEmployeeToSenseflow(EmployeeDto employeeDto);
 
     /// <summary>
     ///     Delete employee

@@ -109,15 +109,26 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeSenseflowDto> AddEmployeeToSenseflow(EmployeeDto employeeDto)
     {
+        Dictionary<int, string> levels = new Dictionary<int, string>
+        {
+            {1,"Unassigned"},
+            {2,"Level 1"},
+            {3,"Level 2"},
+            {4,"Level 3"},
+            {5,"Level 4"},
+            {6,"Level 5"},
+            {7,"Level 6"},
+            {8,"Level 7"},
+        };
+
         var employeeSenseflowDto = new EmployeeSenseflowDto
         {
-            Fullname = employeeDto.Name,
-            Role = {Id = employeeDto.EmployeeType.Id, Name = employeeDto.EmployeeType.Name },
-            Level = { Id = employeeDto.Level, Value =  },
+            Fullname = employeeDto.Name + employeeDto.Surname,
+            Role = { Id = employeeDto.EmployeeType.Id, Name = employeeDto.EmployeeType.Name },
+            Level = { Id = (int)employeeDto.Level, Value = levels[(int)employeeDto.Level] },
             Start = employeeDto.EngagementDate,
             Email = employeeDto.Email
         };
-
         return employeeSenseflowDto;
     }
 
