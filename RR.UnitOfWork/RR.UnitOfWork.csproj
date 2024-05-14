@@ -25,7 +25,6 @@
     <PackageReference Include="MimeKit" Version="4.2.0" />
     <PackageReference Include="NodaTime" Version="3.1.9" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +32,7 @@
     <Folder Include="Interfaces\ATS\" />
     <Folder Include="Migrations\" />
     <Folder Include="Repositories\ATS\" />
+	<Folder Include="Migrations\"/>
   </ItemGroup>
 
   <ItemGroup>
