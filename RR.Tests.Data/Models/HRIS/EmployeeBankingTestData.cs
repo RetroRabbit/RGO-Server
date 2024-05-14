@@ -13,7 +13,6 @@ public class EmployeeBankingTestData
         Branch = "Not Sure",
         AccountNo = "120",
         AccountType = EmployeeBankingAccountType.Savings,
-       
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
         File = "asd",
@@ -59,7 +58,6 @@ public class EmployeeBankingTestData
         Branch = "Not Sure",
         AccountNo = "120",
         AccountType = EmployeeBankingAccountType.Savings,
-            
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
         File = "asd",
