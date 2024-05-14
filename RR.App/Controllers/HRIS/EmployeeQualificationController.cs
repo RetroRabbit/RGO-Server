@@ -68,7 +68,7 @@ public class EmployeeQualificationController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet("by-employee/{employeeId}")]
+    [HttpGet("{employeeId}")]
     public async Task<ActionResult<List<EmployeeQualificationDto>>> GetEmployeeQualificationByEmployeeId(int employeeId)
     {
         try
