@@ -166,60 +166,60 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
-    
-    //[Fact]
-    //public async Task CreateReadUpdateDeleteEmployeeBanking_ReturnsOkResult()
-    //{
-    //    var employeeDto = EmployeeTestData.EmployeeDtoNew;
-    //    var jsonContentEmployee = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
-    //    var response = await _client.PostAsync("/employees", jsonContentEmployee);
+    [Fact]
+    public async Task CreateReadUpdateDeleteEmployeeBanking_ReturnsOkResult()
+    {
+        var employeeDto = EmployeeTestData.EmployeeDtoNew;
+        var jsonContentEmployee = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
-    //    var content = await response.Content.ReadAsStringAsync();
-    //    var jsonDoc = JsonDocument.Parse(content);
-    //    var employeeId = jsonDoc.RootElement.GetProperty("id").GetInt32();
-    //    var employeeEmail = jsonDoc.RootElement.GetProperty("email").GetString();
+        var response = await _client.PostAsync("/employees", jsonContentEmployee);
 
-    //    response.EnsureSuccessStatusCode();
-    //    Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var content = await response.Content.ReadAsStringAsync();
+        var jsonDoc = JsonDocument.Parse(content);
+        var employeeId = jsonDoc.RootElement.GetProperty("id").GetInt32();
+        var employeeEmail = jsonDoc.RootElement.GetProperty("email").GetString();
 
-    //    var bankingDto = EmployeeBankingTestData.GetModifiedEmployeeBankingDtoWithEmployeeId(employeeId);
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-    //    var jsonContentBanking = new StringContent(JsonConvert.SerializeObject(bankingDto), Encoding.UTF8, "application/json");
+        var bankingDto = EmployeeBankingTestData.GetModifiedEmployeeBankingDtoWithEmployeeId(employeeId);
 
-    //    response = await _client.PostAsync("/employee-banking", jsonContentBanking);
+        var jsonContentBanking = new StringContent(JsonConvert.SerializeObject(bankingDto), Encoding.UTF8, "application/json");
 
-    //    content = await response.Content.ReadAsStringAsync();
-    //    jsonDoc = JsonDocument.Parse(content);
-    //    var bankingId = jsonDoc.RootElement.GetProperty("id").GetInt32();
+        response = await _client.PostAsync("/employee-banking", jsonContentBanking);
 
-    //    response.EnsureSuccessStatusCode();
-    //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        content = await response.Content.ReadAsStringAsync();
+        jsonDoc = JsonDocument.Parse(content);
+        var bankingId = jsonDoc.RootElement.GetProperty("id").GetInt32();
 
-    //    response = await _client.GetAsync($"/employee-banking/details?id={employeeId}");
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-    //    response.EnsureSuccessStatusCode();
-    //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response = await _client.GetAsync($"/employee-banking/details?id={employeeId}");
 
-    //    var updatedBankingDto = EmployeeBankingTestData.GetModifiedEmployeeBankingDtoWithEmployeeIdAndBankingId(bankingId, employeeId);
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-    //    var jsonContentUpdatedBanking = new StringContent(JsonConvert.SerializeObject(updatedBankingDto), Encoding.UTF8, "application/json");
+        var updatedBankingDto = EmployeeBankingTestData.GetModifiedEmployeeBankingDtoWithEmployeeIdAndBankingId(bankingId, employeeId);
 
-    //    response = await _client.PutAsync("/employee-banking", jsonContentUpdatedBanking);
+        var jsonContentUpdatedBanking = new StringContent(JsonConvert.SerializeObject(updatedBankingDto), Encoding.UTF8, "application/json");
 
-    //    response.EnsureSuccessStatusCode();
-    //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response = await _client.PutAsync("/employee-banking", jsonContentUpdatedBanking);
 
-    //    response = await _client.DeleteAsync($"/employee-banking?addressId={bankingId}");
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-    //    response.EnsureSuccessStatusCode();
-    //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response = await _client.DeleteAsync($"/employee-banking?addressId={bankingId}");
 
-    //    response = await _client.DeleteAsync($"/employees?email={employeeEmail}");
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-    //    response.EnsureSuccessStatusCode();
-    //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    //}
+        response = await _client.DeleteAsync($"/employees?email={employeeEmail}");
+
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 
     [Fact]
     public async Task DeleteEmployeeBanking_ReturnsOkResult()
