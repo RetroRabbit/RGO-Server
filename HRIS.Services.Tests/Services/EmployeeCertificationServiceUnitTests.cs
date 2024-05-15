@@ -275,24 +275,6 @@ public class EmployeeCertificationServiceUnitTests
         _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
     
-    [Fact]
-    public async Task DeleteEmployeeCertificationFailWhenEmployeeNotFound()
-    {
-        var emptyEmployeeList = new List<Employee>().AsQueryable();
-        var mock = emptyEmployeeList.BuildMock();
-        _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(mock);
-
-        var employeeCertificationDto = CreateEmployeeCertificationDto();
-
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-                                 .Throws(new Exception("Employee not found"));
-
-        await Assert.ThrowsAsync<Exception>(() =>
-                    _employeeCertificationService.DeleteEmployeeCertification(employeeCertificationDto.Id));
-
-        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
-    } 
     
     [Fact]
     public async Task GetAllEmployeeCertificationsFailWhenEmployeeNotFound()
