@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using ATS.Models;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
@@ -6,6 +7,7 @@ using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
 using RGO.Tests.Data.Models;
+using RR.Tests.Data.Models.ATS;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -122,22 +124,16 @@ public class EmployeeCertificationServiceUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeCertificationFailWhenEmployeeNotFound()
-    { 
-        var emptyEmployeeList = new List<Employee>().AsQueryable();
-        var mock = emptyEmployeeList.BuildMock();
-        _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(mock);
+    public async Task CheckCandidateExistPass()
+    {
+        _unitOfWork
+            .Setup(u => u.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+       .Returns(Task.FromResult(true));
 
-        var employeeCertificationDto = CreateEmployeeCertificationDto();
+        var serviceResult = await _employeeCertificationService.CheckEmployeeExists(EmployeeTestData.EmployeeDto.Id);
+        var actionResult = Xunit.Assert.IsType<bool>(serviceResult);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-                                 .Throws(new Exception("Employee not found")); // Or a custom exception
-
-        await Assert.ThrowsAsync<Exception>(() =>
-                    _employeeCertificationService.SaveEmployeeCertification(employeeCertificationDto));
-
-        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
+        Xunit.Assert.True(actionResult);
     }
 
     [Fact]
@@ -152,6 +148,25 @@ public class EmployeeCertificationServiceUnitTests
         var result = await _employeeCertificationService.SaveEmployeeCertification(employeeCertificationDto);
 
         Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task SaveEmployeeCertificationFailWhenEmployeeNotFound()
+    {
+        var emptyEmployeeList = new List<Employee>().AsQueryable();
+        var mock = emptyEmployeeList.BuildMock();
+        _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(mock);
+
+        var employeeCertificationDto = CreateEmployeeCertificationDto();
+
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
+                                 .Throws(new Exception("Employee not found"));
+
+        await Assert.ThrowsAsync<Exception>(() =>
+                    _employeeCertificationService.SaveEmployeeCertification(employeeCertificationDto));
+
+        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 
     [Fact]

@@ -20,7 +20,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     public async Task<EmployeeCertificationDto> SaveEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
     {
 
-        if (await CheckEmployeeExists(employeeCertificationDto.EmployeeId))
+        if (!await CheckEmployeeExists(employeeCertificationDto.EmployeeId))
         {
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
@@ -34,7 +34,8 @@ public class EmployeeCertificationService : IEmployeeCertificationService
             IssueOrganization = employeeCertificationDto.IssueOrganization,
             EmployeeId = employeeCertificationDto.EmployeeId
         };
-        return await _db.EmployeeCertification.Add(certificate);
+
+        return await _db.EmployeeCertification.Add(new EmployeeCertification(employeeCertificationDto));
     }
 
     public async Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId, int certificationId)
@@ -101,7 +102,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
         => await _db.EmployeeCertification.Delete(id);
     
 
-    private async Task<bool> CheckEmployeeExists(int employeeId)
+    public async Task<bool> CheckEmployeeExists(int employeeId)
     {
         var employee = await _db.Employee
                                 .Get(employee => employee.Id == employeeId)
