@@ -19,6 +19,7 @@ public interface IDatabaseContext
     DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
     DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
     DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
+    DbSet<EmployeeQualification> employeeQualifications { get; set; }
     DbSet<Role> roles { get; set; }
     DbSet<RoleAccess> roleAccess { get; set; }
     DbSet<AuditLog> auditLogs { get; set; }
@@ -35,6 +36,7 @@ public interface IDatabaseContext
     DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     DbSet<ErrorLogging> errorLogging { get; set; }
     DbSet<Candidate> candidate { get; set; }
+    DbSet<WorkExperience> workExperience { get; set; }
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
@@ -57,6 +59,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
     public DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
     public DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
+    public DbSet<EmployeeQualification> employeeQualifications { get; set; }
     public DbSet<Role> roles { get; set; }
     public DbSet<RoleAccess> roleAccess { get; set; }
     public DbSet<AuditLog> auditLogs { get; set; }
@@ -73,6 +76,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     public DbSet<ErrorLogging> errorLogging { get; set; }
     public DbSet<Candidate> candidate { get; set; }
+    public DbSet<WorkExperience> workExperience { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

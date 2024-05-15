@@ -25,6 +25,7 @@ public class UnitOfWork : IUnitOfWork
         EmployeeData = new EmployeeDataRepository(_db);
         EmployeeDate = new EmployeeDateRepository(_db);
         EmployeeProject = new EmployeeProjectRepository(_db);
+        EmployeeQualification = new EmployeeQualificationRepository(_db);
         EmployeeEvaluation = new EmployeeEvaluationRepository(_db);
         EmployeeEvaluationAudience = new EmployeeEvaluationAudienceRepository(_db);
         EmployeeEvaluationRating = new EmployeeEvaluationRatingRepository(_db);
@@ -46,6 +47,7 @@ public class UnitOfWork : IUnitOfWork
         MonthlyEmployeeTotal = new MonthlyEmployeeTotalRepository(_db);
         ErrorLogging = new ErrorLoggingRepository(_db);
         Candidate = new CandidateRepository(_db);
+        WorkExperience = new WorkExperienceRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -55,6 +57,7 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeDateRepository EmployeeDate { get; }
     public IEmployeeDocumentRepository EmployeeDocument { get; }
     public IEmployeeProjectRepository EmployeeProject { get; }
+    public IEmployeeQualificationRepository EmployeeQualification { get; }
     public IEmployeeEvaluationRepository EmployeeEvaluation { get; }
     public IEmployeeEvaluationAudienceRepository EmployeeEvaluationAudience { get; }
     public IEmployeeEvaluationRatingRepository EmployeeEvaluationRating { get; }
@@ -76,6 +79,8 @@ public class UnitOfWork : IUnitOfWork
     public IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     public IErrorLoggingRepository ErrorLogging { get; }
     public ICandidateRepository Candidate { get; }
+    public IWorkExperienceRepository WorkExperience { get; }
+
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
         await _db.Database.ExecuteSqlRawAsync(sql, parameters);

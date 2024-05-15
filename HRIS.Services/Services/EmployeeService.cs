@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Text;
-using ATS.Models;
+using Azure.Messaging.ServiceBus;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Expressions.Internal;
-using RabbitMQ.Client;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -14,8 +12,8 @@ namespace HRIS.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private const string QueueName = "employee_data_queue";
-    public static ConnectionFactory? _employeeFactory;
+    private readonly ServiceBusClient serviceBusClient = new (Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
+    private readonly string queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
@@ -59,7 +57,7 @@ public class EmployeeService : IEmployeeService
 
             try
             {
-                PushToProducer(employee);
+                 PushToProducerAsync(employee);
             }
             catch (Exception ex)
             {
@@ -269,8 +267,9 @@ public class EmployeeService : IEmployeeService
     public async Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate()
     {
         var employeeCurrentMonthTotal = await GetEmployeeCurrentMonthTotal();
+
         var employeePreviousMonthTotal = await GetEmployeePreviousMonthTotal();
-     
+
         return new ChurnRateDataCardDto
         {
             ChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.EmployeeTotal ?? 0, employeePreviousMonthTotal?.EmployeeTotal ?? 0),
@@ -282,13 +281,13 @@ public class EmployeeService : IEmployeeService
             Year = employeePreviousMonthTotal?.Year ?? DateTime.Now.Year
         };
     }
-    
+
     private double CalculateChurnRate(int employeeCurrentMonthTotal, int employeePreviousMonthTotal)
     {
         return Math.Round((employeePreviousMonthTotal > 0)
             ? (double)(employeeCurrentMonthTotal - employeePreviousMonthTotal)
               / employeePreviousMonthTotal * 100
-            : 0,0);
+            : 0, 0);
     }
 
     public async Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal()
@@ -424,21 +423,16 @@ public class EmployeeService : IEmployeeService
                         .ToListAsync();
     }
 
-    public void PushToProducer(Employee employeeData)
+    public async void PushToProducerAsync(Employee employeeData)
     {
         try
         {
-            using (var connection = _employeeFactory!.CreateConnection())
-            using (var channel = connection.CreateModel())
             {
                 var messageBody = JsonConvert.SerializeObject(employeeData);
                 var body = Encoding.UTF8.GetBytes(messageBody);
 
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
-
-                channel.QueueDeclare(QueueName, true, false, false, null);
-                channel.BasicPublish(string.Empty, QueueName, properties, body);
+                 await using var sender = serviceBusClient.CreateSender(queueName);
+                 await sender.SendMessageAsync(new ServiceBusMessage(body));
             }
         }
         catch (Exception ex)
@@ -558,10 +552,10 @@ public class EmployeeService : IEmployeeService
 
     private Employee CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
     {
-        var employee = new Employee();
-
-        employee = new Employee(employeeDto, employeeTypeDto);
-        employee.Email = employeeDto.Email;
+        var employee = new Employee(employeeDto, employeeTypeDto)
+        {
+            Email = employeeDto.Email
+        };
 
         return employee;
     }

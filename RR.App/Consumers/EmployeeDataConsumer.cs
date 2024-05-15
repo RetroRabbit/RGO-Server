@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
 using System.Text;
 using System.Timers;
+using Azure.Messaging.ServiceBus;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
@@ -8,7 +9,6 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using MimeKit;
 using Newtonsoft.Json;
-using RabbitMQ.Client;
 using RR.UnitOfWork.Entities.HRIS;
 using Timer = System.Timers.Timer;
 
@@ -16,28 +16,23 @@ namespace HRIS.Services.Services;
 
 public class EmployeeDataConsumer
 {
-    private const string QueueName = "employee_data_queue";
-    private const int TimeInterval = 5 * 60 * 1000; // currently every 5 minutes : change the first number for period.
-    private readonly IModel? _channel;
-    private readonly IConnection? _connection;
-
     private readonly Timer? _consumeTimer;
-
-    private readonly ConnectionFactory? _factory;
     private readonly string ApplicationName = "Retro HR";
+
+    private readonly ServiceBusClient _serviceBusClient;
+    private readonly ServiceBusReceiver _receiver;
 
     private readonly string[] Scopes = { GmailService.Scope.GmailSend };
 
-    public EmployeeDataConsumer(ConnectionFactory factory)
+    public EmployeeDataConsumer(ServiceBusClient serviceBusClient, string queueName)
     {
         try
-        {
-            _factory = factory;
-            _connection = _factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(QueueName, true, false, false, null);
+        {  
+            _serviceBusClient = serviceBusClient;
+            _receiver = _serviceBusClient.CreateReceiver(queueName);
 
-            _consumeTimer = new Timer(TimeInterval);
+            _consumeTimer = new Timer();
+            _consumeTimer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
             _consumeTimer.Elapsed += OnTimedEvent!;
             _consumeTimer.AutoReset = true;
             _consumeTimer.Enabled = true;
@@ -77,8 +72,9 @@ public class EmployeeDataConsumer
 
     private Message CreateMessage(Employee employee)
     {
+        string landingPage = Environment.GetEnvironmentVariable("hris-landing-url");
         var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress("Retro Rabbit", "mschoeman@retrorabbit.co.za"));
+        emailMessage.From.Add(new MailboxAddress("Retro Rabbit", "EMAIL-ADDRESS-HERE"));
         emailMessage.To.Add(new MailboxAddress(employee.Name, employee.Email));
         emailMessage.Subject = $"Welcome to Retro Rabbit, {employee.Name}!";
         var body = $@"
@@ -89,10 +85,9 @@ public class EmployeeDataConsumer
                 <p>From today, you embark on a new journey with us, filled with exciting opportunities, challenges, and growth. At Retro, we pride ourselves on fostering a culture of collaboration, innovation, and mutual respect. We believe that every individual brings a unique perspective and talent to the team, and we can't wait to see the wonderful contributions you'll make.</p>
                 <p>Remember, it's okay to feel overwhelmed or have questions. We've all been there. Don't hesitate to ask or seek clarification on anything. Our doors (and inboxes) are always open.</p>
                 <p>Once again, welcome to Retro Rabbit. Here's to new beginnings and the start of a memorable journey together!</p>
-                <p>Click <a href='http://localhost:4200/'>here</a> to visit our employee portal</p>
+                <p>Click <a href='{landingPage}'>here</a> to visit our employee portal</p>
             </body>
             </html>";
-        // Todo: Change link to the actual link when deployed. Currently set to localhost
         emailMessage.Body = new TextPart("html") { Text = body };
 
         var rawMessage = Base64UrlEncode(emailMessage.ToString());
@@ -139,33 +134,44 @@ public class EmployeeDataConsumer
 
     private void OnTimedEvent(object source, ElapsedEventArgs e)
     {
-        ConsumeAndSendBatchEmails();
+        ConsumeAndSendBatchEmailsAsync();
     }
 
-    public void ConsumeAndSendBatchEmails()
+    public async Task ConsumeAndSendBatchEmailsAsync()
     {
         var newEmployee = new List<Employee>();
 
-        while (true)
+
+        try
         {
-            var result = _channel!.BasicGet(QueueName, false);
-            if (result == null) break;
+            var messages = await _receiver.ReceiveMessagesAsync(maxMessages: 10);
 
-            var body = result.Body.ToArray();
-            var employeeData = JsonConvert.DeserializeObject<Employee>(Encoding.UTF8.GetString(body));
-            newEmployee.Add(employeeData!);
+            foreach (var message in messages)
+            {
+                var employeeData = JsonConvert.DeserializeObject<Employee>(message.Body.ToString());
+                newEmployee.Add(employeeData);
 
-            _channel.BasicAck(result.DeliveryTag, false);
+                await _receiver.CompleteMessageAsync(message);
+            }
+
+            foreach (var employee in newEmployee)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(employee.Email))
+                    {
+                        SendEmail(employee);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
-
-        foreach (var employee in newEmployee)
-            try
-            {
-                if (!string.IsNullOrEmpty(employee.Email)) SendEmail(employee);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while receiving and processing messages: {ex.Message}");
+        }
     }
 }

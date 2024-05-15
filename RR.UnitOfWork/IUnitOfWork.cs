@@ -14,6 +14,7 @@ public interface IUnitOfWork
     IEmployeeDataRepository EmployeeData { get; }
     IEmployeeDateRepository EmployeeDate { get; }
     IEmployeeProjectRepository EmployeeProject { get; }
+    IEmployeeQualificationRepository EmployeeQualification { get; }
     IEmployeeEvaluationRepository EmployeeEvaluation { get; }
     IEmployeeEvaluationAudienceRepository EmployeeEvaluationAudience { get; }
     IEmployeeEvaluationRatingRepository EmployeeEvaluationRating { get; }
@@ -35,8 +36,8 @@ public interface IUnitOfWork
     IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     IErrorLoggingRepository ErrorLogging { get; }
     ICandidateRepository Candidate { get; }
+    IWorkExperienceRepository WorkExperience { get; }
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
-
     Task<List<string>> GetColumnNames(string tableName);
 }
