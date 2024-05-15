@@ -2,7 +2,6 @@
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System;
 using HRIS.Models.Enums.QualificationEnums;
 
 namespace RR.UnitOfWork.Entities.HRIS;
@@ -12,6 +11,10 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
 {
     public EmployeeQualification()
     {
+        School = string.Empty;
+        Degree = string.Empty;
+        FieldOfStudy = string.Empty;
+        Year = DateOnly.MinValue;
     }
 
     public EmployeeQualification(EmployeeQualificationDto employeeQualificationDto)
@@ -30,28 +33,28 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
 
-    [Column("highestQualification")] 
+    [Column("highestQualification")]
     public HighestQualification HighestQualification { get; set; }
 
-    [Column("school")] 
-    public string? School { get; set; }
+    [Column("school")]
+    public string School { get; set; }
 
-    [Column("degree")] 
-    public string? Degree { get; set; }
+    [Column("degree")]
+    public string Degree { get; set; }
 
-    [Column("fieldOfStudy")] 
-    public string? FieldOfStudy { get; set; }
+    [Column("fieldOfStudy")]
+    public string FieldOfStudy { get; set; }
 
-    [Column("nqfLevel")] 
+    [Column("nqfLevel")]
     public NQFLevel NQFLevel { get; set; }
 
-    [Column("year")] 
-    public DateOnly? Year { get; set; }
+    [Column("year")]
+    public DateOnly Year { get; set; }
 
-    public virtual Employee? Employee { get; set; }
+    public virtual Employee Employee { get; set; }
 
     [Key]
-    [Column("id")] 
+    [Column("id")]
     public int Id { get; set; }
 
     public EmployeeQualificationDto ToDto()

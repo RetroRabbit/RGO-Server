@@ -10,14 +10,19 @@ public class EmployeeQualificationDto
 
     [Required]
     public HighestQualification HighestQualification { get; set; }
+
     [Required]
-    public string? School { get; set; }
+    public string School { get; set; } = string.Empty;
+
     [Required]
-    public string? Degree { get; set; }
+    public string Degree { get; set; } = string.Empty;
+
     [Required]
-    public string? FieldOfStudy { get; set; }
+    public string FieldOfStudy { get; set; } = string.Empty;
+
     [Required]
     public NQFLevel NQFLevel { get; set; }
+
     [Required]
-    public DateOnly? Year { get; set; }
+    public DateOnly Year { get; set; } = DateOnly.MinValue;
 }
