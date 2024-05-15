@@ -111,6 +111,19 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeSenseflowDto> AddEmployeeToSenseflow(EmployeeDto employeeDto)
     {
+
+        static int GetKeyByValue(Dictionary<int, string> dictionary, string value)
+        {
+            foreach (var kvp in dictionary)
+            {
+                if (kvp.Value == value)
+                {
+                    return kvp.Key;
+                }
+            }
+            throw new ArgumentException("Value not found in the dictionary", nameof(value));
+        }
+
         Dictionary<int, string> levels = new Dictionary<int, string>
         {
             {1,"Unassigned"},
@@ -124,9 +137,8 @@ public class EmployeeService : IEmployeeService
             {9,"Level 8"},
         };
 
-        Dictionary<int, string> roles = new Dictionary<int, string>
+        Dictionary<int, string> SenseflowRoles = new Dictionary<int, string>
         {
-            {1,"Unassigned"},
             {2,"Developer"},
             {3,"Designer"},
             {4,"Scrum Master"},
@@ -136,12 +148,14 @@ public class EmployeeService : IEmployeeService
             {21,"Business Support"},
         };
 
+        int key = GetKeyByValue(SenseflowRoles, employeeDto.EmployeeType.Name);
+
         employeeDto.Level = (employeeDto.Level != 999) ? employeeDto.Level + 1 : 1;
 
         var employeeSenseflowDto = new EmployeeSenseflowDto
         {
             Fullname = employeeDto.Name + ' '+ employeeDto.Surname,
-            Role = { Id = employeeDto.EmployeeType.Id, Name = employeeDto.EmployeeType.Name },
+            Role = { Id = key, Name = SenseflowRoles[key] },
             Level = { Id = (int)employeeDto.Level, Value = levels[(int)employeeDto.Level] },
             Start = employeeDto.EngagementDate,
             Email = employeeDto.Email
