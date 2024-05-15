@@ -208,12 +208,12 @@ public class EmployeeQualificationControllerUnitTests
         var expectedExceptionMessage = "An unexpected error occurred";
 
         _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(id))
-            .ThrowsAsync(new Exception(exceptionMessage));
+            .ThrowsAsync(new Exception(expectedExceptionMessage));
 
         var result = await _employeeQualificationController.DeleteEmployeeQualification(id);
 
         var statusCodeResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, statusCodeResult.StatusCode);
-        Assert.Equal($"An error occurred while deleting the qualification: {exceptionMessage}", statusCodeResult.Value);
+        Assert.Equal($"An error occurred while deleting the qualification: {expectedExceptionMessage}", statusCodeResult.Value);
     }
 }
