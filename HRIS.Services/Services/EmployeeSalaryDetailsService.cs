@@ -17,6 +17,14 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 {
     private readonly IUnitOfWork _db;
     private readonly IErrorLoggingService _errorLoggingService;
+    //private readonly IEmployeeService _employeeService;
+
+    public EmployeeSalaryDetailsService(IUnitOfWork db/*, IEmployeeService employeeService*/, IErrorLoggingService errorLoggingService)
+    {
+        _db = db;
+        //_employeeService = employeeService;
+        _errorLoggingService = errorLoggingService;
+    }
 
     public async Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(int employeeId)
     {

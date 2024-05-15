@@ -29,10 +29,10 @@ public class EmployeeSalaryDetails : IModel<EmployeeSalaryDetailsDto>
 
     //public int Id { get; set; }
     public EmployeeDto? Employee { get; set; }
-    [Column("salary")] public float? Salary { get; set; }
-    [Column("minSalary")] public float? MinSalary { get; set; }
-    [Column("maxSalary")] public float? MaxSalary { get; set; }
-    [Column("remuneration")] public float? Remuneration { get; set; }
+    [Column("salary")] public double? Salary { get; set; }
+    [Column("minSalary")] public double? MinSalary { get; set; }
+    [Column("maxSalary")] public double? MaxSalary { get; set; }
+    [Column("remuneration")] public double? Remuneration { get; set; }
     [Column("band")] public EmployeeSalaryBand? Band { get; set; }
     [Column("contribution")] public string? Contribution { get; set; }
 

@@ -12,10 +12,10 @@ public class EmployeeSalaryDetailsDto
     public int Id { get; set; }
     //public EmployeeDto? Employee { get; set; }
     public int EmployeeId { get; set; }
-    public float? Salary { get; set; }
-    public float? MinSalary { get; set; }
-    public float? MaxSalary { get; set; }
-    public float? Remuneration { get; set; }
+    public double? Salary { get; set; }
+    public double? MinSalary { get; set; }
+    public double? MaxSalary { get; set; }
+    public double? Remuneration { get; set; }
     public EmployeeSalaryBand? Band { get; set; }
     public string? Contribution { get; set; }
 }
