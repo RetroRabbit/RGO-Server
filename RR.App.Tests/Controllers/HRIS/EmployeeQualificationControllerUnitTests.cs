@@ -205,7 +205,7 @@ public class EmployeeQualificationControllerUnitTests
     public async Task DeleteEmployeeQualificationReturnsStatusCode500OnException()
     {
         var id = 1;
-        var exceptionMessage = "An unexpected error occurred";
+        var expectedExceptionMessage = "An unexpected error occurred";
 
         _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(id))
             .ThrowsAsync(new Exception(exceptionMessage));
