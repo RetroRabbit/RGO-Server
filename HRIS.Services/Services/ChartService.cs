@@ -116,7 +116,10 @@ public partial class ChartService : IChartService
         else
         {
             if (roleList[0] == "All")
+            {
                 employees = await _employeeService.GetAll();
+                roleList.RemoveAt(0);
+            }
             else
                 employees = await _db.Employee
                                      .Get(employee => roleList.Contains(employee.EmployeeType!.Name!))
