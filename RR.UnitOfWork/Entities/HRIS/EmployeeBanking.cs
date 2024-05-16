@@ -64,7 +64,6 @@ public class EmployeeBanking : IModel<EmployeeBankingDto>
             Branch = Branch,
             AccountNo = AccountNo,
             AccountType = AccountType,
-           
             Status = Status,
             DeclineReason = DeclineReason,
             File = File,
