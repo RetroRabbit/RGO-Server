@@ -7,12 +7,11 @@ namespace HRIS.Services.Services
 {
     public class ClientProjectService : IClientProjectService
     {
-        private readonly IClientProjectService _clientProjectService;
-        private readonly UnitOfWork _db;
+        private readonly IUnitOfWork _db;
         private readonly IErrorLoggingService _errorLoggingService;
-        public ClientProjectService(IClientProjectService clientProjectService, UnitOfWork db, IErrorLoggingService errorLoggingService)
+
+        public ClientProjectService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
         {
-            _clientProjectService = clientProjectService;
             _db = db;
             _errorLoggingService = errorLoggingService;
         }
@@ -43,24 +42,23 @@ namespace HRIS.Services.Services
 
         public async Task<ClientProjectsDto> DeleteClientProject(int id)
         {
-            var clientProject = await _db.ClientProject.Delete(id);
-            return clientProject;
+            return await _db.ClientProject.Delete(id);
         }
 
         public async Task<ClientProjectsDto?> GetClientProject(int id)
         {
             var clientProjectExist = await _db.ClientProject.GetById(id);
-             if(clientProjectExist == null)
+            if (clientProjectExist == null)
             {
                 var exception = new Exception("client project not found");
                 throw _errorLoggingService.LogException(exception);
             }
-             return clientProjectExist;
+            return clientProjectExist;
         }
 
         public async Task<List<ClientProjectsDto>> GetAllClientProject()
         {
-            var dtos = await _clientProjectService.GetAllClientProject();
+            var dtos = await _db.ClientProject.GetAll();
             var allClientProjects = dtos
                              .Select(dto => new ClientProjectsDto
                              {

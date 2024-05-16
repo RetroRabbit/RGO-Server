@@ -16,12 +16,19 @@ namespace RR.App.Controllers.HRIS
             _clientProjectService = clientProjectService;
         }
 
-        [Authorize(Policy ="AllRolesPolicy")]
+        [Authorize(Policy = "AllRolesPolicy")]
         [HttpGet]
-        public async Task<IActionResult> GetAllClientProjects()
+        public async Task<ActionResult> GetAllClientProjects()
         {
-            var clientProjects = await _clientProjectService.GetAllClientProject();
-            return Ok(clientProjects);
+            try
+            {
+                var clientProjects = await _clientProjectService.GetAllClientProject();
+                return Ok(clientProjects);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
@@ -40,12 +47,17 @@ namespace RR.App.Controllers.HRIS
 
         [Authorize(Policy = "AllRolesPolicy")]
         [HttpPost]
-        public async Task<CreatedAtActionResult> PostClientProject(ClientProject clientProject)
+        public async Task<IActionResult> PostClientProject(ClientProject clientProject)
         {
             var createdClientProject = await _clientProjectService.CreateClientProject(clientProject);
+
+            if (createdClientProject == null)
+            {
+                return BadRequest("Unable to create the project.");
+            }
+
             return CreatedAtAction(nameof(GetClientProject), new { id = createdClientProject.Id }, createdClientProject);
         }
-
 
         [Authorize(Policy = "AllRolesPolicy")]
         [HttpPut]
@@ -53,25 +65,32 @@ namespace RR.App.Controllers.HRIS
         {
             if (id != clientProject.Id)
             {
-                return BadRequest();
+                return BadRequest("Mismatched project ID.");
             }
 
-            await _clientProjectService.UpdateClientProject(clientProject);
-            return NoContent();
+            try
+            {
+                var clientProjectObject = await _clientProjectService.UpdateClientProject(clientProject);
+                return Ok(clientProjectObject);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred while updating the project.");
+            }
         }
 
         [Authorize(Policy = "AllRolesPolicy")]
         [HttpDelete]
         public async Task<IActionResult> DeleteClientProject(int id)
         {
-            var clientProject = await _clientProjectService.GetClientProject(id);
-            if (clientProject == null)
-            {
-                return NotFound();
-            }
+                var clientProject = await _clientProjectService.GetClientProject(id);
+                if (clientProject == null)
+                {
+                    return NotFound("Project not found");
+                }
 
-            await _clientProjectService.DeleteClientProject(id);
-            return NoContent();
+                var clientProjectObject =  await _clientProjectService.DeleteClientProject(id);
+                return Ok(clientProjectObject);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace HRIS.Tests.Controllers
                 .ReturnsAsync(new ClientProjectsDto { Id = id });
 
             var result = await _controller.DeleteClientProject(id);
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace HRIS.Tests.Controllers
                 .ReturnsAsync(new ClientProjectsDto());
 
             var result = await _controller.PutClientProject(id, clientProject);
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -87,6 +87,71 @@ namespace HRIS.Tests.Controllers
             Assert.Equal(nameof(_controller.GetClientProject), createdAtActionResult.ActionName);
             Assert.Equal(clientProject.Id, createdAtActionResult.RouteValues["id"]);
             Assert.Equal(createdClientProjectDto, createdAtActionResult.Value);
+        }
+
+        [Fact]
+        public async Task PutClientProject_WithNonMatchingId_ReturnsBadRequest()
+        {
+            var clientProject = new ClientProject { Id = 2 };
+            var result = await _controller.PutClientProject(1, clientProject);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task PostClientProject_WithInvalidModel_ReturnsBadRequest()
+        {
+            var clientProject = new ClientProject { /* Invalid data */ };
+            _controller.ModelState.AddModelError("error", "sample error");
+
+            var result = await _controller.PostClientProject(clientProject);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Unable to create the project.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetClientProjectNotFoundResult()
+        {
+            var nonExistentId = 9;
+            _mockClientProjectService.Setup(service => service.GetClientProject(nonExistentId))
+                .ReturnsAsync((ClientProjectsDto)null);
+
+            var result = await _controller.GetClientProject(nonExistentId);
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task UpdateClientProjectReturnsNotFoundResultOnException()
+        {
+            var nonExistentId = 99;
+            var clientProjectToUpdate = new ClientProject { Id = nonExistentId };
+            _mockClientProjectService.Setup(service => service.UpdateClientProject(clientProjectToUpdate))
+                .ThrowsAsync(new Exception("An error occurred while updating the project."));
+
+            var result = await _controller.PutClientProject(nonExistentId, clientProjectToUpdate);
+            var notFoundResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal("An error occurred while updating the project.", notFoundResult.Value);
+        }
+
+        [Fact]
+        public async Task ClientProjectReturnsNotFoundResultOnException()
+        {
+            var nonExistentId = 999;
+            _mockClientProjectService.Setup(service => service.DeleteClientProject(nonExistentId))
+                .ThrowsAsync(new KeyNotFoundException("Project not found"));
+
+            var result = await _controller.DeleteClientProject(nonExistentId);
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetAllReturnsNotFoundResultWhenExceptionThrown()
+        {
+            _mockClientProjectService.Setup(service => service.GetAllClientProject())
+        .   ThrowsAsync(new Exception("Error occurred while fetching client projects"));
+
+            var result = await _controller.GetAllClientProjects();
+            Assert.IsType<NotFoundResult>(result);
         }
     }
 }
