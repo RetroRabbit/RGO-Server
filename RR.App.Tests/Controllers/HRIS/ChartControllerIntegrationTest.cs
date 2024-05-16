@@ -68,6 +68,7 @@ namespace RR.App.Tests.Controllers.HRIS
         {
             var dataType = new List<string> { "Type1", "Type2", "Type3" };
             var roles = new List<string> { "Role1", "Role2" };
+            var labels = new List<string> { "Label1", "Label2" };
             var chartName = "SampleChart";
             var chartType = "Bar";
             var response = await _client.PostAsync($"/charts?dataType={string.Join("&dataType=", dataType)}" +
@@ -87,7 +88,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 Type = chartType,
                 DataTypes = dataType,
                 Roles = roles,
-                Labels = roles,
+                Labels = labels,
             };
             var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto), Encoding.UTF8, "application/json");
 
