@@ -13,7 +13,7 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240510094204_clientproject")]
+    [Migration("20240516105256_clientproject")]
     partial class clientproject
     {
         /// <inheritdoc />
