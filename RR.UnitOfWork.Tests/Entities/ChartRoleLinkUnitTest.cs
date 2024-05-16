@@ -19,6 +19,7 @@ public class ChartRoleLinkUnitTest
             Type = "type 1",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "label 1", "label 2" },
+            Roles = new List<string> { "All" },
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 

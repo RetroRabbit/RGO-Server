@@ -24,6 +24,7 @@ public class ChartUnitTests
             Type = "Type",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
+            Roles = new List<string> { "All" },
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
@@ -40,6 +41,7 @@ public class ChartUnitTests
             Type = "Type",
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
+            Roles = new List<string> { "All" },
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
