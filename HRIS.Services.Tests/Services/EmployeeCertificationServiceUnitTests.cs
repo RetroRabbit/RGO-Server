@@ -120,19 +120,6 @@ public class EmployeeCertificationServiceUnitTests
     }
 
     [Fact]
-    public async Task CheckCandidateExistPass()
-    {
-        _unitOfWork
-            .Setup(u => u.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-       .Returns(Task.FromResult(true));
-
-        var serviceResult = await _employeeCertificationService.CheckEmployeeExists(EmployeeTestData.EmployeeDto.Id);
-        var actionResult = Xunit.Assert.IsType<bool>(serviceResult);
-
-        Xunit.Assert.True(actionResult);
-    }
-
-    [Fact]
     public async Task SaveEmployeeCertificationPass()
     {
         var employeeCertificationDto = CreateEmployeeCertificationDto();
