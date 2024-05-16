@@ -13,8 +13,8 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240410114050_addingSubtype")]
-    partial class addingSubtype
+    [Migration("20240507122618_AddedCertificate")]
+    partial class AddedCertificate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,6 @@ namespace RR.UnitOfWork.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BlacklistedReason")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("blacklistedReason");
 
@@ -45,12 +44,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("blacklisted");
 
                     b.Property<string>("CV")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cv");
 
                     b.Property<string>("CellphoneNumber")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cellphone");
 
@@ -353,7 +350,7 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("employeeNumber");
 
-                    b.Property<int>("EmployeeTypeId")
+                    b.Property<int?>("EmployeeTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeTypeId");
 
@@ -592,6 +589,45 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("EmployeeBanking");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeCertification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CertificateDocument")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("certificateDocument");
+
+                    b.Property<string>("CertificateName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("certificateName");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issueDate");
+
+                    b.Property<string>("IssueOrganization")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("issueOrganization");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeCertification");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeData", b =>
                 {
                     b.Property<int>("Id")
@@ -683,6 +719,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("text")
                         .HasColumnName("fileName");
+
+                    b.Property<DateTime>("LastUpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lastUpdatedDate");
 
                     b.Property<string>("Reason")
                         .HasColumnType("text")
@@ -1215,9 +1255,7 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeType", "EmployeeType")
                         .WithMany()
-                        .HasForeignKey("EmployeeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeTypeId");
 
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "ChampionEmployee")
                         .WithMany()
@@ -1249,6 +1287,17 @@ namespace RR.UnitOfWork.Migrations
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeBanking", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeCertification", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
                         .WithMany()
