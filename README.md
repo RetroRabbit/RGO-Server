@@ -89,10 +89,6 @@ git checkout develop
 
 ```powershell
 docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
-
-For RabbitMQ
-docker pull rabbitmq:3-management
-docker run --name r-mailing -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
 ### Creating Database Tables:
 
