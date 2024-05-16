@@ -86,16 +86,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
         }
-        EmployeeCertification certificate = new EmployeeCertification
-        {
-            Id = 0,
-            CertificateName = employeeCertificationDto.CertificateName,
-            CertificateDocument = employeeCertificationDto.CertificateDocument,
-            IssueDate = employeeCertificationDto.IssueDate,
-            IssueOrganization = employeeCertificationDto.IssueOrganization,
-            EmployeeId = employeeCertificationDto.EmployeeId,
-        };
-        return await _db.EmployeeCertification.Update(certificate);
+        return await _db.EmployeeCertification.Update(new EmployeeCertification(employeeCertificationDto));
     }
 
     public async Task<EmployeeCertificationDto> DeleteEmployeeCertification(int id) 
