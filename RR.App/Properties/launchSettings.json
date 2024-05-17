@@ -34,7 +34,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://hris-dev.azurewebsites.net/",
+      "applicationUrl": "https://hris-dev9ccb.azurewebsites.net/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
