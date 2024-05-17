@@ -62,7 +62,6 @@ public class EmployeeBankingUnitTests
             Branch = "Branch",
             AccountNo = "AccountNo",
             AccountType = EmployeeBankingAccountType.Cheque,
-            AccountHolderName = "AccountHolderName"
         };
 
         if (employee != null)

@@ -7,5 +7,5 @@ public enum FieldCodeType
     Int,
     Float,
     Options,
-    CustomDocument
+    Document
 }
