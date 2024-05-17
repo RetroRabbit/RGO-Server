@@ -71,12 +71,22 @@ Replace the Connection strings, Auth Key, Auth Issuer and Auth Audience
 
 # pgAdmin
 
-### Setup PgAdmin and Create Database
+### Setup pgAdmin and Create Database
 
-Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
-Password should be postgrespw. Set the host to localhost. You should be able to connect to the
-RGO database after adding migrations and updating the DB in package manager console in
-Visual Studios.
+Downaload and Install the latest version of [pgAdmin](https://www.pgadmin.org). Then Register a **new server** on **pgAdmin**.
+
+- Set the *Password* to "postgrespw". 
+- Set the *Server Name* to "RGO".
+- Set the *Host Name* to "localhost". 
+
+1. Register **New Server** in pgAdmin
+
+![pgAdmin Register Server](./README/pgAdminRegisterServer.png)
+
+2. Update **Server Name** and **Host Name**
+
+![pgAdmin Server Name](./README/pgAdminServerName.png)
+![pgAdmin Host Name](./README/pgAdminHostName.png)
 
 
 ### Checkout the Dev branch
@@ -90,12 +100,13 @@ git checkout develop
 
 ### Setting up Docker Container
 
+Download and Install [Docker](https://www.docker.com/get-started/)
+
 ```powershell
 # Postgres Container
 docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
 ```
 ### Creating Database Tables:
-<p class="font-weight: 600">NB!!!</p>
 
 **NB!!!** If you already have a RGO database, you'll need to drop it in pgAdmin and run the migrations again.
 
@@ -103,11 +114,10 @@ docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
     
    **_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
    Make sure the **Default project** is **_RGO.UnitOfWork_**.
-    
+2. Change the default project to RR.UnitOfWork.
+
 ![Image of Package Manager Console](./README/RGO-UnitOfWork-example.png)
 
-2. Change the default project to RR.UnitOfWork.
-   
 3. Run the following commands:
    
 ```powershell
@@ -119,19 +129,11 @@ update-database
 
 🎉🌟 Congratulations! You have successfully created a database with tables!
 
-### Populating Database with Dummy Data:
-Register new RGO server in PgAdmin
+### Populating Database with _Dummy Data_:
 
-![Register service](./README/Screenshot%202023-08-02%20173735.png)
+1. Make a local copy of the ``DummyData.sql`` file In the RR.UnitOfWork Project.
 
-- Update Information and save
-
-![Register service - connection](./Screenshot%202023-08-02%20173613.png)
-
-
-1. Make a local copy of the DummyData.sql file In the RR.UnitOfWork Project.
-
-   ![Screenshot 2024-03-12 130755](https://github.com/RetroRabbit/RGO-Server/assets/82169901/178d5ba8-160e-4b28-b280-2b6a08fb02da)
+   ![Seed Dummy](./README/DummySeedData.png)
 
 2. Copy one of the ``INSERT INTO Employee,`` statements in the script.
    
@@ -144,31 +146,23 @@ Register new RGO server in PgAdmin
    you won't have access to the system. The second email field can just be a dummy or
    additional email you'll make use of.
 
-4. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
-   to assign to yourself.
-   
-   ![RoleAccess Link Statement](image.png)
-   
+4. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want to assign to yourself.
+     
 5. Copy the SQL in the locally created script.
    
-6. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
+6. Open **pgAdmin**, right-click on the RGO database, and select ``Query Tool``.
+![SQL Query](./README/QueryTool.png)
 
-   ![Screenshot 2024-03-12 131219](https://github.com/RetroRabbit/RGO-Server/assets/82169901/5b0fa31a-9e90-4337-8896-fa3d355a5d77)
-
-7. Paste the locally created script in the query screen that pops up.
-
-   ![Screenshot 2024-03-12 131332](https://github.com/RetroRabbit/RGO-Server/assets/82169901/87eabaab-4856-4adc-ba54-feb1c6e47512)
-
-8.  Click on ``Execute Script``.
-  
-   ![Screenshot 2024-03-12 131356](https://github.com/RetroRabbit/RGO-Server/assets/82169901/69c52269-e074-487e-b489-53ac9c41a5ff)
+1. Paste the locally created script in the query screen that pops up. Click on ``Execute Script``.
+![Seed Dummy Script](./README/SQLQueryScriptRun.png)
 
 
-Congratulations you have a fully populated database!
+
+🎉🌟 Congratulations! You have a fully populated the database!
 
 ### Checking new user added to the DB you made
 
-- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfere with your attempts to connect to the database(Docker).
+- Install **pgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfere with your attempts to connect to the database(Docker).
 
 Once the query is completed successfully, you can go to the employee table and view all rows to see if you have data in the database.
 ### Running Unit Tests
@@ -179,7 +173,7 @@ When running unit tests make sure that the database is running to accomodate for
 
 With every pull request, there is a requirement to prove coverage of your code. Attached a screen shot of your code coverage to your PR description
 
-```
+```powershell
 Install the dotnet coverage tool
     dotnet tool install -g dotnet-coverage
 
@@ -198,6 +192,7 @@ Navigate to the %temp% / report folder and open index.html using your prefered b
 ```
 
 # Naming Conventions
+
 ## Endpoints
 Use forward slash
 Use forward slashes for resource hierarchy and to separate URI resources.
