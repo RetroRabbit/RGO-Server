@@ -34,24 +34,24 @@ wsl --install
 ```
 
 # Environment Variables
-Add system environments as follows 
+Add system environment variables as follows:
 
-![Image of System Environment Variables](./EnvironmentVariables.png)
+![Image of System Environment Variables](./README/Audience.png)
+![Image of System Environment Variables](./README/Expires.png)
+![Image of System Environment Variables](./README/Issuer.png)
+![Image of System Environment Variables](./README/Key.png)
 
 With the respective values in the redacted spaces 
 (please note that the dashes in between the variable names are double dashes)
 
 # User Secrets
-Right Click RGO.App and Click on **Mange User Secrets**
+Right Click ``RGO.App`` and Click on **Mange User Secrets**.
+This will open your ``secrets.json`` file
 
-![Image of User Secret Location](./UserSecretsLocation.png)
+![Image of User Secret Location](./README/ManageUserSecretsButton.png)
 
-This will open your secrets.json file
-
-![Image of User secret example](./UserSecretsExample.png)
-
-Paste the following in the file 
-
+Paste the following in the file into ``secrets.json``
+```json
 {
   "ConnectionStrings": {
     "Default": ""
@@ -63,8 +63,11 @@ Paste the following in the file
     "Expires": 60
   }
 }
+```
 
 Replace the Connection strings, Auth Key, Auth Issuer and Auth Audience
+![Image of User secret example](./README/ManageUserSecrets.png)
+
 
 # pgAdmin
 
@@ -76,33 +79,32 @@ RGO database after adding migrations and updating the DB in package manager cons
 Visual Studios.
 
 
-### Change to the Dev branch
+### Checkout the Dev branch
 
-Make sure to have Git installed to run any Git command lines.
+Make sure to have [Git](https://git-scm.com) installed to run any Git command lines.
 
 ```powershell
 #cd RGO-Server\RGO Backend
 git checkout develop
 ```
 
-### Setting up docker container
+### Setting up Docker Container
 
 ```powershell
+# Postgres Container
 docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
 ```
 ### Creating Database Tables:
+<p class="font-weight: 600">NB!!!</p>
 
 **NB!!!** If you already have a RGO database, you'll need to drop it in pgAdmin and run the migrations again.
 
-1. Open Visual Studio 2022 and open the RGO-Server project file. 
-   Pull up the nuget package manager console:
+1. Open Visual Studio 2022 and open the RGO-Server project file. Pull up the nuget package manager console:
     
    **_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
    Make sure the **Default project** is **_RGO.UnitOfWork_**.
     
-   ----
-    
-   ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
+![Image of Package Manager Console](./README/RGO-UnitOfWork-example.png)
 
 2. Change the default project to RR.UnitOfWork.
    
@@ -110,16 +112,17 @@ docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
    
 ```powershell
 add-migration migrationName
+```
+```powershell
 update-database
 ```
 
-Congratulations! You have now successfully created a database with tables.
+🎉🌟 Congratulations! You have successfully created a database with tables!
 
 ### Populating Database with Dummy Data:
+Register new RGO server in PgAdmin
 
-- Register new RGO server in PgAdmin
-
-![Register service](./Screenshot%202023-08-02%20173735.png)
+![Register service](./README/Screenshot%202023-08-02%20173735.png)
 
 - Update Information and save
 
@@ -130,33 +133,33 @@ Congratulations! You have now successfully created a database with tables.
 
    ![Screenshot 2024-03-12 130755](https://github.com/RetroRabbit/RGO-Server/assets/82169901/178d5ba8-160e-4b28-b280-2b6a08fb02da)
 
-3. Copy one of the ``INSERT INTO Employee,`` statements in the script.
+2. Copy one of the ``INSERT INTO Employee,`` statements in the script.
    
    ![Screenshot 2024-03-12 130900](https://github.com/RetroRabbit/RGO-Server/assets/82169901/73545f25-ab5f-4e60-b929-6cd6d0fa781a)
    
-4. Paste a new INSERT statement and populate it with your information such as your email, 
+3. Paste a new INSERT statement and populate it with your information such as your email, 
    name, and surname. Also change the id of the record. 
    It is important to note that the first email field should be populated
    with a personal or work email you're going to use to log into the RGO system, otherwise 
    you won't have access to the system. The second email field can just be a dummy or
    additional email you'll make use of.
 
-5. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
+4. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
    to assign to yourself.
    
    ![RoleAccess Link Statement](image.png)
    
-6. Copy the SQL in the locally created script.
+5. Copy the SQL in the locally created script.
    
-7. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
+6. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
 
    ![Screenshot 2024-03-12 131219](https://github.com/RetroRabbit/RGO-Server/assets/82169901/5b0fa31a-9e90-4337-8896-fa3d355a5d77)
 
-8. Paste the locally created script in the query screen that pops up.
+7. Paste the locally created script in the query screen that pops up.
 
    ![Screenshot 2024-03-12 131332](https://github.com/RetroRabbit/RGO-Server/assets/82169901/87eabaab-4856-4adc-ba54-feb1c6e47512)
 
-9.  Click on ``Execute Script``.
+8.  Click on ``Execute Script``.
   
    ![Screenshot 2024-03-12 131356](https://github.com/RetroRabbit/RGO-Server/assets/82169901/69c52269-e074-487e-b489-53ac9c41a5ff)
 
