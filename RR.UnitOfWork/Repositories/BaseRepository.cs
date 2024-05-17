@@ -3,7 +3,6 @@ using HRIS.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RR.UnitOfWork.Repositories;
 
