@@ -24,9 +24,8 @@ namespace HRIS.Services.Tests.Services
         private readonly EmployeeQualification _employeeQualification;
         private readonly List<EmployeeQualificationDto> _employeeQualificationDtoList;
 
-        private readonly int _employeeId;
-        private readonly int _qualificationId;
-
+        private const int _employeeId = 1;
+        private const int _qualificationId = 1;
         private const int _nonExistingQualificationId = 9999;
 
         public EmployeeQualificationServiceUnitTests()
@@ -34,17 +33,13 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _employeeServiceMock = new Mock<IEmployeeService>();
             _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-            _employeeQualificationService = new EmployeeQualificationService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+            _employeeQualificationService = new EmployeeQualificationService(
+                _unitOfWorkMock.Object,
+                _employeeServiceMock.Object,
+                _errorLoggingServiceMock.Object);
 
             // Initialize shared test mock data
-            _employeeId = 1;
-            _qualificationId = 1;
-
-            _employeeDto = new EmployeeDto
-            {
-                Id = 1,
-                EmployeeNumber = "EMP001",
-            };
+            _employeeDto = new EmployeeDto { Id = 1, EmployeeNumber = "EMP001" };
 
             _employeeQualificationDto = new EmployeeQualificationDto
             {
@@ -54,7 +49,7 @@ namespace HRIS.Services.Tests.Services
                 School = "Example School",
                 Degree = "Example Degree",
                 FieldOfStudy = "Example Field",
-                NQFLevel = Models.Enums.QualificationEnums.NQFLevel.Level7,
+                NQFLevel = NQFLevel.Level7,
                 Year = new DateOnly(2018, 4, 6)
             };
 
@@ -70,31 +65,57 @@ namespace HRIS.Services.Tests.Services
                 Year = _employeeQualificationDto.Year
             };
 
-            _employeeQualificationDtoList = new List<EmployeeQualificationDto>
-            {
-                // Add sample data here
-                new EmployeeQualificationDto
-                {
-                    Id = 1,
-                    EmployeeId = 1,
-                    HighestQualification = HighestQualification.Bachelor,
-                    School = "Example School",
-                    Degree = "Example Degree",
-                    FieldOfStudy = "Example Field",
-                    NQFLevel = Models.Enums.QualificationEnums.NQFLevel.Level7,
-                    Year = new DateOnly(2018, 4, 6)
-                },
-                // Add more sample data if needed
-            };
+            _employeeQualificationDtoList = new List<EmployeeQualificationDto> { _employeeQualificationDto };
+        }
+
+        private void SetupEmployeeExists()
+        {
+            // Setup mock for getting employee by ID
+            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync(_employeeDto);
+        }
+
+        private void SetupEmployeeDoesNotExist()
+        {
+            // Setup mock to return null, simulating the scenario where employee does not exist
+            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync((EmployeeDto)null);
+        }
+
+        private void SetupLogException()
+        {
+            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Returns<Exception>((ex) => ex);
+        }
+
+        private void VerifyLogExceptionCalled(Func<Times> times)
+        {
+            // Verify that the error logging service was not called during a successful operation
+            _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), times);
+        }
+
+        private void VerifyAddQualificationCalled(Func<Times> times)
+        {
+            // Verify that the unitOfWork's EmployeeQualification.Add method was called with the correct parameter
+            _unitOfWorkMock.Verify(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()), times);
+        }
+
+        private void VerifyGetEmployeeByIdCalled(Func<Times> times)
+        {
+            // Verify that the employee service's GetEmployeeById method was called with the correct employeeId
+            _employeeServiceMock.Verify(x => x.GetEmployeeById(_employeeId), times);
+        }
+
+        private void VerifyDeleteQualificationCalled(Func<Times> times)
+        {
+            // Verify that the Delete method of the repository was called with the correct ID
+            _unitOfWorkMock.Verify(x => x.EmployeeQualification.Delete(_qualificationId), times);
         }
 
         [Fact]
         public async Task SaveEmployeeQualification_Success_WithValidData_ReturnsQualificationsList()
         {
-            // Mock setup for dependencies
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync(_employeeDto);
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            // Setup mock
+            SetupEmployeeExists();
+            SetupLogException();
+
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()))
                 .ReturnsAsync(_employeeQualificationDto);
 
@@ -102,32 +123,24 @@ namespace HRIS.Services.Tests.Services
             var result = await _employeeQualificationService.SaveEmployeeQualification(_employeeQualificationDto, _employeeId);
 
             // Assert
+
             // Verify that the result is not null
             Assert.NotNull(result);
 
-            // Additional Assertions
-            // Verify that the employee service's GetEmployeeById method was called with the correct employeeId
-            _employeeServiceMock.Verify(x => x.GetEmployeeById(_employeeId), Times.Once);
-
-            // Verify that the error logging service was not called during a successful operation
-            _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Never);
-
-            // Verify that the unitOfWork's EmployeeQualification.Add method was called with the correct parameter
-            _unitOfWorkMock.Verify(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()), Times.Once);
-
             // Verify that the returned result matches the expected employee qualification DTO
             Assert.Equal(_employeeQualificationDto, result);
+
+            VerifyGetEmployeeByIdCalled(Times.Once);
+            VerifyLogExceptionCalled(Times.Never);
+            VerifyAddQualificationCalled(Times.Once);
         }
 
         [Fact]
         public async Task SaveEmployeeQualification_Failure_WithNonExistingEmployee_ThrowsException()
         {
-            // Setup mock for NullReferenceException 
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
-
-            // Setup mock to return null, simulating the scenario where employee does not exist
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync((EmployeeDto)null);
+            // Setup mocks 
+            SetupLogException();
+            SetupEmployeeDoesNotExist();
 
             // Act
             // Execute the method under test and capture the thrown exception
@@ -138,17 +151,15 @@ namespace HRIS.Services.Tests.Services
             // Verify that the exception is not null
             Assert.NotNull(exception);
 
-            // Additional Assertion
-            // Verify that the GetEmployeeById method of the employee service was called with the correct employeeId
-            _employeeServiceMock.Verify(x => x.GetEmployeeById(_employeeId), Times.Once);
+            VerifyGetEmployeeByIdCalled(Times.Once);
         }
 
         [Fact]
         public async Task GetAllEmployeeQualifications_Success_WithValidData_ReturnsQualificationsList()
         {
-            // Setup mock to return the shared test data
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            // Setup mock
+            SetupLogException();
+
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.GetAll(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
                 .ReturnsAsync(new List<EmployeeQualificationDto> { _employeeQualificationDto });
 
@@ -159,21 +170,15 @@ namespace HRIS.Services.Tests.Services
             Assert.NotNull(result);
             Assert.Single(result); // Since there's only one qualification in the list
             var expectedQualification = result.First();
-            Assert.Equal(_employeeQualificationDto.EmployeeId, expectedQualification.EmployeeId);
-            Assert.Equal(_employeeQualificationDto.HighestQualification, expectedQualification.HighestQualification);
-            Assert.Equal(_employeeQualificationDto.School, expectedQualification.School);
-            Assert.Equal(_employeeQualificationDto.Degree, expectedQualification.Degree);
-            Assert.Equal(_employeeQualificationDto.FieldOfStudy, expectedQualification.FieldOfStudy);
-            Assert.Equal(_employeeQualificationDto.NQFLevel, expectedQualification.NQFLevel);
-            Assert.Equal(_employeeQualificationDto.Year, expectedQualification.Year);
+            Assert.Equal(_employeeQualificationDto, expectedQualification);
         }
 
         [Fact]
         public async Task GetAllEmployeeQualifications_Failure_WhenRetrievalFails_ThrowsException()
         {
             // Setup mock
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            SetupLogException();
+
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.GetAll(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
                 .ThrowsAsync(new Exception("Failed to retrieve qualifications."));
 
@@ -187,8 +192,8 @@ namespace HRIS.Services.Tests.Services
         [Fact]
         public async Task GetAllEmployeeQualificationsByEmployeeId_Success_WithValidEmployeeId_ReturnsQualifications()
         {
-            // Setup mock for getting employee by ID
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync(_employeeDto);
+            // Setup mock
+            SetupEmployeeExists();
 
             // Setup mock qualifications
             var mockQualifications = new List<EmployeeQualification>
@@ -213,9 +218,9 @@ namespace HRIS.Services.Tests.Services
         [Fact]
         public async Task GetAllEmployeeQualificationsByEmployeeId_Failure_WithInvalidEmployeeId_ThrowsInvalidOperationException()
         {
-            // Setup mock for NullReferenceException 
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            // Setup mock 
+            SetupLogException();
+
             // Setup mock to throw an exception when getting employee by ID
             _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ThrowsAsync(new InvalidOperationException("Test exception"));
 
@@ -230,12 +235,9 @@ namespace HRIS.Services.Tests.Services
         [Fact]
         public async Task GetAllEmployeeQualificationsByEmployeeId_Failure_WithNonExistingEmployee_ThrowsKeyNotFoundException()
         {
-            // Setup mock for error logging service
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
-
-            // Setup mock to return null when getting employee by ID
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync((EmployeeDto)null);
+            // Setup mock
+            SetupLogException();
+            SetupEmployeeDoesNotExist();
 
             // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
@@ -244,23 +246,16 @@ namespace HRIS.Services.Tests.Services
                 await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
             });
 
-            // Additional Assertions
-            // Verify that GetEmployeeById method of EmployeeService was called exactly once with the expected employeeId
-            _employeeServiceMock.Verify(x => x.GetEmployeeById(_employeeId), Times.Once);
-
-            // Verify that LogException method of error logging service was called once with any exception
-            _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
+            VerifyGetEmployeeByIdCalled(Times.Once);
+            VerifyLogExceptionCalled(Times.Once);
         }
 
         [Fact]
         public async Task GetAllEmployeeQualificationsByEmployeeId_Failure_ExceptionThrown_LogsAndRethrows()
         {
-            // Setup mock for error logging service
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
-
-            // Setup mock to return a valid employee DTO
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync(_employeeDto);
+            // Setup mock
+            SetupLogException();
+            SetupEmployeeExists();
 
             // Setup mock to throw an exception when retrieving qualifications
             _unitOfWorkMock.Setup(u => u.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
@@ -277,20 +272,15 @@ namespace HRIS.Services.Tests.Services
             // Verify that the exception message matches the expected message
             Assert.Equal("Test exception", ex.Message);
 
-            // Additional Assertions
-            // Verify that GetEmployeeById method of EmployeeService was called exactly once with the expected employeeId
-            _employeeServiceMock.Verify(x => x.GetEmployeeById(_employeeId), Times.Once);
-
-            // Verify that LogException method of error logging service was called once with the exception thrown by the method under test
-            _errorLoggingServiceMock.Verify(x => x.LogException(ex), Times.Once);
+            VerifyGetEmployeeByIdCalled(Times.Once);
+            VerifyLogExceptionCalled(Times.Once);
         }
 
         [Fact]
         public async Task GetEmployeeQualificationById_Success_WithExistingId_ReturnsQualification()
         {
             // Setup mock
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            SetupLogException();
 
             var mockQualificationQuery = new List<EmployeeQualification> { _employeeQualification }
                 .AsQueryable()
@@ -318,8 +308,7 @@ namespace HRIS.Services.Tests.Services
         public async Task GetEmployeeQualificationById_Failure_WithNonExistingId_ThrowsException()
         {
             // Setup mock
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            SetupLogException();
 
             var mockQualifications = new List<EmployeeQualification>().AsQueryable().BuildMock();
 
@@ -336,11 +325,8 @@ namespace HRIS.Services.Tests.Services
         public async Task GetEmployeeQualificationById_FailureWithNonExistingId_ThrowsNullException()
         {
             // Setup mock
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
-
-            // Setup mock for the employee service to return null, simulating no employee found
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync((EmployeeDto)null);
+            SetupLogException();
+            SetupEmployeeDoesNotExist();
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<NullReferenceException>(async () =>
@@ -368,8 +354,7 @@ namespace HRIS.Services.Tests.Services
         public async Task UpdateEmployeeQualification_Failure()
         {
             // Setup mock
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            SetupLogException();
 
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
                 .ReturnsAsync((EmployeeQualificationDto)null); // Simulating scenario where no employee qualification is found
@@ -383,8 +368,7 @@ namespace HRIS.Services.Tests.Services
             // Assert
             Assert.NotNull(exception);
 
-            // Verify that the error logging service was called with the exception
-            _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
+            VerifyLogExceptionCalled(Times.Once);
         }
 
         [Fact]
@@ -403,16 +387,14 @@ namespace HRIS.Services.Tests.Services
             Assert.NotNull(result);
             Assert.Equal(_qualificationId, result.Id); // Verify that the returned DTO has the expected ID
 
-            // Verify that the Delete method of the repository was called with the correct ID
-            _unitOfWorkMock.Verify(x => x.EmployeeQualification.Delete(_qualificationId), Times.Once);
+            VerifyDeleteQualificationCalled(Times.Once);
         }
 
         [Fact]
         public async Task DeleteEmployeeQualification_Failure_WhenDeletionFails_ThrowsException()
         {
             // Setup mock
-            _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-                .Returns<Exception>((ex) => ex);
+            SetupLogException();
 
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.Delete(_qualificationId))
                 .ThrowsAsync(new Exception("Delete operation failed")); // Simulate a failure scenario where an exception occurs during deletion
@@ -426,8 +408,7 @@ namespace HRIS.Services.Tests.Services
             // Assert
             Assert.Equal("Delete operation failed", exception.Message); // Verify the correct exception message
 
-            // Verify that the Delete method of the repository was called with the correct ID
-            _unitOfWorkMock.Verify(x => x.EmployeeQualification.Delete(_qualificationId), Times.Once);
+            VerifyDeleteQualificationCalled(Times.Once);
         }
 
     }
