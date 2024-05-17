@@ -4,6 +4,7 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -215,5 +216,45 @@ public class EmployeeQualificationControllerUnitTests
         var statusCodeResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, statusCodeResult.StatusCode);
         Assert.Equal($"An error occurred while deleting the qualification: {expectedExceptionMessage}", statusCodeResult.Value);
+    }
+
+    [Fact]
+    public async Task GetAllEmployeeQualifications()
+    {
+        var mockEmployeeQualifications = new List<EmployeeQualificationDto>
+        {
+            new EmployeeQualificationDto {
+            Id = 1,
+            EmployeeId = 1,
+            HighestQualification = HighestQualification.Bachelor,
+            School = "University of Africa",
+            Degree = "Bachelor of Science",
+            FieldOfStudy = "Computer Science",
+            NQFLevel = NQFLevel.Level7,
+            Year = new DateOnly(2020, 1, 1)},
+        };
+
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualifications())
+            .ReturnsAsync(mockEmployeeQualifications);
+
+        var result = await _employeeQualificationController.GetAllEmployeeQualifications();
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnValue = Assert.IsType<List<EmployeeQualificationDto>>(okResult.Value);
+        Assert.Equal(mockEmployeeQualifications, returnValue);
+    }
+
+    [Fact]
+    public async Task GetAllEmployeeQualificationsReturnsBadRequestOnException()
+    {
+        var exceptionMessage = "An error occurred while retrieving qualifications";
+
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualifications())
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        var result = await _employeeQualificationController.GetAllEmployeeQualifications();
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.StartsWith("An error occurred while retrieving qualifications", (string)badRequestResult.Value);
     }
 }
