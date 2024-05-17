@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RR.UnitOfWork.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,9 +26,9 @@ namespace RR.UnitOfWork.Migrations
                     jobPosition = table.Column<int>(type: "integer", nullable: false),
                     linkedIn = table.Column<string>(type: "text", nullable: true),
                     profilePicture = table.Column<string>(type: "text", nullable: true),
-                    cellphone = table.Column<string>(type: "text", nullable: true),
+                    cellphone = table.Column<string>(type: "text", nullable: false),
                     location = table.Column<string>(type: "text", nullable: true),
-                    cv = table.Column<string>(type: "text", nullable: true),
+                    cv = table.Column<string>(type: "text", nullable: false),
                     portfolioLink = table.Column<string>(type: "text", nullable: true),
                     portfolioPdf = table.Column<string>(type: "text", nullable: true),
                     gender = table.Column<int>(type: "integer", nullable: false),
@@ -39,7 +39,7 @@ namespace RR.UnitOfWork.Migrations
                     school = table.Column<string>(type: "text", nullable: true),
                     qualificationEndDate = table.Column<int>(type: "integer", nullable: true),
                     blacklisted = table.Column<int>(type: "integer", nullable: false),
-                    blacklistedReason = table.Column<string>(type: "text", nullable: true)
+                    blacklistedReason = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,8 +56,7 @@ namespace RR.UnitOfWork.Migrations
                     type = table.Column<string>(type: "text", nullable: true),
                     dataTypes = table.Column<List<string>>(type: "text[]", nullable: true),
                     labels = table.Column<List<string>>(type: "text[]", nullable: true),
-                    roles = table.Column<List<string>>(type: "text[]", nullable: true),
-                    subType = table.Column<string>(type: "text", nullable: true)
+                    data = table.Column<List<int>>(type: "integer[]", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -208,27 +207,6 @@ namespace RR.UnitOfWork.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChartDataSet",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    label = table.Column<string>(type: "text", nullable: true),
-                    data = table.Column<List<int>>(type: "integer[]", nullable: true),
-                    chartId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChartDataSet", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_ChartDataSet_Chart_chartId",
-                        column: x => x.chartId,
-                        principalTable: "Chart",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EmployeeEvaluationTemplateItem",
                 columns: table => new
                 {
@@ -263,7 +241,7 @@ namespace RR.UnitOfWork.Migrations
                     disability = table.Column<bool>(type: "boolean", nullable: false),
                     disabilityNotes = table.Column<string>(type: "text", nullable: true),
                     level = table.Column<int>(type: "integer", nullable: true),
-                    employeeTypeId = table.Column<int>(type: "integer", nullable: true),
+                    employeeTypeId = table.Column<int>(type: "integer", nullable: false),
                     notes = table.Column<string>(type: "text", nullable: true),
                     leaveInterval = table.Column<float>(type: "real", nullable: true),
                     salaryDays = table.Column<float>(type: "real", nullable: true),
@@ -317,7 +295,8 @@ namespace RR.UnitOfWork.Migrations
                         name: "FK_Employee_EmployeeType_employeeTypeId",
                         column: x => x.employeeTypeId,
                         principalTable: "EmployeeType",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Employee_Employee_peopleChampion",
                         column: x => x.peopleChampion,
@@ -458,6 +437,7 @@ namespace RR.UnitOfWork.Migrations
                     branch = table.Column<string>(type: "text", nullable: true),
                     accountNo = table.Column<string>(type: "text", nullable: true),
                     accountType = table.Column<int>(type: "integer", nullable: false),
+                    accountHolderName = table.Column<string>(type: "text", nullable: true),
                     status = table.Column<int>(type: "integer", nullable: false),
                     reason = table.Column<string>(type: "text", nullable: true),
                     file = table.Column<string>(type: "text", nullable: true),
@@ -469,29 +449,6 @@ namespace RR.UnitOfWork.Migrations
                     table.PrimaryKey("PK_EmployeeBanking", x => x.id);
                     table.ForeignKey(
                         name: "FK_EmployeeBanking_Employee_employeeId",
-                        column: x => x.employeeId,
-                        principalTable: "Employee",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EmployeeCertification",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    employeeId = table.Column<int>(type: "integer", nullable: false),
-                    certificateName = table.Column<string>(type: "text", nullable: false),
-                    certificateDocument = table.Column<string>(type: "text", nullable: false),
-                    issueOrganization = table.Column<string>(type: "text", nullable: false),
-                    issueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmployeeCertification", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_EmployeeCertification_Employee_employeeId",
                         column: x => x.employeeId,
                         principalTable: "Employee",
                         principalColumn: "id",
@@ -557,14 +514,11 @@ namespace RR.UnitOfWork.Migrations
                     reference = table.Column<string>(type: "text", nullable: true),
                     fileName = table.Column<string>(type: "text", nullable: true),
                     fileCategory = table.Column<int>(type: "integer", nullable: false),
-                    employeeFileCategory = table.Column<int>(type: "integer", nullable: false),
                     blob = table.Column<string>(type: "text", nullable: true),
                     status = table.Column<int>(type: "integer", nullable: true),
                     uploadDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     reason = table.Column<string>(type: "text", nullable: true),
-                    counterSign = table.Column<bool>(type: "boolean", nullable: false),
-                    documentType = table.Column<int>(type: "integer", nullable: true),
-                    lastUpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    counterSign = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -638,31 +592,6 @@ namespace RR.UnitOfWork.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeQualifications",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    employeeId = table.Column<int>(type: "integer", nullable: false),
-                    highestQualification = table.Column<int>(type: "integer", nullable: false),
-                    school = table.Column<string>(type: "text", nullable: false),
-                    degree = table.Column<string>(type: "text", nullable: false),
-                    fieldOfStudy = table.Column<string>(type: "text", nullable: false),
-                    nqfLevel = table.Column<int>(type: "integer", nullable: false),
-                    year = table.Column<DateOnly>(type: "date", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmployeeQualifications", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_EmployeeQualifications_Employee_employeeId",
-                        column: x => x.employeeId,
-                        principalTable: "Employee",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EmployeeRole",
                 columns: table => new
                 {
@@ -684,31 +613,6 @@ namespace RR.UnitOfWork.Migrations
                         name: "FK_EmployeeRole_Role_roleId",
                         column: x => x.roleId,
                         principalTable: "Role",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WorkExperience",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    title = table.Column<string>(type: "text", nullable: false),
-                    employmentType = table.Column<string>(type: "text", nullable: true),
-                    companyName = table.Column<string>(type: "text", nullable: true),
-                    location = table.Column<string>(type: "text", nullable: true),
-                    startDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    endDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    employeeId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WorkExperience", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_WorkExperience_Employee_employeeId",
-                        column: x => x.employeeId,
-                        principalTable: "Employee",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -774,11 +678,6 @@ namespace RR.UnitOfWork.Migrations
                 column: "createdById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChartDataSet_chartId",
-                table: "ChartDataSet",
-                column: "chartId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ChartRoleLink_chartId",
                 table: "ChartRoleLink",
                 column: "chartId");
@@ -821,11 +720,6 @@ namespace RR.UnitOfWork.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeBanking_employeeId",
                 table: "EmployeeBanking",
-                column: "employeeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EmployeeCertification_employeeId",
-                table: "EmployeeCertification",
                 column: "employeeId");
 
             migrationBuilder.CreateIndex(
@@ -894,11 +788,6 @@ namespace RR.UnitOfWork.Migrations
                 column: "employeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeQualifications_employeeId",
-                table: "EmployeeQualifications",
-                column: "employeeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EmployeeRole_employeeId",
                 table: "EmployeeRole",
                 column: "employeeId");
@@ -927,11 +816,6 @@ namespace RR.UnitOfWork.Migrations
                 name: "IX_RoleAccessLink_roleId",
                 table: "RoleAccessLink",
                 column: "roleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WorkExperience_employeeId",
-                table: "WorkExperience",
-                column: "employeeId");
         }
 
         /// <inheritdoc />
@@ -944,16 +828,10 @@ namespace RR.UnitOfWork.Migrations
                 name: "Candidate");
 
             migrationBuilder.DropTable(
-                name: "ChartDataSet");
-
-            migrationBuilder.DropTable(
                 name: "ChartRoleLink");
 
             migrationBuilder.DropTable(
                 name: "EmployeeBanking");
-
-            migrationBuilder.DropTable(
-                name: "EmployeeCertification");
 
             migrationBuilder.DropTable(
                 name: "EmployeeData");
@@ -977,9 +855,6 @@ namespace RR.UnitOfWork.Migrations
                 name: "EmployeeProjects");
 
             migrationBuilder.DropTable(
-                name: "EmployeeQualifications");
-
-            migrationBuilder.DropTable(
                 name: "EmployeeRole");
 
             migrationBuilder.DropTable(
@@ -996,9 +871,6 @@ namespace RR.UnitOfWork.Migrations
 
             migrationBuilder.DropTable(
                 name: "RoleAccessLink");
-
-            migrationBuilder.DropTable(
-                name: "WorkExperience");
 
             migrationBuilder.DropTable(
                 name: "Chart");
