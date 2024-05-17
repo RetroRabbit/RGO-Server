@@ -15,8 +15,15 @@ variables:
   dotNetVersion: '7.0.x'
   targetRuntime: 'linux-x64'
 
-# Build the app for .NET 7 framework
 steps:
+# Retore Nuget Packages
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+
+# Build the app for .NET 7 framework
 - task: UseDotNet@2
   inputs:
     version: $(dotNetVersion)
