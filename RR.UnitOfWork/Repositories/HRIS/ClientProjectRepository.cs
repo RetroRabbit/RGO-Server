@@ -2,8 +2,7 @@
 using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Interfaces.HRIS;
 
-namespace RR.UnitOfWork.Repositories.HRIS
-{
+namespace RR.UnitOfWork.Repositories;
     public class ClientProjectRepository : BaseRepository<ClientProject, ClientProjectsDto>, IClientProjectRepository
     {
         public ClientProjectRepository(DatabaseContext db) : base(db)
@@ -11,4 +10,3 @@ namespace RR.UnitOfWork.Repositories.HRIS
 
         }
     }
-}

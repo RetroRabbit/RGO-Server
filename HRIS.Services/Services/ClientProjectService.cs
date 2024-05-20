@@ -16,27 +16,18 @@ namespace HRIS.Services.Services
             _errorLoggingService = errorLoggingService;
         }
 
-        public async Task<ClientProjectsDto> CreateClientProject(ClientProject clientProject)
+        public async Task<ClientProjectsDto> CreateClientProject(ClientProjectsDto clientProjectsDto)
         {
-            var clientProjectDto = new ClientProjectsDto
-            {
-                Id = clientProject.Id,
-                NameOfClient = clientProject.NameOfClient,
-                ProjectName = clientProject.ProjectName,
-                StartDate = clientProject.StartDate,
-                EndDate = clientProject.EndDate,
-                UploadProjectUrl = clientProject.UploadProjectUrl
-            };
 
             var existingProjects = await _db.ClientProject.GetAll();
-            bool projectExists = existingProjects.Exists(p => p.Id == clientProjectDto.Id);
+            bool projectExists = existingProjects.Exists(p => p.Id == clientProjectsDto.Id);
 
             if (projectExists)
             {
                 throw new InvalidOperationException("Client project already exists.");
             }
 
-            var createdProject = await _db.ClientProject.Add(clientProject);
+            var createdProject = await _db.ClientProject.Add(new ClientProject(clientProjectsDto));
             return createdProject;
         }
 
@@ -50,7 +41,7 @@ namespace HRIS.Services.Services
             var clientProjectExist = await _db.ClientProject.GetById(id);
             if (clientProjectExist == null)
             {
-                var exception = new Exception("client project not found");
+                var exception = new Exception("Client project not found");
                 throw _errorLoggingService.LogException(exception);
             }
             return clientProjectExist;
@@ -58,30 +49,17 @@ namespace HRIS.Services.Services
 
         public async Task<List<ClientProjectsDto>> GetAllClientProject()
         {
-            var dtos = await _db.ClientProject.GetAll();
-            var allClientProjects = dtos
-                             .Select(dto => new ClientProjectsDto
-                             {
-                                 Id = dto.Id,
-                                 NameOfClient = dto.NameOfClient,
-                                 ProjectName = dto.ProjectName,
-                                 StartDate = dto.StartDate,
-                                 EndDate = dto.EndDate,
-                                 UploadProjectUrl = dto.UploadProjectUrl
-                             })
-                             .ToList();
-            return allClientProjects;
+            return await _db.ClientProject.GetAll();
         }
 
-        public async Task<ClientProjectsDto> UpdateClientProject(ClientProject clientProject)
+        public async Task<ClientProjectsDto> UpdateClientProject(ClientProjectsDto clientProjectsDto)
         {
-            var existingClientProject = await _db.ClientProject.Update(clientProject);
+            var existingClientProject = await _db.ClientProject.Update(new ClientProject(clientProjectsDto));
             if (existingClientProject == null)
             {
-                var exception = new Exception("ClientProject not found");
+                var exception = new Exception("InvalidOperationException");
                 throw _errorLoggingService.LogException(exception);
             }
-
             return existingClientProject;
         }
     }

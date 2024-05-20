@@ -1,6 +1,5 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -16,7 +15,6 @@ namespace RR.App.Controllers.HRIS
             _clientProjectService = clientProjectService;
         }
 
-        [Authorize(Policy = "AllRolesPolicy")]
         [HttpGet]
         public async Task<ActionResult> GetAllClientProjects()
         {
@@ -31,7 +29,6 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
-        [Authorize(Policy = "AllRolesPolicy")]
         [HttpGet("all")]
         public async Task<ActionResult<ClientProjectsDto>> GetClientProject(int id)
         {
@@ -45,32 +42,29 @@ namespace RR.App.Controllers.HRIS
             return Ok(clientProjectDto);
         }
 
-        [Authorize(Policy = "AllRolesPolicy")]
         [HttpPost]
-        public async Task<IActionResult> PostClientProject(ClientProject clientProject)
+        public async Task<IActionResult> PostClientProject(ClientProjectsDto clientProjectsDto)
         {
-            var createdClientProject = await _clientProjectService.CreateClientProject(clientProject);
+            var createdClientProject = await _clientProjectService.CreateClientProject(clientProjectsDto);
 
             if (createdClientProject == null)
             {
                 return BadRequest("Unable to create the project.");
             }
-
             return CreatedAtAction(nameof(GetClientProject), new { id = createdClientProject.Id }, createdClientProject);
         }
 
-        [Authorize(Policy = "AllRolesPolicy")]
         [HttpPut]
-        public async Task<IActionResult> PutClientProject(int id, ClientProject clientProject)
+        public async Task<IActionResult> PutClientProject(int id, ClientProjectsDto clientProjectsDto)
         {
-            if (id != clientProject.Id)
+            if (id != clientProjectsDto.Id)
             {
                 return BadRequest("Mismatched project ID.");
             }
 
             try
             {
-                var clientProjectObject = await _clientProjectService.UpdateClientProject(clientProject);
+                var clientProjectObject = await _clientProjectService.UpdateClientProject(clientProjectsDto);
                 return Ok(clientProjectObject);
             }
             catch
@@ -79,7 +73,6 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
-        [Authorize(Policy = "AllRolesPolicy")]
         [HttpDelete]
         public async Task<IActionResult> DeleteClientProject(int id)
         {

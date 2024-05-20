@@ -15,22 +15,22 @@ namespace RR.UnitOfWork.Entities.HRIS
         public ClientProject(ClientProjectsDto dto)
         {
             Id = dto.Id;
-            NameOfClient = dto.NameOfClient;
+            ClientName = dto.ClientName;
             ProjectName = dto.ProjectName;
             StartDate = dto.StartDate;
             EndDate = dto.EndDate;
-            UploadProjectUrl = dto.UploadProjectUrl;
+            ProjectURL = dto.ProjectURL;
         }
 
         [Key]
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("nameOfClient")]
-        public string? NameOfClient { get; set; }
+        [Column("clientName")]
+        public string ClientName { get; set; }
 
         [Column("projectName")]
-        public string? ProjectName { get; set; }
+        public string ProjectName { get; set; }
 
         [Column("startDate")]
         public DateTime StartDate { get; set; }
@@ -38,8 +38,8 @@ namespace RR.UnitOfWork.Entities.HRIS
         [Column("endDate")]
         public DateTime EndDate { get; set; }
 
-        [Column("uploadProjectUrl")]
-        public string? UploadProjectUrl { get; set; }
+        [Column("projectURL")]
+        public string ProjectURL { get; set; }
 
         [Column("employeeId")]
         public int EmployeeId { get; set; }
@@ -52,11 +52,11 @@ namespace RR.UnitOfWork.Entities.HRIS
             return new ClientProjectsDto
             {
                 Id = Id,
-                NameOfClient = NameOfClient,
+                ClientName = ClientName,
                 ProjectName = ProjectName,
                 StartDate = StartDate,
                 EndDate = EndDate,
-                UploadProjectUrl = UploadProjectUrl
+                ProjectURL = ProjectURL
             };
         }
     }

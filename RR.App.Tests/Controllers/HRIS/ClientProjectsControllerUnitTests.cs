@@ -3,17 +3,15 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
-using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace HRIS.Tests.Controllers
-{
-    public class ClientProjectsControllerTests
+namespace HRIS.Tests.Controllers;
+    public class ClientProjectsControllerUnitTests
     {
         private Mock<IClientProjectService> _mockClientProjectService;
         private ClientProjectsController _controller;
 
-        public ClientProjectsControllerTests()
+        public ClientProjectsControllerUnitTests()
         {
             _mockClientProjectService = new Mock<IClientProjectService>();
             _controller = new ClientProjectsController(_mockClientProjectService.Object);
@@ -35,12 +33,11 @@ namespace HRIS.Tests.Controllers
         [Fact]
         public async Task GetClientProject_WithValidId_ReturnsOkResult()
         {
-            var id = 1;
-            var clientProjectDto = new ClientProjectsDto { Id = id };
-            _mockClientProjectService.Setup(service => service.GetClientProject(id))
+            var clientProjectDto = new ClientProjectsDto { Id = 1 };
+            _mockClientProjectService.Setup(service => service.GetClientProject(1))
                 .ReturnsAsync(clientProjectDto);
 
-            var result = await _controller.GetClientProject(id);
+            var result = await _controller.GetClientProject(1);
             var okResult = Assert.IsType<ActionResult<ClientProjectsDto>>(result);
             Assert.NotNull(okResult);
             var objectResult = Assert.IsType<OkObjectResult>(okResult.Result);
@@ -51,60 +48,54 @@ namespace HRIS.Tests.Controllers
         [Fact]
         public async Task DeleteClientProject_WithExistingId_ReturnsNoContent()
         {
-            var id = 1;
-            _mockClientProjectService.Setup(service => service.GetClientProject(id))
-                .ReturnsAsync(new ClientProjectsDto { Id = id });
+            _mockClientProjectService.Setup(service => service.GetClientProject(1))
+                .ReturnsAsync(new ClientProjectsDto { Id = 1 });
 
-            var result = await _controller.DeleteClientProject(id);
+            var result = await _controller.DeleteClientProject(1);
             Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
         public async Task PutClientProject_WithMatchingId_ReturnsNoContent()
         {
-            var id = 1;
-            var clientProject = new ClientProject { Id = id };
-            _mockClientProjectService.Setup(service => service.UpdateClientProject(clientProject))
+            var clientProjectsDto = new ClientProjectsDto { Id = 1 };
+            _mockClientProjectService.Setup(service => service.UpdateClientProject(clientProjectsDto))
                 .ReturnsAsync(new ClientProjectsDto());
 
-            var result = await _controller.PutClientProject(id, clientProject);
+            var result = await _controller.PutClientProject(1, clientProjectsDto);
             Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
         public async Task PostClientProject_WithValidInput_ReturnsCreatedAtAction()
         {
-            var clientProject = new ClientProject
-            {
-                Id = 1,
-            };
-            var createdClientProjectDto = new ClientProjectsDto { Id = clientProject.Id };
-            _mockClientProjectService.Setup(service => service.CreateClientProject(clientProject))
+    
+            var createdClientProjectDto = new ClientProjectsDto { Id = 1 };
+            _mockClientProjectService.Setup(service => service.CreateClientProject(createdClientProjectDto))
                 .ReturnsAsync(createdClientProjectDto);
 
-            var result = await _controller.PostClientProject(clientProject);
+            var result = await _controller.PostClientProject(createdClientProjectDto);
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
             Assert.Equal(nameof(_controller.GetClientProject), createdAtActionResult.ActionName);
-            Assert.Equal(clientProject.Id, createdAtActionResult.RouteValues["id"]);
+            Assert.Equal(createdClientProjectDto.Id, createdAtActionResult.RouteValues["id"]);
             Assert.Equal(createdClientProjectDto, createdAtActionResult.Value);
         }
 
         [Fact]
         public async Task PutClientProject_WithNonMatchingId_ReturnsBadRequest()
         {
-            var clientProject = new ClientProject { Id = 2 };
-            var result = await _controller.PutClientProject(1, clientProject);
+            var clientProjectsDto = new ClientProjectsDto { Id = 2 };
+            var result = await _controller.PutClientProject(1, clientProjectsDto);
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
         public async Task PostClientProject_WithInvalidModel_ReturnsBadRequest()
         {
-            var clientProject = new ClientProject { /* Invalid data */ };
+            var clientProjectsDto = new ClientProjectsDto { };
             _controller.ModelState.AddModelError("error", "sample error");
 
-            var result = await _controller.PostClientProject(clientProject);
-
+            var result = await _controller.PostClientProject(clientProjectsDto);
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Unable to create the project.", badRequestResult.Value);
         }
@@ -112,23 +103,21 @@ namespace HRIS.Tests.Controllers
         [Fact]
         public async Task GetClientProjectNotFoundResult()
         {
-            var nonExistentId = 9;
-            _mockClientProjectService.Setup(service => service.GetClientProject(nonExistentId))
+            _mockClientProjectService.Setup(service => service.GetClientProject(99))
                 .ReturnsAsync((ClientProjectsDto)null);
 
-            var result = await _controller.GetClientProject(nonExistentId);
+            var result = await _controller.GetClientProject(99);
             Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
         public async Task UpdateClientProjectReturnsNotFoundResultOnException()
         {
-            var nonExistentId = 99;
-            var clientProjectToUpdate = new ClientProject { Id = nonExistentId };
+            var clientProjectToUpdate = new ClientProjectsDto { Id = 99 };
             _mockClientProjectService.Setup(service => service.UpdateClientProject(clientProjectToUpdate))
                 .ThrowsAsync(new Exception("An error occurred while updating the project."));
 
-            var result = await _controller.PutClientProject(nonExistentId, clientProjectToUpdate);
+            var result = await _controller.PutClientProject(99, clientProjectToUpdate);
             var notFoundResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal("An error occurred while updating the project.", notFoundResult.Value);
         }
@@ -136,11 +125,10 @@ namespace HRIS.Tests.Controllers
         [Fact]
         public async Task ClientProjectReturnsNotFoundResultOnException()
         {
-            var nonExistentId = 999;
-            _mockClientProjectService.Setup(service => service.DeleteClientProject(nonExistentId))
+            _mockClientProjectService.Setup(service => service.DeleteClientProject(999))
                 .ThrowsAsync(new KeyNotFoundException("Project not found"));
 
-            var result = await _controller.DeleteClientProject(nonExistentId);
+            var result = await _controller.DeleteClientProject(999);
             Assert.IsType<NotFoundObjectResult>(result);
         }
 
@@ -154,4 +142,4 @@ namespace HRIS.Tests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
     }
-}
+
