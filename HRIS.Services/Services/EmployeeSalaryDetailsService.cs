@@ -33,7 +33,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         return deletedEmployeeSalary;
     }
     
-    public async Task<EmployeeSalaryDetailsDto> GetAllEmployeeSalaries()
+    public async Task<List<EmployeeSalaryDetailsDto>> GetAllEmployeeSalaries()
     {
         try
         {
@@ -45,7 +45,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
                                             .Select(employeeSalary => employeeSalary.ToDto())
                                             .ToListAsync();
 
-            return employeeSalaries.FirstOrDefault();
+            return employeeSalaries;
         }
         catch (Exception)
         {

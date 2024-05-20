@@ -42,7 +42,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
             var employeeSalaries = await _employeeSalarayDetailsService.GetAllEmployeeSalaries();
             return Ok(employeeSalaries);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching the employee salaries.");
         }

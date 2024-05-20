@@ -20,7 +20,7 @@ public interface IEmployeeSalarayDetailsService
     /// Get All Employee Salaries
     /// </summary>
     /// <returns></returns>
-    Task<EmployeeSalaryDetailsDto> GetAllEmployeeSalaries();
+    Task<List<EmployeeSalaryDetailsDto>> GetAllEmployeeSalaries();
     /// <summary>
     /// Update Employee Salary
     /// </summary>
