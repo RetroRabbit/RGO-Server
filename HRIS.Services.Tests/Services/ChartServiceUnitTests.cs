@@ -107,6 +107,7 @@ public class ChartServiceUnitTests
             Type = chartType,
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
+            Roles = roles,
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
@@ -181,6 +182,7 @@ public class ChartServiceUnitTests
             Type = chartType,
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
+            Roles = roles,
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
@@ -238,6 +240,7 @@ public class ChartServiceUnitTests
             Type = "Pie",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
+            Roles = new List<string>{ "All" },
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
@@ -263,6 +266,7 @@ public class ChartServiceUnitTests
             Type = "Pie",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
+            Roles = new List<string> { "All" },
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 
@@ -275,6 +279,7 @@ public class ChartServiceUnitTests
                 Type = "Existing Type",
                 DataTypes = chartDtoToUpdate.DataTypes,
                 Labels = chartDtoToUpdate.Labels,
+                Roles = new List<string> { "All" },
                 Datasets = ChartDataSetTestData.chartDataSetDtoList
             }
         };
@@ -305,6 +310,7 @@ public class ChartServiceUnitTests
                 Type = "Existing Type",
                 DataTypes = new List<string> { "Gender", "Race" },
                 Labels = new List<string> { "Male", "Female" },
+                Roles = new List<string> { "All" },
                 Datasets = ChartDataSetTestData.chartDataSetDtoList
             }
         };
@@ -316,6 +322,7 @@ public class ChartServiceUnitTests
             Type = "Non Existing Type",
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
+            Roles = new List<string> { "All" },
             Datasets = ChartDataSetTestData.chartDataSetDtoList
         };
 

@@ -36,7 +36,7 @@ public interface IEmployeeCertificationService
     /// <summary>
     ///     Delete Employee Certification
     /// </summary>
-    /// <param name="employeeCertificationDto"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    Task<EmployeeCertificationDto> DeleteEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
+    Task<EmployeeCertificationDto> DeleteEmployeeCertification(int id);
 }

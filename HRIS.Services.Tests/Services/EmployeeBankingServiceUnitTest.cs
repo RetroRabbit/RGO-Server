@@ -118,7 +118,7 @@ public class EmployeeBankingServiceTest
         var result =
             await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingDto, "test@retrorabbit.co.za");
 
-        Assert.Equal(EmployeeBankingTestData.EmployeeBankingDto, result);
+        Assert.Equivalent(EmployeeBankingTestData.EmployeeBankingDto, result);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class EmployeeBankingServiceTest
         var result =
             await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingDto, "admin.email@example.com");
 
-        Assert.Equal(EmployeeBankingTestData.EmployeeBankingDto, result);
+        Assert.Equivalent(EmployeeBankingTestData.EmployeeBankingDto, result);
     }
 
     [Fact]

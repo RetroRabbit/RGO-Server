@@ -31,7 +31,6 @@ public class EmployeeBankingController : ControllerBase
                 Branch = newEntry.Branch,
                 AccountNo = newEntry.AccountNo,
                 AccountType = newEntry.AccountType,
-                AccountHolderName = newEntry.AccountHolderName,
                 Status = newEntry.Status,
                 DeclineReason = newEntry.DeclineReason,
                 File = newEntry.File,
@@ -87,8 +86,6 @@ public class EmployeeBankingController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] SimpleEmployeeBankingDto updateEntry)
     {
-        if (updateEntry.AccountHolderName.Length == 0)
-            return BadRequest("Invalid banking details");
         try
         {
             var Bankingdto = new EmployeeBankingDto
@@ -99,7 +96,6 @@ public class EmployeeBankingController : ControllerBase
                 Branch = updateEntry.Branch,
                 AccountNo = updateEntry.AccountNo,
                 AccountType = updateEntry.AccountType,
-                AccountHolderName = updateEntry.AccountHolderName,
                 Status = updateEntry.Status,
                 DeclineReason = updateEntry.DeclineReason,
                 File = updateEntry.File,

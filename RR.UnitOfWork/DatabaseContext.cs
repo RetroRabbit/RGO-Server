@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork.Entities.HRIS;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.ATS;
 
@@ -12,6 +11,7 @@ public interface IDatabaseContext
     DbSet<Employee> employees { get; set; }
     DbSet<EmployeeRole> employeeRoles { get; set; }
     DbSet<EmployeeAddress> employeeAddresses { get; set; }
+    DbSet<EmployeeCertification> employeeCertification { get; set; }
     DbSet<EmployeeDocument> employeeDocuments { get; set; }
     DbSet<EmployeeProject> employeeProjects { get; set; }
     DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }
@@ -19,6 +19,7 @@ public interface IDatabaseContext
     DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
     DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
     DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
+    DbSet<EmployeeQualification> employeeQualifications { get; set; }
     DbSet<Role> roles { get; set; }
     DbSet<RoleAccess> roleAccess { get; set; }
     DbSet<AuditLog> auditLogs { get; set; }
@@ -52,6 +53,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<Employee> employees { get; set; }
     public DbSet<EmployeeRole> employeeRoles { get; set; }
     public DbSet<EmployeeAddress> employeeAddresses { get; set; }
+    public DbSet<EmployeeCertification> employeeCertification { get; set; }
     public DbSet<EmployeeDocument> employeeDocuments { get; set; }
     public DbSet<EmployeeProject> employeeProjects { get; set; }
     public DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }
@@ -59,6 +61,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
     public DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
     public DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
+    public DbSet<EmployeeQualification> employeeQualifications { get; set; }
     public DbSet<Role> roles { get; set; }
     public DbSet<RoleAccess> roleAccess { get; set; }
     public DbSet<AuditLog> auditLogs { get; set; }

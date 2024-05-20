@@ -20,6 +20,7 @@ public class Chart : IModel<ChartDto>
         Type = chartDto.Type;
         Subtype = chartDto.Subtype;
         Labels = chartDto.Labels;
+        Roles = chartDto.Roles;
         DataTypes = chartDto.DataTypes;
         Datasets = chartDto.Datasets?.Select(datasetDto => new ChartDataSet(datasetDto)).ToList() ?? new List<ChartDataSet>();
     }
@@ -30,6 +31,7 @@ public class Chart : IModel<ChartDto>
 
     [Column("dataTypes")] public List<string>? DataTypes { get; set; }
     [Column("labels")] public List<string>? Labels { get; set; }
+    [Column("roles")] public List<string>? Roles { get; set; }
     [Column("subType")]public string? Subtype { get; set; }
 
     public virtual List<ChartDataSet> Datasets { get; set; }
@@ -46,6 +48,7 @@ public class Chart : IModel<ChartDto>
             Subtype = Subtype,
             DataTypes = DataTypes,
             Labels = Labels,
+            Roles = Roles,
             Datasets = Datasets != null ? Datasets.Select(x => x.ToDto()).ToList() : new List<ChartDataSetDto>()
         };
     }
