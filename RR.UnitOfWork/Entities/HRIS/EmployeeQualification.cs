@@ -23,7 +23,6 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
         EmployeeId = employeeQualificationDto.EmployeeId;
         HighestQualification = employeeQualificationDto.HighestQualification;
         School = employeeQualificationDto.School;
-        Degree = employeeQualificationDto.Degree;
         FieldOfStudy = employeeQualificationDto.FieldOfStudy;
         NQFLevel = employeeQualificationDto.NQFLevel;
         Year = employeeQualificationDto.Year;
@@ -65,7 +64,6 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
             EmployeeId = EmployeeId,
             HighestQualification = HighestQualification,
             School = School,
-            Degree = Degree,
             FieldOfStudy = FieldOfStudy,
             NQFLevel = NQFLevel,
             Year = Year

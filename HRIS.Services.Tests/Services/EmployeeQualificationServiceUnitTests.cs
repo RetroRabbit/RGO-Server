@@ -45,7 +45,6 @@ namespace HRIS.Services.Tests.Services
                 EmployeeId = 1,
                 HighestQualification = HighestQualification.Bachelor,
                 School = "Example School",
-                Degree = "Example Degree",
                 FieldOfStudy = "Example Field",
                 NQFLevel = NQFLevel.Level7,
                 Year = new DateOnly(2018, 4, 6)
@@ -57,7 +56,6 @@ namespace HRIS.Services.Tests.Services
                 EmployeeId = _employeeQualificationDto.EmployeeId,
                 HighestQualification = _employeeQualificationDto.HighestQualification,
                 School = _employeeQualificationDto.School,
-                Degree = _employeeQualificationDto.Degree,
                 FieldOfStudy = _employeeQualificationDto.FieldOfStudy,
                 NQFLevel = _employeeQualificationDto.NQFLevel,
                 Year = _employeeQualificationDto.Year
@@ -252,7 +250,6 @@ namespace HRIS.Services.Tests.Services
             Assert.Equal(_employeeQualificationDto.EmployeeId, result.EmployeeId);
             Assert.Equal(_employeeQualificationDto.HighestQualification, result.HighestQualification);
             Assert.Equal(_employeeQualificationDto.School, result.School);
-            Assert.Equal(_employeeQualificationDto.Degree, result.Degree);
             Assert.Equal(_employeeQualificationDto.FieldOfStudy, result.FieldOfStudy);
             Assert.Equal(_employeeQualificationDto.NQFLevel, result.NQFLevel);
             Assert.Equal(_employeeQualificationDto.Year, result.Year);

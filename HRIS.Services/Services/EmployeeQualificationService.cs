@@ -35,7 +35,6 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                 EmployeeId = id,
                 HighestQualification = employeeQualificationDto.HighestQualification,
                 School = employeeQualificationDto.School,
-                Degree = employeeQualificationDto.Degree,
                 FieldOfStudy = employeeQualificationDto.FieldOfStudy,
                 NQFLevel = employeeQualificationDto.NQFLevel,
                 Year = employeeQualificationDto.Year
@@ -83,7 +82,6 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                     EmployeeId = q.EmployeeId,
                     HighestQualification = q.HighestQualification,
                     School = q.School,
-                    Degree = q.Degree,
                     FieldOfStudy = q.FieldOfStudy,
                     NQFLevel = q.NQFLevel,
                     Year = q.Year
@@ -110,7 +108,6 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                     EmployeeId = q.EmployeeId,
                     HighestQualification = q.HighestQualification,
                     School = q.School,
-                    Degree = q.Degree,
                     FieldOfStudy = q.FieldOfStudy,
                     NQFLevel = q.NQFLevel,
                     Year = q.Year
@@ -147,7 +144,6 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             qualification.EmployeeId = employeeQualificationDto.EmployeeId;
             qualification.HighestQualification = employeeQualificationDto.HighestQualification;
             qualification.School = employeeQualificationDto.School;
-            qualification.Degree = employeeQualificationDto.Degree;
             qualification.FieldOfStudy = employeeQualificationDto.FieldOfStudy;
             qualification.NQFLevel = employeeQualificationDto.NQFLevel;
             qualification.Year = employeeQualificationDto.Year;

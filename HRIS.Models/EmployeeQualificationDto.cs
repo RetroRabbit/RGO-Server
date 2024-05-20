@@ -15,9 +15,6 @@ public class EmployeeQualificationDto
     public string School { get; set; } = string.Empty;
 
     [Required]
-    public string Degree { get; set; } = string.Empty;
-
-    [Required]
     public string FieldOfStudy { get; set; } = string.Empty;
 
     [Required]
