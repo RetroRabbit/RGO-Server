@@ -18,6 +18,7 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
         LastUpdatedDate = DateTime.Now
     };
 
@@ -33,6 +34,7 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
         LastUpdatedDate = DateTime.Now
     };
 
@@ -48,6 +50,7 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
         LastUpdatedDate = DateTime.Now
     };
 
@@ -63,10 +66,17 @@ public class EmployeeDocumentTestData
         UploadDate = DateTime.Now,
         Reason = null,
         CounterSign = false,
+        DocumentType = DocumentType.StarterKit,
+    };
+    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto
+    {
+        Id = 1,
+        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        FileName = "TestFile.pdf",
+        FileCategory = FileCategory.FixedTerm,
+        Blob = "TestFileContent",
+        UploadDate = DateTime.Now,
+        Reference = null,
         LastUpdatedDate = DateTime.Now
     };
-    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto {
-           Id = 1, EmployeeId = EmployeeTestData.EmployeeDto.Id,
-           FileName = "TestFile.pdf", FileCategory = FileCategory.FixedTerm,
-           Blob = "TestFileContent", UploadDate = DateTime.Now};
 }

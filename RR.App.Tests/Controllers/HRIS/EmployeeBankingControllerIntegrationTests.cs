@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿/*using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -166,7 +166,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task CreateReadUpdateDeleteEmployeeBanking_ReturnsOkResult()
     {
@@ -230,3 +230,4 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }
+*/

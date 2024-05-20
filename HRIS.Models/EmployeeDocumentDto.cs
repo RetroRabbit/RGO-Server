@@ -9,10 +9,13 @@ public class EmployeeDocumentDto
     public string? Reference { get; set; }
     public string? FileName { get; set; }
     public FileCategory FileCategory { get; set; }
+    public EmployeeFileCategory EmployeeFileCategory { get; set; }
+    public AdminFileCategory AdminFileCategory { get; set; }
     public string? Blob { get; set; }
     public DocumentStatus? Status { get; set; }
     public DateTime UploadDate { get; set; }
     public string? Reason { get; set; }
     public bool CounterSign { get; set; }
+    public DocumentType? DocumentType { get; set; }
     public DateTime LastUpdatedDate { get; set; }
 }

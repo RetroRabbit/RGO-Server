@@ -6,5 +6,6 @@ public enum FieldCodeType
     String,
     Int,
     Float,
-    Options
+    Options,
+    Document
 }

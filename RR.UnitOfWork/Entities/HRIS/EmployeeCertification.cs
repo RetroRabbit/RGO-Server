@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using HRIS.Models;
-using HRIS.Models.Enums;
+﻿using HRIS.Models;
 using RR.UnitOfWork.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
@@ -13,60 +12,40 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
     {
     }
 
-    public EmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
+    public EmployeeCertification(EmployeeCertificationDto certificateDto)
     {
-        Id = employeeCertificationDto.Id;
-        EmployeeId = employeeCertificationDto.Employee!.Id;
-        EmployeeDocumentId = employeeCertificationDto.EmployeeDocument!.Id;
-        Title = employeeCertificationDto.Title;
-        Publisher = employeeCertificationDto.Publisher;
-        Status = employeeCertificationDto.Status;
-        AuditBy = employeeCertificationDto.AuditBy!.Id;
-        AuditDate = employeeCertificationDto.AuditDate;
-        AuditNote = employeeCertificationDto.AuditNote;
+        Id = certificateDto.Id;
+        EmployeeId = certificateDto.EmployeeId;
+        CertificateName = certificateDto.CertificateName;
+        CertificateDocument = certificateDto.CertificateDocument;
+        IssueOrganization = certificateDto.IssueOrganization;
+        IssueDate = certificateDto.IssueDate;
     }
 
-    [Column("employeeId")]
-    [ForeignKey("Employee")]
-    public int EmployeeId { get; set; }
+    [Key][Column("id")] public int Id { get; set; }
 
-    [Column("employeeDocumentId")]
-    [ForeignKey("EmployeeDocument")]
-    public int EmployeeDocumentId { get; set; }
+    [Column("employeeId")][ForeignKey("Employee")] public int EmployeeId { get; set; }
 
-    [Column("title")] public string? Title { get; set; }
+    [Column("certificateName")] public string CertificateName { get; set; }
 
-    [Column("publisher")] public string? Publisher { get; set; }
+    [Column("certificateDocument")] public string CertificateDocument { get; set; }
 
-    [Column("status")] public EmployeeCertificationStatus Status { get; set; }
+    [Column("issueOrganization")] public string IssueOrganization { get; set; }
 
-    [Column("auditBy")]
-    [ForeignKey("EmployeeAuditBy")]
-    public int? AuditBy { get; set; }
-
-    [Column("auditDate")] public DateTime? AuditDate { get; set; }
-
-    [Column("auditNote")] public string? AuditNote { get; set; }
+    [Column("issueDate")] public DateTime IssueDate { get; set; }
 
     public virtual Employee? Employee { get; set; }
-    public virtual Employee? EmployeeAuditBy { get; set; }
-    public virtual EmployeeDocument? EmployeeDocument { get; set; }
-
-    [Key] [Column("id")] public int Id { get; set; }
 
     public EmployeeCertificationDto ToDto()
     {
         return new EmployeeCertificationDto
         {
             Id = Id,
-            Employee = Employee?.ToDto(),
-            EmployeeDocument = EmployeeDocument?.ToDto(),
-            Title = Title,
-            Publisher = Publisher,
-            Status = Status,
-            AuditBy = EmployeeAuditBy?.ToDto(),
-            AuditDate = AuditDate,
-            AuditNote = AuditNote
+            EmployeeId = EmployeeId,
+            CertificateName = CertificateName,
+            CertificateDocument = CertificateDocument,
+            IssueDate = IssueDate,
+            IssueOrganization = IssueOrganization
         };
     }
 }
