@@ -35,6 +35,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
         var docType = DocumentType.StarterKit;
         var empFileCategory = employeeDocDto.EmployeeFileCategory;
+        var adminFileCategory = employeeDocDto.AdminFileCategory;
 
         switch (documentType)
         {
@@ -52,7 +53,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 break;
         }
 
-        if (docType == DocumentType.EmployeeDocuments)
+        if (docType != DocumentType.StarterKit)
             employeeDocDto.FileCategory = 0;
 
         var employeeDocument = new EmployeeDocumentDto
@@ -63,6 +64,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             FileName = employeeDocDto.FileName,
             FileCategory = employeeDocDto.FileCategory,
             EmployeeFileCategory = (EmployeeFileCategory)employeeDocDto.EmployeeFileCategory,
+            AdminFileCategory = (AdminFileCategory)employeeDocDto.AdminFileCategory,
             Blob = employeeDocDto.Blob,
             Status = status,
             UploadDate = DateTime.Now,
