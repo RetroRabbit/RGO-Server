@@ -303,6 +303,11 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("clientName");
+
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
@@ -311,21 +316,19 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("endDate");
 
-                    b.Property<string>("NameOfClient")
-                        .HasColumnType("text")
-                        .HasColumnName("nameOfClient");
-
                     b.Property<string>("ProjectName")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("projectName");
+
+                    b.Property<string>("ProjectURL")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("projectURL");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("startDate");
-
-                    b.Property<string>("UploadProjectUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("uploadProjectUrl");
 
                     b.HasKey("Id");
 

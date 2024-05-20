@@ -452,11 +452,11 @@ namespace RR.UnitOfWork.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nameOfClient = table.Column<string>(type: "text", nullable: true),
-                    projectName = table.Column<string>(type: "text", nullable: true),
+                    clientName = table.Column<string>(type: "text", nullable: false),
+                    projectName = table.Column<string>(type: "text", nullable: false),
                     startDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     endDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    uploadProjectUrl = table.Column<string>(type: "text", nullable: true),
+                    projectURL = table.Column<string>(type: "text", nullable: false),
                     employeeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
