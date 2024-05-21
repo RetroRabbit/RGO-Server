@@ -1,5 +1,4 @@
-﻿namespace HRIS.Models
-{
+﻿namespace HRIS.Models;
     public class ClientProjectsDto
     {
         public int Id { get; set; }
@@ -9,4 +8,3 @@
         public DateTime EndDate { get; set; }
         public string ProjectURL { get; set; }
     }
-}

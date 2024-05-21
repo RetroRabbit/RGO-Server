@@ -1,8 +1,8 @@
 ﻿using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
 
-namespace HRIS.Services.Interfaces
-{
+namespace HRIS.Services.Interfaces;
+
     /// <summary>
     /// Defines a set of methods for managing client projects.
     /// </summary>
@@ -51,4 +51,3 @@ namespace HRIS.Services.Interfaces
         /// </returns>
         Task<ClientProjectsDto> DeleteClientProject(int id);
     }
-}
