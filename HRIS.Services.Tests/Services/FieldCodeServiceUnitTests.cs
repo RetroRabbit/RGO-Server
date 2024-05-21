@@ -227,7 +227,7 @@ public class FieldCodeServiceUnitTests
     {
         _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        var invalid = 3;
+        var invalid = 4;
         await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.GetByCategory(invalid));
 
         invalid = -1;
