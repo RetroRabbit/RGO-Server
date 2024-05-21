@@ -53,6 +53,24 @@ public class EmployeeDocumentServiceUnitTest
         return documents;
     }
 
+    private void SetupMockRoles()
+    {
+        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
+        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+            .ReturnsAsync(EmployeeTestData.EmployeeDto);
+
+        _unitOfWorkMock
+            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
+
+        _unitOfWorkMock
+            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Returns(roles.AsQueryable().BuildMock());
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
+            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+    }
+
     [Fact]
     public async Task SaveEmployeeDocumentPass()
     {
@@ -81,22 +99,7 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-
-
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+        SetupMockRoles();
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1);
 
@@ -134,22 +137,7 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-
-
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+        SetupMockRoles();
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 0);
 
@@ -188,22 +176,7 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-
-
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+        SetupMockRoles();
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 3);
 
@@ -215,7 +188,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveAdministrativeDocumentPass()
+    public async Task SaveAdministrativeDocumentPass_ShouldReturnSavedDocument()
     {
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
@@ -242,22 +215,7 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-
-
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+        SetupMockRoles();
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 2);
 
@@ -296,22 +254,7 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-
-
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+        SetupMockRoles();
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 5);
 
@@ -349,22 +292,7 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-
-
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoEmployee) };
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+        SetupMockRoles();
 
         var result = await _employeeDocumentService.addNewAdditionalDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1);
 
@@ -423,21 +351,10 @@ public class EmployeeDocumentServiceUnitTest
                     new(EmployeeBankingTestData.EmployeeBankingDto)
                 }.AsQueryable().BuildMock());
 
-        List<Role> roles = new List<Role> { new Role(EmployeeRoleTestData.RoleDtoAdmin) };
-
-        _unitOfWorkMock
-            .Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-            .Returns(EmployeeRoleTestData.EmployeeRolesList.AsQueryable().BuildMock());
-
-        _unitOfWorkMock
-            .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-            .Returns(roles.AsQueryable().BuildMock());
-
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
-            .ReturnsAsync(EmployeeTestData.EmployeeDto);
+        SetupMockRoles();
 
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentActionRequired);
+           .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentActionRequired);
 
         var result = await _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1);
 
