@@ -51,6 +51,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             case 3:
                 docType = DocumentType.EmployeeDocuments;
                 break;
+            case 4:
+                docType = DocumentType.CustomDocuments;
+                break;
             default:
                 docType = DocumentType.StarterKit;
                 break;
