@@ -46,17 +46,13 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
         }
-
         try
         {
-            var employeeSalaries = await _db.EmployeeSalaryDetails
+            return await _db.EmployeeSalaryDetails
                                             .Get(employeeSalary => employeeSalary.EmployeeId == employeeId)
                                             .AsNoTracking()
-                                            .OrderBy(employeeSalary => employeeSalary.EmployeeId)
                                             .Select(employeeSalary => employeeSalary.ToDto())
-                                            .ToListAsync();
-
-            return employeeSalaries.FirstOrDefault();
+                                            .FirstOrDefaultAsync();
         }
         catch (Exception)
         {
