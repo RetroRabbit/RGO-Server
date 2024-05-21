@@ -26,17 +26,13 @@ public class EmployeeSalaryDetails : IModel<EmployeeSalaryDetailsDto>
     [Column("employeeId")]
     [ForeignKey("Employee")]
     public int EmployeeId { get; set; }
-
-    //public int Id { get; set; }
-    public EmployeeDto? Employee { get; set; }
+    public Employee? Employee { get; set; }
     [Column("salary")] public double? Salary { get; set; }
     [Column("minSalary")] public double? MinSalary { get; set; }
     [Column("maxSalary")] public double? MaxSalary { get; set; }
     [Column("remuneration")] public double? Remuneration { get; set; }
     [Column("band")] public EmployeeSalaryBand? Band { get; set; }
     [Column("contribution")] public string? Contribution { get; set; }
-
-    //public virtual Employee? Employee { get; set; }
 
     [Key][Column("id")] public int Id { get; set; }
 

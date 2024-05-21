@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-
-using HRIS.Models;
+﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
@@ -17,12 +10,10 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 {
     private readonly IUnitOfWork _db;
     private readonly IErrorLoggingService _errorLoggingService;
-    //private readonly IEmployeeService _employeeService;
 
-    public EmployeeSalaryDetailsService(IUnitOfWork db/*, IEmployeeService employeeService*/, IErrorLoggingService errorLoggingService)
+    public EmployeeSalaryDetailsService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
     {
         _db = db;
-        //_employeeService = employeeService;
         _errorLoggingService = errorLoggingService;
     }
 
@@ -37,15 +28,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
     {
         try
         {
-            var employeeSalaries = await _db.EmployeeSalaryDetails
-                                            .Get(employeeSalary => true)
-                                            .AsNoTracking()
-                                            //.Include(employeeSalary => employeeSalary.Employee)
-                                            .OrderBy(employeeSalary => employeeSalary.EmployeeId)
-                                            .Select(employeeSalary => employeeSalary.ToDto())
-                                            .ToListAsync();
-
-            return employeeSalaries;
+            return await _db.EmployeeSalaryDetails.GetAll();
         }
         catch (Exception)
         {
@@ -69,7 +52,6 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
             var employeeSalaries = await _db.EmployeeSalaryDetails
                                             .Get(employeeSalary => employeeSalary.EmployeeId == employeeId)
                                             .AsNoTracking()
-                                            //.Include(employeeSalary => employeeSalary.Employee)
                                             .OrderBy(employeeSalary => employeeSalary.EmployeeId)
                                             .Select(employeeSalary => employeeSalary.ToDto())
                                             .ToListAsync();
@@ -132,6 +114,6 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
             return false;
         }
         var exists = await _db.EmployeeAddress.GetById(employeeSalaryDetailsDto.Id);
-        return exists != null;
+        return exists == null;
     }
 }

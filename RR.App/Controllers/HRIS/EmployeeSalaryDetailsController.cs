@@ -1,10 +1,7 @@
 ﻿using HRIS.Models;
-using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -57,7 +54,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
             var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
             return Ok(employeeSalaries);
         }
-        catch (Exception)
+        catch (Exception x)
         {
             return StatusCode(500, "An error occurred while fetching employee salaries.");
         }

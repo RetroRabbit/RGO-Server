@@ -48,6 +48,7 @@ public class UnitOfWork : IUnitOfWork
         ErrorLogging = new ErrorLoggingRepository(_db);
         Candidate = new CandidateRepository(_db);
         WorkExperience = new WorkExperienceRepository(_db);
+        EmployeeSalaryDetails = new EmployeeSalaryDetailsRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
