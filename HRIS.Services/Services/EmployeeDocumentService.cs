@@ -43,7 +43,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 docType = DocumentType.StarterKit;
                 break;
             case 1:
-                docType = DocumentType.Additional;
+                docType = DocumentType.MyDocuments;
                 break;
             case 2:
                 docType = DocumentType.Administrative;
@@ -52,7 +52,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 docType = DocumentType.EmployeeDocuments;
                 break;
             case 4:
-                docType = DocumentType.CustomDocuments;
+                docType = DocumentType.AdditionalDocuments;
                 break;
             default:
                 docType = DocumentType.StarterKit;
