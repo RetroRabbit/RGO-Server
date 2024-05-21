@@ -11,6 +11,7 @@ using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
 using HRIS.Services.Services;
+using HRIS.Services.Middleware;
 
 namespace RR.App
 {
@@ -188,6 +189,8 @@ namespace RR.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
+
+            app.UseMiddleware<SecurityHeadersMiddleware>();
 
             app.UseHttpsRedirection();
 
