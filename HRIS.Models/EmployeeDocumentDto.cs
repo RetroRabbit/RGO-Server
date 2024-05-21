@@ -10,6 +10,7 @@ public class EmployeeDocumentDto
     public string? FileName { get; set; }
     public FileCategory FileCategory { get; set; }
     public EmployeeFileCategory EmployeeFileCategory { get; set; }
+    public AdminFileCategory AdminFileCategory { get; set; }
     public string? Blob { get; set; }
     public DocumentStatus? Status { get; set; }
     public DateTime UploadDate { get; set; }

@@ -10,5 +10,6 @@ public enum DocumentType
 {
     StarterKit,
     Additional,
+    Administrative,
     EmployeeDocuments
 }
