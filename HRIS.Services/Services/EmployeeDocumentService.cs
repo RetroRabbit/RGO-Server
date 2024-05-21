@@ -97,7 +97,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         bool sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
-        var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.Additional;
+        var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.MyDocuments;
 
         var employeeDocument = new EmployeeDocumentDto
         {
