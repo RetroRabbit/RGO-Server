@@ -20,6 +20,7 @@ public interface IDatabaseContext
     DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
     DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
     DbSet<EmployeeQualification> employeeQualifications { get; set; }
+    DbSet<EmployeeSalaryDetails> employeeSalaryDetails { get; set; }
     DbSet<Role> roles { get; set; }
     DbSet<RoleAccess> roleAccess { get; set; }
     DbSet<AuditLog> auditLogs { get; set; }
@@ -61,6 +62,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
     public DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
     public DbSet<EmployeeQualification> employeeQualifications { get; set; }
+    public DbSet<EmployeeSalaryDetails> employeeSalaryDetails { get; set; }
     public DbSet<Role> roles { get; set; }
     public DbSet<RoleAccess> roleAccess { get; set; }
     public DbSet<AuditLog> auditLogs { get; set; }
