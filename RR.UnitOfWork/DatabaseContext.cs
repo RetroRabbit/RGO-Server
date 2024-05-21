@@ -38,7 +38,6 @@ public interface IDatabaseContext
     DbSet<ErrorLogging> errorLogging { get; set; }
     DbSet<Candidate> candidate { get; set; }
     DbSet<WorkExperience> workExperience { get; set; }
-
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
