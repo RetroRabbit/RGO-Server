@@ -9,6 +9,7 @@ public class SimpleEmployeeDocumentDto
     public string FileName { get; set; }
     public FileCategory FileCategory { get; set; }
     public int EmployeeFileCategory { get; set; }
+    public int AdminFileCategory { get; set; }
     public string Blob { get; set; }
     public DateTime UploadDate { get; set; }
     public string? Reference { get; set; }

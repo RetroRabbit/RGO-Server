@@ -21,6 +21,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
         FileName = employeeDocumentsDto.FileName;
         FileCategory = employeeDocumentsDto.FileCategory;
         EmployeeFileCategory = employeeDocumentsDto.EmployeeFileCategory;
+        AdminFileCategory = employeeDocumentsDto.AdminFileCategory;
         Blob = employeeDocumentsDto.Blob;
         Status = employeeDocumentsDto.Status;
         UploadDate = employeeDocumentsDto.UploadDate;
@@ -41,6 +42,8 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
     [Column("fileCategory")] public FileCategory FileCategory { get; set; }
 
     [Column("employeeFileCategory")] public EmployeeFileCategory EmployeeFileCategory { get; set; }
+
+    [Column("adminFileCategory")] public AdminFileCategory AdminFileCategory { get; set; }
 
     [Column("blob")] public string? Blob { get; set; }
 
@@ -69,6 +72,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
                                        FileName = FileName,
                                        FileCategory = FileCategory,
                                        EmployeeFileCategory = EmployeeFileCategory,
+                                       AdminFileCategory = AdminFileCategory,
                                        Blob = Blob,
                                        Status = Status,
                                        UploadDate = UploadDate,
