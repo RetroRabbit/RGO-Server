@@ -46,6 +46,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 docType = DocumentType.Additional;
                 break;
             case 2:
+                docType = DocumentType.Administrative;
+                break;
+            case 3:
                 docType = DocumentType.EmployeeDocuments;
                 break;
             default:
