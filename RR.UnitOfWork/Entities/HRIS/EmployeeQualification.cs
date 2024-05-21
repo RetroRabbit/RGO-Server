@@ -12,7 +12,6 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     public EmployeeQualification()
     {
         School = string.Empty;
-        Degree = string.Empty;
         FieldOfStudy = string.Empty;
         Year = DateOnly.MinValue;
     }
@@ -37,9 +36,6 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
 
     [Column("school")]
     public string School { get; set; }
-
-    [Column("degree")]
-    public string Degree { get; set; }
 
     [Column("fieldOfStudy")]
     public string FieldOfStudy { get; set; }

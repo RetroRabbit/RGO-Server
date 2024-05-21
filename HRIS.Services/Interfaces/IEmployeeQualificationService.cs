@@ -31,7 +31,7 @@ public interface IEmployeeQualificationService
     /// </summary>
     /// <param name="employeeId">The ID of the employee for whom to retrieve all qualifications.</param>
     /// <returns>The requested employee qualification data transfer object.</returns>
-    Task<List<EmployeeQualificationDto>> GetAllEmployeeQualificationsByEmployeeId(int employeeId);
+    Task<EmployeeQualificationDto> GetAllEmployeeQualificationsByEmployeeId(int employeeId);
 
     /// <summary>
     /// Updates an existing employee qualification.
