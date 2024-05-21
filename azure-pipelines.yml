@@ -17,6 +17,14 @@ variables:
 
 # Build the app for .NET 7 framework
 steps:
+- task: DownloadSecureFile@1
+  inputs:
+      secureFile: 'client_secret.json'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: $(Agent.TempDirectory)
+    Contents: 'client_secret.json'
+    TargetFolder: $(Build.SourcesDirectory)
 - task: UseDotNet@2
   inputs:
     version: $(dotNetVersion)
