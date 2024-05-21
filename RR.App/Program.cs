@@ -27,7 +27,6 @@ namespace RR.App
             var queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
             var serviceBusClient = new ServiceBusClient(serviceBusConnectionString); 
 
-            //TODO: Bring back consumer once email service has been aquired and set up
             builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
