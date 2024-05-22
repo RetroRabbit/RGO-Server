@@ -35,6 +35,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
         var docType = DocumentType.StarterKit;
         var empFileCategory = employeeDocDto.EmployeeFileCategory;
+        var adminFileCategory = employeeDocDto.AdminFileCategory;
 
         switch (documentType)
         {
@@ -42,17 +43,23 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 docType = DocumentType.StarterKit;
                 break;
             case 1:
-                docType = DocumentType.Additional;
+                docType = DocumentType.MyDocuments;
                 break;
             case 2:
+                docType = DocumentType.Administrative;
+                break;
+            case 3:
                 docType = DocumentType.EmployeeDocuments;
+                break;
+            case 4:
+                docType = DocumentType.AdditionalDocuments;
                 break;
             default:
                 docType = DocumentType.StarterKit;
                 break;
         }
 
-        if (docType == DocumentType.EmployeeDocuments)
+        if (docType != DocumentType.StarterKit)
             employeeDocDto.FileCategory = 0;
 
         var employeeDocument = new EmployeeDocumentDto
@@ -63,6 +70,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             FileName = employeeDocDto.FileName,
             FileCategory = employeeDocDto.FileCategory,
             EmployeeFileCategory = (EmployeeFileCategory)employeeDocDto.EmployeeFileCategory,
+            AdminFileCategory = (AdminFileCategory)employeeDocDto.AdminFileCategory,
             Blob = employeeDocDto.Blob,
             Status = status,
             UploadDate = DateTime.Now,
@@ -89,7 +97,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         bool sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
-        var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.Additional;
+        var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.MyDocuments;
 
         var employeeDocument = new EmployeeDocumentDto
         {

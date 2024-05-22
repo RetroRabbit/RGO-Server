@@ -50,6 +50,7 @@ public class UnitOfWork : IUnitOfWork
         Candidate = new CandidateRepository(_db);
         ClientProject = new ClientProjectRepository(_db);
         WorkExperience = new WorkExperienceRepository(_db);
+        EmployeeSalaryDetails = new EmployeeSalaryDetailsRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -82,6 +83,7 @@ public class UnitOfWork : IUnitOfWork
     public IErrorLoggingRepository ErrorLogging { get; }
     public ICandidateRepository Candidate { get; }
     public IClientProjectRepository ClientProject { get; }
+    public IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     public IWorkExperienceRepository WorkExperience { get; }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
