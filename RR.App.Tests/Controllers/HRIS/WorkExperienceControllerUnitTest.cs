@@ -28,10 +28,10 @@ public class WorkExperienceControllerUnitTest
     WorkExperienceDto workExperience = new WorkExperienceDto
     {
         Id = 1,
-        Title = "Senior Developer",
-        EmploymentType = "Permanent",
-        CompanyName = "Retro Rabbit",
-        Location = "Pretoria",
+        ClientName = "Capitec",
+        ProjectName = "Project1",
+        SkillSet = new List<string> { "front-end", "back-end" },
+        Software = new List<string> { "c#", "java" },
         EmployeeId = 1,
         StartDate = new DateOnly(2022, 1, 1),
         EndDate = new DateOnly(2024, 1, 1),
