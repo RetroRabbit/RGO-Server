@@ -32,9 +32,9 @@ public class WorkExperience : IModel<WorkExperienceDto>
 
     [Column("software")] public List<string>? Software { get; set; }
 
-    [Column("startDate")] public DateOnly StartDate { get; set; }
+    [Column("startDate")] public DateTime StartDate { get; set; }
 
-    [Column("endDate")] public DateOnly EndDate { get; set; }
+    [Column("endDate")] public DateTime EndDate { get; set; }
 
     [ForeignKey("Employee")]
 

@@ -7,6 +7,6 @@ public class WorkExperienceDto
     public List<string>? SkillSet { get; set; }
     public List<string>? Software { get; set; }
     public int EmployeeId { get; set; }
-    public DateOnly StartDate { get; set; }
-    public DateOnly EndDate { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 }

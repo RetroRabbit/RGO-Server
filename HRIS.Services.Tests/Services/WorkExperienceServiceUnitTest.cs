@@ -32,8 +32,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         };
     }
 
@@ -51,8 +51,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         });
 
         Assert.False(exists);
@@ -72,8 +72,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         });
 
         Assert.True(exists);
@@ -95,8 +95,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         }));
     }
 
@@ -114,8 +114,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         });
 
         _mockDb.Verify(x => x.WorkExperience.Add(It.IsAny<WorkExperience>()), Times.Once);
@@ -150,8 +150,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         });
 
         _mockDb.Verify(x => x.WorkExperience.Update(It.IsAny<WorkExperience>()), Times.Once);
@@ -173,8 +173,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         }));
     }
 
@@ -200,8 +200,8 @@ public class WorkExperienceServiceUnitTest
             SkillSet = new List<string> { "front-end", "back-end" },
             Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2024, 1, 1),
+            StartDate = new DateTime(2022, 1, 1),
+            EndDate = new DateTime(2024, 1, 1),
         };
 
         _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))

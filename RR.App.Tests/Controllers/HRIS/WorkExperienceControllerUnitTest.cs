@@ -33,8 +33,8 @@ public class WorkExperienceControllerUnitTest
         SkillSet = new List<string> { "front-end", "back-end" },
         Software = new List<string> { "c#", "java" },
         EmployeeId = 1,
-        StartDate = new DateOnly(2022, 1, 1),
-        EndDate = new DateOnly(2024, 1, 1),
+        StartDate = new DateTime(2022, 1, 1),
+        EndDate = new DateTime(2024, 1, 1),
     };
 
     [Fact]
