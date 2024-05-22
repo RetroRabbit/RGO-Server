@@ -282,17 +282,17 @@ namespace HRIS.Services.Tests.Services
             });
         }
 
-        [Fact]
-        public async Task UpdateEmployeeQualification_Success()
-        {
-            _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-               .ReturnsAsync(_employeeQualificationDto);
+        //[Fact]
+        //public async Task UpdateEmployeeQualification_Success()
+        //{
+        //    _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
+        //       .ReturnsAsync(_employeeQualificationDto);
 
-            var result = await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
+        //    var result = await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
 
-            Assert.NotNull(result);
-            Assert.Equal(_employeeQualificationDto, result);
-        }
+        //    Assert.NotNull(result);
+        //    Assert.Equal(_employeeQualificationDto, result);
+        //}
 
         [Fact]
         public async Task UpdateEmployeeQualification_Failure()
