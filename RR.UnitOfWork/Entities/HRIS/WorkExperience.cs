@@ -13,10 +13,10 @@ public class WorkExperience : IModel<WorkExperienceDto>
     public WorkExperience(WorkExperienceDto workExperienceDto)
     {
         Id = workExperienceDto.Id;
-        Title = workExperienceDto.Title;
-        EmploymentType = workExperienceDto.EmploymentType;
-        CompanyName = workExperienceDto.CompanyName;
-        Location = workExperienceDto.Location;
+        ClientName = workExperienceDto.ClientName;
+        ProjectName = workExperienceDto.ProjectName;
+        SkillSet = workExperienceDto.SkillSet;
+        Software = workExperienceDto.Software;
         StartDate = workExperienceDto.StartDate;
         EndDate = workExperienceDto.EndDate;
         EmployeeId = workExperienceDto.EmployeeId;
@@ -24,13 +24,13 @@ public class WorkExperience : IModel<WorkExperienceDto>
 
     [Key][Column("id")] public int Id { get; set; }
 
-    [Column("title")] public string Title { get; set; }
+    [Column("clientName")] public string? ClientName { get; set; }
 
-    [Column("employmentType")] public string? EmploymentType { get; set; }
+    [Column("projectName")] public string? ProjectName { get; set; }
 
-    [Column("companyName")] public string? CompanyName { get; set; }
+    [Column("skillSet")] public List<string>? SkillSet { get; set; }
 
-    [Column("location")] public string? Location { get; set; }
+    [Column("software")] public List<string>? Software { get; set; }
 
     [Column("startDate")] public DateOnly StartDate { get; set; }
 
@@ -47,10 +47,10 @@ public class WorkExperience : IModel<WorkExperienceDto>
         return new WorkExperienceDto
         {
             Id = Id,
-            Title = Title,
-            EmploymentType = EmploymentType,
-            CompanyName = CompanyName,
-            Location = Location,
+            ClientName = ClientName,
+            ProjectName = ProjectName,
+            SkillSet = SkillSet,
+            Software = Software,
             EmployeeId = EmployeeId,
             StartDate = StartDate,
             EndDate = EndDate,
