@@ -27,10 +27,10 @@ public class WorkExperienceServiceUnitTest
         _workExperienceDto = new WorkExperienceDto
         {
             Id = 1,
-            Title = "Senior Developer",
-            EmploymentType = "Permanent",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
@@ -46,10 +46,10 @@ public class WorkExperienceServiceUnitTest
         var exists = await _workExperienceService.CheckIfExists(new WorkExperienceDto
         {
             Id = 2,
-            Title = "Senior Developer",
-            EmploymentType = "Permanent",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
@@ -67,10 +67,10 @@ public class WorkExperienceServiceUnitTest
         var exists = await _workExperienceService.CheckIfExists(new WorkExperienceDto
         {
             Id = 1,
-            Title = "Senior Developer",
-            EmploymentType = "Permanent",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
@@ -90,10 +90,10 @@ public class WorkExperienceServiceUnitTest
         await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Save(new WorkExperienceDto
         {
             Id = 1,
-            Title = "Senior Developer",
-            EmploymentType = "Permanent",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
@@ -109,10 +109,10 @@ public class WorkExperienceServiceUnitTest
         await _workExperienceService.Save(new WorkExperienceDto
         {
             Id = 1,
-            Title = "Senior Developer",
-            EmploymentType = "Permanent",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
@@ -145,10 +145,10 @@ public class WorkExperienceServiceUnitTest
         await _workExperienceService.Update(new WorkExperienceDto
         {
             Id = 1,
-            Title = "junior Developer",
-            EmploymentType = "temp",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
@@ -168,10 +168,10 @@ public class WorkExperienceServiceUnitTest
         await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Update(new WorkExperienceDto
         {
             Id = 1,
-            Title = "junior Developer",
-            EmploymentType = "temp",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
@@ -195,10 +195,10 @@ public class WorkExperienceServiceUnitTest
         var workExperience = new WorkExperienceDto
         {
             Id = 1,
-            Title = "junior Developer",
-            EmploymentType = "temp",
-            CompanyName = "Retro Rabbit",
-            Location = "Pretoria",
+            ClientName = "Capitec",
+            ProjectName = "Project1",
+            SkillSet = new List<string> { "front-end", "back-end" },
+            Software = new List<string> { "c#", "java" },
             EmployeeId = 1,
             StartDate = new DateOnly(2022, 1, 1),
             EndDate = new DateOnly(2024, 1, 1),
