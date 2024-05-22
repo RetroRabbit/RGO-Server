@@ -150,7 +150,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             EmployeeQualification employeeQualification = new EmployeeQualification(qualification);
             var updatedEmplyeeQualificationDto = await _db.EmployeeQualification.Update(employeeQualification);
 
-            return employeeQualificationDto;
+            return updatedEmplyeeQualificationDto;
         }
         catch (Exception ex)
         {
