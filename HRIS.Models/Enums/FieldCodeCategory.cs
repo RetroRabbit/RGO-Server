@@ -4,5 +4,6 @@ public enum FieldCodeCategory
 {
     Profile,
     Banking,
+    Career,
     Documents
 }
