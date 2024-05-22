@@ -43,13 +43,16 @@ public class EmployeeDocumentService : IEmployeeDocumentService
                 docType = DocumentType.StarterKit;
                 break;
             case 1:
-                docType = DocumentType.Additional;
+                docType = DocumentType.MyDocuments;
                 break;
             case 2:
                 docType = DocumentType.Administrative;
                 break;
             case 3:
                 docType = DocumentType.EmployeeDocuments;
+                break;
+            case 4:
+                docType = DocumentType.AdditionalDocuments;
                 break;
             default:
                 docType = DocumentType.StarterKit;
@@ -94,7 +97,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         bool sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
-        var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.Additional;
+        var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.MyDocuments;
 
         var employeeDocument = new EmployeeDocumentDto
         {
