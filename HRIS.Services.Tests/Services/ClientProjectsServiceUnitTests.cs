@@ -105,7 +105,7 @@ namespace HRIS.Services.Tests.Services;
             var result = await _clientProjectService.DeleteClientProject(1);
             Assert.NotNull(result);
             Assert.Equal(1, result.Id);
-            _dbMock.Verify(db => db.ClientProject.Delete( 1), Times.Once);
+            _dbMock.Verify(db => db.ClientProject.Delete(1), Times.Once);
         }
 
         [Fact]
