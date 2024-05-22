@@ -24,6 +24,7 @@ namespace HRIS.Services.Tests.Services;
           _clientProjectsDto = new ClientProjectsDto
           {
                 Id = 1,
+                EmployeeId = 1,
                 ClientName = "string",
                 ProjectName = "string",
                 EndDate = DateTime.Now,

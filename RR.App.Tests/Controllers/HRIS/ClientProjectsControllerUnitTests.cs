@@ -142,4 +142,3 @@ namespace HRIS.Tests.Controllers;
             Assert.IsType<NotFoundResult>(result);
         }
     }
-

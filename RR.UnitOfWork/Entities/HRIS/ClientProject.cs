@@ -15,6 +15,7 @@ namespace RR.UnitOfWork.Entities.HRIS
         public ClientProject(ClientProjectsDto dto)
         {
             Id = dto.Id;
+            EmployeeId = dto.EmployeeId;
             ClientName = dto.ClientName;
             ProjectName = dto.ProjectName;
             StartDate = dto.StartDate;
@@ -45,13 +46,14 @@ namespace RR.UnitOfWork.Entities.HRIS
         public int EmployeeId { get; set; }
 
         [ForeignKey("EmployeeId")]
-        public Employee Employee { get; set; }
+        public virtual Employee? Employee { get; set; }
 
         public ClientProjectsDto ToDto()
         {
             return new ClientProjectsDto
             {
                 Id = Id,
+                EmployeeId = EmployeeId,
                 ClientName = ClientName,
                 ProjectName = ProjectName,
                 StartDate = StartDate,
