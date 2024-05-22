@@ -12,4 +12,5 @@ public class EmployeeSalaryDetailsDto
     public double? Remuneration { get; set; }
     public EmployeeSalaryBand? Band { get; set; }
     public string? Contribution { get; set; }
+    public DateTime? SalaryUpdateDate { get; set; }
 }
