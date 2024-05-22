@@ -22,4 +22,10 @@ public class EmployeeQualificationDto
 
     [Required]
     public DateOnly Year { get; set; } = DateOnly.MinValue;
+
+    [Required]
+    public string ProofOfQualification { get; set; }
+
+    [Required]
+    public string DocumentName { get; set; }
 }

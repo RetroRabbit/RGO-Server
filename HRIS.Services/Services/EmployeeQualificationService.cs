@@ -37,7 +37,9 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                 School = employeeQualificationDto.School,
                 FieldOfStudy = employeeQualificationDto.FieldOfStudy,
                 NQFLevel = employeeQualificationDto.NQFLevel,
-                Year = employeeQualificationDto.Year
+                Year = employeeQualificationDto.Year,
+                ProofOfQualification = employeeQualificationDto.ProofOfQualification,
+                DocumentName = employeeQualificationDto.DocumentName,
             };
             var addedQualification = await _db.EmployeeQualification.Add(newQualification);
 
@@ -84,7 +86,9 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                     School = q.School,
                     FieldOfStudy = q.FieldOfStudy,
                     NQFLevel = q.NQFLevel,
-                    Year = q.Year
+                    Year = q.Year,
+                    ProofOfQualification = q.ProofOfQualification,
+                    DocumentName = q.DocumentName
                 }).FirstOrDefaultAsync();
 
             return qualifications;
@@ -109,7 +113,9 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                     School = q.School,
                     FieldOfStudy = q.FieldOfStudy,
                     NQFLevel = q.NQFLevel,
-                    Year = q.Year
+                    Year = q.Year,
+                    ProofOfQualification= q.ProofOfQualification,
+                    DocumentName = q.DocumentName
                 })
                 .LastOrDefaultAsync();
 
@@ -146,6 +152,8 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             qualification.FieldOfStudy = employeeQualificationDto.FieldOfStudy;
             qualification.NQFLevel = employeeQualificationDto.NQFLevel;
             qualification.Year = employeeQualificationDto.Year;
+            qualification.ProofOfQualification = employeeQualificationDto.ProofOfQualification;
+            qualification.DocumentName = employeeQualificationDto.DocumentName;
 
             EmployeeQualification employeeQualification = new EmployeeQualification(qualification);
             var updatedEmplyeeQualificationDto = await _db.EmployeeQualification.Update(employeeQualification);

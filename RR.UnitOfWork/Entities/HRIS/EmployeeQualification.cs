@@ -25,6 +25,8 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
         FieldOfStudy = employeeQualificationDto.FieldOfStudy;
         NQFLevel = employeeQualificationDto.NQFLevel;
         Year = employeeQualificationDto.Year;
+        ProofOfQualification = employeeQualificationDto.ProofOfQualification;
+        DocumentName = employeeQualificationDto.DocumentName;
     }
 
     [Column("employeeId")]
@@ -46,6 +48,12 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     [Column("year")]
     public DateOnly Year { get; set; }
 
+    [Column("proofOfQualification")]
+    public string ProofOfQualification { get; set; }
+
+    [Column("documentName")]
+    public string DocumentName { get; set; }
+
     public virtual Employee Employee { get; set; }
 
     [Key]
@@ -62,7 +70,9 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
             School = School,
             FieldOfStudy = FieldOfStudy,
             NQFLevel = NQFLevel,
-            Year = Year
+            Year = Year,
+            ProofOfQualification = ProofOfQualification,
+            DocumentName = DocumentName,
         };
     }
 }
