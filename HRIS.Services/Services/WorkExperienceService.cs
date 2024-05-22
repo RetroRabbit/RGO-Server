@@ -46,10 +46,10 @@ public class WorkExperienceService : IWorkExperienceService
         var workExperienceToUpdate = new WorkExperienceDto
         {
             Id = workExperience.Id,
-            Title = workExperience.Title,
-            EmploymentType = workExperience.EmploymentType,
-            CompanyName = workExperience.CompanyName,
-            Location = workExperience.Location,
+            ClientName = workExperience.ClientName,
+            ProjectName = workExperience.ProjectName,
+            SkillSet = workExperience.SkillSet,
+            Software = workExperience.Software,
             EmployeeId = workExperience.EmployeeId,
             StartDate = workExperience.StartDate,
             EndDate = workExperience.EndDate,
