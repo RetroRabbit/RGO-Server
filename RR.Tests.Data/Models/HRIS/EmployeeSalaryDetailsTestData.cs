@@ -14,7 +14,8 @@ public class EmployeeSalaryDetailsTestData
         MaxSalary = 20000,
         Remuneration = 15000,
         Band = EmployeeSalaryBand.Level1,
-        Contribution = null
+        Contribution = null,
+        SalaryUpdateDate = DateTime.Now
     };
 
     public static EmployeeSalaryDetailsDto EmployeeSalaryTest2 = new EmployeeSalaryDetailsDto
@@ -26,6 +27,7 @@ public class EmployeeSalaryDetailsTestData
         MaxSalary = 40000,
         Remuneration = 25000,
         Band = EmployeeSalaryBand.Level3,
-        Contribution = null
+        Contribution = null,
+        SalaryUpdateDate = DateTime.Now
     };
 }
