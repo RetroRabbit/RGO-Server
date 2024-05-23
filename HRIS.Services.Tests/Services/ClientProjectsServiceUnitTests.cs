@@ -38,6 +38,7 @@ namespace HRIS.Services.Tests.Services;
         {
             var clientProject = new List<ClientProjectsDto> { _clientProjectsDto };
             _dbMock.Setup(ex => ex.ClientProject.GetAll(null)).ReturnsAsync(clientProject);
+
             var result = await _clientProjectService.GetAllClientProject();
 
             Assert.NotNull(result);
