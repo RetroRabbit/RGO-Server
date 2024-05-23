@@ -160,7 +160,7 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task UpdateEmployeeDocumentReturnsOkResult()
     {
-        _employeeMockDocumentService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>()))
+        _employeeMockDocumentService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>(), ""))
             .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
         var result = await _controller.Update(EmployeeDocumentTestData.EmployeeDocumentPending);
@@ -172,19 +172,32 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task UpdateEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
     {
-        var errorMessage = "An error occurred while updating the employee document.";
 
-        _employeeMockDocumentService
-            .Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>()))
-            .ThrowsAsync(new Exception(errorMessage));
+        EmployeeDocumentDto broken = new EmployeeDocumentDto
+        {
+            Id = 1,
+            DocumentType = DocumentType.StarterKit,
+            LastUpdatedDate = DateTime.UtcNow,
+            UploadDate = DateTime.UtcNow,
+            AdminFileCategory = 0,
+            CounterSign = false,
+            EmployeeFileCategory = 0,
+            FileName = "Test",
+            EmployeeId = 0,
+            Blob = null,
+            FileCategory = 0,
+            Reason = "",
+            Reference = "",
+            Status = DocumentStatus.Approved
+        };
 
-        var result = await _controller.Update(EmployeeDocumentTestData.EmployeeDocumentPending);
-        var notFoundResult = Assert.IsType<ObjectResult>(result);
-        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+        _employeeMockDocumentService.Setup(service => service.UpdateEmployeeDocument(broken, It.IsAny<string>()))
+                             .ThrowsAsync(new Exception("Employee exists"));
+        var result = await _controller.Update(broken);
 
-        Assert.Equal(errorMessage, actualErrorMessage);
-        Assert.Equal(500, notFoundResult.StatusCode);
-
+        var problemDetails = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, problemDetails.StatusCode);
+        Assert.Equal("An error occurred while updating the employee document.", problemDetails.Value);
     }
 
     [Fact]
