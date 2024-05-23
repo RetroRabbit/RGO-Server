@@ -104,23 +104,20 @@ public class EmployeeQualificationControllerUnitTests
         Assert.Equal(exceptionMessage, statusCodeResult.Value);
     }
 
-    //[Fact]
-    //public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
-    //{
-    //    var listOfEmployeeQualificationDto = new List<EmployeeQualificationDto>()
-    //        {
-    //            EmployeeQualificationTestData.EmployeeQualification
-    //        };
+    [Fact]
+    public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
+    {
+        var expectedQualificationDto = EmployeeQualificationTestData.EmployeeQualification;
 
-    //    _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id))
-    //        .ReturnsAsync(listOfEmployeeQualificationDto);
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id))
+            .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
 
-    //    var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id);
+        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id);
 
-    //    var okResult = Assert.IsType<OkObjectResult>(result.Result);
-    //    var returnValue = Assert.IsType<List<EmployeeQualificationDto>>(okResult.Value);
-    //    Assert.Equal(listOfEmployeeQualificationDto, returnValue);
-    //}
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
+        Assert.Equal(expectedQualificationDto, returnValue);
+    }
 
     [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsNotFoundWhenQualificationsNotFound()

@@ -291,7 +291,6 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.Update(It.IsAny<EmployeeQualification>()))
                 .ReturnsAsync(_employeeQualificationDto);
                 
-
             var result = await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
 
             Assert.NotNull(result);
