@@ -28,7 +28,8 @@ public class EmployeeCertificationUnitTests
             IssueDate = DateTime.Now,
             IssueOrganization= "String",
             CertificateDocument = "as",
-            CertificateName = "Name"
+            CertificateName = "Name",
+            DocumentName = "hello"
         };
 
     }
@@ -43,6 +44,7 @@ public class EmployeeCertificationUnitTests
             IssueOrganization = "From",
             CertificateDocument = "base64",
             CertificateName = "Name",
+            DocumentName = "hello"
         };
         var employeeCertification = new EmployeeCertification(certificateDto);
 
