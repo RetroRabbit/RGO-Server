@@ -35,16 +35,17 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                 EmployeeId = id,
                 HighestQualification = employeeQualificationDto.HighestQualification,
                 School = employeeQualificationDto.School,
-                Degree = employeeQualificationDto.Degree,
                 FieldOfStudy = employeeQualificationDto.FieldOfStudy,
                 NQFLevel = employeeQualificationDto.NQFLevel,
-                Year = employeeQualificationDto.Year
+                Year = employeeQualificationDto.Year,
+                ProofOfQualification = employeeQualificationDto.ProofOfQualification,
+                DocumentName = employeeQualificationDto.DocumentName,
             };
             var addedQualification = await _db.EmployeeQualification.Add(newQualification);
 
             employeeQualificationDto.Id = addedQualification.Id;
 
-            return employeeQualificationDto;
+            return addedQualification;
         }
         catch (Exception ex)
         {
@@ -64,7 +65,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
         }
     }
 
-    public async Task<List<EmployeeQualificationDto>> GetAllEmployeeQualificationsByEmployeeId(int employeeId)
+    public async Task<EmployeeQualificationDto> GetAllEmployeeQualificationsByEmployeeId(int employeeId)
     {
         try
         {
@@ -83,12 +84,12 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                     EmployeeId = q.EmployeeId,
                     HighestQualification = q.HighestQualification,
                     School = q.School,
-                    Degree = q.Degree,
                     FieldOfStudy = q.FieldOfStudy,
                     NQFLevel = q.NQFLevel,
-                    Year = q.Year
-                })
-                .ToListAsync();
+                    Year = q.Year,
+                    ProofOfQualification = q.ProofOfQualification,
+                    DocumentName = q.DocumentName
+                }).FirstOrDefaultAsync();
 
             return qualifications;
         }
@@ -110,12 +111,13 @@ public class EmployeeQualificationService : IEmployeeQualificationService
                     EmployeeId = q.EmployeeId,
                     HighestQualification = q.HighestQualification,
                     School = q.School,
-                    Degree = q.Degree,
                     FieldOfStudy = q.FieldOfStudy,
                     NQFLevel = q.NQFLevel,
-                    Year = q.Year
+                    Year = q.Year,
+                    ProofOfQualification= q.ProofOfQualification,
+                    DocumentName = q.DocumentName
                 })
-                .FirstOrDefaultAsync();
+                .LastOrDefaultAsync();
 
             if (qualification == null)
             {
@@ -147,12 +149,16 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             qualification.EmployeeId = employeeQualificationDto.EmployeeId;
             qualification.HighestQualification = employeeQualificationDto.HighestQualification;
             qualification.School = employeeQualificationDto.School;
-            qualification.Degree = employeeQualificationDto.Degree;
             qualification.FieldOfStudy = employeeQualificationDto.FieldOfStudy;
             qualification.NQFLevel = employeeQualificationDto.NQFLevel;
             qualification.Year = employeeQualificationDto.Year;
+            qualification.ProofOfQualification = employeeQualificationDto.ProofOfQualification;
+            qualification.DocumentName = employeeQualificationDto.DocumentName;
 
-            return employeeQualificationDto;
+            EmployeeQualification employeeQualification = new EmployeeQualification(qualification);
+            var updatedEmplyeeQualificationDto = await _db.EmployeeQualification.Update(employeeQualification);
+
+            return updatedEmplyeeQualificationDto;
         }
         catch (Exception ex)
         {

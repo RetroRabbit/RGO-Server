@@ -107,19 +107,16 @@ public class EmployeeQualificationControllerUnitTests
     [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
     {
-        var listOfEmployeeQualificationDto = new List<EmployeeQualificationDto>()
-            {
-                EmployeeQualificationTestData.EmployeeQualification
-            };
+        var expectedQualificationDto = EmployeeQualificationTestData.EmployeeQualification;
 
         _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id))
-            .ReturnsAsync(listOfEmployeeQualificationDto);
+            .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
 
         var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returnValue = Assert.IsType<List<EmployeeQualificationDto>>(okResult.Value);
-        Assert.Equal(listOfEmployeeQualificationDto, returnValue);
+        var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
+        Assert.Equal(expectedQualificationDto, returnValue);
     }
 
     [Fact]

@@ -20,6 +20,7 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
         CertificateDocument = certificateDto.CertificateDocument;
         IssueOrganization = certificateDto.IssueOrganization;
         IssueDate = certificateDto.IssueDate;
+        DocumentName = certificateDto.DocumentName;
     }
 
     [Key][Column("id")] public int Id { get; set; }
@@ -34,6 +35,8 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
 
     [Column("issueDate")] public DateTime IssueDate { get; set; }
 
+    [Column("documentName")] public string DocumentName { get; set; }
+
     public virtual Employee? Employee { get; set; }
 
     public EmployeeCertificationDto ToDto()
@@ -45,7 +48,8 @@ public class EmployeeCertification : IModel<EmployeeCertificationDto>
             CertificateName = CertificateName,
             CertificateDocument = CertificateDocument,
             IssueDate = IssueDate,
-            IssueOrganization = IssueOrganization
+            IssueOrganization = IssueOrganization,
+            DocumentName = DocumentName
         };
     }
 }
