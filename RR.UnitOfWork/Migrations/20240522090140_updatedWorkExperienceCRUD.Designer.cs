@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240522090140_updatedWorkExperienceCRUD")]
+    partial class updatedWorkExperienceCRUD
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -965,10 +968,10 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DocumentName")
+                    b.Property<string>("Degree")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("documentName");
+                        .HasColumnName("degree");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
@@ -986,11 +989,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<int>("NQFLevel")
                         .HasColumnType("integer")
                         .HasColumnName("nqfLevel");
-
-                    b.Property<string>("ProofOfQualification")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("proofOfQualification");
 
                     b.Property<string>("School")
                         .IsRequired()
@@ -1070,10 +1068,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<double?>("Salary")
                         .HasColumnType("double precision")
                         .HasColumnName("salary");
-
-                    b.Property<DateTime?>("SalaryUpdateDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("salaryUpdateDate");
 
                     b.HasKey("Id");
 

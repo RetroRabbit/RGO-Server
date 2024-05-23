@@ -9,7 +9,8 @@ namespace HRIS.Models.Enums;
 public enum DocumentType
 {
     StarterKit,
-    Additional,
+    MyDocuments,
     Administrative,
-    EmployeeDocuments
+    EmployeeDocuments,
+    AdditionalDocuments
 }
