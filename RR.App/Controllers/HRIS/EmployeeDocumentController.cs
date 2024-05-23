@@ -69,7 +69,8 @@ public class EmployeeDocumentController : ControllerBase
     {
         try
         {
-            var updatedEmployeeDocument = await _employeeDocumentService.UpdateEmployeeDocument(employeeDocumentDto);
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var updatedEmployeeDocument = await _employeeDocumentService.UpdateEmployeeDocument(employeeDocumentDto, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
             return Ok(updatedEmployeeDocument);
         }
         catch (Exception)
