@@ -34,8 +34,6 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
         var docType = DocumentType.StarterKit;
-        var empFileCategory = employeeDocDto.EmployeeFileCategory;
-        var adminFileCategory = employeeDocDto.AdminFileCategory;
 
         switch (documentType)
         {
@@ -74,14 +72,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             Blob = employeeDocDto.Blob,
             Status = status,
             UploadDate = DateTime.Now,
-            CounterSign = false, 
+            CounterSign = false,
             DocumentType = docType,
         };
 
-        var convertedDoc = new EmployeeDocument(employeeDocument);
-        var newEmployeeDocument = await _db.EmployeeDocument.Add(convertedDoc);
-
-        return newEmployeeDocument;
+        return await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
     }
 
     public async Task<EmployeeDocumentDto> addNewAdditionalDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
@@ -170,7 +165,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         return employeeDocuments;
     }
 
-    public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto)
+    public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto, string email)
     {
         var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
@@ -180,7 +175,20 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             throw _errorLoggingService.LogException(exception);
         }
 
+        string employeeEmail = await _db.Employee
+            .Get(employee => employee.Id == employeeDocumentDto.EmployeeId)
+            .AsNoTracking()
+            .Select(employee => employee.Email)
+            .FirstAsync();
+
+        bool sameEmail = email.Equals(employeeEmail);
+        var isAdmin = await IsAdmin(email);
+        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
+
+        employeeDocumentDto.Status = status;
+
         EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
+
         var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
 
         return updatedEmployeeDocument;
