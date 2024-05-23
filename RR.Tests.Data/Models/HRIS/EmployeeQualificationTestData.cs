@@ -16,10 +16,11 @@ namespace RR.Tests.Data.Models.HRIS
             EmployeeId = 1,
             HighestQualification = HighestQualification.Bachelor,
             School = "University of Africa",
-            Degree = "Bachelor of Science",
             FieldOfStudy = "Computer Science",
             NQFLevel = NQFLevel.Level7,
-            Year = new DateOnly(2020, 1, 1)
+            Year = new DateOnly(2020, 1, 1),
+            ProofOfQualification = "qualification",
+            DocumentName = "DocName"
         };
     }
 }
