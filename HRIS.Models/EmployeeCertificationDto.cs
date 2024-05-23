@@ -8,4 +8,5 @@ public class EmployeeCertificationDto
     public string IssueOrganization { get; set; }
     public DateTime IssueDate { get; set; }
     public string CertificateDocument { get; set; }
+    public string DocumentName {  get; set; }   
 }
