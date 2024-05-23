@@ -21,6 +21,7 @@ public class EmployeeSalaryDetails : IModel<EmployeeSalaryDetailsDto>
         Remuneration = employeeSalaryDetailsDto.Remuneration;
         Band = employeeSalaryDetailsDto.Band;
         Contribution = employeeSalaryDetailsDto.Contribution;
+        SalaryUpdateDate = employeeSalaryDetailsDto.SalaryUpdateDate;
     }
 
     [Column("employeeId")]
@@ -33,6 +34,7 @@ public class EmployeeSalaryDetails : IModel<EmployeeSalaryDetailsDto>
     [Column("remuneration")] public double? Remuneration { get; set; }
     [Column("band")] public EmployeeSalaryBand? Band { get; set; }
     [Column("contribution")] public string? Contribution { get; set; }
+    [Column("salaryUpdateDate")] public DateTime? SalaryUpdateDate { get; set; }
 
     [Key][Column("id")] public int Id { get; set; }
 
@@ -47,7 +49,8 @@ public class EmployeeSalaryDetails : IModel<EmployeeSalaryDetailsDto>
             MaxSalary = MaxSalary,
             Remuneration = Remuneration,
             Band = Band,
-            Contribution = Contribution
+            Contribution = Contribution,
+            SalaryUpdateDate = SalaryUpdateDate
         };
     }
 }

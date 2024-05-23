@@ -2,11 +2,11 @@
 public class WorkExperienceDto
 {
     public int Id { get; set; }
-    public string Title { get; set; }
-    public string? EmploymentType { get; set; }
-    public string? CompanyName { get; set; }
-    public string? Location { get; set; }
+    public string? ClientName { get; set; }
+    public string? ProjectName { get; set; }
+    public List<string>? SkillSet { get; set; }
+    public List<string>? Software { get; set; }
     public int EmployeeId { get; set; }
-    public DateOnly StartDate { get; set; }
-    public DateOnly EndDate { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 }

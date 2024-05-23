@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240522112841_addDateToSalaryDetails")]
+    partial class addDateToSalaryDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1321,33 +1324,34 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClientName")
+                    b.Property<string>("CompanyName")
                         .HasColumnType("text")
-                        .HasColumnName("clientName");
+                        .HasColumnName("companyName");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
 
+                    b.Property<string>("EmploymentType")
+                        .HasColumnType("text")
+                        .HasColumnName("employmentType");
+
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("endDate");
 
-                    b.Property<string>("ProjectName")
+                    b.Property<string>("Location")
                         .HasColumnType("text")
-                        .HasColumnName("projectName");
-
-                    b.Property<List<string>>("SkillSet")
-                        .HasColumnType("text[]")
-                        .HasColumnName("skillSet");
-
-                    b.Property<List<string>>("Software")
-                        .HasColumnType("text[]")
-                        .HasColumnName("software");
+                        .HasColumnName("location");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("startDate");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.HasKey("Id");
 
