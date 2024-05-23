@@ -18,7 +18,9 @@ namespace RR.Tests.Data.Models.HRIS
             School = "University of Africa",
             FieldOfStudy = "Computer Science",
             NQFLevel = NQFLevel.Level7,
-            Year = new DateOnly(2020, 1, 1)
+            Year = new DateOnly(2020, 1, 1),
+            ProofOfQualification = "qualification",
+            DocumentName = "DocName"
         };
     }
 }

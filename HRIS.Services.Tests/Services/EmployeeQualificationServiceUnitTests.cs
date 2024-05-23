@@ -47,7 +47,9 @@ namespace HRIS.Services.Tests.Services
                 School = "Example School",
                 FieldOfStudy = "Example Field",
                 NQFLevel = NQFLevel.Level7,
-                Year = new DateOnly(2018, 4, 6)
+                Year = new DateOnly(2018, 4, 6),
+                ProofOfQualification = "qualification",
+                DocumentName = "DocumentName"
             };
 
             _employeeQualification = new EmployeeQualification
@@ -161,27 +163,25 @@ namespace HRIS.Services.Tests.Services
             });
         }
 
-        //[Fact]
-        //public async Task GetAllEmployeeQualificationsByEmployeeId_Success_WithValidEmployeeId_ReturnsQualifications()
-        //{
-        //    SetupEmployeeExists();
+        [Fact]
+        public async Task GetAllEmployeeQualificationsByEmployeeId_Success_WithValidEmployeeId_ReturnsQualifications()
+        {
+            SetupEmployeeExists();
 
-        //    var mockQualifications = new List<EmployeeQualification>
-        //    {
-        //        new EmployeeQualification { EmployeeId = _employeeId, HighestQualification = HighestQualification.Bachelor },
-        //        new EmployeeQualification { EmployeeId = _employeeId, HighestQualification = HighestQualification.Master }
-        //    }.AsQueryable().BuildMock();
+            var mockQualifications = new List<EmployeeQualification>
+            {
+                new EmployeeQualification { EmployeeId = _employeeId, HighestQualification = HighestQualification.Bachelor },
+                new EmployeeQualification { EmployeeId = _employeeId, HighestQualification = HighestQualification.Master }
+            }.AsQueryable().BuildMock();
 
-        //    _unitOfWorkMock.Setup(u => u.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-        //                   .Returns(mockQualifications);
+            _unitOfWorkMock.Setup(u => u.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
+                           .Returns(mockQualifications);
 
-        //    var result = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
+            var result = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
 
-        //    Assert.NotNull(result);
-        //    Assert.Equal(2, result.Count);
-        //    Assert.Equal(HighestQualification.Bachelor, result[0].HighestQualification);
-        //    Assert.Equal(HighestQualification.Master, result[1].HighestQualification);
-        //}
+            Assert.NotNull(result);
+            Assert.Equal(HighestQualification.Bachelor, result.HighestQualification);
+        }
 
         [Fact]
         public async Task GetAllEmployeeQualificationsByEmployeeId_Failure_WithInvalidEmployeeId_ThrowsInvalidOperationException()
@@ -282,17 +282,21 @@ namespace HRIS.Services.Tests.Services
             });
         }
 
-        //[Fact]
-        //public async Task UpdateEmployeeQualification_Success()
-        //{
-        //    _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-        //       .ReturnsAsync(_employeeQualificationDto);
+        [Fact]
+        public async Task UpdateEmployeeQualification_Success()
+        {
+            _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
+               .ReturnsAsync(_employeeQualificationDto);
 
-        //    var result = await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
+            _unitOfWorkMock.Setup(x => x.EmployeeQualification.Update(It.IsAny<EmployeeQualification>()))
+                .ReturnsAsync(_employeeQualificationDto);
+                
 
-        //    Assert.NotNull(result);
-        //    Assert.Equal(_employeeQualificationDto, result);
-        //}
+            var result = await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
+
+            Assert.NotNull(result);
+            Assert.Equal(_employeeQualificationDto, result);
+        }
 
         [Fact]
         public async Task UpdateEmployeeQualification_Failure()
