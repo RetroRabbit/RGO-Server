@@ -44,7 +44,7 @@ namespace RR.App.Controllers.HRIS
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostClientProject(ClientProjectsDto clientProjectsDto)
+        public async Task<IActionResult> SaveClientProject(ClientProjectsDto clientProjectsDto)
         {
             var createdClientProject = await _clientProjectService.CreateClientProject(clientProjectsDto);
 
@@ -56,7 +56,7 @@ namespace RR.App.Controllers.HRIS
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutClientProject(int id, ClientProjectsDto clientProjectsDto)
+        public async Task<IActionResult> UpdateClientProject(int id, ClientProjectsDto clientProjectsDto)
         {
             if (id != clientProjectsDto.Id)
             {

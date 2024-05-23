@@ -54,11 +54,7 @@ namespace HRIS.Services.Tests.Services;
         [Fact]
         public async Task GetClientProject_ReturnsCorrectProject()
         {
-            var clientProjectsDto = new ClientProjectsDto
-            {
-                Id = 1
-            };
-            _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(clientProjectsDto);
+            _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProjectsDto);
             var result = await _clientProjectService.GetClientProject(1);
             Assert.NotNull(result);
             Assert.Equal(1, result.Id);
@@ -66,18 +62,17 @@ namespace HRIS.Services.Tests.Services;
 
         [Fact]
         public async Task UpdateClientProject_SuccessfullyUpdatesProject()
-        {
-            var clientProjectsDto = new ClientProjectsDto { };
-            var clientProject = new ClientProject(clientProjectsDto);
+        {  
+            var clientProject = new ClientProject(_clientProjectsDto);
 
             _dbMock.Setup(x => x.ClientProject.Update(It.IsAny<ClientProject>()))
-                   .ReturnsAsync(clientProjectsDto);
+                   .ReturnsAsync(_clientProjectsDto);
 
-            var result = await _clientProjectService.UpdateClientProject(clientProjectsDto);
+            var result = await _clientProjectService.UpdateClientProject(_clientProjectsDto);
 
             Assert.NotNull(result);
-            Assert.Equal(clientProjectsDto.Id, result.Id);
-            Assert.Equal(clientProjectsDto.ProjectName, result.ProjectName);
+            Assert.Equal(_clientProjectsDto.Id, result.Id);
+            Assert.Equal(_clientProjectsDto.ProjectName, result.ProjectName);
             _dbMock.Verify(x => x.ClientProject.Update(It.IsAny<ClientProject>()), Times.Once);
         }
 
@@ -98,9 +93,7 @@ namespace HRIS.Services.Tests.Services;
         [Fact]
         public async Task DeleteClientProject_SuccessfullyDeletesProject()
         {
-            var deletedClientProject = new ClientProjectsDto { Id = 1};
-
-            _dbMock.Setup(db => db.ClientProject.Delete(1)).ReturnsAsync(deletedClientProject);
+            _dbMock.Setup(db => db.ClientProject.Delete(1)).ReturnsAsync(_clientProjectsDto);
 
             var result = await _clientProjectService.DeleteClientProject(1);
             Assert.NotNull(result);
@@ -123,7 +116,6 @@ namespace HRIS.Services.Tests.Services;
         [Fact]
         public async Task CreateClientProject_AddsProjectSuccessfully_WhenNoExistingProject()
         {
-            var clientProject = new ClientProject { };
             var emptyProjects = new List<ClientProjectsDto>();
             _dbMock.Setup(ex => ex.ClientProject.GetAll(null)).ReturnsAsync(emptyProjects);
             _dbMock.Setup(ex => ex.ClientProject.Add(It.IsAny<ClientProject>()))

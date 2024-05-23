@@ -13,8 +13,8 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240521133650_clientproject")]
-    partial class clientproject
+    [Migration("20240523095119_ClientProjects")]
+    partial class ClientProjects
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -743,6 +743,10 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AdminFileCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("adminFileCategory");
+
                     b.Property<string>("Blob")
                         .HasColumnType("text")
                         .HasColumnName("blob");
@@ -1069,6 +1073,50 @@ namespace RR.UnitOfWork.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("EmployeeRole");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeSalaryDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Band")
+                        .HasColumnType("integer")
+                        .HasColumnName("band");
+
+                    b.Property<string>("Contribution")
+                        .HasColumnType("text")
+                        .HasColumnName("contribution");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
+
+                    b.Property<double?>("MaxSalary")
+                        .HasColumnType("double precision")
+                        .HasColumnName("maxSalary");
+
+                    b.Property<double?>("MinSalary")
+                        .HasColumnType("double precision")
+                        .HasColumnName("minSalary");
+
+                    b.Property<double?>("Remuneration")
+                        .HasColumnType("double precision")
+                        .HasColumnName("remuneration");
+
+                    b.Property<double?>("Salary")
+                        .HasColumnType("double precision")
+                        .HasColumnName("salary");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeSalaryDetails");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeType", b =>
@@ -1618,6 +1666,17 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeSalaryDetails", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.FieldCodeOptions", b =>
