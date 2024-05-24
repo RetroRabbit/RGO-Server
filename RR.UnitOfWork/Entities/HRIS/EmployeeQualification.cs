@@ -12,7 +12,6 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     public EmployeeQualification()
     {
         School = string.Empty;
-        Degree = string.Empty;
         FieldOfStudy = string.Empty;
         Year = DateOnly.MinValue;
     }
@@ -23,10 +22,11 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
         EmployeeId = employeeQualificationDto.EmployeeId;
         HighestQualification = employeeQualificationDto.HighestQualification;
         School = employeeQualificationDto.School;
-        Degree = employeeQualificationDto.Degree;
         FieldOfStudy = employeeQualificationDto.FieldOfStudy;
         NQFLevel = employeeQualificationDto.NQFLevel;
         Year = employeeQualificationDto.Year;
+        ProofOfQualification = employeeQualificationDto.ProofOfQualification;
+        DocumentName = employeeQualificationDto.DocumentName;
     }
 
     [Column("employeeId")]
@@ -39,9 +39,6 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
     [Column("school")]
     public string School { get; set; }
 
-    [Column("degree")]
-    public string Degree { get; set; }
-
     [Column("fieldOfStudy")]
     public string FieldOfStudy { get; set; }
 
@@ -50,6 +47,12 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
 
     [Column("year")]
     public DateOnly Year { get; set; }
+
+    [Column("proofOfQualification")]
+    public string ProofOfQualification { get; set; }
+
+    [Column("documentName")]
+    public string DocumentName { get; set; }
 
     public virtual Employee Employee { get; set; }
 
@@ -65,10 +68,11 @@ public class EmployeeQualification : IModel<EmployeeQualificationDto>
             EmployeeId = EmployeeId,
             HighestQualification = HighestQualification,
             School = School,
-            Degree = Degree,
             FieldOfStudy = FieldOfStudy,
             NQFLevel = NQFLevel,
-            Year = Year
+            Year = Year,
+            ProofOfQualification = ProofOfQualification,
+            DocumentName = DocumentName,
         };
     }
 }

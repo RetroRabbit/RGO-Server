@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240522085615_AddingProofOfQualification")]
+    partial class AddingProofOfQualification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -296,49 +299,6 @@ namespace RR.UnitOfWork.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Client");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClientName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("clientName");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employeeId");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("endDate");
-
-                    b.Property<string>("ProjectName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("projectName");
-
-                    b.Property<string>("ProjectURL")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("projectURL");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("startDate");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("ClientProject");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
@@ -647,11 +607,6 @@ namespace RR.UnitOfWork.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("certificateName");
-
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("documentName");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
@@ -1013,11 +968,6 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("documentName");
-
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
@@ -1118,10 +1068,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<double?>("Salary")
                         .HasColumnType("double precision")
                         .HasColumnName("salary");
-
-                    b.Property<DateTime?>("SalaryUpdateDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("salaryUpdateDate");
 
                     b.HasKey("Id");
 
@@ -1374,33 +1320,34 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClientName")
+                    b.Property<string>("CompanyName")
                         .HasColumnType("text")
-                        .HasColumnName("clientName");
+                        .HasColumnName("companyName");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
 
+                    b.Property<string>("EmploymentType")
+                        .HasColumnType("text")
+                        .HasColumnName("employmentType");
+
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("endDate");
 
-                    b.Property<string>("ProjectName")
+                    b.Property<string>("Location")
                         .HasColumnType("text")
-                        .HasColumnName("projectName");
-
-                    b.Property<List<string>>("SkillSet")
-                        .HasColumnType("text[]")
-                        .HasColumnName("skillSet");
-
-                    b.Property<List<string>>("Software")
-                        .HasColumnType("text[]")
-                        .HasColumnName("software");
+                        .HasColumnName("location");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("startDate");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.HasKey("Id");
 
@@ -1446,17 +1393,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Chart");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
-                {
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>

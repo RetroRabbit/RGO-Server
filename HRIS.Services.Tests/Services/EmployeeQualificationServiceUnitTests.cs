@@ -45,10 +45,11 @@ namespace HRIS.Services.Tests.Services
                 EmployeeId = 1,
                 HighestQualification = HighestQualification.Bachelor,
                 School = "Example School",
-                Degree = "Example Degree",
                 FieldOfStudy = "Example Field",
                 NQFLevel = NQFLevel.Level7,
-                Year = new DateOnly(2018, 4, 6)
+                Year = new DateOnly(2018, 4, 6),
+                ProofOfQualification = "qualification",
+                DocumentName = "DocumentName"
             };
 
             _employeeQualification = new EmployeeQualification
@@ -57,7 +58,6 @@ namespace HRIS.Services.Tests.Services
                 EmployeeId = _employeeQualificationDto.EmployeeId,
                 HighestQualification = _employeeQualificationDto.HighestQualification,
                 School = _employeeQualificationDto.School,
-                Degree = _employeeQualificationDto.Degree,
                 FieldOfStudy = _employeeQualificationDto.FieldOfStudy,
                 NQFLevel = _employeeQualificationDto.NQFLevel,
                 Year = _employeeQualificationDto.Year
@@ -180,9 +180,7 @@ namespace HRIS.Services.Tests.Services
             var result = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
 
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count);
-            Assert.Equal(HighestQualification.Bachelor, result[0].HighestQualification);
-            Assert.Equal(HighestQualification.Master, result[1].HighestQualification);
+            Assert.Equal(HighestQualification.Bachelor, result.HighestQualification);
         }
 
         [Fact]
@@ -252,7 +250,6 @@ namespace HRIS.Services.Tests.Services
             Assert.Equal(_employeeQualificationDto.EmployeeId, result.EmployeeId);
             Assert.Equal(_employeeQualificationDto.HighestQualification, result.HighestQualification);
             Assert.Equal(_employeeQualificationDto.School, result.School);
-            Assert.Equal(_employeeQualificationDto.Degree, result.Degree);
             Assert.Equal(_employeeQualificationDto.FieldOfStudy, result.FieldOfStudy);
             Assert.Equal(_employeeQualificationDto.NQFLevel, result.NQFLevel);
             Assert.Equal(_employeeQualificationDto.Year, result.Year);
@@ -291,6 +288,9 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
                .ReturnsAsync(_employeeQualificationDto);
 
+            _unitOfWorkMock.Setup(x => x.EmployeeQualification.Update(It.IsAny<EmployeeQualification>()))
+                .ReturnsAsync(_employeeQualificationDto);
+                
             var result = await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
 
             Assert.NotNull(result);

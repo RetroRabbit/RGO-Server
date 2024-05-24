@@ -514,6 +514,7 @@ public class EmployeeDocumentServiceUnitTest
     public async Task UpdateEmployeeDocumentPass()
     {
         var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                   .Returns(mockEmployeeDbSet.Object);
 
@@ -521,9 +522,11 @@ public class EmployeeDocumentServiceUnitTest
 
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()))
                       .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+
+        SetupMockRoles();
         var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
 
-        var result = await service.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending);
+        var result = await service.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending, "test@retrorabbit.co.za");
 
         Assert.NotNull(result);
     }
@@ -547,7 +550,7 @@ public class EmployeeDocumentServiceUnitTest
         _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
 
         var exception = await Assert.ThrowsAsync<Exception>(() =>
-                        _employeeDocumentService.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved));
+                        _employeeDocumentService.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved, "test@retrorabbit.co.za"));
 
         Assert.Equal("Employee not found", exception.Message);
 
