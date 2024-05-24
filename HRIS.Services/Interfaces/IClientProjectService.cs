@@ -42,12 +42,12 @@ namespace HRIS.Services.Interfaces;
         /// </returns>
         Task<ClientProjectsDto> UpdateClientProject(ClientProjectsDto clientProjectsDto);
 
-        /// <summary>
-        /// Deletes a client project from the database based on its identifier.
-        /// </summary>
-        /// <param name="id">The unique identifier of the client project to be deleted.</param>
-        /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains the <see cref="ClientProjectsDto"/> that was deleted.
-        /// </returns>
-        Task<ClientProjectsDto> DeleteClientProject(int id);
+         /// <summary>
+         /// Deletes a client project from the database based on its identifier.
+         /// </summary>
+         /// <param name="id">The unique identifier of the client project to be deleted.</param>
+         /// <returns>
+         /// A task that represents the asynchronous operation. The task result contains the <see cref="ClientProjectsDto"/> that was deleted.
+         /// </returns>
+       Task<ClientProjectsDto> DeleteClientProject(int id);
     }
