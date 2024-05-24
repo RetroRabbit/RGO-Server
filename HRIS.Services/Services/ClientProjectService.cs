@@ -67,15 +67,7 @@ namespace HRIS.Services.Services
                     throw new KeyNotFoundException($"No client Project found with ID {clientProjectsDto.Id}.");
                 }
 
-                clientProjectFound.Id = clientProjectsDto.Id;
-                clientProjectFound.EmployeeId = clientProjectsDto.EmployeeId;
-                clientProjectFound.StartDate = clientProjectsDto.StartDate;
-                clientProjectFound.EndDate = clientProjectsDto.EndDate;
-                clientProjectFound.ProjectURL = clientProjectsDto.ProjectURL;
-                clientProjectFound.ClientName = clientProjectsDto.ClientName;
-                clientProjectFound.ProjectName = clientProjectsDto.ProjectName;
-
-                ClientProject clientProject = new ClientProject(clientProjectFound);
+                ClientProject clientProject = new ClientProject(clientProjectsDto);
                 var updatedClientProjectDto = await _db.ClientProject.Update(clientProject);
 
                 return updatedClientProjectDto;
