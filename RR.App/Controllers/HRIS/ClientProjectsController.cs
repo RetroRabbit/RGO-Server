@@ -21,70 +21,65 @@ namespace RR.App.Controllers.HRIS
         {
             try
             {
-                var clientProjects = await _clientProjectService.GetAllClientProject();
+                var clientProjects = await _clientProjectService.GetAllClientProjects();
                 return Ok(clientProjects);
             }
-            catch (Exception)
+            catch(Exception ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClientProjectsDto>> GetClientProject(int id)
+        public async Task<ActionResult<ClientProjectsDto>> GetClientProjectById(int id)
         {
-            var clientProjectDto = await _clientProjectService.GetClientProject(id);
-
-            if (clientProjectDto == null)
+            try
             {
-                return NotFound();
+                var clientProjectDto = await _clientProjectService.GetClientProjectById(id);
+                return Ok(clientProjectDto);
+            } 
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
             }
-
-            return Ok(clientProjectDto);
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveClientProject(ClientProjectsDto clientProjectsDto)
         {
-            var createdClientProject = await _clientProjectService.CreateClientProject(clientProjectsDto);
-
-            if (createdClientProject == null)
+            try
             {
-                return BadRequest("Unable to create the project.");
+                var createdClientProject = await _clientProjectService.CreateClientProject(clientProjectsDto);
+                return Ok(createdClientProject);
             }
-            return CreatedAtAction(nameof(GetClientProject), new { id = createdClientProject.Id }, createdClientProject);
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateClientProject(int id, ClientProjectsDto clientProjectsDto)
+        public async Task<IActionResult> UpdateClientProject(ClientProjectsDto clientProjectsDto)
         {
-            if (id != clientProjectsDto.Id)
-            {
-                return BadRequest("Mismatched project ID.");
-            }
-
             try
             {
                 var clientProjectObject = await _clientProjectService.UpdateClientProject(clientProjectsDto);
                 return Ok(clientProjectObject);
             }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while updating the project.");
+                return NotFound(ex.Message);
             }
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteClientProject(int id)
         {
-            var clientProject = await _clientProjectService.GetClientProject(id);
+            var clientProject = await _clientProjectService.GetClientProjectById(id);
+
             if (clientProject == null)
             {
-                return NotFound("Project not found");
+                return NotFound("Client Project not found");
             }
 
             var clientProjectObject = await _clientProjectService.DeleteClientProject(id);

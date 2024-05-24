@@ -18,13 +18,12 @@ namespace HRIS.Services.Services
 
         public async Task<ClientProjectsDto> CreateClientProject(ClientProjectsDto clientProjectsDto)
         {
+            var exists = await CheckIfExists(clientProjectsDto.Id);
 
-            var existingProjects = await _db.ClientProject.GetAll();
-            bool projectExists = existingProjects.Exists(p => p.Id == clientProjectsDto.Id);
-
-            if (projectExists)
+            if (exists)
             {
-                throw new InvalidOperationException("Client project already exists.");
+                var exception = new Exception("Client Project already exists");
+                throw _errorLoggingService.LogException(exception);
             }
 
             var createdProject = await _db.ClientProject.Add(new ClientProject(clientProjectsDto));
@@ -36,31 +35,67 @@ namespace HRIS.Services.Services
             return await _db.ClientProject.Delete(id);
         }
 
-        public async Task<ClientProjectsDto?> GetClientProject(int id)
+        public async Task<ClientProjectsDto?> GetClientProjectById(int id)
         {
-            var clientProjectExist = await _db.ClientProject.GetById(id);
-            if (clientProjectExist == null)
+            var existingClientProject = await _db.ClientProject.GetById(id);
+
+            if (existingClientProject == null)
             {
                 var exception = new Exception("Client project not found");
                 throw _errorLoggingService.LogException(exception);
             }
-            return clientProjectExist;
+
+            return existingClientProject;
         }
 
-        public async Task<List<ClientProjectsDto>> GetAllClientProject()
+        public async Task<List<ClientProjectsDto>> GetAllClientProjects()
         {
             return await _db.ClientProject.GetAll();
         }
 
         public async Task<ClientProjectsDto> UpdateClientProject(ClientProjectsDto clientProjectsDto)
         {
-            var existingClientProject = await _db.ClientProject.Update(new ClientProject(clientProjectsDto));
-            if (existingClientProject == null)
+            if (clientProjectsDto == null)
+                throw new ArgumentNullException(nameof(clientProjectsDto));
+
+            try
             {
-                var exception = new Exception("InvalidOperationException");
-                throw _errorLoggingService.LogException(exception);
+                var clientProjectFound = await _db.ClientProject.FirstOrDefault(q => q.Id == clientProjectsDto.Id);
+
+                if (clientProjectFound == null)
+                {
+                    throw new KeyNotFoundException($"No client Project found with ID {clientProjectsDto.Id}.");
+                }
+
+                clientProjectFound.Id = clientProjectsDto.Id;
+                clientProjectFound.EmployeeId = clientProjectsDto.EmployeeId;
+                clientProjectFound.StartDate = clientProjectsDto.StartDate;
+                clientProjectFound.EndDate = clientProjectsDto.EndDate;
+                clientProjectFound.ProjectURL = clientProjectsDto.ProjectURL;
+                clientProjectFound.ClientName = clientProjectsDto.ClientName;
+                clientProjectFound.ProjectName = clientProjectsDto.ProjectName;
+
+                ClientProject clientProject = new ClientProject(clientProjectFound);
+                var updatedClientProjectDto = await _db.ClientProject.Update(clientProject);
+
+                return updatedClientProjectDto;
+
             }
-            return existingClientProject;
+            catch (Exception ex)
+            {
+                throw _errorLoggingService.LogException(ex);
+            }
+        }
+
+        public async Task<bool> CheckIfExists(int id)
+        {
+            if (id == 0)
+            {
+                return false;
+            }
+
+            var exists = await _db.ClientProject.GetById(id);
+            return exists != null;
         }
     }
 }

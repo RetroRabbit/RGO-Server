@@ -12,7 +12,7 @@ namespace HRIS.Services.Interfaces;
         /// Retrieves all client projects from the database.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="ClientProjectsDto"/>.</returns>
-        Task<List<ClientProjectsDto>> GetAllClientProject();
+        Task<List<ClientProjectsDto>> GetAllClientProjects();
 
         /// <summary>
         /// Retrieves a single client project by its identifier.
@@ -22,7 +22,7 @@ namespace HRIS.Services.Interfaces;
         /// A task that represents the asynchronous operation. The task result contains the <see cref="ClientProjectsDto"/> corresponding to the specified id,
         /// or null if no project with such an id exists.
         /// </returns>
-        Task<ClientProjectsDto?> GetClientProject(int id);
+        Task<ClientProjectsDto?> GetClientProjectById(int id);
 
         /// <summary>
         /// Creates a new client project in the database.
