@@ -68,7 +68,7 @@ git checkout develop
 ```
 
 ## User Secrets
-Open the project/solution in Visual Studio.
+Open the project/solution in Visual Studio. _(If you had visual studio opened when doing environment variables. Please restart visual studio)_
 
 Right Click ``RGO.App`` and Click on **Mange User Secrets**.
 This will open your ``secrets.json`` file
@@ -134,7 +134,7 @@ update-database
 
 ## Populating Database with _Dummy Data_:
 
-1. Make a local copy of the ``DummyData.sql`` file In the RR.UnitOfWork Project.
+1. Make a local copy of the ``SEED_DUMMY.sql`` file In the RR.UnitOfWork Project.
 
    ![Seed Dummy](./README/DummySeedData.png)
 
