@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240523095119_ClientProjects")]
+    partial class ClientProjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -648,11 +651,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("certificateName");
 
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("documentName");
-
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
@@ -1013,10 +1011,10 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DocumentName")
+                    b.Property<string>("Degree")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("documentName");
+                        .HasColumnName("degree");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
@@ -1034,11 +1032,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<int>("NQFLevel")
                         .HasColumnType("integer")
                         .HasColumnName("nqfLevel");
-
-                    b.Property<string>("ProofOfQualification")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("proofOfQualification");
 
                     b.Property<string>("School")
                         .IsRequired()
@@ -1118,10 +1111,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<double?>("Salary")
                         .HasColumnType("double precision")
                         .HasColumnName("salary");
-
-                    b.Property<DateTime?>("SalaryUpdateDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("salaryUpdateDate");
 
                     b.HasKey("Id");
 
@@ -1374,33 +1363,34 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClientName")
+                    b.Property<string>("CompanyName")
                         .HasColumnType("text")
-                        .HasColumnName("clientName");
+                        .HasColumnName("companyName");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
 
+                    b.Property<string>("EmploymentType")
+                        .HasColumnType("text")
+                        .HasColumnName("employmentType");
+
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("endDate");
 
-                    b.Property<string>("ProjectName")
+                    b.Property<string>("Location")
                         .HasColumnType("text")
-                        .HasColumnName("projectName");
-
-                    b.Property<List<string>>("SkillSet")
-                        .HasColumnType("text[]")
-                        .HasColumnName("skillSet");
-
-                    b.Property<List<string>>("Software")
-                        .HasColumnType("text[]")
-                        .HasColumnName("software");
+                        .HasColumnName("location");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("startDate");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.HasKey("Id");
 
