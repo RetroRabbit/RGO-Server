@@ -15,9 +15,6 @@ public class EmployeeQualificationDto
     public string School { get; set; } = string.Empty;
 
     [Required]
-    public string Degree { get; set; } = string.Empty;
-
-    [Required]
     public string FieldOfStudy { get; set; } = string.Empty;
 
     [Required]
@@ -25,4 +22,10 @@ public class EmployeeQualificationDto
 
     [Required]
     public DateOnly Year { get; set; } = DateOnly.MinValue;
+
+    [Required]
+    public string ProofOfQualification { get; set; }
+
+    [Required]
+    public string DocumentName { get; set; }
 }

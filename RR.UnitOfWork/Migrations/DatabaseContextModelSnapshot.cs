@@ -605,6 +605,11 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("certificateName");
 
+                    b.Property<string>("DocumentName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("documentName");
+
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
@@ -696,6 +701,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdminFileCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("adminFileCategory");
 
                     b.Property<string>("Blob")
                         .HasColumnType("text")
@@ -961,10 +970,10 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Degree")
+                    b.Property<string>("DocumentName")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("degree");
+                        .HasColumnName("documentName");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
@@ -982,6 +991,11 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<int>("NQFLevel")
                         .HasColumnType("integer")
                         .HasColumnName("nqfLevel");
+
+                    b.Property<string>("ProofOfQualification")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("proofOfQualification");
 
                     b.Property<string>("School")
                         .IsRequired()
@@ -1023,6 +1037,54 @@ namespace RR.UnitOfWork.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("EmployeeRole");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeSalaryDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Band")
+                        .HasColumnType("integer")
+                        .HasColumnName("band");
+
+                    b.Property<string>("Contribution")
+                        .HasColumnType("text")
+                        .HasColumnName("contribution");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
+
+                    b.Property<double?>("MaxSalary")
+                        .HasColumnType("double precision")
+                        .HasColumnName("maxSalary");
+
+                    b.Property<double?>("MinSalary")
+                        .HasColumnType("double precision")
+                        .HasColumnName("minSalary");
+
+                    b.Property<double?>("Remuneration")
+                        .HasColumnType("double precision")
+                        .HasColumnName("remuneration");
+
+                    b.Property<double?>("Salary")
+                        .HasColumnType("double precision")
+                        .HasColumnName("salary");
+
+                    b.Property<DateTime?>("SalaryUpdateDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("salaryUpdateDate");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeSalaryDetails");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeType", b =>
@@ -1269,34 +1331,33 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CompanyName")
+                    b.Property<string>("ClientName")
                         .HasColumnType("text")
-                        .HasColumnName("companyName");
+                        .HasColumnName("clientName");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
 
-                    b.Property<string>("EmploymentType")
-                        .HasColumnType("text")
-                        .HasColumnName("employmentType");
-
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("endDate");
 
-                    b.Property<string>("Location")
+                    b.Property<string>("ProjectName")
                         .HasColumnType("text")
-                        .HasColumnName("location");
+                        .HasColumnName("projectName");
+
+                    b.Property<List<string>>("SkillSet")
+                        .HasColumnType("text[]")
+                        .HasColumnName("skillSet");
+
+                    b.Property<List<string>>("Software")
+                        .HasColumnType("text[]")
+                        .HasColumnName("software");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("startDate");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
 
                     b.HasKey("Id");
 
@@ -1561,6 +1622,17 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.EmployeeSalaryDetails", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.FieldCodeOptions", b =>

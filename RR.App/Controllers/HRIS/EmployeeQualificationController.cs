@@ -93,10 +93,6 @@ public class EmployeeQualificationController : ControllerBase
         try
         {
             var deletedQualification = await _employeeQualificationService.DeleteEmployeeQualification(id);
-            if (deletedQualification == null)
-            {
-                return NotFound($"No qualification found with ID {id}.");
-            }
             return Ok(deletedQualification);
         }
         catch (KeyNotFoundException knf)

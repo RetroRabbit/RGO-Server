@@ -40,7 +40,7 @@ public interface IEmployeeDocumentService
     /// </summary>
     /// <param name="employeeDocumentDto"></param>
     /// <returns>Employee Document</returns>
-    Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto);
+    Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto, string email);
 
     /// <summary>
     /// Delete Employee Document

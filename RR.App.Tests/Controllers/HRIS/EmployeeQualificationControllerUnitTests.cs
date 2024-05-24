@@ -3,7 +3,10 @@ using HRIS.Models.Enums.QualificationEnums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using RGO.Tests.Data.Models;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data.Models.HRIS;
+using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -104,30 +107,16 @@ public class EmployeeQualificationControllerUnitTests
     [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
     {
-        var employeeId = 1;
-        var qualifications = new List<EmployeeQualificationDto>
-            {
-                new EmployeeQualificationDto
-                {
-                    Id = 1,
-                    EmployeeId = employeeId,
-                    HighestQualification = HighestQualification.Bachelor,
-                    School = "University of Africa",
-                    Degree = "Bachelor of Science",
-                    FieldOfStudy = "Computer Science",
-                    NQFLevel = NQFLevel.Level7,
-                    Year = new DateOnly(2020, 1, 1)
-                }
-            };
+        var expectedQualificationDto = EmployeeQualificationTestData.EmployeeQualification;
 
-        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(employeeId))
-            .ReturnsAsync(qualifications);
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id))
+            .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
 
-        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(employeeId);
+        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returnValue = Assert.IsType<List<EmployeeQualificationDto>>(okResult.Value);
-        Assert.Equal(qualifications, returnValue);
+        var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
+        Assert.Equal(expectedQualificationDto, returnValue);
     }
 
     [Fact]
@@ -163,27 +152,16 @@ public class EmployeeQualificationControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeQualificationReturnsOkObjectResultWithDeletedQualification()
     {
-        var qualificationId = 1;
-        var deletedQualification = new EmployeeQualificationDto
-        {
-            Id = qualificationId,
-            EmployeeId = 1,
-            HighestQualification = HighestQualification.Bachelor,
-            School = "University of Africa",
-            Degree = "Bachelor of Science",
-            FieldOfStudy = "Computer Science",
-            NQFLevel = NQFLevel.Level7,
-            Year = new DateOnly(2020, 1, 1)
-        };
+        var EmployeeQualificationDto = EmployeeQualificationTestData.EmployeeQualification; 
 
-        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(qualificationId))
-            .ReturnsAsync(deletedQualification);
+        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(EmployeeQualificationDto.Id))
+            .ReturnsAsync(EmployeeQualificationDto);
 
-        var result = await _employeeQualificationController.DeleteEmployeeQualification(qualificationId);
+        var result = await _employeeQualificationController.DeleteEmployeeQualification(EmployeeQualificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
-        Assert.Equal(deletedQualification, returnValue);
+        Assert.Equal(EmployeeQualificationDto, returnValue);
     }
 
     [Fact]
@@ -215,5 +193,37 @@ public class EmployeeQualificationControllerUnitTests
         var statusCodeResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, statusCodeResult.StatusCode);
         Assert.Equal($"An error occurred while deleting the qualification: {expectedExceptionMessage}", statusCodeResult.Value);
+    }
+
+    [Fact]
+    public async Task GetAllEmployeeQualifications()
+    {
+        var listOfEmployeeQualificationDto = new List<EmployeeQualificationDto>()
+            {
+                EmployeeQualificationTestData.EmployeeQualification
+            };
+
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualifications())
+            .ReturnsAsync(listOfEmployeeQualificationDto);
+
+        var result = await _employeeQualificationController.GetAllEmployeeQualifications();
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnValue = Assert.IsType<List<EmployeeQualificationDto>>(okResult.Value);
+        Assert.Equal(listOfEmployeeQualificationDto, returnValue);
+    }
+
+    [Fact]
+    public async Task GetAllEmployeeQualificationsReturnsBadRequestOnException()
+    {
+        var exceptionMessage = "An error occurred while retrieving qualifications";
+
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualifications())
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        var result = await _employeeQualificationController.GetAllEmployeeQualifications();
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.StartsWith("An error occurred while retrieving qualifications", (string)badRequestResult.Value);
     }
 }

@@ -125,7 +125,7 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<List<FieldCodeDto>> GetByCategory(int categoryIndex)
     {
-        if (categoryIndex < 0 || categoryIndex > 2)
+        if (categoryIndex < 0 || categoryIndex > 3)
         {
             var exception = new Exception("Invalid Index");
             throw _errorLoggingService.LogException(exception);
@@ -141,6 +141,9 @@ public class FieldCodeService : IFieldCodeService
                 type = FieldCodeCategory.Banking;
                 break;
             case 2:
+                type = FieldCodeCategory.Career;
+                break;
+            case 3:
                 type = FieldCodeCategory.Documents;
                 break;
         }

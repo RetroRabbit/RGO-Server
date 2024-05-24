@@ -13,8 +13,8 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240516145832_Init")]
-    partial class Init
+    [Migration("20240520082137_AddAdminFileCategory")]
+    partial class AddAdminFileCategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -699,6 +699,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdminFileCategory")
+                        .HasColumnType("integer")
+                        .HasColumnName("adminFileCategory");
 
                     b.Property<string>("Blob")
                         .HasColumnType("text")
