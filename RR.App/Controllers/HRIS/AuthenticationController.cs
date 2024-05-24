@@ -18,7 +18,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [AllowAnonymous]
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost("login")]
     public async Task<IActionResult> LoginUser([FromQuery] string email)
     {
