@@ -1,57 +1,82 @@
 # Introduction
 
-### NB!!! Make sure you're checked out on the develop branch
-
 This system is an employee management system for Retro Rabbit Enterprise Services. This is the back end for said system and works in conjuncture with the Front End repository
+
+# Prerequisites
+- [Visual Studio Community 2022](https://visualstudio.microsoft.com/vs/community/)
+- [PgAdmin 4 (V8.6 or above)](https://www.pgadmin.org/download/pgadmin-4-windows/)
+- [Node.js (v20.13.1 or above)](https://nodejs.org/en/download/prebuilt-installer)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Git (v2.45.1 or above)](https://git-scm.com/download/win)
+- [Docker Desktop (Or any other git UI application)](https://desktop.github.com/)
 
 # Getting Started
 
-### Cloning the [repository](https://retro-rabbit@dev.azure.com/retro-rabbit/RetroGradOnboard/_git/RGO-Server)
-
-```powershell
-git clone 'https://retro-rabbit@dev.azure.com/retro-rabbit/RetroGradOnboard/_git/RGO-Server'
-```
-
-Runs on(.NET Web API):
-
-- https://localhost:7026
-- http://localhost:5193
-
 ## Docker
 
-### Install Docker
+Docker is used to run PostgreSql.
 
-- https://www.docker.com/products/docker-desktop/
-- If you don't use **WSL/Ubuntu** subsystem install Docker using the **Hyper-V** installation
-- If new installation follow default settings for install
+### Installing Docker
 
-### Incorrect WSL version error
+- If you don't use **WSL/Ubuntu** subsystem, install Docker using the **Hyper-V** installation
+- If this is a new installation, follow the default settings for install
 
-- If you get a WSL wrong version error run the following command
+- If you get a `WSL wrong version error` run the following command 
 
 ```powershell
 wsl --install
 ```
 
-# Environment Variables
-Add system environments as follows 
+- Run the below command to install Postgres container in Docker
+```powershell
+docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
+```
 
-![Image of System Environment Variables](./EnvironmentVariables.png)
+## Environment Variables
+You need to add environment variables onto your machine.
 
-With the respective values in the redacted spaces 
-(please note that the dashes in between the variable names are double dashes)
+| Variable name                      | Variable value |
+| --------------------------         | -------------- |
+| Auth__Audience                     | RGO Client     |
+| Auth__Expires                      | 60             |
+| Auth__Issuer                       | RGO API        |
+| Auth__Key                          | ########       |
+| ConnectionStrings__Default         | ########       |
+| NewEmployeeQueue__ConnectionString | ########       |
 
-# User Secrets
-Right Click RGO.App and Click on **Mange User Secrets**
+![Image of System Environment Variables](./README/Audience.png)
+![Image of System Environment Variables](./README/Expires.png)
+![Image of System Environment Variables](./README/Issuer.png)
+![Image of System Environment Variables](./README/Key.png)
 
-![Image of User Secret Location](./UserSecretsLocation.png)
+_With the respective values in the redacted (#######) spaces_
 
-This will open your secrets.json file
+### Git
 
-![Image of User secret example](./UserSecretsExample.png)
+Make sure to have [Git](https://git-scm.com) installed to run any Git command lines.
 
-Paste the following in the file 
+### Cloning the [repository](https://github.com/RetroRabbit/RGO-Server.git)
 
+```powershell
+git clone 'https://github.com/RetroRabbit/RGO-Server.git'
+```
+
+Make sure to `checkout` develop branch
+
+```powershell
+git checkout develop
+```
+
+## User Secrets
+Open the project/solution in Visual Studio.
+
+Right Click ``RGO.App`` and Click on **Mange User Secrets**.
+This will open your ``secrets.json`` file
+
+![Image of User Secret Location](./README/ManageUserSecretsButton.png)
+
+Paste the following in the file into ``secrets.json``
+```json
 {
   "ConnectionStrings": {
     "Default": ""
@@ -63,111 +88,87 @@ Paste the following in the file
     "Expires": 60
   }
 }
+```
 
 Replace the Connection strings, Auth Key, Auth Issuer and Auth Audience
-
-# pgAdmin
-
-### Setup PgAdmin and Create Database
-
-Install the latest version of PgAdmin. Then Register a new server on PgAdmin, name it RGO.
-Password should be postgrespw. Set the host to localhost. You should be able to connect to the
-RGO database after adding migrations and updating the DB in package manager console in
-Visual Studios.
+![Image of User secret example](./README/ManageUserSecrets.png)
 
 
-### Change to the Dev branch
+## pgAdmin
 
-Make sure to have Git installed to run any Git command lines.
+Launch pgAdmin. Register a **new server** on **pgAdmin**.
 
-```powershell
-#cd RGO-Server\RGO Backend
-git checkout develop
-```
+- Set the *Password* to "postgrespw". 
+- Set the *Server Name* to "RGO".
+- Set the *Host Name* to "localhost". 
 
-### Setting up docker container
+1. Register **New Server** in pgAdmin
 
-```powershell
-docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
-```
-### Creating Database Tables:
+![pgAdmin Register Server](./README/pgAdminRegisterServer.png)
 
-**NB!!!** If you already have a RGO database, you'll need to drop it in pgAdmin and run the migrations again.
+2. Update **Server Name** and **Host Name**
 
-1. Open Visual Studio 2022 and open the RGO-Server project file. 
-   Pull up the nuget package manager console:
+![pgAdmin Server Name](./README/pgAdminServerName.png)
+![pgAdmin Host Name](./README/pgAdminHostName.png)
+
+
+
+
+
+## EF Migrations
+
+1. In Visual Studio->RGO-Server project/solution file. Pull up the nuget package manager console:
     
    **_Tools_** -> **_NuGet Package Manager_** -> **_Package Manager Console_**
-   Make sure the **Default project** is **_RGO.UnitOfWork_**.
-    
-   ----
-    
-   ![Image of Package Manager Console](./RGO-UnitOfWork-example.png)
-
 2. Change the default project to RR.UnitOfWork.
-   
+
+![Image of Package Manager Console](./README/RGO-UnitOfWork-example.png)
+
 3. Run the following commands:
    
 ```powershell
-add-migration migrationName
 update-database
 ```
 
-Congratulations! You have now successfully created a database with tables.
+🎉🌟 Congratulations! You have successfully created a database with tables!
 
-### Populating Database with Dummy Data:
+## Populating Database with _Dummy Data_:
 
-- Register new RGO server in PgAdmin
+1. Make a local copy of the ``DummyData.sql`` file In the RR.UnitOfWork Project.
 
-![Register service](./Screenshot%202023-08-02%20173735.png)
+   ![Seed Dummy](./README/DummySeedData.png)
 
-- Update Information and save
-
-![Register service - connection](./Screenshot%202023-08-02%20173613.png)
-
-
-1. Make a local copy of the DummyData.sql file In the RR.UnitOfWork Project.
-
-   ![Screenshot 2024-03-12 130755](https://github.com/RetroRabbit/RGO-Server/assets/82169901/178d5ba8-160e-4b28-b280-2b6a08fb02da)
-
-3. Copy one of the ``INSERT INTO Employee,`` statements in the script.
+2. Copy one of the ``INSERT INTO Employee,`` statements in the script.
    
    ![Screenshot 2024-03-12 130900](https://github.com/RetroRabbit/RGO-Server/assets/82169901/73545f25-ab5f-4e60-b929-6cd6d0fa781a)
    
-4. Paste a new INSERT statement and populate it with your information such as your email, 
+3. Paste a new INSERT statement and populate it with your information such as your email, 
    name, and surname. Also change the id of the record. 
    It is important to note that the first email field should be populated
    with a personal or work email you're going to use to log into the RGO system, otherwise 
    you won't have access to the system. The second email field can just be a dummy or
    additional email you'll make use of.
 
-5. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want
-   to assign to yourself.
+4. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want to assign to yourself.
+     
+5. Copy the SQL in the locally created script.
    
-   ![RoleAccess Link Statement](image.png)
-   
-6. Copy the SQL in the locally created script.
-   
-7. Open PgAdmin, right-click on the RGO database, and select ``Create Script``.
+6. Open **pgAdmin**, right-click on the RGO database, and select ``Query Tool``.
+![SQL Query](./README/QueryTool.png)
 
-   ![Screenshot 2024-03-12 131219](https://github.com/RetroRabbit/RGO-Server/assets/82169901/5b0fa31a-9e90-4337-8896-fa3d355a5d77)
-
-8. Paste the locally created script in the query screen that pops up.
-
-   ![Screenshot 2024-03-12 131332](https://github.com/RetroRabbit/RGO-Server/assets/82169901/87eabaab-4856-4adc-ba54-feb1c6e47512)
-
-9.  Click on ``Execute Script``.
-  
-   ![Screenshot 2024-03-12 131356](https://github.com/RetroRabbit/RGO-Server/assets/82169901/69c52269-e074-487e-b489-53ac9c41a5ff)
+1. Paste the locally created script in the query screen that pops up. Click on ``Execute Script``.
+![Seed Dummy Script](./README/SQLQueryScriptRun.png)
 
 
-Congratulations you have a fully populated database!
+
+🎉🌟 Congratulations! You have a fully populated the database!
 
 ### Checking new user added to the DB you made
 
-- Install **PgAdmin** beforehand. If you locally installed **_PostgreSQL_** be warned that it may interfere with your attempts to connect to the database(Docker).
-
 Once the query is completed successfully, you can go to the employee table and view all rows to see if you have data in the database.
+
+# Notes
+
 ### Running Unit Tests
 
 When running unit tests make sure that the database is running to accomodate for integration tests
@@ -176,7 +177,7 @@ When running unit tests make sure that the database is running to accomodate for
 
 With every pull request, there is a requirement to prove coverage of your code. Attached a screen shot of your code coverage to your PR description
 
-```
+```powershell
 Install the dotnet coverage tool
     dotnet tool install -g dotnet-coverage
 
@@ -194,37 +195,38 @@ Navigate to the %temp% / report folder and open index.html using your prefered b
     /RGO-Server/coverage/report/index.html
 ```
 
-# Naming Conventions
-## Endpoints
+## Naming Conventions
+
+### Endpoints
 Use forward slash
 Use forward slashes for resource hierarchy and to separate URI resources.
 Example: "/employee/{id}"
 
 
-## Use nouns, not verbs
+### Use nouns, not verbs
 When naming the URIs, you should use nouns to describe what the resource is and not what it does. For example:
 Wrong:   "getEmployees/"
 Correct: "employees/"
 
-## Use plural nouns
+### Use plural nouns
 This makes it clear that there is more than one resource within a collection. Using singular nouns can be confusing. For example:
 Wrong:  "chart/{id}"
 Correct: "charts/{id}"
 
-## Lowercase letters
+### Lowercase letters
 As a standard, URLs are typed in lowercase. The same applies to API URIs.
 
 
-## Use hyphens to separate words
+### Use hyphens to separate words
 When chaining words together, hyphens are the most user-friendly way and are a better choice than underscores.
 For example: "employee-documents/10"
 
 
-## Endpoint strings can be the same provided that the Request Mapping is different:
+### Endpoint strings can be the same provided that the Request Mapping is different:
 PUT "employee/{id}"
 GET "employee/{id}"
 
-## Variables
+### Variables
 All variables in methods must be in camelCase
 
 Anything referenced by a service should prefixed with an underscore, to indicate that it is a reference to a service 
@@ -233,3 +235,9 @@ All Method names must be PascalCase
  ie: SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto)
 
 PS: When naming and endpoint, variable or method make the name as descriptive as possible. The only exception is for small scopes like a lambda.
+
+### Project URL
+Runs on(.NET Web API):
+
+- https://localhost:7026
+- http://localhost:5193
