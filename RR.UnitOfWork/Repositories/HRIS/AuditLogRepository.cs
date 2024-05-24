@@ -8,6 +8,5 @@ public class AuditLogRepository : BaseRepository<AuditLog, AuditLogDto>, IAuditL
 {
     public AuditLogRepository(DatabaseContext db) : base(db)
     {
-
     }
 }

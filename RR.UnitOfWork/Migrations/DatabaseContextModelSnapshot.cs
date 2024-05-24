@@ -298,49 +298,6 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("Client");
                 });
 
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClientName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("clientName");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employeeId");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("endDate");
-
-                    b.Property<string>("ProjectName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("projectName");
-
-                    b.Property<string>("ProjectURL")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("projectURL");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("startDate");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("ClientProject");
-                });
-
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -1446,17 +1403,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Chart");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
-                {
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
