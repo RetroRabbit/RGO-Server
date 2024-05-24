@@ -33,7 +33,6 @@ public interface IUnitOfWork
     IChartRoleLinkRepositories ChartRoleLink { get; }
     IEmployeeBankingRepository EmployeeBanking { get; }
     IClientRepository Client { get; }
-    IClientProjectRepository ClientProject { get; }
     IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     IErrorLoggingRepository ErrorLogging { get; }
     ICandidateRepository Candidate { get; }
