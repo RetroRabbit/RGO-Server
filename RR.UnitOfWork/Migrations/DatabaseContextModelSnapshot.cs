@@ -336,7 +336,7 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("Employee");
 
                     b.ToTable("ClientProject");
                 });
