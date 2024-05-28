@@ -31,7 +31,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet()]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployeeSalaries()
     {
         try
