@@ -1448,17 +1448,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
-                {
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Client", "ClientAssigned")
