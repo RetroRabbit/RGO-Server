@@ -5,6 +5,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -220,6 +221,55 @@ public class FieldCodeServiceUnitTests
 
         Assert.NotNull(result);
         Assert.Single(result);
+
+        _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
+               .Returns(fieldCodes.AsQueryable().BuildMock());
+
+        category = 3;
+
+        result = await _fieldCodeService.GetByCategory(category);
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task DeleteThrowNoFieldFoundException()
+    {
+        var fieldCodeDto5 = new FieldCodeDto
+        {
+            Id = 1,
+            Code = "AAA000",
+            Name = "RandomField",
+            Description = "string",
+            Regex = "string",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Archive,
+            Internal = false,
+            InternalTable = "",
+            Category = FieldCodeCategory.Documents,
+            Required = false
+        };
+
+        var fields = new List<FieldCodeDto> { fieldCodeDto5, _fieldCodeDto2 };
+        var options = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto };
+        _fieldCodeDto.Options = options;
+
+
+        _dbMock.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
+              .Returns(Task.FromResult(fieldCodeDto5));
+        _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
+                                .Returns(Task.FromResult(_fieldCodeOptionsDto));
+        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+                                .Returns(Task.FromResult(options));
+
+        _dbMock.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
+              .Returns(Task.FromResult(fieldCodeDto5));
+
+        _dbMock.Setup(x => x.FieldCode.GetAll(It.IsAny<Expression<Func<FieldCode, bool>>>())).Returns(Task.FromResult(fields));
+        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("No field with that name found"));
+
+        await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.GetFieldCode("AdminDocuments"));
     }
 
     [Fact]
