@@ -91,30 +91,32 @@ public class WorkExperienceControllerUnitTest
     [Fact]
     public async Task GetWorkExperienceByIdPass()
     {
+        var workExperienceList = new List<WorkExperienceDto> { workExperience };
+
         _workExperienceServiceMock
            .Setup(x => x
-               .GetWorkExperienceByEmployeeId(workExperience.Id))
-           .ReturnsAsync(workExperience);
+           .GetWorkExperienceByEmployeeId(workExperience.EmployeeId))
+           .ReturnsAsync(workExperienceList);
 
         var controllerResult = await _controller
-            .GetWorkExperienceById(workExperience.Id);
+            .GetWorkExperienceById(workExperience.EmployeeId);
 
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
         Assert.NotNull(actionResult.Value);
-        Assert.Equal(workExperience, actionResult.Value);
+        Assert.Equal(workExperienceList, actionResult.Value);
     }
 
     [Fact]
     public async Task GetWorkExperienceByIdFail()
     {
         _workExperienceServiceMock
-           .Setup(x => x
-               .GetWorkExperienceByEmployeeId(workExperience.Id))
-           .ThrowsAsync(new Exception());
+       .Setup(x => x
+           .GetWorkExperienceByEmployeeId(workExperience.EmployeeId))
+       .ThrowsAsync(new Exception());
 
         var controllerResult = await _controller
-            .GetWorkExperienceById(workExperience.Id);
+            .GetWorkExperienceById(workExperience.EmployeeId);
 
         var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
 
