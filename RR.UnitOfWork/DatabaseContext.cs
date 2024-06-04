@@ -38,6 +38,7 @@ public interface IDatabaseContext
     DbSet<ErrorLogging> errorLogging { get; set; }
     DbSet<Candidate> candidate { get; set; }
     DbSet<WorkExperience> workExperience { get; set; }
+    DbSet<Termination> termination { get; set; }
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
@@ -80,6 +81,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<ErrorLogging> errorLogging { get; set; }
     public DbSet<Candidate> candidate { get; set; }
     public DbSet<WorkExperience> workExperience { get; set; }
+    public DbSet<Termination> termination { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -38,6 +38,7 @@ public interface IUnitOfWork
     ICandidateRepository Candidate { get; }
     IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     IWorkExperienceRepository WorkExperience { get; }
+    ITerminationRepository Termination { get; }
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
     Task<List<string>> GetColumnNames(string tableName);
