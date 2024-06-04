@@ -24,9 +24,9 @@ public class EmployeeSalaryDetailsController : ControllerBase
             var deletedEmployeeSalary = await _employeeSalarayDetailsService.DeleteEmployeeSalary(employeeId);
             return Ok(deletedEmployeeSalary);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while deleting the employee salary.");
+            return NotFound(ex.Message);
         }
     }
 
@@ -87,9 +87,9 @@ public class EmployeeSalaryDetailsController : ControllerBase
             var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
             return Ok(updatedEmployeeSalary);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while updating the employee salary.");
+            return NotFound(ex.Message);
         }
     }
 }
