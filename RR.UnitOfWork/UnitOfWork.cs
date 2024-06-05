@@ -1,4 +1,5 @@
-﻿using System.Data;
+using System.Data;
+using HRIS.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using RR.UnitOfWork.Entities;
@@ -48,6 +49,7 @@ public class UnitOfWork : IUnitOfWork
         MonthlyEmployeeTotal = new MonthlyEmployeeTotalRepository(_db);
         ErrorLogging = new ErrorLoggingRepository(_db);
         Candidate = new CandidateRepository(_db);
+        ClientProject = new ClientProjectRepository(_db);
         WorkExperience = new WorkExperienceRepository(_db);
         EmployeeSalaryDetails = new EmployeeSalaryDetailsRepository(_db);
         Termination = new TerminationRepository(_db);
@@ -82,6 +84,7 @@ public class UnitOfWork : IUnitOfWork
     public IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     public IErrorLoggingRepository ErrorLogging { get; }
     public ICandidateRepository Candidate { get; }
+    public IClientProjectRepository ClientProject { get; }
     public IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     public IWorkExperienceRepository WorkExperience { get; }
     public ITerminationRepository Termination { get; }
