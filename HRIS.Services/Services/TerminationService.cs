@@ -31,8 +31,8 @@ public class TerminationService : ITerminationService
         var exists = await CheckTerminationExist(terminationDto.EmployeeId);
         if (exists)
         {
-            var exception = new Exception("termination already exists");
-            throw _errorLoggingService.LogException(exception);
+            TerminationDto updatedTermination = await UpdateTermination(terminationDto);
+            return updatedTermination;
         }
         try
         {
@@ -45,7 +45,7 @@ public class TerminationService : ITerminationService
                .GetEmployeeType(currentEmployee.EmployeeType!.Name);
 
             await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
-            var newTermination = await _db.Termination.Add(new Termination(terminationDto));
+            TerminationDto newTermination = await _db.Termination.Add(new Termination(terminationDto));
 
 
             return newTermination;
@@ -54,6 +54,11 @@ public class TerminationService : ITerminationService
         {
             throw _errorLoggingService.LogException(ex);
         }
+    }
+
+    public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
+    {
+        return await _db.Termination.Update(new Termination(terminationDto));
     }
 
     public async Task<TerminationDto> GetTerminationByEmployeeId(int employeeId)
@@ -66,7 +71,7 @@ public class TerminationService : ITerminationService
         }
         try
         {
-            var newTermination = await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
+            TerminationDto newTermination = await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
 
             return newTermination;
         }
