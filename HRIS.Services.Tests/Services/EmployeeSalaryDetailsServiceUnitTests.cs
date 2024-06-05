@@ -55,6 +55,8 @@ namespace HRIS.Services.Tests.Services
             var result = await _employeeSalaryDetailsService.GetEmployeeSalary(employeeId);
             Assert.NotNull(result);
             Assert.Equal(salary, result.Salary);
+            Assert.Equal(employeeSalaryDetails.Salary, result.Salary);
+            Assert.IsType<EmployeeSalaryDetailsDto>(result);
         }
 
         [Fact]
