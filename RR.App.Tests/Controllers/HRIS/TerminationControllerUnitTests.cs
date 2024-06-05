@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,5 +84,34 @@ public class TerminationControllerUnitTests
         var actionResult = Assert.IsType<ObjectResult>(controllerResult);
     }
 
+    [Fact]
+    public async Task GetTerminationByEmployeeIdPass()
+    {
+        _terminationServiceMock
+           .Setup(x => x
+           .GetTerminationByEmployeeId(terminationDto.EmployeeId))
+           .ReturnsAsync(terminationDto);
 
+        var controllerResult = await _controller
+            .GetTerminationByEmployeeId(terminationDto.EmployeeId);
+
+        var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(terminationDto, actionResult.Value);
+    }
+
+    [Fact]
+    public async Task GetTerminationByEmployeeIdReturnsNotFound()
+    {
+        _terminationServiceMock
+           .Setup(x => x
+           .GetTerminationByEmployeeId(terminationDto.EmployeeId))
+           .ThrowsAsync(new Exception());
+
+        var controllerResult = await _controller
+            .GetTerminationByEmployeeId(terminationDto.EmployeeId);
+
+        var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
+    }
 }
