@@ -42,10 +42,10 @@ public class ClientProject : IModel<ClientProjectsDto>
     [Column("projectURL")]
     public string ProjectURL { get; set; }
 
-    [Column("employeeId")]
-    public int EmployeeId { get; set; }
-
     [ForeignKey("Employee")]
+
+    [Column("employeeId")] public int EmployeeId { get; set; }
+
     public virtual Employee? Employee { get; set; }
 
     public ClientProjectsDto ToDto()
@@ -58,7 +58,7 @@ public class ClientProject : IModel<ClientProjectsDto>
             ProjectName = ProjectName,
             StartDate = StartDate,
             EndDate = EndDate,
-            ProjectURL = ProjectURL
+            ProjectURL = ProjectURL,
         };
     }
 }
