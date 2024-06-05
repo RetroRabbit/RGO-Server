@@ -1,11 +1,5 @@
-﻿using System;
-using System.Text;
-using Azure.Messaging.ServiceBus;
-using HRIS.Models;
+﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -40,8 +34,7 @@ public class TerminationService : ITerminationService
         currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment;
         currentEmployee.Active = false;
 
-        EmployeeTypeDto employeeTypeDto = await _employeeTypeService
-           .GetEmployeeType(currentEmployee.EmployeeType!.Name);
+        EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
 
         await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
         TerminationDto newTermination = await _db.Termination.Add(new Termination(terminationDto));
@@ -70,7 +63,6 @@ public class TerminationService : ITerminationService
 
     public async Task<bool> CheckTerminationExist(int employeeId)
     {
-        return await _db.Termination
-                        .Any(termination => termination.EmployeeId == employeeId);
+        return await _db.Termination.Any(termination => termination.EmployeeId == employeeId);
     }
 }

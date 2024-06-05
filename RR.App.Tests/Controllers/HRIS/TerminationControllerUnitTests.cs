@@ -4,12 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -18,7 +12,6 @@ public class TerminationControllerUnitTests
 {
     private readonly Mock<ITerminationService> _terminationServiceMock;
     private readonly TerminationController _controller;
-    private readonly Mock<IUnitOfWork> _db;
 
     public TerminationControllerUnitTests()
     {
@@ -44,14 +37,10 @@ public class TerminationControllerUnitTests
     [Fact]
     public async Task saveTerminationReturnsOk()
     {
-        _terminationServiceMock
-           .Setup(x => x
-               .SaveTermination(terminationDto))
-           .ReturnsAsync(terminationDto);
+        _terminationServiceMock.Setup(x => x.SaveTermination(terminationDto)).ReturnsAsync(terminationDto);
 
         var controllerResult = await _controller.AddTermination(terminationDto);
         var actionResult = Assert.IsType<CreatedAtActionResult>(controllerResult);
-
         TerminationDto newTermination = actionResult.Value as TerminationDto;
 
         Assert.NotNull(newTermination);
@@ -61,40 +50,27 @@ public class TerminationControllerUnitTests
     [Fact]
     public async Task saveTerminationReturnsBadRequest()
     {
-        _terminationServiceMock
-           .Setup(x => x
-               .SaveTermination(terminationDto))
-           .ThrowsAsync(new Exception("exists"));
+        _terminationServiceMock.Setup(x => x.SaveTermination(terminationDto)).ThrowsAsync(new Exception("exists"));
 
         var controllerResult = await _controller.AddTermination(terminationDto);
-
         var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
     }
 
     [Fact]
     public async Task saveTerminationReturnsProblem()
     {
-        _terminationServiceMock
-           .Setup(x => x
-               .SaveTermination(terminationDto))
-           .ThrowsAsync(new Exception());
+        _terminationServiceMock.Setup(x => x.SaveTermination(terminationDto)).ThrowsAsync(new Exception());
 
         var controllerResult = await _controller.AddTermination(terminationDto);
-
         var actionResult = Assert.IsType<ObjectResult>(controllerResult);
     }
 
     [Fact]
     public async Task GetTerminationByEmployeeIdPass()
     {
-        _terminationServiceMock
-           .Setup(x => x
-           .GetTerminationByEmployeeId(terminationDto.EmployeeId))
-           .ReturnsAsync(terminationDto);
+        _terminationServiceMock.Setup(x => x.GetTerminationByEmployeeId(terminationDto.EmployeeId)).ReturnsAsync(terminationDto);
 
-        var controllerResult = await _controller
-            .GetTerminationByEmployeeId(terminationDto.EmployeeId);
-
+        var controllerResult = await _controller.GetTerminationByEmployeeId(terminationDto.EmployeeId);
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
 
         Assert.NotNull(actionResult.Value);
@@ -104,14 +80,9 @@ public class TerminationControllerUnitTests
     [Fact]
     public async Task GetTerminationByEmployeeIdReturnsNotFound()
     {
-        _terminationServiceMock
-           .Setup(x => x
-           .GetTerminationByEmployeeId(terminationDto.EmployeeId))
-           .ThrowsAsync(new Exception());
+        _terminationServiceMock.Setup(x => x.GetTerminationByEmployeeId(terminationDto.EmployeeId)).ThrowsAsync(new Exception());
 
-        var controllerResult = await _controller
-            .GetTerminationByEmployeeId(terminationDto.EmployeeId);
-
+        var controllerResult = await _controller.GetTerminationByEmployeeId(terminationDto.EmployeeId);
         var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
     }
 }
