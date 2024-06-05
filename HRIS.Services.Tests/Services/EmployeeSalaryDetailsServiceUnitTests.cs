@@ -3,11 +3,8 @@ using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
 using MockQueryable.Moq;
 using Moq;
-using RGO.Tests.Data.Models;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -22,6 +19,9 @@ namespace HRIS.Services.Tests.Services
         private readonly Mock<IEmployeeSalarayDetailsService> _employeeSalaryDetailsServiceMock;
         private readonly EmployeeSalaryDetailsService _employeeSalaryDetailsService;
 
+        int employeeId = 1;
+        static Employee testEmployee = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType);
+
         public EmployeeSalaryDetailsServiceUnitTest()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -29,9 +29,6 @@ namespace HRIS.Services.Tests.Services
             _employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalarayDetailsService>();
             _employeeSalaryDetailsService = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object, _errorLoggingServiceMock.Object);
         }
-
-        int employeeId = 1;
-        static Employee testEmployee = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType);
 
         [Fact]
         public async Task GetEmployeeSalaryPass()
