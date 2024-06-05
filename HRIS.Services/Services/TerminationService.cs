@@ -3,6 +3,7 @@ using System.Text;
 using Azure.Messaging.ServiceBus;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RR.UnitOfWork;
@@ -27,7 +28,7 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> SaveTermination(TerminationDto terminationDto)
     {
-        var exists = await CheckTerminationExist(terminationDto.Id);
+        var exists = await CheckTerminationExist(terminationDto.EmployeeId);
         if (exists)
         {
             var exception = new Exception("termination already exists");
@@ -55,9 +56,29 @@ public class TerminationService : ITerminationService
         }
     }
 
-    public async Task<bool> CheckTerminationExist(int id)
+    public async Task<TerminationDto> GetTerminationByEmployeeId(int employeeId)
+    {
+        var exists = await CheckTerminationExist(employeeId);
+        if (!exists)
+        {
+            var exception = new Exception("termination not found");
+            throw _errorLoggingService.LogException(exception);
+        }
+        try
+        {
+            var newTermination = await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
+
+            return newTermination;
+        }
+        catch (Exception ex)
+        {
+            throw _errorLoggingService.LogException(ex);
+        }
+    }
+
+    public async Task<bool> CheckTerminationExist(int employeeId)
     {
         return await _db.Termination
-                        .Any(termination => termination.Id == id);
+                        .Any(termination => termination.EmployeeId == employeeId);
     }
 }

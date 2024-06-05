@@ -17,4 +17,11 @@ public interface ITerminationService
     /// <param name="terminationDto">TerminationDto</param>
     /// <returns>TerminationDto</returns>
     Task<TerminationDto> SaveTermination(TerminationDto terminationDto);
+
+    /// <summary>
+    ///     Get Termination by employeeid
+    /// </summary>
+    /// <param name="employeeId">employeeId</param>
+    /// <returns>TerminationDto</returns>
+    Task<TerminationDto> GetTerminationByEmployeeId(int employeeId);
 }
