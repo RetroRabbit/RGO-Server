@@ -88,9 +88,9 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null)).Returns(Task.FromResult(employeeSalariesDto));
             var result = await _employeeSalaryDetailsService.GetAllEmployeeSalaries();
 
+            Assert.NotNull(result);
             Assert.Equal(2, result.Count);
             Assert.Equal(employeeSalariesDto, result);
-            Assert.NotNull(result);
             Assert.IsType<List<EmployeeSalaryDetailsDto>>(result);
         }
 
