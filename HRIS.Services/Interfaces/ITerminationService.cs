@@ -24,4 +24,5 @@ public interface ITerminationService
     /// <param name="employeeId">employeeId</param>
     /// <returns>TerminationDto</returns>
     Task<TerminationDto> GetTerminationByEmployeeId(int employeeId);
+
 }

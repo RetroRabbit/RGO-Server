@@ -34,26 +34,21 @@ public class TerminationService : ITerminationService
             TerminationDto updatedTermination = await UpdateTermination(terminationDto);
             return updatedTermination;
         }
-        try
-        {
-            EmployeeDto currentEmployee = await _employeeService.GetEmployeeById(terminationDto.EmployeeId);
-            currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
-            currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment;
-            currentEmployee.Active = false;
 
-            EmployeeTypeDto employeeTypeDto = await _employeeTypeService
-               .GetEmployeeType(currentEmployee.EmployeeType!.Name);
+        EmployeeDto currentEmployee = await _employeeService.GetEmployeeById(terminationDto.EmployeeId);
+        currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
+        currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment;
+        currentEmployee.Active = false;
 
-            await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
-            TerminationDto newTermination = await _db.Termination.Add(new Termination(terminationDto));
+        EmployeeTypeDto employeeTypeDto = await _employeeTypeService
+           .GetEmployeeType(currentEmployee.EmployeeType!.Name);
+
+        await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
+        TerminationDto newTermination = await _db.Termination.Add(new Termination(terminationDto));
 
 
-            return newTermination;
-        }
-        catch (Exception ex)
-        {
-            throw _errorLoggingService.LogException(ex);
-        }
+        return newTermination;
+
     }
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
@@ -69,16 +64,11 @@ public class TerminationService : ITerminationService
             var exception = new Exception("termination not found");
             throw _errorLoggingService.LogException(exception);
         }
-        try
-        {
-            TerminationDto newTermination = await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
 
-            return newTermination;
-        }
-        catch (Exception ex)
-        {
-            throw _errorLoggingService.LogException(ex);
-        }
+        TerminationDto newTermination = await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
+
+        return newTermination;
+
     }
 
     public async Task<bool> CheckTerminationExist(int employeeId)
