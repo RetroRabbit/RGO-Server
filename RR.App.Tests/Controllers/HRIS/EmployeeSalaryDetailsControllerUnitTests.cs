@@ -44,6 +44,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
         _salaries = new List<EmployeeSalaryDetailsDto> { _employeeSalaryDetailsDto };
     }
 
+    [Fact]
     public async Task SaveEmployeeSalaryValidInputReturnsOkResult()
     {
         var employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalarayDetailsService>();
@@ -66,11 +67,14 @@ public class EmployeeSalaryDetailsControllerUnitTest
                            .ReturnsAsync(EmployeeTestData.EmployeeDto);
 
         employeeSalaryDetailsServiceMock.Setup(x => x.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
-                               .Returns((Task<EmployeeSalaryDetailsDto>)Task.CompletedTask);
+                                        .ReturnsAsync(employeeSalaryDetailsDto);
 
         var result = await controller.AddEmployeeSalary(employeeSalaryDetailsDto);
 
-        Assert.IsType<OkResult>(result);
+        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+        Assert.Equal(nameof(controller.AddEmployeeSalary), createdAtActionResult.ActionName);
+        Assert.Equal(employeeSalaryDetailsDto.EmployeeId, createdAtActionResult.RouteValues["employeeId"]);
+        Assert.Equal(employeeSalaryDetailsDto, createdAtActionResult.Value);
     }
 
     [Fact]
