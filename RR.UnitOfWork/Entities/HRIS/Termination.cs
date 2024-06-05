@@ -34,7 +34,6 @@ public class Termination : IModel<TerminationDto>
     public int Id { get; set; }
 
     [ForeignKey("Employee")]
-    
     [Column("employeeId")] public int EmployeeId { get; set; }
     public virtual Employee? Employee { get; set; }
 
