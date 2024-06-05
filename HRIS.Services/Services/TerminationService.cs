@@ -38,7 +38,7 @@ public class TerminationService : ITerminationService
         {
             EmployeeDto currentEmployee = await _employeeService.GetEmployeeById(terminationDto.EmployeeId);
             currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
-            currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment.ToDateTime(new TimeOnly());
+            currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment;
             currentEmployee.Active = false;
 
             EmployeeTypeDto employeeTypeDto = await _employeeTypeService

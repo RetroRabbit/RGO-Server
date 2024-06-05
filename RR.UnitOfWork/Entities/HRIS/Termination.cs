@@ -42,10 +42,10 @@ public class Termination : IModel<TerminationDto>
     public TerminationOption TerminationOption { get; set; }
 
     [Column("dayOfNotice")]
-    public DateOnly DayOfNotice { get; set; }
+    public DateTime DayOfNotice { get; set; }
 
     [Column("lastDayOfEmployment")]
-    public DateOnly LastDayOfEmployment { get; set; }
+    public DateTime LastDayOfEmployment { get; set; }
 
     [Column("reemploymentStatus")]
     public bool ReemploymentStatus { get; set; }
