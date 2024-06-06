@@ -8,6 +8,7 @@ using RGO.Tests.Data.Models;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using Xunit;
 
@@ -268,5 +269,34 @@ public class EmployeeDocumentControllerUnitTest
 
         Assert.Equal("An error occurred while fetching the employee documents.", notfoundResult.Value);
 
+    }
+
+    [Fact]
+    public async Task GetAllDocuments_ReturnsInternalServerError_WhenExceptionIsThrown()
+    {
+        _employeeMockDocumentService
+                .Setup(ex => ex.GetAllDocuments())
+                .ThrowsAsync(new Exception("Test exception"));
+
+        var result = await _controller.GetAllDocuments();
+
+        var statusCodeResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, statusCodeResult.StatusCode);
+        Assert.Equal("An error occurred while fetching the employee documents.", statusCodeResult.Value);
+    }
+
+    [Fact]
+    public async Task GetAllDocuments_ReturnsOk_WhenDocumentsAreFetchedSuccessfully()
+    {
+        var documents = new List<SimpleEmployeeDocumentGetAllDto> { };
+        _employeeMockDocumentService
+            .Setup(ex => ex.GetAllDocuments())
+            .ReturnsAsync(documents);
+
+        var result = await _controller.GetAllDocuments();
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+        Assert.Equal(documents, okResult.Value);
     }
 }
