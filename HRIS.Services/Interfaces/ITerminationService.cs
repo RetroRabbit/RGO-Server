@@ -8,7 +8,7 @@ public interface ITerminationService
     ///     Check if user exist
     /// </summary>
     /// <param name="email"></param>
-    /// <returns></returns>
+    /// <returns>Boolean to check if the Termination exists</returns>
     Task<bool> CheckTerminationExist(int Id);
 
     /// <summary>

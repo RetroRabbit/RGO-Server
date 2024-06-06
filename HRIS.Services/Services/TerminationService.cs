@@ -37,9 +37,8 @@ public class TerminationService : ITerminationService
         EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
 
         await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
-        TerminationDto newTermination = await _db.Termination.Add(new Termination(terminationDto));
 
-        return newTermination;
+        return await _db.Termination.Add(new Termination(terminationDto));
     }
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
@@ -56,9 +55,7 @@ public class TerminationService : ITerminationService
             throw _errorLoggingService.LogException(exception);
         }
 
-        TerminationDto newTermination = await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
-
-        return newTermination;
+        return await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
     }
 
     public async Task<bool> CheckTerminationExist(int employeeId)
