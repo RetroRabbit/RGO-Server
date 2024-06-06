@@ -25,7 +25,7 @@ namespace RR.App
 
             var serviceBusConnectionString = Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString");
             var queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
-            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString); 
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
 
             builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
             builder.Services.AddControllers();
@@ -67,12 +67,12 @@ namespace RR.App
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
-            /// and set the token validation parameters.
+            /// and set the token validation parameters using public key.
             /// </summary>
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new()
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -80,9 +80,16 @@ namespace RR.App
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
 
-                        ValidIssuer = Environment.GetEnvironmentVariable("Auth__Issuer"),
-                        ValidAudience = Environment.GetEnvironmentVariable("Auth__Audience"),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Auth__Key")))
+                        ValidIssuer = "https://dev-o6d2moyfh4iz7sat.us.auth0.com/",//Environment.GetEnvironmentVariable("Auth__Issuer"),
+                        ValidAudience = "https://webapi/",//Environment.GetEnvironmentVariable("Auth__Audience"),
+                        IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
+                        {
+                            // Fetch the public keys from Auth0
+                            var client = new HttpClient();
+                            var response = client.GetAsync("https://dev-o6d2moyfh4iz7sat.us.auth0.com/.well-known/jwks.json").Result;
+                            var keys = new JsonWebKeySet(response.Content.ReadAsStringAsync().Result);
+                            return keys.Keys;
+                        }
                     };
 
                     options.Events = new JwtBearerEvents
@@ -94,14 +101,15 @@ namespace RR.App
                             var issuer = context.Principal.FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
                             var audience = context.Principal.FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
 
-                            if (issuer != Environment.GetEnvironmentVariable("Auth__Issuer") || audience != Environment.GetEnvironmentVariable("Auth__Audience"))
+                            if (issuer != "https://dev-o6d2moyfh4iz7sat.us.auth0.com/"/*Environment.GetEnvironmentVariable("Auth__Issuer")*/ || audience != "https://webapi/"/*Environment.GetEnvironmentVariable("Auth__Audience")*/)
                             {
                                 context.Fail("Token is not valid");
                                 return Task.CompletedTask;
                             }
 
+                            // Updated to handle assignedRole instead of role
                             Claim? roleClaims = claimsIdentity!.Claims
-                                .FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                                .FirstOrDefault(c => c.Type == "assignedRole");
 
                             if (roleClaims == null) return Task.CompletedTask;
 
