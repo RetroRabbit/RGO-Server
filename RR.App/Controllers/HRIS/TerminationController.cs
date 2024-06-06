@@ -17,7 +17,7 @@ public class TerminationController : ControllerBase
         _terminationService = terminationService;
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> AddTermination([FromBody] TerminationDto newTerminationDto)
     {
@@ -34,7 +34,7 @@ public class TerminationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetTerminationByEmployeeId([FromQuery] int employeeId)
     {
