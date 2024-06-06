@@ -109,7 +109,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         {
             return false;
         }
-        var exists = await _db.EmployeeAddress.GetById(employeeSalaryDetailsDto.Id);
+        var exists = await _db.EmployeeSalaryDetails.GetById(employeeSalaryDetailsDto.Id);
         return exists == null;
     }
 }
