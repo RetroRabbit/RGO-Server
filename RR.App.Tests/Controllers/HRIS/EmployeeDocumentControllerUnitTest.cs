@@ -7,6 +7,7 @@ using Moq;
 using RGO.Tests.Data.Models;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data.Models.HRIS;
+using RR.UnitOfWork.Entities.HRIS;
 using System.Security.Claims;
 using Xunit;
 
@@ -28,9 +29,9 @@ public class EmployeeDocumentControllerUnitTest
         _controller = new EmployeeDocumentController(_employeeMockDocumentService.Object);
 
         claims = new List<Claim>
-        {
+            {
                 new Claim(ClaimTypes.Email, "test@example.com"),
-        };
+            };
 
         identity = new ClaimsIdentity(claims, "TestAuthType");
         claimsPrincipal = new ClaimsPrincipal(identity);
@@ -88,9 +89,14 @@ public class EmployeeDocumentControllerUnitTest
     public async Task GetAllEmployeeDocumentReturnsOkResult()
     {
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
-        {
+            {
                 EmployeeDocumentTestData.EmployeeDocumentPending
-        };
+            };
+
+        var listOfEmployeeDocuments = new List<EmployeeDocument>()
+            {
+                new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending)
+            };
 
         _employeeMockDocumentService.Setup(x => x.GetEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.DocumentType!.Value)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
@@ -121,6 +127,7 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task SaveEmployeeDocumentReturnsOkResult()
     {
+
         _employeeMockDocumentService
             .Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument, "test@example.com", 0))
             .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
@@ -163,6 +170,20 @@ public class EmployeeDocumentControllerUnitTest
     {
         EmployeeDocumentDto broken = new EmployeeDocumentDto
         {
+            Id = 1,
+            DocumentType = DocumentType.StarterKit,
+            LastUpdatedDate = DateTime.UtcNow,
+            UploadDate = DateTime.UtcNow,
+            AdminFileCategory = 0,
+            CounterSign = false,
+            EmployeeFileCategory = 0,
+            FileName = "Test",
+            EmployeeId = 0,
+            Blob = null,
+            FileCategory = 0,
+            Reason = "",
+            Reference = "",
+            Status = DocumentStatus.Approved
         };
 
         _employeeMockDocumentService.Setup(service => service.UpdateEmployeeDocument(broken, It.IsAny<string>()))
@@ -254,18 +275,15 @@ public class EmployeeDocumentControllerUnitTest
     }
 
     [Fact]
-    public async Task GetAllDocumentsReturnsOkWhenDocumentsAreFetched()
+    public async Task GetAllDocuments_ReturnsOk_WhenDocumentsAreFetchedSuccessfully()
     {
-        var documents = new List<SimpleEmployeeDocumentGetAllDto>
-        {
-            new SimpleEmployeeDocumentGetAllDto { Name = "Joe", Surname = "Jee1", EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved },
-            new SimpleEmployeeDocumentGetAllDto { Name = "Jack", Surname = "Joe2", EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved },
-        };
-
-         _employeeMockDocumentService
-            .Setup(service => service.GetAllDocuments()).ReturnsAsync(documents);
+        var documents = new List<SimpleEmployeeDocumentGetAllDto>();
+        _employeeMockDocumentService
+            .Setup(service => service.GetAllDocuments())
+            .ReturnsAsync(documents);
 
         var result = await _controller.GetAllDocuments();
+
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
         Assert.Equal(documents, okResult.Value);
