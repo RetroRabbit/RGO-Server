@@ -17,12 +17,9 @@ public class AuthServiceUnitTest
     private readonly AuthService _authService;
     private readonly Mock<IAuthService> _authServiceMock;
     private readonly Mock<IConfiguration> _configuration;
-    //private readonly Mock<IEmployeeAddressService>? _employeeAddressService;
-    private readonly Mock<IEmployeeRoleService> _employeeRoleServiceMock;
     private readonly Mock<IEmployeeService> _employeeService;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IRoleAccessLinkService> _roleAccessLinkService;
-    //private readonly Mock<IRoleService> _roleService;
     private readonly Mock<IUnitOfWork> _unitOfWork;
     private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType? employeeType1;
@@ -30,8 +27,6 @@ public class AuthServiceUnitTest
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto? employeeTypeDto2;
     private readonly ErrorLoggingService _errorLoggingService;
-
-    private EmployeeTypeService? employeeTypeService;
     
     public AuthServiceUnitTest()
     {
@@ -40,11 +35,9 @@ public class AuthServiceUnitTest
         _employeeService = new Mock<IEmployeeService>();
         _configuration = new Mock<IConfiguration>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         _authServiceMock = new Mock<IAuthService>();
         _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
 
-        employeeTypeService = new EmployeeTypeService(_unitOfWork.Object);
         employeeTypeDto1 = new EmployeeTypeDto{ Id = 3, Name = "Developer" };
         employeeTypeDto2 = new EmployeeTypeDto{ Id = 7, Name = "People Champion" };
         employeeType1 = new EmployeeType(employeeTypeDto1);

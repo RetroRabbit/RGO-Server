@@ -21,7 +21,6 @@ namespace HRIS.Services.Tests.Services
         private readonly EmployeeDto _employeeDto;
         private readonly EmployeeQualificationDto _employeeQualificationDto;
         private readonly EmployeeQualification _employeeQualification;
-        private readonly List<EmployeeQualificationDto> _employeeQualificationDtoList;
 
         private const int _employeeId = 1;
         private const int _qualificationId = 1;
@@ -63,7 +62,6 @@ namespace HRIS.Services.Tests.Services
                 Year = _employeeQualificationDto.Year
             };
 
-            _employeeQualificationDtoList = new List<EmployeeQualificationDto> { _employeeQualificationDto };
         }
 
         private void SetupEmployeeExists()
@@ -347,6 +345,5 @@ namespace HRIS.Services.Tests.Services
 
             VerifyDeleteQualificationCalled(Times.Once);
         }
-
     }
 }
