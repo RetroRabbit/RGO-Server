@@ -29,9 +29,9 @@ public class EmployeeDocumentControllerUnitTest
         _controller = new EmployeeDocumentController(_employeeMockDocumentService.Object);
 
         claims = new List<Claim>
-            {
+        {
                 new Claim(ClaimTypes.Email, "test@example.com"),
-            };
+        };
 
         identity = new ClaimsIdentity(claims, "TestAuthType");
         claimsPrincipal = new ClaimsPrincipal(identity);
@@ -89,14 +89,9 @@ public class EmployeeDocumentControllerUnitTest
     public async Task GetAllEmployeeDocumentReturnsOkResult()
     {
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
-            {
+        {
                 EmployeeDocumentTestData.EmployeeDocumentPending
-            };
-
-        var listOfEmployeeDocuments = new List<EmployeeDocument>()
-            {
-                new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending)
-            };
+        };
 
         _employeeMockDocumentService.Setup(x => x.GetEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.DocumentType!.Value)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
@@ -275,15 +270,18 @@ public class EmployeeDocumentControllerUnitTest
     }
 
     [Fact]
-    public async Task GetAllDocuments_ReturnsOk_WhenDocumentsAreFetchedSuccessfully()
+    public async Task GetAllDocumentsReturnsOkWhenDocumentsAreFetched()
     {
-        var documents = new List<SimpleEmployeeDocumentGetAllDto>();
+        var documents = new List<SimpleEmployeeDocumentGetAllDto>
+        {
+            new SimpleEmployeeDocumentGetAllDto { Name = "Joe", Surname = "Jee1", EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved },
+            new SimpleEmployeeDocumentGetAllDto { Name = "Jack", Surname = "Joe2", EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved },
+        };
+
         _employeeMockDocumentService
-            .Setup(service => service.GetAllDocuments())
-            .ReturnsAsync(documents);
+           .Setup(service => service.GetAllDocuments()).ReturnsAsync(documents);
 
         var result = await _controller.GetAllDocuments();
-
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
         Assert.Equal(documents, okResult.Value);
