@@ -290,7 +290,7 @@ public class EmployeeDocumentControllerUnitTest
     {
         var documents = new List<SimpleEmployeeDocumentGetAllDto> { };
         _employeeMockDocumentService
-            .Setup(ex => ex.GetAllDocuments())
+            .Setup(service => service.GetAllDocuments())
             .ReturnsAsync(documents);
 
         var result = await _controller.GetAllDocuments();
