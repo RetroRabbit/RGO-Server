@@ -288,7 +288,7 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task GetAllDocuments_ReturnsOk_WhenDocumentsAreFetchedSuccessfully()
     {
-        var documents = new List<SimpleEmployeeDocumentGetAllDto> { };
+        var documents = new List<SimpleEmployeeDocumentGetAllDto>();
         _employeeMockDocumentService
             .Setup(service => service.GetAllDocuments())
             .ReturnsAsync(documents);
