@@ -98,14 +98,7 @@ namespace RR.App
                         {
                             var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
 
-                            Claim? assignedRoleClaim = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == "assignedRole");
-                            if (assignedRoleClaim != null)
-                            {
-                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, assignedRoleClaim.Value));
-                                claimsIdentity.RemoveClaim(assignedRoleClaim);
-                            }
-
-                            Claim? roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == "role");
+                            Claim? roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
                             if (roleClaims != null)
                             {
                                 var roles = JArray.Parse(roleClaims.Value);
