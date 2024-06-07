@@ -17,6 +17,7 @@ public class EmployeeControllerUnitTests
     private readonly EmployeeController _controller;
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDto _employee;
+    private readonly SimpleEmployeeProfileDto _simpleEmployee;
     private readonly Mock<IEmployeeService> _employeeMockService;
 
     private readonly EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto
@@ -77,6 +78,27 @@ public class EmployeeControllerUnitTests
             Email = "ksmith@retrorabbit.co.za",
             PersonalEmail = "kmaosmith@gmail.com",
             CellphoneNo = "0123456789",
+            PhysicalAddress = employeeAddressDto,
+            PostalAddress = employeeAddressDto
+        };
+
+        _simpleEmployee = new SimpleEmployeeProfileDto{
+            Id = 1,
+            EmployeeNumber = "1",
+            TaxNumber = "123123",
+            EngagementDate = new DateTime(),
+            Disability = false,
+            DisabilityNotes = "",
+            Level = 3,
+            EmployeeType = employeeTypeDto,
+            Name = "John",
+            Initials = "J",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(),
+            IdNumber = "123",
+            Email = "ksmith@retrorabbit.co.za",
+            PersonalEmail = "ba@gmail.com",
+            CellphoneNo = "123",
             PhysicalAddress = employeeAddressDto,
             PostalAddress = employeeAddressDto
         };
@@ -370,66 +392,22 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetSimpleEmployeeSuccess()
     {
-        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto
-        {
-            Id = 1,
-            EmployeeNumber = "1",
-            TaxNumber = "123123",
-            EngagementDate = new DateTime(),
-            Disability = false,
-            DisabilityNotes = "",
-            Level = 3,
-            EmployeeType = employeeTypeDto,
-            Name = "John",
-            Initials = "J",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(),
-            IdNumber = "123",
-            Email = "ksmith@retrorabbit.co.za",
-            PersonalEmail = "ba@gmail.com",
-            CellphoneNo = "123",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
-        };
+        _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(_simpleEmployee);
 
-        _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(employee);
-
-        var result = await _controller.GetSimpleEmployee(employee.Email!);
+        var result = await _controller.GetSimpleEmployee(_simpleEmployee.Email!);
 
         var simpleEmployee = (ObjectResult)result;
 
-        Assert.Equal(employee, simpleEmployee.Value);
+        Assert.Equal(_simpleEmployee, simpleEmployee.Value);
     }
 
     [Fact]
     public async Task GetSimpleEmployeeFail()
     {
-        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto
-        {
-            Id = 1,
-            EmployeeNumber = "1",
-            TaxNumber = "123123",
-            EngagementDate = new DateTime(),
-            Disability = false,
-            DisabilityNotes = "",
-            Level = 3,
-            EmployeeType = employeeTypeDto,
-            Name = "John",
-            Initials = "J",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(),
-            IdNumber = "123",
-            Email = "ksmith@retrorabbit.co.za",
-            PersonalEmail = "ba@gmail.com",
-            CellphoneNo = "123",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
-        };
-
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
                             .ThrowsAsync(new Exception("Not Found"));
 
-        var result = await _controller.GetSimpleEmployee(employee.Email!);
+        var result = await _controller.GetSimpleEmployee(_simpleEmployee.Email!);
 
         var simpleEmployee = (NotFoundObjectResult)result;
 

@@ -41,7 +41,6 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task GetAllEmployeelCertiificatesPass()
     {
-       
         _mockService.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id))
             .ReturnsAsync(certificates);
 
@@ -50,13 +49,11 @@ public class EmployeeCertificationControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<IEnumerable<EmployeeCertificationDto>>(okResult.Value);
         Assert.Equal(model, certificates);
-
     }
     
     [Fact]
     public async Task GetAllEmployeelCertiificatesFail()
     {
-       
         _mockService.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id + 1))
             .ThrowsAsync(new Exception("Employee not found"));
 
@@ -64,13 +61,11 @@ public class EmployeeCertificationControllerUnitTests
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
-
     }
     
     [Fact]
     public async Task SaveEmployeelCertiificatesPass()
     {
-       
         _mockService.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
             .ReturnsAsync(employeeCertificationDto);
 
@@ -78,13 +73,11 @@ public class EmployeeCertificationControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
-
     }
     
     [Fact]
     public async Task SaveEmployeelCertiificatesFail()
     {
-       
         _mockService.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
             .ThrowsAsync(new Exception("Employee not found"));
 
@@ -92,13 +85,11 @@ public class EmployeeCertificationControllerUnitTests
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
-
     }
     
     [Fact]
     public async Task GetEmployeelCertiificatesPass()
     {
-       
         _mockService.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id))
             .ReturnsAsync(employeeCertificationDto);
 
@@ -106,13 +97,11 @@ public class EmployeeCertificationControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
-
     }
     
     [Fact]
     public async Task GetEmployeelCertiificatesFail()
     {
-       
         _mockService.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("Employee not found"));
 
@@ -120,13 +109,11 @@ public class EmployeeCertificationControllerUnitTests
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
-
     }
     
     [Fact]
     public async Task DeleteEmployeelCertiificatesPass()
     {
-       
         _mockService.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
             .ReturnsAsync(employeeCertificationDto);
 
@@ -139,7 +126,6 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task DeleteEmployeelCertiificatesFail()
     {
-       
         _mockService.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("Employee not found"));
 
@@ -152,7 +138,6 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task UpdateEmployeelCertiificatesPass()
     {
-       
         _mockService.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
             .ReturnsAsync(employeeCertificationDto);
 
@@ -165,7 +150,6 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task UpdateEmployeelCertiificatesFail()
     {
-       
         _mockService.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
             .ThrowsAsync(new Exception("Employee not found"));
 
@@ -175,4 +159,3 @@ public class EmployeeCertificationControllerUnitTests
         Assert.Equal("Employee not found", notFoundResult.Value);
     }
 }
-

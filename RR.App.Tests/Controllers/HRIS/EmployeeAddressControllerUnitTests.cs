@@ -131,18 +131,7 @@ public class EmployeeAddressControllerUnitTests
     public async Task DeleteEmployeeAddressReturnsOkResultWithDeletedAddress()
     {
         var addressToDelete = EmployeeAddressTestData.EmployeeAddressDto2;
-        var deletedAddress = new EmployeeAddressDto
-        {
-            Id = 1,
-            UnitNumber = "Deleted 1",
-            ComplexName = "Deleted Complex Name 1",
-            StreetNumber = "Deleted Street Number 1",
-            SuburbOrDistrict = "Deleted Suburb or District 1",
-            City = "Deleted City 1",
-            Country = "Deleted Country 1",
-            Province = "Deleted Province 1",
-            PostalCode = "0002"
-        };
+        var deletedAddress = EmployeeAddressTestData.EmployeeAddressDto2;
 
         var mockEmployeeAddressService = new Mock<IEmployeeAddressService>();
         mockEmployeeAddressService.Setup(s => s.Delete(addressToDelete.Id)).ReturnsAsync(deletedAddress);
