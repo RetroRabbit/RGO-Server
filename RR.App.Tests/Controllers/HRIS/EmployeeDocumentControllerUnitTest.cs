@@ -270,7 +270,7 @@ public class EmployeeDocumentControllerUnitTest
     }
 
     [Fact]
-    public async Task GetAllDocumentsReturnsOkWhenDocumentsAreFetched()
+    public async Task GetAllDocuments_ReturnsOk_WhenDocumentsAreFetched()
     {
         var documents = new List<SimpleEmployeeDocumentGetAllDto>
         {
