@@ -10,6 +10,7 @@ using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
 using HRIS.Services.Services;
+using Newtonsoft.Json;
 
 namespace RR.App
 {
@@ -100,11 +101,21 @@ namespace RR.App
 
                             Claim? roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
                             if (roleClaims != null)
-                            {
-                                var roles = JArray.Parse(roleClaims.Value);
-                                foreach (var role in roles)
+                                try
                                 {
-                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
+                                    var roles = JArray.Parse(roleClaims.Value);
+                                    foreach (var role in roles)
+                                    {
+                                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
+                                    }
+                                }
+                                catch (JsonReaderException)
+                                {
+                                    var roles = roleClaims.Value.Split(',');
+                                    foreach (var role in roles)
+                                    {
+                                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
+                                    }
                                 }
                                 claimsIdentity.RemoveClaim(roleClaims);
                             }
