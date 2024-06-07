@@ -275,7 +275,7 @@ public class EmployeeDocumentControllerUnitTest
     public async Task GetAllDocuments_ReturnsInternalServerError_WhenExceptionIsThrown()
     {
         _employeeMockDocumentService
-                .Setup(service => service.GetAllDocuments())
+                .Setup(x => x.GetAllDocuments())
                 .ThrowsAsync(new Exception("Test exception"));
 
         var result = await _controller.GetAllDocuments();
@@ -290,7 +290,7 @@ public class EmployeeDocumentControllerUnitTest
     {
         var documents = new List<SimpleEmployeeDocumentGetAllDto>();
         _employeeMockDocumentService
-            .Setup(service => service.GetAllDocuments())
+            .Setup(x => x.GetAllDocuments())
             .ReturnsAsync(documents);
 
         var result = await _controller.GetAllDocuments();
