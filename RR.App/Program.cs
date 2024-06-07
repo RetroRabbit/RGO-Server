@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using HRIS.Services;
 using RR.UnitOfWork;
 using System.Security.Claims;
-using System.Text;
+using Newtonsoft.Json.Linq;
 using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
@@ -67,12 +66,12 @@ namespace RR.App
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application
-            /// and set the token validation parameters using public key.
+            /// and set the token validation parameters.
             /// </summary>
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters
+                    options.TokenValidationParameters = new()
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -80,14 +79,15 @@ namespace RR.App
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
 
-                        ValidIssuer = "https://dev-o6d2moyfh4iz7sat.us.auth0.com/",//Environment.GetEnvironmentVariable("Auth__Issuer"),
-                        ValidAudience = "https://webapi/",//Environment.GetEnvironmentVariable("Auth__Audience"),
+                        ValidIssuer = Environment.GetEnvironmentVariable("Auth__Issuer"),
+                        ValidAudience = Environment.GetEnvironmentVariable("Auth__Audience"),
                         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
                         {
-                            // Fetch the public keys from Auth0
                             var client = new HttpClient();
-                            var response = client.GetAsync("https://dev-o6d2moyfh4iz7sat.us.auth0.com/.well-known/jwks.json").Result;
-                            var keys = new JsonWebKeySet(response.Content.ReadAsStringAsync().Result);
+                            var jwksUrl = Environment.GetEnvironmentVariable("Auth__Issuer") + ".well-known/jwks.json";
+                            var httpClient = new HttpClient();
+                            var jwksResponse = httpClient.GetStringAsync(jwksUrl);
+                            var keys = new JsonWebKeySet(jwksResponse.Result);
                             return keys.Keys;
                         }
                     };
@@ -98,29 +98,23 @@ namespace RR.App
                         {
                             var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
 
-                            var issuer = context.Principal.FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
-                            var audience = context.Principal.FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
-
-                            if (issuer != "https://dev-o6d2moyfh4iz7sat.us.auth0.com/"/*Environment.GetEnvironmentVariable("Auth__Issuer")*/ || audience != "https://webapi/"/*Environment.GetEnvironmentVariable("Auth__Audience")*/)
+                            Claim? assignedRoleClaim = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == "assignedRole");
+                            if (assignedRoleClaim != null)
                             {
-                                context.Fail("Token is not valid");
-                                return Task.CompletedTask;
+                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, assignedRoleClaim.Value));
+                                claimsIdentity.RemoveClaim(assignedRoleClaim);
                             }
 
-                            // Updated to handle assignedRole instead of role
-                            Claim? roleClaims = claimsIdentity!.Claims
-                                .FirstOrDefault(c => c.Type == "assignedRole");
-
-                            if (roleClaims == null) return Task.CompletedTask;
-
-                            var roles = roleClaims.Value.Split(",");
-
-                            foreach (var role in roles)
+                            Claim? roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == "role");
+                            if (roleClaims != null)
                             {
-                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+                                var roles = JArray.Parse(roleClaims.Value);
+                                foreach (var role in roles)
+                                {
+                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
+                                }
+                                claimsIdentity.RemoveClaim(roleClaims);
                             }
-
-                            claimsIdentity.RemoveClaim(roleClaims);
                             return Task.CompletedTask;
                         }
                     };
@@ -180,7 +174,7 @@ namespace RR.App
                         {
                             policy.RequireRole(policySettings.Roles);
                             if (policySettings.Permissions.Count > 0)
-                                policy.RequireClaim("Permission", policySettings.Permissions);
+                                policy.RequireClaim("permissions", policySettings.Permissions);
                         });
                 });
             });
@@ -195,9 +189,7 @@ namespace RR.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
-
-            app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

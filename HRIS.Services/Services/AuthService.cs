@@ -62,7 +62,7 @@ public class AuthService : IAuthService
         {
             claims.Add(new Claim(ClaimTypes.Role, role.Key));
 
-            foreach (var permission in role.Value) claims.Add(new Claim("Permission", permission));
+            foreach (var permission in role.Value) claims.Add(new Claim("permissions", permission));
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor
