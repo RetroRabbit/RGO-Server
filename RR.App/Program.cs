@@ -16,6 +16,24 @@ namespace RR.App
 {
     public class Program
     {
+        private static Lazy<JsonWebKeySet> LazyJwksSet = new Lazy<JsonWebKeySet>(() =>
+        {
+            try
+            {
+                var jwksUrl = Environment.GetEnvironmentVariable("Auth__Issuer") + ".well-known/jwks.json";
+                using (var httpClient = new HttpClient())
+                {
+                    var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
+                    return new JsonWebKeySet(jwksResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching JWKS: {ex.Message}");
+                throw;
+            }
+        });
+
         public static async Task Main(params string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -84,12 +102,15 @@ namespace RR.App
                         ValidAudience = Environment.GetEnvironmentVariable("Auth__Audience"),
                         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
                         {
-                            var client = new HttpClient();
-                            var jwksUrl = Environment.GetEnvironmentVariable("Auth__Issuer") + ".well-known/jwks.json";
-                            var httpClient = new HttpClient();
-                            var jwksResponse = httpClient.GetStringAsync(jwksUrl);
-                            var keys = new JsonWebKeySet(jwksResponse.Result);
-                            return keys.Keys;
+                            var jwksSet = LazyJwksSet.Value;
+                            if (jwksSet != null)
+                            {
+                                return jwksSet.Keys;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("JsonWebKeySet is not available.");
+                            }
                         }
                     };
 
@@ -117,8 +138,8 @@ namespace RR.App
                                         claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
                                     }
                                 }
-                                claimsIdentity.RemoveClaim(roleClaims);
-                            }
+                            claimsIdentity.RemoveClaim(roleClaims);
+
                             return Task.CompletedTask;
                         }
                     };
