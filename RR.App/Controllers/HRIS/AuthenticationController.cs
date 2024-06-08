@@ -59,7 +59,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("roles")]
     public async Task<IActionResult> GetUserRoles([FromQuery] string? email)
     {

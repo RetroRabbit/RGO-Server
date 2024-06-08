@@ -214,7 +214,9 @@ namespace RR.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
-            app.UseAuthentication();
+
+            app.UseHttpsRedirection();
+
             app.UseAuthorization();
 
             app.MapControllers();
