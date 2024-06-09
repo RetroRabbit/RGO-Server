@@ -88,6 +88,7 @@ public class PropertyAccessController : ControllerBase
         try
         {
             var employee = await _employeeService.GetEmployee(email);
+            GlobalVariables.SetUserId(employee!.Id);
             return Ok(employee.Id);
         }
         catch (Exception ex)
