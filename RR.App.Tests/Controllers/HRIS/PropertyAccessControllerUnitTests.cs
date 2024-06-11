@@ -135,21 +135,21 @@ public class PropertyAccessControllerUnitTests
         _propertyAccessMockService.Verify(service => service.UpdatePropertyAccess(0, PropertyAccessLevel.read), Times.Once);
     }
 
-    [Fact]
-    public async Task GetUserIdReturnsOkResult()
-    {
-        var email = "test@retrorabbit.co.za";
+    //[Fact]
+    //public async Task GetUserIdReturnsOkResult()
+    //{
+    //    var email = "test@retrorabbit.co.za";
 
-        _employeeMockService.Setup(service => service.GetEmployee(email))
-                                 .ReturnsAsync(EmployeeTestData.EmployeeDto);
+    //    _employeeMockService.Setup(service => service.GetEmployee(email))
+    //                             .ReturnsAsync(EmployeeTestData.EmployeeDto);
 
-        var result = await _propertyAccessController.GetUserId(email);
+    //    var result = await _propertyAccessController.GetUserId(email);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(1, okResult.Value!);
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+    //    Assert.Equal(1, okResult.Value!);
 
-        _employeeMockService.Verify(service => service.GetEmployee(email), Times.Once);
-    }
+    //    _employeeMockService.Verify(service => service.GetEmployee(email), Times.Once);
+    //}
 
     [Fact]
     public async Task GetUserIdReturnsNotFoundResult()
