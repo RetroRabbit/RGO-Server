@@ -38,7 +38,7 @@ steps:
     command: publish
     publishWebProjects: true
     arguments: '--configuration $(BuildConfiguration) --framework $(dotNetFramework) --runtime $(targetRuntime) --self-contained --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: true
+    zipAfterPublish: false
     modifyOutputPath: false
 
 # Package the file and uploads them as an artifact of the build
