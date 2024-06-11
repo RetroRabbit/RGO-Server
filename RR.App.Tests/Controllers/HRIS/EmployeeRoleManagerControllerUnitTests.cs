@@ -80,10 +80,12 @@ public class EmployeeRoleManagerControllerUnitTests
     {
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
+
         var roleServiceMock = new Mock<IRoleService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var email = "test@retrorabbit.co.za";
         var role = "Admin";
@@ -174,9 +176,9 @@ public class EmployeeRoleManagerControllerUnitTests
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         var roleServiceMock = new Mock<IRoleService>();
-
+        var employeeAuthServiceMock = new Mock<IAuthService>();
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var email = "test@retrorabbit.co.za";
         var role = "Super Admin";
@@ -270,10 +272,11 @@ public class EmployeeRoleManagerControllerUnitTests
     {
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
         var roleServiceMock = new Mock<IRoleService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var email = "test@retrorabbit.co.za";
         var role = "Unknown Role";
@@ -364,10 +367,11 @@ public class EmployeeRoleManagerControllerUnitTests
     {
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
         var roleServiceMock = new Mock<IRoleService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var invalidEmail = string.Empty;
         string? invalidRole = null;
@@ -387,9 +391,10 @@ public class EmployeeRoleManagerControllerUnitTests
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         var roleServiceMock = new Mock<IRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var email = "test@retrorabbit.co.za";
         var role = "Employee";
@@ -414,9 +419,10 @@ public class EmployeeRoleManagerControllerUnitTests
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         var roleServiceMock = new Mock<IRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var email = "test@retrorabbit.co.za";
         var role = "Employee";
@@ -514,10 +520,10 @@ public class EmployeeRoleManagerControllerUnitTests
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         var roleServiceMock = new Mock<IRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
-
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
         var email = "test@retrorabbit.co.za";
         var role = "Journey";
 
@@ -545,9 +551,10 @@ public class EmployeeRoleManagerControllerUnitTests
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         var roleServiceMock = new Mock<IRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var employeeDto = new EmployeeDto
         {
@@ -632,9 +639,10 @@ public class EmployeeRoleManagerControllerUnitTests
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         var roleServiceMock = new Mock<IRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
 
         var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object);
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         var email = "test@retrorabbit.co.za";
         var role = "Employee";
@@ -660,7 +668,7 @@ public class EmployeeRoleManagerControllerUnitTests
         var expectedRoleDescription = "Employee Role";
 
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
+        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, null);
 
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email))
                                .ReturnsAsync(new EmployeeRoleDto
@@ -744,8 +752,10 @@ public class EmployeeRoleManagerControllerUnitTests
     public async Task GetAllRolesReturnsOk()
     {
         var roleServiceMock = new Mock<IRoleService>();
-        var controller = new EmployeeRoleManageController(null, null, roleServiceMock.Object);
+        var employeeAuthServiceMock = new Mock<IAuthService>();
 
+        var controller = new EmployeeRoleManageController(null, null,
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
         var roles = new List<RoleDto>
         {
             new RoleDto{ Id = 1, Description = "Super Admin" },
@@ -771,7 +781,10 @@ public class EmployeeRoleManagerControllerUnitTests
     public async Task GetAllRolesReturnsNotFoundOnError()
     {
         var roleServiceMock = new Mock<IRoleService>();
-        var controller = new EmployeeRoleManageController(null, null, roleServiceMock.Object);
+        var employeeAuthServiceMock = new Mock<IAuthService>();
+
+        var controller = new EmployeeRoleManageController(null, null,
+                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
 
         roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("An error occurred getting all roles."));
 
@@ -787,7 +800,8 @@ public class EmployeeRoleManagerControllerUnitTests
     public async Task GetAllEmployeeOnRolesReturnsOk()
     {
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
+        var employeeAuthServiceMock = new Mock<IAuthService>();
+        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, employeeAuthServiceMock.Object);
 
         var roleId = 1;
         var employeeRoles = new List<EmployeeRoleDto>
@@ -822,7 +836,8 @@ public class EmployeeRoleManagerControllerUnitTests
     public async Task GetAllEmployeeOnRolesReturnsNotFoundOnError()
     {
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
+        var employeeAuthServiceMock = new Mock<IAuthService>();
+        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, employeeAuthServiceMock.Object);
 
         var roleId = 1;
 
@@ -844,7 +859,8 @@ public class EmployeeRoleManagerControllerUnitTests
         var expectedErrorMessage = "An error occurred while processing the request.";
 
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null);
+        var employeeAuthServiceMock = new Mock<IAuthService>();
+        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, employeeAuthServiceMock.Object);
 
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ThrowsAsync(new Exception(expectedErrorMessage));
 

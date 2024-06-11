@@ -11,7 +11,7 @@ public class AuthService : IAuthService
     private readonly IErrorLoggingService _errorLoggingService;
     private readonly HttpClient client = new();
     private static string _cachedAccessToken = string.Empty;
-
+ 
     public AuthService(IErrorLoggingService errorLoggingService)
     {
         _errorLoggingService = errorLoggingService;
@@ -34,7 +34,7 @@ public class AuthService : IAuthService
     }
 
     public async Task<string?> GetAuth0ManagementAccessToken()
-    {//TODO: change secrets to .env vars
+    {
         if (!string.IsNullOrEmpty(_cachedAccessToken))
         {
             var isExpired = IsTokenExpired(_cachedAccessToken);
