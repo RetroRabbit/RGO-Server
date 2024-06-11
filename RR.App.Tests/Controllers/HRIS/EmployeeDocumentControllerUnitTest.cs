@@ -16,7 +16,6 @@ namespace RR.App.Tests.Controllers.HRIS;
 public class EmployeeDocumentControllerUnitTest
 {
     private readonly Mock<IEmployeeDocumentService> _employeeMockDocumentService;
-    //private readonly EmployeeDocumentDto _employeeDocument;
     private readonly SimpleEmployeeDocumentDto _simpleEmployeeDocument;
     private readonly EmployeeDocumentController _controller;
 
@@ -30,9 +29,9 @@ public class EmployeeDocumentControllerUnitTest
         _controller = new EmployeeDocumentController(_employeeMockDocumentService.Object);
 
         claims = new List<Claim>
-            {
+        {
                 new Claim(ClaimTypes.Email, "test@example.com"),
-            };
+        };
 
         identity = new ClaimsIdentity(claims, "TestAuthType");
         claimsPrincipal = new ClaimsPrincipal(identity);
@@ -84,21 +83,15 @@ public class EmployeeDocumentControllerUnitTest
         var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
 
         Assert.Equal("An error occurred while fetching the employee document.", actualExceptionMessage);
-
     }
 
     [Fact]
     public async Task GetAllEmployeeDocumentReturnsOkResult()
     {
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
-            {
+        {
                 EmployeeDocumentTestData.EmployeeDocumentPending
-            };
-
-        var listOfEmployeeDocuments = new List<EmployeeDocument>()
-            {
-                new EmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending)
-            };
+        };
 
         _employeeMockDocumentService.Setup(x => x.GetEmployeeDocuments(EmployeeDocumentTestData.EmployeeDocumentPending.Id, EmployeeDocumentTestData.EmployeeDocumentPending.DocumentType!.Value)).ReturnsAsync(listOfEmployeeDocumentsDto);
 
@@ -108,7 +101,6 @@ public class EmployeeDocumentControllerUnitTest
 
         Assert.NotNull(result);
         Assert.Equal(listOfEmployeeDocumentsDto, actualDetails);
-
     }
 
     [Fact]
@@ -140,7 +132,6 @@ public class EmployeeDocumentControllerUnitTest
         var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
 
         Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualSavedEmployeeDocument);
-
     }
 
     [Fact]
@@ -172,7 +163,6 @@ public class EmployeeDocumentControllerUnitTest
     [Fact]
     public async Task UpdateEmployeeDocumentReturnsNotFoundResultWhenExceptionThrown()
     {
-
         EmployeeDocumentDto broken = new EmployeeDocumentDto
         {
             Id = 1,
@@ -212,7 +202,6 @@ public class EmployeeDocumentControllerUnitTest
         var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
         Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualemployeeDocument);
-
     }
 
     [Fact]
@@ -226,18 +215,15 @@ public class EmployeeDocumentControllerUnitTest
         var notFoundResult = Assert.IsType<ObjectResult>(result);
 
         Assert.Equal(exceptionMessage, notFoundResult.Value);
-
     }
 
     [Fact]
     public async Task GetEmployeeDocumentByStatusReturnsOkResult()
     {
-        //var status = DocumentStatus.Rejected;
-
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
-            {
+        {
                 EmployeeDocumentTestData.EmployeeDocumentPending
-            };
+        };
 
         _employeeMockDocumentService
             .Setup(x => x.GetEmployeeDocumentsByStatus(EmployeeDocumentTestData.EmployeeDocumentPending.Id, (DocumentStatus)EmployeeDocumentTestData.EmployeeDocumentPending.Status!))
@@ -267,6 +253,37 @@ public class EmployeeDocumentControllerUnitTest
         var notfoundResult = Assert.IsType<ObjectResult>(result);
 
         Assert.Equal("An error occurred while fetching the employee documents.", notfoundResult.Value);
+    }
 
+    [Fact]
+    public async Task GetAllDocuments_ReturnsInternalServerError_WhenExceptionIsThrown()
+    {
+        _employeeMockDocumentService
+                .Setup(service => service.GetAllDocuments())
+                .ThrowsAsync(new Exception("Test exception"));
+
+        var result = await _controller.GetAllDocuments();
+
+        var statusCodeResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, statusCodeResult.StatusCode);
+        Assert.Equal("An error occurred while fetching the employee documents.", statusCodeResult.Value);
+    }
+
+    [Fact]
+    public async Task GetAllDocuments_ReturnsOk_WhenDocumentsAreFetched()
+    {
+        var documents = new List<SimpleEmployeeDocumentGetAllDto>
+        {
+            new SimpleEmployeeDocumentGetAllDto { Name = "Joe", Surname = "Jee1", EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved },
+            new SimpleEmployeeDocumentGetAllDto { Name = "Jack", Surname = "Joe2", EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentApproved },
+        };
+
+        _employeeMockDocumentService
+           .Setup(service => service.GetAllDocuments()).ReturnsAsync(documents);
+
+        var result = await _controller.GetAllDocuments();
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+        Assert.Equal(documents, okResult.Value);
     }
 }
