@@ -13,17 +13,16 @@ public class EmployeeCertificationControllerUnitTests
 { 
 
     private readonly EmployeeCertificationController _controller;
-    private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IEmployeeCertificationService> _mockService;
+    private readonly Mock<IEmployeeCertificationService> _employeeCertificationServiceMock;
 
     private readonly EmployeeCertificationDto employeeCertificationDto;
-    private readonly List<EmployeeCertificationDto> certificates;
+    private readonly List<EmployeeCertificationDto> employeeCertificationDtoList;
     
     public EmployeeCertificationControllerUnitTests()
     {
-        _dbMock = new Mock<IUnitOfWork>();
-        _mockService = new Mock<IEmployeeCertificationService>();
-        _controller = new EmployeeCertificationController(_mockService.Object);
+        _employeeCertificationServiceMock = new Mock<IEmployeeCertificationService>();
+        _controller = new EmployeeCertificationController(_employeeCertificationServiceMock.Object);
+
         employeeCertificationDto =
             new EmployeeCertificationDto
             {
@@ -35,29 +34,26 @@ public class EmployeeCertificationControllerUnitTests
                 EmployeeId = EmployeeTestData.EmployeeDto.Id,
             };
 
-        certificates = new List<EmployeeCertificationDto> { employeeCertificationDto };
+        employeeCertificationDtoList = new List<EmployeeCertificationDto> { employeeCertificationDto };
     }
 
     [Fact]
     public async Task GetAllEmployeelCertiificatesPass()
     {
-       
-        _mockService.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id))
-            .ReturnsAsync(certificates);
+        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id))
+            .ReturnsAsync(employeeCertificationDtoList);
 
         var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<IEnumerable<EmployeeCertificationDto>>(okResult.Value);
-        Assert.Equal(model, certificates);
-
+        Assert.Equal(model, employeeCertificationDtoList);
     }
     
     [Fact]
     public async Task GetAllEmployeelCertiificatesFail()
     {
-       
-        _mockService.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id + 1))
+        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id + 1))
             .ThrowsAsync(new Exception("Employee not found"));
 
         var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeDto.Id + 1);
@@ -70,8 +66,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task SaveEmployeelCertiificatesPass()
     {
-       
-        _mockService.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
+        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
             .ReturnsAsync(employeeCertificationDto);
 
         var result = await _controller.SaveEmployeeCertificate(employeeCertificationDto);
@@ -84,8 +79,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task SaveEmployeelCertiificatesFail()
     {
-       
-        _mockService.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
+        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
             .ThrowsAsync(new Exception("Employee not found"));
 
         var result = await _controller.SaveEmployeeCertificate(employeeCertificationDto);
@@ -98,8 +92,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task GetEmployeelCertiificatesPass()
     {
-       
-        _mockService.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id))
             .ReturnsAsync(employeeCertificationDto);
 
         var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id);
@@ -112,8 +105,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task GetEmployeelCertiificatesFail()
     {
-       
-        _mockService.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("Employee not found"));
 
         var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id);
@@ -126,8 +118,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task DeleteEmployeelCertiificatesPass()
     {
-       
-        _mockService.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
             .ReturnsAsync(employeeCertificationDto);
 
         var result = await _controller.DeleteEmployeeCertificate(employeeCertificationDto.Id);
@@ -139,8 +130,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task DeleteEmployeelCertiificatesFail()
     {
-       
-        _mockService.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("Employee not found"));
 
         var result = await _controller.DeleteEmployeeCertificate(employeeCertificationDto.Id);
@@ -152,8 +142,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task UpdateEmployeelCertiificatesPass()
     {
-       
-        _mockService.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
+        _employeeCertificationServiceMock.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
             .ReturnsAsync(employeeCertificationDto);
 
         var result = await _controller.UpdateCertificate(employeeCertificationDto);
@@ -165,8 +154,7 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task UpdateEmployeelCertiificatesFail()
     {
-       
-        _mockService.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
+        _employeeCertificationServiceMock.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
             .ThrowsAsync(new Exception("Employee not found"));
 
         var result = await _controller.UpdateCertificate(employeeCertificationDto);

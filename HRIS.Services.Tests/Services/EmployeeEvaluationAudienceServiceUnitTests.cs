@@ -5,6 +5,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -37,44 +38,10 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Id = 1,
             Name = "Developer"
         };
-        var employeeAddressDto =
-            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
-        _employee = new EmployeeDto
-        {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = DateTime.Now,
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = employeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Dorothy",
-            Initials = "D",
-            Surname = "Mahoko",
-            DateOfBirth = DateTime.Now,
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "0000080000000",
-            PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = null,
-            Race = Race.Black,
-            Gender = Gender.Male,
-            Email = "texample@retrorabbit.co.za",
-            PersonalEmail = "test.example@gmail.com",
-            CellphoneNo = "0000000000",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
-        };
 
+        var employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
+
+        _employee = EmployeeTestData.EmployeeDto;
         _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto { Id = 1, Description = "template" };
     }
 

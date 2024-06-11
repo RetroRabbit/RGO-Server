@@ -9,51 +9,37 @@ namespace RR.App.Tests.Controllers.HRIS;
 
 public class RoleManageControllerUnitTests
 {
-    private readonly Mock<IRoleAccessLinkService> roleAccessLinkServiceMock;
-    private readonly Mock<IRoleAccessService> roleAccessServiceMock;
-    private readonly Mock<IRoleService> roleServiceMock;
+    private readonly Mock<IRoleAccessLinkService> _roleAccessLinkServiceMock;
+    private readonly Mock<IRoleAccessService> _roleAccessServiceMock;
+    private readonly Mock<IRoleService> _roleServiceMock;
+    private readonly RoleManageController _controller;
+    private readonly RoleDto _roleDto;
+    private readonly RoleAccessDto _roleAccessDto;
+    private readonly RoleAccessLinkDto _roleAccessLinkDto;
 
     public RoleManageControllerUnitTests()
     {
-        roleAccessLinkServiceMock = new Mock<IRoleAccessLinkService>();
-        roleServiceMock = new Mock<IRoleService>();
-        roleAccessServiceMock = new Mock<IRoleAccessService>();
-    }
-
-    public static RoleDto CreateRoleDto()
-    {
-        return new RoleDto { Id = 0, Description = "Super Admin"};
-    }
-
-    public static RoleAccessDto CreateRoleAccessDto()
-    {
-        return new RoleAccessDto { Id = 1, Permission =  "Permission 1", Grouping = "Group 1" };
-    }
-
-    public static RoleAccessLinkDto CreateRoleAccessLinkDto()
-    {
-        return new RoleAccessLinkDto { Id = 1, Role = CreateRoleDto(), RoleAccess = CreateRoleAccessDto()};
+        _roleAccessLinkServiceMock = new Mock<IRoleAccessLinkService>();
+        _roleServiceMock = new Mock<IRoleService>();
+        _roleAccessServiceMock = new Mock<IRoleAccessService>();
+        _controller = new RoleManageController(_roleAccessLinkServiceMock.Object, _roleServiceMock.Object, _roleAccessServiceMock.Object);
+        _roleDto = new RoleDto { Id = 0, Description = "Super Admin" };
+        _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "Permission 1", Grouping = "Group 1" };
+        _roleAccessLinkDto = new RoleAccessLinkDto { Id = 1, Role = _roleDto, RoleAccess = _roleAccessDto };
     }
 
     [Fact]
     public async Task AddPermissionReturnsCreatedAtAction()
     {
-        roleServiceMock.Setup(x => x.CheckRole(It.IsAny<string>())).ReturnsAsync(true);
-        roleServiceMock.Setup(x => x.GetRole(It.IsAny<string>())).ReturnsAsync(CreateRoleDto());
-        roleServiceMock.Setup(x => x.SaveRole(It.IsAny<RoleDto>())).ReturnsAsync(CreateRoleDto());
+        _roleServiceMock.Setup(x => x.CheckRole(It.IsAny<string>())).ReturnsAsync(true);
+        _roleServiceMock.Setup(x => x.GetRole(It.IsAny<string>())).ReturnsAsync(_roleDto);
+        _roleServiceMock.Setup(x => x.SaveRole(It.IsAny<RoleDto>())).ReturnsAsync(_roleDto);
+        _roleAccessServiceMock.Setup(x => x.CheckRoleAccess(It.IsAny<string>())).ReturnsAsync(true);
+        _roleAccessServiceMock.Setup(x => x.GetRoleAccess(It.IsAny<string>())).ReturnsAsync(_roleAccessDto);
+        _roleAccessServiceMock.Setup(x => x.SaveRoleAccess(It.IsAny<RoleAccessDto>())).ReturnsAsync(_roleAccessDto);
+        _roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>())).ReturnsAsync(_roleAccessLinkDto);
 
-        roleAccessServiceMock.Setup(x => x.CheckRoleAccess(It.IsAny<string>())).ReturnsAsync(true);
-        roleAccessServiceMock.Setup(x => x.GetRoleAccess(It.IsAny<string>())).ReturnsAsync(CreateRoleAccessDto());
-        roleAccessServiceMock.Setup(x => x.SaveRoleAccess(It.IsAny<RoleAccessDto>()))
-                             .ReturnsAsync(CreateRoleAccessDto());
-
-        roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>()))
-                                 .ReturnsAsync(CreateRoleAccessLinkDto());
-
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, roleServiceMock.Object,
-                                                  roleAccessServiceMock.Object);
-
-        var result = await controller.AddPermission("Super Admin", "Permission 1", "Grouping 1");
+        var result = await _controller.AddPermission("Super Admin", "Permission 1", "Grouping 1");
 
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
         var roleAccessLinkDto = Assert.IsType<RoleAccessLinkDto>(createdAtActionResult.Value);
@@ -64,17 +50,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task AddPermissionHandlesExceptionReturnsNotFound()
     {
-        var roleAccessLinkServiceMock = new Mock<IRoleAccessLinkService>();
-        roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>()))
-                                 .ThrowsAsync(new Exception("Error adding permission"));
+        _roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>())).ThrowsAsync(new Exception("Error adding permission"));
 
-        var roleServiceMock = new Mock<IRoleService>();
-        var roleAccessServiceMock = new Mock<IRoleAccessService>();
-
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, roleServiceMock.Object,
-                                                  roleAccessServiceMock.Object);
-
-        var result = await controller.AddPermission("Super Admin", "Permission 1", "Grouping 1");
+        var result = await _controller.AddPermission("Super Admin", "Permission 1", "Grouping 1");
 
         var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
@@ -84,22 +62,15 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task RemovePermissionReturnsCreatedAtAction()
     {
-        roleServiceMock.Setup(x => x.CheckRole(It.IsAny<string>())).ReturnsAsync(true);
-        roleServiceMock.Setup(x => x.GetRole(It.IsAny<string>())).ReturnsAsync(CreateRoleDto());
-        roleServiceMock.Setup(x => x.SaveRole(It.IsAny<RoleDto>())).ReturnsAsync(CreateRoleDto());
+        _roleServiceMock.Setup(x => x.CheckRole(It.IsAny<string>())).ReturnsAsync(true);
+        _roleServiceMock.Setup(x => x.GetRole(It.IsAny<string>())).ReturnsAsync(_roleDto);
+        _roleServiceMock.Setup(x => x.SaveRole(It.IsAny<RoleDto>())).ReturnsAsync(_roleDto);
+        _roleAccessServiceMock.Setup(x => x.CheckRoleAccess(It.IsAny<string>())).ReturnsAsync(true);
+        _roleAccessServiceMock.Setup(x => x.GetRoleAccess(It.IsAny<string>())).ReturnsAsync(_roleAccessDto);
+        _roleAccessServiceMock.Setup(x => x.SaveRoleAccess(It.IsAny<RoleAccessDto>())).ReturnsAsync(_roleAccessDto);
+        _roleAccessLinkServiceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_roleAccessLinkDto);
 
-        roleAccessServiceMock.Setup(x => x.CheckRoleAccess(It.IsAny<string>())).ReturnsAsync(true);
-        roleAccessServiceMock.Setup(x => x.GetRoleAccess(It.IsAny<string>())).ReturnsAsync(CreateRoleAccessDto());
-        roleAccessServiceMock.Setup(x => x.SaveRoleAccess(It.IsAny<RoleAccessDto>()))
-                             .ReturnsAsync(CreateRoleAccessDto());
-
-        roleAccessLinkServiceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<string>()))
-                                 .ReturnsAsync(CreateRoleAccessLinkDto());
-
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, roleServiceMock.Object,
-                                                  roleAccessServiceMock.Object);
-
-        var result = await controller.RemovePermission("Super Admin", "Permission 2", "Grouping 1");
+        var result = await _controller.RemovePermission("Super Admin", "Permission 2", "Grouping 1");
 
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
         var roleAccessLinkDto = Assert.IsType<RoleAccessLinkDto>(createdAtActionResult.Value);
@@ -110,16 +81,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task RemovePermissionHandlesExceptionReturnsBadRequest()
     {
-        roleAccessLinkServiceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<string>()))
-                                 .ThrowsAsync(new Exception("Error removing permission"));
+        _roleAccessLinkServiceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("Error removing permission"));
 
-        var roleServiceMock = new Mock<IRoleService>();
-        var roleAccessServiceMock = new Mock<IRoleAccessService>();
-
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, roleServiceMock.Object,
-                                                  roleAccessServiceMock.Object);
-
-        var result = await controller.RemovePermission("Super Admin", "Permission 1", "Grouping 1");
+        var result = await _controller.RemovePermission("Super Admin", "Permission 1", "Grouping 1");
 
         var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(result);
         var errorMessage = Assert.IsType<string>(badRequestObjectResult.Value);
@@ -129,15 +93,13 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetRolePermissionsReturnsOk()
     {
-        roleAccessLinkServiceMock.Setup(x => x.GetByRole(It.IsAny<string>()))
+        _roleAccessLinkServiceMock.Setup(x => x.GetByRole(It.IsAny<string>()))
                                  .ReturnsAsync(new Dictionary<string, List<string>>
                                  {
                                      { "Super Admin", new List<string> { "Permission 1", "Permission 2" } }
                                  });
 
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, null, null);
-
-        var result = await controller.GetRolePermissions("Super Admin");
+        var result = await _controller.GetRolePermissions("Super Admin");
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         var roleAccessLinks = Assert.IsType<Dictionary<string, List<string>>>(okObjectResult.Value);
@@ -147,13 +109,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetRolePermissionsHandlesExceptionReturnsNotFound()
     {
-        ;
-        roleAccessLinkServiceMock.Setup(x => x.GetByRole(It.IsAny<string>()))
-                                 .ThrowsAsync(new Exception("Error getting role permissions"));
+        _roleAccessLinkServiceMock.Setup(x => x.GetByRole(It.IsAny<string>())).ThrowsAsync(new Exception("Error getting role permissions"));
 
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, null, null);
-
-        var result = await controller.GetRolePermissions("Super Admin");
+        var result = await _controller.GetRolePermissions("Super Admin");
 
         var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
@@ -164,14 +122,12 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessLinkReturnsOk()
     {
-        roleAccessLinkServiceMock.Setup(x => x.GetAll()).ReturnsAsync(new Dictionary<string, List<string>>
+        _roleAccessLinkServiceMock.Setup(x => x.GetAll()).ReturnsAsync(new Dictionary<string, List<string>>
         {
             { "Super Admin", new List<string> { "Permission 1", "Permission 2" } }
         });
 
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, null, null);
-
-        var result = await controller.GetAllRoleAccessLink();
+        var result = await _controller.GetAllRoleAccessLink();
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         var roleAccessLinks = Assert.IsType<Dictionary<string, List<string>>>(okObjectResult.Value);
@@ -181,12 +137,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessLinkHandlesExceptionReturnsNotFound()
     {
-        roleAccessLinkServiceMock.Setup(x => x.GetAll())
-                                 .ThrowsAsync(new Exception("Error getting all role access link"));
+        _roleAccessLinkServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("Error getting all role access link"));
 
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, null, null);
-
-        var result = await controller.GetAllRoleAccessLink();
+        var result = await _controller.GetAllRoleAccessLink();
 
         var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
@@ -196,12 +149,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessLinksReturnsOk()
     {
-        roleAccessLinkServiceMock.Setup(x => x.GetAllRoleAccessLink())
-                                 .ReturnsAsync(new List<RoleAccessLinkDto> { CreateRoleAccessLinkDto() });
+        _roleAccessLinkServiceMock.Setup(x => x.GetAllRoleAccessLink()).ReturnsAsync(new List<RoleAccessLinkDto> { _roleAccessLinkDto });
 
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, null, null);
-
-        var result = await controller.GetAllRoleAccessLinks();
+        var result = await _controller.GetAllRoleAccessLinks();
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         var roleAccessLinks = Assert.IsType<List<RoleAccessLinkDto>>(okObjectResult.Value);
@@ -211,12 +161,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessLinksHandlesExceptionReturnsNotFound()
     {
-        roleAccessLinkServiceMock.Setup(x => x.GetAllRoleAccessLink())
-                                 .ThrowsAsync(new Exception("Error getting all role access link"));
+        _roleAccessLinkServiceMock.Setup(x => x.GetAllRoleAccessLink()).ThrowsAsync(new Exception("Error getting all role access link"));
 
-        var controller = new RoleManageController(roleAccessLinkServiceMock.Object, null, null);
-
-        var result = await controller.GetAllRoleAccessLinks();
+        var result = await _controller.GetAllRoleAccessLinks();
 
         var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
@@ -226,12 +173,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessesReturnsOk()
     {
-        roleAccessServiceMock.Setup(x => x.GetAllRoleAccess())
-                             .ReturnsAsync(new List<RoleAccessDto> { CreateRoleAccessDto() });
+        _roleAccessServiceMock.Setup(x => x.GetAllRoleAccess()).ReturnsAsync(new List<RoleAccessDto> { _roleAccessDto });
 
-        var controller = new RoleManageController(null, null, roleAccessServiceMock.Object);
-
-        var result = await controller.GetAllRoleAccesses();
+        var result = await _controller.GetAllRoleAccesses();
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         var roleAccesses = Assert.IsType<List<RoleAccessDto>>(okObjectResult.Value);
@@ -241,12 +185,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessesHandlesExceptionReturnsNotFound()
     {
-        roleAccessServiceMock.Setup(x => x.GetAllRoleAccess())
-                             .ThrowsAsync(new Exception("Error getting all role access"));
+        _roleAccessServiceMock.Setup(x => x.GetAllRoleAccess()).ThrowsAsync(new Exception("Error getting all role access"));
 
-        var controller = new RoleManageController(null, null, roleAccessServiceMock.Object);
-
-        var result = await controller.GetAllRoleAccesses();
+        var result = await _controller.GetAllRoleAccesses();
 
         var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
@@ -256,11 +197,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRolesReturnsOk()
     {
-        roleServiceMock.Setup(x => x.GetAll()).ReturnsAsync(new List<RoleDto> { CreateRoleDto() });
+        _roleServiceMock.Setup(x => x.GetAll()).ReturnsAsync(new List<RoleDto> { _roleDto });
 
-        var controller = new RoleManageController(null, roleServiceMock.Object, null);
-
-        var result = await controller.GetAllRoles();
+        var result = await _controller.GetAllRoles();
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         var roles = Assert.IsType<List<RoleDto>>(okObjectResult.Value);
@@ -270,11 +209,9 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRolesHandlesExceptionReturnsNotFound()
     {
-        roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("Error getting all roles"));
+        _roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("Error getting all roles"));
 
-        var controller = new RoleManageController(null, roleServiceMock.Object, null);
-
-        var result = await controller.GetAllRoles();
+        var result = await _controller.GetAllRoles();
 
         var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);

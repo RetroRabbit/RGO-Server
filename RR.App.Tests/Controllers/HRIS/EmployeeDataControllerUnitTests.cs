@@ -9,161 +9,130 @@ namespace RR.App.Tests.Controllers.HRIS;
 
 public class EmployeeDataControllerUnitTests
 {
+    private readonly Mock<IEmployeeDataService> _employeeDataServiceMock;
+    private readonly EmployeeDataController _controller;
+    private readonly List<EmployeeDataDto> _employeeDataDtoList;
+    private readonly EmployeeDataDto _employeeDataDto;
+    public EmployeeDataControllerUnitTests()
+    {
+        _employeeDataServiceMock = new Mock<IEmployeeDataService>();
+        _controller = new EmployeeDataController(_employeeDataServiceMock.Object);
+
+        _employeeDataDtoList = new List<EmployeeDataDto>
+        {
+            new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" },
+            new EmployeeDataDto { Id = 2, EmployeeId = 2, FieldCodeId = 1, Value = "example 1" }
+        };
+
+        _employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
+    }
+
     [Fact]
     public async Task GetEmployeeDataReturnsOkResult()
     {
-        var id = 1;
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.GetAllEmployeeData(id))
-                               .ReturnsAsync(new List<EmployeeDataDto>
-                               {
-                                  new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" },
-                                  new EmployeeDataDto { Id = 2, EmployeeId = 2, FieldCodeId = 1, Value = "example 1" }
+        _employeeDataServiceMock.Setup(service => service.GetAllEmployeeData(1))
+                               .ReturnsAsync(_employeeDataDtoList);
 
-                               });
-
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.GetEmployeeData(id);
+        var result = await _controller.GetEmployeeData(1);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsType<List<EmployeeDataDto>>(okResult.Value);
-
-        mockEmployeeDataService.Verify(service => service.GetAllEmployeeData(id), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(1), Times.Once);
     }
 
     [Fact]
     public async Task GetEmployeeDataReturnsNotFoundResult()
     {
-        var id = 1;
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.GetAllEmployeeData(id))
+        _employeeDataServiceMock.Setup(service => service.GetAllEmployeeData(1))
                                .ReturnsAsync((List<EmployeeDataDto>?)null);
 
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.GetEmployeeData(id);
+        var result = await _controller.GetEmployeeData(1);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-
         Assert.Equal("Employee data not found", errorMessage);
-
-        mockEmployeeDataService.Verify(service => service.GetAllEmployeeData(id), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(1), Times.Once);
     }
 
     [Fact]
     public async Task SaveEmployeeDataReturnsOkResult()
     {
-        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.SaveEmployeeData(employeeDataDto))
-                               .ReturnsAsync(employeeDataDto);
+        _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
+                               .ReturnsAsync(_employeeDataDto);
 
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.SaveEmployeeData(employeeDataDto);
+        var result = await _controller.SaveEmployeeData(_employeeDataDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsType<EmployeeDataDto>(okResult.Value);
-
-        mockEmployeeDataService.Verify(service => service.SaveEmployeeData(employeeDataDto), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.SaveEmployeeData(_employeeDataDto), Times.Once);
     }
 
     [Fact]
     public async Task SaveEmployeeDataReturnsNotFoundResultOnException()
     {
-        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.SaveEmployeeData(employeeDataDto))
+        _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
                                .ThrowsAsync(new Exception("Error saving employee data."));
 
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.SaveEmployeeData(employeeDataDto);
+        var result = await _controller.SaveEmployeeData(_employeeDataDto);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-
         Assert.Equal("Error saving employee data.", errorMessage);
-
-        mockEmployeeDataService.Verify(service => service.SaveEmployeeData(employeeDataDto), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.SaveEmployeeData(_employeeDataDto), Times.Once);
     }
 
     [Fact]
     public async Task UpdateEmployeeDataReturnsOkResult()
     {
-        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.UpdateEmployeeData(employeeDataDto))
-                               .ReturnsAsync(employeeDataDto);
+        _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
+                               .ReturnsAsync(_employeeDataDto);
 
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.UpdateEmployeeData(employeeDataDto);
+        var result = await _controller.UpdateEmployeeData(_employeeDataDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsType<EmployeeDataDto>(okResult.Value);
-
-        mockEmployeeDataService.Verify(service => service.UpdateEmployeeData(employeeDataDto), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.UpdateEmployeeData(_employeeDataDto), Times.Once);
     }
 
     [Fact]
     public async Task UpdateEmployeeDataReturnsNotFoundResultOnException()
     {
-        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.UpdateEmployeeData(employeeDataDto))
+        _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
                                .ThrowsAsync(new Exception("Error updating employee data."));
 
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.UpdateEmployeeData(employeeDataDto);
+        var result = await _controller.UpdateEmployeeData(_employeeDataDto);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-
         Assert.Equal("Error updating employee data.", errorMessage);
-
-        mockEmployeeDataService.Verify(service => service.UpdateEmployeeData(employeeDataDto), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.UpdateEmployeeData(_employeeDataDto), Times.Once);
     }
 
 
     [Fact]
     public async Task DeleteEmployeeDataReturnsOkResult()
     {
-        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto.Id))
-                               .ReturnsAsync(employeeDataDto);
+        _employeeDataServiceMock.Setup(service => service.DeleteEmployeeData(_employeeDataDto.Id))
+                               .ReturnsAsync(_employeeDataDto);
 
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.DeleteEmployeeData(employeeDataDto.Id);
+        var result = await _controller.DeleteEmployeeData(_employeeDataDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsType<EmployeeDataDto>(okResult.Value);
-
-        mockEmployeeDataService.Verify(service => service.DeleteEmployeeData(employeeDataDto.Id), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.DeleteEmployeeData(_employeeDataDto.Id), Times.Once);
     }
 
     [Fact]
     public async Task DeleteEmployeeDataReturnsNotFoundResultOnException()
     {
-        var employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
-        var mockEmployeeDataService = new Mock<IEmployeeDataService>();
-        mockEmployeeDataService.Setup(service => service.DeleteEmployeeData(employeeDataDto.Id))
+        _employeeDataServiceMock.Setup(service => service.DeleteEmployeeData(_employeeDataDto.Id))
                                .ThrowsAsync(new Exception("Error deleting employee data."));
 
-        var controller = new EmployeeDataController(mockEmployeeDataService.Object);
-
-        var result = await controller.DeleteEmployeeData(employeeDataDto.Id);
+        var result = await _controller.DeleteEmployeeData(_employeeDataDto.Id);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-
         Assert.Equal("Error deleting employee data.", errorMessage);
-
-        mockEmployeeDataService.Verify(service => service.DeleteEmployeeData(employeeDataDto.Id), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.DeleteEmployeeData(_employeeDataDto.Id), Times.Once);
     }
 }

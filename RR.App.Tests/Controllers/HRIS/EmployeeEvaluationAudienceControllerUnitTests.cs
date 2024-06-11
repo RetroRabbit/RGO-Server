@@ -10,14 +10,19 @@ namespace RR.App.Tests.Controllers.HRIS;
 
 public class EmployeeEvaluationAudienceControllerUnitTests
 {
-    [Fact]
-    public async Task GetAllEmployeeEvaluationAudiencesValidInputReturnsOkResult()
-    {
-        var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-        var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
+    private readonly Mock<IEmployeeEvaluationAudienceService> _mockEmployeeEvaluationAudienceService;
+    private readonly EmployeeEvaluationAudienceController _controller;
+    private readonly List<EmployeeEvaluationAudienceDto> _employeeEvaluationList;
+    private readonly EmployeeEvaluationInput _employeeEvaluationInput;
+    private readonly EmployeeEvaluationAudienceDto _employeeEvaluationAudienceDto;
 
-        var expectedAudiences = new List<EmployeeEvaluationAudienceDto>
-{
+    public EmployeeEvaluationAudienceControllerUnitTests() 
+    {
+        _mockEmployeeEvaluationAudienceService = new Mock<IEmployeeEvaluationAudienceService>();
+        _controller = new EmployeeEvaluationAudienceController(_mockEmployeeEvaluationAudienceService.Object);
+
+        _employeeEvaluationList = new List<EmployeeEvaluationAudienceDto>
+        {
             new EmployeeEvaluationAudienceDto
             {
                 Id = 1,
@@ -35,106 +40,79 @@ public class EmployeeEvaluationAudienceControllerUnitTests
             }
         };
 
-        serviceMock.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>()))
-                   .ReturnsAsync(expectedAudiences);
-
-        var result = await controller.GetAll(new EmployeeEvaluationInput
+        _employeeEvaluationInput = new EmployeeEvaluationInput
         {
             Id = 1,
             OwnerEmail = "owner@retrorabbit.co.za",
             EmployeeEmail = "employee@retrorabbit.co.za",
             Template = "Test Template",
             Subject = "Test Subject"
-        });
+        };
+
+        _employeeEvaluationAudienceDto = new EmployeeEvaluationAudienceDto
+        {
+            Id = 1,
+            Evaluation = new EmployeeEvaluationDto
+            {
+                Id = 1,
+                Employee = EmployeeTestData.EmployeeDto,
+                Template = new EmployeeEvaluationTemplateDto { Id = 1, Description = "Employee Evaluation Template 1" },
+                Owner = EmployeeTestData.EmployeeDto2,
+                Subject = "Employee Evaluation Subject",
+                StartDate = new DateOnly(2022, 1, 1),
+                EndDate = new DateOnly(2022, 2, 1)
+            },
+
+            Employee = EmployeeTestData.EmployeeDto3
+        };
+    }
+
+    [Fact]
+    public async Task GetAllEmployeeEvaluationAudiencesValidInputReturnsOkResult()
+    {
+        _mockEmployeeEvaluationAudienceService.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>()))
+                   .ReturnsAsync(_employeeEvaluationList);
+
+        var result = await _controller.GetAll(_employeeEvaluationInput);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualAudiences = Assert.IsType<List<EmployeeEvaluationAudienceDto>>(okResult.Value);
-        Assert.Equal(expectedAudiences, actualAudiences);
+        Assert.Equal(_employeeEvaluationList, actualAudiences);
     }
 
     [Fact]
     public async Task GetAllEmployeeEvaluationAudiencesExceptionThrownReturnsNotFoundResult()
     {
-        var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-        var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
-
-        serviceMock.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>()))
+        _mockEmployeeEvaluationAudienceService.Setup(x => x.GetAllbyEvaluation(It.IsAny<EmployeeEvaluationInput>()))
                    .ThrowsAsync(new Exception("Error retrieving employee evaluation audiences."));
 
-        var result = await controller.GetAll(new EmployeeEvaluationInput
-        {
-            Id = 1,
-            OwnerEmail = "owner@retrorabbit.co.za",
-            EmployeeEmail = "employee@retrorabbit.co.za",
-            Template = "Test Template",
-            Subject = "Test Subject"
-        });
+        var result = await _controller.GetAll(_employeeEvaluationInput);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notFoundResult.Value);
-
         Assert.Equal("Error retrieving employee evaluation audiences.", exceptionMessage);
     }
-
 
     [Fact]
     public async Task SaveEmployeeEvaluationAudienceValidInputReturnsOkResult()
     {
-        var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-        var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
+       _mockEmployeeEvaluationAudienceService.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
+                   .ReturnsAsync(_employeeEvaluationAudienceDto);
 
-        var savedAudience = new EmployeeEvaluationAudienceDto
-        { Id = 1, Evaluation = new EmployeeEvaluationDto
-        {
-            Id = 1,
-            Employee = EmployeeTestData.EmployeeDto,
-            Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
-            Owner = EmployeeTestData.EmployeeDto2,
-            Subject = "Employee Evaluation Subject",
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2022, 2, 1)
-        },
-
-        Employee = EmployeeTestData.EmployeeDto3
-        };
-
-        serviceMock.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
-                   .ReturnsAsync(savedAudience);
-
-        var result = await controller.SaveEmployeeEvaluationAudience( "test@retrorabbit.co.za",
-                                                                     new EmployeeEvaluationInput
-                                                                     {
-                                                                         Id = 1,
-                                                                         OwnerEmail = "owner@retrorabbit.co.za",
-                                                                         EmployeeEmail = "employee@retrorabbit.co.za",
-                                                                         Template = "Test Template",
-                                                                         Subject = "Test Subject"
-                                                                     });
-                                                                      
-
+        var result = await _controller.SaveEmployeeEvaluationAudience( "test@retrorabbit.co.za", _employeeEvaluationInput);
+        
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualSavedAudience = Assert.IsType<EmployeeEvaluationAudienceDto>(okResult.Value);
-
-        Assert.Equal(savedAudience, actualSavedAudience);
+        Assert.Equal(_employeeEvaluationAudienceDto, actualSavedAudience);
     }
 
     [Fact]
     public async Task SaveEmployeeEvaluationAudienceExceptionThrownReturnsNotFoundResult()
     {
-        var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-        serviceMock.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
+        _mockEmployeeEvaluationAudienceService.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
                    .ThrowsAsync(new Exception("Exception occurred while saving employee evaluation audience."));
-        var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
-        var result = await controller.SaveEmployeeEvaluationAudience("test@retrorabbit.co.za",
-                                                                     new EmployeeEvaluationInput
-                                                                     {
-                                                                         Id = 1,
-                                                                         OwnerEmail = "owner@retrorabbit.co.za",
-                                                                         EmployeeEmail = "employee@retrorabbit.co.za",
-                                                                         Template = "Test Template",
-                                                                         Subject = "Test Subject"
-                                                                     });
+        var result = await _controller.SaveEmployeeEvaluationAudience("test@retrorabbit.co.za", _employeeEvaluationInput);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notFoundResult.Value);
@@ -144,19 +122,9 @@ public class EmployeeEvaluationAudienceControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationAudienceValidInputReturnsOkResult()
     {
-        var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-        serviceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()));
-        var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
+        _mockEmployeeEvaluationAudienceService.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()));
 
-        var result = await controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za",
-                                                                       new EmployeeEvaluationInput
-                                                                       {
-                                                                           Id = 1,
-                                                                           OwnerEmail = "owner@retrorabbit.co.za",
-                                                                           EmployeeEmail = "employee@retrorabbit.co.za",
-                                                                           Template = "Test Template",
-                                                                           Subject = "Test Subject"
-                                                                       });
+        var result = await _controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za", _employeeEvaluationInput);
 
         Assert.IsType<OkResult>(result);
     }
@@ -164,20 +132,10 @@ public class EmployeeEvaluationAudienceControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationAudienceExceptionThrownReturnsNotFoundResult()
     {
-        var serviceMock = new Mock<IEmployeeEvaluationAudienceService>();
-        serviceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
+        _mockEmployeeEvaluationAudienceService.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<EmployeeEvaluationInput>()))
                    .ThrowsAsync(new Exception("Exception occurred while deleting employee evaluation audience."));
-        var controller = new EmployeeEvaluationAudienceController(serviceMock.Object);
 
-        var result = await controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za",
-                                                                       new EmployeeEvaluationInput
-                                                                       {
-                                                                           Id = 1,
-                                                                           OwnerEmail = "owner@retrorabbit.co.za",
-                                                                           EmployeeEmail = "employee@retrorabbit.co.za",
-                                                                           Template = "Test Template",
-                                                                           Subject = "Test Subject"
-                                                                       });
+        var result = await _controller.DeleteEmployeeEvaluationAudience("test@retrorabbit.co.za", _employeeEvaluationInput);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notFoundResult.Value);
