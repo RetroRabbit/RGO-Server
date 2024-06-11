@@ -30,9 +30,9 @@ public class EmployeeDocumentControllerUnitTest
         _controller = new EmployeeDocumentController(_employeeMockDocumentService.Object);
 
         claims = new List<Claim>
-            {
+        {
                 new Claim(ClaimTypes.Email, "test@example.com"),
-            };
+        };
 
         identity = new ClaimsIdentity(claims, "TestAuthType");
         claimsPrincipal = new ClaimsPrincipal(identity);
@@ -180,7 +180,6 @@ public class EmployeeDocumentControllerUnitTest
         var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
         Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualemployeeDocument);
-
     }
 
     [Fact]
@@ -194,16 +193,15 @@ public class EmployeeDocumentControllerUnitTest
         var notFoundResult = Assert.IsType<ObjectResult>(result);
 
         Assert.Equal(exceptionMessage, notFoundResult.Value);
-
     }
 
     [Fact]
     public async Task GetEmployeeDocumentByStatusReturnsOkResult()
     {
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
-            {
+        {
                 EmployeeDocumentTestData.EmployeeDocumentPending
-            };
+        };
 
         _employeeMockDocumentService
             .Setup(x => x.GetEmployeeDocumentsByStatus(EmployeeDocumentTestData.EmployeeDocumentPending.Id, (DocumentStatus)EmployeeDocumentTestData.EmployeeDocumentPending.Status!))
