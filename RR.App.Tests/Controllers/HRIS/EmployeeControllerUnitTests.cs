@@ -17,6 +17,7 @@ public class EmployeeControllerUnitTests
     private readonly EmployeeController _controller;
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDto _employee;
+    private readonly SimpleEmployeeProfileDto _simpleEmployee;
     private readonly Mock<IEmployeeService> _employeeMockService;
     private readonly EmployeeAddressDto _employeeAddressDto;
     private readonly EmployeeTypeDto _employeeTypeDto;

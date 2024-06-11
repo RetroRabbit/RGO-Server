@@ -60,7 +60,6 @@ public class EmployeeCertificationControllerUnitTests
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
-
     }
     
     [Fact]
@@ -73,7 +72,6 @@ public class EmployeeCertificationControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
-
     }
     
     [Fact]
@@ -86,7 +84,6 @@ public class EmployeeCertificationControllerUnitTests
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
-
     }
     
     [Fact]
@@ -99,7 +96,6 @@ public class EmployeeCertificationControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
-
     }
     
     [Fact]
@@ -112,7 +108,6 @@ public class EmployeeCertificationControllerUnitTests
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
-
     }
     
     [Fact]
@@ -163,4 +158,3 @@ public class EmployeeCertificationControllerUnitTests
         Assert.Equal("Employee not found", notFoundResult.Value);
     }
 }
-
