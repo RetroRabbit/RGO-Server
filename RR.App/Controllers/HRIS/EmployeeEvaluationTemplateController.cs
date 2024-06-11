@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -15,6 +16,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         _employeeEvaluationTemplateService = employeeEvaluationTemplateService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetEmployeeEvaluationTemplate(string template)
     {
@@ -30,6 +32,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployeeEvaluationTemplates()
     {
@@ -45,6 +48,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeEvaluationTemplate([FromQuery] string template)
     {
@@ -60,6 +64,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeEvaluationTemplate(
         [FromBody] EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
@@ -76,6 +81,7 @@ public class EmployeeEvaluationTemplateController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeEvaluationTemplate([FromQuery] string template)
     {

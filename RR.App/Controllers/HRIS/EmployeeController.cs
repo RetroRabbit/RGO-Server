@@ -143,6 +143,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("card-count")]
     public async Task<IActionResult> GetEmployeesCount()
     {
@@ -157,6 +158,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("churn-rate")]
     public async Task<IActionResult> GetChurnRate()
     {
@@ -171,6 +173,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
     {
@@ -202,6 +205,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("id-number")]
     public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int employeeId)
     {

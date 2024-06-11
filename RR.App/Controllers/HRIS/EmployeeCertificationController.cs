@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
@@ -16,6 +17,7 @@ public class EmployeeCertificationController : ControllerBase
         _employeeCertificationService = employeeCertificationService;
     }
 
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllEmployeelCertiificates(int employeeId)
     {
@@ -30,7 +32,8 @@ public class EmployeeCertificationController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeCertificate(EmployeeCertificationDto employeeCertificationDto)
     {
@@ -45,7 +48,8 @@ public class EmployeeCertificationController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("employee-certificate")]
     public async Task<IActionResult> GetEmployeeCertificate(int employeeId, int certificationId)
     {
@@ -60,7 +64,8 @@ public class EmployeeCertificationController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
+
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeCertificate(int id)
     {
@@ -76,6 +81,7 @@ public class EmployeeCertificationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateCertificate(EmployeeCertificationDto employeeCertificationDto)
     {

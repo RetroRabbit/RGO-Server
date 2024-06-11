@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RR.UnitOfWork.Entities.HRIS;
@@ -16,6 +17,8 @@ namespace RR.App.Controllers.HRIS
             _clientProjectService = clientProjectService;
         }
 
+
+        [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpGet]
         public async Task<ActionResult> GetAllClientProjects()
         {
@@ -30,6 +33,8 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
+
+        [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpGet("{id}")]
         public async Task<ActionResult<ClientProjectsDto>> GetClientProjectById(int id)
         {
@@ -44,6 +49,8 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
+
+        [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> SaveClientProject(ClientProjectsDto clientProjectsDto)
         {
@@ -58,6 +65,8 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
+
+        [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateClientProject(ClientProjectsDto clientProjectsDto)
         {
@@ -72,6 +81,8 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
+
+        [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpDelete]
         public async Task<IActionResult> DeleteClientProject(int id)
         {
