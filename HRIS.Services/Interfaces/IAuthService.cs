@@ -1,41 +1,41 @@
-﻿using HRIS.Models;
-
+﻿using Auth0.ManagementApi.Models;
+using Auth0.ManagementApi.Paging;
 namespace HRIS.Services.Interfaces;
 
 public interface IAuthService
 {
-    /// <summary>
-    ///     Check if user exist
-    /// </summary>
-    /// <param name="email"></param>
-    /// <returns>true if user with given email is found else false</returns>
-    Task<bool> CheckUserExist(string email);
+    Task<IPagedList<Role>> GetAllRolesAsync();
 
-    /// <summary>
-    ///     Get user roles by email
-    /// </summary>
-    /// <param name="email"></param>
-    /// <returns>List of role, will reflect as list of int</returns>
-    Task<Dictionary<string, List<string>>> GetUserRoles(string email);
+    Task<IPagedList<User>> GetAllUsersAsync();
 
-    /// <summary>
-    ///     Login user
-    /// </summary>
-    /// <param name="email"></param>
-    /// <returns>JWT token</returns>
-    Task<string> Login(string email);
+    Task<IList<User>> GetUsersByEmailAsync(string email);
 
-    /// <summary>
-    ///     Register new employee
-    /// </summary>
-    /// <param name="newEmployee"></param>
-    /// <returns>JWT token</returns>
-    Task<string> RegisterEmployee(EmployeeDto employeeDto);
+    Task<IPagedList<AssignedUser>> GetUsersByRoleAsync(string roleId);
 
-    /// <summary>
-    ///     Generate a bearer token
-    /// </summary>
-    /// <param name="employee"></param>
-    /// <returns>JWT as a string</returns>
-    Task<string> GenerateToken(EmployeeDto employee);
+    Task<IPagedList<Role>> GetUserRolesAsync(string userId);
+
+    Task<bool> AddRoleToUserAsync(string userId, string roleId);
+
+    Task<bool> RemoveRoleFromUserAsync(string userId, string roleId);
+
+    Task<Role> CreateRoleAsync(string roleName, string description);
+
+    Task<bool> DeleteRoleAsync(string roleId);
+
+    Task<bool> UpdateRoleAsync(string roleId, string roleName, string description);
+
+    Task<IPagedList<Permission>> GetPermissionsByRoleAsync(string roleId);
+
+    Task<bool> RemovePermissionsFromRoleAsync(string roleId, string permissionName);
+
+    Task<bool> AddPermissionsToRoleAsync(string roleId, string permissionName);
+
+    Task<bool> CreateUser(UserCreateRequest request);
+
+    Task<User> GetUserById(string userId);
+
+    Task<bool> DeleteUser(string userId);
+
+    Task<bool> UpdateUser(string userId, UserUpdateRequest request);
+
 }
