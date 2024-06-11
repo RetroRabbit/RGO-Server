@@ -15,14 +15,14 @@ public class AuthenticationController : ControllerBase
         _authService = authService;
     }
 
-    [AllowAnonymous]
+    [Authorize(Policy = "AllRolesPolicy")]
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet()]
-    public async Task<IActionResult> LoginUser()
+    public async Task<IActionResult> LoggedInUser()
     {
         try
         {
-            return Ok("Api Test works");
+            return Ok("Api connection works");
         }
         catch (Exception ex)
         {
