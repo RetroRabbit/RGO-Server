@@ -3,6 +3,7 @@ using HRIS.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using RR.UnitOfWork.Entities;
+using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Interfaces;
 using RR.UnitOfWork.Interfaces.ATS;
 using RR.UnitOfWork.Interfaces.HRIS;
@@ -51,6 +52,7 @@ public class UnitOfWork : IUnitOfWork
         ClientProject = new ClientProjectRepository(_db);
         WorkExperience = new WorkExperienceRepository(_db);
         EmployeeSalaryDetails = new EmployeeSalaryDetailsRepository(_db);
+        Termination = new TerminationRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -85,6 +87,7 @@ public class UnitOfWork : IUnitOfWork
     public IClientProjectRepository ClientProject { get; }
     public IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     public IWorkExperienceRepository WorkExperience { get; }
+    public ITerminationRepository Termination { get; }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {

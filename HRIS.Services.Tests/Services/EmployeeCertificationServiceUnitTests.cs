@@ -46,13 +46,6 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(employeeList.AsQueryable().BuildMock());
     }
 
-    private void MockEmployeeCertificationRepositorySetup(EmployeeCertificationDto employeeCertificationDto)
-    {
-        var employeeCertificationList = new List<EmployeeCertification> { new EmployeeCertification(employeeCertificationDto) };
-        _unitOfWork.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
-                   .Returns(employeeCertificationList.AsQueryable().BuildMock().Take(1));
-    }
-
     private void MockEmployeeRepositorySetupWithEmployee(EmployeeDto employeeDto)
     {
         var employee = new Employee(employeeDto, employeeDto.EmployeeType!);

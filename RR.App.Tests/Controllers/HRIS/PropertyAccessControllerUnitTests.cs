@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
