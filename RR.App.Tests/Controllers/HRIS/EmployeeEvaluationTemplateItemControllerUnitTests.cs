@@ -9,88 +9,67 @@ using Xunit;
 namespace RR.App.Tests.Controllers.HRIS;
 public class EmployeeEvaluationTemplateItemControllerUnitTests
 {
-    [Fact]
-    public async Task GetAllEmployeeEvaluationTemplateItemsValidSectionReturnsOkResult()
+    private readonly Mock<IEmployeeEvaluationTemplateItemService> _employeeEvaluationTemplateItemServiceMock;
+    private readonly EmployeeEvaluationTemplateItemController _controller;
+    private readonly List<EmployeeEvaluationTemplateItemDto> _employeeEvaluationTemplateItemDtoList;
+    public EmployeeEvaluationTemplateItemControllerUnitTests()
     {
-        var section = "Example Test Section";
-        var expectedTemplateItems = new List<EmployeeEvaluationTemplateItemDto>
+        _employeeEvaluationTemplateItemServiceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
+        _controller = new EmployeeEvaluationTemplateItemController(_employeeEvaluationTemplateItemServiceMock.Object);
+
+        _employeeEvaluationTemplateItemDtoList = new List<EmployeeEvaluationTemplateItemDto>
         {
           EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto,
           EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2,
         };
+    }
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.GetAllBySection(section)).ReturnsAsync(expectedTemplateItems);
+    [Fact]
+    public async Task GetAllEmployeeEvaluationTemplateItemsValidSectionReturnsOkResult()
+    {
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.GetAllBySection("Example Test Section")).ReturnsAsync(_employeeEvaluationTemplateItemDtoList);
 
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.GetAllEmployeeEvaluationTemplateItems(section, null);
+        var result = await _controller.GetAllEmployeeEvaluationTemplateItems("Example Test Section", null);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualTemplateItems = Assert.IsAssignableFrom<List<EmployeeEvaluationTemplateItemDto>>(okResult.Value);
-        Assert.Equal(expectedTemplateItems.Count, actualTemplateItems.Count);
-        Assert.All(actualTemplateItems, item => { Assert.Equal(section, item.Section); });
+        Assert.Equal(_employeeEvaluationTemplateItemDtoList.Count, actualTemplateItems.Count);
+        Assert.All(actualTemplateItems, item => { Assert.Equal("Example Test Section", item.Section); });
     }
 
     [Fact]
     public async Task GetAllEmployeeEvaluationTemplateItemsValidTemplateReturnsOkResult()
     {
-        var template = "Example Test Template";
-        var expectedTemplateItems = new List<EmployeeEvaluationTemplateItemDto>
-        {
-             EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto,
-             EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto,
-        };
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.GetAllByTemplate(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2.Template.Description))
+            .ReturnsAsync(_employeeEvaluationTemplateItemDtoList);
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.GetAllByTemplate(
-            EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description))
-            .ReturnsAsync(expectedTemplateItems);
-
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.GetAllEmployeeEvaluationTemplateItems(null,
-            EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description);
+        var result = await _controller.GetAllEmployeeEvaluationTemplateItems(null, EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2.Template.Description);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualTemplateItems = Assert.IsAssignableFrom<List<EmployeeEvaluationTemplateItemDto>>(okResult.Value);
-        Assert.Equal(expectedTemplateItems.Count, actualTemplateItems.Count);
-        Assert.All(actualTemplateItems, item => { Assert.Equal(
-            EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto.Template.Description, 
-            item.Template?.Description); });
+        Assert.Equal(_employeeEvaluationTemplateItemDtoList.Count, actualTemplateItems.Count);
     }
 
     [Fact]
     public async Task GetAllEmployeeEvaluationTemplateItemsNoSectionOrTemplateReturnsOkResult()
     {
-        var expectedTemplateItems = new List<EmployeeEvaluationTemplateItemDto>
-        {
-             EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto,
-             EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2,
-        };
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.GetAll())
+            .ReturnsAsync(_employeeEvaluationTemplateItemDtoList);
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.GetAll()).ReturnsAsync(expectedTemplateItems);
-
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.GetAllEmployeeEvaluationTemplateItems(null, null);
+        var result = await _controller.GetAllEmployeeEvaluationTemplateItems(null, null);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualTemplateItems = Assert.IsAssignableFrom<List<EmployeeEvaluationTemplateItemDto>>(okResult.Value);
-        Assert.Equal(expectedTemplateItems.Count, actualTemplateItems.Count);
+        Assert.Equal(_employeeEvaluationTemplateItemDtoList.Count, actualTemplateItems.Count);
     }
 
     [Fact]
     public async Task GetAllEmployeeEvaluationTemplateItemsExceptionThrownReturnsNotFoundResult()
     {
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.GetAll())
-                   .ThrowsAsync(new Exception("An error occurred while retrieving employee evaluation template items."));
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.GetAll())
+            .ThrowsAsync(new Exception("An error occurred while retrieving employee evaluation template items."));
 
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.GetAllEmployeeEvaluationTemplateItems(null, null);
+        var result = await _controller.GetAllEmployeeEvaluationTemplateItems(null, null);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var exceptionMessage = Assert.IsType<string>(notFoundResult.Value);
@@ -104,12 +83,9 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var section = "Example Test Section";
         var question = "Example Test Question";
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.Save(template, section, question)).ReturnsAsync(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto);
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.Save(template, section, question)).ReturnsAsync(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto);
 
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.SaveEmployeeEvaluationTemplateItem(template, section, question);
+        var result = await _controller.SaveEmployeeEvaluationTemplateItem(template, section, question);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualSavedItem = Assert.IsAssignableFrom<EmployeeEvaluationTemplateItemDto>(okResult.Value);
@@ -123,37 +99,21 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var section = "Example Test Section";
         var question = "Example Test Question";
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        var exceptionMessage = "An error occurred while saving the employee evaluation template item.";
-        serviceMock.Setup(x => x.Save(template, section, question)).ThrowsAsync(new Exception(exceptionMessage));
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.Save(template, section, question)).ThrowsAsync(new Exception("An error occurred while saving the employee evaluation template item."));
 
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.SaveEmployeeEvaluationTemplateItem(template, section, question);
+        var result = await _controller.SaveEmployeeEvaluationTemplateItem(template, section, question);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var actualExceptionMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal(exceptionMessage, actualExceptionMessage);
+        Assert.Equal("An error occurred while saving the employee evaluation template item.", actualExceptionMessage);
     }
 
     [Fact]
     public async Task UpdateEmployeeEvaluationTemplateItemValidDtoReturnsOkResult()
     {
-        var validDto =
-            new EmployeeEvaluationTemplateItemDto
-            {
-                Id = 1,
-                Template = new EmployeeEvaluationTemplateDto { Id = 101, Description = "Example Test Template" },
-                Section = "Example Section",
-                Question = "Example Question"
-            };
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.Update(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto)).ReturnsAsync(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto);
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.Update(validDto)).ReturnsAsync(validDto);
-
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.UpdateEmployeeEvaluationTemplateItem(validDto);
+        var result = await _controller.UpdateEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto);
 
         var okResult = Assert.IsType<OkResult>(result);
         Assert.Equal(200, okResult.StatusCode);
@@ -162,18 +122,13 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeEvaluationTemplateItemExceptionThrownReturnsNotFoundResult()
     {
-        
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        var exceptionMessage = "An error occurred while updating the employee evaluation template item.";
-        serviceMock.Setup(x => x.Update(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2)).ThrowsAsync(new Exception(exceptionMessage));
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.Update(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2)).ThrowsAsync(new Exception("An error occurred while updating the employee evaluation template item."));
 
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.UpdateEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2);
+        var result = await _controller.UpdateEmployeeEvaluationTemplateItem(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto2);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var actualExceptionMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal(exceptionMessage, actualExceptionMessage);
+        Assert.Equal("An error occurred while updating the employee evaluation template item.", actualExceptionMessage);
     }
 
     [Fact]
@@ -183,14 +138,10 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var section = "Example Section";
         var question = "Example Question";
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        serviceMock.Setup(x => x.Delete(template, section, question))
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.Delete(template, section, question))
                    .ReturnsAsync(EmployeeEvaluationTemplateItemTestData.employeeEvaluationTemplateItemDto);
-                 
 
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.DeleteEmployeeEvaluationTemplateItem(template, section, question);
+        var result = await _controller.DeleteEmployeeEvaluationTemplateItem(template, section, question);
 
         var okResult = Assert.IsType<OkResult>(result);
         Assert.Equal(200, okResult.StatusCode);
@@ -203,16 +154,12 @@ public class EmployeeEvaluationTemplateItemControllerUnitTests
         var section = "Example Section";
         var question = "Example Question";
 
-        var serviceMock = new Mock<IEmployeeEvaluationTemplateItemService>();
-        var exceptionMessage = "An error occurred while deleting the employee evaluation template item.";
-        serviceMock.Setup(x => x.Delete(template, section, question)).ThrowsAsync(new Exception(exceptionMessage));
+        _employeeEvaluationTemplateItemServiceMock.Setup(x => x.Delete(template, section, question)).ThrowsAsync(new Exception("An error occurred while deleting the employee evaluation template item."));
 
-        var controller = new EmployeeEvaluationTemplateItemController(serviceMock.Object);
-
-        var result = await controller.DeleteEmployeeEvaluationTemplateItem(template, section, question);
+        var result = await _controller.DeleteEmployeeEvaluationTemplateItem(template, section, question);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         var actualExceptionMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal(exceptionMessage, actualExceptionMessage);
+        Assert.Equal("An error occurred while deleting the employee evaluation template item.", actualExceptionMessage);
     }
 }

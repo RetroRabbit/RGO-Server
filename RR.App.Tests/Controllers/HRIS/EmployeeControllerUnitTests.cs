@@ -17,26 +17,14 @@ public class EmployeeControllerUnitTests
     private readonly EmployeeController _controller;
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDto _employee;
+    private readonly SimpleEmployeeProfileDto _simpleEmployee;
     private readonly Mock<IEmployeeService> _employeeMockService;
-
-    private readonly EmployeeAddressDto employeeAddressDto = new EmployeeAddressDto
-    {
-        Id = 1,
-        UnitNumber = "2",
-        ComplexName = "Complex",
-        StreetNumber = "2",
-        SuburbOrDistrict = "Suburb/District",
-        City = "City",
-        Country = "Country",
-        Province = "Province",
-        PostalCode = "1620"
-    };
-
-    private readonly EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
-
-    private readonly List<Claim> claims;
-    private readonly ClaimsPrincipal claimsPrincipal;
-    private readonly ClaimsIdentity identity;
+    private readonly EmployeeAddressDto _employeeAddressDto;
+    private readonly EmployeeTypeDto _employeeTypeDto;
+    private readonly List<Claim> _claims;
+    private readonly ClaimsPrincipal _claimsPrincipal;
+    private readonly ClaimsIdentity _claimsIdentity;
+    private readonly SimpleEmployeeProfileDto _simpleEmployeeProfileDto;
 
     public EmployeeControllerUnitTests()
     {
@@ -56,7 +44,7 @@ public class EmployeeControllerUnitTests
             Disability = false,
             DisabilityNotes = "None",
             Level = 4,
-            EmployeeType = employeeTypeDto,
+            EmployeeType = _employeeTypeDto,
             Notes = "Notes",
             LeaveInterval = 1,
             SalaryDays = 28,
@@ -77,22 +65,58 @@ public class EmployeeControllerUnitTests
             Email = "ksmith@retrorabbit.co.za",
             PersonalEmail = "kmaosmith@gmail.com",
             CellphoneNo = "0123456789",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
+            PhysicalAddress = _employeeAddressDto,
+            PostalAddress = _employeeAddressDto
         };
 
-        claims = new List<Claim>
+        _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto{
+            Id = 1,
+            EmployeeNumber = "1",
+            TaxNumber = "123123",
+            EngagementDate = new DateTime(),
+            Disability = false,
+            DisabilityNotes = "",
+            Level = 3,
+            EmployeeType = _employeeTypeDto,
+            Name = "John",
+            Initials = "J",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(),
+            IdNumber = "123",
+            Email = "ksmith@retrorabbit.co.za",
+            PersonalEmail = "ba@gmail.com",
+            CellphoneNo = "123",
+            PhysicalAddress = _employeeAddressDto,
+            PostalAddress = _employeeAddressDto
+        };
+
+        _claims = new List<Claim>
         {
             new(ClaimTypes.Email, "ksmith@retrorabbit.co.za")
         };
 
-        identity = new ClaimsIdentity(claims, "TestAuthType");
-        claimsPrincipal = new ClaimsPrincipal(identity);
+        _claimsIdentity = new ClaimsIdentity(_claims, "TestAuthType");
+        _claimsPrincipal = new ClaimsPrincipal(_claimsIdentity);
 
         _controller.ControllerContext = new ControllerContext
         {
-            HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            HttpContext = new DefaultHttpContext { User = _claimsPrincipal }
         };
+
+        _employeeAddressDto = new EmployeeAddressDto
+        {
+            Id = 1,
+            UnitNumber = "2",
+            ComplexName = "Complex",
+            StreetNumber = "2",
+            SuburbOrDistrict = "Suburb/District",
+            City = "City",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
+        };
+
+        _employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
     }
 
     private ClaimsPrincipal SetupClaimsProncipal(string email)
@@ -322,7 +346,6 @@ public class EmployeeControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualDetails = Assert.IsType<EmployeeDto>(okResult.Value);
-
         Assert.Equal(expectedDetails, actualDetails);
     }
 
@@ -370,66 +393,22 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetSimpleEmployeeSuccess()
     {
-        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto
-        {
-            Id = 1,
-            EmployeeNumber = "1",
-            TaxNumber = "123123",
-            EngagementDate = new DateTime(),
-            Disability = false,
-            DisabilityNotes = "",
-            Level = 3,
-            EmployeeType = employeeTypeDto,
-            Name = "John",
-            Initials = "J",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(),
-            IdNumber = "123",
-            Email = "ksmith@retrorabbit.co.za",
-            PersonalEmail = "ba@gmail.com",
-            CellphoneNo = "123",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
-        };
+        _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(_simpleEmployeeProfileDto);
 
-        _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(employee);
-
-        var result = await _controller.GetSimpleEmployee(employee.Email!);
+        var result = await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!);
 
         var simpleEmployee = (ObjectResult)result;
 
-        Assert.Equal(employee, simpleEmployee.Value);
+        Assert.Equal(_simpleEmployeeProfileDto, simpleEmployee.Value);
     }
 
     [Fact]
     public async Task GetSimpleEmployeeFail()
     {
-        SimpleEmployeeProfileDto employee = new SimpleEmployeeProfileDto
-        {
-            Id = 1,
-            EmployeeNumber = "1",
-            TaxNumber = "123123",
-            EngagementDate = new DateTime(),
-            Disability = false,
-            DisabilityNotes = "",
-            Level = 3,
-            EmployeeType = employeeTypeDto,
-            Name = "John",
-            Initials = "J",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(),
-            IdNumber = "123",
-            Email = "ksmith@retrorabbit.co.za",
-            PersonalEmail = "ba@gmail.com",
-            CellphoneNo = "123",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
-        };
-
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
                             .ThrowsAsync(new Exception("Not Found"));
 
-        var result = await _controller.GetSimpleEmployee(employee.Email!);
+        var result = await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!);
 
         var simpleEmployee = (NotFoundObjectResult)result;
 
