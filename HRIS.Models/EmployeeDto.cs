@@ -4,6 +4,7 @@ namespace HRIS.Models;
 
 public class EmployeeDto
 {
+    public string? AuthUserId { get; set; }
     public int Id { get; set; }
     public string? EmployeeNumber { get; set; }
     public string? TaxNumber { get; set; }
