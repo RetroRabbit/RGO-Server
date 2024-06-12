@@ -58,5 +58,5 @@ public class AuthServiceUnitTest
         _authService = new AuthService(_errorLoggingService);
     }
 
-    // TODO: update this unit test
+
 }

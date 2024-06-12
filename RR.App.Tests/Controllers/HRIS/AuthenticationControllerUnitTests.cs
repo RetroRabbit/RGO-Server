@@ -12,5 +12,5 @@ namespace RR.App.Tests.Controllers.HRIS;
 
 public class AuthenticationControllerUnitTests
 {
-    // TODO: update this unit test
+
 }
