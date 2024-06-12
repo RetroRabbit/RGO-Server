@@ -15,10 +15,10 @@ public class AuthenticationController : ControllerBase
         _authService = authService;
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [AllowAnonymous]
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet()]
-    public async Task<IActionResult> LoggedInUser()
+    public async Task<IActionResult> LoggingInUser()
     {
         try
         {

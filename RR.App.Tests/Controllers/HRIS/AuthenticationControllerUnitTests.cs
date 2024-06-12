@@ -18,9 +18,9 @@ namespace RR.App.Tests.Controllers.HRIS
         }
 
         [Fact]
-        public async Task LoggedInUser_ReturnsOkResult()
+        public async Task LoggingInUser_ReturnsOkResult()
         {
-            var result = await _controller.LoggedInUser();
+            var result = await _controller.LoggingInUser();
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("Api connection works", okResult.Value);
         }
