@@ -1,12 +1,11 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
-using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
-using RR.Tests.Data.Models.HRIS;
-using RR.UnitOfWork.Entities.HRIS;
+using System.Security.Claims;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -135,21 +134,64 @@ public class PropertyAccessControllerUnitTests
         _propertyAccessMockService.Verify(service => service.UpdatePropertyAccess(0, PropertyAccessLevel.read), Times.Once);
     }
 
-    //[Fact]
-    //public async Task GetUserIdReturnsOkResult()
-    //{
-    //    var email = "test@retrorabbit.co.za";
+    [Fact]
+    public async Task GetUserIdReturnsOkResult()
+    {
+        var email = "test@retrorabbit.co.za";
+        var employeeId = 1;
+        var authUserId = "authUser123";
 
-    //    _employeeMockService.Setup(service => service.GetEmployee(email))
-    //                             .ReturnsAsync(EmployeeTestData.EmployeeDto);
+        var employee = new EmployeeDto
+        {
+            Id = employeeId,
+            AuthUserId = null
+        };
 
-    //    var result = await _propertyAccessController.GetUserId(email);
+        var claims = new List<Claim>
+        {
+        new Claim(ClaimTypes.NameIdentifier, authUserId)
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuthType");
+        var claimsPrincipal = new ClaimsPrincipal(identity);
 
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    Assert.Equal(1, okResult.Value!);
+        _employeeMockService.Setup(service => service.GetEmployee(email))
+                            .ReturnsAsync(employee);
 
-    //    _employeeMockService.Verify(service => service.GetEmployee(email), Times.Once);
-    //}
+        var httpContext = new DefaultHttpContext
+        {
+            User = claimsPrincipal
+        };
+        _propertyAccessController.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContext
+        };
+
+        var result = await _propertyAccessController.GetUserId(email);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(employeeId, okResult.Value);
+
+        _employeeMockService.Verify(service => service.GetEmployee(email), Times.Once);
+
+        _employeeMockService.Verify(service => service.UpdateEmployee(It.Is<EmployeeDto>(e =>
+            e.Id == employeeId && e.AuthUserId == authUserId), email), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetUserIdReturnsNotFoundResultWhenExceptionThrown()
+    {
+        var email = "test@retrorabbit.co.za";
+
+        _employeeMockService.Setup(service => service.GetEmployee(email))
+                            .ThrowsAsync(new Exception("Employee not found"));
+
+        var result = await _propertyAccessController.GetUserId(email);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("Employee not found", notFoundResult.Value);
+
+        _employeeMockService.Verify(service => service.GetEmployee(email), Times.Once);
+    }
 
     [Fact]
     public async Task GetUserIdReturnsNotFoundResult()

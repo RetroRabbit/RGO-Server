@@ -122,6 +122,7 @@ namespace RR.App
 
                             Claim? roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
                             if (roleClaims != null)
+                            {
                                 try
                                 {
                                     var roles = JArray.Parse(roleClaims.Value);
@@ -138,8 +139,8 @@ namespace RR.App
                                         claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
                                     }
                                 }
-                            claimsIdentity.RemoveClaim(roleClaims);
-
+                                claimsIdentity.RemoveClaim(roleClaims);
+                            }
                             return Task.CompletedTask;
                         }
                     };
