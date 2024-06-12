@@ -24,8 +24,10 @@ public class EmployeeDateServiceUnitTests
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _employeeDateService = new EmployeeDateService(_mockDb.Object,_errorLoggingServiceMock.Object);
         var employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Employee" };
+
         var employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+
         _employeeDto = new EmployeeDto
         {
             Id = 1,
