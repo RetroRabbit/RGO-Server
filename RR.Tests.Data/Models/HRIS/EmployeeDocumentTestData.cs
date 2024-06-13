@@ -68,6 +68,7 @@ public class EmployeeDocumentTestData
         CounterSign = false,
         DocumentType = DocumentType.StarterKit,
     };
+
     public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto
     {
         Id = 1,

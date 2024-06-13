@@ -34,10 +34,12 @@ public interface IDatabaseContext
     DbSet<RoleAccessLink> roleAccessLinks { get; set; }
     DbSet<EmployeeBanking> employeeBanking { get; set; }
     DbSet<Client> clients { get; set; }
+    DbSet<ClientProject> clientsProject { get; set; }
     DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     DbSet<ErrorLogging> errorLogging { get; set; }
     DbSet<Candidate> candidate { get; set; }
     DbSet<WorkExperience> workExperience { get; set; }
+    DbSet<Termination> termination { get; set; }
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
@@ -76,10 +78,12 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<RoleAccessLink> roleAccessLinks { get; set; }
     public DbSet<EmployeeBanking> employeeBanking { get; set; }
     public DbSet<Client> clients { get; set; }
+    public DbSet<ClientProject> clientsProject { get; set; }
     public DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
     public DbSet<ErrorLogging> errorLogging { get; set; }
     public DbSet<Candidate> candidate { get; set; }
     public DbSet<WorkExperience> workExperience { get; set; }
+    public DbSet<Termination> termination { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

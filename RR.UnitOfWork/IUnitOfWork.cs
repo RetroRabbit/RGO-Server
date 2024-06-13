@@ -33,11 +33,13 @@ public interface IUnitOfWork
     IChartRoleLinkRepositories ChartRoleLink { get; }
     IEmployeeBankingRepository EmployeeBanking { get; }
     IClientRepository Client { get; }
+    IClientProjectRepository ClientProject { get; }
     IMonthlyEmployeeTotalRepository MonthlyEmployeeTotal { get; }
     IErrorLoggingRepository ErrorLogging { get; }
     ICandidateRepository Candidate { get; }
     IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     IWorkExperienceRepository WorkExperience { get; }
+    ITerminationRepository Termination { get; }
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
     Task<List<string>> GetColumnNames(string tableName);

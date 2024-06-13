@@ -32,10 +32,12 @@ public static class RegisterServicesExtension
         services.AddScoped<IFieldCodeOptionsService, FieldCodeOptionsService>();
         services.AddScoped<IEmployeeBankingService, EmployeeBankingService>();
         services.AddScoped<IClientService, ClientService>();
+        services.AddScoped<IClientProjectService, ClientProjectService>();
         services.AddScoped<IErrorLoggingService, ErrorLoggingService>();
         services.AddScoped<IBankingAndStarterKitService, BankingAndStarterKitService>();
         services.AddScoped<IEmployeeQualificationService, EmployeeQualificationService>();
         services.AddScoped<IWorkExperienceService, WorkExperienceService>();
         services.AddScoped<IEmployeeSalarayDetailsService, EmployeeSalaryDetailsService>();
+        services.AddScoped<ITerminationService, TerminationService>();
     }
 }

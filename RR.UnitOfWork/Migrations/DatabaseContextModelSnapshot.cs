@@ -298,6 +298,49 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("Client");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("clientName");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("endDate");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("projectName");
+
+                    b.Property<string>("ProjectURL")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("projectURL");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("startDate");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("ClientProject");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -1322,6 +1365,65 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("RoleAccessLink");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Termination", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AccountsStatus")
+                        .HasColumnType("boolean")
+                        .HasColumnName("accountsStatus");
+
+                    b.Property<DateTime>("DayOfNotice")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("dayOfNotice");
+
+                    b.Property<string>("DocumentName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("documentName");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
+
+                    b.Property<bool>("EquipmentStatus")
+                        .HasColumnType("boolean")
+                        .HasColumnName("equipmentStatus");
+
+                    b.Property<DateTime>("LastDayOfEmployment")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lastDayOfEmployment");
+
+                    b.Property<bool>("ReemploymentStatus")
+                        .HasColumnType("boolean")
+                        .HasColumnName("reemploymentStatus");
+
+                    b.Property<string>("TerminationComments")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("terminationComments");
+
+                    b.Property<string>("TerminationDocument")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("terminationDocument");
+
+                    b.Property<int>("TerminationOption")
+                        .HasColumnType("integer")
+                        .HasColumnName("terminationOption");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Termination");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.WorkExperience", b =>
                 {
                     b.Property<int>("Id")
@@ -1339,8 +1441,8 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
 
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("endDate");
 
                     b.Property<string>("ProjectName")
@@ -1355,8 +1457,8 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text[]")
                         .HasColumnName("software");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("startDate");
 
                     b.HasKey("Id");
@@ -1403,6 +1505,17 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Chart");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ClientProject", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Employee", b =>
@@ -1674,6 +1787,17 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("RoleAccess");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Termination", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.WorkExperience", b =>

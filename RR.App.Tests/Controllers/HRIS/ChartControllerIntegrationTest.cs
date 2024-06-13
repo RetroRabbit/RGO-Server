@@ -51,7 +51,7 @@ namespace RR.App.Tests.Controllers.HRIS
             }
         }
 
-        [Fact(Skip = "I will fix with charts unit test fix")]
+        [Fact]
         public async Task GetAllCharts_ReturnsOk_WithCharts()
         {
             var response = await _client.GetAsync("/charts");
@@ -63,7 +63,7 @@ namespace RR.App.Tests.Controllers.HRIS
             var charts = JsonSerializer.Deserialize<List<ChartDto>>(content);
         }
 
-        [Fact(Skip = "I will fix with charts unit test fix")]
+        [Fact]
         public async Task Create_Update_Delte_Chart_ReturnsOK_OnSuccess()
         {
             var dataType = new List<string> { "Type1", "Type2", "Type3" };
@@ -145,5 +145,4 @@ namespace RR.App.Tests.Controllers.HRIS
             Assert.NotNull(chartData);
         }
     }
-
 }

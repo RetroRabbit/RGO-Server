@@ -15,7 +15,6 @@ public class EmployeeAddressServiceUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeAddressService _employeeAddressService;
-    //private readonly EmployeeDto? _employeeDto;
     private readonly IErrorLoggingService _errorLoggingService;
 
     public EmployeeAddressServiceUnitTest()
