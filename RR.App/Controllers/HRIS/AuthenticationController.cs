@@ -17,7 +17,7 @@ public class AuthenticationController : ControllerBase
 
     [AllowAnonymous]
     [ApiExplorerSettings(IgnoreApi = true)]
-    [HttpGet()]
+    [HttpPost()]
     public async Task<IActionResult> LoggingInUser()
     {
         try
