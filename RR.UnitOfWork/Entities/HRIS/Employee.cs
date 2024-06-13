@@ -155,6 +155,11 @@ public class Employee : IModel<EmployeeDto>
     public virtual Client? ClientAssigned { get; set; }
     public virtual EmployeeAddress? PhysicalAddress { get; set; }
     public virtual EmployeeAddress? PostalAddress { get; set; }
+    public virtual List<EmployeeData>? EmployeeData { get; set; }
+    public virtual List<EmployeeCertification>? EmployeeCertification { get; set; }
+    public virtual List<EmployeeDocument>? EmployeeDocument { get; set; }
+    public virtual List<EmployeeQualification>? EmployeeQualification { get; set; }
+    public virtual EmployeeSalaryDetails? EmployeeSalaryDetails { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
 

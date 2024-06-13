@@ -40,7 +40,11 @@ public interface IUnitOfWork
     IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     IWorkExperienceRepository WorkExperience { get; }
     ITerminationRepository Termination { get; }
+    IDataReportRepository DataReport { get; }
+    IDataReportFilterRepository DataReportFilter { get; }
+    IDataReportColumnsRepository DataReportColumns { get; }
+
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
-    Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
+    Task<List<int>> RawSqlForIntList(string sql, string column, params NpgsqlParameter[] parameters);
     Task<List<string>> GetColumnNames(string tableName);
 }

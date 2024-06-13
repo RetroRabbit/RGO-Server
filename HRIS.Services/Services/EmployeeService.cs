@@ -120,6 +120,7 @@ public class EmployeeService : IEmployeeService
         return await _db.Employee.Delete(existingEmployee!.Id);
     }
 
+    // TODO : This needs to be split into 2 methods. Can not have GetAll but if you provide an email and is Journey do something other than GetAll.
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
     {
         if (userEmail != "" && await IsJourney(userEmail))

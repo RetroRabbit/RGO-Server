@@ -53,6 +53,9 @@ public class UnitOfWork : IUnitOfWork
         WorkExperience = new WorkExperienceRepository(_db);
         EmployeeSalaryDetails = new EmployeeSalaryDetailsRepository(_db);
         Termination = new TerminationRepository(_db);
+        DataReport = new DataReportRepository(_db);
+        DataReportFilter = new DataReportFilterRepository(_db);
+        DataReportColumns = new DataReportColumnsRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -88,32 +91,32 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     public IWorkExperienceRepository WorkExperience { get; }
     public ITerminationRepository Termination { get; }
+    public IDataReportRepository DataReport { get; }
+    public IDataReportFilterRepository DataReportFilter { get; }
+    public IDataReportColumnsRepository DataReportColumns { get; }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
         await _db.Database.ExecuteSqlRawAsync(sql, parameters);
     }
 
-    public async Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters)
+    public async Task<List<int>> RawSqlForIntList(string sql, string column, params NpgsqlParameter[] parameters)
     {
-        try
-        {
-            using (var command = _db.Database.GetDbConnection().CreateCommand())
-            {
-                command.CommandText = sql;
-                command.Parameters.AddRange(parameters);
+        var ids = new List<int>();
 
-                if (command.Connection!.State == ConnectionState.Closed) await command.Connection.OpenAsync();
+        var connection = _db.Database.GetDbConnection();
+        if (connection.State != ConnectionState.Open)
+            await connection.OpenAsync();
 
-                var result = await command.ExecuteScalarAsync();
+        await using var command = connection.CreateCommand();
+        command.CommandText = sql;
+        command.Parameters.AddRange(parameters);
 
-                return result?.ToString()!;
-            }
-        }
-        catch (Exception)
-        {
-            return null!;
-        }
+        await using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+            ids.Add(Convert.ToInt32(reader[column]));
+
+        return ids;
     }
 
     public Task<List<string>> GetColumnNames(string tableName)

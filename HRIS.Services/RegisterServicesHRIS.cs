@@ -39,5 +39,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IWorkExperienceService, WorkExperienceService>();
         services.AddScoped<IEmployeeSalarayDetailsService, EmployeeSalaryDetailsService>();
         services.AddScoped<ITerminationService, TerminationService>();
+        services.AddScoped<IDataReportService, DataReportService>();
     }
 }

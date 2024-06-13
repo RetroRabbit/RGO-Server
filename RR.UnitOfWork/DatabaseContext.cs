@@ -40,6 +40,7 @@ public interface IDatabaseContext
     DbSet<Candidate> candidate { get; set; }
     DbSet<WorkExperience> workExperience { get; set; }
     DbSet<Termination> termination { get; set; }
+    DbSet<DataReport> dataReport { get; set; }
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
@@ -84,6 +85,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<Candidate> candidate { get; set; }
     public DbSet<WorkExperience> workExperience { get; set; }
     public DbSet<Termination> termination { get; set; }
+    public DbSet<DataReport> dataReport { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
