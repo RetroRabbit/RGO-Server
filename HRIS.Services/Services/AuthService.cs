@@ -47,8 +47,8 @@ public class AuthService : IAuthService
         var tokenEndpoint = $"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}oauth/token";
         var requestBody = new Dictionary<string, string>
         {
-            { "client_id",  Environment.GetEnvironmentVariable("Management__ClientId")},
-            { "client_secret", Environment.GetEnvironmentVariable("Management__ClientSecret") },
+            { "client_id",  Environment.GetEnvironmentVariable("AuthManagement__ClientId")},
+            { "client_secret", Environment.GetEnvironmentVariable("AuthManagement__ClientSecret") },
             { "grant_type", "client_credentials" },
             { "audience", $"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2/" }
         };
