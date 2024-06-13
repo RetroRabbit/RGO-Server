@@ -20,7 +20,7 @@ namespace RR.App
         {
             try
             {
-                var jwksUrl = Environment.GetEnvironmentVariable("Auth__Issuer") + ".well-known/jwks.json";
+                var jwksUrl = Environment.GetEnvironmentVariable("AuthManagement__Issuer") + ".well-known/jwks.json";
                 using (var httpClient = new HttpClient())
                 {
                     var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
@@ -98,8 +98,8 @@ namespace RR.App
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
 
-                        ValidIssuer = Environment.GetEnvironmentVariable("Auth__Issuer"),
-                        ValidAudience = Environment.GetEnvironmentVariable("Auth__Audience"),
+                        ValidIssuer = Environment.GetEnvironmentVariable("AuthManagement__Issuer"),
+                        ValidAudience = Environment.GetEnvironmentVariable("AuthManagement__Audience"),
                         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
                         {
                             var jwksSet = LazyJwksSet.Value;
