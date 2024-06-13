@@ -22,7 +22,8 @@ public class RoleServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _roleService = new RoleService(_dbMock.Object, _errorLoggingServiceMock.Object);
+        var _employeeAuthServiceMock = new Mock<IAuthService>();
+        _roleService = new RoleService(_dbMock.Object, _errorLoggingServiceMock.Object, _employeeAuthServiceMock.Object);
         _roleDto = new RoleDto { Id = 1, Description = "Employee" };
     }
 

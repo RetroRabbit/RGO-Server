@@ -11,11 +11,31 @@ using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
 using HRIS.Services.Services;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace RR.App
 {
     public class Program
     {
+        private static Lazy<JsonWebKeySet> LazyJwksSet = new Lazy<JsonWebKeySet>(() =>
+        {
+            try
+            {
+                var jwksUrl = Environment.GetEnvironmentVariable("AuthManagement__Issuer") + ".well-known/jwks.json";
+                using (var httpClient = new HttpClient())
+                {
+                    var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
+                    return new JsonWebKeySet(jwksResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching JWKS: {ex.Message}");
+                throw;
+            }
+        });
+
         public static async Task Main(params string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -80,9 +100,20 @@ namespace RR.App
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
 
-                        ValidIssuer = Environment.GetEnvironmentVariable("Auth__Issuer"),
-                        ValidAudience = Environment.GetEnvironmentVariable("Auth__Audience"),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Auth__Key")))
+                        ValidIssuer = Environment.GetEnvironmentVariable("AuthManagement__Issuer"),
+                        ValidAudience = Environment.GetEnvironmentVariable("AuthManagement__Audience"),
+                        IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
+                        {
+                            var jwksSet = LazyJwksSet.Value;
+                            if (jwksSet != null)
+                            {
+                                return jwksSet.Keys;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("JsonWebKeySet is not available.");
+                            }
+                        }
                     };
 
                     options.Events = new JwtBearerEvents
@@ -91,28 +122,27 @@ namespace RR.App
                         {
                             var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
 
-                            var issuer = context.Principal.FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
-                            var audience = context.Principal.FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
-
-                            if (issuer != Environment.GetEnvironmentVariable("Auth__Issuer") || audience != Environment.GetEnvironmentVariable("Auth__Audience"))
+                            Claim? roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                            if (roleClaims != null)
                             {
-                                context.Fail("Token is not valid");
-                                return Task.CompletedTask;
+                                try
+                                {
+                                    var roles = JArray.Parse(roleClaims.Value);
+                                    foreach (var role in roles)
+                                    {
+                                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
+                                    }
+                                }
+                                catch (JsonReaderException)
+                                {
+                                    var roles = roleClaims.Value.Split(',');
+                                    foreach (var role in roles)
+                                    {
+                                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
+                                    }
+                                }
+                                claimsIdentity.RemoveClaim(roleClaims);
                             }
-
-                            Claim? roleClaims = claimsIdentity!.Claims
-                                .FirstOrDefault(c => c.Type == ClaimTypes.Role);
-
-                            if (roleClaims == null) return Task.CompletedTask;
-
-                            var roles = roleClaims.Value.Split(",");
-
-                            foreach (var role in roles)
-                            {
-                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-                            }
-
-                            claimsIdentity.RemoveClaim(roleClaims);
                             return Task.CompletedTask;
                         }
                     };
@@ -172,7 +202,7 @@ namespace RR.App
                         {
                             policy.RequireRole(policySettings.Roles);
                             if (policySettings.Permissions.Count > 0)
-                                policy.RequireClaim("Permission", policySettings.Permissions);
+                                policy.RequireClaim("permissions", policySettings.Permissions);
                         });
                 });
             });

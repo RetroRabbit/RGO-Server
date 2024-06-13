@@ -17,6 +17,7 @@ public class Employee : IModel<EmployeeDto>
 
     public Employee(EmployeeDto employeeDto, EmployeeTypeDto employeeType)
     {
+        AuthUserId = employeeDto.AuthUserId;
         Id = employeeDto.Id;
         EmployeeNumber = employeeDto.EmployeeNumber;
         TaxNumber = employeeDto.TaxNumber;
@@ -149,6 +150,8 @@ public class Employee : IModel<EmployeeDto>
 
     [Column("inactiveReason")] public string? InactiveReason { get; set; }
 
+    [Column("authuserid")] public string? AuthUserId { get; set; }
+
     public virtual EmployeeType? EmployeeType { get; set; }
     public virtual Employee? ChampionEmployee { get; set; }
     public virtual Employee? TeamLeadAssigned { get; set; }
@@ -162,6 +165,7 @@ public class Employee : IModel<EmployeeDto>
     {
         return new EmployeeDto
         {
+            AuthUserId = AuthUserId,
             Id = Id,
             EmployeeNumber = EmployeeNumber,
             TaxNumber = TaxNumber,

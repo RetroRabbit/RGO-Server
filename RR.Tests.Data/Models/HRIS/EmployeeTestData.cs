@@ -7,6 +7,7 @@ public class EmployeeTestData
 {
     public static EmployeeDto EmployeeDto = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|134145450660776787996",
         Id = 1,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
@@ -49,6 +50,7 @@ public class EmployeeTestData
 
     public static EmployeeDto EmployeeDto2 = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|133145450660776787996",
         Id = 2,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
@@ -91,6 +93,7 @@ public class EmployeeTestData
 
     public static EmployeeDto EmployeeDto3 = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|134145450660776587996",
         Id = 3,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
@@ -133,6 +136,7 @@ public class EmployeeTestData
 
     public static EmployeeDto EmployeeDto4 = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|134145450660776787994",
         Id = 4,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
@@ -175,6 +179,7 @@ public class EmployeeTestData
 
     public static EmployeeDto EmployeeDto5 = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|134145450660776787946",
         Id = 1,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
@@ -217,6 +222,7 @@ public class EmployeeTestData
 
     public static EmployeeDto EmployeeDtoNew = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|134145450660773787996",
         Id = 0,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
@@ -259,6 +265,7 @@ public class EmployeeTestData
 
     public static EmployeeDto EmployeeDto6 = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|134145450660776787996",
         Id = 1,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
@@ -302,6 +309,7 @@ public class EmployeeTestData
 
     public static EmployeeDto EmployeeDtoAdminSameEmail = new EmployeeDto
     {
+        AuthUserId = "google-oauth2|134145450660776787996",
         Id = 1,
         EmployeeNumber = "001",
         TaxNumber = "34434434",
