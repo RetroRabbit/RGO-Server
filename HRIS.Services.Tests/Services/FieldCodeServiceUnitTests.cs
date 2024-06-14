@@ -195,24 +195,18 @@ public class FieldCodeServiceUnitTests
         _dbMock.Verify(r => r.FieldCode.Update(It.IsAny<FieldCode>()), Times.Once);
     }
 
-    [Fact]
-    public async Task GetByCategoryPass()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task GetByCategoryPass(int categoryNumber)
     {
         var fieldCodes = new List<FieldCode>
         {
             new(_fieldCodeDto),
             new(_fieldCodeDto2)
         };
-
-        _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
-               .Returns(fieldCodes.AsQueryable().BuildMock());
-
-        var category = 0;
-
-        var result = await _fieldCodeService.GetByCategory(category);
-
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count);
 
         fieldCodes = new List<FieldCode>
         {
@@ -222,34 +216,7 @@ public class FieldCodeServiceUnitTests
         _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
                .Returns(fieldCodes.AsQueryable().BuildMock());
 
-        category = 1;
-
-        result = await _fieldCodeService.GetByCategory(category);
-
-        Assert.NotNull(result);
-        Assert.Single(result);
-
-        fieldCodes = new List<FieldCode>
-        {
-            new(_fieldCodeDto4)
-        };
-
-        _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
-               .Returns(fieldCodes.AsQueryable().BuildMock());
-
-        category = 2;
-
-        result = await _fieldCodeService.GetByCategory(category);
-
-        Assert.NotNull(result);
-        Assert.Single(result);
-
-        _dbMock.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
-               .Returns(fieldCodes.AsQueryable().BuildMock());
-
-        category = 3;
-
-        result = await _fieldCodeService.GetByCategory(category);
+        var result = await _fieldCodeService.GetByCategory(categoryNumber);
 
         Assert.NotNull(result);
         Assert.Single(result);

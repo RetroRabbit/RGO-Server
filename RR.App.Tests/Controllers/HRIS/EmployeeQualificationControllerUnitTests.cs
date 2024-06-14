@@ -17,133 +17,118 @@ public class EmployeeQualificationControllerUnitTests
     private readonly Mock<IEmployeeService> _mockEmployeeService;
     private readonly Mock<IErrorLoggingService> _mockErrorLoggingService;
     private readonly EmployeeQualificationController _employeeQualificationController;
+    private readonly EmployeeQualificationDto _employeeQualificationDto;
 
     public EmployeeQualificationControllerUnitTests()
     {
         _mockEmployeeQualificationService = new Mock<IEmployeeQualificationService>();
         _mockEmployeeService = new Mock<IEmployeeService>();
         _mockErrorLoggingService = new Mock<IErrorLoggingService>();
+
         _employeeQualificationController = new EmployeeQualificationController(
             _mockEmployeeQualificationService.Object,
             _mockEmployeeService.Object,
             _mockErrorLoggingService.Object);
+
+        _employeeQualificationDto = EmployeeQualificationTestData.EmployeeQualification;
     }
 
     [Fact]
     public async Task SaveEmployeeQualificationReturnsOkObjectResultWithQualification()
     {
-        var dto = new EmployeeQualificationDto { EmployeeId = 1 };
-        _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(dto, dto.EmployeeId))
-            .ReturnsAsync(dto);
+        _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(_employeeQualificationDto, _employeeQualificationDto.EmployeeId))
+            .ReturnsAsync(_employeeQualificationDto);
 
-        var result = await _employeeQualificationController.SaveEmployeeQualification(dto);
+        var result = await _employeeQualificationController.SaveEmployeeQualification(_employeeQualificationDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
-        Assert.Equal(dto, returnValue);
+        Assert.Equal(_employeeQualificationDto, returnValue);
     }
 
     [Fact]
     public async Task SaveEmployeeQualificationReturnsInternalServerErrorOnException()
     {
-        var dto = new EmployeeQualificationDto { EmployeeId = 1 };
-        var exceptionMessage = "Test Exception";
+        _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(   _employeeQualificationDto, _employeeQualificationDto.EmployeeId))
+            .ThrowsAsync(new Exception("Test Exception"));
 
-        _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(dto, dto.EmployeeId))
-            .ThrowsAsync(new Exception(exceptionMessage));
-
-        var result = await _employeeQualificationController.SaveEmployeeQualification(dto);
+        var result = await _employeeQualificationController.SaveEmployeeQualification(_employeeQualificationDto);
 
         var statusCodeResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, statusCodeResult.StatusCode);
-        Assert.Equal(exceptionMessage, statusCodeResult.Value);
+        Assert.Equal("Test Exception", statusCodeResult.Value);
     }
 
     [Fact]
     public async Task UpdateEmployeeQualificationReturnsOkObjectResultWithUpdatedQualification()
     {
-        var dto = new EmployeeQualificationDto { Id = 1, EmployeeId = 1 };
-        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(dto))
-            .ReturnsAsync(dto);
+        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(_employeeQualificationDto))
+            .ReturnsAsync(_employeeQualificationDto);
 
-        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, dto);
+        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, _employeeQualificationDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
-        Assert.Equal(dto, returnValue);
+        Assert.Equal(_employeeQualificationDto, returnValue);
     }
 
     [Fact]
     public async Task UpdateEmployeeQualificationReturnsNotFoundOnKeyNotFoundException()
     {
-        var dto = new EmployeeQualificationDto { Id = 1, EmployeeId = 1 };
-        var exceptionMessage = "Qualification not found";
+        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(_employeeQualificationDto))
+            .ThrowsAsync(new KeyNotFoundException("Qualification not found"));
 
-        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(dto))
-            .ThrowsAsync(new KeyNotFoundException(exceptionMessage));
-
-        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, dto);
+        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, _employeeQualificationDto);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(exceptionMessage, notFoundResult.Value);
+        Assert.Equal("Qualification not found", notFoundResult.Value);
     }
 
     [Fact]
     public async Task UpdateEmployeeQualificationReturnsInternalServerErrorOnException()
     {
-        var dto = new EmployeeQualificationDto { Id = 1, EmployeeId = 1 };
-        var exceptionMessage = "Test Exception";
+        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(_employeeQualificationDto))
+            .ThrowsAsync(new Exception("Test Exception"));
 
-        _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(dto))
-            .ThrowsAsync(new Exception(exceptionMessage));
-
-        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, dto);
+        var result = await _employeeQualificationController.UpdateEmployeeQualification(1, _employeeQualificationDto);
 
         var statusCodeResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, statusCodeResult.StatusCode);
-        Assert.Equal(exceptionMessage, statusCodeResult.Value);
+        Assert.Equal("Test Exception", statusCodeResult.Value);
     }
 
     [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
     {
-        var expectedQualificationDto = EmployeeQualificationTestData.EmployeeQualification;
-
-        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id))
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(_employeeQualificationDto.Id))
             .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
 
-        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.Id);
+        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(_employeeQualificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
-        Assert.Equal(expectedQualificationDto, returnValue);
+        Assert.Equal(_employeeQualificationDto, returnValue);
     }
 
     [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsNotFoundWhenQualificationsNotFound()
     {
-        var employeeId = 1;
-        var exceptionMessage = "Qualifications not found";
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(1))
+            .ThrowsAsync(new KeyNotFoundException("Qualifications not found"));
 
-        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(employeeId))
-            .ThrowsAsync(new KeyNotFoundException(exceptionMessage));
-
-        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(employeeId);
+        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(1);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
-        Assert.Equal(exceptionMessage, notFoundResult.Value);
+        Assert.Equal("Qualifications not found", notFoundResult.Value);
     }
 
     [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsBadRequestOnException()
     {
-        var employeeId = 1;
-        var exceptionMessage = "An error occurred while retrieving qualifications";
+        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(1))
+            .ThrowsAsync(new Exception("An error occurred while retrieving qualifications"));
 
-        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(employeeId))
-            .ThrowsAsync(new Exception(exceptionMessage));
-
-        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(employeeId);
+        var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(1);
 
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.StartsWith("An error occurred while retrieving qualifications", (string)badRequestResult.Value);
@@ -152,47 +137,39 @@ public class EmployeeQualificationControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeQualificationReturnsOkObjectResultWithDeletedQualification()
     {
-        var EmployeeQualificationDto = EmployeeQualificationTestData.EmployeeQualification; 
+        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(_employeeQualificationDto.Id))
+            .ReturnsAsync(_employeeQualificationDto);
 
-        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(EmployeeQualificationDto.Id))
-            .ReturnsAsync(EmployeeQualificationDto);
-
-        var result = await _employeeQualificationController.DeleteEmployeeQualification(EmployeeQualificationDto.Id);
+        var result = await _employeeQualificationController.DeleteEmployeeQualification(_employeeQualificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
-        Assert.Equal(EmployeeQualificationDto, returnValue);
+        Assert.Equal(_employeeQualificationDto, returnValue);
     }
 
     [Fact]
     public async Task DeleteEmployeeQualificationReturnsNotFoundWhenKeyNotFoundExceptionThrown()
     {
-        var id = 1;
-        var exceptionMessage = "Qualification not found";
+        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(1))
+            .ThrowsAsync(new KeyNotFoundException("Qualification not found"));
 
-        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(id))
-            .ThrowsAsync(new KeyNotFoundException(exceptionMessage));
-
-        var result = await _employeeQualificationController.DeleteEmployeeQualification(id);
+        var result = await _employeeQualificationController.DeleteEmployeeQualification(1);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(exceptionMessage, notFoundResult.Value);
+        Assert.Equal("Qualification not found", notFoundResult.Value);
     }
 
     [Fact]
     public async Task DeleteEmployeeQualificationReturnsStatusCode500OnException()
     {
-        var id = 1;
-        var expectedExceptionMessage = "An unexpected error occurred";
+        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(1))
+            .ThrowsAsync(new Exception("An unexpected error occurred"));
 
-        _mockEmployeeQualificationService.Setup(x => x.DeleteEmployeeQualification(id))
-            .ThrowsAsync(new Exception(expectedExceptionMessage));
-
-        var result = await _employeeQualificationController.DeleteEmployeeQualification(id);
+        var result = await _employeeQualificationController.DeleteEmployeeQualification(1);
 
         var statusCodeResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, statusCodeResult.StatusCode);
-        Assert.Equal($"An error occurred while deleting the qualification: {expectedExceptionMessage}", statusCodeResult.Value);
+        Assert.Equal($"An error occurred while deleting the qualification: {"An unexpected error occurred"}", statusCodeResult.Value);
     }
 
     [Fact]
@@ -200,7 +177,8 @@ public class EmployeeQualificationControllerUnitTests
     {
         var listOfEmployeeQualificationDto = new List<EmployeeQualificationDto>()
             {
-                EmployeeQualificationTestData.EmployeeQualification
+               _employeeQualificationDto,
+               _employeeQualificationDto
             };
 
         _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualifications())
@@ -216,10 +194,8 @@ public class EmployeeQualificationControllerUnitTests
     [Fact]
     public async Task GetAllEmployeeQualificationsReturnsBadRequestOnException()
     {
-        var exceptionMessage = "An error occurred while retrieving qualifications";
-
         _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualifications())
-            .ThrowsAsync(new Exception(exceptionMessage));
+            .ThrowsAsync(new Exception("An error occurred while retrieving qualifications"));
 
         var result = await _employeeQualificationController.GetAllEmployeeQualifications();
 

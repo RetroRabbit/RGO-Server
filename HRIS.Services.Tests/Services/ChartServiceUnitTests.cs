@@ -1,13 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using HRIS.Models;
-using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using Microsoft.AspNetCore.Mvc;
 using MockQueryable.Moq;
 using Moq;
 using RR.Tests.Data.Models.HRIS;
@@ -24,12 +18,10 @@ public class ChartServiceUnitTests
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IServiceProvider> _services;
     private readonly Mock<IUnitOfWork> _unitOfWork;
-    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType1;
     private readonly EmployeeType employeeType2;
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto employeeTypeDto2;
-    private readonly EmployeeTypeTestData employeeTypeTestData;
     private readonly IErrorLoggingService _errorLoggingService;
 
     public ChartServiceUnitTests()
@@ -48,7 +40,6 @@ public class ChartServiceUnitTests
                                 .Returns(Task.FromResult(employeeTypeDto1));
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
-        employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
     }
 
     [Fact]
