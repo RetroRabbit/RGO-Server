@@ -124,9 +124,9 @@ Note: If you get login issue
 
 Right click on RR.App -> Dependencies -> Packages and Manage Nuget Packages. If the packages are highlighted with an exclamation mark then they still need to be restored. A popup should appear in this case and you can click "Restore".
 
-Change from Production to Development in the drop down menu next to the play/debug button
+Change from Production to Development in the drop down menu next to the play/debug button.
 
-Note: You must have .net 7.0 as your target framework
+Note: You must have .net 7.0 as your target framework.
 
 ## EF Migrations
 
