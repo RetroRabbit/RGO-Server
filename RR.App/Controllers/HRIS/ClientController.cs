@@ -15,7 +15,6 @@ public class ClientController : Controller
         _clientService = clientService;
     }
 
-
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllClients()

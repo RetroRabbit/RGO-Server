@@ -66,7 +66,6 @@ public class EmployeeController : ControllerBase
         }
     }
 
-
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("by-email")]
     public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
@@ -87,7 +86,6 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]

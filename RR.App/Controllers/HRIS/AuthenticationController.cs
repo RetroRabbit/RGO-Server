@@ -38,7 +38,6 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeDto newEmployee)

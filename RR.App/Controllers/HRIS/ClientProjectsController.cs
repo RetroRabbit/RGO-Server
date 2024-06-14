@@ -17,7 +17,6 @@ namespace RR.App.Controllers.HRIS
             _clientProjectService = clientProjectService;
         }
 
-
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpGet]
         public async Task<ActionResult> GetAllClientProjects()
@@ -32,7 +31,6 @@ namespace RR.App.Controllers.HRIS
                 return NotFound(ex.Message);
             }
         }
-
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpGet("{id}")]
@@ -49,7 +47,6 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
-
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> SaveClientProject(ClientProjectsDto clientProjectsDto)
@@ -65,7 +62,6 @@ namespace RR.App.Controllers.HRIS
             }
         }
 
-
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateClientProject(ClientProjectsDto clientProjectsDto)
@@ -80,7 +76,6 @@ namespace RR.App.Controllers.HRIS
                 return NotFound(ex.Message);
             }
         }
-
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpDelete]
