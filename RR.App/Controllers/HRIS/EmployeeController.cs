@@ -77,10 +77,10 @@ public class EmployeeController : ControllerBase
 
             if (!string.IsNullOrEmpty(accessTokenEmail))
             {
-                if (email == accessTokenEmail)
-                {
-                    var emailToUse = email ?? claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
+                var emailToUse = email ?? claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
 
+                if (emailToUse == accessTokenEmail)
+                {
                     var employee = await _employeeService.GetEmployee(emailToUse);
 
                     return Ok(employee);
