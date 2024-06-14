@@ -66,7 +66,6 @@ public class EmployeeController : ControllerBase
         }
     }
 
-
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("by-email")]
     public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
@@ -74,20 +73,27 @@ public class EmployeeController : ControllerBase
         try
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
 
-            var emailToUse = email ??
-                             claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if (email == accessTokenEmail)
+                {
+                    var emailToUse = email ?? claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
 
-            var employee = await _employeeService.GetEmployee(emailToUse);
+                    var employee = await _employeeService.GetEmployee(emailToUse);
 
-            return Ok(employee);
+                    return Ok(employee);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {
             return NotFound(ex.Message);
         }
     }
-
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
@@ -143,6 +149,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("card-count")]
     public async Task<IActionResult> GetEmployeesCount()
     {
@@ -157,6 +164,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("churn-rate")]
     public async Task<IActionResult> GetChurnRate()
     {
@@ -171,14 +179,26 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
     {
         try
         {
-            var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
 
-            return Ok(simpleProfile);
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if (employeeEmail == accessTokenEmail)
+                {
+                    var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+
+                    return Ok(simpleProfile);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {
@@ -202,12 +222,13 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("id-number")]
     public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int employeeId)
     {
         try
         {
-            var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber,employeeId);
+            var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
 
             return Ok(isExisting);
         }
