@@ -1,9 +1,11 @@
 ﻿using HRIS.Models;
+using HRIS.Models.Update;
 
 namespace HRIS.Services.Interfaces;
 
 public interface IDataReportService
 {
     Task<List<DataReportDto>> GetDataReportList();
-    Task<List<Dictionary<string, object?>>> GetDataReport(string code);
+    Task<object> GetDataReport(string code);
+    Task UpdateReportInput(UpdateReportCustomValue input);
 }

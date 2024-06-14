@@ -43,6 +43,7 @@ public interface IUnitOfWork
     IDataReportRepository DataReport { get; }
     IDataReportFilterRepository DataReportFilter { get; }
     IDataReportColumnsRepository DataReportColumns { get; }
+    IDataReportValuesRepository DataReportValues { get; }
 
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<List<int>> RawSqlForIntList(string sql, string column, params NpgsqlParameter[] parameters);

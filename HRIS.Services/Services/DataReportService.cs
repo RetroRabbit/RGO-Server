@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using HRIS.Models;
 using HRIS.Models.Enums;
+using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -23,7 +25,7 @@ public class DataReportService : IDataReportService
         return await _db.DataReport.Get(x => x.Status == ItemStatus.Active).Select(x => x.ToDto()).ToListAsync();
     }
 
-    public async Task<List<Dictionary<string, object?>>> GetDataReport(string code)
+    public async Task<object> GetDataReport(string code)
     {
         var report = await GetReport(code) ?? throw new Exception($"Report '{code}' not found");
 
@@ -33,7 +35,44 @@ public class DataReportService : IDataReportService
 
         var mappedEmployeeData = MapEmployeeData(report, employeeDataList);
 
-        return mappedEmployeeData;
+        var mappedColumns = MapReportColumns(report);
+
+        return new
+        {
+            ReportId = report.Id,
+            Columns = mappedColumns,
+            Data = mappedEmployeeData
+        };
+    }
+
+    public async Task UpdateReportInput(UpdateReportCustomValue input)
+    {
+        var item = await _db.DataReportValues
+            .Get(x => x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId)
+            .FirstOrDefaultAsync();
+
+        if (item != null)
+        {
+            item.Input = input.Input;
+            await _db.DataReportValues.Update(item);
+        }
+        else
+            await _db.DataReportValues.Add(new DataReportValues
+            {
+                ReportId = input.ReportId,
+                ColumnId = input.ColumnId,
+                EmployeeId = input.EmployeeId,
+                Input = input.Input
+            });
+
+    }
+
+    private static List<DataReportColumnsDto> MapReportColumns(DataReport report)
+    {
+        return report.DataReportColumns?
+            .OrderBy(x => x.Sequence)
+            .Select(x => x.ToDto())
+            .ToList() ?? new List<DataReportColumnsDto>();
     }
 
     private static List<Dictionary<string, object?>> MapEmployeeData(DataReport report, List<Employee> employeeDataList)
@@ -41,20 +80,33 @@ public class DataReportService : IDataReportService
         if (report.DataReportColumns == null)
             throw new Exception($"Report '{report.Code}' has no columns");
 
-        var mappingList = report.DataReportColumns
-            .GroupBy(x => x.Prop)
-            .ToDictionary(x => x.Key, 
-                y => y.FirstOrDefault()?.Mapping.Split('.') ?? Array.Empty<string>());
+        var mappingList = report.DataReportColumns;
 
         var list = new List<Dictionary<string, object?>>();
 
         foreach (var employee in employeeDataList)
         {
+            var customInput = report.DataReportValues?.Where(x => x.EmployeeId == employee.Id).ToList() ?? new List<DataReportValues>();
             var dictionary = new Dictionary<string, object?> { { "Id", employee.Id } };
-            foreach (var map in mappingList)
+            foreach (var map in mappingList.OrderBy(x => x.Sequence))
             {
-                var value = GetValueFromMapping(employee, map.Value);
-                dictionary.Add(map.Key, value);
+                object? value = null;
+                if (map.IsCustom)
+                {
+                    value = map.FieldType switch
+                    {
+                        DataReportCustom.EmployeeData => employee.EmployeeData?.Where(x => x.FieldCode?.Code == map.Mapping).FirstOrDefault()?.Value,
+                        DataReportCustom.Checkbox => customInput.FirstOrDefault(x => x.ColumnId == map.Id)?.Input ?? "false",
+                        DataReportCustom.Text => customInput.FirstOrDefault(x => x.ColumnId == map.Id)?.Input,
+                        _ => value
+                    };
+                }
+                else
+                {
+                    value = GetValueFromMapping(employee, map.Mapping.Split('.'));
+                }
+
+                dictionary.Add(map.Prop, value ?? "");
             }
             list.Add(dictionary);
         }
@@ -103,15 +155,16 @@ public class DataReportService : IDataReportService
     {
         return await _db.DataReport
             .Get(x => x.Status == ItemStatus.Active && x.Code == code)
-            .Include(x => x.DataReportFilter)
-            .Include(x => x.DataReportColumns)
+            .Include(x => x.DataReportFilter!.Where(y => y.Status == ItemStatus.Active))
+            .Include(x => x.DataReportColumns!.Where(y => y.Status == ItemStatus.Active))
+            .Include(x => x.DataReportValues)
             .AsNoTracking()
             .FirstOrDefaultAsync();
     }
 
     private async Task<List<int>> GetEmployeeIdListForReport(DataReport report)
     {
-        if(report.DataReportFilter == null)
+        if (report.DataReportFilter == null)
             throw new Exception($"Report '{report.Code}' has no filters");
 
         var employeeIds = await _db.RawSqlForIntList("SELECT \"id\" FROM \"Employee\"", "id");

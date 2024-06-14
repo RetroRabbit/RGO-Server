@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,22 @@ namespace RR.App.Controllers.HRIS
             try
             {
                 return Ok(await _service.GetDataReport(code));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        //[Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
+        [AllowAnonymous]
+        [HttpPost("update-report-input")]
+        public async Task<IActionResult> UpdateReportInput([FromBody] UpdateReportCustomValue input)
+        {
+            try
+            {
+                await _service.UpdateReportInput(input);
+                return Ok();
             }
             catch (Exception ex)
             {

@@ -26,6 +26,8 @@ public class DataReport : IModel<DataReportDto>
 
     public virtual List<DataReportFilter>? DataReportFilter { get; set; }
 
+    public virtual List<DataReportValues>? DataReportValues { get; set; }
+
     public DataReport(){}
 
     public DataReport(DataReportDto dto)
