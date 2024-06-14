@@ -27,14 +27,21 @@ Docker is used to run PostgreSql.
 wsl --install
 ```
 
+- Make sure ports 80 and 5432 are not being used by other containers.
+
 - Run the below command to install Postgres container in Docker
 ```powershell
 docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
 ```
 
+## Alternate ways to run PG Admin
 ```powershell
 docker run -itd --name pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@postgres.com -e PGADMIN_DEFAULT_PASSWORD=admin -p 80:80 dpage/pgadmin4
 ```
+- Navigate to localhost:80 on your browser and login with 
+``Email: admin@postgres.com
+  password: admin
+``
 
 ## Environment Variables
 You need to add environment variables onto your machine.
