@@ -32,6 +32,10 @@ wsl --install
 docker run --name RGO -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres
 ```
 
+```powershell
+docker run -itd --name pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@postgres.com -e PGADMIN_DEFAULT_PASSWORD=admin -p 80:80 dpage/pgadmin4
+```
+
 ## Environment Variables
 You need to add environment variables onto your machine.
 
@@ -111,9 +115,18 @@ Launch pgAdmin. Register a **new server** on **pgAdmin**.
 ![pgAdmin Server Name](./README/pgAdminServerName.png)
 ![pgAdmin Host Name](./README/pgAdminHostName.png)
 
+Note: If you get login issue
+- Double check *Host Name* and *Password*
+- Check that you are only running one instance of postgres on your machine. To check: run ```netstat -aon``` on the command line and check that port 5432 is only used once.
 
 
+## Project Build and run
 
+Right click on RR.App -> Dependencies -> Packages and Manage Nuget Packages. If the packages are highlighted with an exclamation mark then they still need to be restored. A popup should appear in this case and you can click "Restore".
+
+Change from Production to Development in the drop down menu next to the play/debug button
+
+Note: You must have .net 7.0 as your target framework
 
 ## EF Migrations
 
@@ -150,6 +163,8 @@ update-database
    additional email you'll make use of.
 
 4. Copy one of the ``INSERT INTO RoleAccessLink,`` statements in the script, change the id and roleId to the role you want to assign to yourself.
+
+4. Copy one of the ``INSERT INTO EmployeeRole,`` statements in the script, change the id, employeeId and roleId to the role you want to assign to yourself. employeeId should match the insert from ``Employee`` Table.
      
 5. Copy the SQL in the locally created script.
    
