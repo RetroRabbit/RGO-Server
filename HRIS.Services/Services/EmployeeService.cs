@@ -98,6 +98,7 @@ public class EmployeeService : IEmployeeService
         employee.PostalAddressId = postalAddress.Id;
 
         var roleDto = await _roleService.GetRole("Employee");
+        employee.Active = true;
         var newEmployee = await _db.Employee.Add(employee);
 
         var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee, Role = roleDto };
