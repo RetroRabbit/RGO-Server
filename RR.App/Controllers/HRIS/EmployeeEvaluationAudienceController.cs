@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -17,6 +18,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         _employeeEvaluationAudienceService = employeeEvaluationAudienceService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost("all")]
     public async Task<IActionResult> GetAll([FromBody] EmployeeEvaluationInput evaluationInput)
     {
@@ -33,6 +35,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeEvaluationAudience(
         [FromQuery] string email,
@@ -50,6 +53,7 @@ public class EmployeeEvaluationAudienceController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeEvaluationAudience(
         [FromQuery] string email,

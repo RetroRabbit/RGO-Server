@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -16,6 +17,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         _employeeEvaluationTemplateItemService = employeeEvaluationTemplateItemService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllEmployeeEvaluationTemplateItems(
         [FromQuery] string? section,
@@ -42,6 +44,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeEvaluationTemplateItem(
         [FromQuery] string template,
@@ -62,6 +65,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeEvaluationTemplateItem(
         [FromBody] EmployeeEvaluationTemplateItemDto employeeEvaluationTemplateItemDto)
@@ -78,6 +82,7 @@ public class EmployeeEvaluationTemplateItemController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeEvaluationTemplateItem(
         [FromQuery] string template,

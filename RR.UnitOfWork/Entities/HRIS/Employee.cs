@@ -17,6 +17,7 @@ public class Employee : IModel<EmployeeDto>
 
     public Employee(EmployeeDto employeeDto, EmployeeTypeDto employeeType)
     {
+        AuthUserId = employeeDto.AuthUserId;
         Id = employeeDto.Id;
         EmployeeNumber = employeeDto.EmployeeNumber;
         TaxNumber = employeeDto.TaxNumber;
@@ -161,12 +162,14 @@ public class Employee : IModel<EmployeeDto>
     public virtual List<EmployeeQualification>? EmployeeQualification { get; set; }
     public virtual EmployeeSalaryDetails? EmployeeSalaryDetails { get; set; }
 
-    [Key] [Column("id")] public int Id { get; set; }
+    [Key][Column("id")] public int Id { get; set; }
+    [Column("authuserid")] public string? AuthUserId { get; set; }
 
     public EmployeeDto ToDto()
     {
         return new EmployeeDto
         {
+            AuthUserId = AuthUserId,
             Id = Id,
             EmployeeNumber = EmployeeNumber,
             TaxNumber = TaxNumber,
