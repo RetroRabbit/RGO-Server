@@ -86,7 +86,7 @@ public class RoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [ProducesResponseType(typeof(List<string>), 200)]
     [ProducesErrorResponseType(typeof(string))]
     [HttpGet("permissions")]
