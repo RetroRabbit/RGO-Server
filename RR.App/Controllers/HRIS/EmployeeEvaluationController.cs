@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -15,6 +16,7 @@ public class EmployeeEvaluationController : Controller
         _employeeEvaluationService = employeeEvaluationService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployeeEvaluations(
         [FromQuery] string email)
@@ -33,6 +35,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetEmployeeEvaluation(
         [FromQuery] string employeeEmail,
@@ -53,6 +56,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeEvaluation(
         [FromBody] EmployeeEvaluationInput evaluationInput)
@@ -68,6 +72,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeEvaluation(
         [FromBody] List<EmployeeEvaluationInput> evaluation)
@@ -85,6 +90,7 @@ public class EmployeeEvaluationController : Controller
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeEvaluation([FromBody] EmployeeEvaluationInput evaluationInput)
     {

@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -15,6 +16,7 @@ public class EmployeeDataController : Controller
         _employeeDataService = employeeDataService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetEmployeeData([FromQuery] int id)
     {
@@ -31,6 +33,7 @@ public class EmployeeDataController : Controller
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
     {
@@ -47,6 +50,7 @@ public class EmployeeDataController : Controller
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
     {
@@ -63,6 +67,7 @@ public class EmployeeDataController : Controller
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeData(int employeeDataId)
     {
