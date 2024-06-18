@@ -1,6 +1,5 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
-using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -135,3 +134,4 @@ public class PropertyAccessController : ControllerBase
         }
     }
 }
+//TODO: find a better way to add auth0 user id to the db, perhaps employee id and auth id should be the same?

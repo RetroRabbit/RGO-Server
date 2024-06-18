@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -35,7 +37,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployee([FromQuery] String email)
     {
@@ -101,10 +103,21 @@ public class EmployeeController : ControllerBase
         try
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            var updatedEmployee =
-                await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+                return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
+            }
 
-            return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
+            var userId = GlobalVariables.GetUserId();
+            if (employee.Id == userId)
+            {
+                var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+                return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {

@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using HRIS.Models;
-using HRIS.Services.Interfaces;
+﻿using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,18 +19,12 @@ public class AuthenticationController : ControllerBase
 
     [AllowAnonymous]
     [ApiExplorerSettings(IgnoreApi = true)]
-    [HttpPost("login")]
-    public async Task<IActionResult> LoginUser([FromQuery] string email)
+    [HttpPost()]
+    public async Task<IActionResult> LoggingInUser()
     {
         try
         {
-            var userExists = await _authService.CheckUserExist(email);
-
-            if (!userExists) throw new Exception("User not found");
-
-            var token = await _authService.Login(email);
-
-            return Ok(token);
+            return Ok("Api connection works");
         }
         catch (Exception ex)
         {
