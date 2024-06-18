@@ -122,6 +122,7 @@ public class PropertyAccessController : ControllerBase
                 if (email == accessTokenEmail)
                 {
                     var employee = await _employeeService.GetEmployee(email);
+                    GlobalVariables.SetUserId(employee!.Id);
                     return Ok(employee!.Id);
                 }
             }

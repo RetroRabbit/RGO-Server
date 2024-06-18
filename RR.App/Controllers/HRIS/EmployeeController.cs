@@ -75,20 +75,13 @@ public class EmployeeController : ControllerBase
         try
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
 
-            if (!string.IsNullOrEmpty(accessTokenEmail))
-            {
-                var emailToUse = email ?? claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
-                if (emailToUse == accessTokenEmail)
-                {
-                    var employee = await _employeeService.GetEmployee(emailToUse);
+            var emailToUse = email ??
+                             claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
 
-                    return Ok(employee);
-                }
-            }
+            var employee = await _employeeService.GetEmployee(emailToUse);
 
-            return NotFound("Tampering found!");
+            return Ok(employee);
         }
         catch (Exception ex)
         {
@@ -190,27 +183,15 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
 
-            if (!string.IsNullOrEmpty(accessTokenEmail))
-            {
-                if (employeeEmail == accessTokenEmail)
-                {
-                    var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
-
-                    return Ok(simpleProfile);
-                }
-            }
-
-            return NotFound("Tampering found!");
+            return Ok(simpleProfile);
         }
         catch (Exception ex)
         {
