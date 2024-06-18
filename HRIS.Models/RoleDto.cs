@@ -4,4 +4,5 @@ public class RoleDto
 {
     public int Id { get; set; }
     public string? Description { get; set; }
+    public string? AuthRoleId { get; set; }
 }

@@ -1,10 +1,10 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
-using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -87,6 +87,16 @@ public class PropertyAccessController : ControllerBase
         try
         {
             var employee = await _employeeService.GetEmployee(email);
+            GlobalVariables.SetUserId(employee!.Id);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+
+            var authUserId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            if (!String.IsNullOrEmpty(authUserId))
+            {
+                var updatedEmployee = employee;
+                updatedEmployee.AuthUserId = authUserId;
+                await _employeeService.UpdateEmployee(updatedEmployee, email);
+            }
             return Ok(employee.Id);
         }
         catch (Exception ex)
@@ -95,3 +105,4 @@ public class PropertyAccessController : ControllerBase
         }
     }
 }
+//TODO: find a better way to add auth0 user id to the db, perhaps employee id and auth id should be the same?
