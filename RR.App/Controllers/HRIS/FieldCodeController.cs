@@ -16,7 +16,7 @@ public class FieldCodeController : Controller
         _fieldCodeService = fieldCodeService;
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllFieldCodes()
     {

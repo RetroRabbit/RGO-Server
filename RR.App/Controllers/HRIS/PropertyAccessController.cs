@@ -1,7 +1,5 @@
-﻿using HRIS.Models;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork;
@@ -113,16 +111,17 @@ public class PropertyAccessController : ControllerBase
 
             if (!string.IsNullOrEmpty(accessTokenEmail))
             {
-                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
-                {
-                    var employee = await _employeeService.GetEmployee(email);
-                    return Ok(employee!.Id);
-                }
-
                 if (email == accessTokenEmail)
                 {
                     var employee = await _employeeService.GetEmployee(email);
+                    //TODO: find a better way to add auth0 user id to the db, perhaps employee id and auth id should be the same?
                     GlobalVariables.SetUserId(employee!.Id);
+                    return Ok(employee!.Id);
+                }
+
+                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                {
+                    var employee = await _employeeService.GetEmployee(email);
                     return Ok(employee!.Id);
                 }
             }
@@ -135,4 +134,3 @@ public class PropertyAccessController : ControllerBase
         }
     }
 }
-//TODO: find a better way to add auth0 user id to the db, perhaps employee id and auth id should be the same?
