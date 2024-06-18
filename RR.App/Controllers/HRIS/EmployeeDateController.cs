@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -17,6 +18,7 @@ public class EmployeeDateController : ControllerBase
         _employeeService = employeeService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeDate([FromBody] EmployeeDateInput employeeDateInput)
     {
@@ -42,6 +44,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeDate(int employeeDateId)
     {
@@ -57,6 +60,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeDate([FromBody] EmployeeDateDto employeeDate)
     {
@@ -82,6 +86,7 @@ public class EmployeeDateController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public IActionResult GetAllEmployeeDate(
         [FromQuery] DateOnly? date = null,

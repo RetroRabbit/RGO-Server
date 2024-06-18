@@ -50,7 +50,6 @@ public class PropertyAccessController : ControllerBase
         }
     }
 
-
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdatePropertyRoleAccess(int propertyId,[FromBody] PropertyAccessLevel propertyAccess)

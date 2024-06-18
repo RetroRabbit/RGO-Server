@@ -67,6 +67,7 @@ public class WorkExperienceController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateWorkExperience([FromBody] WorkExperienceDto workExperience)
