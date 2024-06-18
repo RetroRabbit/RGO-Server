@@ -17,7 +17,7 @@ public class EmployeeQualificationController : ControllerBase
         _employeeQualificationService = employeeQualificationService;
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeQualification([FromBody] EmployeeQualificationDto employeeQualificationDto)
     {
@@ -32,7 +32,7 @@ public class EmployeeQualificationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEmployeeQualification(int id, [FromBody] EmployeeQualificationDto employeeQualificationDto)
     {
@@ -67,7 +67,7 @@ public class EmployeeQualificationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("{employeeId}")]
     public async Task<ActionResult<List<EmployeeQualificationDto>>> GetEmployeeQualificationByEmployeeId(int employeeId)
     {
@@ -86,7 +86,7 @@ public class EmployeeQualificationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployeeQualification(int id)
     {

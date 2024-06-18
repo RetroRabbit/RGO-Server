@@ -2,9 +2,11 @@
 using HRIS.Models.Enums;
 using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -26,8 +28,28 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
-            return Ok(accessList);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                {
+                    var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
+                    return Ok(accessList);
+                }
+
+                var userId = GlobalVariables.GetUserId();
+
+                if (userId == employeeId)
+                {
+                    var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
+                    return Ok(accessList);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {
@@ -86,8 +108,26 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            var employee = await _employeeService.GetEmployee(email);
-            return Ok(employee.Id);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                {
+                    var employee = await _employeeService.GetEmployee(email);
+                    return Ok(employee!.Id);
+                }
+
+                if (email == accessTokenEmail)
+                {
+                    var employee = await _employeeService.GetEmployee(email);
+                    return Ok(employee!.Id);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {

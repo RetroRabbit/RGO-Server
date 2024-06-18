@@ -1,8 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System.Data;
+using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -121,8 +125,28 @@ public class EmployeeBankingController : ControllerBase
     {
         try
         {
-            var employeeBanking = await _employeeBankingService.GetBanking(id);
-            return Ok(employeeBanking);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                {
+                    var employeeBanking = await _employeeBankingService.GetBanking(id);
+                    return Ok(employeeBanking);
+                }
+
+                var userId = GlobalVariables.GetUserId();
+
+                if (userId == id)
+                {
+                    var employeeBanking = await _employeeBankingService.GetBanking(id);
+                    return Ok(employeeBanking);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
 
         catch (Exception ex)
