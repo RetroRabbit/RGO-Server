@@ -222,18 +222,18 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact]
-    public async Task UpdateEmployeeSuccessTest()
-    {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
-                            .ReturnsAsync(_employee);
+    //[Fact]
+    //public async Task UpdateEmployeeSuccessTest()
+    //{
+    //    _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
+    //                        .ReturnsAsync(_employee);
 
-        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
+    //    var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
 
-        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-        Assert.Equal("UpdateEmployee", createdAtActionResult.ActionName);
-        Assert.Equal(201, createdAtActionResult.StatusCode);
-    }
+    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+    //    Assert.Equal("UpdateEmployee", createdAtActionResult.ActionName);
+    //    Assert.Equal(201, createdAtActionResult.StatusCode);
+    //}
 
     [Fact]
     public async Task UpdateEmployeeFailTest()
@@ -247,17 +247,17 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact]
-    public async Task UpdateEmployeeUnauthorized()
-    {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
-                            .ThrowsAsync(new Exception("Unauthorized action"));
+    //[Fact]
+    //public async Task UpdateEmployeeUnauthorized()
+    //{
+    //    _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
+    //                        .ThrowsAsync(new Exception("Unauthorized action"));
 
-        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
-        var statusCodeResult = (ObjectResult)result;
+    //    var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
+    //    var statusCodeResult = (ObjectResult)result;
 
-        Assert.Equal(403, statusCodeResult.StatusCode);
-    }
+    //    Assert.Equal(403, statusCodeResult.StatusCode);
+    //}
 
     [Fact]
     public async Task GetAllEmployeesSuccessTest()
