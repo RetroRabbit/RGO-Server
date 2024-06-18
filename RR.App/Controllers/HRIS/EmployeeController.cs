@@ -73,13 +73,21 @@ public class EmployeeController : ControllerBase
         try
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
 
-            var emailToUse = email ??
-                             claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if (email == accessTokenEmail)
+                {
+                    var emailToUse = email ?? claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value;
 
-            var employee = await _employeeService.GetEmployee(emailToUse);
+                    var employee = await _employeeService.GetEmployee(emailToUse);
 
-            return Ok(employee);
+                    return Ok(employee);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {
@@ -177,9 +185,20 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
 
-            return Ok(simpleProfile);
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if (employeeEmail == accessTokenEmail)
+                {
+                    var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+
+                    return Ok(simpleProfile);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {
