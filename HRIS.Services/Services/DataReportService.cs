@@ -39,6 +39,7 @@ public class DataReportService : IDataReportService
 
         return new
         {
+            ReportName = report.Name,
             ReportId = report.Id,
             Columns = mappedColumns,
             Data = mappedEmployeeData
