@@ -36,7 +36,7 @@ public class DataReportHelper : IDataReportHelper
 
         foreach (var g in report.DataReportFilter.GroupBy(x => x.Table))
         {
-            var selector = g.FirstOrDefault()?.Select;
+            var selector = g.FirstOrDefault()?.Select ?? throw new Exception($"No Selector for {g.Key} to filter on");
             var conditions = g.Aggregate(string.Empty, (current, dto) => current + $"AND \"{dto.Column}\" {dto.Condition} {dto.Value ?? ""}")[3..];
             var sql = $"SELECT \"{selector}\" FROM \"{g.Key}\" WHERE {conditions}";
             var list = await _db.RawSqlForIntList(sql, selector);

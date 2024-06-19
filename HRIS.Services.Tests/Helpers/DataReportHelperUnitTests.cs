@@ -169,6 +169,30 @@ public class DataReportHelperUnitTests
     }
 
     [Fact]
+    public async Task GetEmployeeIdListForReport_Fail_Selector()
+    {
+        _report.DataReportFilter = new List<DataReportFilter>
+        {
+            new()
+            {
+                Id = 1,
+                Table = "Employee",
+                Column = "clientAllocated",
+                Condition = "IS NULL",
+                Value = null,
+                Select = null,
+                ReportId = 1,
+                Status = ItemStatus.Active
+            }
+        };
+
+        var exception =
+            await Assert.ThrowsAsync<Exception>(async () => await _helper.GetEmployeeIdListForReport(_report));
+
+        Assert.Equal($"No Selector for Employee to filter on", exception.Message);
+    }
+
+    [Fact]
     public async Task GetEmployeeData()
     {
         var employeeList = new List<Employee>
