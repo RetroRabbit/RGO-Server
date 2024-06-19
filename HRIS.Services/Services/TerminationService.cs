@@ -25,6 +25,8 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> SaveTermination(TerminationDto terminationDto)
     {
+        try
+        {
         var exists = await CheckTerminationExist(terminationDto.EmployeeId);
         if (exists)
         {
@@ -44,10 +46,14 @@ public class TerminationService : ITerminationService
         }  
 
         EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
-
         await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
 
         return await _db.Termination.Add(new Termination(terminationDto));
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
