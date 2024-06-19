@@ -51,98 +51,98 @@ namespace RR.App.Tests.Controllers.HRIS
             }
         }
 
-        //[Fact]
-        //public async Task GetAllCharts_ReturnsOk_WithCharts()
-        //{
-        //    var response = await _client.GetAsync("/charts");
+        [Fact(Skip = "Unauthorised error")]
+        public async Task GetAllCharts_ReturnsOk_WithCharts()
+        {
+            var response = await _client.GetAsync("/charts");
 
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //    var content = await response.Content.ReadAsStringAsync();
-        //    var charts = JsonSerializer.Deserialize<List<ChartDto>>(content);
-        //}
+            var content = await response.Content.ReadAsStringAsync();
+            var charts = JsonSerializer.Deserialize<List<ChartDto>>(content);
+        }
 
-        //[Fact]
-        //public async Task Create_Update_Delte_Chart_ReturnsOK_OnSuccess()
-        //{
-        //    var dataType = new List<string> { "Type1", "Type2", "Type3" };
-        //    var roles = new List<string> { "Role1", "Role2" };
-        //    var labels = new List<string> { "Label1", "Label2" };
-        //    var chartName = "SampleChart";
-        //    var chartType = "Bar";
-        //    var response = await _client.PostAsync($"/charts?dataType={string.Join("&dataType=", dataType)}" +
-        //                                           $"&roles={string.Join("&roles=", roles)}" +
-        //                                           $"&chartName={chartName}&chartType={chartType}",
-        //                                           content: null);
+        [Fact(Skip = "Unauthorised error")]
+        public async Task Create_Update_Delte_Chart_ReturnsOK_OnSuccess()
+        {
+            var dataType = new List<string> { "Type1", "Type2", "Type3" };
+            var roles = new List<string> { "Role1", "Role2" };
+            var labels = new List<string> { "Label1", "Label2" };
+            var chartName = "SampleChart";
+            var chartType = "Bar";
+            var response = await _client.PostAsync($"/charts?dataType={string.Join("&dataType=", dataType)}" +
+                                                   $"&roles={string.Join("&roles=", roles)}" +
+                                                   $"&chartName={chartName}&chartType={chartType}",
+                                                   content: null);
 
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //    var content = await response.Content.ReadAsStringAsync();
-        //    var jsonDoc = JsonDocument.Parse(content);
-        //    var chartId = jsonDoc.RootElement.GetProperty("id").GetInt32();
-        //    var chartDto = new ChartDto
-        //    {
-        //        Id = chartId,
-        //        Name = chartName,
-        //        Type = chartType,
-        //        DataTypes = dataType,
-        //        Roles = roles,
-        //        Labels = labels,
-        //    };
-        //    var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto), Encoding.UTF8, "application/json");
+            var content = await response.Content.ReadAsStringAsync();
+            var jsonDoc = JsonDocument.Parse(content);
+            var chartId = jsonDoc.RootElement.GetProperty("id").GetInt32();
+            var chartDto = new ChartDto
+            {
+                Id = chartId,
+                Name = chartName,
+                Type = chartType,
+                DataTypes = dataType,
+                Roles = roles,
+                Labels = labels,
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(chartDto), Encoding.UTF8, "application/json");
 
-        //    response = await _client.PutAsync($"/charts", jsonContent);
+            response = await _client.PutAsync($"/charts", jsonContent);
 
-        //    response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-        //    response = await _client.DeleteAsync($"/charts?chartId={chartId}");
+            response = await _client.DeleteAsync($"/charts?chartId={chartId}");
 
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        //}
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
 
-        //[Fact]
-        //public async Task GetColumns_ReturnsOk_WithColumns()
-        //{
-        //    var response = await _client.GetAsync("/charts/column");
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        //    var content = await response.Content.ReadAsStringAsync();
-        //}
+        [Fact(Skip = "Unauthorised error")]
+        public async Task GetColumns_ReturnsOk_WithColumns()
+        {
+            var response = await _client.GetAsync("/charts/column");
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+        }
 
-        //[Fact]
-        //public async Task ExportCsv_ReturnsFileResult_WithData()
-        //{
-        //    var response = await _client.GetAsync("/charts/report/export");
+        [Fact(Skip = "Unauthorised error")]
+        public async Task ExportCsv_ReturnsFileResult_WithData()
+        {
+            var response = await _client.GetAsync("/charts/report/export");
 
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //    var csvData = await response.Content.ReadAsStringAsync();
-        //    Assert.NotEmpty(csvData);
+            var csvData = await response.Content.ReadAsStringAsync();
+            Assert.NotEmpty(csvData);
 
-        //    Assert.Equal("text/csv", response.Content.Headers.ContentType.MediaType);
-        //    Assert.Equal("Report.csv", response.Content.Headers.ContentDisposition.FileNameStar);
-        //}
+            Assert.Equal("text/csv", response.Content.Headers.ContentType.MediaType);
+            Assert.Equal("Report.csv", response.Content.Headers.ContentDisposition.FileNameStar);
+        }
 
-        //[Fact]
-        //public async Task GetChartData_ReturnsOk_WithData()
-        //{
-        //    var dataTypes = new List<string> { "Type1", "Type2", "Type3" };
-        //    var queryString = new FormUrlEncodedContent(new Dictionary<string, string>
-        //    {
-        //        { "dataTypes", JsonSerializer.Serialize(dataTypes) }
-        //    });
+        [Fact(Skip = "Unauthorised error")]
+        public async Task GetChartData_ReturnsOk_WithData()
+        {
+            var dataTypes = new List<string> { "Type1", "Type2", "Type3" };
+            var queryString = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "dataTypes", JsonSerializer.Serialize(dataTypes) }
+            });
 
-        //    var response = await _client.GetAsync("/charts/data?" + queryString.ReadAsStringAsync().Result);
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var response = await _client.GetAsync("/charts/data?" + queryString.ReadAsStringAsync().Result);
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //    var responseBody = await response.Content.ReadAsStringAsync();
-        //    var chartData = JsonSerializer.Deserialize<ChartDataDto>(responseBody);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var chartData = JsonSerializer.Deserialize<ChartDataDto>(responseBody);
 
-        //    Assert.NotNull(chartData);
-        //}
+            Assert.NotNull(chartData);
+        }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data.Models.HRIS;
 using System.Security.Claims;
 using Xunit;
 
@@ -52,32 +53,32 @@ public class PropertyAccessControllerUnitTests
 
     }
 
-    //[Fact]
-    //public async Task GetPropertyWithAccessReturnsOkResult()
-    //{
-    //    _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(0))
-    //                             .ReturnsAsync(new List<PropertyAccessDto>());
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task GetPropertyWithAccessReturnsOkResult()
+    {
+        _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(0))
+                                 .ReturnsAsync(new List<PropertyAccessDto>());
 
-    //    var result = await _propertyAccessController.GetPropertiesWithAccess(0);
+        var result = await _propertyAccessController.GetPropertiesWithAccess(0);
 
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var model = Assert.IsAssignableFrom<List<PropertyAccessDto>>(okResult.Value);
-    //    _propertyAccessMockService.Verify(service => service.GetAccessListByEmployeeId(0), Times.Once);
-    //}
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var model = Assert.IsAssignableFrom<List<PropertyAccessDto>>(okResult.Value);
+        _propertyAccessMockService.Verify(service => service.GetAccessListByEmployeeId(0), Times.Once);
+    }
 
-    //[Fact]
-    //public async Task GetPropertyWithAccessReturnsNotFoundResult()
-    //{
-    //    _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(0))
-    //                             .ThrowsAsync(new Exception("Error retrieving properties with access for the specified user."));
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task GetPropertyWithAccessReturnsNotFoundResult()
+    {
+        _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(0))
+                                 .ThrowsAsync(new Exception("Error retrieving properties with access for the specified user."));
 
-    //    var result = await _propertyAccessController.GetPropertiesWithAccess(0);
+        var result = await _propertyAccessController.GetPropertiesWithAccess(0);
 
-    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-    //    var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-    //    Assert.Equal("Error retrieving properties with access for the specified user.", errorMessage);
-    //    _propertyAccessMockService.Verify(service => service.GetAccessListByEmployeeId(0), Times.Once);
-    //}
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        var errorMessage = Assert.IsType<string>(notFoundResult.Value);
+        Assert.Equal("Error retrieving properties with access for the specified user.", errorMessage);
+        _propertyAccessMockService.Verify(service => service.GetAccessListByEmployeeId(0), Times.Once);
+    }
 
     [Fact]
     public async Task SeedPropertiesSuccess()
@@ -127,28 +128,28 @@ public class PropertyAccessControllerUnitTests
         _propertyAccessMockService.Verify(service => service.UpdatePropertyAccess(0, PropertyAccessLevel.read), Times.Once);
     }
 
-    //[Fact]
-    //public async Task GetUserIdReturnsOkResult()
-    //{
-    //    _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ReturnsAsync(EmployeeTestData.EmployeeDto);
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task GetUserIdReturnsOkResult()
+    {
+        _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ReturnsAsync(EmployeeTestData.EmployeeDto);
 
-    //    var result = await _propertyAccessController.GetUserId("test@retrorabbit.co.za");
+        var result = await _propertyAccessController.GetUserId("test@retrorabbit.co.za");
 
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    Assert.Equal(1, okResult.Value!);
-    //    _employeeMockService.Verify(service => service.GetEmployee("test@retrorabbit.co.za"), Times.Once);
-    //}
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(1, okResult.Value!);
+        _employeeMockService.Verify(service => service.GetEmployee("test@retrorabbit.co.za"), Times.Once);
+    }
 
-    //[Fact]
-    //public async Task GetUserIdReturnsNotFoundResult()
-    //{
-    //    _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ThrowsAsync(new Exception("Error retrieving properties with access for the specified user."));
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task GetUserIdReturnsNotFoundResult()
+    {
+        _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ThrowsAsync(new Exception("Error retrieving properties with access for the specified user."));
 
-    //    var result = await _propertyAccessController.GetUserId("test@retrorabbit.co.za");
+        var result = await _propertyAccessController.GetUserId("test@retrorabbit.co.za");
 
-    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-    //    var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-    //    Assert.Equal("Error retrieving properties with access for the specified user.", errorMessage);
-    //    _employeeMockService.Verify(service => service.GetEmployee("test@retrorabbit.co.za"), Times.Once);
-    //}
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        var errorMessage = Assert.IsType<string>(notFoundResult.Value);
+        Assert.Equal("Error retrieving properties with access for the specified user.", errorMessage);
+        _employeeMockService.Verify(service => service.GetEmployee("test@retrorabbit.co.za"), Times.Once);
+    }
 }

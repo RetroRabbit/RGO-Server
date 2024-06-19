@@ -187,28 +187,28 @@ public class EmployeeBankingControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    //[Fact]
-    //public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
-    //{
-    //    _employeeBankingServiceMock.Setup(x => x.GetBanking(123))
-    //        .ReturnsAsync(new List<EmployeeBankingDto> { _employeeBankingDto });
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
+    {
+        _employeeBankingServiceMock.Setup(x => x.GetBanking(123))
+            .ReturnsAsync(new List<EmployeeBankingDto> { _employeeBankingDto });
 
-    //    var result = await _controller.GetBankingDetails(123);
+        var result = await _controller.GetBankingDetails(123);
 
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var actualDetails = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
-    //    Assert.Contains(_employeeBankingDto, actualDetails);
-    //}
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var actualDetails = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
+        Assert.Contains(_employeeBankingDto, actualDetails);
+    }
 
-    //[Fact]
-    //public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()
-    //{
-    //    _employeeBankingServiceMock.Setup(x => x.GetBanking(456)).ThrowsAsync(new Exception("Employee banking details not found"));
+    [Fact(Skip = "Tampering found")]
+    public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()
+    {
+        _employeeBankingServiceMock.Setup(x => x.GetBanking(456)).ThrowsAsync(new Exception("Employee banking details not found"));
 
-    //    var result = await _controller.GetBankingDetails(456);
+        var result = await _controller.GetBankingDetails(456);
 
-    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-    //    var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
-    //    Assert.Equal("Employee banking details not found", actualErrorMessage);
-    //}
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
+        Assert.Equal("Employee banking details not found", actualErrorMessage);
+    }
 }

@@ -31,17 +31,17 @@ public class WorkExperienceControllerUnitTest
         };
     }
 
-    //[Fact]
-    //public async Task saveWorkExperienceReturnsOk()
-    //{
-    //    _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ReturnsAsync(_workExperienceDto);
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task saveWorkExperienceReturnsOk()
+    {
+        _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ReturnsAsync(_workExperienceDto);
 
-    //    var controllerResult = await _controller.SaveWorkExperience(_workExperienceDto);
+        var controllerResult = await _controller.SaveWorkExperience(_workExperienceDto);
 
-    //    var actionResult = Assert.IsType<CreatedAtActionResult>(controllerResult);
-    //    Assert.NotNull(actionResult.Value);
-    //    Assert.Equal(_workExperienceDto, actionResult.Value);
-    //}
+        var actionResult = Assert.IsType<CreatedAtActionResult>(controllerResult);
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(_workExperienceDto, actionResult.Value);
+    }
 
     [Fact]
     public async Task saveWorkExperienceFail()
@@ -59,35 +59,35 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal("Could not save data.", problemDetails.Detail);
     }
 
-    //[Fact]
-    //public async Task saveWorkExperienceAlreadyExists()
-    //{
-    //    _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ThrowsAsync(new Exception("work experience exists"));
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task saveWorkExperienceAlreadyExists()
+    {
+        _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ThrowsAsync(new Exception("work experience exists"));
 
-    //    var controllerResult = await _controller.SaveWorkExperience(_workExperienceDto);
-    //    var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
+        var controllerResult = await _controller.SaveWorkExperience(_workExperienceDto);
+        var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
 
-    //    Assert.Equal(400, actionResult.StatusCode);
+        Assert.Equal(400, actionResult.StatusCode);
 
-    //    var errorMessage = actionResult.Value as string;
+        var errorMessage = actionResult.Value as string;
 
-    //    Assert.NotNull(errorMessage);
-    //    Assert.Equal("work experience exists", errorMessage);
-    //}
+        Assert.NotNull(errorMessage);
+        Assert.Equal("work experience exists", errorMessage);
+    }
 
-    //[Fact]
-    //public async Task GetWorkExperienceByIdPass()
-    //{
-    //    var workExperienceList = new List<WorkExperienceDto> { _workExperienceDto };
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task GetWorkExperienceByIdPass()
+    {
+        var workExperienceList = new List<WorkExperienceDto> { _workExperienceDto };
 
-    //    _workExperienceServiceMock.Setup(x => x.GetWorkExperienceByEmployeeId(_workExperienceDto.EmployeeId)).ReturnsAsync(workExperienceList);
+        _workExperienceServiceMock.Setup(x => x.GetWorkExperienceByEmployeeId(_workExperienceDto.EmployeeId)).ReturnsAsync(workExperienceList);
 
-    //    var controllerResult = await _controller.GetWorkExperienceById(_workExperienceDto.EmployeeId);
+        var controllerResult = await _controller.GetWorkExperienceById(_workExperienceDto.EmployeeId);
 
-    //    var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
-    //    Assert.NotNull(actionResult.Value);
-    //    Assert.Equal(workExperienceList, actionResult.Value);
-    //}
+        var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(workExperienceList, actionResult.Value);
+    }
 
     [Fact]
     public async Task GetWorkExperienceByIdFail()
@@ -100,17 +100,17 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal(404, actionResult.StatusCode);
     }
 
-    //[Fact]
-    //public async Task UpdateWorkExperiencePass()
-    //{
-    //    _workExperienceServiceMock.Setup(x => x.Update(_workExperienceDto)).ReturnsAsync(_workExperienceDto);
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task UpdateWorkExperiencePass()
+    {
+        _workExperienceServiceMock.Setup(x => x.Update(_workExperienceDto)).ReturnsAsync(_workExperienceDto);
 
-    //    var controllerResult = await _controller.UpdateWorkExperience(_workExperienceDto);
+        var controllerResult = await _controller.UpdateWorkExperience(_workExperienceDto);
 
-    //    var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
-    //    Assert.NotNull(actionResult.Value);
-    //    Assert.Equal(200, actionResult.StatusCode);
-    //}
+        var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
+        Assert.NotNull(actionResult.Value);
+        Assert.Equal(200, actionResult.StatusCode);
+    }
 
     [Fact]
     public async Task UpdateWorkExperienceFail()
@@ -124,17 +124,17 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal("Work experience could not be updated", actionResult.Value);
     }
 
-    //[Fact]
-    //public async Task DeleteWorkExperiencePass()
-    //{
-    //    _workExperienceServiceMock.Setup(x => x.Delete(_workExperienceDto.Id)).ReturnsAsync(_workExperienceDto);
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    public async Task DeleteWorkExperiencePass()
+    {
+        _workExperienceServiceMock.Setup(x => x.Delete(_workExperienceDto.Id)).ReturnsAsync(_workExperienceDto);
 
-    //    var controllerResult = await _controller.DeleteWorkExperience(_workExperienceDto.Id);
+        var controllerResult = await _controller.DeleteWorkExperience(_workExperienceDto.Id);
 
-    //    var actionResult = Assert.IsType<OkResult>(controllerResult);
-    //    Assert.NotNull(actionResult);
-    //    Assert.Equal(200, actionResult.StatusCode);
-    //}
+        var actionResult = Assert.IsType<OkResult>(controllerResult);
+        Assert.NotNull(actionResult);
+        Assert.Equal(200, actionResult.StatusCode);
+    }
 
     [Fact]
     public async Task DeleteWorkExperienceFail()
