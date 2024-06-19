@@ -1,4 +1,5 @@
-﻿using HRIS.Models;
+﻿using Auth0.ManagementApi.Models;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -11,17 +12,21 @@ public class TerminationService : ITerminationService
     private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IEmployeeService _employeeService;
+    private readonly IAuthService _authService;
 
-    public TerminationService(IUnitOfWork db, IErrorLoggingService errorLoggingService, IEmployeeTypeService employeeTypeService, IEmployeeService employeeService)
+    public TerminationService(IUnitOfWork db,IAuthService authService, IErrorLoggingService errorLoggingService, IEmployeeTypeService employeeTypeService, IEmployeeService employeeService)
     {
         _db = db;
         _errorLoggingService = errorLoggingService;
         _employeeTypeService = employeeTypeService;
         _employeeService = employeeService;
+        _authService = authService;
     }
 
     public async Task<TerminationDto> SaveTermination(TerminationDto terminationDto)
     {
+        try
+        {
         var exists = await CheckTerminationExist(terminationDto.EmployeeId);
         if (exists)
         {
@@ -33,12 +38,22 @@ public class TerminationService : ITerminationService
         currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
         currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment;
         currentEmployee.Active = false;
+        var isRemovedFromAuth0 = await  _authService.DeleteUser(currentEmployee.AuthUserId);
+
+        if (isRemovedFromAuth0 != true)
+        {
+            throw new Exception("User not terminated");
+        }  
 
         EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
-
         await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
 
         return await _db.Termination.Add(new Termination(terminationDto));
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
