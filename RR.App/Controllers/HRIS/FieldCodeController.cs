@@ -34,7 +34,7 @@ public class FieldCodeController : Controller
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveFieldCode([FromBody] FieldCodeDto fieldCodeDto)
     {
@@ -49,7 +49,7 @@ public class FieldCodeController : Controller
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateFieldCode([FromBody] FieldCodeDto fieldCodeDto)
     {
@@ -64,7 +64,7 @@ public class FieldCodeController : Controller
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteFieldCode([FromBody] FieldCodeDto fieldCodeDto)
     {
@@ -79,7 +79,7 @@ public class FieldCodeController : Controller
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("category")]
     public async Task<IActionResult> GetByCategory([FromQuery] int category)
     {

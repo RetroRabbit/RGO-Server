@@ -68,7 +68,7 @@ public class EmployeeRoleManageController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {

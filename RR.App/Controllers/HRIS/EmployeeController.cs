@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -35,7 +37,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployee([FromQuery] String email)
     {
@@ -94,10 +96,21 @@ public class EmployeeController : ControllerBase
         try
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            var updatedEmployee =
-                await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+                return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
+            }
 
-            return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
+            var userId = GlobalVariables.GetUserId();
+            if (employee.Id == userId)
+            {
+                var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+                return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
@@ -170,16 +183,27 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
     {
         try
         {
-            var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+                return Ok(simpleProfile);
+            }
+            var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!;
 
-            return Ok(simpleProfile);
+            if (employeeEmail == authEmail)
+            {
+                var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+                return Ok(simpleProfile);
+            }
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
@@ -203,15 +227,27 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("id-number")]
     public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int employeeId)
     {
         try
         {
-            var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber,employeeId);
-
-            return Ok(isExisting);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
+                return Ok(isExisting);
+            }
+            var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!;
+            var userId = GlobalVariables.GetUserId();
+            if (employeeId == userId)
+            {
+                var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
+                return Ok(isExisting);
+            }
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
