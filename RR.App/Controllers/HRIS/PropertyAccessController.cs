@@ -1,5 +1,4 @@
-﻿using HRIS.Models;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,8 +25,28 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
-            return Ok(accessList);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.IsNullOrEmpty(accessTokenEmail))
+            {
+                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                {
+                    var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
+                    return Ok(accessList);
+                }
+
+                var userId = GlobalVariables.GetUserId();
+
+                if (userId == employeeId)
+                {
+                    var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
+                    return Ok(accessList);
+                }
+            }
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {
@@ -86,18 +105,28 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            var employee = await _employeeService.GetEmployee(email);
-            GlobalVariables.SetUserId(employee!.Id);
             var claimsIdentity = User.Identity as ClaimsIdentity;
+            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
 
-            var authUserId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-            if (!String.IsNullOrEmpty(authUserId))
+            if (!string.IsNullOrEmpty(accessTokenEmail))
             {
-                var updatedEmployee = employee;
-                updatedEmployee.AuthUserId = authUserId;
-                await _employeeService.UpdateEmployee(updatedEmployee, email);
+                if (email == accessTokenEmail)
+                {
+                    var employee = await _employeeService.GetEmployee(email);
+                    //TODO: find a better way to add auth0 user id to the db, perhaps employee id and auth id should be the same?
+                    GlobalVariables.SetUserId(employee!.Id);
+                    return Ok(employee!.Id);
+                }
+
+                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                {
+                    var employee = await _employeeService.GetEmployee(email);
+                    return Ok(employee!.Id);
+                }
             }
-            return Ok(employee.Id);
+
+            return NotFound("Tampering found!");
         }
         catch (Exception ex)
         {
@@ -105,4 +134,3 @@ public class PropertyAccessController : ControllerBase
         }
     }
 }
-//TODO: find a better way to add auth0 user id to the db, perhaps employee id and auth id should be the same?

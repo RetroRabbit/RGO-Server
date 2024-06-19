@@ -1,7 +1,11 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -15,7 +19,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
         _employeeSalarayDetailsService = employeeSalarayDetailsService;
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteSalary(int employeeId)
     {
@@ -30,7 +34,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployeeSalaries()
     {
@@ -51,8 +55,22 @@ public class EmployeeSalaryDetailsController : ControllerBase
     {
         try
         {
-            var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
-            return Ok(employeeSalaries);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
+                return Ok(employeeSalaries);
+            }
+
+            var userId = GlobalVariables.GetUserId();
+            if (employeeId == userId)
+            {
+                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
+                return Ok(employeeSalaries);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception x)
         {
@@ -66,9 +84,23 @@ public class EmployeeSalaryDetailsController : ControllerBase
     {
         try
         {
-            var employeeSalaries = await _employeeSalarayDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
-            return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
-        }
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var employeeSalaries = await _employeeSalarayDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
+                return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
+            }
+
+            var userId = GlobalVariables.GetUserId();
+            if (employeeSalaryDetailsDto.Id == userId)
+            {
+                var employeeSalaries = await _employeeSalarayDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
+                return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
+         }
         catch (Exception ex)
         {
             if (ex.Message.Contains("exists"))
@@ -84,8 +116,22 @@ public class EmployeeSalaryDetailsController : ControllerBase
     {
         try
         {
-            var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
-            return Ok(updatedEmployeeSalary);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
+                return Ok(updatedEmployeeSalary);
+            }
+
+            var userId = GlobalVariables.GetUserId();
+            if (employeeSalaryDetailsDto.Id == userId)
+            {
+                var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
+                return Ok(updatedEmployeeSalary);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
