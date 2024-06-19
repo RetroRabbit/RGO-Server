@@ -9,70 +9,59 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace HRIS.Services.Tests.Handler.Charts;
+namespace HRIS.Services.Tests.Factory.Charts;
 
-public class LeaveIntervalTypeUnitTest
+public class PayRateTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private readonly EmployeeAddressDto employeeAddressDto;
+    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
-    private readonly LeaveIntervalType leaveIntervalType;
+    private readonly PayRateType payRateType;
 
-    public LeaveIntervalTypeUnitTest()
+    public PayRateTypeUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        leaveIntervalType = new LeaveIntervalType();
+        payRateType = new PayRateType();
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-
-        employeeAddressDto = new EmployeeAddressDto
-        {
-            Id = 1,
-            UnitNumber = "2",
-            ComplexName = "Complex",
-            StreetNumber = "2",
-            SuburbOrDistrict = "Suburb/District",
-            City = "City",
-            Country = "Country",
-            Province = "Province",
-            PostalCode = "1620"
-        };
+        employeeAddressDto =
+            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
-    private EmployeeDto CreateEmployee(float? leaveInterval)
+    private EmployeeDto CreateEmployee(float? payRateType)
     {
         return new EmployeeDto
         {
             Id = 1,
             EmployeeNumber = "001",
             TaxNumber = "34434434",
-            EngagementDate = new DateTime(),
-            TerminationDate = new DateTime(),
+            EngagementDate = DateTime.Now,
+            TerminationDate = null,
             PeopleChampion = null,
             Disability = false,
             DisabilityNotes = "None",
-            Level = 4,
+            Level = 3,
             EmployeeType = employeeTypeDto,
             Notes = "Notes",
-            LeaveInterval = leaveInterval,
+            LeaveInterval = 1,
             SalaryDays = 28,
-            PayRate = 128,
+            PayRate = payRateType,
             Salary = 100000,
             Name = "Matt",
             Initials = "MT",
             Surname = "Schoeman",
-            DateOfBirth = new DateTime(),
+            DateOfBirth = DateTime.Now,
             CountryOfBirth = "South Africa",
             Nationality = "South African",
             IdNumber = "0000080000000",
             PassportNumber = " ",
-            PassportExpirationDate = new DateTime(),
-            PassportCountryIssue = null,
+            PassportExpirationDate = DateTime.Now,
+            PassportCountryIssue = "South Africa",
             Race = Race.Black,
             Gender = Gender.Male,
             Photo = null,
@@ -90,7 +79,7 @@ public class LeaveIntervalTypeUnitTest
     }
 
     [Fact]
-    public void GenerateDataNullTestSuccess()
+    public void PayRateTypeNullTestSuccess()
     {
         var employeeDto = CreateEmployee(null);
 
@@ -103,54 +92,16 @@ public class LeaveIntervalTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
+        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void GenerateDataOneDayTestSuccess()
-    {
-        var employeeDto = CreateEmployee(1);
-
-        var employeeList = new List<Employee>
-        {
-            new(employeeDto, employeeDto.EmployeeType!)
-        };
-
-        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
-
-        var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
-
-        Assert.Contains("1 Day", result);
-    }
-
-    [Fact]
-    public void GenerateDataMoreDaysTestSuccess()
-    {
-        var employeeDto = CreateEmployee(5);
-
-        var employeeList = new List<Employee>
-        {
-            new(employeeDto, employeeDto.EmployeeType!)
-        };
-
-        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
-
-        var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
-
-        Assert.Contains("Days",result);
-    }
-
-    [Fact]
-    public void GenerateDataNullTestFail()
+    public void PayRateTypeNullFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
-                                .Throws(new Exception("There was a problem fetching the employee type of the employee"));
+                                .Throws(new Exception("Failed to get employee type of employee"));
 
         var employeeDto = CreateEmployee(null);
 
@@ -167,44 +118,37 @@ public class LeaveIntervalTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
+        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void GenerateDataOneDayTestFail()
+    public void PayRateTypeValueTestSuccess()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
-                                .Throws(new Exception("There was a problem fetching the employee type of the employee"));
-
-        var employeeDto = CreateEmployee(1);
+        var employeeDto = CreateEmployee(128);
 
         var employeeList = new List<Employee>
         {
             new(employeeDto, employeeDto.EmployeeType!)
         };
 
-        _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
-               .Returns(Task.FromResult(false));
-        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(Task.FromResult(false));
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
+        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
 
-        Assert.Contains("1 Day", result);
+        Assert.Equal("PayRate 128, ", result);
     }
 
     [Fact]
-    public void GenerateDataMoreDaysTestFail()
+    public void PayRateTypeValueTestFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
-                                .Throws(new Exception("There was a problem fetching the employee type of the employee"));
+                                .Throws(new Exception("Failed to get employee type of employee"));
 
-        var employeeDto = CreateEmployee(5);
+        var employeeDto = CreateEmployee(128);
 
         var employeeList = new List<Employee>
         {
@@ -219,8 +163,8 @@ public class LeaveIntervalTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result2 = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
+        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
 
-        Assert.Contains("Days", result2);
+        Assert.Equal("PayRate 128, ", result);
     }
 }

@@ -1,15 +1,15 @@
-﻿using Moq;
-using Xunit;
-using System.Linq.Expressions;
-using MockQueryable.Moq;
-using HRIS.Models.Enums;
+﻿using System.Linq.Expressions;
 using HRIS.Models;
+using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using RR.UnitOfWork.Entities.HRIS;
+using MockQueryable.Moq;
+using Moq;
 using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
+using Xunit;
 
-namespace RGO.Services.Tests.Handler.Charts;
+namespace HRIS.Services.Tests.Factory.Charts;
 
 public class SalaryTypeUnitTest
 {

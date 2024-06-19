@@ -9,22 +9,22 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace HRIS.Services.Tests.Handler.Charts;
+namespace HRIS.Services.Tests.Factory.Charts;
 
-public class LevelTypeUnitTest
+public class LeaveIntervalTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private EmployeeAddressDto? employeeAddressDto;
+    private readonly EmployeeAddressDto employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
-    private readonly LevelType levelType;
+    private readonly LeaveIntervalType leaveIntervalType;
 
-    public LevelTypeUnitTest()
+    public LeaveIntervalTypeUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        levelType = new LevelType();
+        leaveIntervalType = new LeaveIntervalType();
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
@@ -44,7 +44,7 @@ public class LevelTypeUnitTest
         };
     }
 
-    private EmployeeDto CreateEmployee(int? levelType)
+    private EmployeeDto CreateEmployee(float? leaveInterval)
     {
         return new EmployeeDto
         {
@@ -56,10 +56,10 @@ public class LevelTypeUnitTest
             PeopleChampion = null,
             Disability = false,
             DisabilityNotes = "None",
-            Level = levelType,
+            Level = 4,
             EmployeeType = employeeTypeDto,
             Notes = "Notes",
-            LeaveInterval = 1,
+            LeaveInterval = leaveInterval,
             SalaryDays = 28,
             PayRate = 128,
             Salary = 100000,
@@ -90,7 +90,7 @@ public class LevelTypeUnitTest
     }
 
     [Fact]
-    public void LevelTypeNullTestSuccess()
+    public void GenerateDataNullTestSuccess()
     {
         var employeeDto = CreateEmployee(null);
 
@@ -103,16 +103,54 @@ public class LevelTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = levelType.GenerateData(employeeDto, realServiceProvider);
+        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void LevelTypeNullFail()
+    public void GenerateDataOneDayTestSuccess()
+    {
+        var employeeDto = CreateEmployee(1);
+
+        var employeeList = new List<Employee>
+        {
+            new(employeeDto, employeeDto.EmployeeType!)
+        };
+
+        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(employeeList.AsQueryable().BuildMock());
+
+        var realServiceProvider = Mock.Of<IServiceProvider>();
+        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
+
+        Assert.Contains("1 Day", result);
+    }
+
+    [Fact]
+    public void GenerateDataMoreDaysTestSuccess()
+    {
+        var employeeDto = CreateEmployee(5);
+
+        var employeeList = new List<Employee>
+        {
+            new(employeeDto, employeeDto.EmployeeType!)
+        };
+
+        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(employeeList.AsQueryable().BuildMock());
+
+        var realServiceProvider = Mock.Of<IServiceProvider>();
+        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
+
+        Assert.Contains("Days",result);
+    }
+
+    [Fact]
+    public void GenerateDataNullTestFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
-                                .Throws(new Exception("Failed to get employee type of employee"));
+                                .Throws(new Exception("There was a problem fetching the employee type of the employee"));
 
         var employeeDto = CreateEmployee(null);
 
@@ -129,37 +167,18 @@ public class LevelTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = levelType.GenerateData(employeeDto, realServiceProvider);
+        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void LevelTypeValueTestSuccess()
-    {
-        var employeeDto = CreateEmployee(3);
-
-        var employeeList = new List<Employee>
-        {
-            new(employeeDto, employeeDto.EmployeeType!)
-        };
-
-        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
-
-        var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = levelType.GenerateData(employeeDto, realServiceProvider);
-
-        Assert.Equal("Level 3, ", result);
-    }
-
-    [Fact]
-    public void LevelTypeValueTestFail()
+    public void GenerateDataOneDayTestFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
-                                .Throws(new Exception("Failed to get employee type of employee"));
+                                .Throws(new Exception("There was a problem fetching the employee type of the employee"));
 
-        var employeeDto = CreateEmployee(3);
+        var employeeDto = CreateEmployee(1);
 
         var employeeList = new List<Employee>
         {
@@ -174,8 +193,34 @@ public class LevelTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = levelType.GenerateData(employeeDto, realServiceProvider);
+        var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
 
-        Assert.Equal("Level 3, ", result);
+        Assert.Contains("1 Day", result);
+    }
+
+    [Fact]
+    public void GenerateDataMoreDaysTestFail()
+    {
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
+                                .Throws(new Exception("There was a problem fetching the employee type of the employee"));
+
+        var employeeDto = CreateEmployee(5);
+
+        var employeeList = new List<Employee>
+        {
+            new(employeeDto, employeeDto.EmployeeType!)
+        };
+
+        _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
+               .Returns(Task.FromResult(false));
+        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(Task.FromResult(false));
+        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(employeeList.AsQueryable().BuildMock());
+
+        var realServiceProvider = Mock.Of<IServiceProvider>();
+        var result2 = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
+
+        Assert.Contains("Days", result2);
     }
 }

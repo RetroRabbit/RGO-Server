@@ -38,7 +38,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
                .ToList();
     }
 
-    public async Task<T> FirstOrDefault(Expression<Func<TK, bool>> criteria)
+    public async Task<T?> FirstOrDefault(Expression<Func<TK, bool>> criteria)
     {
         return (criteria == null
                 ? await _entity.FirstOrDefaultAsync()

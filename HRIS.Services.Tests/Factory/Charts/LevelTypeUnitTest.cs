@@ -9,59 +9,70 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace HRIS.Services.Tests.Handler.Charts;
+namespace HRIS.Services.Tests.Factory.Charts;
 
-public class PayRateTypeUnitTest
+public class LevelTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
-    private readonly PayRateType payRateType;
+    private readonly LevelType levelType;
 
-    public PayRateTypeUnitTest()
+    public LevelTypeUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        payRateType = new PayRateType();
+        levelType = new LevelType();
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto));
-        employeeAddressDto =
-            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+
+        employeeAddressDto = new EmployeeAddressDto
+        {
+            Id = 1,
+            UnitNumber = "2",
+            ComplexName = "Complex",
+            StreetNumber = "2",
+            SuburbOrDistrict = "Suburb/District",
+            City = "City",
+            Country = "Country",
+            Province = "Province",
+            PostalCode = "1620"
+        };
     }
 
-    private EmployeeDto CreateEmployee(float? payRateType)
+    private EmployeeDto CreateEmployee(int? levelType)
     {
         return new EmployeeDto
         {
             Id = 1,
             EmployeeNumber = "001",
             TaxNumber = "34434434",
-            EngagementDate = DateTime.Now,
-            TerminationDate = null,
+            EngagementDate = new DateTime(),
+            TerminationDate = new DateTime(),
             PeopleChampion = null,
             Disability = false,
             DisabilityNotes = "None",
-            Level = 3,
+            Level = levelType,
             EmployeeType = employeeTypeDto,
             Notes = "Notes",
             LeaveInterval = 1,
             SalaryDays = 28,
-            PayRate = payRateType,
+            PayRate = 128,
             Salary = 100000,
             Name = "Matt",
             Initials = "MT",
             Surname = "Schoeman",
-            DateOfBirth = DateTime.Now,
+            DateOfBirth = new DateTime(),
             CountryOfBirth = "South Africa",
             Nationality = "South African",
             IdNumber = "0000080000000",
             PassportNumber = " ",
-            PassportExpirationDate = DateTime.Now,
-            PassportCountryIssue = "South Africa",
+            PassportExpirationDate = new DateTime(),
+            PassportCountryIssue = null,
             Race = Race.Black,
             Gender = Gender.Male,
             Photo = null,
@@ -79,7 +90,7 @@ public class PayRateTypeUnitTest
     }
 
     [Fact]
-    public void PayRateTypeNullTestSuccess()
+    public void LevelTypeNullTestSuccess()
     {
         var employeeDto = CreateEmployee(null);
 
@@ -92,13 +103,13 @@ public class PayRateTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
+        var result = levelType.GenerateData(employeeDto, realServiceProvider);
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void PayRateTypeNullFail()
+    public void LevelTypeNullFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
@@ -118,15 +129,15 @@ public class PayRateTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
+        var result = levelType.GenerateData(employeeDto, realServiceProvider);
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void PayRateTypeValueTestSuccess()
+    public void LevelTypeValueTestSuccess()
     {
-        var employeeDto = CreateEmployee(128);
+        var employeeDto = CreateEmployee(3);
 
         var employeeList = new List<Employee>
         {
@@ -137,18 +148,18 @@ public class PayRateTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
+        var result = levelType.GenerateData(employeeDto, realServiceProvider);
 
-        Assert.Equal("PayRate 128, ", result);
+        Assert.Equal("Level 3, ", result);
     }
 
     [Fact]
-    public void PayRateTypeValueTestFail()
+    public void LevelTypeValueTestFail()
     {
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
 
-        var employeeDto = CreateEmployee(128);
+        var employeeDto = CreateEmployee(3);
 
         var employeeList = new List<Employee>
         {
@@ -163,8 +174,8 @@ public class PayRateTypeUnitTest
                .Returns(employeeList.AsQueryable().BuildMock());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = payRateType.GenerateData(employeeDto, realServiceProvider);
+        var result = levelType.GenerateData(employeeDto, realServiceProvider);
 
-        Assert.Equal("PayRate 128, ", result);
+        Assert.Equal("Level 3, ", result);
     }
 }

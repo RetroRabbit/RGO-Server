@@ -10,7 +10,7 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace HRIS.Services.Tests.Handler.Charts;
+namespace HRIS.Services.Tests.Factory.Charts;
 
 public class PeopleChampionTypeUnitTest
 {

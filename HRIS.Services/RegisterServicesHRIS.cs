@@ -1,4 +1,6 @@
-﻿using HRIS.Services.Interfaces;
+﻿using HRIS.Services.Helpers;
+using HRIS.Services.Interfaces;
+using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -40,5 +42,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IEmployeeSalarayDetailsService, EmployeeSalaryDetailsService>();
         services.AddScoped<ITerminationService, TerminationService>();
         services.AddScoped<IDataReportService, DataReportService>();
+        services.AddScoped<IDataReportHelper, DataReportHelper>();
     }
 }
