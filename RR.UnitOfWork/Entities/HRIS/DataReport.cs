@@ -28,7 +28,9 @@ public class DataReport : IModel<DataReportDto>
 
     public virtual List<DataReportValues>? DataReportValues { get; set; }
 
-    public DataReport(){}
+    public DataReport()
+    {
+    }
 
     public DataReport(DataReportDto dto)
     {

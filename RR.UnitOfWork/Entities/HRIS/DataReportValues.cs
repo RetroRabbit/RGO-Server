@@ -8,7 +8,9 @@ namespace RR.UnitOfWork.Entities.HRIS;
 [Table("DataReportValues")]
 public class DataReportValues : IModel<DataReportValuesDto>
 {
-    public DataReportValues() { }
+    public DataReportValues()
+    {
+    }
 
     public DataReportValues(DataReportValuesDto dataReportValuesDto)
     {
@@ -46,11 +48,13 @@ public class DataReportValues : IModel<DataReportValuesDto>
 
     public DataReportValuesDto ToDto()
     {
-       return new DataReportValuesDto { 
-            Id = Id, 
-            ReportId = ReportId, 
-            ColumnId = ColumnId, 
-            Input = Input, 
-            EmployeeId = EmployeeId };
+        return new DataReportValuesDto
+        {
+            Id = Id,
+            ReportId = ReportId,
+            ColumnId = ColumnId,
+            Input = Input,
+            EmployeeId = EmployeeId
+        };
     }
 }

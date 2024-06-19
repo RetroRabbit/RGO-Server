@@ -45,7 +45,8 @@ public class DataReportHelperUnitTests
             },
             DataReportColumns = new List<DataReportColumns>
             {
-                new() {
+                new()
+                {
                     Id = 1,
                     Name = "Name",
                     Prop = "Name",
@@ -54,7 +55,8 @@ public class DataReportHelperUnitTests
                     IsCustom = false,
                     FieldType = null
                 },
-                new() {
+                new()
+                {
                     Id = 2,
                     Name = "Surname",
                     Prop = "Surname",
@@ -63,7 +65,8 @@ public class DataReportHelperUnitTests
                     IsCustom = false,
                     FieldType = null
                 },
-                new() {
+                new()
+                {
                     Id = 3,
                     Name = "Role",
                     Prop = "Role",
@@ -72,7 +75,8 @@ public class DataReportHelperUnitTests
                     IsCustom = false,
                     FieldType = null
                 },
-                new() {
+                new()
+                {
                     Id = 4,
                     Name = "Level",
                     Prop = "Level",
@@ -81,7 +85,8 @@ public class DataReportHelperUnitTests
                     IsCustom = false,
                     FieldType = null
                 },
-                new() {
+                new()
+                {
                     Id = 5,
                     Name = "Location",
                     Prop = "Location",
@@ -90,7 +95,8 @@ public class DataReportHelperUnitTests
                     IsCustom = false,
                     FieldType = null
                 },
-                new() {
+                new()
+                {
                     Id = 6,
                     Name = "NQF Level",
                     Prop = "NqfLevel",
@@ -99,7 +105,8 @@ public class DataReportHelperUnitTests
                     IsCustom = true,
                     FieldType = DataReportCustom.EmployeeData
                 },
-                new() {
+                new()
+                {
                     Id = 7,
                     Name = "Open Source",
                     Prop = "OpenSource",
@@ -108,7 +115,8 @@ public class DataReportHelperUnitTests
                     IsCustom = true,
                     FieldType = DataReportCustom.Checkbox
                 },
-                new() {
+                new()
+                {
                     Id = 8,
                     Name = "Notes",
                     Prop = "Notes",
@@ -137,7 +145,8 @@ public class DataReportHelperUnitTests
     {
         var dataReport = new List<DataReport> { _report };
 
-        _db.Setup(u => u.DataReport.Get(It.IsAny<Expression<Func<DataReport, bool>>>())).Returns(dataReport.AsQueryable().BuildMock());
+        _db.Setup(u => u.DataReport.Get(It.IsAny<Expression<Func<DataReport, bool>>>()))
+            .Returns(dataReport.AsQueryable().BuildMock());
 
         var result = await _helper.GetReport(It.IsAny<string>());
 
@@ -149,8 +158,10 @@ public class DataReportHelperUnitTests
     [Fact]
     public async Task GetEmployeeIdListForReport()
     {
-        _db.Setup(u => u.RawSqlForIntList("SELECT \"id\" FROM \"Employee\"", "id")).ReturnsAsync(new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-        _db.Setup(u => u.RawSqlForIntList("SELECT \"id\" FROM \"Employee\" WHERE  \"clientAllocated\" IS NULL ", "id")).ReturnsAsync(new List<int> { 3, 4, 6, 11 });
+        _db.Setup(u => u.RawSqlForIntList("SELECT \"id\" FROM \"Employee\"", "id"))
+            .ReturnsAsync(new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        _db.Setup(u => u.RawSqlForIntList("SELECT \"id\" FROM \"Employee\" WHERE  \"clientAllocated\" IS NULL ", "id"))
+            .ReturnsAsync(new List<int> { 3, 4, 6, 11 });
 
         var result = await _helper.GetEmployeeIdListForReport(_report);
 
@@ -163,7 +174,8 @@ public class DataReportHelperUnitTests
     public async Task GetEmployeeIdListForReport_Fail()
     {
         var exception =
-            await Assert.ThrowsAsync<Exception>(async () => await _helper.GetEmployeeIdListForReport(new DataReport { Code = "Failing Report"}));
+            await Assert.ThrowsAsync<Exception>(async () =>
+                await _helper.GetEmployeeIdListForReport(new DataReport { Code = "Failing Report" }));
 
         Assert.Equal("Report 'Failing Report' has no filters", exception.Message);
     }
@@ -214,7 +226,8 @@ public class DataReportHelperUnitTests
     public void MapEmployeeData_Fail()
     {
         var exception =
-            Assert.Throws<Exception>(() => _helper.MapEmployeeData(new DataReport { Code = "Failing Report" }, It.IsAny<List<Employee>>()));
+            Assert.Throws<Exception>(() =>
+                _helper.MapEmployeeData(new DataReport { Code = "Failing Report" }, It.IsAny<List<Employee>>()));
 
         Assert.Equal("Report 'Failing Report' has no columns", exception.Message);
     }
@@ -244,7 +257,7 @@ public class DataReportHelperUnitTests
                     {
                         FieldCode = new FieldCode
                         {
-                            Code = "nqf",
+                            Code = "nqf"
                         },
                         Value = "NQF 99"
                     }
@@ -254,15 +267,15 @@ public class DataReportHelperUnitTests
         var result = _helper.MapEmployeeData(_report, employees);
         var expected = new Dictionary<string, object?>
         {
-            {"Id", 1},
-            {"Name", "Jane"},
-            {"Surname", "Doe"},
-            {"Role", "Developer"},
-            {"Level", 6},
-            {"Location", "Gotham City"},
-            {"NqfLevel", "NQF 99"},
-            {"OpenSource", false},
-            {"Notes", "Test"},
+            { "Id", 1 },
+            { "Name", "Jane" },
+            { "Surname", "Doe" },
+            { "Role", "Developer" },
+            { "Level", 6 },
+            { "Location", "Gotham City" },
+            { "NqfLevel", "NQF 99" },
+            { "OpenSource", false },
+            { "Notes", "Test" }
         };
 
         Assert.NotNull(result);
@@ -279,7 +292,8 @@ public class DataReportHelperUnitTests
         Assert.IsType<List<DataReportColumnsDto>>(result);
         var expected = new List<DataReportColumnsDto>
         {
-            new() {
+            new()
+            {
                 Id = 1,
                 Name = "Name",
                 Prop = "Name",
@@ -287,7 +301,8 @@ public class DataReportHelperUnitTests
                 IsCustom = false,
                 FieldType = null
             },
-            new() {
+            new()
+            {
                 Id = 2,
                 Name = "Surname",
                 Prop = "Surname",
@@ -295,7 +310,8 @@ public class DataReportHelperUnitTests
                 IsCustom = false,
                 FieldType = null
             },
-            new() {
+            new()
+            {
                 Id = 3,
                 Name = "Role",
                 Prop = "Role",
@@ -303,7 +319,8 @@ public class DataReportHelperUnitTests
                 IsCustom = false,
                 FieldType = null
             },
-            new() {
+            new()
+            {
                 Id = 4,
                 Name = "Level",
                 Prop = "Level",
@@ -311,7 +328,8 @@ public class DataReportHelperUnitTests
                 IsCustom = false,
                 FieldType = null
             },
-            new() {
+            new()
+            {
                 Id = 5,
                 Name = "Location",
                 Prop = "Location",
@@ -319,7 +337,8 @@ public class DataReportHelperUnitTests
                 IsCustom = false,
                 FieldType = null
             },
-            new() {
+            new()
+            {
                 Id = 6,
                 Name = "NQF Level",
                 Prop = "NqfLevel",
@@ -327,7 +346,8 @@ public class DataReportHelperUnitTests
                 IsCustom = false,
                 FieldType = null
             },
-            new() {
+            new()
+            {
                 Id = 8,
                 Name = "Notes",
                 Prop = "Notes",
@@ -335,7 +355,8 @@ public class DataReportHelperUnitTests
                 IsCustom = true,
                 FieldType = "Text"
             },
-            new() {
+            new()
+            {
                 Id = 7,
                 Name = "Open Source",
                 Prop = "OpenSource",

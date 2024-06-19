@@ -47,11 +47,12 @@ public class DataReportServiceUnitTests
     [Fact]
     public async Task GetDataReport()
     {
-        var report = new DataReport { Id = 1, Name = "Test Report"};
+        var report = new DataReport { Id = 1, Name = "Test Report" };
         _helper.Setup(x => x.GetReport(It.IsAny<string>())).ReturnsAsync(report);
         _helper.Setup(x => x.GetEmployeeIdListForReport(It.IsAny<DataReport>())).ReturnsAsync(new List<int>());
         _helper.Setup(x => x.GetEmployeeData(It.IsAny<List<int>>())).ReturnsAsync(new List<Employee>());
-        _helper.Setup(x => x.MapEmployeeData(It.IsAny<DataReport>(), It.IsAny<List<Employee>>())).Returns(new List<Dictionary<string, object?>>());
+        _helper.Setup(x => x.MapEmployeeData(It.IsAny<DataReport>(), It.IsAny<List<Employee>>()))
+               .Returns(new List<Dictionary<string, object?>>());
         _helper.Setup(x => x.MapReportColumns(It.IsAny<DataReport>())).Returns(new List<DataReportColumnsDto>());
 
         var result = await _service.GetDataReport("TEST");
@@ -76,9 +77,9 @@ public class DataReportServiceUnitTests
             Input = "some Value"
         };
         _db.Setup(y => y.DataReportValues.FirstOrDefault(x =>
-                x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId))
-            .ReturnsAsync(new DataReportValuesDto());
-        
+               x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId))
+           .ReturnsAsync(new DataReportValuesDto());
+
         await _service.UpdateReportInput(input);
 
         _db.Verify(x => x.DataReportValues.Update(It.IsAny<DataReportValues>()), Times.Once);
@@ -96,8 +97,8 @@ public class DataReportServiceUnitTests
         };
 
         _db.Setup(y => y.DataReportValues.FirstOrDefault(x =>
-                x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId))
-            .ReturnsAsync((DataReportValuesDto)null!);
+               x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId))
+           .ReturnsAsync((DataReportValuesDto)null!);
 
         await _service.UpdateReportInput(input);
 

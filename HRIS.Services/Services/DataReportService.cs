@@ -48,7 +48,8 @@ public class DataReportService : IDataReportService
     public async Task UpdateReportInput(UpdateReportCustomValue input)
     {
         var item = await _db.DataReportValues
-            .FirstOrDefault(x => x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId);
+            .FirstOrDefault(x =>
+                x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId);
 
         if (item != null)
         {

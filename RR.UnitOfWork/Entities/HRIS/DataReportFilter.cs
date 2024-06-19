@@ -52,7 +52,7 @@ public class DataReportFilter : IModel<DataReportFilterDto>
             Value = Value,
             Select = Select,
             ReportId = ReportId,
-            Status = Status,
+            Status = Status
         };
     }
 }

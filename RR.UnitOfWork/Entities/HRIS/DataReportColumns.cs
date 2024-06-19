@@ -15,7 +15,7 @@ public class DataReportColumns : IModel<DataReportColumnsDto>
 
     [Column("name")]
     public string Name { get; set; }
-    
+
     [Column("prop")]
     public string Prop { get; set; }
 
