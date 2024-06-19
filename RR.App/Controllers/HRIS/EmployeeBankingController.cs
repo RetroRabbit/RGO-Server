@@ -131,7 +131,7 @@ public class EmployeeBankingController : ControllerBase
 
             if (!string.IsNullOrEmpty(accessTokenEmail))
             {
-                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                if ("SuperAdmin" == role || "Admin" == role)
                 {
                     var employeeBanking = await _employeeBankingService.GetBanking(id);
                     return Ok(employeeBanking);
