@@ -71,7 +71,7 @@ public class TerminationServiceUnitTests
         Assert.True(exists);
     }
 
-    [Fact(Skip = "Test needs updating")]
+    [Fact]
     public async Task SavePassTest()
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(false);
@@ -92,11 +92,12 @@ public class TerminationServiceUnitTests
         _db.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
         _db.Setup(er => er.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>())).Returns(empRoles.AsQueryable().BuildMock());
         _db.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>())).Returns(roles.AsQueryable().BuildMock());
-        _db.Setup(t => t.Termination.Update(new Termination(_terminationDto))).Returns(Task.FromResult(_terminationDto));
 
         _employeeServiceMock.Setup(e => e.GetEmployeeById(1)).ReturnsAsync(_employeeDto);
         _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name)).Returns(Task.FromResult(EmployeeTypeTestData.DeveloperType));
         _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employeeDto.EmployeeType.Name)).ReturnsAsync(_employeeTypeDto);
+
+        _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
 
         await _terminationService.SaveTermination(_terminationDto);
 
