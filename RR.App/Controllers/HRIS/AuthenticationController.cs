@@ -1,4 +1,5 @@
-﻿using HRIS.Services.Interfaces;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,8 +16,8 @@ public class AuthenticationController : ControllerBase
         _authService = authService;
     }
 
-    [AllowAnonymous]
-    [ApiExplorerSettings(IgnoreApi = true)]
+    //[AllowAnonymous]
+    //[ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost()]
     public async Task<IActionResult> LoggingInUser()
     {
@@ -30,4 +31,19 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPut()]
+    public async Task<IActionResult> RemoveUserRole([FromQuery] string userId,[FromBody] string roleId)
+    {
+        try
+        {
+            await _authService.RemoveRoleFromUserAsync(userId, roleId);
+            return Ok("Role removed succesfully");
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }
