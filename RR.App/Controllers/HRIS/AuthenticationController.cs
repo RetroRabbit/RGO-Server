@@ -16,8 +16,8 @@ public class AuthenticationController : ControllerBase
         _authService = authService;
     }
 
-    //[AllowAnonymous]
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [AllowAnonymous]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost()]
     public async Task<IActionResult> LoggingInUser()
     {
