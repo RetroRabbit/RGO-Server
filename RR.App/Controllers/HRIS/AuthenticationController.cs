@@ -30,20 +30,4 @@ public class AuthenticationController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpPut()]
-    public async Task<IActionResult> RemoveUserRole([FromQuery] string userId,[FromBody] string roleId)
-    {
-        try
-        {
-            await _authService.RemoveRoleFromUserAsync(userId, roleId);
-            return Ok("Role removed succesfully");
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
 }
