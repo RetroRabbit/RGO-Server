@@ -8,6 +8,17 @@ namespace RR.UnitOfWork.Entities.HRIS;
 [Table("DataReportValues")]
 public class DataReportValues : IModel<DataReportValuesDto>
 {
+    public DataReportValues() { }
+
+    public DataReportValues(DataReportValuesDto dataReportValuesDto)
+    {
+        Id = dataReportValuesDto.Id;
+        ReportId = dataReportValuesDto.ReportId;
+        ColumnId = dataReportValuesDto.ColumnId;
+        EmployeeId = dataReportValuesDto.EmployeeId;
+        Input = dataReportValuesDto.Input;
+    }
+
     [Key]
     [Column("id")]
     public int Id { get; set; }
@@ -35,6 +46,11 @@ public class DataReportValues : IModel<DataReportValuesDto>
 
     public DataReportValuesDto ToDto()
     {
-        throw new NotImplementedException();
+       return new DataReportValuesDto { 
+            Id = Id, 
+            ReportId = ReportId, 
+            ColumnId = ColumnId, 
+            Input = Input, 
+            EmployeeId = EmployeeId };
     }
 }
