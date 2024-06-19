@@ -1,4 +1,5 @@
-﻿using HRIS.Services.Interfaces;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,5 +30,4 @@ public class AuthenticationController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
 }

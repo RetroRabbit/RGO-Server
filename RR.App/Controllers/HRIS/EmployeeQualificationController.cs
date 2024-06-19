@@ -1,8 +1,9 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -23,8 +24,21 @@ public class EmployeeQualificationController : ControllerBase
     {
         try
         {
-            var newQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
-            return Ok(newQualification);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var newQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
+                return Ok(newQualification);
+            }
+            var userId = GlobalVariables.GetUserId();
+
+            if (employeeQualificationDto.EmployeeId == userId)
+            {
+                var newQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
+                return Ok(newQualification);
+            }
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
@@ -32,7 +46,7 @@ public class EmployeeQualificationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEmployeeQualification(int id, [FromBody] EmployeeQualificationDto employeeQualificationDto)
     {
@@ -73,8 +87,21 @@ public class EmployeeQualificationController : ControllerBase
     {
         try
         {
-            var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
-            return Ok(qualifications);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
+                return Ok(qualifications);
+            }
+            var userId = GlobalVariables.GetUserId();
+
+            if (employeeId == userId)
+            {
+                var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
+                return Ok(qualifications);
+            }
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (KeyNotFoundException knf)
         {
@@ -86,7 +113,7 @@ public class EmployeeQualificationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployeeQualification(int id)
     {
