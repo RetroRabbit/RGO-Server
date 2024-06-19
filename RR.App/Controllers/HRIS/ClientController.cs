@@ -1,4 +1,5 @@
 ﻿using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
@@ -14,6 +15,7 @@ public class ClientController : Controller
         _clientService = clientService;
     }
 
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllClients()
     {

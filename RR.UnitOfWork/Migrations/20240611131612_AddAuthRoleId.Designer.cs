@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240611131612_AddAuthRoleId")]
+    partial class AddAuthRoleId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,10 +356,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("boolean")
                         .HasColumnName("active");
-
-                    b.Property<string>("AuthUserId")
-                        .HasColumnType("text")
-                        .HasColumnName("authuserid");
 
                     b.Property<string>("CellphoneNo")
                         .HasColumnType("text")
@@ -1312,14 +1311,14 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AuthRoleId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("authroleid");
-
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("Description");
+
+                    b.Property<string>("authroleid")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("authroleid");
 
                     b.HasKey("Id");
 
@@ -1372,65 +1371,6 @@ namespace RR.UnitOfWork.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RoleAccessLink");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Termination", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AccountsStatus")
-                        .HasColumnType("boolean")
-                        .HasColumnName("accountsStatus");
-
-                    b.Property<DateTime>("DayOfNotice")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("dayOfNotice");
-
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("documentName");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employeeId");
-
-                    b.Property<bool>("EquipmentStatus")
-                        .HasColumnType("boolean")
-                        .HasColumnName("equipmentStatus");
-
-                    b.Property<DateTime>("LastDayOfEmployment")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("lastDayOfEmployment");
-
-                    b.Property<bool>("ReemploymentStatus")
-                        .HasColumnType("boolean")
-                        .HasColumnName("reemploymentStatus");
-
-                    b.Property<string>("TerminationComments")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("terminationComments");
-
-                    b.Property<string>("TerminationDocument")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("terminationDocument");
-
-                    b.Property<int>("TerminationOption")
-                        .HasColumnType("integer")
-                        .HasColumnName("terminationOption");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("Termination");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.WorkExperience", b =>
@@ -1796,17 +1736,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("RoleAccess");
-                });
-
-            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Termination", b =>
-                {
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.WorkExperience", b =>

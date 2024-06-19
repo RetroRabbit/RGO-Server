@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
@@ -17,6 +18,7 @@ public partial class ChartsController : ControllerBase
         _chartService = chartService;
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllCharts()
     {
@@ -40,6 +42,7 @@ public partial class ChartsController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> CreateChart([FromQuery] List<string> dataType, [FromQuery] List<string> roles,
                                                  string chartName, string chartType)
@@ -56,6 +59,7 @@ public partial class ChartsController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("data")]
     public async Task<IActionResult> GetChartData([FromQuery] List<string> dataTypes)
     {
@@ -70,6 +74,7 @@ public partial class ChartsController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateChartData(ChartDto chartDto)
     {
@@ -86,6 +91,7 @@ public partial class ChartsController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteChart([FromQuery] int chartId)
     {
@@ -100,6 +106,7 @@ public partial class ChartsController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("column")]
     public IActionResult GetColumns()
     {
@@ -120,6 +127,7 @@ public partial class ChartsController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("report/export")]
     public async Task<IActionResult> ExportCsv([FromQuery] List<string> dataTypes)
     {

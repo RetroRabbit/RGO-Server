@@ -3,6 +3,9 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using RR.UnitOfWork;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -24,8 +27,22 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var workExperience = await _workExperienceService.Save(newWorkExperience);
-            return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var workExperience = await _workExperienceService.Save(newWorkExperience);
+                return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
+            }
+
+            var userId = GlobalVariables.GetUserId();
+            if (newWorkExperience.Id == userId)
+            {
+                var workExperience = await _workExperienceService.Save(newWorkExperience);
+                return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
@@ -43,9 +60,22 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
+                return Ok(workExperienceData);
+            }
 
-            return Ok(workExperienceData);
+            var userId = GlobalVariables.GetUserId();
+            if (id == userId)
+            {
+                var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
+                return Ok(workExperienceData);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
@@ -59,22 +89,51 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            await _workExperienceService.Delete(id);
-            return Ok();
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                await _workExperienceService.Delete(id);
+                return Ok();
+            }
+
+            var userId = GlobalVariables.GetUserId();
+            if (id == userId)
+            {
+                await _workExperienceService.Delete(id);
+                return Ok();
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         {
             return NotFound(ex.Message);
         }
     }
+
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateWorkExperience([FromBody] WorkExperienceDto workExperience)
     {
         try
         {
-            await _workExperienceService.Update(workExperience);
-            return Ok(workExperience);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
+            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            {
+                await _workExperienceService.Update(workExperience);
+                return Ok(workExperience);
+            }
+
+            var userId = GlobalVariables.GetUserId();
+            if (workExperience.Id == userId)
+            {
+                await _workExperienceService.Update(workExperience);
+                return Ok(workExperience);
+            }
+
+            return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
         { 
