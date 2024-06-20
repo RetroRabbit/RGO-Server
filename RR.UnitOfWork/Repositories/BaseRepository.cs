@@ -40,10 +40,11 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
 
     public async Task<T?> FirstOrDefault(Expression<Func<TK, bool>> criteria)
     {
-        return (criteria == null
-                ? await _entity.FirstOrDefaultAsync()
-                : await _entity.Where(criteria).FirstOrDefaultAsync())!
-            .ToDto();
+        var value = (criteria == null
+            ? await _entity.FirstOrDefaultAsync()
+            : await _entity.Where(criteria).FirstOrDefaultAsync());
+
+        return value == null ? default(T) : value.ToDto();
     }
 
     public async Task<bool> Any(Expression<Func<TK, bool>> criteria)
