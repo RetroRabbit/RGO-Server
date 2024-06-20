@@ -36,7 +36,7 @@ public class WorkExperienceController : ControllerBase
             }
 
             var userId = GlobalVariables.GetUserId();
-            if (newWorkExperience.Id == userId)
+            if (newWorkExperience.EmployeeId == userId)
             {
                 var workExperience = await _workExperienceService.Save(newWorkExperience);
                 return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
