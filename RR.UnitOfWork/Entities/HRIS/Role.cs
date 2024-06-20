@@ -22,8 +22,11 @@ public class Role : IModel<RoleDto>
 
     [Key] [Column("id")] public int Id { get; set; }
 
+    [Column("authroleid")]
+    public string AuthRoleId { get; set; }
+
     public RoleDto ToDto()
     {
-        return new RoleDto { Id=Id, Description=Description};              
+        return new RoleDto { Id=Id, Description=Description, AuthRoleId = AuthRoleId };              
     }
 }

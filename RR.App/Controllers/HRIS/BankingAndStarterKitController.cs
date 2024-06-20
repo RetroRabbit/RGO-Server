@@ -16,7 +16,7 @@ public class BankingAndStarterKitController : ControllerBase
         _bankingAndStarterKitService = bankingAndStarterKitService ;
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet()]
     public async Task<IActionResult> GetAllDocuments()
     {
