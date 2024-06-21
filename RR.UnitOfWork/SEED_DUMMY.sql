@@ -35,26 +35,7 @@ INSERT INTO "EmployeeType" (id, name)
 VALUES (6, 'Account Manager');
 INSERT INTO "EmployeeType" (id, name)
 VALUES (7, 'People Champion');
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (1, 0, 'degree', NULL, FALSE, NULL, 'Degree', NULL, FALSE, 0, 1);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (2, 0, 'tenure', NULL, FALSE, NULL, 'Tenure', NULL, FALSE, 0, 1);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (3, 0, 'nqf', NULL, FALSE, NULL, 'NQF Level', NULL, FALSE, 0, 4);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (4, 0, 'institution', NULL, FALSE, NULL, 'Institution', NULL, FALSE, 0, 4);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (5, 0, 'experience', NULL, FALSE, NULL, 'Experience', NULL, FALSE, 0, 4);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (6, 1, 'cv', NULL, FALSE, NULL, 'CV Link', NULL, FALSE, 0, 1);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (8, 1, 'skills', NULL, FALSE, NULL, 'Tech Stack', NULL, FALSE, 0, 1);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (9, 1, 'engagement', NULL, FALSE, NULL, 'Engagement', NULL, FALSE, 0, 4);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (12, 2, 'location', NULL, FALSE, NULL, 'Location', NULL, FALSE, 0, 4);
-INSERT INTO "FieldCode" (id, category, code, description, internal, "internalTable", name, regex, required, status, type)
-VALUES (14, 2, 'risk', NULL, FALSE, NULL, 'Risk', NULL, FALSE, 0, 4);
+
 INSERT INTO "Role" (id, "Description")
 VALUES (1, 'SuperAdmin');
 INSERT INTO "Role" (id, "Description")
@@ -92,105 +73,6 @@ INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId
 VALUES (2, 'Was this a challanging experience?', 'Expectations', 1);
 INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")
 VALUES (3, 'What is your plan?', 'Goals', 1);
-
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (1, 14, 'Very Low');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (2, 14, 'Low');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (3, 14, 'Medium');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (4, 14, 'High');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (5, 14, 'Very High');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (6, 14, 'Unknown');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (7, 12, 'JHB');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (8, 12, 'PTA');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (9, 12, 'CP');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (10, 12, 'Other');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (11, 9, 'Very Low');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (12, 9, 'Low');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (13, 9, 'Average');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (14, 9, 'High');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (15, 9, 'Unknown');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (16, 5, 'Grad');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (17, 5, '1+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (18, 5, '2+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (19, 5, '3+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (20, 5, '4+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (21, 5, '5+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (22, 5, '6+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (23, 5, '7+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (24, 5, '8+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (25, 5, '9+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (26, 5, '10+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (27, 5, '15+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (28, 5, '20+');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (29, 4, 'TUT');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (30, 4, 'Belgium Campus');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (31, 4, 'University of Limpopo');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (32, 4, 'University of Pretoria');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (33, 4, 'NWU - Potch');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (34, 4, 'Pearson');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (35, 4, 'University of Johannesburg');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (36, 4, 'Other');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (37, 4, 'Open Window');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (38, 4, 'University of Cape Town');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (39, 4, 'Rhodes');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (40, 4, 'University of Kwa-Zulu Natal');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (41, 4, 'UNISA');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (42, 4, 'University of Witwatersrand');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (43, 3, 'NQF 4');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (44, 3, 'NQF 5');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (45, 3, 'NQF 6');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (46, 3, 'NQF 7');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (47, 3, 'NQF 8');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (48, 3, 'NQF 9');
-INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
-VALUES (49, 3, 'NQF 10');
 
 INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
 VALUES (1, 1, 1);

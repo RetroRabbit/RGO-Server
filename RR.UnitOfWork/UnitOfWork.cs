@@ -57,6 +57,7 @@ public class UnitOfWork : IUnitOfWork
         DataReportFilter = new DataReportFilterRepository(_db);
         DataReportColumns = new DataReportColumnsRepository(_db);
         DataReportValues = new DataReportValuesRepository(_db);
+        DataReportColumnMenu = new DataReportColumnMenuRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -96,6 +97,7 @@ public class UnitOfWork : IUnitOfWork
     public IDataReportFilterRepository DataReportFilter { get; }
     public IDataReportColumnsRepository DataReportColumns { get; }
     public IDataReportValuesRepository DataReportValues { get; }
+    public IDataReportColumnMenuRepository DataReportColumnMenu { get; }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {

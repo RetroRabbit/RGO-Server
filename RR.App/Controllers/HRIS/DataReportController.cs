@@ -1,4 +1,6 @@
-﻿using HRIS.Models.Update;
+﻿using HRIS.Models.DataReport;
+using HRIS.Models.DataReport.Request;
+using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +54,78 @@ public class DataReportController : ControllerBase
         {
             await _service.UpdateReportInput(input);
             return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet("ui/get-column-menu")]
+    public async Task<IActionResult> GetColumnMenu()
+    {
+        try
+        {
+            return Ok(await _service.GetColumnMenu());
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPut("ui/add-column-to-report")]
+    public async Task<IActionResult> AddColumnToReport([FromBody] ReportColumnRequest input)
+    {
+        try
+        {
+            return Ok(await _service.AddColumnToReport(input));
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpDelete("ui/archive-column-from-report")]
+    public async Task<IActionResult> ArchiveColumnFromReport(int columnId)
+    {
+        try
+        {
+            await _service.ArchiveColumnFromReport(columnId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpDelete("ui/enable-column-from-report")]
+    public async Task<IActionResult> EnableColumnFromReport(int columnId)
+    {
+        try
+        {
+            await _service.EnableColumnFromReport(columnId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPut("ui/move-column-on-report")]
+    public async Task<IActionResult> MoveColumnOnReport([FromBody] ReportColumnRequest input)
+    {
+        try
+        {
+            return Ok(await _service.MoveColumnOnReport(input));
         }
         catch (Exception ex)
         {

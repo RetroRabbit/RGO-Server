@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.DataReport;
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

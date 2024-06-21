@@ -91,6 +91,7 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
 
     private async Task AddAuditLog(TK entity, CRUDOperations operation)
     {
+#if !DEBUG
         if (!GlobalVariables.AreTestsRunning())
         {          
             var log = new AuditLog
@@ -103,5 +104,6 @@ public class BaseRepository<TK, T> : IRepository<TK, T> where TK : class, IModel
             };
             await _db.auditLogs.AddAsync(log);
         }
+#endif
     }
 }

@@ -1,6 +1,6 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models;
+namespace HRIS.Models.DataReport;
 
 public class DataReportColumnsDto
 {

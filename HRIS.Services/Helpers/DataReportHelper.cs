@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.DataReport;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces.Helper;
 using Microsoft.EntityFrameworkCore;
@@ -16,15 +16,44 @@ public class DataReportHelper : IDataReportHelper
         _db = db;
     }
 
-    public async Task<DataReport?> GetReport(string code)
+    public async Task<DataReport?> GetReport(int id)
     {
-        return await _db.DataReport
-            .Get(x => x.Status == ItemStatus.Active && x.Code == code)
-            .Include(x => x.DataReportFilter!.Where(y => y.Status == ItemStatus.Active))
-            .Include(x => x.DataReportColumns!.Where(y => y.Status == ItemStatus.Active))
+        var columns = await _db.DataReportColumns
+            .Get(x => x.ReportId == id)
+            .Include(x => x.Menu)
+            .ThenInclude(y => y.FieldCode)
+            .OrderBy(x => x.Sequence)
+            .ToListAsync();
+
+        var report = await _db.DataReport
+            .Get(x => x.Status == ItemStatus.Active && x.Id == id)
+            .Include(x => x.DataReportFilter)
             .Include(x => x.DataReportValues)
             .AsNoTracking()
             .FirstOrDefaultAsync();
+
+        report!.DataReportColumns = columns;
+        return report;
+    }
+
+    public async Task<DataReport?> GetReport(string code)
+    {
+        var report = await _db.DataReport
+            .Get(x => x.Status == ItemStatus.Active && x.Code == code)
+            .Include(x => x.DataReportFilter)
+            .Include(x => x.DataReportValues)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        var columns = await _db.DataReportColumns
+            .Get(x => x.Status == ItemStatus.Active && x.ReportId == report!.Id)
+            .Include(x => x.Menu)
+            .ThenInclude(y => y.FieldCode)
+            .OrderBy(x => x.Sequence)
+            .ToListAsync();
+
+        report!.DataReportColumns = columns;
+        return report;
     }
 
     public async Task<List<int>> GetEmployeeIdListForReport(DataReport report)
@@ -53,9 +82,6 @@ public class DataReportHelper : IDataReportHelper
             .Get(x => employeeIds.Contains(x.Id))
             .Include(x => x.PhysicalAddress)
             .Include(x => x.PostalAddress)
-            .Include(x => x.EmployeeCertification)
-            .Include(x => x.EmployeeDocument)
-            .Include(x => x.EmployeeQualification)
             .Include(x => x.EmployeeSalaryDetails)
             .Include(x => x.EmployeeType)
             .Include(x => x.ChampionEmployee)
@@ -83,20 +109,33 @@ public class DataReportHelper : IDataReportHelper
             foreach (var map in mappingList.OrderBy(x => x.Sequence))
             {
                 object? value = null;
-                if (map.IsCustom)
-                    value = map.FieldType switch
-                    {
-                        DataReportCustom.EmployeeData => employee.EmployeeData
-                            ?.Where(x => x.FieldCode?.Code == map.Mapping).FirstOrDefault()?.Value,
-                        DataReportCustom.Checkbox => customInput.FirstOrDefault(x => x.ColumnId == map.Id)?.Input ??
-                                                     "false",
-                        DataReportCustom.Text => customInput.FirstOrDefault(x => x.ColumnId == map.Id)?.Input,
-                        _ => value
-                    };
-                else
-                    value = GetValueFromMapping(employee, map.Mapping.Split('.'));
+                string prop = "";
+                switch (map.FieldType)
+                {
+                    case DataReportColumnType.Employee:
+                        if (map.Menu!.FieldCodeId == null)
+                        {
+                            value = GetValueFromMapping(employee, map.Menu.Mapping!.Split('.'));
+                            prop = map.Menu.Prop;
+                        }
+                        if (map.Menu!.FieldCodeId != null)
+                        {
+                            value = employee.EmployeeData?.Where(x => x.FieldCode?.Code == map.Menu.FieldCode!.Code)
+                                            .FirstOrDefault()?.Value;
+                            prop = map.Menu.FieldCode.Code;
+                        }
+                        break;
+                    case DataReportColumnType.Checkbox:
+                        value = customInput.FirstOrDefault(x => x.ColumnId == map.Id)?.Input ?? "false";
+                        prop = map.CustomProp;
+                        break;
+                    case DataReportColumnType.Text:
+                        value = customInput.FirstOrDefault(x => x.ColumnId == map.Id)?.Input;
+                        prop = map.CustomProp;
+                        break;
+                }
 
-                dictionary.Add(map.Prop, value ?? "");
+                dictionary.Add(prop, value ?? "");
             }
 
             list.Add(dictionary);
@@ -112,12 +151,19 @@ public class DataReportHelper : IDataReportHelper
 
         foreach (var propertyName in mappingList)
         {
-            var property = currentType.GetProperty(propertyName);
-            if (property == null)
-                return null;
+            try
+            {
+                var property = currentType.GetProperty(propertyName);
+                if (property == null)
+                    return null;
 
-            currentObject = property.GetValue(currentObject);
-            currentType = property.PropertyType;
+                currentObject = property.GetValue(currentObject);
+                currentType = property.PropertyType;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         return currentObject;

@@ -4,6 +4,6 @@ using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Interfaces.HRIS;
 
-public interface IDataReportRepository : IRepository<DataReport, DataReportDto>
+public interface IDataReportColumnMenuRepository : IRepository<DataReportColumnMenu, DataReportColumnMenuDto>
 {
 }

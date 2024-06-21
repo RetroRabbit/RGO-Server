@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.DataReport;
 using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Interfaces.HRIS;

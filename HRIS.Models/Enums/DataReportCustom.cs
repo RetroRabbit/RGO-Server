@@ -1,8 +1,8 @@
 ﻿namespace HRIS.Models.Enums;
 
-public enum DataReportCustom
+public enum DataReportColumnType
 {
-    EmployeeData,
+    Employee,
     Checkbox,
     Text
 }

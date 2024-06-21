@@ -1,11 +1,12 @@
 ﻿using HRIS.Models.Enums;
-using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
+using HRIS.Models.DataReport;
 
 namespace HRIS.Services.Interfaces.Helper;
 
 public interface IDataReportHelper
 {
+    Task<DataReport?> GetReport(int id);
     Task<DataReport?> GetReport(string code);
     Task<List<int>> GetEmployeeIdListForReport(DataReport report);
     Task<List<Employee>> GetEmployeeData(List<int> employeeIds);

@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.DataReport;
 using HRIS.Models.Enums;
 using HRIS.Models.Update;
 using HRIS.Services.Interfaces;

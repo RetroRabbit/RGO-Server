@@ -1,4 +1,4 @@
-﻿namespace HRIS.Models;
+﻿namespace HRIS.Models.DataReport;
 
 public class DataReportValuesDto
 {
