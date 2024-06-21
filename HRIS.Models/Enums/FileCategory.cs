@@ -2,7 +2,7 @@
 
 public enum FileCategory
 {
-    FixedTerm,
+    EmploymentContract,
     Retirement,
     Medical
 }
