@@ -1,8 +1,10 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using System.Security.Claims;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -31,10 +33,18 @@ public class WorkExperienceControllerUnitTest
         };
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task saveWorkExperienceReturnsOk()
     {
         _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ReturnsAsync(_workExperienceDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var controllerResult = await _controller.SaveWorkExperience(_workExperienceDto);
 
@@ -59,10 +69,18 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal("Could not save data.", problemDetails.Detail);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task saveWorkExperienceAlreadyExists()
     {
         _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ThrowsAsync(new Exception("work experience exists"));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var controllerResult = await _controller.SaveWorkExperience(_workExperienceDto);
         var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
@@ -75,12 +93,20 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal("work experience exists", errorMessage);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetWorkExperienceByIdPass()
     {
         var workExperienceList = new List<WorkExperienceDto> { _workExperienceDto };
 
         _workExperienceServiceMock.Setup(x => x.GetWorkExperienceByEmployeeId(_workExperienceDto.EmployeeId)).ReturnsAsync(workExperienceList);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var controllerResult = await _controller.GetWorkExperienceById(_workExperienceDto.EmployeeId);
 
@@ -100,10 +126,18 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal(404, actionResult.StatusCode);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task UpdateWorkExperiencePass()
     {
         _workExperienceServiceMock.Setup(x => x.Update(_workExperienceDto)).ReturnsAsync(_workExperienceDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var controllerResult = await _controller.UpdateWorkExperience(_workExperienceDto);
 
@@ -124,10 +158,18 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal("Work experience could not be updated", actionResult.Value);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task DeleteWorkExperiencePass()
     {
         _workExperienceServiceMock.Setup(x => x.Delete(_workExperienceDto.Id)).ReturnsAsync(_workExperienceDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var controllerResult = await _controller.DeleteWorkExperience(_workExperienceDto.Id);
 

@@ -1,12 +1,15 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums.QualificationEnums;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Transaction;
 using Moq;
 using RGO.Tests.Data.Models;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
+using System.Security.Claims;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -33,11 +36,19 @@ public class EmployeeQualificationControllerUnitTests
         _employeeQualificationDto = EmployeeQualificationTestData.EmployeeQualification;
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task SaveEmployeeQualificationReturnsOkObjectResultWithQualification()
     {
         _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(_employeeQualificationDto, _employeeQualificationDto.EmployeeId))
             .ReturnsAsync(_employeeQualificationDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _employeeQualificationController.ControllerContext = new ControllerContext();
+        _employeeQualificationController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _employeeQualificationController.SaveEmployeeQualification(_employeeQualificationDto);
 
@@ -46,11 +57,19 @@ public class EmployeeQualificationControllerUnitTests
         Assert.Equal(_employeeQualificationDto, returnValue);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task SaveEmployeeQualificationReturnsInternalServerErrorOnException()
     {
         _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(   _employeeQualificationDto, _employeeQualificationDto.EmployeeId))
             .ThrowsAsync(new Exception("Test Exception"));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _employeeQualificationController.ControllerContext = new ControllerContext();
+        _employeeQualificationController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _employeeQualificationController.SaveEmployeeQualification(_employeeQualificationDto);
 
@@ -97,11 +116,19 @@ public class EmployeeQualificationControllerUnitTests
         Assert.Equal("Test Exception", statusCodeResult.Value);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
     {
         _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(_employeeQualificationDto.Id))
             .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _employeeQualificationController.ControllerContext = new ControllerContext();
+        _employeeQualificationController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(_employeeQualificationDto.Id);
 
@@ -110,11 +137,19 @@ public class EmployeeQualificationControllerUnitTests
         Assert.Equal(_employeeQualificationDto, returnValue);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsNotFoundWhenQualificationsNotFound()
     {
         _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(1))
             .ThrowsAsync(new KeyNotFoundException("Qualifications not found"));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _employeeQualificationController.ControllerContext = new ControllerContext();
+        _employeeQualificationController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(1);
 

@@ -51,7 +51,7 @@ namespace RR.App.Tests.Controllers.HRIS
             }
         }
 
-        [Fact(Skip = "Unauthorised error")]
+         [Fact(Skip = "Unauthorised error")]
         public async Task GetAllCharts_ReturnsOk_WithCharts()
         {
             var response = await _client.GetAsync("/charts");

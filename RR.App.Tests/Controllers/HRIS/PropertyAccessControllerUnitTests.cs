@@ -3,6 +3,7 @@ using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Transaction;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data.Models.HRIS;
@@ -53,11 +54,19 @@ public class PropertyAccessControllerUnitTests
 
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetPropertyWithAccessReturnsOkResult()
     {
         _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(0))
                                  .ReturnsAsync(new List<PropertyAccessDto>());
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _propertyAccessController.ControllerContext = new ControllerContext();
+        _propertyAccessController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _propertyAccessController.GetPropertiesWithAccess(0);
 
@@ -66,11 +75,19 @@ public class PropertyAccessControllerUnitTests
         _propertyAccessMockService.Verify(service => service.GetAccessListByEmployeeId(0), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetPropertyWithAccessReturnsNotFoundResult()
     {
         _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(0))
                                  .ThrowsAsync(new Exception("Error retrieving properties with access for the specified user."));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _propertyAccessController.ControllerContext = new ControllerContext();
+        _propertyAccessController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _propertyAccessController.GetPropertiesWithAccess(0);
 
@@ -128,10 +145,18 @@ public class PropertyAccessControllerUnitTests
         _propertyAccessMockService.Verify(service => service.UpdatePropertyAccess(0, PropertyAccessLevel.read), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetUserIdReturnsOkResult()
     {
         _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ReturnsAsync(EmployeeTestData.EmployeeDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _propertyAccessController.ControllerContext = new ControllerContext();
+        _propertyAccessController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _propertyAccessController.GetUserId("test@retrorabbit.co.za");
 
@@ -140,10 +165,18 @@ public class PropertyAccessControllerUnitTests
         _employeeMockService.Verify(service => service.GetEmployee("test@retrorabbit.co.za"), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetUserIdReturnsNotFoundResult()
     {
         _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ThrowsAsync(new Exception("Error retrieving properties with access for the specified user."));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _propertyAccessController.ControllerContext = new ControllerContext();
+        _propertyAccessController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _propertyAccessController.GetUserId("test@retrorabbit.co.za");
 

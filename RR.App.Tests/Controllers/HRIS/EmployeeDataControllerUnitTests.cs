@@ -1,8 +1,10 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using System.Security.Claims;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -27,11 +29,19 @@ public class EmployeeDataControllerUnitTests
         _employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeeDataReturnsOkResult()
     {
         _employeeDataServiceMock.Setup(service => service.GetAllEmployeeData(1))
                                .ReturnsAsync(_employeeDataDtoList);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.GetEmployeeData(1);
 
@@ -40,11 +50,19 @@ public class EmployeeDataControllerUnitTests
         _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(1), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeeDataReturnsNotFoundResult()
     {
         _employeeDataServiceMock.Setup(service => service.GetAllEmployeeData(1))
                                .ReturnsAsync((List<EmployeeDataDto>?)null);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.GetEmployeeData(1);
 
@@ -54,11 +72,19 @@ public class EmployeeDataControllerUnitTests
         _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(1), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task SaveEmployeeDataReturnsOkResult()
     {
         _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
                                .ReturnsAsync(_employeeDataDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.SaveEmployeeData(_employeeDataDto);
 
@@ -67,11 +93,19 @@ public class EmployeeDataControllerUnitTests
         _employeeDataServiceMock.Verify(service => service.SaveEmployeeData(_employeeDataDto), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task SaveEmployeeDataReturnsNotFoundResultOnException()
     {
         _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
                                .ThrowsAsync(new Exception("Error saving employee data."));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.SaveEmployeeData(_employeeDataDto);
 
@@ -81,11 +115,19 @@ public class EmployeeDataControllerUnitTests
         _employeeDataServiceMock.Verify(service => service.SaveEmployeeData(_employeeDataDto), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task UpdateEmployeeDataReturnsOkResult()
     {
         _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
                                .ReturnsAsync(_employeeDataDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.UpdateEmployeeData(_employeeDataDto);
 
@@ -94,11 +136,19 @@ public class EmployeeDataControllerUnitTests
         _employeeDataServiceMock.Verify(service => service.UpdateEmployeeData(_employeeDataDto), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task UpdateEmployeeDataReturnsNotFoundResultOnException()
     {
         _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
                                .ThrowsAsync(new Exception("Error updating employee data."));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.UpdateEmployeeData(_employeeDataDto);
 

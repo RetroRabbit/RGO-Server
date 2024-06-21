@@ -222,11 +222,19 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task UpdateEmployeeSuccessTest()
     {
         _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
                             .ReturnsAsync(_employee);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "ksmith@retrorabbit.co.za"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
 
@@ -247,11 +255,19 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact (Skip = "User data being accessed does not match user making the request.")]
+    [Fact]
     public async Task UpdateEmployeeUnauthorized()
     {
         _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
                             .ThrowsAsync(new Exception("Unauthorized action"));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "ksmith@retrorabbit.co.za"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
         var statusCodeResult = (ObjectResult)result;

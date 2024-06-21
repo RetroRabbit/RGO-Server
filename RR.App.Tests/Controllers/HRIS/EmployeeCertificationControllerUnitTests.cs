@@ -1,10 +1,12 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
+using System.Security.Claims;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -37,11 +39,19 @@ public class EmployeeCertificationControllerUnitTests
         employeeCertificationDtoList = new List<EmployeeCertificationDto> { employeeCertificationDto };
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetAllEmployeelCertiificatesPass()
     {
         _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id))
             .ReturnsAsync(employeeCertificationDtoList);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeDto.Id);
 
@@ -86,11 +96,19 @@ public class EmployeeCertificationControllerUnitTests
         Assert.Equal("Employee not found", notFoundResult.Value);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeelCertiificatesPass()
     {
         _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id))
             .ReturnsAsync(employeeCertificationDto);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id);
 
@@ -98,11 +116,19 @@ public class EmployeeCertificationControllerUnitTests
         Assert.Equal(employeeCertificationDto, okResult.Value);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeelCertiificatesFail()
     {
         _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("Employee not found"));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id);
 

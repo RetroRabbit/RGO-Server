@@ -4,6 +4,8 @@ using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Transaction;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data.Models.HRIS;
@@ -187,11 +189,19 @@ public class EmployeeBankingControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
     {
         _employeeBankingServiceMock.Setup(x => x.GetBanking(123))
             .ReturnsAsync(new List<EmployeeBankingDto> { _employeeBankingDto });
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.GetBankingDetails(123);
 
@@ -200,10 +210,18 @@ public class EmployeeBankingControllerUnitTests
         Assert.Contains(_employeeBankingDto, actualDetails);
     }
 
-    [Fact(Skip = "Tampering found")]
+    [Fact]
     public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()
     {
         _employeeBankingServiceMock.Setup(x => x.GetBanking(456)).ThrowsAsync(new Exception("Employee banking details not found"));
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "TestUser"),
+                                        new Claim(ClaimTypes.Email, "test@example.com"),
+                                        new Claim(ClaimTypes.Role, "SuperAdmin")
+                                   }, "TestAuthentication"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         var result = await _controller.GetBankingDetails(456);
 
