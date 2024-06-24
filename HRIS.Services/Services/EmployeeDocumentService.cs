@@ -181,11 +181,10 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .Select(employee => employee.Email)
             .FirstAsync();
 
+     
         bool sameEmail = email.Equals(employeeEmail);
         var isAdmin = await IsAdmin(email);
-        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
-
-        employeeDocumentDto.Status = status;
+        if (isAdmin && !sameEmail) employeeDocumentDto.Status = DocumentStatus.ActionRequired;
 
         EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
 
