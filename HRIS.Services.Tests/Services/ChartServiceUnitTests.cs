@@ -23,6 +23,7 @@ public class ChartServiceUnitTests
     private readonly EmployeeTypeDto employeeTypeDto1;
     private readonly EmployeeTypeDto employeeTypeDto2;
     private readonly IErrorLoggingService _errorLoggingService;
+    EmployeeDto testEmployee = EmployeeTestData.EmployeeDto;
 
     public ChartServiceUnitTests()
     {
@@ -40,6 +41,7 @@ public class ChartServiceUnitTests
                                 .Returns(Task.FromResult(employeeTypeDto1));
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
                                 .Returns(Task.FromResult(employeeTypeDto2));
+        
     }
 
     [Fact]
@@ -63,6 +65,7 @@ public class ChartServiceUnitTests
         var dataTypes = new List<string> { "Gender, Race, Age" };
         var chartName = "TestChart";
         var chartType = "Pie";
+
 
         EmployeeTypeDto developerEmployeeTypeDto =EmployeeTypeTestData.DeveloperType;
         EmployeeTypeDto designerEmployeeTypeDto = EmployeeTypeTestData.DesignerType;
@@ -109,7 +112,7 @@ public class ChartServiceUnitTests
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, testEmployee.Id);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
@@ -130,7 +133,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                  .Returns(employeeList.AsQueryable().BuildMock());
 
-        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, testEmployee.Id);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
@@ -187,7 +190,7 @@ public class ChartServiceUnitTests
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, testEmployee.Id);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);

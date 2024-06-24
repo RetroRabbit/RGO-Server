@@ -32,8 +32,15 @@ public partial class ChartService : IChartService
         return await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
     }
 
+    public async Task<List<ChartDto>> GetEmployeeCharts(int employeeId)
+    {
+        return await _db.Chart.Get()
+            .Where(chart => chart.EmployeeId == employeeId)
+            .Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
+    }
+
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName,
-                                            string chartType)
+                                            string chartType, int employeeId)
     {
         List<EmployeeDto> employees;
 
@@ -50,7 +57,8 @@ public partial class ChartService : IChartService
         {
             Name = chartName,
             DataTypes = dataTypes,
-            Datasets = new List<ChartDataSet>()
+            Datasets = new List<ChartDataSet>(),
+            EmployeeId = employeeId,
         };
 
         if (chartType.ToUpper() == "STACKED")
