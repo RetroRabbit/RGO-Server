@@ -434,7 +434,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task FilterEmployeesSuccessTest()
     {
-        _employeeMockService.Setup(service => service.FillerEmployees(1, 0))
+        _employeeMockService.Setup(service => service.FilterEmployees(1, 0,true))
                             .ReturnsAsync(new List<EmployeeDto> { _employee });
 
         var result = await _controller.FilterEmployees(1, 0);
@@ -447,7 +447,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task FilterEmployeesFailTest()
     {
-        _employeeMockService.Setup(service => service.FillerEmployees(-1, -1))
+        _employeeMockService.Setup(service => service.FilterEmployees(-1, -1, true))
                             .ThrowsAsync(new Exception("Not found"));
 
         var result = await _controller.FilterEmployees(-1, -1);

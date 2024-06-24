@@ -221,11 +221,11 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("filter-employees")]
-    public async Task<IActionResult> FilterEmployees(int peopleChampId, int employeetype)
+    public async Task<IActionResult> FilterEmployees(int peopleChampId, int employeetype,bool activeStatus = true )
     {
         try
         {
-            var employees = await _employeeService.FillerEmployees(peopleChampId, employeetype);
+            var employees = await _employeeService.FilterEmployees(peopleChampId, employeetype, activeStatus);
 
             return Ok(employees);
         }
