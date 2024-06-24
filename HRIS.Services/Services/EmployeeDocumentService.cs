@@ -181,7 +181,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .Select(employee => employee.Email)
             .FirstAsync();
 
-        //Check to see if Admin Actioned Employees Document
+     
         bool sameEmail = email.Equals(employeeEmail);
         var isAdmin = await IsAdmin(email);
         if (isAdmin && !sameEmail) employeeDocumentDto.Status = DocumentStatus.ActionRequired;
