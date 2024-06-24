@@ -20,6 +20,14 @@ public class DataReportCreationService : IDataReportCreationService
     {
         var report = await _db.DataReport.Add(new DataReport { Name = input.Name, Code = input.Code, Status = ItemStatus.Active });
         await _db.DataReportAccess.Add(new DataReportAccess { EmployeeId = activeEmployeeId, ReportId = report.Id, ViewOnly = false, Status = ItemStatus.Active });
+
+        var nameMenuItemId = await _db.DataReportColumnMenu.Get(x => x.Status == ItemStatus.Active && x.Prop == "Name").Select(x => x.Id).FirstOrDefaultAsync();
+        if(nameMenuItemId > 0)
+            await _db.DataReportColumns.Add(new DataReportColumns { ReportId = report.Id, Status = ItemStatus.Active, Sequence = 0, FieldType = DataReportColumnType.Employee, MenuId = nameMenuItemId });
+
+        var surnameMenuItemId = await _db.DataReportColumnMenu.Get(x => x.Status == ItemStatus.Active && x.Prop == "Surname").Select(x => x.Id).FirstOrDefaultAsync();
+        if(surnameMenuItemId > 0)
+            await _db.DataReportColumns.Add(new DataReportColumns { ReportId = report.Id, Status = ItemStatus.Active, Sequence = 1, FieldType = DataReportColumnType.Employee, MenuId = surnameMenuItemId });
     }
 
     public async Task UpdateReport(UpdateReportRequest input)

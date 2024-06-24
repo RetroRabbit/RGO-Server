@@ -4,7 +4,6 @@ using HRIS.Models.Report;
 using HRIS.Models.Report.Response;
 using HRIS.Models.Update;
 using HRIS.Services.Extensions;
-using HRIS.Services.Interfaces;
 using HRIS.Services.Interfaces.Reporting;
 using HRIS.Services.Interfaces.Helper;
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +16,11 @@ public class DataReportService : IDataReportService
 {
     private readonly IUnitOfWork _db;
     private readonly IDataReportHelper _helper;
-    private readonly IEmployeeRoleService _employeeService;
 
-    public DataReportService(IUnitOfWork db, IDataReportHelper helper, IEmployeeRoleService employeeService)
+    public DataReportService(IUnitOfWork db, IDataReportHelper helper)
     {
         _db = db;
         _helper = helper;
-        _employeeService = employeeService;
     }
 
     public async Task<List<DataReportListResponse>> GetDataReportList(AuthorizeIdentity identity)

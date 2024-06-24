@@ -63,7 +63,7 @@ public class DataReportRepository : BaseRepository<DataReport, DataReportDto>, I
 
         var access = await (from a in _db.dataReportAccess
             where roles.Contains(a.RoleId ?? 0) || a.EmployeeId == employee.Id
-            select a.RoleId).ToListAsync();
+            select a.ReportId).ToListAsync();
 
         var reports = await Get(x => x.Status == ItemStatus.Active && access.Contains(x.Id))
             .Include(x => x.DataReportFilter)

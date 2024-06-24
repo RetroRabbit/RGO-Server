@@ -23,6 +23,21 @@ VALUES (4, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 INSERT INTO "EmployeeEvaluationTemplate" (id, description)
 VALUES (1, 'L3 Level Up');
 
+INSERT INTO "EmployeeType" (id, name)
+VALUES (1, 'Executive');
+INSERT INTO "EmployeeType" (id, name)
+VALUES (2, 'Developer');
+INSERT INTO "EmployeeType" (id, name)
+VALUES (3, 'Designer');
+INSERT INTO "EmployeeType" (id, name)
+VALUES (4, 'Scrum Master');
+INSERT INTO "EmployeeType" (id, name)
+VALUES (5, 'Business Support');
+INSERT INTO "EmployeeType" (id, name)
+VALUES (6, 'Account Manager');
+INSERT INTO "EmployeeType" (id, name)
+VALUES (7, 'People Champion');
+
 INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")
 VALUES (1, 'Did you meet expectations?', 'Expectations', 1);
 INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")

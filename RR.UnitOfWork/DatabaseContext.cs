@@ -169,16 +169,6 @@ public class DatabaseContext : DbContext, IDatabaseContext
             new RoleAccessLink { Id = 36, RoleAccessId = 10, RoleId = 5 }
         );
 
-        modelBuilder.Entity<EmployeeType>().HasData(
-            new EmployeeType { Id = 1, Name = "Executive" },
-            new EmployeeType { Id = 2, Name = "Developer" },
-            new EmployeeType { Id = 3, Name = "Designer" },
-            new EmployeeType { Id = 4, Name = "Scrum Master" },
-            new EmployeeType { Id = 5, Name = "Business Support" },
-            new EmployeeType { Id = 6, Name = "Account Manager" },
-            new EmployeeType { Id = 7, Name = "People Champion" }
-        );
-
         modelBuilder.Entity<FieldCode>().HasData(
             new FieldCode { Id = 1, Code = "degree", Name = "Degree", Description = null, Regex = null, Type = (FieldCodeType)1, Status = (ItemStatus)0, Internal = false, InternalTable = null, Category = (FieldCodeCategory)0, Required = false },
             new FieldCode { Id = 2, Code = "tenure", Name = "Tenure", Description = null, Regex = null, Type = (FieldCodeType)1, Status = (ItemStatus)0, Internal = false, InternalTable = null, Category = (FieldCodeCategory)0, Required = false },

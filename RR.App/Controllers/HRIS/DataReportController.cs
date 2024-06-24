@@ -109,21 +109,6 @@ public class DataReportController : RRController
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpDelete("ui/enable-column-from-report")]
-    public async Task<IActionResult> EnableColumnFromReport(int columnId)
-    {
-        try
-        {
-            await _control.EnableColumnFromReport(columnId);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut("ui/move-column-on-report")]
     public async Task<IActionResult> MoveColumnOnReport([FromBody] ReportColumnRequest input)
     {

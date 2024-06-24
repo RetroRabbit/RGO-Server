@@ -5,7 +5,6 @@ using HRIS.Models.Report.Request;
 using HRIS.Models.Update;
 using HRIS.Services.Extensions;
 using HRIS.Services.Interfaces.Reporting;
-using HRIS.Services.Interfaces.Helper;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -15,13 +14,11 @@ namespace HRIS.Services.Services.Reporting;
 public class DataReportControlService : IDataReportControlService
 {
     private readonly IUnitOfWork _db;
-    private readonly IDataReportHelper _helper;
     private readonly IDataReportCreationService _creation;
 
-    public DataReportControlService(IUnitOfWork db, IDataReportHelper helper, IDataReportCreationService creation)
+    public DataReportControlService(IUnitOfWork db, IDataReportCreationService creation)
     {
         _db = db;
-        _helper = helper;
         _creation = creation;
     }
 
@@ -84,7 +81,9 @@ public class DataReportControlService : IDataReportControlService
             throw new Exception("The report does not seem to exist.");
 
         var entity = await _db.DataReportColumns
-            .Get(x => x.MenuId == input.MenuId || x.MenuId == null && x.FieldType == input.GetColumnType() && x.CustomName == input.Name)
+            .Get(x => x.ReportId == report.Id && (x.MenuId == input.MenuId ||
+                                                  x.MenuId == null && x.FieldType == input.GetColumnType() &&
+                                                  x.CustomName == input.Name))
             .FirstOrDefaultAsync();
 
         if (entity != null && entity.Status == ItemStatus.Active)
@@ -131,21 +130,6 @@ public class DataReportControlService : IDataReportControlService
             throw new Exception("Could not locate column to archive.");
 
         column.Status = ItemStatus.Archive;
-        await _db.DataReportColumns.Update(column);
-    }
-
-    public async Task EnableColumnFromReport(int columnId)
-    {
-        var column = await _db.DataReportColumns
-            .Get(x => x.Id == columnId && x.Status == ItemStatus.Archive)
-            .Include(x => x.Menu)
-            .ThenInclude(y => y.FieldCode)
-            .FirstOrDefaultAsync();
-
-        if (column == null)
-            throw new Exception("Could not locate column to enable.");
-
-        column.Status = ItemStatus.Active;
         await _db.DataReportColumns.Update(column);
     }
 
