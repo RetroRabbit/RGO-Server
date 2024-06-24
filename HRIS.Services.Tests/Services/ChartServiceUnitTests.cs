@@ -109,7 +109,7 @@ public class ChartServiceUnitTests
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, 0);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
@@ -130,7 +130,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                  .Returns(employeeList.AsQueryable().BuildMock());
 
-        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, 0);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
@@ -187,7 +187,7 @@ public class ChartServiceUnitTests
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType);
+        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, 0);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
