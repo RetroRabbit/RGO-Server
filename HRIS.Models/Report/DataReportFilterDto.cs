@@ -1,6 +1,6 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models.DataReport;
+namespace HRIS.Models.Report;
 
 public class DataReportFilterDto
 {

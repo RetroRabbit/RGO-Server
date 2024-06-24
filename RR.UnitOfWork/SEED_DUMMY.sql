@@ -10,6 +10,7 @@ INSERT INTO "Client" (id, name)
 VALUES (5, 'ABC Enterprises');
 INSERT INTO "Client" (id, name)
 VALUES (6, 'Company XYZ');
+
 INSERT INTO "EmployeeAddress" (id, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (1, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 INSERT INTO "EmployeeAddress" (id, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
@@ -21,51 +22,6 @@ VALUES (4, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
 INSERT INTO "EmployeeEvaluationTemplate" (id, description)
 VALUES (1, 'L3 Level Up');
-INSERT INTO "EmployeeType" (id, name)
-VALUES (1, 'Executive');
-INSERT INTO "EmployeeType" (id, name)
-VALUES (2, 'Developer');
-INSERT INTO "EmployeeType" (id, name)
-VALUES (3, 'Designer');
-INSERT INTO "EmployeeType" (id, name)
-VALUES (4, 'Scrum Master');
-INSERT INTO "EmployeeType" (id, name)
-VALUES (5, 'Business Support');
-INSERT INTO "EmployeeType" (id, name)
-VALUES (6, 'Account Manager');
-INSERT INTO "EmployeeType" (id, name)
-VALUES (7, 'People Champion');
-
-INSERT INTO "Role" (id, "Description")
-VALUES (1, 'SuperAdmin');
-INSERT INTO "Role" (id, "Description")
-VALUES (2, 'Admin');
-INSERT INTO "Role" (id, "Description")
-VALUES (3, 'Employee');
-INSERT INTO "Role" (id, "Description")
-VALUES (4, 'Talent');
-INSERT INTO "Role" (id, "Description")
-VALUES (5, 'Journey');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (1, 'Employee Data', 'ViewEmployee');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (2, 'Employee Data', 'AddEmployee');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (3, 'Employee Data', 'EditEmployee');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (4, 'Employee Data', 'DeleteEmployee');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (5, 'Charts', 'ViewChart');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (6, 'Charts', 'AddChart');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (7, 'Charts', 'EditChart');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (8, 'Charts', 'DeleteChart');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (9, 'Employee Data', 'ViewOwnInfo');
-INSERT INTO "RoleAccess" (id, grouping, permission)
-VALUES (10, 'Employee Data', 'EditOwnInfo');
 
 INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")
 VALUES (1, 'Did you meet expectations?', 'Expectations', 1);
@@ -73,79 +29,6 @@ INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId
 VALUES (2, 'Was this a challanging experience?', 'Expectations', 1);
 INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")
 VALUES (3, 'What is your plan?', 'Goals', 1);
-
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (1, 1, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (2, 2, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (3, 3, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (4, 4, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (5, 5, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (6, 6, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (7, 7, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (8, 8, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (9, 9, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (10, 10, 1);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (11, 1, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (12, 2, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (13, 3, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (14, 4, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (15, 5, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (16, 6, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (17, 7, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (18, 8, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (19, 9, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (20, 10, 2);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (21, 1, 3);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (22, 3, 3);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (23, 9, 3);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (24, 10, 3);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (25, 5, 4);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (26, 6, 4);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (27, 7, 4);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (28, 8, 4);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (29, 9, 4);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (30, 10, 4);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (31, 5, 5);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (32, 6, 5);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (33, 7, 5);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (34, 8, 5);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (35, 9, 5);
-INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
-VALUES (36, 10, 5);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
 VALUES (1, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'tdutoit', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930887Z', 2, NULL, '0231646', 'C', 1, 4, 'Tiny', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'du Toit', '8465468', NULL, NULL,True,NULL);
@@ -167,7 +50,6 @@ VALUES (6, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE,
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate", "active","inactiveReason")
 VALUES (7, '085456565656', NULL, 'SA', TIMESTAMPTZ '1997-12-09 22:00:00Z', FALSE, 'na', 'drichter@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930906Z', 1, NULL, '0231646', 'L', 1, 6, 'Delia', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Richter', '8465468', NULL, NULL,True,NULL);
-
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
 VALUES (8, '085456565656', 2, 'SA', TIMESTAMPTZ '1995-12-09 22:00:00Z', TRUE, 'na', 'hpaskell@gmail.com', NULL, NULL, '8464', 2, TIMESTAMPTZ '2024-03-07 13:10:48.930907Z', 2, NULL, '0231646', 'D', 1, 3, 'Haskell', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 0, 5, 30, 'Paskell', '8465468', 1, NULL,True,NULL);
@@ -193,45 +75,20 @@ VALUES (14, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALS
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
 VALUES (15, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'rgreen@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930913Z', 1, NULL, '0231646', 'E', 2, 3, 'Rachell', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Green', '8465468', 1, NULL,True,NULL);
 
-
+INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
+VALUES (1, 1, 1);
+INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
+VALUES (2, 2, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (3, 3, 1);
+INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
+VALUES (4, 4, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (5, 5, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (6, 6, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (7, 7, 1);
-
-INSERT INTO "EmployeeData" ("id", "employeeId", "fieldCodeId", value)
-VALUES (1, 1, 14, 'John');
-
-INSERT INTO "EmployeeEvaluations" (id, "employeeId", "endDate", "ownerId", "startDate", subject, "templateId")
-VALUES (1, 1, NULL, 1, DATE '2024-03-07', 'Peoples'' Champion Checkin', 1);
-INSERT INTO "EmployeeEvaluations" (id, "employeeId", "endDate", "ownerId", "startDate", subject, "templateId")
-VALUES (2, 2, NULL, 1, DATE '2024-03-07', 'Peoples'' Champion Checkin', 1);
-
-INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
-VALUES (1, 1, 1);
-INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
-VALUES (2, 2, 1);
-INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
-VALUES (4, 4, 1);
-
-INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
-VALUES (1, 1, 1);
-INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
-VALUES (2, 2, 2);
-INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
-VALUES (3, 1, 3);
-
-INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
-VALUES (1, 'No', 'Test 1', 1, 1, 1);
-INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
-VALUES (2, 'Yes', 'Test 2', 2, 1, 2);
-INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
-VALUES (3, 'Maybe', 'Test 3', 1, 2, 3);
-
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (8, 8, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
@@ -248,7 +105,26 @@ INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (14, 14, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (15, 15, 1);
-      
+
+INSERT INTO "EmployeeEvaluations" (id, "employeeId", "endDate", "ownerId", "startDate", subject, "templateId")
+VALUES (1, 1, NULL, 1, DATE '2024-03-07', 'Peoples'' Champion Checkin', 1);
+INSERT INTO "EmployeeEvaluations" (id, "employeeId", "endDate", "ownerId", "startDate", subject, "templateId")
+VALUES (2, 2, NULL, 1, DATE '2024-03-07', 'Peoples'' Champion Checkin', 1);
+
+INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
+VALUES (1, 1, 1);
+INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
+VALUES (2, 2, 2);
+INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
+VALUES (3, 1, 3);
+
+INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
+VALUES (1, 'No', 'Test 1', 1, 1, 1);
+INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
+VALUES (2, 'Yes', 'Test 2', 2, 1, 2);
+INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
+VALUES (3, 'Maybe', 'Test 3', 1, 2, 3);
+
 SELECT setval(
 pg_get_serial_sequence('"Client"', 'id'),
 GREATEST(

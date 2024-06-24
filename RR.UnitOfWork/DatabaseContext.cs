@@ -44,6 +44,11 @@ public interface IDatabaseContext
     DbSet<WorkExperience> workExperience { get; set; }
     DbSet<Termination> termination { get; set; }
     DbSet<DataReport> dataReport { get; set; }
+    DbSet<DataReportColumnMenu> dataReportColumnMenu { get; set; }
+    DbSet<DataReportColumns> dataReportColumns { get; set; }
+    DbSet<DataReportFilter> dataReportFilter { get; set; }
+    DbSet<DataReportValues> dataReportValues { get; set; }
+    DbSet<DataReportAccess> dataReportAccess { get; set; }
 }
 
 public class DatabaseContext : DbContext, IDatabaseContext
@@ -93,6 +98,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<DataReportColumns> dataReportColumns { get; set; }
     public DbSet<DataReportFilter> dataReportFilter { get; set; }
     public DbSet<DataReportValues> dataReportValues { get; set; }
+    public DbSet<DataReportAccess> dataReportAccess { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -103,155 +109,74 @@ public class DatabaseContext : DbContext, IDatabaseContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<DataReport>().HasData(new DataReport
-        {
-            Id = 1,
-            Name = "Availability Snapshot",
-            Code = "AS01",
-            Status = ItemStatus.Active
-        });
-
-        var sequence = 0;
-        modelBuilder.Entity<DataReportColumns>().HasData(
-            new DataReportColumns
-            {
-                Id = 1,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 5,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 2,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 7,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 3,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 20,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 4,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 4,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 5,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 42,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 7,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 43,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 8,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 47,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 9,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 49,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 10,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = 51,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Employee
-            },
-            new DataReportColumns
-            {
-                Id = 11,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = null,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Text,
-                CustomName = "Internal Project",
-                CustomProp = "InternalProject"
-            },
-            new DataReportColumns
-            {
-                Id = 12,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = null,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Text,
-                CustomName = "Open Source",
-                CustomProp = "OpenSource"
-            },
-            new DataReportColumns
-            {
-                Id = 13,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                MenuId = null,
-                Sequence = sequence++,
-                FieldType = DataReportColumnType.Text,
-                CustomName = "Notes",
-                CustomProp = "Notes"
-            }
+        modelBuilder.Entity<Role>().HasData(
+            new Role { Id = 1, Description = "SuperAdmin", AuthRoleId = "" },
+            new Role { Id = 2, Description = "Admin", AuthRoleId = "" },
+            new Role { Id = 3, Description = "Employee", AuthRoleId = "" },
+            new Role { Id = 4, Description = "Talent", AuthRoleId = "" },
+            new Role { Id = 5, Description = "Journey", AuthRoleId = "" }
         );
 
-        modelBuilder.Entity<DataReportFilter>().HasData(
-            new DataReportFilter
-            {
-                Id = 1,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                Table = "Employee",
-                Column = "clientAllocated",
-                Condition = "IS NULL",
-                Value = null,
-                Select = "id",
-            },
-            new DataReportFilter
-            {
-                Id = 2,
-                Status = ItemStatus.Active,
-                ReportId = 1,
-                Table = "Employee",
-                Column = "employeeTypeId",
-                Condition = "IN",
-                Value = "(2,3,4)",
-                Select = "id",
-            }
+        modelBuilder.Entity<RoleAccess>().HasData(
+            new RoleAccess { Id = 1, Grouping = "Employee Data", Permission = "ViewEmployee" },
+            new RoleAccess { Id = 2, Grouping = "Employee Data", Permission = "AddEmployee" },
+            new RoleAccess { Id = 3, Grouping = "Employee Data", Permission = "EditEmployee" },
+            new RoleAccess { Id = 4, Grouping = "Employee Data", Permission = "DeleteEmployee" },
+            new RoleAccess { Id = 5, Grouping = "Charts", Permission = "ViewChart" },
+            new RoleAccess { Id = 6, Grouping = "Charts", Permission = "AddChart" },
+            new RoleAccess { Id = 7, Grouping = "Charts", Permission = "EditChart" },
+            new RoleAccess { Id = 8, Grouping = "Charts", Permission = "DeleteChart" },
+            new RoleAccess { Id = 9, Grouping = "Employee Data", Permission = "ViewOwnInfo" },
+            new RoleAccess { Id = 10, Grouping = "Employee Data", Permission = "EditOwnInfo" }
+        );
+
+        modelBuilder.Entity<RoleAccessLink>().HasData(
+            new RoleAccessLink { Id = 1, RoleAccessId = 1, RoleId = 1 },
+            new RoleAccessLink { Id = 2, RoleAccessId = 2, RoleId = 1 },
+            new RoleAccessLink { Id = 3, RoleAccessId = 3, RoleId = 1 },
+            new RoleAccessLink { Id = 4, RoleAccessId = 4, RoleId = 1 },
+            new RoleAccessLink { Id = 5, RoleAccessId = 5, RoleId = 1 },
+            new RoleAccessLink { Id = 6, RoleAccessId = 6, RoleId = 1 },
+            new RoleAccessLink { Id = 7, RoleAccessId = 7, RoleId = 1 },
+            new RoleAccessLink { Id = 8, RoleAccessId = 8, RoleId = 1 },
+            new RoleAccessLink { Id = 9, RoleAccessId = 9, RoleId = 1 },
+            new RoleAccessLink { Id = 10, RoleAccessId = 10, RoleId = 1 },
+            new RoleAccessLink { Id = 11, RoleAccessId = 1, RoleId = 2 },
+            new RoleAccessLink { Id = 12, RoleAccessId = 2, RoleId = 2 },
+            new RoleAccessLink { Id = 13, RoleAccessId = 3, RoleId = 2 },
+            new RoleAccessLink { Id = 14, RoleAccessId = 4, RoleId = 2 },
+            new RoleAccessLink { Id = 15, RoleAccessId = 5, RoleId = 2 },
+            new RoleAccessLink { Id = 16, RoleAccessId = 6, RoleId = 2 },
+            new RoleAccessLink { Id = 17, RoleAccessId = 7, RoleId = 2 },
+            new RoleAccessLink { Id = 18, RoleAccessId = 8, RoleId = 2 },
+            new RoleAccessLink { Id = 19, RoleAccessId = 9, RoleId = 2 },
+            new RoleAccessLink { Id = 20, RoleAccessId = 10, RoleId = 2 },
+            new RoleAccessLink { Id = 21, RoleAccessId = 1, RoleId = 3 },
+            new RoleAccessLink { Id = 22, RoleAccessId = 3, RoleId = 3 },
+            new RoleAccessLink { Id = 23, RoleAccessId = 9, RoleId = 3 },
+            new RoleAccessLink { Id = 24, RoleAccessId = 10, RoleId = 3 },
+            new RoleAccessLink { Id = 25, RoleAccessId = 5, RoleId = 4 },
+            new RoleAccessLink { Id = 26, RoleAccessId = 6, RoleId = 4 },
+            new RoleAccessLink { Id = 27, RoleAccessId = 7, RoleId = 4 },
+            new RoleAccessLink { Id = 28, RoleAccessId = 8, RoleId = 4 },
+            new RoleAccessLink { Id = 29, RoleAccessId = 9, RoleId = 4 },
+            new RoleAccessLink { Id = 30, RoleAccessId = 10, RoleId = 4 },
+            new RoleAccessLink { Id = 31, RoleAccessId = 5, RoleId = 5 },
+            new RoleAccessLink { Id = 32, RoleAccessId = 6, RoleId = 5 },
+            new RoleAccessLink { Id = 33, RoleAccessId = 7, RoleId = 5 },
+            new RoleAccessLink { Id = 34, RoleAccessId = 8, RoleId = 5 },
+            new RoleAccessLink { Id = 35, RoleAccessId = 9, RoleId = 5 },
+            new RoleAccessLink { Id = 36, RoleAccessId = 10, RoleId = 5 }
+        );
+
+        modelBuilder.Entity<EmployeeType>().HasData(
+            new EmployeeType { Id = 1, Name = "Executive" },
+            new EmployeeType { Id = 2, Name = "Developer" },
+            new EmployeeType { Id = 3, Name = "Designer" },
+            new EmployeeType { Id = 4, Name = "Scrum Master" },
+            new EmployeeType { Id = 5, Name = "Business Support" },
+            new EmployeeType { Id = 6, Name = "Account Manager" },
+            new EmployeeType { Id = 7, Name = "People Champion" }
         );
 
         modelBuilder.Entity<FieldCode>().HasData(
@@ -320,210 +245,84 @@ public class DatabaseContext : DbContext, IDatabaseContext
        );
 
         modelBuilder.Entity<DataReportColumnMenu>().HasData(
-            new DataReportColumnMenu
-            {
-                Id = 1, Name = "Employee Number", Prop = "EmployeeNumber", Mapping = "EmployeeNumber", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 2, Name = "Engagement Date", Prop = "EngagementDate", Mapping = "EngagementDate", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 3, Name = "Termination Date", Prop = "TerminationDate", Mapping = "TerminationDate", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 4, Name = "Level", Prop = "Level", Mapping = "Level", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 5, Name = "Name", Prop = "Name", Mapping = "Name", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 6, Name = "Initials", Prop = "Initials", Mapping = "Initials", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 7, Name = "Surname", Prop = "Surname", Mapping = "Surname", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 8, Name = "Date Of Birth", Prop = "DateOfBirth", Mapping = "DateOfBirth", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 9, Name = "Country Of Birth", Prop = "CountryOfBirth", Mapping = "CountryOfBirth", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 10, Name = "Nationality", Prop = "Nationality", Mapping = "Nationality", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 11, Name = "Race", Prop = "Race", Mapping = "Race", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 12, Name = "Gender", Prop = "Gender", Mapping = "Gender", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 13, Name = "Email", Prop = "Email", Mapping = "Email", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 14, Name = "Personal Email", Prop = "PersonalEmail", Mapping = "PersonalEmail", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 15, Name = "Cellphone No", Prop = "CellphoneNo", Mapping = "CellphoneNo", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 16, Name = "House No", Prop = "HouseNo", Mapping = "HouseNo", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 17, Name = "Emergency Contact Name", Prop = "EmergencyContactName", Mapping = "EmergencyContactName", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 18, Name = "Emergency Contact No", Prop = "EmergencyContactNo", Mapping = "EmergencyContactNo", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 19, Name = "Inactive Reason", Prop = "InactiveReason", Mapping = "InactiveReason", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 20, Name = "Role", Prop = "Role", Mapping = "EmployeeType.Name", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 21, Name = "Client Assigned", Prop = "ClientAssigned", Mapping = "ClientAssigned.Name", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 22, Name = "Physical Address", Prop = "PhysicalAddress", Mapping = "PhysicalAddress", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 23, Name = "Unit Number", Prop = "UnitNumber", Mapping = "PhysicalAddress.UnitNumber", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 24, Name = "Complex Name", Prop = "ComplexName", Mapping = "PhysicalAddress.ComplexName", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 25, Name = "Street Name", Prop = "StreetName", Mapping = "PhysicalAddress.StreetName", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 26, Name = "Street Number", Prop = "StreetNumber", Mapping = "PhysicalAddress.StreetNumber", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 27, Name = "Suburb Or District", Prop = "SuburbOrDistrict", Mapping = "PhysicalAddress.SuburbOrDistrict", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 28, Name = "City", Prop = "City", Mapping = "PhysicalAddress.City", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 29, Name = "Country", Prop = "Country", Mapping = "PhysicalAddress.Country", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 30, Name = "Province", Prop = "Province", Mapping = "PhysicalAddress.Province", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 31, Name = "Postal Code", Prop = "PostalCode", Mapping = "PhysicalAddress.PostalCode", ParentId = 22, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 32, Name = "Postal Address", Prop = "PostalAddress", Mapping = "PostalAddress", ParentId = null, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 33, Name = "Unit Number", Prop = "UnitNumber", Mapping = "PostalAddress.UnitNumber", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 34, Name = "Complex Name", Prop = "ComplexName", Mapping = "PostalAddress.ComplexName", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 35, Name = "Street Name", Prop = "StreetName", Mapping = "PostalAddress.StreetName", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 36, Name = "Street Number", Prop = "StreetNumber", Mapping = "PostalAddress.StreetNumber", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 37, Name = "Suburb Or District", Prop = "SuburbOrDistrict", Mapping = "PostalAddress.SuburbOrDistrict", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 38, Name = "City", Prop = "City", Mapping = "PostalAddress.City", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 39, Name = "Country", Prop = "Country", Mapping = "PostalAddress.Country", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 40, Name = "Province", Prop = "Province", Mapping = "PostalAddress.Province", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 41, Name = "Postal Code", Prop = "PostalCode", Mapping = "PostalAddress.PostalCode", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 51, Name = "People Champion", Prop = "PeopleChampion", Mapping = "ChampionEmployee.Name", ParentId = 32, Status = ItemStatus.Active
-            },
-            new DataReportColumnMenu
-            {
-                Id = 42, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 1
-            },
-            new DataReportColumnMenu
-            {
-                Id = 43, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 2
-            },
-            new DataReportColumnMenu
-            {
-                Id = 44, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 3
-            },
-            new DataReportColumnMenu
-            {
-                Id = 45, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 4
-            },
-            new DataReportColumnMenu
-            {
-                Id = 46, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 5
-            },
-            new DataReportColumnMenu
-            {
-                Id = 47, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 7
-            },
-            new DataReportColumnMenu
-            {
-                Id = 48, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 8
-            },
-            new DataReportColumnMenu
-            {
-                Id = 49, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 9
-            },
-            new DataReportColumnMenu
-            {
-                Id = 50, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 10
-            }
+            new DataReportColumnMenu { Id = 1, Name = "Employee Number", Prop = "EmployeeNumber", Mapping = "EmployeeNumber", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 2, Name = "Engagement Date", Prop = "EngagementDate", Mapping = "EngagementDate", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 3, Name = "Termination Date", Prop = "TerminationDate", Mapping = "TerminationDate", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 4, Name = "Level", Prop = "Level", Mapping = "Level", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 5, Name = "Name", Prop = "Name", Mapping = "Name", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 6, Name = "Initials", Prop = "Initials", Mapping = "Initials", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 7, Name = "Surname", Prop = "Surname", Mapping = "Surname", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 8, Name = "Date Of Birth", Prop = "DateOfBirth", Mapping = "DateOfBirth", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 9, Name = "Country Of Birth", Prop = "CountryOfBirth", Mapping = "CountryOfBirth", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 10, Name = "Nationality", Prop = "Nationality", Mapping = "Nationality", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 11, Name = "Race", Prop = "Race", Mapping = "Race", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 12, Name = "Gender", Prop = "Gender", Mapping = "Gender", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 13, Name = "Email", Prop = "Email", Mapping = "Email", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 14, Name = "Personal Email", Prop = "PersonalEmail", Mapping = "PersonalEmail", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 15, Name = "Cellphone No", Prop = "CellphoneNo", Mapping = "CellphoneNo", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 16, Name = "House No", Prop = "HouseNo", Mapping = "HouseNo", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 17, Name = "Emergency Contact Name", Prop = "EmergencyContactName", Mapping = "EmergencyContactName", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 18, Name = "Emergency Contact No", Prop = "EmergencyContactNo", Mapping = "EmergencyContactNo", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 19, Name = "Inactive Reason", Prop = "InactiveReason", Mapping = "InactiveReason", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 20, Name = "Role", Prop = "Role", Mapping = "EmployeeType.Name", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 21, Name = "Client Assigned", Prop = "ClientAssigned", Mapping = "ClientAssigned.Name", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 22, Name = "Physical Address", Prop = "PhysicalAddress", Mapping = "PhysicalAddress", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 23, Name = "Unit Number", Prop = "UnitNumber", Mapping = "PhysicalAddress.UnitNumber", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 24, Name = "Complex Name", Prop = "ComplexName", Mapping = "PhysicalAddress.ComplexName", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 25, Name = "Street Name", Prop = "StreetName", Mapping = "PhysicalAddress.StreetName", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 26, Name = "Street Number", Prop = "StreetNumber", Mapping = "PhysicalAddress.StreetNumber", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 27, Name = "Suburb Or District", Prop = "SuburbOrDistrict", Mapping = "PhysicalAddress.SuburbOrDistrict", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 28, Name = "City", Prop = "City", Mapping = "PhysicalAddress.City", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 29, Name = "Country", Prop = "Country", Mapping = "PhysicalAddress.Country", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 30, Name = "Province", Prop = "Province", Mapping = "PhysicalAddress.Province", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 31, Name = "Postal Code", Prop = "PostalCode", Mapping = "PhysicalAddress.PostalCode", ParentId = 22, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 32, Name = "Postal Address", Prop = "PostalAddress", Mapping = "PostalAddress", ParentId = null, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 33, Name = "Unit Number", Prop = "UnitNumber", Mapping = "PostalAddress.UnitNumber", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 34, Name = "Complex Name", Prop = "ComplexName", Mapping = "PostalAddress.ComplexName", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 35, Name = "Street Name", Prop = "StreetName", Mapping = "PostalAddress.StreetName", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 36, Name = "Street Number", Prop = "StreetNumber", Mapping = "PostalAddress.StreetNumber", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 37, Name = "Suburb Or District", Prop = "SuburbOrDistrict", Mapping = "PostalAddress.SuburbOrDistrict", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 38, Name = "City", Prop = "City", Mapping = "PostalAddress.City", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 39, Name = "Country", Prop = "Country", Mapping = "PostalAddress.Country", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 40, Name = "Province", Prop = "Province", Mapping = "PostalAddress.Province", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 41, Name = "Postal Code", Prop = "PostalCode", Mapping = "PostalAddress.PostalCode", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 51, Name = "People Champion", Prop = "PeopleChampion", Mapping = "ChampionEmployee.Name", ParentId = 32, Status = ItemStatus.Active },
+            new DataReportColumnMenu { Id = 42, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 1 },
+            new DataReportColumnMenu { Id = 43, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 2 },
+            new DataReportColumnMenu { Id = 44, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 3 },
+            new DataReportColumnMenu { Id = 45, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 4 },
+            new DataReportColumnMenu { Id = 46, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 5 },
+            new DataReportColumnMenu { Id = 47, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 7 },
+            new DataReportColumnMenu { Id = 48, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 8 },
+            new DataReportColumnMenu { Id = 49, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 9 },
+            new DataReportColumnMenu { Id = 50, Name = null, Prop = null, Mapping = null, ParentId = null, Status = ItemStatus.Active, FieldCodeId = 10 }
+        );
+
+        modelBuilder.Entity<DataReport>().HasData(new DataReport { Id = 1, Name = "Availability Snapshot", Code = "AS01", Status = ItemStatus.Active });
+
+        var sequence = 0;
+        modelBuilder.Entity<DataReportColumns>().HasData(
+            new DataReportColumns { Id = 1, Status = ItemStatus.Active, ReportId = 1, MenuId = 5, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 2, Status = ItemStatus.Active, ReportId = 1, MenuId = 7, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 3, Status = ItemStatus.Active, ReportId = 1, MenuId = 20, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 4, Status = ItemStatus.Active, ReportId = 1, MenuId = 4, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 5, Status = ItemStatus.Active, ReportId = 1, MenuId = 42, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 7, Status = ItemStatus.Active, ReportId = 1, MenuId = 43, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 8, Status = ItemStatus.Active, ReportId = 1, MenuId = 47, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 9, Status = ItemStatus.Active, ReportId = 1, MenuId = 49, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 10, Status = ItemStatus.Active, ReportId = 1, MenuId = 51, Sequence = sequence++, FieldType = DataReportColumnType.Employee },
+            new DataReportColumns { Id = 11, Status = ItemStatus.Active, ReportId = 1, MenuId = null, Sequence = sequence++, FieldType = DataReportColumnType.Text, CustomName = "Internal Project", CustomProp = "InternalProject" },
+            new DataReportColumns { Id = 12, Status = ItemStatus.Active, ReportId = 1, MenuId = null, Sequence = sequence++, FieldType = DataReportColumnType.Text, CustomName = "Open Source", CustomProp = "OpenSource" },
+            new DataReportColumns { Id = 13, Status = ItemStatus.Active, ReportId = 1, MenuId = null, Sequence = sequence++, FieldType = DataReportColumnType.Text, CustomName = "Notes", CustomProp = "Notes" }
+        );
+
+        modelBuilder.Entity<DataReportFilter>().HasData(
+            new DataReportFilter { Id = 1, Status = ItemStatus.Active, ReportId = 1, Table = "Employee", Column = "clientAllocated", Condition = "IS NULL", Value = null, Select = "id", },
+            new DataReportFilter { Id = 2, Status = ItemStatus.Active, ReportId = 1, Table = "Employee", Column = "employeeTypeId", Condition = "IN", Value = "(2,3,4)", Select = "id", }
+        );
+
+        modelBuilder.Entity<DataReportAccess>().HasData(
+            new DataReportAccess { Id = 1, ReportId = 1, EmployeeId = null, RoleId = 1 }
         );
     }
 

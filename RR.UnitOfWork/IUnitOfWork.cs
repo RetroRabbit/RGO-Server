@@ -1,4 +1,6 @@
+using HRIS.Models;
 using Npgsql;
+using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Interfaces;
 using RR.UnitOfWork.Interfaces.ATS;
 using RR.UnitOfWork.Interfaces.HRIS;
@@ -45,8 +47,10 @@ public interface IUnitOfWork
     IDataReportColumnsRepository DataReportColumns { get; }
     IDataReportValuesRepository DataReportValues { get; }
     IDataReportColumnMenuRepository DataReportColumnMenu { get; }
+    IDataReportAccessRepository DataReportAccess { get; }
 
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<List<int>> RawSqlForIntList(string sql, string column, params NpgsqlParameter[] parameters);
     Task<List<string>> GetColumnNames(string tableName);
+    Task<int> GetActiveEmployeeId(AuthorizeIdentity identity);
 }

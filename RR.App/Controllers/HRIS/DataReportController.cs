@@ -1,21 +1,25 @@
-﻿using HRIS.Models.DataReport;
-using HRIS.Models.DataReport.Request;
-using HRIS.Models.Update;
-using HRIS.Services.Interfaces;
+﻿using HRIS.Models.Update;
+using HRIS.Services.Interfaces.Reporting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using HRIS.Models.Report.Request;
 
 namespace RR.App.Controllers.HRIS;
 
 [Route("data-reports")]
 [ApiController]
-public class DataReportController : ControllerBase
+public class DataReportController : RRController
 {
     private readonly IDataReportService _service;
+    private readonly IDataReportControlService _control;
+    private readonly IDataReportAccessService _access;
 
-    public DataReportController(IDataReportService service)
+    public DataReportController(IDataReportService service, IDataReportControlService control, IDataReportAccessService access)
     {
         _service = service;
+        _control = control;
+        _access = access;
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -24,7 +28,7 @@ public class DataReportController : ControllerBase
     {
         try
         {
-            return Ok(await _service.GetDataReportList());
+            return Ok(await _service.GetDataReportList(GetIdentity()));
         }
         catch (Exception ex)
         {
@@ -67,7 +71,7 @@ public class DataReportController : ControllerBase
     {
         try
         {
-            return Ok(await _service.GetColumnMenu());
+            return Ok(await _control.GetColumnMenu());
         }
         catch (Exception ex)
         {
@@ -81,7 +85,7 @@ public class DataReportController : ControllerBase
     {
         try
         {
-            return Ok(await _service.AddColumnToReport(input));
+            return Ok(await _control.AddColumnToReport(input));
         }
         catch (Exception ex)
         {
@@ -95,7 +99,7 @@ public class DataReportController : ControllerBase
     {
         try
         {
-            await _service.ArchiveColumnFromReport(columnId);
+            await _control.ArchiveColumnFromReport(columnId);
             return Ok();
         }
         catch (Exception ex)
@@ -110,7 +114,7 @@ public class DataReportController : ControllerBase
     {
         try
         {
-            await _service.EnableColumnFromReport(columnId);
+            await _control.EnableColumnFromReport(columnId);
             return Ok();
         }
         catch (Exception ex)
@@ -125,7 +129,37 @@ public class DataReportController : ControllerBase
     {
         try
         {
-            return Ok(await _service.MoveColumnOnReport(input));
+            return Ok(await _control.MoveColumnOnReport(input));
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPut("update-report")]
+    public async Task<IActionResult> AddOrUpdateReport([FromBody] UpdateReportRequest input)
+    {
+        try
+        {
+            await _control.AddOrUpdateReport(input, GetIdentity());
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPut("update-report-access")]
+    public async Task<IActionResult> AddOrUpdateReportAccess([FromBody] UpdateReportAccessRequest input)
+    {
+        try
+        {
+            await _access.AddOrUpdateReportAccess(input);
+            return Ok();
         }
         catch (Exception ex)
         {

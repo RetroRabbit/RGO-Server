@@ -1,6 +1,6 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models.DataReport;
+namespace HRIS.Models.Report;
 
 public class DataReportColumnsDto
 {
@@ -10,4 +10,5 @@ public class DataReportColumnsDto
     public int Sequence { get; set; }
     public bool IsCustom { get; set; }
     public string? FieldType { get; set; }
+    public ItemStatus Status { get; set; }
 }

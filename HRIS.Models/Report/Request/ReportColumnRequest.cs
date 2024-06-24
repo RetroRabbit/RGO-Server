@@ -1,6 +1,6 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models.DataReport.Request;
+namespace HRIS.Models.Report.Request;
 
 public class ReportColumnRequest
 {

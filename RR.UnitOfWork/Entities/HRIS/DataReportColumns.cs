@@ -1,8 +1,8 @@
-﻿using HRIS.Models.DataReport;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HRIS.Models.Report;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
@@ -50,28 +50,31 @@ public class DataReportColumns : IModel<DataReportColumnsDto>
                 FieldType = FieldType.ToString(),
                 IsCustom = true,
                 Prop = CustomProp,
-                Sequence = Sequence
+                Sequence = Sequence,
+                Status = Status
             };
 
         if(Menu?.FieldCodeId != null)
             return new DataReportColumnsDto
             {
                 Id = Id,
-                Name = Menu!.FieldCode.Name,
+                Name = Menu?.FieldCode.Name,
                 FieldType = null,
                 IsCustom = false,
-                Prop = Menu!.FieldCode.Code,
-                Sequence = Sequence
+                Prop = Menu?.FieldCode.Code,
+                Sequence = Sequence,
+                Status = Status
             };
 
         return new DataReportColumnsDto
         {
             Id = Id,
-            Name = Menu!.Name,
+            Name = Menu?.Name,
             FieldType = null,
             IsCustom = false,
-            Prop = Menu!.Prop,
-            Sequence = Sequence
+            Prop = Menu?.Prop,
+            Sequence = Sequence,
+            Status = Status
         };
     }
 }

@@ -1,4 +1,5 @@
 using System.Data;
+using System.Security.Authentication;
 using HRIS.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -58,6 +59,7 @@ public class UnitOfWork : IUnitOfWork
         DataReportColumns = new DataReportColumnsRepository(_db);
         DataReportValues = new DataReportValuesRepository(_db);
         DataReportColumnMenu = new DataReportColumnMenuRepository(_db);
+        DataReportAccess = new DataReportAccessRepository(_db);
     }
 
     public IAuditLogRepository AuditLog { get; }
@@ -98,6 +100,7 @@ public class UnitOfWork : IUnitOfWork
     public IDataReportColumnsRepository DataReportColumns { get; }
     public IDataReportValuesRepository DataReportValues { get; }
     public IDataReportColumnMenuRepository DataReportColumnMenu { get; }
+    public IDataReportAccessRepository DataReportAccess { get; }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {
@@ -127,5 +130,14 @@ public class UnitOfWork : IUnitOfWork
     {
         var columnsFunc = _db.GetColumnNames(tableName);
         return Task.FromResult(columnsFunc);
+    }
+
+    public async Task<int> GetActiveEmployeeId(AuthorizeIdentity identity)
+    {
+        var employee = await (from e in _db.employees
+            where e.Email == identity.Email
+            select e).FirstOrDefaultAsync();
+
+        return employee?.Id ?? throw new AuthenticationException("Unauthorized Access");
     }
 }

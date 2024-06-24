@@ -1,8 +1,8 @@
-﻿using HRIS.Models.DataReport;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HRIS.Models.Report;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
@@ -27,6 +27,8 @@ public class DataReport : IModel<DataReportDto>
     public virtual List<DataReportFilter>? DataReportFilter { get; set; }
 
     public virtual List<DataReportValues>? DataReportValues { get; set; }
+
+    public virtual List<DataReportAccess>? DataReportAccess { get; set; }
 
     public DataReport()
     {

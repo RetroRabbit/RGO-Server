@@ -1,8 +1,8 @@
-﻿using HRIS.Models.DataReport;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HRIS.Models.Report;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 

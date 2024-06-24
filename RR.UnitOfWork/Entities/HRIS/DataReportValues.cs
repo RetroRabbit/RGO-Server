@@ -1,7 +1,7 @@
-﻿using HRIS.Models.DataReport;
-using RR.UnitOfWork.Interfaces;
+﻿using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HRIS.Models.Report;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 

@@ -1,5 +1,5 @@
-﻿using HRIS.Models.DataReport;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
+using HRIS.Models.Report;
 using HRIS.Services.Interfaces.Helper;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
@@ -14,46 +14,6 @@ public class DataReportHelper : IDataReportHelper
     public DataReportHelper(IUnitOfWork db)
     {
         _db = db;
-    }
-
-    public async Task<DataReport?> GetReport(int id)
-    {
-        var columns = await _db.DataReportColumns
-            .Get(x => x.ReportId == id)
-            .Include(x => x.Menu)
-            .ThenInclude(y => y.FieldCode)
-            .OrderBy(x => x.Sequence)
-            .ToListAsync();
-
-        var report = await _db.DataReport
-            .Get(x => x.Status == ItemStatus.Active && x.Id == id)
-            .Include(x => x.DataReportFilter)
-            .Include(x => x.DataReportValues)
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
-
-        report!.DataReportColumns = columns;
-        return report;
-    }
-
-    public async Task<DataReport?> GetReport(string code)
-    {
-        var report = await _db.DataReport
-            .Get(x => x.Status == ItemStatus.Active && x.Code == code)
-            .Include(x => x.DataReportFilter)
-            .Include(x => x.DataReportValues)
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
-
-        var columns = await _db.DataReportColumns
-            .Get(x => x.Status == ItemStatus.Active && x.ReportId == report!.Id)
-            .Include(x => x.Menu)
-            .ThenInclude(y => y.FieldCode)
-            .OrderBy(x => x.Sequence)
-            .ToListAsync();
-
-        report!.DataReportColumns = columns;
-        return report;
     }
 
     public async Task<List<int>> GetEmployeeIdListForReport(DataReport report)
@@ -109,7 +69,7 @@ public class DataReportHelper : IDataReportHelper
             foreach (var map in mappingList.OrderBy(x => x.Sequence))
             {
                 object? value = null;
-                string prop = "";
+                var prop = "";
                 switch (map.FieldType)
                 {
                     case DataReportColumnType.Employee:
@@ -122,7 +82,7 @@ public class DataReportHelper : IDataReportHelper
                         {
                             value = employee.EmployeeData?.Where(x => x.FieldCode?.Code == map.Menu.FieldCode!.Code)
                                             .FirstOrDefault()?.Value;
-                            prop = map.Menu.FieldCode.Code;
+                            prop = map.Menu.FieldCode!.Code;
                         }
                         break;
                     case DataReportColumnType.Checkbox:
@@ -135,7 +95,9 @@ public class DataReportHelper : IDataReportHelper
                         break;
                 }
 
-                dictionary.Add(prop, value ?? "");
+                prop ??= "";
+                if(!dictionary.ContainsKey(prop))
+                    dictionary.Add(prop, value ?? "");
             }
 
             list.Add(dictionary);

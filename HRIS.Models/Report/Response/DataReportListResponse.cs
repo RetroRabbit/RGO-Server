@@ -1,8 +1,8 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models.DataReport;
+namespace HRIS.Models.Report.Response;
 
-public class DataReportDto
+public class DataReportListResponse
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -10,4 +10,5 @@ public class DataReportDto
     public ItemStatus Status { get; set; }
     public List<DataReportColumnsDto>? Columns { get; set; }
     public List<DataReportFilterDto>? Filters { get; set; }
+    public bool ViewOnly { get; set; }
 }
