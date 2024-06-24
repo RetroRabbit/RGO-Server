@@ -410,13 +410,14 @@ public class EmployeeService : IEmployeeService
         return simpleProfile;
     }
 
-    public async Task<List<EmployeeDto>> FillerEmployees(int peopleChampId = 0, int employeeType = 0)
+    public async Task<List<EmployeeDto>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true)
     {
         return await _db.Employee
                         .Get(employee => true)
                         .Where(employee =>
                                    (peopleChampId == 0 || employee.PeopleChampion == peopleChampId)
-                                   && (employeeType == 0 || employee.EmployeeType!.Id == employeeType))
+                                   && (employeeType == 0 || employee.EmployeeType!.Id == employeeType)
+                                   && (employee.Active == activeStatus))
                         .Include(employee => employee.EmployeeType)
                         .Include(employee => employee.PhysicalAddress)
                         .Include(employee => employee.PostalAddress)
