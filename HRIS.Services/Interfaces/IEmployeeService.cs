@@ -93,7 +93,7 @@ public interface IEmployeeService
     ///     Filtered list of Employees based on assigned Peoples Champion or Employee Type if 0 is passed as parameter it
     ///     will ignore the filter
     /// </returns>
-    Task<List<EmployeeDto>> FillerEmployees(int peopleChampId = 0, int employeeType = 0);
+    Task<List<EmployeeDto>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true);
 
     /// <summary>
     ///     Checks for any existing id numbers that does not exist on the current employee
