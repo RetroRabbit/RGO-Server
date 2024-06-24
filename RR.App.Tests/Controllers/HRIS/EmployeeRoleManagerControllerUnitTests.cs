@@ -1,4 +1,6 @@
-﻿using HRIS.Models;
+using Auth0.ManagementApi.Models;
+using Auth0.ManagementApi.Paging;
+using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -232,51 +234,65 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Never);
     }
 
-    //[Fact]
-    //public async Task UpdateRoleValidInputReturnsCreatedAtAction()
-    //{
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Employee";
+    [Fact]
+    public async Task UpdateRoleValidInputReturnsCreatedAtAction()
+    {
+        var email = "test@retrorabbit.co.za";
+        var role = "Employee";
 
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var authServiceMock = new Mock<IAuthService>();
+        var employeeServiceMock = new Mock<IEmployeeService>();
+        var roleServiceMock = new Mock<IRoleService>();
+        var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+        var authServiceMock = new Mock<IAuthService>();
 
-    //    var controller = new EmployeeRoleManageController(
-    //        employeeRoleServiceMock.Object,
-    //        employeeServiceMock.Object,
-    //        roleServiceMock.Object,
-    //        authServiceMock.Object
-    //    );
+        var controller = new EmployeeRoleManageController(
+            employeeRoleServiceMock.Object,
+            employeeServiceMock.Object,
+            roleServiceMock.Object,
+            authServiceMock.Object
+        );
 
-    //    var existingEmployee = CreateEmployee(email);
-    //    var existingRole = new RoleDto { Id = 1, Description = role };
-    //    var existingEmployeeRole = new EmployeeRoleDto
-    //    {
-    //        Id = 1,
-    //        Employee = existingEmployee,
-    //        Role = existingRole
-    //    };
+        var existingEmployee = new EmployeeDto { Email = email, Id = 1 };
+        var existingRole = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+        var existingEmployeeRole = new EmployeeRoleDto
+        {
+            Id = 1,
+            Employee = existingEmployee,
+            Role = existingRole
+        };
+        var authUserList = new List<User> { new User { UserId = "authUserId" } };
+        var authRolesList = new PagedList<Auth0.ManagementApi.Models.Role>(
+            new List<Auth0.ManagementApi.Models.Role> { new Auth0.ManagementApi.Models.Role { Id = "authRoleId", Name = role } },
+            new PagingInformation(0, 1, 1, 1) // Correctly initialize PagingInformation
+        );
 
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(existingEmployee);
-    //    roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-    //    roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(existingRole);
-    //    employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
-    //    employeeRoleServiceMock.Setup(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(existingEmployeeRole);
+        // Mock setup
+        employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(existingEmployee);
+        roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
+        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(existingRole);
+        employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
+        employeeRoleServiceMock.Setup(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(existingEmployeeRole);
+        authServiceMock.Setup(x => x.GetUsersByEmailAsync(email)).ReturnsAsync(authUserList);
+        authServiceMock.Setup(x => x.GetUserRolesAsync("authUserId")).ReturnsAsync(authRolesList);
+        authServiceMock.Setup(x => x.RemoveRoleFromUserAsync("authUserId", "authRoleId")).ReturnsAsync(true);
+        authServiceMock.Setup(x => x.AddRoleToUserAsync("authUserId", "authRoleId")).ReturnsAsync(true);
 
-    //    var result = await controller.UpdateRole(email, role);
+        var result = await controller.UpdateRole(email, role);
 
-    //    Assert.NotNull(result);
-    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-    //    Assert.Equal(nameof(EmployeeRoleManageController.UpdateRole), createdAtActionResult.ActionName);
+        Assert.NotNull(result);
+        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+        Assert.Equal(nameof(EmployeeRoleManageController.UpdateRole), createdAtActionResult.ActionName);
 
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.CheckRole(role), Times.Once);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Once);
-    //}
+        employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
+        roleServiceMock.Verify(x => x.CheckRole(role), Times.Once);
+        roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
+        employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
+        employeeRoleServiceMock.Verify(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Once);
+        authServiceMock.Verify(x => x.GetUsersByEmailAsync(email), Times.Once);
+        authServiceMock.Verify(x => x.GetUserRolesAsync("authUserId"), Times.Once);
+        authServiceMock.Verify(x => x.RemoveRoleFromUserAsync("authUserId", "authRoleId"), Times.Once);
+        authServiceMock.Verify(x => x.AddRoleToUserAsync("authUserId", "authRoleId"), Times.Once);
+    }
 
     [Fact]
     public async Task UpdateRoleExceptionReturnsBadRequest()
@@ -306,44 +322,59 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeRoleServiceMock.Verify(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Never);
     }
 
-    //[Fact]
-    //public async Task RemoveRoleValidInputReturnsOk()
-    //{
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Journey";
+    [Fact]
+    public async Task RemoveRoleValidInputReturnsOk()
+    {
+        var email = "test@retrorabbit.co.za";
+        var role = "Journey";
 
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var authServiceMock = new Mock<IAuthService>();
+        var employeeServiceMock = new Mock<IEmployeeService>();
+        var roleServiceMock = new Mock<IRoleService>();
+        var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+        var authServiceMock = new Mock<IAuthService>();
 
-    //    var controller = new EmployeeRoleManageController(
-    //        employeeRoleServiceMock.Object,
-    //        employeeServiceMock.Object,
-    //        roleServiceMock.Object,
-    //        authServiceMock.Object
-    //    );
+        var controller = new EmployeeRoleManageController(
+            employeeRoleServiceMock.Object,
+            employeeServiceMock.Object,
+            roleServiceMock.Object,
+            authServiceMock.Object
+        );
 
-    //    var existingEmployee = CreateEmployee(email);
-    //    var existingRole = new RoleDto { Id = 1, Description = role };
-    //    var existingEmployeeRole = new EmployeeRoleDto { Id = 1, Employee = existingEmployee, Role = existingRole };
+        var existingEmployee = new EmployeeDto { Email = email, Id = 1 };
+        var existingRole = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+        var existingEmployeeRole = new EmployeeRoleDto { Id = 1, Employee = existingEmployee, Role = existingRole };
+        var authUserList = new List<User> { new User { UserId = "authUserId" } };
+        var authRolesList = new PagedList<Auth0.ManagementApi.Models.Role>(
+            new List<Auth0.ManagementApi.Models.Role> { new Auth0.ManagementApi.Models.Role { Id = "authRoleId", Name = role } },
+            new PagingInformation(0, 1, 1, 1) // Correctly initialize PagingInformation
+        );
 
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(existingEmployee);
-    //    roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(existingRole);
-    //    employeeRoleServiceMock.Setup(x => x.DeleteEmployeeRole(email, role)).ReturnsAsync(existingEmployeeRole);
+        // Mock setup
+        employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(existingEmployee);
+        roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(existingRole);
+        employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
+        employeeRoleServiceMock.Setup(x => x.DeleteEmployeeRole(email, role)).ReturnsAsync(existingEmployeeRole);
+        authServiceMock.Setup(x => x.GetUsersByEmailAsync(email)).ReturnsAsync(authUserList);
+        authServiceMock.Setup(x => x.GetUserRolesAsync("authUserId")).ReturnsAsync(authRolesList);
+        authServiceMock.Setup(x => x.RemoveRoleFromUserAsync("authUserId", "authRoleId")).ReturnsAsync(true);
 
-    //    var result = await controller.RemoveRole(email, role);
+        var result = await controller.RemoveRole(email, role);
 
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var returnedDto = Assert.IsType<EmployeeRoleDto>(okResult.Value);
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var returnedDto = Assert.IsType<EmployeeRoleDto>(okResult.Value);
 
-    //    Assert.Equal(existingEmployee, returnedDto.Employee);
-    //    Assert.Equal(existingRole, returnedDto.Role);
+        Assert.Equal(existingEmployee, returnedDto.Employee);
+        Assert.Equal(existingRole, returnedDto.Role);
 
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.DeleteEmployeeRole(email, role), Times.Once);
-    //}
+        employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
+        roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
+        employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
+        employeeRoleServiceMock.Verify(x => x.DeleteEmployeeRole(email, role), Times.Once);
+        authServiceMock.Verify(x => x.GetUsersByEmailAsync(email), Times.Once);
+        authServiceMock.Verify(x => x.GetUserRolesAsync("authUserId"), Times.Once);
+        authServiceMock.Verify(x => x.RemoveRoleFromUserAsync("authUserId", "authRoleId"), Times.Once);
+    }
+
 
     [Fact]
     public async Task RemoveRoleExceptionReturnsBadRequest()
