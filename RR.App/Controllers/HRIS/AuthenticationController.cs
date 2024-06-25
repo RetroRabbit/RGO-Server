@@ -54,6 +54,7 @@ public class AuthenticationController : ControllerBase
             var userExists = await _employeeService.CheckUserExist(authEmail);
             if (!userExists)
             {
+                await _authService.DeleteUser(authEmail);
                 return NotFound("User not found.");
             }
 

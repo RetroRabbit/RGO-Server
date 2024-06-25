@@ -103,11 +103,14 @@ namespace RR.App.Tests.Controllers.HRIS
             };
 
             _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(false);
+            _authServiceMock.Setup(x => x.DeleteUser(email)).ReturnsAsync(false);
 
             var result = await _controller.CheckUserExistence();
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("User not found.", notFoundResult.Value);
+
+            _authServiceMock.Verify(x => x.DeleteUser(email), Times.Once);
         }
 
         [Fact]
