@@ -86,7 +86,7 @@ public class ChartControllerUnitTests
     [Fact]
     public async Task CreateChart_ReturnsOk_OnSuccess()
     {
-        var result = await _controller.CreateChart(_dataTypes, _roles, _chartName, _chartType);
+        var result = await _controller.CreateChart(_dataTypes, _roles, _chartName, _chartType, 0);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -95,10 +95,10 @@ public class ChartControllerUnitTests
     public async Task CreateChart_ReturnsNotFound_OnException()
     {
         _chartServiceMock.Setup(service => service
-        .CreateChart(It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>(), It.IsAny<string>()))
+        .CreateChart(It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
             .ThrowsAsync(new Exception("Error message"));
 
-        var result = await _controller.CreateChart(_dataTypes, _roles, _chartName, _chartType);
+        var result = await _controller.CreateChart(_dataTypes, _roles, _chartName, _chartType, 0);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("Error message", notFoundResult.Value);

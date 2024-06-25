@@ -11,13 +11,20 @@ public interface IChartService
     Task<List<ChartDto>> GetAllCharts();
 
     /// <summary>
+    ///     Get all the charts for an employee
+    /// </summary>
+    /// <returns>List<ChartDto></returns>
+    Task<List<ChartDto>> GetEmployeeCharts(int employeeId);
+
+    /// <summary>
     ///     Create a chart
     /// </summary>
     /// <param name="dataTypes"></param>
     /// <param name="chartName"></param>
     /// <param name="chartType"></param>
+    /// <param name="employeeId"></param>
     /// <returns>ChartDto</returns>
-    Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType);
+    Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName, string chartType, int employeeId);
 
     /// <summary>
     ///     Gets data points selected by the user

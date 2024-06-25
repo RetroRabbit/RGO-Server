@@ -71,6 +71,7 @@ public class EmployeeDocument : IModel<EmployeeDocumentDto>
                                        Reference = Reference,
                                        FileName = FileName,
                                        FileCategory = FileCategory,
+                                       DocumentType = DocumentType,
                                        EmployeeFileCategory = EmployeeFileCategory,
                                        AdminFileCategory = AdminFileCategory,
                                        Blob = Blob,
