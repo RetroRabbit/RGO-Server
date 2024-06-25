@@ -8,6 +8,7 @@ namespace HRIS.Services.Interfaces.Reporting;
 public interface IDataReportService
 {
     Task<List<DataReportListResponse>> GetDataReportList(AuthorizeIdentity identity);
-    Task<object> GetDataReport(string code);
+    Task<object> GetDataReport(AuthorizeIdentity identity, string code);
     Task UpdateReportInput(UpdateReportCustomValue input);
+    Task<bool> IsReportViewOnlyForEmployee(AuthorizeIdentity identity, int reportId);
 }

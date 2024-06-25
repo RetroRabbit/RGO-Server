@@ -4,6 +4,7 @@ using HRIS.Models.Report.Response;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Interfaces.HRIS;
+using System.Security.Authentication;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
@@ -90,6 +91,25 @@ public class DataReportRepository : BaseRepository<DataReport, DataReportDto>, I
         }
 
         return list;
+    }
+
+    public async Task<List<DataReportAccess>> GetAccessForReport(int reportId, int employeeId)
+    {
+        var employee = (await (
+            from e in _db.employees
+            where e.Id == employeeId
+            select e).FirstOrDefaultAsync()) ?? throw new AuthenticationException("Unauthorized Access");
+
+        var roles = await (
+            from r in _db.employeeRoles
+            where r.EmployeeId == employee.Id
+            select r.RoleId).ToListAsync();
+
+        var access = await (from a in _db.dataReportAccess
+            where a.RoleId == reportId && roles.Contains(a.RoleId ?? 0) || a.EmployeeId == employee.Id
+            select a).ToListAsync();
+
+        return access;
     }
 
     private async Task<List<DataReportColumns>> GetColumns(int reportId)

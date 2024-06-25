@@ -42,7 +42,7 @@ public class DataReportController : RRController
     {
         try
         {
-            return Ok(await _service.GetDataReport(code));
+            return Ok(await _service.GetDataReport(GetIdentity(), code));
         }
         catch (Exception ex)
         {

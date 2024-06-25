@@ -28,9 +28,12 @@ public class DataReportService : IDataReportService
         return await _db.DataReport.GetReportsForEmployee(identity.Email) ?? throw new Exception("Not reports found");
     }
 
-    public async Task<object> GetDataReport(string code)
+    public async Task<object> GetDataReport(AuthorizeIdentity identity, string code)
     {
         var report = await _db.DataReport.GetReport(code) ?? throw new Exception($"Report '{code}' not found");
+
+        var viewOnly = await IsReportViewOnlyForEmployee(identity, report.Id);
+
         var employeeIdList = await _helper.GetEmployeeIdListForReport(report);
         var employeeDataList = await _helper.GetEmployeeData(employeeIdList);
         var mappedEmployeeData = _helper.MapEmployeeData(report, employeeDataList);
@@ -38,11 +41,29 @@ public class DataReportService : IDataReportService
 
         return new
         {
+            ReportCode = report.Code,
             ReportName = report.Name,
             ReportId = report.Id,
+            ViewOnly = viewOnly,
             Columns = mappedColumns,
             Data = mappedEmployeeData
         };
+    }
+
+    public async Task<bool> IsReportViewOnlyForEmployee(AuthorizeIdentity identity, int reportId)
+    {
+        var employeeId = await _db.GetActiveEmployeeId(identity);
+
+        var roles = await _db.EmployeeRole.Get(r => r.EmployeeId == employeeId).Select(r => r.RoleId).ToListAsync();
+
+        var access = await _db.DataReportAccess
+            .Get(a => roles.Contains(a.RoleId ?? 0) || a.EmployeeId == employeeId)
+            .ToListAsync();
+
+        var roleAccess = access.Any(x => x is { RoleId: not null, ViewOnly: true });
+        var specificAccess = access.Any(x => x is { EmployeeId: not null, ViewOnly: true });
+
+        return specificAccess || roleAccess;
     }
 
     public async Task UpdateReportInput(UpdateReportCustomValue input)
