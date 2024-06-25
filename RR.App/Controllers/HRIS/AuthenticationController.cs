@@ -12,11 +12,14 @@ public class AuthenticationController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IEmployeeService _employeeService;
-
-    public AuthenticationController(IAuthService authService, IEmployeeService employeeService)
+    private readonly IRoleAccessLinkService _roleAccessLinkService;
+    private readonly ITerminationService _terminationService;
+    public AuthenticationController(IAuthService authService, IEmployeeService employeeService, IRoleAccessLinkService roleAccessLinkService, ITerminationService terminationService)
     {
         _authService = authService;
         _employeeService = employeeService;
+        _roleAccessLinkService = roleAccessLinkService;
+        _terminationService = terminationService;
     }
 
     [AllowAnonymous]
@@ -66,22 +69,32 @@ public class AuthenticationController : ControllerBase
                 var employee = await _employeeService.GetEmployee(authEmail);
                 if (employee == null)
                 {
-                    return NotFound("Employee not found.");
+                    return NotFound("User account not found in database.");
                 }
 
-                employee.AuthUserId = authId;
                 GlobalVariables.SetUserId(employee.Id);
-                await _employeeService.UpdateEmployee(employee, authEmail);
+                if (employee.AuthUserId != authId)
+                {
+                    employee.AuthUserId = authId;
+                    await _employeeService.UpdateEmployee(employee, authEmail);
+                }
+
+                var isUserTerminated = await _terminationService.CheckTerminationExist(employee.Id);
+                if (true == isUserTerminated)
+                {
+                    return NotFound("User has been terminated.");
+                }
 
                 var allRoles = await _authService.GetAllRolesAsync();
-                var roleFound = allRoles.Any(r => r.Name == "Employee");
+                var databaseEmployeeRole = await _roleAccessLinkService.GetRoleByEmployee(authEmail);
+                var roleFound = allRoles.Any(r => r.Name == databaseEmployeeRole.First().Key);
 
                 if (!roleFound)
                 {
-                    return NotFound("Auth0 does not have this Employee Role.");
+                    return NotFound($"Auth0 does not have this {databaseEmployeeRole.First().Key} Role.");
                 }
 
-                await _authService.AddRoleToUserAsync(authId, allRoles.First(r => r.Name == "Employee").Id);
+                await _authService.AddRoleToUserAsync(authId, allRoles.First(r => r.Name == databaseEmployeeRole.First().Key).Id);
 
                 return Ok("User found.");
             }

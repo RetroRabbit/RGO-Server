@@ -14,14 +14,18 @@ namespace RR.App.Tests.Controllers.HRIS
     {
         private readonly Mock<IAuthService> _authServiceMock;
         private readonly Mock<IEmployeeService> _employeeServiceMock;
+        private readonly Mock<IRoleAccessLinkService> _roleAccessLinkServiceMock;
+        private readonly Mock<ITerminationService> _terminationServiceMock;
         private readonly AuthenticationController _controller;
 
         public AuthenticationControllerUnitTests()
         {
             _authServiceMock = new Mock<IAuthService>();
             _employeeServiceMock = new Mock<IEmployeeService>();
+            _roleAccessLinkServiceMock = new Mock<IRoleAccessLinkService>();
+            _terminationServiceMock = new Mock<ITerminationService>();
 
-            _controller = new AuthenticationController(_authServiceMock.Object, _employeeServiceMock.Object);
+            _controller = new AuthenticationController(_authServiceMock.Object, _employeeServiceMock.Object, _roleAccessLinkServiceMock.Object, _terminationServiceMock.Object);
         }
 
         [Fact]
@@ -53,11 +57,16 @@ namespace RR.App.Tests.Controllers.HRIS
 
             _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(true);
             _employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
+            _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
+            _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
+            {
+                { "Employee", new List<string> { "roleId" } }
+            });
             _authServiceMock.Setup(x => x.GetAllRolesAsync()).ReturnsAsync(() =>
             {
                 var roles = new List<Auth0.ManagementApi.Models.Role>
                 {
-                    new Auth0.ManagementApi.Models.Role { Description = "Employee", Id = "roleId" }
+                    new Auth0.ManagementApi.Models.Role { Name = "Employee", Id = "roleId" }
                 };
 
                 var pagedList = new PagedList<Auth0.ManagementApi.Models.Role>(roles);
@@ -121,6 +130,11 @@ namespace RR.App.Tests.Controllers.HRIS
 
             _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(true);
             _employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
+            _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
+            _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
+            {
+                { "Employee", new List<string> { "roleId" } }
+            });
             _authServiceMock.Setup(x => x.GetAllRolesAsync()).ReturnsAsync(() =>
             {
                 var roles = new List<Auth0.ManagementApi.Models.Role>(); // Empty list to simulate no roles
@@ -154,6 +168,11 @@ namespace RR.App.Tests.Controllers.HRIS
             };
 
             _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(true);
+            _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
+            _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
+            {
+                { "Employee", new List<string> { "roleId" } }
+            });
 
             var result = await _controller.CheckUserExistence();
 
