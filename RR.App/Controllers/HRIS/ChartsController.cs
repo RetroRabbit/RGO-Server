@@ -43,13 +43,37 @@ public partial class ChartsController : ControllerBase
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpPost]
-    public async Task<IActionResult> CreateChart([FromQuery] List<string> dataType, [FromQuery] List<string> roles,
-                                                 string chartName, string chartType)
+    [HttpGet("employee")]
+    public async Task<IActionResult> GetEmployeeCharts([FromQuery] int employeeId)
     {
         try
         {
-            var response = await _chartService.CreateChart(dataType, roles, chartName, chartType);
+            var charts = await _chartService.GetEmployeeCharts(employeeId);
+
+            for (int i = 0; i < charts.Count; i++)
+            {
+                for (int j = 0; j < charts[i].DataTypes!.Count; j++)
+                {
+                    charts[i].DataTypes![j] = CapitalLetters().Replace(charts[i].DataTypes![j], "$1 $2");
+                }
+            }
+
+            return Ok(charts);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPost]
+    public async Task<IActionResult> CreateChart([FromQuery] List<string> dataType, [FromQuery] List<string> roles,
+                                                 string chartName, string chartType, int employeeId)
+    {
+        try
+        {
+            var response = await _chartService.CreateChart(dataType, roles, chartName, chartType, employeeId);
 
             return Ok(response);
         }
