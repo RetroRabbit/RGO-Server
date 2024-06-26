@@ -7,7 +7,7 @@ namespace RR.App.Controllers.HRIS;
 
 [Route("field-code")]
 [ApiController]
-public class FieldCodeController : Controller
+public class FieldCodeController : ControllerBase
 {
     private readonly IFieldCodeService _fieldCodeService;
 
