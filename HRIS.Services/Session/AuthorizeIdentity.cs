@@ -8,12 +8,12 @@ namespace HRIS.Services.Session;
 public class AuthorizeIdentity
 {
     private readonly IUnitOfWork _db;
-    private readonly ClaimsPrincipal _userIdentity;
+    private readonly ClaimsPrincipal? _userIdentity;
 
     public AuthorizeIdentity(IUnitOfWork db, IHttpContextAccessor httpAccessor)
     {
         _db = db;
-        _userIdentity = httpAccessor.HttpContext.User;
+        _userIdentity = httpAccessor?.HttpContext?.User ?? null;
     }
 
     private string? _email;
