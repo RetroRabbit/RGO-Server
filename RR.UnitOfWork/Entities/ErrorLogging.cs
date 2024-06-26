@@ -14,9 +14,9 @@ public class ErrorLogging: IModel<ErrorLoggingDto>
     public ErrorLogging(ErrorLoggingDto errorLoggingDto)
     {   
         Id = errorLoggingDto.Id;
-        dateOfIncident = errorLoggingDto.dateOfIncident;
-        stackTrace = errorLoggingDto.stackTrace;
-        message = errorLoggingDto.message;
+        dateOfIncident = errorLoggingDto.DateOfIncident;
+        stackTrace = errorLoggingDto.StackTrace;
+        message = errorLoggingDto.Message;
     }
 
     [Key][Column("id")] public int Id { get; set; }
@@ -29,9 +29,9 @@ public class ErrorLogging: IModel<ErrorLoggingDto>
         return new ErrorLoggingDto
         {
             Id = this.Id,
-            dateOfIncident = this.dateOfIncident,
-            stackTrace = this.stackTrace,
-            message = this.message
+            DateOfIncident = this.dateOfIncident,
+            StackTrace = this.stackTrace,
+            Message = this.message
         };
     }
 }

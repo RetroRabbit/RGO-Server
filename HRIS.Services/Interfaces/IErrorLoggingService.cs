@@ -48,6 +48,6 @@ namespace HRIS.Services.Interfaces
         /// </summary>
         /// <param name="exception"></param>
         /// <returns>A logged exception</returns>
-        Exception LogException(Exception exception);
+        Exception LogException(Exception exception, int statusCode, string v);
     }
 }

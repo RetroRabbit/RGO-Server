@@ -40,26 +40,29 @@ public class ErrorLoggingService : IErrorLoggingService
         await _db.ErrorLogging.Add(newErroLog);
     }
 
-    public Exception LogException(Exception exception)
+    public Exception LogException(Exception exception, int statusCode = 500, string errorDetails = null)
     {
-        DateTime utcNow = DateTime.UtcNow;
-        TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
-        DateTime targetLocalTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, targetTimeZone);
-        DateTime localDateTime = DateTime.Now;
-        DateTime utcDateTime = localDateTime.ToUniversalTime();
-
-        ErrorLoggingDto errorLog = new ErrorLoggingDto
+        try
         {
-            dateOfIncident = targetLocalTime,
-            message = exception.Message,
-            stackTrace = JsonConvert.SerializeObject(exception)!
-        };
+            DateTime utcNow = DateTime.UtcNow;
+            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+            DateTime targetLocalTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, targetTimeZone);
 
-        Task.Run(async () =>
+            ErrorLoggingDto errorLog = new ErrorLoggingDto
+            {
+                DateOfIncident = targetLocalTime,
+                Message = exception.Message,
+                StackTrace = exception.StackTrace,  
+                StatusCode = statusCode,
+                ErrorDetails = errorDetails
+            };
+            Task.Run(async () => await SaveErrorLog(errorLog)).Wait();
+        }
+        catch (Exception ex)
         {
-            await SaveErrorLog(errorLog);
-        }).GetAwaiter().GetResult();
+            Console.WriteLine($"Error occurred while logging exception: {ex.Message}");
+        }
 
-        return exception;
+        return exception;  
     }
 }
