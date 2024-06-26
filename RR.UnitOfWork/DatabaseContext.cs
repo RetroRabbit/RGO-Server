@@ -227,7 +227,6 @@ public class DatabaseContext : DbContext, IDatabaseContext
             new DataReportColumns { Id = 2, Status = ItemStatus.Active, ReportId = 1, MenuId = 7,    Sequence = sequence++, FieldType = DataReportColumnType.Employee },
             new DataReportColumns { Id = 3, Status = ItemStatus.Active, ReportId = 1, MenuId = 20,   Sequence = sequence++, FieldType = DataReportColumnType.Employee },
             new DataReportColumns { Id = 4, Status = ItemStatus.Active, ReportId = 1, MenuId = 4,    Sequence = sequence++, FieldType = DataReportColumnType.Employee },
-            new DataReportColumns { Id = 5, Status = ItemStatus.Active, ReportId = 1, MenuId = 51,   Sequence = sequence++, FieldType = DataReportColumnType.Employee },
             new DataReportColumns { Id = 6, Status = ItemStatus.Active, ReportId = 1, MenuId = null, Sequence = sequence++, FieldType = DataReportColumnType.Text, CustomName = "Internal Project", CustomProp = "InternalProject" },
             new DataReportColumns { Id = 7, Status = ItemStatus.Active, ReportId = 1, MenuId = null, Sequence = sequence++, FieldType = DataReportColumnType.Text, CustomName = "Open Source", CustomProp = "OpenSource" },
             new DataReportColumns { Id = 8, Status = ItemStatus.Active, ReportId = 1, MenuId = null, Sequence = sequence++, FieldType = DataReportColumnType.Text, CustomName = "Notes", CustomProp = "Notes" }
