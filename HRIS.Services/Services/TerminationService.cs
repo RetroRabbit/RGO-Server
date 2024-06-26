@@ -40,13 +40,7 @@ public class TerminationService : ITerminationService
         currentEmployee.Active = false;
         var isRemovedFromAuth0 = await  _authService.DeleteUser(currentEmployee.AuthUserId);
 
-            if (isRemovedFromAuth0 != true)
-            {
-                var exception = new Exception("User not terminated on auth0");
-                _errorLoggingService.LogException(exception);
-            }
-
-            EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
+        EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
         await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
 
         return await _db.Termination.Add(new Termination(terminationDto));
