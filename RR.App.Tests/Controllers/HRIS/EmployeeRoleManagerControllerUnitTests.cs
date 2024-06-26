@@ -188,14 +188,19 @@ public class EmployeeRoleManagerControllerUnitTests
     {
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        var employeeAuthServiceMock = new Mock<IAuthService>();
         var roleServiceMock = new Mock<IRoleService>();
+        var authServiceMock = new Mock<IAuthService>();
 
-        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
+        var controller = new EmployeeRoleManageController(
+            employeeRoleServiceMock.Object,
+            employeeServiceMock.Object,
+            roleServiceMock.Object,
+            authServiceMock.Object
+        );
 
         var invalidEmail = string.Empty;
         string? invalidRole = null;
+
         var result = await controller.AddRole(invalidEmail, invalidRole!);
 
         Assert.IsType<BadRequestObjectResult>(result);
@@ -206,16 +211,21 @@ public class EmployeeRoleManagerControllerUnitTests
         employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Never);
     }
 
+
     [Fact]
     public async Task AddRoleExceptionReturnsBadRequest()
     {
         var employeeServiceMock = new Mock<IEmployeeService>();
         var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
         var roleServiceMock = new Mock<IRoleService>();
-        var employeeAuthServiceMock = new Mock<IAuthService>();
+        var authServiceMock = new Mock<IAuthService>();
 
-        var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-                                                          roleServiceMock.Object, employeeAuthServiceMock.Object);
+        var controller = new EmployeeRoleManageController(
+            employeeRoleServiceMock.Object,
+            employeeServiceMock.Object,
+            roleServiceMock.Object,
+            authServiceMock.Object
+        );
 
         var email = "test@retrorabbit.co.za";
         var role = "Employee";
@@ -263,10 +273,9 @@ public class EmployeeRoleManagerControllerUnitTests
         var authUserList = new List<User> { new User { UserId = "authUserId" } };
         var authRolesList = new PagedList<Auth0.ManagementApi.Models.Role>(
             new List<Auth0.ManagementApi.Models.Role> { new Auth0.ManagementApi.Models.Role { Id = "authRoleId", Name = role } },
-            new PagingInformation(0, 1, 1, 1) // Correctly initialize PagingInformation
+            new PagingInformation(0, 1, 1, 1)
         );
 
-        // Mock setup
         employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(existingEmployee);
         roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
         roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(existingRole);
@@ -346,10 +355,9 @@ public class EmployeeRoleManagerControllerUnitTests
         var authUserList = new List<User> { new User { UserId = "authUserId" } };
         var authRolesList = new PagedList<Auth0.ManagementApi.Models.Role>(
             new List<Auth0.ManagementApi.Models.Role> { new Auth0.ManagementApi.Models.Role { Id = "authRoleId", Name = role } },
-            new PagingInformation(0, 1, 1, 1) // Correctly initialize PagingInformation
+            new PagingInformation(0, 1, 1, 1)
         );
 
-        // Mock setup
         employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(existingEmployee);
         roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(existingRole);
         employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
@@ -374,7 +382,6 @@ public class EmployeeRoleManagerControllerUnitTests
         authServiceMock.Verify(x => x.GetUserRolesAsync("authUserId"), Times.Once);
         authServiceMock.Verify(x => x.RemoveRoleFromUserAsync("authUserId", "authRoleId"), Times.Once);
     }
-
 
     [Fact]
     public async Task RemoveRoleExceptionReturnsBadRequest()
@@ -613,5 +620,37 @@ public class EmployeeRoleManagerControllerUnitTests
         Assert.Equal(expectedErrorMessage, notFoundResult.Value as string);
 
         employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
+    }
+
+    [Fact]
+    public async Task AddRoleEmployeeNotFoundReturnsNotFound()
+    {
+        var employeeServiceMock = new Mock<IEmployeeService>();
+        var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
+        var employeeAuthServiceMock = new Mock<IAuthService>();
+        var roleServiceMock = new Mock<IRoleService>();
+
+        var controller = new EmployeeRoleManageController(
+            employeeRoleServiceMock.Object,
+            employeeServiceMock.Object,
+            roleServiceMock.Object,
+            employeeAuthServiceMock.Object
+        );
+
+        var email = "test@retrorabbit.co.za";
+        var role = "Admin";
+
+        employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync((EmployeeDto)null);
+
+        var result = await controller.AddRole(email, role);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("Employee not found.", notFoundResult.Value);
+
+        employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
+        employeeAuthServiceMock.Verify(x => x.GetUsersByEmailAsync(email), Times.Never);
+        roleServiceMock.Verify(x => x.CheckRole(role), Times.Never);
+        roleServiceMock.Verify(x => x.GetRole(role), Times.Never);
+        employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Never);
     }
 }
