@@ -14,7 +14,7 @@ public class ReportColumnRequest
 
     public DataReportColumnType GetColumnType()
     {
-        if (CustomType == "Checkbox")
+        if (CustomType == "CheckBox")
             return DataReportColumnType.Checkbox;
         if(CustomType == "Text")
             return DataReportColumnType.Text;
