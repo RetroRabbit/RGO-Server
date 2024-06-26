@@ -14,12 +14,15 @@ public class AuthenticationController : ControllerBase
     private readonly IEmployeeService _employeeService;
     private readonly IRoleAccessLinkService _roleAccessLinkService;
     private readonly ITerminationService _terminationService;
-    public AuthenticationController(IAuthService authService, IEmployeeService employeeService, IRoleAccessLinkService roleAccessLinkService, ITerminationService terminationService)
+    private readonly IErrorLoggingService _errorLoggingService;
+ 
+    public AuthenticationController(IAuthService authService, IEmployeeService employeeService, IRoleAccessLinkService roleAccessLinkService, ITerminationService terminationService, IErrorLoggingService errorLoggingService)
     {
         _authService = authService;
         _employeeService = employeeService;
         _roleAccessLinkService = roleAccessLinkService;
         _terminationService = terminationService;
+        _errorLoggingService = errorLoggingService;
     }
 
     [AllowAnonymous]
@@ -33,6 +36,7 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception ex)
         {
+            _errorLoggingService.LogException(ex);
             return NotFound(ex.Message);
         }
     }
@@ -48,20 +52,26 @@ public class AuthenticationController : ControllerBase
 
             if (string.IsNullOrEmpty(authEmail))
             {
-                return BadRequest("Email claim not found.");
+                var exception = new Exception("Email claim not found");
+                _errorLoggingService.LogException(exception);
+                return NotFound("User not found.");
             }
 
             var userExists = await _employeeService.CheckUserExist(authEmail);
             if (!userExists)
             {
                 await _authService.DeleteUser(authEmail);
+                var exception = new Exception("User not found");
+                _errorLoggingService.LogException(exception);
                 return NotFound("User not found.");
             }
 
             var authId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(authId))
             {
-                return BadRequest("Auth Id claim not found.");
+                var exception = new Exception("Auth Id claim not found");
+                _errorLoggingService.LogException(exception);
+                return BadRequest("User not found.");
             }
 
             var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
@@ -70,7 +80,9 @@ public class AuthenticationController : ControllerBase
                 var employee = await _employeeService.GetEmployee(authEmail);
                 if (employee == null)
                 {
-                    return NotFound("User account not found in database.");
+                    var exception = new Exception("User account not found in database.");
+                    _errorLoggingService.LogException(exception);
+                    return NotFound("User not found.");
                 }
 
                 GlobalVariables.SetUserId(employee.Id);
@@ -83,7 +95,9 @@ public class AuthenticationController : ControllerBase
                 var isUserTerminated = await _terminationService.CheckTerminationExist(employee.Id);
                 if (true == isUserTerminated)
                 {
-                    return NotFound("User has been terminated.");
+                    var exception = new Exception("User account not found in database.");
+                    _errorLoggingService.LogException(exception);
+                    return NotFound("User not found.");
                 }
 
                 var allRoles = await _authService.GetAllRolesAsync();
@@ -92,7 +106,9 @@ public class AuthenticationController : ControllerBase
 
                 if (!roleFound)
                 {
-                    return NotFound($"Auth0 does not have this {databaseEmployeeRole.First().Key} Role.");
+                    var exception = new Exception($"Auth0 does not have this {databaseEmployeeRole.First().Key} Role.");
+                    _errorLoggingService.LogException(exception);
+                    return NotFound("User not found");
                 }
 
                 await _authService.AddRoleToUserAsync(authId, allRoles.First(r => r.Name == databaseEmployeeRole.First().Key).Id);
@@ -104,6 +120,7 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception ex)
         {
+            _errorLoggingService.LogException(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
