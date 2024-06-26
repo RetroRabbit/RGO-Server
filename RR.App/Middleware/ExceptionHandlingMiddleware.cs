@@ -34,7 +34,7 @@ namespace YourNamespace.Middleware
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-           _errorLoggingService.LogException(exception, context.Response.StatusCode, exception.ToString());
+           //_errorLoggingService.LogException(exception, context.Response.StatusCode, exception.ToString());
 
             context.Response.ContentType = "application/json";
 
@@ -43,7 +43,7 @@ namespace YourNamespace.Middleware
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 return context.Response.WriteAsync(new ErrorLoggingDto
                 {
-                    StatusCode = context.Response.StatusCode,
+                   // StatusCode = context.Response.StatusCode,
                     Message = exception.Message
                 }.ToString());
             }
@@ -52,7 +52,7 @@ namespace YourNamespace.Middleware
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 return context.Response.WriteAsync(new ErrorLoggingDto
                 {
-                    StatusCode = context.Response.StatusCode,
+                  //  StatusCode = context.Response.StatusCode,
                     Message = exception.Message
                 }.ToString());
             }
@@ -61,7 +61,7 @@ namespace YourNamespace.Middleware
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 return context.Response.WriteAsync(new ErrorLoggingDto
                 {
-                    StatusCode = context.Response.StatusCode,
+                   // StatusCode = context.Response.StatusCode,
                     Message = "Internal Server Error. Please try again later."
                 }.ToString());
             }

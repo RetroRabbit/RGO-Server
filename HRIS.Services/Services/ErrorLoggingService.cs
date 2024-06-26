@@ -53,8 +53,8 @@ public class ErrorLoggingService : IErrorLoggingService
                 DateOfIncident = targetLocalTime,
                 Message = exception.Message,
                 StackTrace = exception.StackTrace,  
-                StatusCode = statusCode,
-                ErrorDetails = errorDetails
+                //StatusCode = statusCode,
+                //ErrorDetails = errorDetails
             };
             Task.Run(async () => await SaveErrorLog(errorLog)).Wait();
         }
@@ -64,5 +64,10 @@ public class ErrorLoggingService : IErrorLoggingService
         }
 
         return exception;  
+    }
+
+    public Exception LogException(Exception exception)
+    {
+        throw new NotImplementedException();
     }
 }
