@@ -10,7 +10,7 @@ namespace ATS.Models
         public string Message { get; set; }
 
         // Additional properties for error details
-       // public int? StatusCode { get; set; }
-       // public string ErrorDetails { get; set; }
+        public int? StatusCode { get; set; }
+        public string ErrorDetails { get; set; }
     }
 }

@@ -40,7 +40,7 @@ public class ErrorLoggingService : IErrorLoggingService
         await _db.ErrorLogging.Add(newErroLog);
     }
 
-    public Exception LogException(Exception exception, int statusCode = 500, string errorDetails = null)
+    public Exception LogException(Exception exception)
     {
         try
         {
@@ -52,9 +52,8 @@ public class ErrorLoggingService : IErrorLoggingService
             {
                 DateOfIncident = targetLocalTime,
                 Message = exception.Message,
-                StackTrace = exception.StackTrace,  
-                //StatusCode = statusCode,
-                //ErrorDetails = errorDetails
+                StackTrace = exception.StackTrace,
+              
             };
             Task.Run(async () => await SaveErrorLog(errorLog)).Wait();
         }
@@ -64,10 +63,5 @@ public class ErrorLoggingService : IErrorLoggingService
         }
 
         return exception;  
-    }
-
-    public Exception LogException(Exception exception)
-    {
-        throw new NotImplementedException();
     }
 }

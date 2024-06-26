@@ -11,6 +11,7 @@ using ATS.Services;
 using Azure.Messaging.ServiceBus;
 using HRIS.Services.Services;
 using Newtonsoft.Json;
+using Hris.Middleware;
 
 namespace RR.App
 {
@@ -215,6 +216,8 @@ namespace RR.App
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

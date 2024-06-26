@@ -46,7 +46,7 @@ public class AuditLogService : IAuditLogService
         {
             var exception = new Exception("Audit Log not found");
 
-            throw _errorLoggingService.LogException(exception);
+           // throw _errorLoggingService.LogException(exception);
         }                                                            
 
         var auditLog = new AuditLog(auditLogDto);
@@ -61,7 +61,7 @@ public class AuditLogService : IAuditLogService
         if (!ifAuditLog) 
         { 
             var exception = new Exception("Audit Log not found");
-            throw _errorLoggingService.LogException(exception);
+           // throw _errorLoggingService.LogException(exception);
         } 
 
         var auditLog = new AuditLog(auditLogDto);
