@@ -53,6 +53,7 @@ public class WorkExperienceService : IWorkExperienceService
             EmployeeId = workExperience.EmployeeId,
             StartDate = workExperience.StartDate,
             EndDate = workExperience.EndDate,
+            ProjectDescription = workExperience.ProjectDescription,
         };
         return await _db.WorkExperience.Update(new WorkExperience(workExperienceToUpdate));
     }
