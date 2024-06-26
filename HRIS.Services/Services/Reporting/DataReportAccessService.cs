@@ -23,7 +23,7 @@ public class DataReportAccessService : IDataReportAccessService
 
         report.DataReportAccess ??= new List<DataReportAccess>();
 
-        await ArchiveAccessNotFound(report, input);
+        //await ArchiveAccessNotFound(report, input);
 
         foreach (var request in input.Access)
         {
