@@ -93,30 +93,34 @@ public class EmployeeRoleManageController : ControllerBase
 
             var authEmployeeId = authUser.First().UserId;
 
-            var authRoles = await _authService.GetUserRolesAsync(authEmployeeId);
-            if (authRoles != null && authRoles.Any())
-            {
-                var authCurrRoleId = authRoles.First().Id;
-                await _authService.RemoveRoleFromUserAsync(authEmployeeId, authCurrRoleId);
-            }
-
-            var currRole = await _roleService.CheckRole(role)
+            var changingToRole = await _roleService.CheckRole(role)
                 ? await _roleService.GetRole(role)
                 : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
 
-            await _authService.AddRoleToUserAsync(authEmployeeId, currRole.AuthRoleId);
-
-            var currEmployeeRole = await _employeeRoleService.GetEmployeeRole(email);
-
-            var updatedEmployeeRole = new EmployeeRoleDto
+            var userRoleIsFoundInAuth0 = await _authService.AddRoleToUserAsync(authEmployeeId, changingToRole.AuthRoleId);
+            if (userRoleIsFoundInAuth0)
             {
-                Id = currEmployeeRole.Id,
-                Employee = employee,
-                Role = currRole
-            };
+                var authRoles = await _authService.GetUserRolesAsync(authEmployeeId);
+                if (authRoles != null && authRoles.Any())
+                {
+                    var authPreviousRole = authRoles.First(authRole => authRole.Description != role);
+                    await _authService.RemoveRoleFromUserAsync(authEmployeeId, authPreviousRole.Id);
+                }
 
-            var savedEmployeeRole = await _employeeRoleService.UpdateEmployeeRole(updatedEmployeeRole);
-            return CreatedAtAction(nameof(UpdateRole), savedEmployeeRole);
+                var currEmployeeRole = await _employeeRoleService.GetEmployeeRole(email);
+
+                var updatedEmployeeRole = new EmployeeRoleDto
+                {
+                    Id = currEmployeeRole.Id,
+                    Employee = employee,
+                    Role = changingToRole
+                };
+
+                var savedEmployeeRole = await _employeeRoleService.UpdateEmployeeRole(updatedEmployeeRole);
+                return CreatedAtAction(nameof(UpdateRole), savedEmployeeRole);
+            }
+            return NotFound("Auth role not found in the database.");
+            
         }
         catch (Exception ex)
         {
