@@ -1,4 +1,4 @@
-﻿using HRIS.Services.Interfaces;
+using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RR.UnitOfWork;
@@ -57,21 +57,21 @@ public class AuthenticationController : ControllerBase
                 return NotFound("User not found.");
             }
 
-            var userExists = await _employeeService.CheckUserExist(authEmail);
-            if (!userExists)
-            {
-                await _authService.DeleteUser(authEmail);
-                var exception = new Exception("User not found");
-                _errorLoggingService.LogException(exception);
-                return NotFound("User not found.");
-            }
-
             var authId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(authId))
             {
                 var exception = new Exception("Auth Id claim not found");
                 _errorLoggingService.LogException(exception);
                 return BadRequest("User not found.");
+            }
+
+            var userExists = await _employeeService.CheckUserExist(authEmail);
+            if (!userExists)
+            {
+                await _authService.DeleteUser(authId);
+                var exception = new Exception("User not found");
+                _errorLoggingService.LogException(exception);
+                return NotFound("User not found.");
             }
 
             var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
