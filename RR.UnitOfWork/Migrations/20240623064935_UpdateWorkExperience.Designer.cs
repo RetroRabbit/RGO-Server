@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240623064935_UpdateWorkExperience")]
+    partial class UpdateWorkExperience
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,6 +127,42 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("Candidate");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CRUDOperation")
+                        .HasColumnType("integer")
+                        .HasColumnName("CRUDOperation");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("createdById");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("text")
+                        .HasColumnName("data");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("Date");
+
+                    b.Property<string>("Table")
+                        .HasColumnType("text")
+                        .HasColumnName("table");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.ErrorLogging", b =>
                 {
                     b.Property<int>("Id")
@@ -164,10 +203,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<List<string>>("DataTypes")
                         .HasColumnType("text[]")
                         .HasColumnName("dataTypes");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employeeId");
 
                     b.Property<List<string>>("Labels")
                         .HasColumnType("text[]")
@@ -1447,6 +1482,17 @@ namespace RR.UnitOfWork.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("WorkExperience");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.AuditLog", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartDataSet", b =>
