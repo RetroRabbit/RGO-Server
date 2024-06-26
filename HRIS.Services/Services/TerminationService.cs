@@ -42,7 +42,7 @@ public class TerminationService : ITerminationService
 
             if (isRemovedFromAuth0 != true)
             {
-                var exception = new Exception("User not terminated");
+                var exception = new Exception("User not terminated on auth0");
                 _errorLoggingService.LogException(exception);
             }
 
