@@ -3,6 +3,7 @@
 public class ChartDto
 {
     public int Id { get; set; }
+    public int EmployeeId { get; set; }
     public string? Name { get; set; }
     public string? Type { get; set; }
     public string? Subtype { get; set; }
