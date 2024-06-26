@@ -44,7 +44,6 @@ namespace Hris.Middleware
                     message = exception.Message;
                     break;
                 default:
-                    // Log the exception if it's not a known custom exception
                     _errorLoggingService.LogException(exception);
                     break;
             }
