@@ -131,13 +131,4 @@ public class UnitOfWork : IUnitOfWork
         var columnsFunc = _db.GetColumnNames(tableName);
         return Task.FromResult(columnsFunc);
     }
-
-    public async Task<int> GetActiveEmployeeId(AuthorizeIdentity identity)
-    {
-        var employee = await (from e in _db.employees
-            where e.Email == identity.Email
-            select e).FirstOrDefaultAsync();
-
-        return employee?.Id ?? throw new AuthenticationException("Unauthorized Access");
-    }
 }

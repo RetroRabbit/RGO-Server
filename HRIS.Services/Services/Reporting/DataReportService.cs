@@ -23,12 +23,12 @@ public class DataReportService : IDataReportService
         _helper = helper;
     }
 
-    public async Task<List<DataReportListResponse>> GetDataReportList(AuthorizeIdentity identity)
+    public async Task<List<DataReportListResponse>> GetDataReportList()
     {
         return await _db.DataReport.GetReportsForEmployee(identity.Email) ?? throw new Exception("Not reports found");
     }
 
-    public async Task<object> GetDataReport(AuthorizeIdentity identity, string code)
+    public async Task<object> GetDataReport(string code)
     {
         var report = await _db.DataReport.GetReport(code) ?? throw new Exception($"Report '{code}' not found");
 
@@ -50,7 +50,7 @@ public class DataReportService : IDataReportService
         };
     }
 
-    public async Task<bool> IsReportViewOnlyForEmployee(AuthorizeIdentity identity, int reportId)
+    public async Task<bool> IsReportViewOnlyForEmployee(int reportId)
     {
         var employeeId = await _db.GetActiveEmployeeId(identity);
 

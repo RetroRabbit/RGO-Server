@@ -9,7 +9,7 @@ namespace RR.App.Controllers.HRIS;
 
 [Route("data-reports")]
 [ApiController]
-public class DataReportController : RRController
+public class DataReportController : ControllerBase
 {
     private readonly IDataReportService _service;
     private readonly IDataReportControlService _control;
@@ -28,7 +28,7 @@ public class DataReportController : RRController
     {
         try
         {
-            return Ok(await _service.GetDataReportList(GetIdentity()));
+            return Ok(await _service.GetDataReportList());
         }
         catch (Exception ex)
         {
@@ -42,7 +42,7 @@ public class DataReportController : RRController
     {
         try
         {
-            return Ok(await _service.GetDataReport(GetIdentity(), code));
+            return Ok(await _service.GetDataReport(code));
         }
         catch (Exception ex)
         {
@@ -128,7 +128,7 @@ public class DataReportController : RRController
     {
         try
         {
-            await _control.AddOrUpdateReport(input, GetIdentity());
+            await _control.AddOrUpdateReport(input);
             return Ok();
         }
         catch (Exception ex)

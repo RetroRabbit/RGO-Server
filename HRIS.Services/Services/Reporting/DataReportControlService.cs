@@ -174,11 +174,11 @@ public class DataReportControlService : IDataReportControlService
         return column.ToDto();
     }
 
-    public async Task AddOrUpdateReport(UpdateReportRequest input, AuthorizeIdentity identity)
+    public async Task AddOrUpdateReport(UpdateReportRequest input)
     {
         if (input.ReportId > 0)
             await _creation.UpdateReport(input);
         else
-            await _creation.AddReport(input, await _db.GetActiveEmployeeId(identity));
+            await _creation.AddReport(input);
     }
 }

@@ -10,5 +10,5 @@ public interface IDataReportControlService
     Task<DataReportColumnsDto?> AddColumnToReport(ReportColumnRequest input);
     Task ArchiveColumnFromReport(int columnId);
     Task<DataReportColumnsDto?> MoveColumnOnReport(ReportColumnRequest input);
-    Task AddOrUpdateReport(UpdateReportRequest input, AuthorizeIdentity identity);
+    Task AddOrUpdateReport(UpdateReportRequest input);
 }
