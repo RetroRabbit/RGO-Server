@@ -151,4 +151,19 @@ public class DataReportController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpDelete("archive-report-access")]
+    public async Task<IActionResult> ArchiveReportAccess([FromBody] int accessId)
+    {
+        try
+        {
+            await _access.ArchiveReportAccess(accessId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }

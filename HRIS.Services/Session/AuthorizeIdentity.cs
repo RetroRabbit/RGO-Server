@@ -33,6 +33,12 @@ public class AuthorizeIdentity
         }
     }
 
+    public async Task<int> GetEmployeeId()
+    {
+        _employeeId ??= await _db.GetActiveEmployeeId(Email, Role);
+        return _employeeId ?? throw new Exception("Unauthorized Access");
+    }
+
     private string GetEmail()
     {
         return GetUserType(ClaimTypes.Email);
