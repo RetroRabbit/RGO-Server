@@ -42,7 +42,8 @@ public class TerminationService : ITerminationService
 
             if (isRemovedFromAuth0 != true)
             {
-                throw new Exception("User not terminated");
+                var exception = new Exception("User not terminated");
+                _errorLoggingService.LogException(exception);
             }
 
             EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
