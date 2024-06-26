@@ -1,6 +1,5 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

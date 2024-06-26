@@ -1,7 +1,6 @@
 ﻿using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
 using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
@@ -85,7 +84,6 @@ public class AuthenticationController : ControllerBase
                     return NotFound("User not found.");
                 }
 
-                GlobalVariables.SetUserId(employee.Id);
                 if (employee.AuthUserId != authId)
                 {
                     employee.AuthUserId = authId;

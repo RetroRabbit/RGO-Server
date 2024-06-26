@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -28,7 +29,7 @@ public class EmployeeBankingControllerUnitTests
     public EmployeeBankingControllerUnitTests()
     {
         _employeeBankingServiceMock = new Mock<IEmployeeBankingService>();
-        _controller = new EmployeeBankingController(_employeeBankingServiceMock.Object);
+        _controller = new EmployeeBankingController(new AuthorizeIdentityMock(), _employeeBankingServiceMock.Object);
 
         _claimList = new List<Claim>
         {

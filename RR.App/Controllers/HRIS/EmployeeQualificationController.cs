@@ -1,9 +1,8 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
-using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -11,10 +10,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeQualificationController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IEmployeeQualificationService _employeeQualificationService;
 
-    public EmployeeQualificationController(IEmployeeQualificationService employeeQualificationService, IEmployeeService employeeService, IErrorLoggingService errorLoggingService)
+    public EmployeeQualificationController(AuthorizeIdentity identity, IEmployeeQualificationService employeeQualificationService)
     {
+        _identity = identity;
         _employeeQualificationService = employeeQualificationService;
     }
 
@@ -24,16 +25,13 @@ public class EmployeeQualificationController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var newQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
                 return Ok(newQualification);
             }
-            var userId = GlobalVariables.GetUserId();
-
-            if (employeeQualificationDto.EmployeeId == userId)
+            
+            if (employeeQualificationDto.EmployeeId == _identity.EmployeeId)
             {
                 var newQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
                 return Ok(newQualification);
@@ -87,16 +85,13 @@ public class EmployeeQualificationController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
                 return Ok(qualifications);
             }
-            var userId = GlobalVariables.GetUserId();
-
-            if (employeeId == userId)
+            
+            if (employeeId == _identity.EmployeeId)
             {
                 var qualifications = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(employeeId);
                 return Ok(qualifications);

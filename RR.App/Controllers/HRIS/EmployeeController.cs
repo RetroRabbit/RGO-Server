@@ -1,10 +1,9 @@
 ﻿using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -12,10 +11,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IEmployeeService _employeeService;
 
-    public EmployeeController(IEmployeeService employeeService, IChartService chartService)
+    public EmployeeController(AuthorizeIdentity identity, IEmployeeService employeeService)
     {
+        _identity = identity;
         _employeeService = employeeService;
     }
 
@@ -95,18 +96,15 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
-                var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+                var updatedEmployee = await _employeeService.UpdateEmployee(employee, _identity.Email);
                 return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (employee.Id == userId)
+            if (employee.Id == _identity.EmployeeId)
             {
-                var updatedEmployee = await _employeeService.UpdateEmployee(employee, claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+                var updatedEmployee = await _employeeService.UpdateEmployee(employee, _identity.Email);
                 return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
             }
 
@@ -233,20 +231,18 @@ public class EmployeeController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
                 return Ok(isExisting);
             }
-            var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!;
-            var userId = GlobalVariables.GetUserId();
-            if (employeeId == userId)
+
+            if (employeeId == _identity.EmployeeId)
             {
                 var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
                 return Ok(isExisting);
             }
+
             return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
