@@ -34,37 +34,33 @@ namespace Hris.Middleware
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-          // _errorLoggingService.LogException(exception, context.Response.StatusCode, exception.ToString());
+            var statusCode = StatusCodes.Status500InternalServerError;
+            var message = "Internal Server Error. Please try again later.";
+
+            switch (exception)
+            {
+                case CustomException:
+                    statusCode = StatusCodes.Status404NotFound;
+                    message = exception.Message;
+                    break;
+                default:
+                    // Log the exception if it's not a known custom exception
+                    _errorLoggingService.LogException(exception);
+                    break;
+            }
 
             context.Response.ContentType = "application/json";
+            context.Response.StatusCode = statusCode;
 
-            if (exception is CustomNotFoundException)
+            var errorResponse = new ErrorLoggingDto
             {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                return context.Response.WriteAsync(new ErrorLoggingDto
-                {
-                    StatusCode = context.Response.StatusCode,
-                    Message = exception.Message
-                }.ToString());
-            }
-            else if (exception is CustomBadRequestException)
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                return context.Response.WriteAsync(new ErrorLoggingDto
-                {
-                    StatusCode = context.Response.StatusCode,
-                    Message = exception.Message
-                }.ToString());
-            }
-            else
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                return context.Response.WriteAsync(new ErrorLoggingDto
-                {
-                    StatusCode = context.Response.StatusCode,
-                    Message = "Internal Server Error. Please try again later."
-                }.ToString());
-            }
+                StatusCode = statusCode,
+                Message = message
+            };
+
+            var errorJson = System.Text.Json.JsonSerializer.Serialize(errorResponse);
+            return context.Response.WriteAsync(errorJson);
         }
+
     }
 }

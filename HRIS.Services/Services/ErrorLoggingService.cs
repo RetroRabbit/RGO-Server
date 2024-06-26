@@ -53,7 +53,6 @@ public class ErrorLoggingService : IErrorLoggingService
                 DateOfIncident = targetLocalTime,
                 Message = exception.Message,
                 StackTrace = exception.StackTrace,
-              
             };
             Task.Run(async () => await SaveErrorLog(errorLog)).Wait();
         }

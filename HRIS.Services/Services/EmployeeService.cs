@@ -182,12 +182,13 @@ public class EmployeeService : IEmployeeService
 
         if (employee == null)
         {
-            var exception = new Exception("Employee not found");
+            var exception = new CustomException($"Employee with ID {id} not found");
             throw _errorLoggingService.LogException(exception);
         }
 
         return employee;
     }
+
 
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
