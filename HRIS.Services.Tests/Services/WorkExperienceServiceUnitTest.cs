@@ -34,6 +34,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         };
     }
 
@@ -53,6 +54,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         });
 
         Assert.False(exists);
@@ -74,6 +76,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         });
 
         Assert.True(exists);
@@ -97,6 +100,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         }));
     }
 
@@ -116,6 +120,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         });
 
         _mockDb.Verify(x => x.WorkExperience.Add(It.IsAny<WorkExperience>()), Times.Once);
@@ -152,6 +157,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         });
 
         _mockDb.Verify(x => x.WorkExperience.Update(It.IsAny<WorkExperience>()), Times.Once);
@@ -175,6 +181,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         }));
     }
 
@@ -202,6 +209,7 @@ public class WorkExperienceServiceUnitTest
             EmployeeId = 1,
             StartDate = new DateTime(2022, 1, 1),
             EndDate = new DateTime(2024, 1, 1),
+            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
         };
 
         _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
