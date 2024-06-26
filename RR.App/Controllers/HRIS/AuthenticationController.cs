@@ -1,7 +1,6 @@
 ﻿using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
 using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
@@ -70,7 +69,6 @@ public class AuthenticationController : ControllerBase
                 }
 
                 employee.AuthUserId = authId;
-                GlobalVariables.SetUserId(employee.Id);
                 await _employeeService.UpdateEmployee(employee, authEmail);
 
                 var allRoles = await _authService.GetAllRolesAsync();

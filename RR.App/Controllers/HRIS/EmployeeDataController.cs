@@ -1,20 +1,21 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
-using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
 [Route("employee-data")]
 [ApiController]
-public class EmployeeDataController : Controller
+public class EmployeeDataController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IEmployeeDataService _employeeDataService;
 
-    public EmployeeDataController(IEmployeeDataService employeeDataService)
+    public EmployeeDataController(AuthorizeIdentity identity, IEmployeeDataService employeeDataService)
     {
+        _identity = identity;
         _employeeDataService = employeeDataService;
     }
 
@@ -24,17 +25,14 @@ public class EmployeeDataController : Controller
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var getEmployeeData = await _employeeDataService.GetAllEmployeeData(id);
                 if (getEmployeeData == null) throw new Exception("Employee data not found");
                 return Ok(getEmployeeData);
             }
-            var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!;
-            var userId = GlobalVariables.GetUserId();
-            if (id == userId)
+
+            if (id == _identity.EmployeeId)
             {
                 var getEmployeeData = await _employeeDataService.GetAllEmployeeData(id);
                 if (getEmployeeData == null) throw new Exception("Employee data not found");
@@ -54,17 +52,14 @@ public class EmployeeDataController : Controller
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var saveEmployeeData = await _employeeDataService.SaveEmployeeData(employeeDataDto);
                 if (saveEmployeeData == null) throw new Exception("Employee data not saved");
                 return Ok(saveEmployeeData);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (employeeDataDto.EmployeeId == userId)
+            if (employeeDataDto.EmployeeId == _identity.EmployeeId)
             {
                 var saveEmployeeData = await _employeeDataService.SaveEmployeeData(employeeDataDto);
                 if (saveEmployeeData == null) throw new Exception("Employee data not saved");
@@ -84,17 +79,14 @@ public class EmployeeDataController : Controller
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var saveEmployeeData = await _employeeDataService.UpdateEmployeeData(employeeDataDto);
                 if (saveEmployeeData == null) throw new Exception("Employee data not updated");
                 return Ok(saveEmployeeData);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (employeeDataDto.EmployeeId == userId)
+            if (employeeDataDto.EmployeeId == _identity.EmployeeId)
             {
                 var saveEmployeeData = await _employeeDataService.UpdateEmployeeData(employeeDataDto);
                 if (saveEmployeeData == null) throw new Exception("Employee data not updated");
