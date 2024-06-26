@@ -442,18 +442,14 @@ public class AuthService : IAuthService
 
     public async Task<bool> DeleteUser(string userId)
     {
-        try
-        {
             var token = await GetAuth0ManagementAccessToken();
             var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
-            await client.Users.DeleteAsync(userId);
+            var existingUser = GetUserById(userId);
+            if (existingUser != null)
+            {
+                await client.Users.DeleteAsync(userId);
+            }
             return true;
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return false;
-        }
     }
 
     public async Task<bool> UpdateUser(string userId, UserUpdateRequest request)
