@@ -7,7 +7,6 @@ namespace RR.UnitOfWork;
 
 public interface IUnitOfWork
 {
-    IAuditLogRepository AuditLog { get; }
     IEmployeeAddressRepository EmployeeAddress { get; }
     IEmployeeCertificationRepository EmployeeCertification { get; }
     IEmployeeDocumentRepository EmployeeDocument { get; }
@@ -43,4 +42,5 @@ public interface IUnitOfWork
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
     Task<List<string>> GetColumnNames(string tableName);
+    Task<int> GetActiveEmployeeId(string email, string role);
 }

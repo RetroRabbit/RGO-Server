@@ -52,7 +52,6 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
 
     public EmployeeAddressControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
     {  
-        GlobalVariables.SetRunningTests(true);
         _factory = factory;
 
         var configBuilder = new ConfigurationBuilder()

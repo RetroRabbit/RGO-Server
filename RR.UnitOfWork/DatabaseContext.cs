@@ -23,7 +23,6 @@ public interface IDatabaseContext
     DbSet<EmployeeSalaryDetails> employeeSalaryDetails { get; set; }
     DbSet<Role> roles { get; set; }
     DbSet<RoleAccess> roleAccess { get; set; }
-    DbSet<AuditLog> auditLogs { get; set; }
     DbSet<Chart> Chart { get; set; }
     DbSet<ChartRoleLink> ChartRoleLink { get; set; }
     DbSet<FieldCode> fieldCodes { get; set; }
@@ -67,7 +66,6 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<EmployeeSalaryDetails> employeeSalaryDetails { get; set; }
     public DbSet<Role> roles { get; set; }
     public DbSet<RoleAccess> roleAccess { get; set; }
-    public DbSet<AuditLog> auditLogs { get; set; }
     public DbSet<Chart> Chart { get; set; }
     public DbSet<ChartRoleLink> ChartRoleLink { get; set; }
     public DbSet<FieldCode> fieldCodes { get; set; }

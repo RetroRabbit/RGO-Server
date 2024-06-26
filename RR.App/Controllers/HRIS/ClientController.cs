@@ -6,7 +6,7 @@ namespace RR.App.Controllers.HRIS;
 
 [Route("clients")]
 [ApiController]
-public class ClientController : Controller
+public class ClientController : ControllerBase
 {
     private readonly IClientService _clientService;
 

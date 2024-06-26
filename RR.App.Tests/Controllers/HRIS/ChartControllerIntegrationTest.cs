@@ -20,7 +20,6 @@ namespace RR.App.Tests.Controllers.HRIS
 
         public ChartControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
-            GlobalVariables.SetRunningTests(true);
             _factory = factory;
 
             var configBuilder = new ConfigurationBuilder()

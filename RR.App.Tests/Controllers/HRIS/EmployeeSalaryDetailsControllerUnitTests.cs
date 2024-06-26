@@ -3,6 +3,7 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using Xunit;
 
@@ -20,7 +21,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     {
         _employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalarayDetailsService>();
         _employeeServiceMock = new Mock<IEmployeeService>();
-        _controller = new EmployeeSalaryDetailsController(_employeeSalaryDetailsServiceMock.Object);
+        _controller = new EmployeeSalaryDetailsController(new AuthorizeIdentityMock(), _employeeSalaryDetailsServiceMock.Object);
         _employeeSalaryDetailsDto = EmployeeSalaryDetailsTestData.EmployeeSalaryTest1;
         _employeeDto = EmployeeTestData.EmployeeDto;
     }

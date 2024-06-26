@@ -7,7 +7,7 @@ namespace RR.App.Controllers.HRIS;
 
 [Route("evaluation")]
 [ApiController]
-public class EmployeeEvaluationController : Controller
+public class EmployeeEvaluationController : ControllerBase
 {
     private readonly IEmployeeEvaluationService _employeeEvaluationService;
 

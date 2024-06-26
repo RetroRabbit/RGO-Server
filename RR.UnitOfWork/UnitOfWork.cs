@@ -20,7 +20,6 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(DatabaseContext db)
     {
         _db = db;
-        AuditLog = new AuditLogRepository(_db);
         EmployeeAddress = new EmployeeAddressRepository(_db);
         EmployeeCertification = new EmployeeCertificationRepository(_db);
         EmployeeDocument = new EmployeeDocumentRepository(_db);
@@ -55,7 +54,6 @@ public class UnitOfWork : IUnitOfWork
         Termination = new TerminationRepository(_db);
     }
 
-    public IAuditLogRepository AuditLog { get; }
     public IEmployeeAddressRepository EmployeeAddress { get; }
     public IEmployeeCertificationRepository EmployeeCertification { get; }
     public IEmployeeDataRepository EmployeeData { get; }
@@ -120,5 +118,17 @@ public class UnitOfWork : IUnitOfWork
     {
         var columnsFunc = _db.GetColumnNames(tableName);
         return Task.FromResult(columnsFunc);
+    }
+
+    public async Task<int> GetActiveEmployeeId(string email, string role)
+    {
+        var employee = await (from e in _db.employees
+            join er in _db.employeeRoles on e.Id equals er.EmployeeId
+            join r in _db.roles on er.RoleId equals r.Id
+            where e.Email == email
+                  && r.Description == role
+            select e).FirstOrDefaultAsync();
+
+        return employee?.Id ?? throw new Exception("Unauthorized Access");
     }
 }

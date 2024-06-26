@@ -3,6 +3,7 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -16,7 +17,7 @@ public class EmployeeDataControllerUnitTests
     public EmployeeDataControllerUnitTests()
     {
         _employeeDataServiceMock = new Mock<IEmployeeDataService>();
-        _controller = new EmployeeDataController(_employeeDataServiceMock.Object);
+        _controller = new EmployeeDataController(new AuthorizeIdentityMock(), _employeeDataServiceMock.Object);
 
         _employeeDataDtoList = new List<EmployeeDataDto>
         {

@@ -1,11 +1,8 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using RR.UnitOfWork;
-using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -14,10 +11,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class WorkExperienceController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IWorkExperienceService _workExperienceService;
-    
-    public WorkExperienceController(IWorkExperienceService workExperienceService)
+
+    public WorkExperienceController(AuthorizeIdentity identity, IWorkExperienceService workExperienceService)
     {
+        _identity = identity;
         _workExperienceService = workExperienceService;
     }
 
@@ -27,16 +26,13 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var workExperience = await _workExperienceService.Save(newWorkExperience);
                 return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (newWorkExperience.EmployeeId == userId)
+            if (newWorkExperience.EmployeeId == _identity.EmployeeId)
             {
                 var workExperience = await _workExperienceService.Save(newWorkExperience);
                 return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
@@ -60,16 +56,13 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
                 return Ok(workExperienceData);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (id == userId)
+            if (id == _identity.EmployeeId)
             {
                 var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
                 return Ok(workExperienceData);
@@ -89,16 +82,13 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 await _workExperienceService.Delete(id);
                 return Ok();
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (id == userId)
+            if (id == _identity.EmployeeId)
             {
                 await _workExperienceService.Delete(id);
                 return Ok();
@@ -118,16 +108,13 @@ public class WorkExperienceController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 await _workExperienceService.Update(workExperience);
                 return Ok(workExperience);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (workExperience.Id == userId)
+            if (workExperience.Id == _identity.EmployeeId)
             {
                 await _workExperienceService.Update(workExperience);
                 return Ok(workExperience);

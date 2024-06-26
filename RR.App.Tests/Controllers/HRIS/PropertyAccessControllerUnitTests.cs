@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using System.Security.Claims;
 using Xunit;
@@ -21,7 +22,7 @@ public class PropertyAccessControllerUnitTests
     public PropertyAccessControllerUnitTests() {
         _propertyAccessMockService = new Mock<IPropertyAccessService>();
         _employeeMockService = new Mock<IEmployeeService>();
-        _propertyAccessController = new PropertyAccessController(_propertyAccessMockService.Object, _employeeMockService.Object);
+        _propertyAccessController = new PropertyAccessController(new AuthorizeIdentityMock(), _propertyAccessMockService.Object, _employeeMockService.Object);
     }
 
     [Fact]

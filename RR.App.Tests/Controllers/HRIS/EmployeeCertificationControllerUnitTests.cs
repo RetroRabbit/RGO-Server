@@ -3,6 +3,7 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using Xunit;
@@ -10,18 +11,18 @@ using Xunit;
 namespace RR.App.Tests.Controllers.HRIS;
 
 public class EmployeeCertificationControllerUnitTests
-{ 
+{
 
     private readonly EmployeeCertificationController _controller;
     private readonly Mock<IEmployeeCertificationService> _employeeCertificationServiceMock;
 
     private readonly EmployeeCertificationDto employeeCertificationDto;
     private readonly List<EmployeeCertificationDto> employeeCertificationDtoList;
-    
+
     public EmployeeCertificationControllerUnitTests()
     {
         _employeeCertificationServiceMock = new Mock<IEmployeeCertificationService>();
-        _controller = new EmployeeCertificationController(_employeeCertificationServiceMock.Object);
+        _controller = new EmployeeCertificationController(new AuthorizeIdentityMock(), _employeeCertificationServiceMock.Object);
 
         employeeCertificationDto =
             new EmployeeCertificationDto
@@ -49,8 +50,8 @@ public class EmployeeCertificationControllerUnitTests
         var model = Assert.IsAssignableFrom<IEnumerable<EmployeeCertificationDto>>(okResult.Value);
         Assert.Equal(model, employeeCertificationDtoList);
     }
-    
-    [Fact (Skip = "Current user needs to be set for validations on endpoint")]
+
+    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetAllEmployeelCertiificatesFail()
     {
         _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id + 1))
@@ -61,7 +62,7 @@ public class EmployeeCertificationControllerUnitTests
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
     }
-    
+
     [Fact]
     public async Task SaveEmployeelCertiificatesPass()
     {
@@ -73,7 +74,7 @@ public class EmployeeCertificationControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
     }
-    
+
     [Fact]
     public async Task SaveEmployeelCertiificatesFail()
     {
@@ -89,10 +90,10 @@ public class EmployeeCertificationControllerUnitTests
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetEmployeelCertiificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id))
             .ReturnsAsync(employeeCertificationDto);
 
-        var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId,employeeCertificationDto.Id);
+        var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
@@ -109,7 +110,7 @@ public class EmployeeCertificationControllerUnitTests
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
     }
-    
+
     [Fact]
     public async Task DeleteEmployeelCertiificatesPass()
     {
@@ -121,7 +122,7 @@ public class EmployeeCertificationControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
     }
-    
+
     [Fact]
     public async Task DeleteEmployeelCertiificatesFail()
     {
@@ -133,7 +134,7 @@ public class EmployeeCertificationControllerUnitTests
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
     }
-    
+
     [Fact]
     public async Task UpdateEmployeelCertiificatesPass()
     {
@@ -145,7 +146,7 @@ public class EmployeeCertificationControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(employeeCertificationDto, okResult.Value);
     }
-    
+
     [Fact]
     public async Task UpdateEmployeelCertiificatesFail()
     {

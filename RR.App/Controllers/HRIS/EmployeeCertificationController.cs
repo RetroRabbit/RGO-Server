@@ -1,9 +1,8 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
-using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -11,9 +10,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeCertificationController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private IEmployeeCertificationService _employeeCertificationService;
-    public EmployeeCertificationController(IEmployeeCertificationService employeeCertificationService)
+
+    public EmployeeCertificationController(AuthorizeIdentity identity, IEmployeeCertificationService employeeCertificationService)
     {
+        _identity = identity;
         _employeeCertificationService = employeeCertificationService;
     }
 
@@ -23,16 +25,13 @@ public class EmployeeCertificationController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var certificates = await _employeeCertificationService.GetAllEmployeeCertifications(employeeId);
                 return Ok(certificates);
             }
-            var userId = GlobalVariables.GetUserId();
-
-            if (employeeId == userId)
+            
+            if (employeeId == _identity.EmployeeId)
             {
                 var certificates = await _employeeCertificationService.GetAllEmployeeCertifications(employeeId);
                 return Ok(certificates);
@@ -67,20 +66,18 @@ public class EmployeeCertificationController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
                 return Ok(certificate);
             }
-            var userId = GlobalVariables.GetUserId();
+            
+            if (employeeId == _identity.EmployeeId)
+            {
+                var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
+                return Ok(certificate);
+            }
 
-            if (employeeId == userId)
-            {
-                var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
-                return Ok(certificate);
-            }
             return NotFound("User data being accessed does not match user making the request.");
         }
         catch(Exception ex)
