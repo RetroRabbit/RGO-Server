@@ -1,12 +1,9 @@
-﻿using System.Data;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -14,10 +11,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeBankingController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IEmployeeBankingService _employeeBankingService;
 
-    public EmployeeBankingController(IEmployeeBankingService employeeBankingService)
+    public EmployeeBankingController(AuthorizeIdentity identity, IEmployeeBankingService employeeBankingService)
     {
+        _identity = identity;
         _employeeBankingService = employeeBankingService;
     }
 
@@ -108,8 +107,7 @@ public class EmployeeBankingController : ControllerBase
             };
 
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            var employee =
-                await _employeeBankingService.Update(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
+            await _employeeBankingService.Update(Bankingdto, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
 
             return Ok();
         }
@@ -125,21 +123,15 @@ public class EmployeeBankingController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (!string.IsNullOrEmpty(accessTokenEmail))
+            if (!string.IsNullOrEmpty(_identity.Email))
             {
-                if ("SuperAdmin" == role || "Admin" == role)
+                if (_identity.Role is "SuperAdmin" or "Admin")
                 {
                     var employeeBanking = await _employeeBankingService.GetBanking(id);
                     return Ok(employeeBanking);
                 }
 
-                var userId = GlobalVariables.GetUserId();
-
-                if (userId == id)
+                if (_identity.EmployeeId == id)
                 {
                     var employeeBanking = await _employeeBankingService.GetBanking(id);
                     return Ok(employeeBanking);

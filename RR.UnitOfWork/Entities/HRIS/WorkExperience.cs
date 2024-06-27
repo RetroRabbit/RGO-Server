@@ -19,6 +19,7 @@ public class WorkExperience : IModel<WorkExperienceDto>
         Software = workExperienceDto.Software;
         StartDate = workExperienceDto.StartDate;
         EndDate = workExperienceDto.EndDate;
+        ProjectDescription = workExperienceDto.ProjectDescription;
         EmployeeId = workExperienceDto.EmployeeId;
     }
 
@@ -35,6 +36,8 @@ public class WorkExperience : IModel<WorkExperienceDto>
     [Column("startDate")] public DateTime StartDate { get; set; }
 
     [Column("endDate")] public DateTime EndDate { get; set; }
+
+    [Column("projectDescription")] public string? ProjectDescription {  get; set; }
 
     [ForeignKey("Employee")]
 
@@ -54,6 +57,7 @@ public class WorkExperience : IModel<WorkExperienceDto>
             EmployeeId = EmployeeId,
             StartDate = StartDate,
             EndDate = EndDate,
+            ProjectDescription = ProjectDescription,
         };
     }
 }
