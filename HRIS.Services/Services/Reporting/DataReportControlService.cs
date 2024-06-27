@@ -5,19 +5,23 @@ using HRIS.Models.Report.Request;
 using HRIS.Models.Update;
 using HRIS.Services.Extensions;
 using HRIS.Services.Interfaces.Reporting;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Migrations;
 
 namespace HRIS.Services.Services.Reporting;
 
 public class DataReportControlService : IDataReportControlService
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IUnitOfWork _db;
     private readonly IDataReportCreationService _creation;
 
-    public DataReportControlService(IUnitOfWork db, IDataReportCreationService creation)
+    public DataReportControlService(AuthorizeIdentity identity, IUnitOfWork db, IDataReportCreationService creation)
     {
+        _identity = identity;
         _db = db;
         _creation = creation;
     }
@@ -75,6 +79,8 @@ public class DataReportControlService : IDataReportControlService
 
     public async Task<DataReportColumnsDto?> AddColumnToReport(ReportColumnRequest input)
     {
+        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+
         var report = await _db.DataReport.GetReport(input.ReportId);
 
         if (report == null)
@@ -124,10 +130,12 @@ public class DataReportControlService : IDataReportControlService
             .Get(x => x.Id == columnId && x.Status == ItemStatus.Active)
             .Include(x => x.Menu)
                 .ThenInclude(y => y!.FieldCode)
-            .FirstOrDefaultAsync();
+        .FirstOrDefaultAsync();
 
         if (column == null)
             throw new Exception("Could not locate column to archive.");
+
+        await _db.DataReport.ConfirmAccessToReport(column.ReportId, _identity.EmployeeId);
 
         column.Status = ItemStatus.Archive;
         await _db.DataReportColumns.Update(column);
@@ -135,6 +143,8 @@ public class DataReportControlService : IDataReportControlService
 
     public async Task<DataReportColumnsDto?> MoveColumnOnReport(ReportColumnRequest input)
     {
+        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+
         var report = await _db.DataReport.GetReport(input.ReportId);
 
         if (report == null)

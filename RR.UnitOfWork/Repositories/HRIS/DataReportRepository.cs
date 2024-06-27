@@ -93,12 +93,12 @@ public class DataReportRepository : BaseRepository<DataReport, DataReportDto>, I
         return list;
     }
 
-    public async Task<List<DataReportAccess>> GetAccessForReport(int reportId, int employeeId)
+    public async Task ConfirmAccessToReport(int reportId, int employeeId)
     {
         var employee = (await (
             from e in _db.employees
             where e.Id == employeeId
-            select e).FirstOrDefaultAsync()) ?? throw new AuthenticationException("Unauthorized Access");
+            select e).FirstOrDefaultAsync()) ?? throw new UnauthorizedAccessException("Unauthorized Access");
 
         var roles = await (
             from r in _db.employeeRoles
@@ -109,7 +109,8 @@ public class DataReportRepository : BaseRepository<DataReport, DataReportDto>, I
             where a.RoleId == reportId && roles.Contains(a.RoleId ?? 0) || a.EmployeeId == employee.Id
             select a).ToListAsync();
 
-        return access;
+        if(!access.Any())
+            throw new UnauthorizedAccessException("Unauthorized Access");
     }
 
     private async Task<List<DataReportColumns>> GetColumns(int reportId)

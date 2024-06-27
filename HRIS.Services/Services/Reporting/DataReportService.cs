@@ -37,6 +37,8 @@ public class DataReportService : IDataReportService
     {
         var report = await _db.DataReport.GetReport(code) ?? throw new Exception($"Report '{code}' not found");
 
+        await _db.DataReport.ConfirmAccessToReport(report.Id, _identity.EmployeeId);
+
         var viewOnly = await IsReportViewOnlyForEmployee(report.Id);
 
         var employeeIdList = await _helper.GetEmployeeIdListForReport(report);
@@ -78,6 +80,8 @@ public class DataReportService : IDataReportService
 
     public async Task UpdateReportInput(UpdateReportCustomValue input)
     {
+        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+
         var item = await _db.DataReportValues
             .FirstOrDefault(x =>
                 x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId);

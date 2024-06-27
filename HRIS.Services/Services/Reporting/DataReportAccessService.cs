@@ -1,8 +1,10 @@
 ﻿using HRIS.Models.Enums;
 using HRIS.Models.Report.Request;
 using HRIS.Models.Report.Response;
+using HRIS.Services.Extensions;
 using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Interfaces.Reporting;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -11,15 +13,19 @@ namespace HRIS.Services.Services.Reporting;
 
 public class DataReportAccessService : IDataReportAccessService
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IUnitOfWork _db;
 
-    public DataReportAccessService(IUnitOfWork db)
+    public DataReportAccessService(AuthorizeIdentity identity, IUnitOfWork db)
     {
+        _identity = identity;
         _db = db;
     }
 
     public async Task AddOrUpdateReportAccess(UpdateReportAccessRequest input)
     {
+        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+
         var report = await _db.DataReport.GetReport(input.ReportId) ?? throw new Exception("The report does not seem to exist.");
 
         report.DataReportAccess ??= new List<DataReportAccess>();
@@ -81,11 +87,45 @@ public class DataReportAccessService : IDataReportAccessService
             }).ToList();
     }
 
+    public async Task<object> GetReportAccessAvailability(int reportId)
+    {
+        await _db.DataReport.ConfirmAccessToReport(reportId, _identity.EmployeeId);
+
+        var report = await _db.DataReport.GetReport(reportId);
+
+        var existingRoles = report!.DataReportAccess!
+            .Where(x => x.Status == ItemStatus.Active && x.RoleId.HasValue && x.ReportId == reportId)
+            .Select(x => x.RoleId)
+            .ToList();
+
+        var existingEmployees = report!.DataReportAccess!
+            .Where(x => x.Status == ItemStatus.Active && x.EmployeeId.HasValue && x.ReportId == reportId)
+            .Select(x => x.EmployeeId)
+            .ToList();
+
+        var allRoles = await _db.Role
+            .Get(x => existingRoles.Contains(x.Id) == false)
+            .Select(x => new { id = x.Id, name = x.Description.ToDisplay() })
+            .ToListAsync();
+
+        var allEmployees = await _db.Employee
+            .Get(x => x.Active && existingEmployees.Contains(x.Id) == false)
+            .Select(x => new { id = x.Id, name = $"{x.Name} {x.Surname}" })
+            .ToListAsync();
+
+        return new
+        {
+            role = allRoles,
+            employee = allEmployees
+        };
+    }
+
     public async Task ArchiveReportAccess(int accessId)
     {
         var a = await _db.DataReportAccess.Get(x => x.Id == accessId).FirstOrDefaultAsync();
         if(a == null)
             return;
+        await _db.DataReport.ConfirmAccessToReport(a.ReportId, _identity.EmployeeId);
         a.Status = ItemStatus.Archive;
         await _db.DataReportAccess.Update(a);
     }

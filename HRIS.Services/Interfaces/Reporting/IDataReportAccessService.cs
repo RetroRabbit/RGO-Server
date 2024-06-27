@@ -10,4 +10,5 @@ public interface IDataReportAccessService
     Task ArchiveReportAccess(int accessId);
     bool InvalidAccessParams(UpdateReportAccessRequest.UpdateReportAccessItemRequest request);
     Task<List<ReportAccessResponse>> GetAccessListForReport(int reportId);
+    Task<object> GetReportAccessAvailability(int reportId);
 }

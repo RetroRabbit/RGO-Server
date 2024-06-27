@@ -9,5 +9,6 @@ public interface IDataReportRepository : IRepository<DataReport, DataReportDto>
 {
     Task<DataReport?> GetReport(string code);
     Task<DataReport?> GetReport(int id);
+    Task ConfirmAccessToReport(int reportId, int employeeId);
     Task<List<DataReportListResponse>?> GetReportsForEmployee(string employeeEmail);
 }
