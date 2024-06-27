@@ -25,26 +25,16 @@ namespace RR.UnitOfWork.Entities
         }
 
         [Key]
-        [Column("id")]
-        public int Id { get; set; }
-        [Column("dateOfIncident")]
-        public DateTime DateOfIncident { get; set; }
-        [Column("stackTrace")]
-        public string StackTrace { get; set; }
-        [Column("message")]
-        public string Message { get; set; }
-        [Column("ipAddress")]
-        public string IpAddress { get; set; }
-        [Column("statusCode")]
-        public int StatusCode { get; set; }
-        [Column("requestUrl")]
-        public string RequestUrl { get; set; }
-        [Column("requestMethod")]
-        public string RequestMethod { get; set; }
-        [Column("requestContentType")]
-        public string RequestContentType { get; set; }
-        [NotMapped]
-        public object RequestBody { get; set; }
+        [Column("id")] public int Id { get; set; }
+        [Column("dateOfIncident")] public DateTime DateOfIncident { get; set; }
+        [Column("stackTrace")] public string StackTrace { get; set; }
+        [Column("message")] public string Message { get; set; }
+        [Column("ipAddress")] public string IpAddress { get; set; }
+        [Column("statusCode")] public int StatusCode { get; set; }
+        [Column("requestUrl")] public string RequestUrl { get; set; }
+        [Column("requestMethod")] public string RequestMethod { get; set; }
+        [Column("requestContentType")] public string RequestContentType { get; set; }
+        [NotMapped] public object RequestBody { get; set; }
 
         public ErrorLoggingDto ToDto()
         {
