@@ -44,9 +44,10 @@ docker run -itd --name pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@postgres.com -e PG
 ``
 
 ## Environment Variables
+
 You need to add environment variables onto your machine.
-Obtain the AuthManagement values from the Auth0 Identity provider.
-Remember to restart Visual Studio once added/edited.
+
+![Image of System Environment Variables](./README/SystemProperties1.png)
 
 | Variable name                      | Variable value |
 | --------------------------         | -------------- |
@@ -59,9 +60,17 @@ Remember to restart Visual Studio once added/edited.
 
 _With the respective values in the redacted (#######) spaces_
 
+Obtain the AuthManagement values from the Auth0 Identity provider or project contributors on the Retro Rabbit team.
+
+![Image of System Environment Variables](./README/SystemProperties2.png)
+
+Add the following and simarlarly add the others from the table with their respective values.
+
 ConnectionStrings__Default : Host=localhost:5432;Database=RGO;Username=postgres;Password=postgrespw
 
-![Image of System Environment Variables](./README/SystemProperties.png)
+![Image of System Environment Variables](./README/SystemProperties3.png)
+
+Remember to restart Visual Studio once added/edited.
 
 ### Git
 
