@@ -40,7 +40,7 @@ namespace Hris.Middleware
                     errorResponse.Message = exception.Message;
                     break;
                 default:
-                    _errorLoggingService.LogException(exception);
+                    _errorLoggingService.LogException(errorResponse);
                     break;
             }
 
@@ -53,8 +53,13 @@ namespace Hris.Middleware
 
         private async Task<ErrorLoggingDto> GetRequestInfo(HttpContext context)
         {
+            DateTime utcNow = DateTime.UtcNow;
+            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+            DateTime targetLocalTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, targetTimeZone);
+
             var log = new ErrorLoggingDto
             {
+                DateOfIncident = targetLocalTime,
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Internal Server Error. Please try again later."
             };
