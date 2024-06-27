@@ -182,7 +182,7 @@ public class EmployeeService : IEmployeeService
 
         if (employee == null)
         {
-            var exception = new CustomException($"Employee with ID {id} not found");
+            throw new CustomException("");
         }
 
         return employee;
