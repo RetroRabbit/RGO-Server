@@ -68,7 +68,6 @@ namespace Hris.Middleware
                 bodyAsString = await requestStream.ReadToEndAsync();
                 context.Request.Body.Position = 0;  
             }
-
             log.IpAddress = context.Request.Host.Host;
             log.RequestUrl = context.Request.GetDisplayUrl();
             log.RequestMethod = context.Request.Method;
@@ -77,6 +76,5 @@ namespace Hris.Middleware
 
             return log;
         }
-
     }
 }
