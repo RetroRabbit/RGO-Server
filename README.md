@@ -46,7 +46,7 @@ docker run -itd --name pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@postgres.com -e PG
 ## Environment Variables
 You need to add environment variables onto your machine.
 Obtain the AuthManagement values from the Auth0 Identity provider.
-Remeber to restart Visual Studio once added/edited.
+Remember to restart Visual Studio once added/edited.
 
 | Variable name                      | Variable value |
 | --------------------------         | -------------- |
@@ -58,6 +58,8 @@ Remeber to restart Visual Studio once added/edited.
 | NewEmployeeQueue__ConnectionString | ########       |
 
 _With the respective values in the redacted (#######) spaces_
+
+ConnectionStrings__Default=Host=localhost:5432;Database=RGO;Username=postgres;Password=postgrespw
 
 ![Image of System Environment Variables](./README/SystemProperties.png)
 
