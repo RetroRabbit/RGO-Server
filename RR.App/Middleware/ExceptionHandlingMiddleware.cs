@@ -40,7 +40,7 @@ namespace Hris.Middleware
                     errorResponse.Message = exception.Message;
                     break;
                 default:
-                    _errorLoggingService.LogException(errorResponse);
+                    _errorLoggingService.LogException(exception);
                     break;
             }
 
