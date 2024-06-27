@@ -10,7 +10,6 @@ namespace ATS.Models
         public string Message { get; set; }
         public string IpAddress { get; set; }
         public int? StatusCode { get; set; }
-        public string ErrorDetails { get; set; }
         public string RequestUrl { get; set; }
         public string RequestMethod { get; set; }
         public string? RequestContentType { get; set; }
