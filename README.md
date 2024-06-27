@@ -59,7 +59,7 @@ Remember to restart Visual Studio once added/edited.
 
 _With the respective values in the redacted (#######) spaces_
 
-ConnectionStrings__Default=Host=localhost:5432;Database=RGO;Username=postgres;Password=postgrespw
+ConnectionStrings__Default : Host=localhost:5432;Database=RGO;Username=postgres;Password=postgrespw
 
 ![Image of System Environment Variables](./README/SystemProperties.png)
 
