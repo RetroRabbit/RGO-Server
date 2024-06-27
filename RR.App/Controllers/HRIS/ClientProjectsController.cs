@@ -2,8 +2,6 @@
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS
 {

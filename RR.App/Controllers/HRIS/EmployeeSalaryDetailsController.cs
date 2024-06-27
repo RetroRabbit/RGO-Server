@@ -1,11 +1,8 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork;
-using System.Security.Claims;
+using HRIS.Services.Session;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -13,9 +10,12 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeSalaryDetailsController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IEmployeeSalarayDetailsService _employeeSalarayDetailsService;
-    public EmployeeSalaryDetailsController(IEmployeeSalarayDetailsService employeeSalarayDetailsService) 
+
+    public EmployeeSalaryDetailsController(AuthorizeIdentity identity, IEmployeeSalarayDetailsService employeeSalarayDetailsService)
     {
+        _identity = identity;
         _employeeSalarayDetailsService = employeeSalarayDetailsService;
     }
 
@@ -55,16 +55,13 @@ public class EmployeeSalaryDetailsController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
                 return Ok(employeeSalaries);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (employeeId == userId)
+            if (employeeId == _identity.EmployeeId)
             {
                 var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
                 return Ok(employeeSalaries);
@@ -84,16 +81,13 @@ public class EmployeeSalaryDetailsController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var employeeSalaries = await _employeeSalarayDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
                 return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (employeeSalaryDetailsDto.Id == userId)
+            if (employeeSalaryDetailsDto.Id == _identity.EmployeeId)
             {
                 var employeeSalaries = await _employeeSalarayDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
                 return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
@@ -116,16 +110,13 @@ public class EmployeeSalaryDetailsController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value!;
-            if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
                 var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
                 return Ok(updatedEmployeeSalary);
             }
 
-            var userId = GlobalVariables.GetUserId();
-            if (employeeSalaryDetailsDto.Id == userId)
+            if (employeeSalaryDetailsDto.Id == _identity.EmployeeId)
             {
                 var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
                 return Ok(updatedEmployeeSalary);

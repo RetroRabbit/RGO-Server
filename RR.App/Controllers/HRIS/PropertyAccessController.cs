@@ -1,20 +1,21 @@
 ﻿using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork;
-using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
 [Route("access")]
 public class PropertyAccessController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IPropertyAccessService _propertyAccessService;
     private readonly IEmployeeService _employeeService;
 
-    public PropertyAccessController(IPropertyAccessService propertyAccessService,IEmployeeService employeeService)
+    public PropertyAccessController(AuthorizeIdentity identity, IPropertyAccessService propertyAccessService, IEmployeeService employeeService)
     {
+        _identity = identity;
         _propertyAccessService = propertyAccessService;
         _employeeService = employeeService;
     }
@@ -25,21 +26,15 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (!string.IsNullOrEmpty(accessTokenEmail))
+            if (!string.IsNullOrEmpty(_identity.Email))
             {
-                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
                 {
                     var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
                     return Ok(accessList);
                 }
 
-                var userId = GlobalVariables.GetUserId();
-
-                if (userId == employeeId)
+                if (employeeId == _identity.EmployeeId)
                 {
                     var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
                     return Ok(accessList);
@@ -105,21 +100,14 @@ public class PropertyAccessController : ControllerBase
     {
         try
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var accessTokenEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (!string.IsNullOrEmpty(accessTokenEmail))
+            if (!string.IsNullOrEmpty(_identity.Email))
             {
-                if (email == accessTokenEmail)
+                if (email == _identity.Email)
                 {
-                    var employee = await _employeeService.GetEmployee(email);
-                    //TODO: find a better way to add auth0 user id to the db, perhaps employee id and auth id should be the same?
-                    GlobalVariables.SetUserId(employee!.Id);
-                    return Ok(employee!.Id);
+                    return Ok(_identity.EmployeeId);
                 }
 
-                if ("SuperAdmin" == role || "Admin" == role || "Talent" == role || "Journey" == role)
+                if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
                 {
                     var employee = await _employeeService.GetEmployee(email);
                     return Ok(employee!.Id);

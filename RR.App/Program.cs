@@ -11,6 +11,8 @@ using ATS.Services;
 using Azure.Messaging.ServiceBus;
 using HRIS.Services.Services;
 using Newtonsoft.Json;
+using HRIS.Services.Session;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace RR.App
 {
@@ -48,6 +50,7 @@ namespace RR.App
             builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddHttpContextAccessor();
 
             /// <summary>
             /// Adds Swagger to the project and configures it to use JWT Bearer Authentication
@@ -82,6 +85,7 @@ namespace RR.App
             builder.Services.RegisterRepository();
             builder.Services.RegisterServicesHRIS();
             builder.Services.RegisterServicesATS();
+            builder.Services.AddScoped<AuthorizeIdentity>();
 
             /// <summary>
             /// Add authentication with JWT bearer token to the application

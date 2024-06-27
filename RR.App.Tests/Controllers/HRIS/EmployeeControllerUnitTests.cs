@@ -8,6 +8,8 @@ using Moq;
 using RR.App.Controllers.HRIS;
 using RR.UnitOfWork;
 using Xunit;
+using Microsoft.Extensions.DependencyInjection;
+using RR.Tests.Data;
 
 namespace RR.App.Tests.Controllers.HRIS;
 
@@ -30,8 +32,8 @@ public class EmployeeControllerUnitTests
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeMockService = new Mock<IEmployeeService>();
-        _chartMockService = new Mock<IChartService>();
-        _controller = new EmployeeController(_employeeMockService.Object, _chartMockService.Object);
+
+        _controller = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
 
         _employee = new EmployeeDto
         {
