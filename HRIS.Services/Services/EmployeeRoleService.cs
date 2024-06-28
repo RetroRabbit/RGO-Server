@@ -66,11 +66,29 @@ public class EmployeeRoleService : IEmployeeRoleService
         return deletedEmployeeRole;
     }
 
-    public Task<List<EmployeeRoleDto>> GetAllEmployeeRoles()
+    public async Task<List<SimpleEmployeeData>> GetAllEmployeeRoles()
     {
-        return _db.EmployeeRole
-                  .GetAll();
+        var roles = await _db.EmployeeRole
+                              .Get()
+                             .Include(employeeRole => employeeRole.Role)
+                             .Include(employeeRole => employeeRole.Employee)
+                             .Select(employeeRole => new SimpleEmployeeData
+                             {
+                                 Name = $"{employeeRole.Employee.Name} {employeeRole.Employee.Surname}",
+                                 Position = employeeRole.Employee.EmployeeType.Name,
+                                 Level = employeeRole.Employee.Level,
+                                 Email = employeeRole.Employee.Email,
+                                 EngagementDate = employeeRole.Employee.EngagementDate,
+                                 TerminationDate = employeeRole.Employee.TerminationDate,
+                                 InactiveReason = employeeRole.Employee.InactiveReason,
+                                 Roles = employeeRole.Role.Description
+                             })
+                             .ToListAsync();
+
+        return roles;
     }
+
+
 
     public async Task<List<EmployeeRoleDto>> GetEmployeeRoles(string email)
     {

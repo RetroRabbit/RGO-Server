@@ -247,4 +247,26 @@ public class EmployeeRoleManageController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet("roles")]
+    public async Task<IActionResult> GetAllEmployeeRoles()
+    {
+        if (_employeeRoleService == null)
+        {
+            return BadRequest("Invalid input");
+        }
+
+        try
+        {
+            var roles = await _employeeRoleService.GetAllEmployeeRoles();
+            return Ok(roles);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+
+    }
+
 }

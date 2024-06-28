@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Interfaces;
 
@@ -29,7 +30,7 @@ public interface IEmployeeRoleService
     ///     Get All Employee Roles
     /// </summary>
     /// <returns></returns>
-    Task<List<EmployeeRoleDto>> GetAllEmployeeRoles();
+    Task<List<SimpleEmployeeData>> GetAllEmployeeRoles();
 
     /// <summary>
     ///     Update Employee Role
