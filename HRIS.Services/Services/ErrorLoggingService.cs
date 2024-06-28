@@ -53,6 +53,11 @@ public class ErrorLoggingService : IErrorLoggingService
                 DateOfIncident = targetLocalTime,
                 Message = exception.Message,
                 StackTrace = exception.StackTrace,
+                IpAddress = "",
+                RequestBody = "",
+                RequestUrl = "",
+                RequestContentType = "",
+                RequestMethod = "",
             };
             Task.Run(async () => await SaveErrorLog(errorLog)).Wait();
         }
@@ -61,6 +66,11 @@ public class ErrorLoggingService : IErrorLoggingService
             Console.WriteLine($"Error occurred while logging exception: {ex.Message}");
         }
 
-        return exception;  
+        return exception;
+    }
+
+    public async Task LogException(ErrorLoggingDto error)
+    {
+        await SaveErrorLog(error);
     }
 }

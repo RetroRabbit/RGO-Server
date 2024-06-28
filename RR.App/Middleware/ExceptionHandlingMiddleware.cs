@@ -31,27 +31,28 @@ namespace Hris.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            var errorResponse = await GetRequestInfo(context);
+            var errorResponse = await GetRequestInfo(context, exception);
+            var message = "Internal Server Error. Please try again later.";
 
             switch (exception)
             {
                 case CustomException:
                     errorResponse.StatusCode = StatusCodes.Status404NotFound;
-                    errorResponse.Message = exception.Message;
+                    message = exception.Message;
                     break;
                 default:
-                    _errorLoggingService.LogException(exception);
+                    errorResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                    _errorLoggingService.LogException(errorResponse);
                     break;
             }
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)errorResponse.StatusCode;
 
-            var errorJson = System.Text.Json.JsonSerializer.Serialize(errorResponse);
-            await context.Response.WriteAsync(errorJson);
+            await context.Response.WriteAsync(message);
         }
 
-        private async Task<ErrorLoggingDto> GetRequestInfo(HttpContext context)
+        private async Task<ErrorLoggingDto> GetRequestInfo(HttpContext context, Exception exception)
         {
             DateTime utcNow = DateTime.UtcNow;
             TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
@@ -60,9 +61,15 @@ namespace Hris.Middleware
             var log = new ErrorLoggingDto
             {
                 DateOfIncident = targetLocalTime,
-                StatusCode = StatusCodes.Status500InternalServerError,
-                Message = "Internal Server Error. Please try again later."
+                Message = exception.Message,
+                StackTrace = exception.ToString(),
+                IpAddress = context.Request.Host.Host,
+                RequestUrl = context.Request.GetDisplayUrl(),
+                RequestMethod = context.Request.Method,
+                RequestContentType = context.Request.ContentType,
+                
             };
+
             var bodyAsString = string.Empty;
             context.Request.EnableBuffering();
 
@@ -73,10 +80,6 @@ namespace Hris.Middleware
                 bodyAsString = await requestStream.ReadToEndAsync();
                 context.Request.Body.Position = 0;  
             }
-            log.IpAddress = context.Request.Host.Host;
-            log.RequestUrl = context.Request.GetDisplayUrl();
-            log.RequestMethod = context.Request.Method;
-            log.RequestContentType = context.Request.ContentType;
             log.RequestBody = bodyAsString;
 
             return log;

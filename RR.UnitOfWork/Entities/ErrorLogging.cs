@@ -17,7 +17,6 @@ namespace RR.UnitOfWork.Entities
             StackTrace = errorLoggingDto.StackTrace;
             Message = errorLoggingDto.Message;
             IpAddress = errorLoggingDto.IpAddress;
-            StatusCode = errorLoggingDto.StatusCode ?? default;
             RequestUrl = errorLoggingDto.RequestUrl;
             RequestMethod = errorLoggingDto.RequestMethod;
             RequestContentType = errorLoggingDto.RequestContentType;
@@ -30,7 +29,6 @@ namespace RR.UnitOfWork.Entities
         [Column("stackTrace")] public string StackTrace { get; set; }
         [Column("message")] public string Message { get; set; }
         [Column("ipAddress")] public string IpAddress { get; set; }
-        [Column("statusCode")] public int StatusCode { get; set; }
         [Column("requestUrl")] public string RequestUrl { get; set; }
         [Column("requestMethod")] public string RequestMethod { get; set; }
         [Column("requestContentType")] public string RequestContentType { get; set; }
@@ -45,7 +43,6 @@ namespace RR.UnitOfWork.Entities
                 StackTrace = this.StackTrace,
                 Message = this.Message,
                 IpAddress = this.IpAddress,
-                StatusCode = this.StatusCode,
                 RequestUrl = this.RequestUrl,
                 RequestMethod = this.RequestMethod,
                 RequestContentType = this.RequestContentType,

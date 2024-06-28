@@ -5,7 +5,7 @@
 namespace RR.UnitOfWork.Migrations
 {
     /// <inheritdoc />
-    public partial class errorloggingAdditionalFields : Migration
+    public partial class addErrorlogFields : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,6 +18,12 @@ namespace RR.UnitOfWork.Migrations
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
+                name: "requestBody",
+                table: "ErrorLog",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
                 name: "requestContentType",
                 table: "ErrorLog",
                 type: "text",
@@ -37,13 +43,6 @@ namespace RR.UnitOfWork.Migrations
                 type: "text",
                 nullable: false,
                 defaultValue: "");
-
-            migrationBuilder.AddColumn<int>(
-                name: "statusCode",
-                table: "ErrorLog",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
         }
 
         /// <inheritdoc />
@@ -54,6 +53,10 @@ namespace RR.UnitOfWork.Migrations
                 table: "ErrorLog");
 
             migrationBuilder.DropColumn(
+                name: "requestBody",
+                table: "ErrorLog");
+
+            migrationBuilder.DropColumn(
                 name: "requestContentType",
                 table: "ErrorLog");
 
@@ -63,10 +66,6 @@ namespace RR.UnitOfWork.Migrations
 
             migrationBuilder.DropColumn(
                 name: "requestUrl",
-                table: "ErrorLog");
-
-            migrationBuilder.DropColumn(
-                name: "statusCode",
                 table: "ErrorLog");
         }
     }

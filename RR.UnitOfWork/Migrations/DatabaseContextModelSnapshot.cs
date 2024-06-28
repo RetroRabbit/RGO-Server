@@ -147,6 +147,10 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("message");
 
+                    b.Property<string>("RequestBody")
+                        .HasColumnType("text")
+                        .HasColumnName("requestBody");
+
                     b.Property<string>("RequestContentType")
                         .IsRequired()
                         .HasColumnType("text")
@@ -166,10 +170,6 @@ namespace RR.UnitOfWork.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("stackTrace");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("integer")
-                        .HasColumnName("statusCode");
 
                     b.HasKey("Id");
 
