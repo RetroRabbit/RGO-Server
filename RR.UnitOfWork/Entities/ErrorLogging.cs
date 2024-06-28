@@ -34,7 +34,7 @@ namespace RR.UnitOfWork.Entities
         [Column("requestUrl")] public string RequestUrl { get; set; }
         [Column("requestMethod")] public string RequestMethod { get; set; }
         [Column("requestContentType")] public string RequestContentType { get; set; }
-        [NotMapped] public object RequestBody { get; set; }
+        [Column("requestBody")] public string? RequestBody { get; set; }
 
         public ErrorLoggingDto ToDto()
         {
