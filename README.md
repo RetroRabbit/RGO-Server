@@ -44,23 +44,33 @@ docker run -itd --name pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@postgres.com -e PG
 ``
 
 ## Environment Variables
+
 You need to add environment variables onto your machine.
+
+![Image of System Environment Variables](./README/SystemProperties1.png)
 
 | Variable name                      | Variable value |
 | --------------------------         | -------------- |
-| Auth__Audience                     | RGO Client     |
-| Auth__Expires                      | 60             |
-| Auth__Issuer                       | RGO API        |
-| Auth__Key                          | ########       |
+| AuthManagement__Audience           | ########       |
+| AuthManagement__Issuer             | ########       |
+| AuthManagement__ClientId           | ########       |
+| AuthManagement__ClientSecret       | ########       |
 | ConnectionStrings__Default         | ########       |
 | NewEmployeeQueue__ConnectionString | ########       |
 
-![Image of System Environment Variables](./README/Audience.png)
-![Image of System Environment Variables](./README/Expires.png)
-![Image of System Environment Variables](./README/Issuer.png)
-![Image of System Environment Variables](./README/Key.png)
-
 _With the respective values in the redacted (#######) spaces_
+
+Obtain the AuthManagement values from the Auth0 Identity provider or project contributors on the Retro Rabbit team.
+
+![Image of System Environment Variables](./README/SystemProperties2.png)
+
+Add the following and simarlarly add the others from the table with their respective values.
+
+ConnectionStrings__Default : Host=localhost:5432;Database=RGO;Username=postgres;Password=postgrespw
+
+![Image of System Environment Variables](./README/SystemProperties3.png)
+
+Remember to restart Visual Studio once added/edited.
 
 ### Git
 
@@ -77,33 +87,6 @@ Make sure to `checkout` develop branch
 ```powershell
 git checkout develop
 ```
-
-## User Secrets
-Open the project/solution in Visual Studio. _(If you had visual studio opened when doing environment variables. Please restart visual studio)_
-
-Right Click ``RGO.App`` and Click on **Mange User Secrets**.
-This will open your ``secrets.json`` file
-
-![Image of User Secret Location](./README/ManageUserSecretsButton.png)
-
-Paste the following in the file into ``secrets.json``
-```json
-{
-  "ConnectionStrings": {
-    "Default": ""
-  },
-  "Auth": {
-    "Key": "",
-    "Issuer": "",
-    "Audience": "",
-    "Expires": 60
-  }
-}
-```
-
-Replace the Connection strings, Auth Key, Auth Issuer and Auth Audience
-![Image of User secret example](./README/ManageUserSecrets.png)
-
 
 ## pgAdmin
 
