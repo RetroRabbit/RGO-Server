@@ -70,7 +70,7 @@ namespace Hris.Middleware
             {
                 context.Request.Body.Position = 0;  
                 using StreamReader requestStream = new StreamReader(context.Request.Body, leaveOpen: true);
-                bodyAsString = await requestStream.ReadToEndAsync();
+                bodyAsString = await requestStream.ReadToEndAsync().ToString()
                 context.Request.Body.Position = 0;  
             }
             log.IpAddress = context.Request.Host.Host;
