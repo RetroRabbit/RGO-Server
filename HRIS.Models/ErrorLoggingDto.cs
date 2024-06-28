@@ -13,6 +13,6 @@ namespace ATS.Models
         public string RequestUrl { get; set; }
         public string RequestMethod { get; set; }
         public string? RequestContentType { get; set; }
-        public object RequestBody { get; set; }
+        public string? RequestBody { get; set; }
     }
 }
