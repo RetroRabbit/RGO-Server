@@ -172,7 +172,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
                         StartDate = DateOnly.FromDateTime(DateTime.Now),
                         EndDate = null
                     },
-                    Employee = EmployeeTestData.EmployeeDto,
+                    Employee = EmployeeTestData.EmployeeOne.ToDto(),
                     Description = "exampleDescription",
                     Score = 4.5f,
                     Comment = "exampleComment"
@@ -181,7 +181,7 @@ public class EmployeeEvaluationRatingControllerUnitTests
 
         _evaluationRatingInput = new EvaluationRatingInput(1, "test@retrorabbit.co.za", _employeeEvaluationInput, "Test Description",5.0f, "Test Comment");
 
-        _employeeDto = EmployeeTestData.EmployeeDto;
+        _employeeDto = EmployeeTestData.EmployeeOne.ToDto();
 
         _employeeEvaluationTemplateDto = new EmployeeEvaluationTemplateDto { Id = 301, Description = "Template 1" };
 

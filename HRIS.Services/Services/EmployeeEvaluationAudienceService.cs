@@ -55,7 +55,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         var deletedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
                                                          .Delete(employeeEvaluationAudience.Id);
 
-        return deletedEmployeeEvaluationAudience;
+        return deletedEmployeeEvaluationAudience.ToDto();
     }
 
     public async Task<EmployeeEvaluationAudienceDto> Get(EmployeeEvaluationDto evaluation, string email)
@@ -176,7 +176,7 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
                                                        .Add(new
                                                                 EmployeeEvaluationAudience(employeeEvaluationAudienceDto));
 
-        return savedEmployeeEvaluationAudience;
+        return savedEmployeeEvaluationAudience.ToDto();
     }
 
     public async Task<EmployeeEvaluationAudienceDto> Update(EmployeeEvaluationAudienceDto employeeEvaluationAudienceDto)
@@ -195,6 +195,6 @@ public class EmployeeEvaluationAudienceService : IEmployeeEvaluationAudienceServ
         var updatedEmployeeEvaluationAudience = await _db.EmployeeEvaluationAudience
                                                          .Update(employeeEvaluationAudience);
 
-        return updatedEmployeeEvaluationAudience;
+        return updatedEmployeeEvaluationAudience.ToDto();
     }
 }

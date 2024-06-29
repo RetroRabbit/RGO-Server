@@ -1,7 +1,7 @@
-﻿using HRIS.Models;
-using HRIS.Services.Interfaces;
+﻿using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
+using RR.Tests.Data;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -12,65 +12,64 @@ public class FieldCodeOptionsServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
-    private readonly FieldCodeOptionsDto _fieldCodeOptionsDto;
-    private readonly FieldCodeOptionsDto _fieldCodeOptionsDto2;
+    private readonly FieldCodeOptions _fieldCodeOptions;
+    private readonly FieldCodeOptions _fieldCodeOptions2;
     private readonly FieldCodeOptionsService _fieldCodeOptionsService;
 
     public FieldCodeOptionsServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _fieldCodeOptionsService = new FieldCodeOptionsService(_dbMock.Object,_errorLoggingServiceMock.Object);
-        _fieldCodeOptionsDto = new FieldCodeOptionsDto { Id=1, FieldCodeId = 1, Option = "string" };
-        _fieldCodeOptionsDto2 = new FieldCodeOptionsDto{ Id = 0, FieldCodeId = 1, Option = "string2" };
+        _fieldCodeOptionsService = new FieldCodeOptionsService(_dbMock.Object, _errorLoggingServiceMock.Object);
+        _fieldCodeOptions = new FieldCodeOptions { Id = 1, FieldCodeId = 1, Option = "string" };
+        _fieldCodeOptions2 = new FieldCodeOptions { Id = 0, FieldCodeId = 1, Option = "string2" };
     }
 
     [Fact]
     public async Task GetAllFieldCodeOptionsTest()
     {
-        var fields = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto };
-
-        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).Returns(Task.FromResult(fields));
+        var fields = _fieldCodeOptions.EntityToList();
+        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).ReturnsAsync(fields);
         var result = await _fieldCodeOptionsService.GetAllFieldCodeOptions();
 
         Assert.NotNull(result);
         Assert.Single(result);
-        Assert.Equal(fields, result);
+        Assert.Equivalent(fields.Select(x => x.ToDto()).ToList(), result);
     }
 
     [Fact]
     public async Task GetFieldCodeOptionsTest()
     {
-        var fields = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto };
-        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).Returns(Task.FromResult(fields));
+        var fields = _fieldCodeOptions.EntityToList();
+        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).ReturnsAsync(fields);
 
-        var result = await _fieldCodeOptionsService.GetFieldCodeOptions(_fieldCodeOptionsDto.Id);
+        var result = await _fieldCodeOptionsService.GetFieldCodeOptions(_fieldCodeOptions.Id);
         Assert.NotNull(result);
-        Assert.Equal(fields, result);
+        Assert.Equivalent(fields.Select(x => x.ToDto()).ToList(), result);
         _dbMock.Verify(x => x.FieldCodeOptions.GetAll(null), Times.Once);
     }
 
     [Fact]
     public async Task SaveFieldCodeOptionsTest()
     {
-        var fields = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto };
-        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).Returns(Task.FromResult(fields));
+        var fields = _fieldCodeOptions.EntityToList();
+        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).ReturnsAsync(fields);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()))
-               .Returns(Task.FromResult(_fieldCodeOptionsDto2));
+               .ReturnsAsync(_fieldCodeOptions2);
 
-        var result = await _fieldCodeOptionsService.SaveFieldCodeOptions(_fieldCodeOptionsDto2);
+        var result = await _fieldCodeOptionsService.SaveFieldCodeOptions(_fieldCodeOptions2.ToDto());
         Assert.NotNull(result);
-        Assert.Equal(_fieldCodeOptionsDto2, result);
+        Assert.Equivalent(_fieldCodeOptions2.ToDto(), result);
         _dbMock.Verify(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()), Times.Once);
     }
 
     [Fact]
     public async Task UpdateFieldCodeOptionsTest()
     {
-        var fieldList = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto, _fieldCodeOptionsDto2 };
-        var field = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto };
-        var field2 = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto2 };
+        var fieldList = _fieldCodeOptions.EntityToList(_fieldCodeOptions2);
+        var field = _fieldCodeOptions.EntityToList();
+        var field2 = _fieldCodeOptions2.EntityToList();
 
         _dbMock.SetupSequence(x => x.FieldCodeOptions.GetAll(null))
                .ReturnsAsync(field)
@@ -80,11 +79,11 @@ public class FieldCodeOptionsServiceUnitTests
 
 
         _dbMock.Setup(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()))
-               .Returns(Task.FromResult(_fieldCodeOptionsDto2));
+               .ReturnsAsync(_fieldCodeOptions2);
         _dbMock.Setup(x => x.FieldCodeOptions.Delete(It.IsAny<int>()))
-               .Returns(Task.FromResult(_fieldCodeOptionsDto));
+               .ReturnsAsync(_fieldCodeOptions);
 
-        var result = await _fieldCodeOptionsService.UpdateFieldCodeOptions(field2);
+        await _fieldCodeOptionsService.UpdateFieldCodeOptions(field2.Select(x => x.ToDto()).ToList());
 
         _dbMock.Verify(x => x.FieldCodeOptions.Add(It.IsAny<FieldCodeOptions>()), Times.Once);
         _dbMock.Verify(x => x.FieldCodeOptions.Delete(It.IsAny<int>()), Times.Once);
@@ -93,15 +92,15 @@ public class FieldCodeOptionsServiceUnitTests
     [Fact]
     public async Task DeleteFieldCode()
     {
-        var fields = new List<FieldCodeOptionsDto> { _fieldCodeOptionsDto };
-        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).Returns(Task.FromResult(fields));
+        var fields = new List<FieldCodeOptions> { _fieldCodeOptions };
+        _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).ReturnsAsync(fields);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Delete(It.IsAny<int>()))
-               .Returns(Task.FromResult(_fieldCodeOptionsDto));
+               .ReturnsAsync(_fieldCodeOptions);
 
-        var result = await _fieldCodeOptionsService.DeleteFieldCodeOptions(_fieldCodeOptionsDto);
+        var result = await _fieldCodeOptionsService.DeleteFieldCodeOptions(_fieldCodeOptions.ToDto());
         Assert.NotNull(result);
-        Assert.Equal(_fieldCodeOptionsDto, result);
+        Assert.Equivalent(_fieldCodeOptions.ToDto(), result);
         _dbMock.Verify(r => r.FieldCodeOptions.Delete(It.IsAny<int>()), Times.Once);
     }
 }

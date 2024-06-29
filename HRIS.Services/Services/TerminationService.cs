@@ -1,5 +1,4 @@
-﻿using Auth0.ManagementApi.Models;
-using HRIS.Models;
+﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -14,7 +13,7 @@ public class TerminationService : ITerminationService
     private readonly IEmployeeService _employeeService;
     private readonly IAuthService _authService;
 
-    public TerminationService(IUnitOfWork db,IAuthService authService, IErrorLoggingService errorLoggingService, IEmployeeTypeService employeeTypeService, IEmployeeService employeeService)
+    public TerminationService(IUnitOfWork db, IAuthService authService, IErrorLoggingService errorLoggingService, IEmployeeTypeService employeeTypeService, IEmployeeService employeeService)
     {
         _db = db;
         _errorLoggingService = errorLoggingService;
@@ -27,23 +26,23 @@ public class TerminationService : ITerminationService
     {
         try
         {
-        var exists = await CheckTerminationExist(terminationDto.EmployeeId);
-        if (exists)
-        {
-            TerminationDto updatedTermination = await UpdateTermination(terminationDto);
-            return updatedTermination;
-        }
+            var exists = await CheckTerminationExist(terminationDto.EmployeeId);
+            if (exists)
+            {
+                TerminationDto updatedTermination = await UpdateTermination(terminationDto);
+                return updatedTermination;
+            }
 
-        EmployeeDto currentEmployee = await _employeeService.GetEmployeeById(terminationDto.EmployeeId);
-        currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
-        currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment;
-        currentEmployee.Active = false;
-        var isRemovedFromAuth0 = await  _authService.DeleteUser(currentEmployee.AuthUserId);
+            EmployeeDto currentEmployee = await _employeeService.GetEmployeeById(terminationDto.EmployeeId);
+            currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
+            currentEmployee.TerminationDate = terminationDto.LastDayOfEmployment;
+            currentEmployee.Active = false;
+            var isRemovedFromAuth0 = await _authService.DeleteUser(currentEmployee.AuthUserId);
 
-        EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
-        await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
+            EmployeeTypeDto employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
+            await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
 
-        return await _db.Termination.Add(new Termination(terminationDto));
+            return (await _db.Termination.Add(new Termination(terminationDto))).ToDto();
         }
         catch (Exception ex)
         {
@@ -53,7 +52,7 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
     {
-        return await _db.Termination.Update(new Termination(terminationDto));
+        return (await _db.Termination.Update(new Termination(terminationDto))).ToDto();
     }
 
     public async Task<TerminationDto> GetTerminationByEmployeeId(int employeeId)
@@ -65,7 +64,7 @@ public class TerminationService : ITerminationService
             throw _errorLoggingService.LogException(exception);
         }
 
-        return await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId);
+        return (await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId)).ToDto();
     }
 
     public async Task<bool> CheckTerminationExist(int employeeId)

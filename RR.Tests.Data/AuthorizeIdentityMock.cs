@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using Google.Apis.Gmail.v1.Data;
-using HRIS.Services.Session;
+﻿using HRIS.Services.Session;
 using Microsoft.AspNetCore.Http;
 using RR.UnitOfWork;
 

@@ -7,7 +7,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("FieldCode")]
-public class FieldCode : IModel<FieldCodeDto>
+public class FieldCode : IModel
 {
     public FieldCode()
     {
@@ -51,6 +51,8 @@ public class FieldCode : IModel<FieldCodeDto>
 
     [Key] [Column("id")] public int Id { get; set; }
 
+    public virtual List<FieldCodeOptions>? Options { get; set; }
+
     public FieldCodeDto ToDto()
     {
         return new FieldCodeDto
@@ -65,7 +67,8 @@ public class FieldCode : IModel<FieldCodeDto>
             Internal = Internal,
             InternalTable = InternalTable,
             Category = Category,
-            Required = Required
+            Required = Required,
+            Options = Options?.Select(x => x.ToDto()).ToList() ?? new List<FieldCodeOptionsDto>()
         };
     }
 }

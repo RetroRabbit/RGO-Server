@@ -27,12 +27,12 @@ namespace HRIS.Services.Services
             }
 
             var createdProject = await _db.ClientProject.Add(new ClientProject(clientProjectsDto));
-            return createdProject;
+            return createdProject.ToDto();
         }
 
         public async Task<ClientProjectsDto> DeleteClientProject(int id)
         {
-            return await _db.ClientProject.Delete(id);
+            return (await _db.ClientProject.Delete(id)).ToDto();
         }
 
         public async Task<ClientProjectsDto?> GetClientProjectById(int id)
@@ -45,12 +45,12 @@ namespace HRIS.Services.Services
                 throw _errorLoggingService.LogException(exception);
             }
 
-            return existingClientProject;
+            return existingClientProject.ToDto();
         }
 
         public async Task<List<ClientProjectsDto>> GetAllClientProjects()
         {
-            return await _db.ClientProject.GetAll();
+            return (await _db.ClientProject.GetAll()).Select(x => x.ToDto()).ToList();
         }
 
         public async Task<ClientProjectsDto> UpdateClientProject(ClientProjectsDto clientProjectsDto)
@@ -70,7 +70,7 @@ namespace HRIS.Services.Services
                 ClientProject clientProject = new ClientProject(clientProjectsDto);
                 var updatedClientProjectDto = await _db.ClientProject.Update(clientProject);
 
-                return updatedClientProjectDto;
+                return updatedClientProjectDto.ToDto();
 
             }
             catch (Exception ex)

@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
-using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -16,10 +15,10 @@ public class EmployeeEvaluationAudienceServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
-    private readonly EmployeeDto _employee;
+    private readonly Employee _employee;
     private readonly EmployeeEvaluationAudienceService _employeeEvaluationAudienceService;
     private readonly Mock<IEmployeeEvaluationService> _employeeEvaluationServiceMock;
-    private readonly EmployeeEvaluationTemplateDto _employeeEvaluationTemplate;
+    private readonly EmployeeEvaluationTemplate _employeeEvaluationTemplate;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
 
     public EmployeeEvaluationAudienceServiceUnitTests()
@@ -31,24 +30,16 @@ public class EmployeeEvaluationAudienceServiceUnitTests
         _employeeEvaluationAudienceService = new EmployeeEvaluationAudienceService(
          _dbMock.Object,
          _employeeServiceMock.Object,
-         _employeeEvaluationServiceMock.Object,_errorLoggingServiceMock.Object);
+         _employeeEvaluationServiceMock.Object, _errorLoggingServiceMock.Object);
 
-        EmployeeTypeDto employeeTypeDto = new EmployeeTypeDto
-        {
-            Id = 1,
-            Name = "Developer"
-        };
-
-        var employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
-
-        _employee = EmployeeTestData.EmployeeDto;
-        _employeeEvaluationTemplate = new EmployeeEvaluationTemplateDto { Id = 1, Description = "template" };
+        _employee = EmployeeTestData.EmployeeOne;
+        _employeeEvaluationTemplate = new EmployeeEvaluationTemplate { Id = 1, Description = "template" };
     }
 
     private EmployeeEvaluation CreateEmployeeEvaluation(
-        EmployeeDto? employee = null,
-        EmployeeDto? owner = null,
-        EmployeeEvaluationTemplateDto? template = null,
+        Employee? employee = null,
+        Employee? owner = null,
+        EmployeeEvaluationTemplate? template = null,
         string subject = "subject")
     {
         var employeeEvaluation = new EmployeeEvaluation
@@ -62,20 +53,20 @@ public class EmployeeEvaluationAudienceServiceUnitTests
         };
 
         if (employee != null)
-            employeeEvaluation.Employee = new Employee(employee, employee.EmployeeType!);
+            employeeEvaluation.Employee = employee;
 
         if (owner != null)
-            employeeEvaluation.Owner = new Employee(owner, owner.EmployeeType!);
+            employeeEvaluation.Owner = owner;
 
         if (template != null)
-            employeeEvaluation.Template = new EmployeeEvaluationTemplate(template);
+            employeeEvaluation.Template = template;
 
         return employeeEvaluation;
     }
 
     private EmployeeEvaluationAudience CreateEmployeeEvaluationAudience(
         EmployeeEvaluation? evaluation = null,
-        EmployeeDto? employee = null)
+        Employee? employee = null)
     {
         var employeeEvaluationAudience = new EmployeeEvaluationAudience
         {
@@ -88,7 +79,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             employeeEvaluationAudience.Evaluation = evaluation;
 
         if (employee != null)
-            employeeEvaluationAudience.Employee = new Employee(employee, employee.EmployeeType!);
+            employeeEvaluationAudience.Employee = employee;
 
         return employeeEvaluationAudience;
     }
@@ -146,8 +137,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
         _dbMock
             .Setup(x =>
                        x.EmployeeEvaluationAudience.Get(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
-            .Returns(new List<EmployeeEvaluationAudience> { evaluationAudience }.AsQueryable().BuildMock()
-                         .Where(criteria));
+            .Returns(evaluationAudience.ToMockIQueryable().Where(criteria));
 
         var result = await _employeeEvaluationAudienceService.Get(evaluation.ToDto(), targetEmail!);
 
@@ -167,7 +157,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Subject = evaluation.Subject
         };
 
-        
+
 
         _dbMock
             .Setup(x =>
@@ -211,11 +201,10 @@ public class EmployeeEvaluationAudienceServiceUnitTests
         _dbMock
             .Setup(x =>
                        x.EmployeeEvaluationAudience.Get(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
-            .Returns(new List<EmployeeEvaluationAudience> { evaluationAudience }.AsQueryable().BuildMock()
-                         .Where(criteria));
+            .Returns(evaluationAudience.ToMockIQueryable().Where(criteria));
 
         _dbMock.Setup(x => x.EmployeeEvaluationAudience.Delete(It.IsAny<int>()))
-               .ReturnsAsync(evaluationAudience.ToDto());
+               .ReturnsAsync(evaluationAudience);
 
         var result = await _employeeEvaluationAudienceService.Delete(targetEmail!, evaluationInput);
 
@@ -226,7 +215,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
     public async Task SaveFailTest()
     {
         var evaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
-        var evaluationAudience = CreateEmployeeEvaluationAudience(evaluation, _employee);
+        CreateEmployeeEvaluationAudience(evaluation, _employee);
         var evaluationInput = new EmployeeEvaluationInput
         {
             Id = 0,
@@ -235,7 +224,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Template = evaluation.Template.Description,
             Subject = evaluation.Subject
         };
-                                                          
+
 
         _dbMock
             .Setup(x =>
@@ -270,7 +259,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
                                       .ReturnsAsync(evaluation.ToDto());
 
         _employeeServiceMock.Setup(x => x.GetEmployee(It.IsAny<string>()))
-                            .ReturnsAsync(_employee);
+                            .ReturnsAsync(_employee.ToDto);
 
         _dbMock
             .Setup(x =>
@@ -278,7 +267,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             .ReturnsAsync(false);
 
         _dbMock.Setup(x => x.EmployeeEvaluationAudience.Add(It.IsAny<EmployeeEvaluationAudience>()))
-               .ReturnsAsync(evaluationAudience.ToDto());
+               .ReturnsAsync(evaluationAudience);
 
         var result = await _employeeEvaluationAudienceService.Save(_employee.Email!, evaluationInput);
 
@@ -314,7 +303,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             .ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeEvaluationAudience.Update(It.IsAny<EmployeeEvaluationAudience>()))
-               .ReturnsAsync(evaluationAudience.ToDto());
+               .ReturnsAsync(evaluationAudience);
 
         var result = await _employeeEvaluationAudienceService.Update(evaluationAudience.ToDto());
 
@@ -330,7 +319,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
         _dbMock
             .Setup(x =>
                        x.EmployeeEvaluationAudience.Get(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
-            .Returns(new List<EmployeeEvaluationAudience> { evaluationAudience }.AsQueryable().BuildMock());
+            .Returns(evaluationAudience.ToMockIQueryable());
 
         var result = await _employeeEvaluationAudienceService.GetAll();
 
@@ -362,8 +351,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
         _dbMock
             .Setup(x =>
                        x.EmployeeEvaluationAudience.Get(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
-            .Returns(new List<EmployeeEvaluationAudience> { evaluationAudience }.AsQueryable().BuildMock()
-                         .Where(criteria));
+            .Returns(evaluationAudience.ToMockIQueryable().Where(criteria));
 
         var result = await _employeeEvaluationAudienceService.GetAllbyEmployee(targetEmail!);
 
@@ -382,7 +370,7 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Template = evaluation.Template.Description,
             Subject = evaluation.Subject
         };
-                                                          
+
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(false);
         _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
@@ -404,14 +392,13 @@ public class EmployeeEvaluationAudienceServiceUnitTests
             Template = evaluation.Template.Description,
             Subject = evaluation.Subject
         };
-                                                          
+
         _employeeEvaluationServiceMock.Setup(x => x.CheckIfExists(It.IsAny<EmployeeEvaluationInput>()))
                                       .ReturnsAsync(true);
 
         _dbMock
-            .Setup(x =>
-                       x.EmployeeEvaluationAudience.Get(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
-            .Returns(new List<EmployeeEvaluationAudience> { evaluationAudience }.AsQueryable().BuildMock());
+            .Setup(x => x.EmployeeEvaluationAudience.Get(It.IsAny<Expression<Func<EmployeeEvaluationAudience, bool>>>()))
+            .Returns(evaluationAudience.ToMockIQueryable());
 
         var result = await _employeeEvaluationAudienceService.GetAllbyEvaluation(evaluationInput);
 

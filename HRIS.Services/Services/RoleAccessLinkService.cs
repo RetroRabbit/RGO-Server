@@ -25,7 +25,7 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
         var addedRoleAccessLink = await _db.RoleAccessLink.Add(newRoleAccessLink);
 
-        return addedRoleAccessLink;
+        return addedRoleAccessLink.ToDto();
     }
 
     public async Task<RoleAccessLinkDto> Delete(string role, string permission)
@@ -46,7 +46,7 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
         var deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id);
 
-        return deleted.Role != null ? deleted : roleAccessLink;
+        return deleted.Role != null ? deleted.ToDto() : roleAccessLink;
     }
 
     public async Task<Dictionary<string, List<string>>> GetAll()
@@ -120,10 +120,10 @@ public class RoleAccessLinkService : IRoleAccessLinkService
         return mergedRoleAccessLinks;
     }
 
-    public Task<RoleAccessLinkDto> Update(RoleAccessLinkDto roleAccessLinkDto)
+    public async Task<RoleAccessLinkDto> Update(RoleAccessLinkDto roleAccessLinkDto)
     {
-        var roleAccessLink = _db.RoleAccessLink.Update(new RoleAccessLink(roleAccessLinkDto));
-        return roleAccessLink;
+        var roleAccessLink = await _db.RoleAccessLink.Update(new RoleAccessLink(roleAccessLinkDto));
+        return roleAccessLink.ToDto();
     }
 
     public async Task<List<RoleAccessLinkDto>> GetAllRoleAccessLink()

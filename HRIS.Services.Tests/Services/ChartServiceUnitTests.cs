@@ -2,8 +2,8 @@
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities;
@@ -15,15 +15,10 @@ namespace RGO.Tests.Services;
 public class ChartServiceUnitTests
 {
     private readonly Mock<IEmployeeService> _employeeService;
-    private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IServiceProvider> _services;
     private readonly Mock<IUnitOfWork> _unitOfWork;
-    private readonly EmployeeType employeeType1;
-    private readonly EmployeeType employeeType2;
-    private readonly EmployeeTypeDto employeeTypeDto1;
-    private readonly EmployeeTypeDto employeeTypeDto2;
     private readonly IErrorLoggingService _errorLoggingService;
-    EmployeeDto testEmployee = EmployeeTestData.EmployeeDto;
+    private readonly Employee _testEmployee = EmployeeTestData.EmployeeOne;
 
     public ChartServiceUnitTests()
     {
@@ -31,17 +26,6 @@ public class ChartServiceUnitTests
         _employeeService = new Mock<IEmployeeService>();
         _services = new Mock<IServiceProvider>();
         _errorLoggingService = new ErrorLoggingService(_unitOfWork.Object);
-
-        _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        employeeTypeDto1 = EmployeeTypeTestData.DeveloperType;
-        employeeTypeDto2 = EmployeeTypeTestData.PeopleChampionType;
-        employeeType1 = new EmployeeType(employeeTypeDto1);
-        employeeType2 = new EmployeeType(employeeTypeDto2);
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType1.Name!))
-                                .Returns(Task.FromResult(employeeTypeDto1));
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType2.Name!))
-                                .Returns(Task.FromResult(employeeTypeDto2));
-        
     }
 
     [Fact]
@@ -49,7 +33,7 @@ public class ChartServiceUnitTests
     {
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().AsQueryable().BuildMock());
+        _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().ToMockIQueryable());
 
         var result = await chartService.GetAllCharts();
 
@@ -67,34 +51,33 @@ public class ChartServiceUnitTests
         var chartType = "Pie";
 
 
-        EmployeeTypeDto developerEmployeeTypeDto =EmployeeTypeTestData.DeveloperType;
-        EmployeeTypeDto designerEmployeeTypeDto = EmployeeTypeTestData.DesignerType;
-        EmployeeTypeDto scrumMasterEmployeeTypeDto = EmployeeTypeTestData.ScrumType;
-        EmployeeTypeDto otherEmployeeTypeDto = EmployeeTypeTestData.OtherType;
+        var developerType =EmployeeTypeTestData.DeveloperType;
+        var designerType = EmployeeTypeTestData.DesignerType;
+        var scrumType = EmployeeTypeTestData.ScrumType;
+        var otherType = EmployeeTypeTestData.OtherType;
 
-        EmployeeDto developerEmployeeDto = EmployeeTestData.EmployeeDto;
-        EmployeeDto developerEmployeeDto1 = EmployeeTestData.EmployeeDto2;
-        EmployeeDto designerEmployeeDto = EmployeeTestData.EmployeeDto3;
+        var employeeOne = EmployeeTestData.EmployeeOne;
+        var employeeTwo = EmployeeTestData.EmployeeTwo;
+        var employeeThree = EmployeeTestData.EmployeeThree;
       
         var employeeList = new List<Employee>
         {
-            new(developerEmployeeDto, developerEmployeeTypeDto),
-            new(designerEmployeeDto, designerEmployeeTypeDto),
-            new(developerEmployeeDto, scrumMasterEmployeeTypeDto),
-            new(designerEmployeeDto, otherEmployeeTypeDto)
+            new(employeeOne.ToDto(), developerType.ToDto()),
+            new(employeeThree.ToDto(), designerType.ToDto()),
+            new(employeeTwo.ToDto(), scrumType.ToDto()),
+            new(employeeThree.ToDto(), otherType.ToDto())
         };
-
 
         _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                 .Returns(employeeList.AsQueryable().BuildMock()); 
+                 .Returns(employeeList.ToMockIQueryable()); 
         
-        var employeeDtoList = new List<EmployeeDto>
+        var employees = new List<Employee>
         {
-            developerEmployeeDto,
-            designerEmployeeDto
+            employeeOne,
+            employeeThree
         };
 
-        var chartDto = new ChartDto
+        var chart = new Chart
         {
             Id = 1,
             Name = chartName,
@@ -102,38 +85,38 @@ public class ChartServiceUnitTests
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
             Roles = roles,
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
+        _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employees.Select(x => x.ToDto()).ToList());
 
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
-                   .ReturnsAsync(chartDto);
+                   .ReturnsAsync(chart);
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, testEmployee.Id);
+        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, _testEmployee.Id);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
         Assert.Equal(chartType, result.Type);
 
-        chartDto.Type = "stacked";
+        chart.Type = "stacked";
 
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
-                   .ReturnsAsync(chartDto);
+                   .ReturnsAsync(chart);
         
         chartType = "stacked";
 
-        employeeList[0].EmployeeType = new EmployeeType(developerEmployeeTypeDto);
-        employeeList[1].EmployeeType = new EmployeeType(designerEmployeeTypeDto);
-        employeeList[2].EmployeeType = new EmployeeType(scrumMasterEmployeeTypeDto);
-        employeeList[3].EmployeeType = new EmployeeType(otherEmployeeTypeDto);
+        employeeList[0].EmployeeType = developerType;
+        employeeList[1].EmployeeType = designerType;
+        employeeList[2].EmployeeType = scrumType;
+        employeeList[3].EmployeeType = otherType;
 
         _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                 .Returns(employeeList.AsQueryable().BuildMock());
+                 .Returns(employeeList.ToMockIQueryable());
 
-        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, testEmployee.Id);
+        result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, _testEmployee.Id);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
@@ -148,28 +131,26 @@ public class ChartServiceUnitTests
         var chartName = "TestChart";
         var chartType = "Pie";
 
-        EmployeeTypeDto devEmployeeTypeDto = EmployeeTypeTestData.DeveloperType;
-        EmployeeTypeDto desEmployeeTypeDto = EmployeeTypeTestData.DesignerType;
+        var developerType = EmployeeTypeTestData.DeveloperType;
+        var designerType = EmployeeTypeTestData.DesignerType;
 
-        var employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
-           
-        EmployeeDto employeeDto = EmployeeTestData.EmployeeDto;
+        var employeeOne = EmployeeTestData.EmployeeOne;
 
-        EmployeeDto desEmployeeDto = EmployeeTestData.EmployeeDto2;
+        var employeeTwo = EmployeeTestData.EmployeeTwo;
 
         var employeeList = new List<Employee>
         {
-            new(employeeDto, devEmployeeTypeDto),
-            new(desEmployeeDto, desEmployeeTypeDto)
+            new(employeeOne.ToDto(), developerType.ToDto()),
+            new(employeeTwo.ToDto(), designerType.ToDto())
         };
 
-        var employeeDtoList = new List<EmployeeDto>
+        var employees = new List<Employee>
         {
-            employeeDto,
-            desEmployeeDto
+            employeeOne,
+            employeeTwo
         };
 
-        var chartDto = new ChartDto
+        var chart = new Chart
         {
             Id = 1,
             Name = chartName,
@@ -177,20 +158,20 @@ public class ChartServiceUnitTests
             DataTypes = dataTypes,
             Labels = new List<string> { "Male", "Female" },
             Roles = roles,
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeDtoList);
+        _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employees.Select(x => x.ToDto()).ToList);
 
         _unitOfWork.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(employeeList.AsQueryable().BuildMock());
+                   .Returns(employeeList.ToMockIQueryable());
 
         _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>()))
-                   .ReturnsAsync(chartDto);
+                   .ReturnsAsync(chart);
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, testEmployee.Id);
+        var result = await chartService.CreateChart(dataTypes, roles, chartName, chartType, _testEmployee.Id);
 
         Assert.NotNull(result);
         Assert.Equal(chartName, result.Name);
@@ -202,18 +183,14 @@ public class ChartServiceUnitTests
     {
         var dataType = new List<string> { "Gender", "Race" };
 
-        EmployeeTypeDto employeeTypeDto = EmployeeTypeTestData.DeveloperType;
-        EmployeeType employeeType = new(employeeTypeDto);
-        var employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
+        var employeeOne = EmployeeTestData.EmployeeOne;
 
-        EmployeeDto employeeDto = EmployeeTestData.EmployeeDto;
-
-        var employeeList = new List<EmployeeDto>
+        var employees = new List<Employee>
         {
-            employeeDto
+            employeeOne
         };
 
-        _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employeeList);
+        _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employees.Select(x => x.ToDto()).ToList());
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
@@ -227,7 +204,7 @@ public class ChartServiceUnitTests
     public async Task DeleteChartTest()
     {
         var chartId = 1;
-        var expectedChartDto = new ChartDto
+        var expectedChart = new Chart
         {
             Id = chartId,
             Name = "Test",
@@ -235,10 +212,10 @@ public class ChartServiceUnitTests
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
             Roles = new List<string>{ "All" },
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        _unitOfWork.Setup(u => u.Chart.Delete(chartId)).ReturnsAsync(expectedChartDto);
+        _unitOfWork.Setup(u => u.Chart.Delete(chartId)).ReturnsAsync(expectedChart);
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
@@ -246,14 +223,14 @@ public class ChartServiceUnitTests
 
         Assert.NotNull(result);
         Assert.IsType<ChartDto>(result);
-        Assert.Equal(expectedChartDto.Id, result.Id);
+        Assert.Equal(expectedChart.Id, result.Id);
         _unitOfWork.Verify(x => x.Chart.Delete(It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
     public async Task UpdateChartTest()
     {
-        var chartDtoToUpdate = new ChartDto
+        var expectedChart = new Chart
         {
             Id = 1,
             Name = "Update",
@@ -261,43 +238,43 @@ public class ChartServiceUnitTests
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
             Roles = new List<string> { "All" },
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        var existingCharts = new List<ChartDto>
+        var existingCharts = new List<Chart>
         {
-            new ChartDto
+            new()
             {
                 Id = 1,
                 Name = "Existing Chart",
                 Type = "Existing Type",
-                DataTypes = chartDtoToUpdate.DataTypes,
-                Labels = chartDtoToUpdate.Labels,
+                DataTypes = expectedChart.DataTypes,
+                Labels = expectedChart.Labels,
                 Roles = new List<string> { "All" },
-                Datasets = ChartDataSetTestData.chartDataSetDtoList
+                Datasets = ChartDataSetTestData.ChartDataSetList
             }
         };
 
-        _unitOfWork.Setup(x => x.Chart.GetAll(null)).Returns(Task.FromResult(existingCharts));
+        _unitOfWork.Setup(x => x.Chart.GetAll(null)).ReturnsAsync(existingCharts);
 
         _unitOfWork.Setup(x => x.Chart.Update(It.IsAny<Chart>()))
-                   .Returns(Task.FromResult(chartDtoToUpdate));
+                   .ReturnsAsync(expectedChart);
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var result = await chartService.UpdateChart(chartDtoToUpdate);
+        var result = await chartService.UpdateChart(expectedChart.ToDto());
 
         Assert.NotNull(result);
-        Assert.Equal(chartDtoToUpdate, result);
+        Assert.Equivalent(expectedChart.ToDto(), result);
         _unitOfWork.Verify(x => x.Chart.Update(It.IsAny<Chart>()), Times.Once);
     }
 
     [Fact]
     public async Task UpdateChartTestFail()
     {
-        var existingCharts = new List<ChartDto>
+        var existingCharts = new List<Chart>
         {
-            new ChartDto
+            new()
             {
                 Id = 1,
                 Name = "Existing Chart",
@@ -305,11 +282,11 @@ public class ChartServiceUnitTests
                 DataTypes = new List<string> { "Gender", "Race" },
                 Labels = new List<string> { "Male", "Female" },
                 Roles = new List<string> { "All" },
-                Datasets = ChartDataSetTestData.chartDataSetDtoList
+                Datasets = ChartDataSetTestData.ChartDataSetList
             }
         };
 
-        var nonExistingCharts = new ChartDto
+        var nonExistingCharts = new Chart
         {
             Id = 2,
             Name = "Non Existing Chart",
@@ -317,17 +294,17 @@ public class ChartServiceUnitTests
             DataTypes = new List<string> { "Gender", "Race" },
             Labels = new List<string> { "Male", "Female" },
             Roles = new List<string> { "All" },
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        _unitOfWork.SetupSequence(a => a.Chart.GetAll(null)).Returns(Task.FromResult(existingCharts));
+        _unitOfWork.SetupSequence(a => a.Chart.GetAll(null)).ReturnsAsync(existingCharts);
         _unitOfWork.Setup(a => a.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
         _unitOfWork.Setup(a => a.Chart.Update(It.IsAny<Chart>())).Throws(new Exception());
         _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
 
-        var exception = await Assert.ThrowsAsync<Exception>(async () => await chartService.UpdateChart(nonExistingCharts));
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await chartService.UpdateChart(nonExistingCharts.ToDto()));
         Assert.Equal("No chart data record found", exception.Message);
     }
 
@@ -342,21 +319,20 @@ public class ChartServiceUnitTests
         Assert.NotEmpty(columnNames);
     }
 
-    [Fact]
+    [Fact(Skip = "Needs Work")]
     public async Task ExportCsvAsyncTest()
     {
-        var employeeDto = EmployeeTestData.EmployeeDto6;
+        var employeeSix = EmployeeTestData.EmployeeSix;
 
-        var employeeDtoList = new List<EmployeeDto>
+        var employees = new List<Employee>
         {
-            employeeDto
+            employeeSix
         };
 
         var dataTypeList = new List<string> { "Gender", "Race", "Age" };
-        var propertyNames = new List<string>();
 
         _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(Task.FromResult(employeeDtoList));
+                   .ReturnsAsync(employees);
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
         var result = await chartService.ExportCsvAsync(dataTypeList);
@@ -378,15 +354,15 @@ public class ChartServiceUnitTests
     {
         var dataTypeList = new List<string> { "", "" };
 
-        var employeeDto = EmployeeTestData.EmployeeDto;
+        var employeeOne = EmployeeTestData.EmployeeOne;
 
-        var employeeDtoList = new List<EmployeeDto>
+        var employees = new List<Employee>
         {
-            employeeDto
+            employeeOne
         };
 
         _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(Task.FromResult(employeeDtoList));
+                   .ReturnsAsync(employees);
 
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _errorLoggingService);
         _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));

@@ -29,12 +29,12 @@ public class RoleAccessService : IRoleAccessService
 
         var deletedRoleAccess = await _db.RoleAccess.Delete(roleAccess.Id);
 
-        return deletedRoleAccess;
+        return deletedRoleAccess.ToDto();
     }
 
-    public Task<List<RoleAccessDto>> GetAllRoleAccess()
+    public async Task<List<RoleAccessDto>> GetAllRoleAccess()
     {
-        return _db.RoleAccess.GetAll();
+        return (await _db.RoleAccess.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
     public async Task<RoleAccessDto> GetRoleAccess(string permission)
@@ -57,13 +57,13 @@ public class RoleAccessService : IRoleAccessService
     {
         var addedRoleAccess = await _db.RoleAccess.Add(new RoleAccess(roleAccessDto));
 
-        return addedRoleAccess;
+        return addedRoleAccess.ToDto();
     }
 
     public async Task<RoleAccessDto> UpdateRoleAccess(RoleAccessDto roleAccessDto)
     {
         var updatedRoleAccess = await _db.RoleAccess.Update(new RoleAccess(roleAccessDto));
 
-        return updatedRoleAccess;
+        return updatedRoleAccess.ToDto();
     }
 }

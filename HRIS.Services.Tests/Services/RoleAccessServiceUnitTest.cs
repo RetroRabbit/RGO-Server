@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
-using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -15,7 +14,7 @@ public class RoleAccessServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
-    private readonly RoleAccessDto _roleAccessDto;
+    private readonly RoleAccess _roleAccessDto;
     private readonly RoleAccessService _roleAccessService;
 
     public RoleAccessServiceUnitTest()
@@ -23,7 +22,7 @@ public class RoleAccessServiceUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _roleAccessService = new RoleAccessService(_dbMock.Object, _errorLoggingServiceMock.Object);
-        _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmplopyee", Grouping = "Employee Data" };
+        _roleAccessDto = new RoleAccess { Id = 1, Permission = "ViewEmplopyee", Grouping = "Employee Data" };
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class RoleAccessServiceUnitTest
     {
         _dbMock
             .Setup(r => r.RoleAccess.Any(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
-            .Returns(Task.FromResult(true));
+            .ReturnsAsync(true);
 
         var result = await _roleAccessService.CheckRoleAccess(_roleAccessDto.Permission);
 
@@ -42,16 +41,16 @@ public class RoleAccessServiceUnitTest
     [Fact]
     public async Task GetAllRoleAccessTest()
     {
-        var listOfRoleAccess = new List<RoleAccessDto> { _roleAccessDto };
+        var listOfRoleAccess = new List<RoleAccess> { _roleAccessDto };
 
         _dbMock
             .Setup(r => r.RoleAccess.GetAll(null))
-            .Returns(Task.FromResult(listOfRoleAccess));
+            .ReturnsAsync(listOfRoleAccess);
 
         var result = await _roleAccessService.GetAllRoleAccess();
 
         Assert.NotNull(result);
-        Assert.Equal(listOfRoleAccess, result);
+        Assert.Equivalent(listOfRoleAccess.Select(x => x.ToDto()).ToList(), result);
         _dbMock.Verify(r => r.RoleAccess.GetAll(null), Times.Once);
     }
 
@@ -63,12 +62,12 @@ public class RoleAccessServiceUnitTest
             new() { Id = 1, Permission = "ViewEmployee" },
             new() { Id = 2, Permission = "ViewManager" },
             new() { Id = 3, Permission = "ViewAdmin" }
-        }.AsQueryable().BuildMock();
+        }.ToMockIQueryable();
 
         var randPermission = permissions.Where(r => r.Id == 3).Select(r => r.Permission).First();
 
         Expression<Func<RoleAccess, bool>> criteria = r => r.Permission == randPermission;
-        var expect = await permissions.Where(criteria).Select(r => r.ToDto()).FirstAsync();
+        await permissions.Where(criteria).Select(r => r.ToDto()).FirstAsync();
 
         _dbMock
             .Setup(r => r.RoleAccess.Get(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
@@ -86,12 +85,12 @@ public class RoleAccessServiceUnitTest
     {
         _dbMock
             .Setup(r => r.RoleAccess.Add(It.IsAny<RoleAccess>()))
-            .Returns(Task.FromResult(_roleAccessDto));
+            .ReturnsAsync(_roleAccessDto);
 
-        var result = await _roleAccessService.SaveRoleAccess(_roleAccessDto);
+        var result = await _roleAccessService.SaveRoleAccess(_roleAccessDto.ToDto());
 
         Assert.NotNull(result);
-        Assert.Equal(_roleAccessDto, result);
+        Assert.Equivalent(_roleAccessDto.ToDto(), result);
         _dbMock.Verify(r => r.RoleAccess.Add(It.IsAny<RoleAccess>()), Times.Once);
     }
 
@@ -103,12 +102,12 @@ public class RoleAccessServiceUnitTest
             new() { Id = 1, Permission = "ViewEmployee" },
             new() { Id = 2, Permission = "ViewManager" },
             new() { Id = 3, Permission = "ViewAdmin" }
-        }.AsQueryable().BuildMock();
+        }.ToMockIQueryable();
 
         var randPermission = permissions.Where(r => r.Id == 3).Select(r => r.Permission).First();
 
         Expression<Func<RoleAccess, bool>> criteria = r => r.Permission == randPermission;
-        var expect = await permissions.Where(criteria).Select(r => r.ToDto()).FirstAsync();
+        var expect = await permissions.Where(criteria).Select(r => r).FirstAsync();
 
         _dbMock
             .Setup(r => r.RoleAccess.Get(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
@@ -116,12 +115,12 @@ public class RoleAccessServiceUnitTest
 
         _dbMock
             .Setup(r => r.RoleAccess.Delete(It.IsAny<int>()))
-            .Returns(Task.FromResult(expect));
+            .ReturnsAsync(expect);
 
         var result = await _roleAccessService.DeleteRoleAccess(randPermission!);
 
         Assert.NotNull(result);
-        Assert.Equal(expect, result);
+        Assert.Equivalent(expect.ToDto(), result);
         _dbMock.Verify(r => r.RoleAccess.Delete(It.IsAny<int>()), Times.Once);
     }
 
@@ -130,12 +129,12 @@ public class RoleAccessServiceUnitTest
     {
         _dbMock
             .Setup(r => r.RoleAccess.Update(It.IsAny<RoleAccess>()))
-            .Returns(Task.FromResult(_roleAccessDto));
+            .ReturnsAsync(_roleAccessDto);
 
-        var result = await _roleAccessService.UpdateRoleAccess(_roleAccessDto);
+        var result = await _roleAccessService.UpdateRoleAccess(_roleAccessDto.ToDto());
 
         Assert.NotNull(result);
-        Assert.Equal(_roleAccessDto, result);
+        Assert.Equivalent(_roleAccessDto.ToDto(), result);
         _dbMock.Verify(r => r.RoleAccess.Update(It.IsAny<RoleAccess>()), Times.Once);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
-using System.Security;
 using Xunit;
 
 namespace RR.UnitOfWork.Tests.Entities;

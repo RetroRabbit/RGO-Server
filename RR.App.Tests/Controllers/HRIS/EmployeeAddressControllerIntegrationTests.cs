@@ -6,7 +6,6 @@ using HRIS.Services.Services;
 using IUnitOfWork = RR.UnitOfWork.IUnitOfWork;
 using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 using RR.Tests.Data.Models.HRIS;
 using Microsoft.AspNetCore.Authentication;
@@ -97,7 +96,7 @@ public class EmployeeAddressControllerIntegrationTests : IClassFixture<WebApplic
     [Fact]
     public async Task SaveUpdateDeleteEmployeeAddress_ReturnsOkResult()
     {
-        var addressDto = EmployeeAddressTestData.EmployeeAddressDtoNew;
+        var addressDto = EmployeeAddressTestData.EmployeeAddressNew;
         var jsonContent = new StringContent(JsonConvert.SerializeObject(addressDto), Encoding.UTF8, "application/json");
 
         var response = await _client.PostAsync("/employee-address", jsonContent);

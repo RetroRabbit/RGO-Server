@@ -1,17 +1,12 @@
 ﻿using HRIS.Models.Enums;
 using RR.UnitOfWork.Entities.HRIS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RR.Tests.Data.Models.HRIS
 {
     public class PropertyAccessTestData
     {
 
-        public static PropertyAccess EmployeeTable1 = new PropertyAccess
+        public static PropertyAccess PropertyAccessOne = new()
         {
             Id = 1,
             Role = new Role(),
@@ -21,7 +16,7 @@ namespace RR.Tests.Data.Models.HRIS
             AccessLevel = PropertyAccessLevel.write
         };
         
-        public static PropertyAccess EmployeeTable2 = new PropertyAccess
+        public static PropertyAccess PropertyAccessTwo = new()
         {
             Id = 2,
             Role = new Role(),
@@ -31,7 +26,7 @@ namespace RR.Tests.Data.Models.HRIS
             AccessLevel = PropertyAccessLevel.write
         };
         
-        public static PropertyAccess EmployeeTable3 = new PropertyAccess
+        public static PropertyAccess PropertyAccessThree = new()
         {
             Id = 3,
             Role = new Role(),
@@ -41,9 +36,11 @@ namespace RR.Tests.Data.Models.HRIS
             AccessLevel = PropertyAccessLevel.write
         };
 
-        public static List<PropertyAccess> PropertyAccessList = new List<PropertyAccess>()
-        { EmployeeTable1,
-        EmployeeTable2,
-        EmployeeTable3};
+        public static List<PropertyAccess> PropertyAccessList = new()
+        {
+            PropertyAccessOne,
+            PropertyAccessTwo,
+            PropertyAccessThree
+        };
     }
 }

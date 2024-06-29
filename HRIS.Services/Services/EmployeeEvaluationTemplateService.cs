@@ -40,7 +40,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         var deletedEmployeeEvaluationTemplate = await _db.EmployeeEvaluationTemplate
                                                          .Delete(employeeEvaluationTemplate.Id);
 
-        return deletedEmployeeEvaluationTemplate;
+        return deletedEmployeeEvaluationTemplate.ToDto();
     }
 
     public async Task<List<EmployeeEvaluationTemplateDto>> GetAll()
@@ -48,7 +48,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         var employeeEvaluationTemplates = await _db.EmployeeEvaluationTemplate
                                                    .GetAll();
 
-        return employeeEvaluationTemplates;
+        return employeeEvaluationTemplates.Select(x => x.ToDto()).ToList();
     }
 
     public async Task<EmployeeEvaluationTemplateDto> Get(string template)
@@ -88,7 +88,7 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
         var savedEmployeeEvaluationTemplate = await _db.EmployeeEvaluationTemplate
                                                        .Add(employeeEvaluationTemplate);
 
-        return savedEmployeeEvaluationTemplate;
+        return savedEmployeeEvaluationTemplate.ToDto();
     }
 
     public async Task<EmployeeEvaluationTemplateDto> Update(EmployeeEvaluationTemplateDto employeeEvaluationTemplateDto)
@@ -105,6 +105,6 @@ public class EmployeeEvaluationTemplateService : IEmployeeEvaluationTemplateServ
                                                      .Update(new
                                                                  EmployeeEvaluationTemplate(employeeEvaluationTemplateDto));
 
-        return newEmployeeEvaluationTemplate;
+        return newEmployeeEvaluationTemplate.ToDto();
     }
 }

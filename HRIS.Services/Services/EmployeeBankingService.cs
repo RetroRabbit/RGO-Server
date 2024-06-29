@@ -34,7 +34,7 @@ public class EmployeeBankingService : IEmployeeBankingService
     public async Task<EmployeeBankingDto> Delete(int addressId)
     {
         var address = await _db.EmployeeBanking.Delete(addressId);
-        return address;
+        return address.ToDto();
     }
 
    public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail)
@@ -128,12 +128,12 @@ public class EmployeeBankingService : IEmployeeBankingService
 
         if (employee.Email == userEmail)
         {
-            newEntryDto = await _db.EmployeeBanking.Add(bankingDetails);
+            newEntryDto = (await _db.EmployeeBanking.Add(bankingDetails)).ToDto();
         }
         else
         {
             if (await IsAdmin(userEmail))
-                newEntryDto = await _db.EmployeeBanking.Add(bankingDetails);
+                newEntryDto = (await _db.EmployeeBanking.Add(bankingDetails)).ToDto();
             else
             {
                 var exception = new Exception("Unauthorized access");

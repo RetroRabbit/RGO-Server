@@ -1,30 +1,30 @@
-﻿using HRIS.Models;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS;
 
 public class EmployeeTypeTestData
 {
-    public static EmployeeTypeDto DeveloperType = new EmployeeTypeDto
+    public static EmployeeType DeveloperType = new()
     {
         Id = 1,
         Name = "Developer"
     };
-    public static EmployeeTypeDto DesignerType = new EmployeeTypeDto
+    public static EmployeeType DesignerType = new()
     {
         Id = 2,
         Name = "Designer"
     };
-    public static EmployeeTypeDto ScrumType = new EmployeeTypeDto
+    public static EmployeeType ScrumType = new()
     {
         Id = 3,
         Name = "Scrum Master"
     };
-    public static EmployeeTypeDto OtherType = new EmployeeTypeDto
+    public static EmployeeType OtherType = new()
     { 
         Id = 4,
         Name = "Other"
     };
-    public static EmployeeTypeDto PeopleChampionType = new EmployeeTypeDto
+    public static EmployeeType PeopleChampionType = new()
     {
         Id = 5,
         Name = "People Champion"

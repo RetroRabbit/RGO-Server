@@ -1,5 +1,4 @@
-﻿using HRIS.Models;
-using RR.Tests.Data.Models.HRIS;
+﻿using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
@@ -7,12 +6,12 @@ namespace RR.UnitOfWork.Tests.Entities;
 
 public class ChartRoleLinkUnitTest
 {
-    private readonly ChartDto _chart;
-    private readonly RoleDto _role;
+    private readonly Chart _chart;
+    private readonly Role _role;
 
     public ChartRoleLinkUnitTest()
     {
-        _chart = new ChartDto
+        _chart = new Chart
         {
             Id = 1,
             Name = "Chart",
@@ -20,13 +19,13 @@ public class ChartRoleLinkUnitTest
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "label 1", "label 2" },
             Roles = new List<string> { "All" },
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        _role = new RoleDto { Id = 1, Description = "Description" };
+        _role = new Role { Id = 1, Description = "Description" };
     }
 
-    public ChartRoleLink CreateChartRoleLink(ChartDto? chart = null, RoleDto? role = null)
+    public ChartRoleLink CreateChartRoleLink(Chart? chart = null, Role? role = null)
     {
         var chartRoleLink = new ChartRoleLink
         {
@@ -36,10 +35,10 @@ public class ChartRoleLinkUnitTest
         };
 
         if (chart != null)
-            chartRoleLink.Chart = new Chart(chart);
+            chartRoleLink.Chart = chart;
 
         if (role != null)
-            chartRoleLink.Role = new Role(role);
+            chartRoleLink.Role = role;
 
         return chartRoleLink;
     }

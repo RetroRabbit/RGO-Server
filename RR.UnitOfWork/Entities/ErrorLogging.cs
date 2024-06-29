@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RR.UnitOfWork.Entities;
 
 [Table("ErrorLog")]
-public class ErrorLogging: IModel<ErrorLoggingDto>
+public class ErrorLogging: IModel
 {
     public ErrorLogging() { }
 

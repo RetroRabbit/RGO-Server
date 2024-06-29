@@ -23,11 +23,15 @@ public class ErrorLoggingService : IErrorLoggingService
             .Any(errorLog => errorLog.Id == Id);
     }
 
-    public async Task<ErrorLoggingDto> DeleteErrorLog(int id) => await
-    _db.ErrorLogging.Delete(id);
+    public async Task<ErrorLoggingDto> DeleteErrorLog(int id)
+    {
+        return (await _db.ErrorLogging.Delete(id)).ToDto();
+    }
 
-    public async Task<List<ErrorLoggingDto>> GetAllErrorLogs() =>
-        await _db.ErrorLogging.GetAll();
+    public async Task<List<ErrorLoggingDto>> GetAllErrorLogs()
+    {
+        return (await _db.ErrorLogging.GetAll()).Select(x => x.ToDto()).ToList();
+    }
 
     public async Task<ErrorLoggingDto> GetErrorLogById(int id) =>
         await _db.ErrorLogging.Get(errorLog => errorLog.Id == id)

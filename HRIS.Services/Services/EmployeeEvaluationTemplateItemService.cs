@@ -47,7 +47,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         var deletedEmployeeEvaluationTemplateItem = await _db.EmployeeEvaluationTemplateItem
                                                              .Delete(employeeEvaluationTemplateItemDto.Id);
 
-        return deletedEmployeeEvaluationTemplateItem;
+        return deletedEmployeeEvaluationTemplateItem.ToDto();
     }
 
     public async Task<List<EmployeeEvaluationTemplateItemDto>> GetAll()
@@ -137,7 +137,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
                                                            .Add(new
                                                                     EmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto));
 
-        return savedEmployeeEvaluationTemplateItem;
+        return savedEmployeeEvaluationTemplateItem.ToDto();
     }
 
     public async Task<EmployeeEvaluationTemplateItemDto> Update(
@@ -158,6 +158,6 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
                                                              .Update(new
                                                                          EmployeeEvaluationTemplateItem(employeeEvaluationTemplateItemDto));
 
-        return updatedEmployeeEvaluationTemplateItem;
+        return updatedEmployeeEvaluationTemplateItem.ToDto();
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Azure.Messaging.ServiceBus;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
@@ -101,11 +100,11 @@ public class EmployeeService : IEmployeeService
         employee.Active = true;
         var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee, Role = roleDto };
+        var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee.ToDto(), Role = roleDto };
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
-        return newEmployee;
+        return newEmployee.ToDto();
     }
 
     public async Task<bool> CheckUserExist(string? email)
@@ -118,7 +117,7 @@ public class EmployeeService : IEmployeeService
     {
         var existingEmployee = await GetEmployee(email);
 
-        return await _db.Employee.Delete(existingEmployee!.Id);
+        return (await _db.Employee.Delete(existingEmployee!.Id)).ToDto();
     }
 
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
@@ -218,13 +217,13 @@ public class EmployeeService : IEmployeeService
             }
         }
 
-        return await _db.Employee.Update(employee);
+        return (await _db.Employee.Update(employee)).ToDto();
     }
 
     public async Task<EmployeeDto?> GetById(int employeeId)
     {
         var employee = await _db.Employee.GetById(employeeId);
-        return employee;
+        return employee.ToDto();
     }
 
     public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
@@ -321,7 +320,7 @@ public class EmployeeService : IEmployeeService
             };
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
-            return await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
+            return (await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal)).ToDto();
         }
         return currentEmployeeTotal.ToDto();
     }

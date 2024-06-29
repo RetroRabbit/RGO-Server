@@ -5,7 +5,6 @@ using Moq;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
-using RR.UnitOfWork;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -16,15 +15,15 @@ public class EmployeeCertificationControllerUnitTests
     private readonly EmployeeCertificationController _controller;
     private readonly Mock<IEmployeeCertificationService> _employeeCertificationServiceMock;
 
-    private readonly EmployeeCertificationDto employeeCertificationDto;
-    private readonly List<EmployeeCertificationDto> employeeCertificationDtoList;
+    private readonly EmployeeCertificationDto _employeeCertificationDto;
+    private readonly List<EmployeeCertificationDto> _employeeCertificationDtoList;
 
     public EmployeeCertificationControllerUnitTests()
     {
         _employeeCertificationServiceMock = new Mock<IEmployeeCertificationService>();
         _controller = new EmployeeCertificationController(new AuthorizeIdentityMock(), _employeeCertificationServiceMock.Object);
 
-        employeeCertificationDto =
+        _employeeCertificationDto =
             new EmployeeCertificationDto
             {
                 Id = 1,
@@ -32,32 +31,32 @@ public class EmployeeCertificationControllerUnitTests
                 IssueOrganization = "Amazon",
                 CertificateDocument = "asd",
                 CertificateName = "Name",
-                EmployeeId = EmployeeTestData.EmployeeDto.Id,
+                EmployeeId = EmployeeTestData.EmployeeOne.Id,
             };
 
-        employeeCertificationDtoList = new List<EmployeeCertificationDto> { employeeCertificationDto };
+        _employeeCertificationDtoList = new List<EmployeeCertificationDto> { _employeeCertificationDto };
     }
 
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetAllEmployeelCertiificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id))
-            .ReturnsAsync(employeeCertificationDtoList);
+        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id))
+            .ReturnsAsync(_employeeCertificationDtoList);
 
-        var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeDto.Id);
+        var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeOne.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<IEnumerable<EmployeeCertificationDto>>(okResult.Value);
-        Assert.Equal(model, employeeCertificationDtoList);
+        Assert.Equal(model, _employeeCertificationDtoList);
     }
 
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetAllEmployeelCertiificatesFail()
     {
-        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeDto.Id + 1))
+        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id + 1))
             .ThrowsAsync(new Exception("Employee not found"));
 
-        var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeDto.Id + 1);
+        var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeOne.Id + 1);
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
@@ -66,22 +65,22 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task SaveEmployeelCertiificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
-            .ReturnsAsync(employeeCertificationDto);
+        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(_employeeCertificationDto))
+            .ReturnsAsync(_employeeCertificationDto);
 
-        var result = await _controller.SaveEmployeeCertificate(employeeCertificationDto);
+        var result = await _controller.SaveEmployeeCertificate(_employeeCertificationDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(employeeCertificationDto, okResult.Value);
+        Assert.Equal(_employeeCertificationDto, okResult.Value);
     }
 
     [Fact]
     public async Task SaveEmployeelCertiificatesFail()
     {
-        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(employeeCertificationDto))
+        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(_employeeCertificationDto))
             .ThrowsAsync(new Exception("Employee not found"));
 
-        var result = await _controller.SaveEmployeeCertificate(employeeCertificationDto);
+        var result = await _controller.SaveEmployeeCertificate(_employeeCertificationDto);
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
@@ -90,22 +89,22 @@ public class EmployeeCertificationControllerUnitTests
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetEmployeelCertiificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id))
-            .ReturnsAsync(employeeCertificationDto);
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
+            .ReturnsAsync(_employeeCertificationDto);
 
-        var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id);
+        var result = await _controller.GetEmployeeCertificate(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(employeeCertificationDto, okResult.Value);
+        Assert.Equal(_employeeCertificationDto, okResult.Value);
     }
 
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetEmployeelCertiificatesFail()
     {
-        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("Employee not found"));
 
-        var result = await _controller.GetEmployeeCertificate(employeeCertificationDto.EmployeeId, employeeCertificationDto.Id);
+        var result = await _controller.GetEmployeeCertificate(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id);
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
@@ -114,22 +113,22 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task DeleteEmployeelCertiificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
-            .ReturnsAsync(employeeCertificationDto);
+        _employeeCertificationServiceMock.Setup(s => s.DeleteEmployeeCertification(_employeeCertificationDto.Id))
+            .ReturnsAsync(_employeeCertificationDto);
 
-        var result = await _controller.DeleteEmployeeCertificate(employeeCertificationDto.Id);
+        var result = await _controller.DeleteEmployeeCertificate(_employeeCertificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(employeeCertificationDto, okResult.Value);
+        Assert.Equal(_employeeCertificationDto, okResult.Value);
     }
 
     [Fact]
     public async Task DeleteEmployeelCertiificatesFail()
     {
-        _employeeCertificationServiceMock.Setup(s => s.DeleteEmployeeCertification(employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.DeleteEmployeeCertification(_employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("Employee not found"));
 
-        var result = await _controller.DeleteEmployeeCertificate(employeeCertificationDto.Id);
+        var result = await _controller.DeleteEmployeeCertificate(_employeeCertificationDto.Id);
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);
@@ -138,22 +137,22 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task UpdateEmployeelCertiificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
-            .ReturnsAsync(employeeCertificationDto);
+        _employeeCertificationServiceMock.Setup(s => s.UpdateEmployeeCertification(_employeeCertificationDto))
+            .ReturnsAsync(_employeeCertificationDto);
 
-        var result = await _controller.UpdateCertificate(employeeCertificationDto);
+        var result = await _controller.UpdateCertificate(_employeeCertificationDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(employeeCertificationDto, okResult.Value);
+        Assert.Equal(_employeeCertificationDto, okResult.Value);
     }
 
     [Fact]
     public async Task UpdateEmployeelCertiificatesFail()
     {
-        _employeeCertificationServiceMock.Setup(s => s.UpdateEmployeeCertification(employeeCertificationDto))
+        _employeeCertificationServiceMock.Setup(s => s.UpdateEmployeeCertification(_employeeCertificationDto))
             .ThrowsAsync(new Exception("Employee not found"));
 
-        var result = await _controller.UpdateCertificate(employeeCertificationDto);
+        var result = await _controller.UpdateCertificate(_employeeCertificationDto);
 
         var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Employee not found", notFoundResult.Value);

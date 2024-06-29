@@ -8,7 +8,6 @@ using Moq;
 using RR.App.Controllers.HRIS;
 using RR.UnitOfWork;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
 using RR.Tests.Data;
 
 namespace RR.App.Tests.Controllers.HRIS;

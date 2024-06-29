@@ -12,7 +12,6 @@ using Azure.Messaging.ServiceBus;
 using HRIS.Services.Services;
 using Newtonsoft.Json;
 using HRIS.Services.Session;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace RR.App
 {

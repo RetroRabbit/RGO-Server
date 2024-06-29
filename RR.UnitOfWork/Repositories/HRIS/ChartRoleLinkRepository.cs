@@ -1,10 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class ChartRoleLinkRepository : BaseRepository<ChartRoleLink, ChartRoleLinkDto>, IChartRoleLinkRepositories
+public interface IChartRoleLinkRepositories : IRepository<ChartRoleLink>
+{
+}
+
+public class ChartRoleLinkRepository : BaseRepository<ChartRoleLink>, IChartRoleLinkRepositories
 {
     public ChartRoleLinkRepository(DatabaseContext db) : base(db)
     {
