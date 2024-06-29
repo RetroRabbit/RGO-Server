@@ -423,7 +423,7 @@ public class EmployeeServiceUnitTests
 
         _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<Exception>(() => employeeService.GetEmployeeById(2));
+        await Assert.ThrowsAsync<CustomException>(() => employeeService.GetEmployeeById(2));
     }
 
     [Fact]

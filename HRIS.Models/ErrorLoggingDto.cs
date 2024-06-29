@@ -1,10 +1,18 @@
-﻿namespace ATS.Models;
+﻿using System;
 
-public class ErrorLoggingDto
+namespace ATS.Models
 {
-    public int Id { get; set; }
-    public required DateTime dateOfIncident { get; set; }
-    public required string stackTrace { get; set; }
-    public required string message { get; set; }
-
+    public class ErrorLoggingDto
+    {
+        public int Id { get; set; }
+        public DateTime DateOfIncident { get; set; }
+        public string StackTrace { get; set; }
+        public string Message { get; set; }
+        public string IpAddress { get; set; }
+        public int? StatusCode { get; set; }
+        public string RequestUrl { get; set; }
+        public string RequestMethod { get; set; }
+        public string? RequestContentType { get; set; }
+        public string? RequestBody { get; set; }
+    }
 }

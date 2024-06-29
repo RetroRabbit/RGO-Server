@@ -3,35 +3,51 @@ using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
-namespace RR.UnitOfWork.Entities;
-
-[Table("ErrorLog")]
-public class ErrorLogging: IModel
+namespace RR.UnitOfWork.Entities
 {
-    public ErrorLogging() { }
-
-    public ErrorLogging(ErrorLoggingDto errorLoggingDto)
-    {   
-        Id = errorLoggingDto.Id;
-        dateOfIncident = errorLoggingDto.dateOfIncident;
-        stackTrace = errorLoggingDto.stackTrace;
-        message = errorLoggingDto.message;
-    }
-
-    [Key][Column("id")] public int Id { get; set; }
-    [Column("dateOfIncident")] public DateTime dateOfIncident { get; set; }
-    [Column("stackTrace")] public string stackTrace { get; set; }
-    [Column("message")] public string message { get; set; }
-
-    public ErrorLoggingDto ToDto()
+    [Table("ErrorLog")]
+    public class ErrorLogging : IModel
     {
-        return new ErrorLoggingDto
+        public ErrorLogging() { }
+
+        public ErrorLogging(ErrorLoggingDto errorLoggingDto)
         {
-            Id = this.Id,
-            dateOfIncident = this.dateOfIncident,
-            stackTrace = this.stackTrace,
-            message = this.message
-        };
+            Id = errorLoggingDto.Id;
+            DateOfIncident = errorLoggingDto.DateOfIncident;
+            StackTrace = errorLoggingDto.StackTrace;
+            Message = errorLoggingDto.Message;
+            IpAddress = errorLoggingDto.IpAddress;
+            RequestUrl = errorLoggingDto.RequestUrl;
+            RequestMethod = errorLoggingDto.RequestMethod;
+            RequestContentType = errorLoggingDto.RequestContentType;
+            RequestBody = errorLoggingDto.RequestBody;
+        }
+
+        [Key]
+        [Column("id")] public int Id { get; set; }
+        [Column("dateOfIncident")] public DateTime DateOfIncident { get; set; }
+        [Column("stackTrace")] public string StackTrace { get; set; }
+        [Column("message")] public string Message { get; set; }
+        [Column("ipAddress")] public string IpAddress { get; set; }
+        [Column("requestUrl")] public string RequestUrl { get; set; }
+        [Column("requestMethod")] public string RequestMethod { get; set; }
+        [Column("requestContentType")] public string RequestContentType { get; set; }
+        [Column("requestBody")] public string? RequestBody { get; set; }
+
+        public ErrorLoggingDto ToDto()
+        {
+            return new ErrorLoggingDto
+            {
+                Id = this.Id,
+                DateOfIncident = this.DateOfIncident,
+                StackTrace = this.StackTrace,
+                Message = this.Message,
+                IpAddress = this.IpAddress,
+                RequestUrl = this.RequestUrl,
+                RequestMethod = this.RequestMethod,
+                RequestContentType = this.RequestContentType,
+                RequestBody = this.RequestBody
+            };
+        }
     }
 }
