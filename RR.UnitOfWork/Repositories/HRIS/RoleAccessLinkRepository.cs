@@ -1,10 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class RoleAccessLinkRepository : BaseRepository<RoleAccessLink, RoleAccessLinkDto>, IRoleAccessLinkRepository
+public interface IRoleAccessLinkRepository : IRepository<RoleAccessLink>
+{
+}
+
+public class RoleAccessLinkRepository : BaseRepository<RoleAccessLink>, IRoleAccessLinkRepository
 {
     public RoleAccessLinkRepository(DatabaseContext databaseContext) : base(databaseContext)
     {

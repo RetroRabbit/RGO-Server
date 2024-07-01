@@ -1,12 +1,12 @@
-﻿using HRIS.Models;
-using HRIS.Services.Interfaces;
+﻿using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using System.Linq.Expressions;
+using RR.Tests.Data.Models;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -14,9 +14,9 @@ namespace HRIS.Services.Tests.Services;
 public class TerminationServiceUnitTests
 {
     private readonly TerminationService _terminationService;
-    private readonly TerminationDto _terminationDto;
-    private readonly EmployeeDto _employeeDto;
-    private readonly EmployeeTypeDto _employeeTypeDto;
+    private readonly Termination _terminationDto;
+    private readonly Employee _employeeDto;
+    private readonly EmployeeType _employeeTypeDto;
     private readonly Mock<IUnitOfWork> _db;
     private readonly Mock<IErrorLoggingService> _errorLogggingServiceMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
@@ -30,9 +30,9 @@ public class TerminationServiceUnitTests
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _authServiceMock = new Mock<IAuthService>();
-        _terminationService = new TerminationService(_db.Object,_authServiceMock.Object, _errorLogggingServiceMock.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object);
+        _terminationService = new TerminationService(_db.Object, _authServiceMock.Object, _errorLogggingServiceMock.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object);
 
-        _terminationDto = new TerminationDto
+        _terminationDto = new Termination
         {
             Id = 1,
             EmployeeId = 1,
@@ -47,7 +47,7 @@ public class TerminationServiceUnitTests
             TerminationComments = "termination comment",
         };
 
-        _employeeDto = EmployeeTestData.EmployeeDto;
+        _employeeDto = EmployeeTestData.EmployeeOne;
         _employeeTypeDto = EmployeeTypeTestData.DeveloperType;
     }
 
@@ -74,32 +74,39 @@ public class TerminationServiceUnitTests
     [Fact]
     public async Task SavePassTest()
     {
-        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(false);
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
+            .ReturnsAsync(false);
 
-        Employee emp = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType);
-        emp.EmployeeType = new EmployeeType(EmployeeTypeTestData.DeveloperType);
+        _db.Setup(e => e.Employee.Update(It.IsAny<Employee>()))
+            .ReturnsAsync(EmployeeTestData.EmployeeOne);
 
-        RoleDto roleDto = new RoleDto { Id = 1, Description = "Developer" };
-        EmployeeRoleDto empRoleDto = new EmployeeRoleDto { Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = roleDto };
-        EmployeeRole empRole = new EmployeeRole(empRoleDto);
+        _db.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(EmployeeTestData.EmployeeOne.ToMockIQueryable());
 
-        List<Employee> employees = new List<Employee> { emp };
-        List<EmployeeRole> empRoles = new List<EmployeeRole> { empRole };
-        List<Role> roles = new List<Role> { new Role(roleDto) };
+        _db.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
 
-        _db.Setup(e => e.Employee.Update(It.IsAny<Employee>())).Returns(Task.FromResult(EmployeeTestData.EmployeeDto));
-        _db.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employees.AsQueryable().BuildMock());
-        _db.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-        _db.Setup(er => er.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>())).Returns(empRoles.AsQueryable().BuildMock());
-        _db.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>())).Returns(roles.AsQueryable().BuildMock());
+        _db.Setup(er => er.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+            .Returns(new EmployeeRole { Id = 1, Employee = EmployeeTestData.EmployeeOne, Role = RoleTestData.EmployeeRole }.ToMockIQueryable());
 
-        _employeeServiceMock.Setup(e => e.GetEmployeeById(1)).ReturnsAsync(_employeeDto);
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name)).Returns(Task.FromResult(EmployeeTypeTestData.DeveloperType));
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employeeDto.EmployeeType.Name)).ReturnsAsync(_employeeTypeDto);
+        _db.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Returns(RoleTestData.EmployeeRole.ToMockIQueryable());
+
+        _db.Setup(r => r.Termination.Add(It.IsAny<Termination>()))
+            .ReturnsAsync(new Termination());
+
+        _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
+            .ReturnsAsync(_employeeDto.ToDto);
+
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType!.Name))
+            .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
+
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employeeDto.EmployeeType!.Name))
+            .ReturnsAsync(_employeeTypeDto.ToDto);
 
         _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
 
-        await _terminationService.SaveTermination(_terminationDto);
+        await _terminationService.SaveTermination(_terminationDto.ToDto());
 
         _db.Verify(x => x.Termination.Add(It.IsAny<Termination>()), Times.Once);
     }
@@ -109,7 +116,10 @@ public class TerminationServiceUnitTests
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(true);
 
-        await _terminationService.SaveTermination(_terminationDto);
+        _db.Setup(r => r.Termination.Update(It.IsAny<Termination>()))
+            .ReturnsAsync(new Termination());
+
+        await _terminationService.SaveTermination(_terminationDto.ToDto());
 
         _db.Verify(x => x.Termination.Update(It.IsAny<Termination>()), Times.Once);
     }
@@ -128,6 +138,8 @@ public class TerminationServiceUnitTests
     public async Task GetByIdPassTest()
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(true);
+
+        _db.Setup(x => x.Termination.FirstOrDefault(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(_terminationDto);
 
         await _terminationService.GetTerminationByEmployeeId(1);
 

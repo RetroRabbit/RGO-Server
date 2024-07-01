@@ -20,32 +20,32 @@ public class EmployeeDocumentControllerUnitTest
     private readonly List<EmployeeDocumentDto> _employeeDocumentDtoList;
     private readonly EmployeeDocumentDto _employeeDocumentDto;
 
-    List<Claim> claims;
-    ClaimsPrincipal claimsPrincipal;
-    ClaimsIdentity identity;
+    List<Claim> _claims;
+    ClaimsPrincipal _claimsPrincipal;
+    ClaimsIdentity _identity;
 
     public EmployeeDocumentControllerUnitTest()
     {
         _employeeMockDocumentService = new Mock<IEmployeeDocumentService>();
         _controller = new EmployeeDocumentController(_employeeMockDocumentService.Object);
 
-        claims = new List<Claim>
+        _claims = new List<Claim>
         {
                 new Claim(ClaimTypes.Email, "test@example.com"),
         };
 
-        identity = new ClaimsIdentity(claims, "TestAuthType");
-        claimsPrincipal = new ClaimsPrincipal(identity);
+        _identity = new ClaimsIdentity(_claims, "TestAuthType");
+        _claimsPrincipal = new ClaimsPrincipal(_identity);
 
         _controller.ControllerContext = new ControllerContext
         {
-            HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            HttpContext = new DefaultHttpContext { User = _claimsPrincipal }
         };
       
         _simpleEmployeeDocument = new SimpleEmployeeDocumentDto
         {
             Id = 1,
-            EmployeeId = EmployeeTestData.EmployeeDto.Id,
+            EmployeeId = EmployeeTestData.EmployeeOne.Id,
             FileName = "TestFile.pdf",
             FileCategory = FileCategory.EmploymentContract,
             Blob = "TestFileContent",
@@ -54,10 +54,10 @@ public class EmployeeDocumentControllerUnitTest
 
         _employeeDocumentDtoList = new List<EmployeeDocumentDto>()
         {
-            EmployeeDocumentTestData.EmployeeDocumentPending
+            EmployeeDocumentTestData.EmployeeDocumentPending.ToDto()
         };
 
-        _employeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending;
+        _employeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending.ToDto();
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class EmployeeDocumentControllerUnitTest
         Assert.NotNull(result);
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualDetails = Assert.IsType<EmployeeDocumentDto>(okResult.Value);
-        Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualDetails);
+        Assert.Equivalent(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), actualDetails);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class EmployeeDocumentControllerUnitTest
 
         var notfoundResult = Assert.IsType<ObjectResult>(result);
         var actualExceptionMessage = Assert.IsType<string>(notfoundResult.Value);
-        Assert.Equal("An error occurred while fetching the employee document.", actualExceptionMessage);
+        Assert.Equivalent("An error occurred while fetching the employee document.", actualExceptionMessage);
     }
 
     [Fact]
@@ -121,13 +121,13 @@ public class EmployeeDocumentControllerUnitTest
     public async Task SaveEmployeeDocumentReturnsOkResult()
     {
         _employeeMockDocumentService.Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument, "test@example.com", 0))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto());
 
         var result = await _controller.Save(_simpleEmployeeDocument!, 0);
 
         var okresult = Assert.IsType<OkObjectResult>(result);
         var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
-        Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualSavedEmployeeDocument);
+        Assert.Equivalent(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), actualSavedEmployeeDocument);
     }
 
     [Fact]
@@ -147,9 +147,9 @@ public class EmployeeDocumentControllerUnitTest
     public async Task UpdateEmployeeDocumentReturnsOkResult()
     {
         _employeeMockDocumentService.Setup(x => x.UpdateEmployeeDocument(It.IsAny<EmployeeDocumentDto>(), ""))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto());
 
-        var result = await _controller.Update(EmployeeDocumentTestData.EmployeeDocumentPending);
+        var result = await _controller.Update(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto());
 
         var okresult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okresult.StatusCode);
@@ -173,13 +173,13 @@ public class EmployeeDocumentControllerUnitTest
     {
         _employeeMockDocumentService
             .Setup(e => e.DeleteEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto());
 
         var result = await _controller.Delete(EmployeeDocumentTestData.EmployeeDocumentPending.Id);
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualemployeeDocument = Assert.IsAssignableFrom<EmployeeDocumentDto>(okResult.Value);
 
-        Assert.Equal(EmployeeDocumentTestData.EmployeeDocumentPending, actualemployeeDocument);
+        Assert.Equivalent(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), actualemployeeDocument);
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class EmployeeDocumentControllerUnitTest
     {
         var listOfEmployeeDocumentsDto = new List<EmployeeDocumentDto>()
         {
-                EmployeeDocumentTestData.EmployeeDocumentPending
+                EmployeeDocumentTestData.EmployeeDocumentPending.ToDto()
         };
 
         _employeeMockDocumentService

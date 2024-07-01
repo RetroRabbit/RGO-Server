@@ -117,7 +117,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         var savedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
                                                      .Add(new EmployeeEvaluationRating(evaluationRating));
 
-        return savedEmployeeEvaluationRating;
+        return savedEmployeeEvaluationRating.ToDto();
     }
 
     public async Task<EmployeeEvaluationRatingDto> Update(EvaluationRatingInput rating)
@@ -144,7 +144,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         var updatedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
                                                        .Update(new EmployeeEvaluationRating(ratingDtoToUpdate));
 
-        return updatedEmployeeEvaluationRating;
+        return updatedEmployeeEvaluationRating.ToDto();
     }
 
     public async Task<EmployeeEvaluationRatingDto> Delete(EvaluationRatingInput rating)
@@ -170,7 +170,7 @@ public class EmployeeEvaluationRatingService : IEmployeeEvaluationRatingService
         var deletedEmployeeEvaluationRating = await _db.EmployeeEvaluationRating
                                                        .Delete(employeeEvaluationRating.Id);
 
-        return deletedEmployeeEvaluationRating;
+        return deletedEmployeeEvaluationRating.ToDto();
     }
 
     public async Task<List<EmployeeEvaluationRatingDto>> GetAll()

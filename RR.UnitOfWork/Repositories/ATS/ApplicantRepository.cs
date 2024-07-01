@@ -1,10 +1,12 @@
-﻿using ATS.Models;
-using RR.UnitOfWork.Entities.ATS;
-using RR.UnitOfWork.Interfaces.ATS;
+﻿using RR.UnitOfWork.Entities.ATS;
 
 namespace RR.UnitOfWork.Repositories.ATS;
 
-public  class CandidateRepository : BaseRepository<Candidate, CandidateDto>, ICandidateRepository
+public interface ICandidateRepository : IRepository<Candidate>
+{
+}
+
+public  class CandidateRepository : BaseRepository<Candidate>, ICandidateRepository
 {
     public CandidateRepository(DatabaseContext db) : base(db) 
     { }

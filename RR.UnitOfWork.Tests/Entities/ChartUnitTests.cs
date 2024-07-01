@@ -1,5 +1,4 @@
-﻿using HRIS.Models;
-using RR.Tests.Data.Models.HRIS;
+﻿using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
@@ -17,7 +16,7 @@ public class ChartUnitTests
 
     public Chart CreateTestChartDto()
     {
-        var chartDto = new ChartDto
+        var chartDto = new Chart
         {
             Id = 0,
             Name = "Name",
@@ -25,16 +24,16 @@ public class ChartUnitTests
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
             Roles = new List<string> { "All" },
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        return new Chart(chartDto);
+        return chartDto;
     }
 
     [Fact]
     public void ChartToDtoTest()
     {
-        var chartDto = new ChartDto
+        var chartDto = new Chart
         {
             Id = 0,
             Name = "Name",
@@ -42,10 +41,10 @@ public class ChartUnitTests
             DataTypes = new List<string> { "data 1", "data 2" },
             Labels = new List<string> { "Label1", "Label2" },
             Roles = new List<string> { "All" },
-            Datasets = ChartDataSetTestData.chartDataSetDtoList
+            Datasets = ChartDataSetTestData.ChartDataSetList
         };
 
-        var chart = new Chart(chartDto);
+        var chart = chartDto;
 
         Assert.Equivalent(chart.ToDto(), chartDto);
     }

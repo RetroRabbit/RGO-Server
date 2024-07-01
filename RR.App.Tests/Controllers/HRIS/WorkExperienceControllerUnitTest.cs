@@ -33,7 +33,7 @@ public class WorkExperienceControllerUnitTest
     }
 
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
-    public async Task saveWorkExperienceReturnsOk()
+    public async Task SaveWorkExperienceReturnsOk()
     {
         _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ReturnsAsync(_workExperienceDto);
 
@@ -45,7 +45,7 @@ public class WorkExperienceControllerUnitTest
     }
 
     [Fact(Skip = "Needs fixing")]
-    public async Task saveWorkExperienceFail()
+    public async Task SaveWorkExperienceFail()
     {
         _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ThrowsAsync(new Exception("unexpected error occurred"));
 
@@ -61,7 +61,7 @@ public class WorkExperienceControllerUnitTest
     }
 
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
-    public async Task saveWorkExperienceAlreadyExists()
+    public async Task SaveWorkExperienceAlreadyExists()
     {
         _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto)).ThrowsAsync(new Exception("work experience exists"));
 

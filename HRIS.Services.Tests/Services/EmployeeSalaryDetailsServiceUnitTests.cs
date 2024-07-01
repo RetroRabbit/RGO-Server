@@ -5,6 +5,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -19,8 +20,8 @@ namespace HRIS.Services.Tests.Services
         private readonly Mock<IEmployeeSalarayDetailsService> _employeeSalaryDetailsServiceMock;
         private readonly EmployeeSalaryDetailsService _employeeSalaryDetailsService;
 
-        int employeeId = 1;
-        static Employee testEmployee = new Employee(EmployeeTestData.EmployeeDto, EmployeeTypeTestData.DeveloperType);
+        private const int EmployeeId = 1;
+        private readonly Employee _testEmployee = EmployeeTestData.EmployeeOne;
 
         public EmployeeSalaryDetailsServiceUnitTest()
         {
@@ -33,14 +34,13 @@ namespace HRIS.Services.Tests.Services
         [Fact]
         public async Task GetEmployeeSalaryPass()
         {
-            double salary = 25000.00;
-            var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
+            var salary = 25000.00d;
             _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                        .Returns(mockEmployeeDbSet.Object);
+                        .Returns(_testEmployee.EntityToList().AsQueryable().BuildMockDbSet().Object);
 
             var employeeSalaryDetails = new EmployeeSalaryDetails
             {
-                EmployeeId = employeeId,
+                EmployeeId = EmployeeId,
                 Salary = salary
             };
 
@@ -49,7 +49,7 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                            .Returns(mockEmployeeSalaryDetailsDbSet.Object);
 
-            var result = await _employeeSalaryDetailsService.GetEmployeeSalary(employeeId);
+            var result = await _employeeSalaryDetailsService.GetEmployeeSalary(EmployeeId);
             Assert.NotNull(result);
             Assert.Equal(salary, result.Salary);
             Assert.Equal(employeeSalaryDetails.Salary, result.Salary);
@@ -61,73 +61,60 @@ namespace HRIS.Services.Tests.Services
         {
             var employeeSalaries = new List<EmployeeSalaryDetails>
             {
-                new EmployeeSalaryDetails(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1),
-                new EmployeeSalaryDetails(EmployeeSalaryDetailsTestData.EmployeeSalaryTest2)
+                EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne,
+                EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsTwo
             };
 
-            var employeeSalariesDto = new List<EmployeeSalaryDetailsDto>
-            {
-                EmployeeSalaryDetailsTestData.EmployeeSalaryTest1,
-                EmployeeSalaryDetailsTestData.EmployeeSalaryTest2
-            };
-
-            var obj = _unitOfWorkMock
-            .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-            .Returns(employeeSalaries.AsQueryable().BuildMock());
+            _unitOfWorkMock
+                .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                .Returns(employeeSalaries.ToMockIQueryable());
 
             _employeeSalaryDetailsServiceMock.Setup(r => r.GetAllEmployeeSalaries());
 
-            _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null)).Returns(Task.FromResult(employeeSalariesDto));
+            _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null)).ReturnsAsync(employeeSalaries);
 
             var result = await _employeeSalaryDetailsService.GetAllEmployeeSalaries();
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
-            Assert.Equal(employeeSalariesDto, result);
+            Assert.Equivalent(employeeSalaries.Select(x => x.ToDto()).ToList(), result);
             Assert.IsType<List<EmployeeSalaryDetailsDto>>(result);
         }
 
         [Fact]
         public async Task CheckEmployeeFail()
         {
-            var mockEmployeeDbSet = new List<Employee>();
-
             _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                           .Returns(mockEmployeeDbSet.AsQueryable().BuildMock());
+                           .Returns(new List<Employee>().ToMockIQueryable());
 
-            var result = await _employeeSalaryDetailsService.CheckEmployee(employeeId);
+            var result = await _employeeSalaryDetailsService.CheckEmployee(EmployeeId);
             Assert.False(result);
         }
 
         [Fact]
         public async Task UpdateEmployeeDocumentPass()
         {
-            var mockEmployeeDbSet = new List<Employee> { testEmployee }.AsQueryable().BuildMockDbSet();
             _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                      .Returns(mockEmployeeDbSet.Object);
+                      .Returns(_testEmployee.EntityToList().AsQueryable().BuildMockDbSet().Object);
 
             _unitOfWorkMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
-                        .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1);
+                        .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
             var service = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object, _errorLoggingServiceMock.Object);
-            var results = await service.UpdateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1);
+            var results = await service.UpdateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
             Assert.NotNull(results);
-            Assert.Equal(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1, results);
+            Assert.Equivalent(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto(), results);
         }
 
         [Fact]
         public async Task SaveEmployeeSalaryFail()
         {
-            var obj = _unitOfWorkMock
-            .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-            .Returns(new List<EmployeeSalaryDetails>
-            {
-                new EmployeeSalaryDetails(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1)
-            }
-            .AsQueryable().BuildMock());
+            _unitOfWorkMock
+                .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                .Returns(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockIQueryable());
 
-            _employeeSalaryDetailsServiceMock.Setup(r => r.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).Returns(Task.FromResult(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1));
+            _employeeSalaryDetailsServiceMock.Setup(r => r.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
 
-            _unitOfWorkMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).Returns(Task.FromResult(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1));
+            _unitOfWorkMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
             _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                            .ReturnsAsync(true);
@@ -135,25 +122,21 @@ namespace HRIS.Services.Tests.Services
             _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee salary already exists"));
 
             var exception = await Assert.ThrowsAnyAsync<Exception>(() => _employeeSalaryDetailsService
-                .SaveEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1));
-            
+                .SaveEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));
+
             Assert.Equal("Employee salary already exists", exception.Message);
         }
 
         [Fact]
         public async Task SaveEmployeeSalaryPass()
         {
-            var obj = _unitOfWorkMock
-           .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-           .Returns(new List<EmployeeSalaryDetails>
-           {
-                new EmployeeSalaryDetails(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1)
-           }
-           .AsQueryable().BuildMock());
+            _unitOfWorkMock
+                .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                .Returns(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockIQueryable());
 
-            _employeeSalaryDetailsServiceMock.Setup(r => r.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).Returns(Task.FromResult(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1));
+            _employeeSalaryDetailsServiceMock.Setup(r => r.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
 
-            _unitOfWorkMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).Returns(Task.FromResult(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1));
+            _unitOfWorkMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
             _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                            .ReturnsAsync(true);
@@ -163,23 +146,22 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
 
             Assert.NotNull(result);
-            Assert.Equal(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1, result);
+            Assert.Equivalent(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto(), result);
             _unitOfWorkMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
         }
 
         [Fact]
         public async Task DeleteSalaryPass()
         {
-            var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetailsDto> { EmployeeSalaryDetailsTestData.EmployeeSalaryTest1 }.AsQueryable().BuildMockDbSet();
             _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
-                           .ReturnsAsync(mockEmployeeSalaryDetailsDbSet.Object.ToList());
+                           .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockDbSet().Object.ToList());
 
             _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
-                           .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1);
+                           .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            var result = await _employeeSalaryDetailsService.DeleteEmployeeSalary(employeeId);
+            var result = await _employeeSalaryDetailsService.DeleteEmployeeSalary(EmployeeId);
             Assert.NotNull(result);
-            Assert.Equal(EmployeeSalaryDetailsTestData.EmployeeSalaryTest1, result);
+            Assert.Equivalent(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto(), result);
             _unitOfWorkMock.Verify(r => r.EmployeeSalaryDetails.Delete(It.IsAny<int>()), Times.Once);
         }
     }

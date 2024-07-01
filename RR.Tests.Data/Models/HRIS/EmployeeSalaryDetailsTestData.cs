@@ -1,14 +1,14 @@
-﻿using HRIS.Models;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS;
 
 public class EmployeeSalaryDetailsTestData
 {
-    public static EmployeeSalaryDetailsDto EmployeeSalaryTest1 = new EmployeeSalaryDetailsDto
+    public static EmployeeSalaryDetails EmployeeSalaryDetailsOne = new()
     {
         Id = 1,
-        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        EmployeeId = EmployeeTestData.EmployeeOne.Id,
         Salary = 15000,
         MinSalary = 9000,
         MaxSalary = 20000,
@@ -18,10 +18,10 @@ public class EmployeeSalaryDetailsTestData
         SalaryUpdateDate = DateTime.Now
     };
 
-    public static EmployeeSalaryDetailsDto EmployeeSalaryTest2 = new EmployeeSalaryDetailsDto
+    public static EmployeeSalaryDetails EmployeeSalaryDetailsTwo = new()
     {
         Id = 2,
-        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        EmployeeId = EmployeeTestData.EmployeeOne.Id,
         Salary = 25000,
         MinSalary = 12000,
         MaxSalary = 40000,

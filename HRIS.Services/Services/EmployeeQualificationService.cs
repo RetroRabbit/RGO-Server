@@ -3,7 +3,6 @@ using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using System;
 
 namespace HRIS.Services.Services;
 
@@ -45,7 +44,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
 
             employeeQualificationDto.Id = addedQualification.Id;
 
-            return addedQualification;
+            return addedQualification.ToDto();
         }
         catch (Exception ex)
         {
@@ -53,11 +52,11 @@ public class EmployeeQualificationService : IEmployeeQualificationService
         }
     }
 
-    public Task<List<EmployeeQualificationDto>> GetAllEmployeeQualifications()
+    public async Task<List<EmployeeQualificationDto>> GetAllEmployeeQualifications()
     {
         try
         {
-            return _db.EmployeeQualification.GetAll();
+            return (await _db.EmployeeQualification.GetAll()).Select(x => x.ToDto()).ToList();
         }
         catch (Exception ex)
         {
@@ -155,10 +154,9 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             qualification.ProofOfQualification = employeeQualificationDto.ProofOfQualification;
             qualification.DocumentName = employeeQualificationDto.DocumentName;
 
-            EmployeeQualification employeeQualification = new EmployeeQualification(qualification);
-            var updatedEmplyeeQualificationDto = await _db.EmployeeQualification.Update(employeeQualification);
+            var updatedEmplyeeQualificationDto = await _db.EmployeeQualification.Update(qualification);
 
-            return updatedEmplyeeQualificationDto;
+            return updatedEmplyeeQualificationDto.ToDto();
         }
         catch (Exception ex)
         {
@@ -171,7 +169,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
         try
         {
             var deletedQualification = await _db.EmployeeQualification.Delete(id);
-            return deletedQualification;
+            return deletedQualification.ToDto();
         }
         catch (Exception ex)
         {

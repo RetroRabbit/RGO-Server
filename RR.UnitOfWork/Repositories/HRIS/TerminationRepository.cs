@@ -1,10 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class TerminationRepository : BaseRepository<Termination, TerminationDto>, ITerminationRepository
+public interface ITerminationRepository : IRepository<Termination>
+{
+}
+
+public class TerminationRepository : BaseRepository<Termination>, ITerminationRepository
 {
     public TerminationRepository(DatabaseContext db) : base(db)
     {

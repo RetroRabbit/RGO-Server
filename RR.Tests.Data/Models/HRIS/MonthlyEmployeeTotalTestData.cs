@@ -1,15 +1,10 @@
-﻿using HRIS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS
 {
     public class MonthlyEmployeeTotalTestData
     {
-        public static MonthlyEmployeeTotalDto monthlyEmployeeTotalDtoCurrentYearCurrentMonth = new MonthlyEmployeeTotalDto
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_CurrentYear_CurrentMonth = new()
         {
             Id = 1,
             EmployeeTotal = 1,
@@ -20,7 +15,7 @@ namespace RR.Tests.Data.Models.HRIS
             Year = DateTime.Now.Year
         };
 
-        public static MonthlyEmployeeTotalDto monthlyEmployeeTotalDtoPreviuosMonthCurrentYear = new MonthlyEmployeeTotalDto
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviuosMonth_CurrentYear = new()
         {
             Id = 1,
             EmployeeTotal = 1,
@@ -31,7 +26,7 @@ namespace RR.Tests.Data.Models.HRIS
             Year = DateTime.Now.Year
         };
 
-        public static MonthlyEmployeeTotalDto monthlyEmployeeTotalDtoPreviuosMonthFurtureYear = new MonthlyEmployeeTotalDto
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviuosMonth_FurtureYear = new()
         {
             Id = 1,
             EmployeeTotal = 1,
@@ -42,7 +37,7 @@ namespace RR.Tests.Data.Models.HRIS
             Year = 2032
         };
 
-        public static MonthlyEmployeeTotalDto monthlyEmployeeTotalDtoMonthNovCurrentYear = new MonthlyEmployeeTotalDto
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_MonthNov_CurrentYear = new()
         {
             Id = 1,
             EmployeeTotal = 1,

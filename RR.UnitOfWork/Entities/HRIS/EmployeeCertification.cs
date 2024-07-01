@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeCertification")]
-public class EmployeeCertification : IModel<EmployeeCertificationDto>
+public class EmployeeCertification : IModel
 {
     public EmployeeCertification()
     {

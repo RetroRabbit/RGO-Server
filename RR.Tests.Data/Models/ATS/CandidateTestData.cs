@@ -1,12 +1,12 @@
-﻿using ATS.Models;
-using ATS.Models.Enums;
+﻿using ATS.Models.Enums;
 using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.ATS;
 
 namespace RR.Tests.Data.Models.ATS;
 
-public class CandidateDtoTestData
+public class CandidateTestData
 {
-    public static CandidateDto CandidateDto = new CandidateDto
+    public static Candidate CandidateOne = new()
     {
         Id = 1,
         Name = "Jane",
@@ -30,7 +30,7 @@ public class CandidateDtoTestData
         QualificationEndDate = 2020,
     };
 
-    public static CandidateDto CandidateDtoTwo = new CandidateDto
+    public static Candidate CandidateTwo = new()
     {
         Id = 1,
         Name = "Joe",

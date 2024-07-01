@@ -1,10 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class ClientRepository : BaseRepository<Client, ClientDto>, IClientRepository
+public interface IClientRepository : IRepository<Client>
+{
+}
+
+public class ClientRepository : BaseRepository<Client>, IClientRepository
 {
     public ClientRepository(DatabaseContext db) : base(db)
     {

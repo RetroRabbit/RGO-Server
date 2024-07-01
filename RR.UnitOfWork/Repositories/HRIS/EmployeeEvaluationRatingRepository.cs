@@ -1,11 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class EmployeeEvaluationRatingRepository : BaseRepository<EmployeeEvaluationRating, EmployeeEvaluationRatingDto>,
-                                                  IEmployeeEvaluationRatingRepository
+public interface IEmployeeEvaluationRatingRepository : IRepository<EmployeeEvaluationRating>
+{
+}
+
+public class EmployeeEvaluationRatingRepository : BaseRepository<EmployeeEvaluationRating>, IEmployeeEvaluationRatingRepository
 {
     public EmployeeEvaluationRatingRepository(DatabaseContext databaseContext) : base(databaseContext)
     {

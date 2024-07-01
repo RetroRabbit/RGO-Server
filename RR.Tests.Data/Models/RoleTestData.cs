@@ -1,15 +1,10 @@
 ﻿using RR.UnitOfWork.Entities.HRIS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RR.Tests.Data.Models
 {
     public class RoleTestData
     {
-        public List<Role> roleList = new List<Role>
+        public static List<Role> Roles = new()
         {
             new() { Id = 1, Description = "SuperAdmin" },
             new() { Id = 2, Description = "Admin" },
@@ -17,10 +12,10 @@ namespace RR.Tests.Data.Models
             new() { Id = 4, Description = "Talent" },
             new() { Id = 5, Description = "Journey" }
         };
-        public Role superAdminRole = new Role { Id = 1, Description = "SuperAdmin" };
-        public Role adminRole = new Role { Id = 2, Description = "Admin" };
-        public Role employeeRole = new Role { Id = 3, Description = "Employee" };
-        public Role talentRole = new Role { Id = 4, Description = "Talent" };
-        public Role journeyRole = new Role { Id = 4, Description = "Journey" };
+        public static Role SuperAdminRole = new() { Id = 1, Description = "SuperAdmin" };
+        public static Role AdminRole = new() { Id = 2, Description = "Admin" };
+        public static Role EmployeeRole = new() { Id = 3, Description = "Employee" };
+        public static Role TalentRole = new() { Id = 4, Description = "Talent" };
+        public static Role JourneyRole = new() { Id = 4, Description = "Journey" };
     }
 }

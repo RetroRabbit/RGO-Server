@@ -1,13 +1,11 @@
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
-using System.Security.Claims;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -132,7 +130,7 @@ public class PropertyAccessControllerUnitTests
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetUserIdReturnsOkResult()
     {
-        _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ReturnsAsync(EmployeeTestData.EmployeeDto);
+        _employeeMockService.Setup(service => service.GetEmployee("test@retrorabbit.co.za")).ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto());
 
         var result = await _propertyAccessController.GetUserId("test@retrorabbit.co.za");
 

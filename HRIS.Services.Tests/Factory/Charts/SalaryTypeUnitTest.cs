@@ -1,4 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using Moq;
+using Xunit;
+using System.Linq.Expressions;
+using HRIS.Models.Enums;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
@@ -6,8 +9,7 @@ using HRIS.Services.Services;
 using MockQueryable.Moq;
 using Moq;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
-using Xunit;
+using RR.Tests.Data;
 
 namespace HRIS.Services.Tests.Factory.Charts;
 
@@ -29,7 +31,7 @@ public class SalaryTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto{ Id = 3, Description = "Employee"};
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!)).Returns(Task.FromResult(employeeTypeDto));
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!)).ReturnsAsync(employeeTypeDto);
         employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
@@ -85,11 +87,11 @@ public class SalaryTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType!)
+            new(employeeDto,employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+            .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = salaryType.GenerateData(employeeDto, realServiceProvider);
@@ -103,11 +105,11 @@ public class SalaryTypeUnitTest
 
         var employeeList = new List<Employee>
         {
-            new Employee(employeeDto,employeeDto.EmployeeType!)
+            new(employeeDto,employeeDto.EmployeeType!)
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+            .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = salaryType.GenerateData(employeeDto, realServiceProvider);
@@ -121,7 +123,7 @@ public class SalaryTypeUnitTest
         var employeeList = new List<Employee>();
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(employeeList.AsQueryable().BuildMock());
+            .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = salaryType.GenerateData(null, realServiceProvider);

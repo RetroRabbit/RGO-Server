@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.11" />
+    <PackageReference Include="MockQueryable.Moq" Version="7.0.1" />
     <PackageReference Include="Moq" Version="4.20.69" />
   </ItemGroup>
 

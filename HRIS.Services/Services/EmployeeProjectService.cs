@@ -19,7 +19,7 @@ public class EmployeeProjectService : IEmployeeProjectService
     {
         var newEmployeeProject = await _db.EmployeeProject.Add(new EmployeeProject(employeeProjectDto));
 
-        return newEmployeeProject;
+        return newEmployeeProject.ToDto();
     }
 
     public async Task<EmployeeProjectDto> DeleteEmployeeProject(string name)
@@ -29,12 +29,7 @@ public class EmployeeProjectService : IEmployeeProjectService
         var employeeProjectDto = await _db.EmployeeProject
                                           .Delete(existsingEmployeeProject.Id);
 
-        return employeeProjectDto;
-    }
-
-    public Task<List<EmployeeProjectDto>> GetAllEmployeeProjects()
-    {
-        return _db.EmployeeProject.GetAll();
+        return employeeProjectDto.ToDto();
     }
 
     public async Task<EmployeeProjectDto> GetEmployeeProject(string name)
@@ -54,6 +49,6 @@ public class EmployeeProjectService : IEmployeeProjectService
         var updatedEmployeeProject = await _db.EmployeeProject
                                               .Update(new EmployeeProject(existingEmployeeProject));
 
-        return updatedEmployeeProject;
+        return updatedEmployeeProject.ToDto();
     }
 }

@@ -7,7 +7,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeDocument")]
-public class EmployeeDocument : IModel<EmployeeDocumentDto>
+public class EmployeeDocument : IModel
 {
     public EmployeeDocument()
     {

@@ -5,7 +5,7 @@ using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
-public class ChartRoleLink : IModel<ChartRoleLinkDto>
+public class ChartRoleLink : IModel
 {
     public ChartRoleLink()
     {

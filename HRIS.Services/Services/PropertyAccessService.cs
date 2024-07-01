@@ -1,12 +1,9 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
-using HRIS.Models.Update;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using System.Collections.Generic;
 
 namespace HRIS.Services.Services;
 
@@ -26,14 +23,13 @@ public class PropertyAccessService : IPropertyAccessService
         if (employeeRole == null) 
             return new List<PropertyAccessDto>();
         else
-            return await _db.PropertyAccess.GetAll(p => p.RoleId == employeeRole.Id);
+            return await GetAccessListByRoleId(employeeRole.Id);
     }
 
     public async Task<List<PropertyAccessDto>> GetAccessListByRoleId(int roleId)
     {
-        return await _db.PropertyAccess.GetAll(p => p.RoleId == roleId);
+        return (await _db.PropertyAccess.GetAll(p => p.RoleId == roleId)).Select(x => x.ToDto()).ToList();
     }
-
 
     public async Task<List<PropertyAccessDto>> GetAll()
     {
@@ -71,7 +67,7 @@ public class PropertyAccessService : IPropertyAccessService
                         var propertyAccess = new PropertyAccessDto
                         {
                             Id = 0,
-                            Role = role,
+                            Role = role.ToDto(),
                             Table = table,
                             Field = column,
                             AccessLevel = PropertyAccessLevel.write

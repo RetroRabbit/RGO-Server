@@ -133,16 +133,40 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("dateOfIncident")
+                    b.Property<DateTime>("DateOfIncident")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("dateOfIncident");
 
-                    b.Property<string>("message")
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ipAddress");
+
+                    b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("message");
 
-                    b.Property<string>("stackTrace")
+                    b.Property<string>("RequestBody")
+                        .HasColumnType("text")
+                        .HasColumnName("requestBody");
+
+                    b.Property<string>("RequestContentType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("requestContentType");
+
+                    b.Property<string>("RequestMethod")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("requestMethod");
+
+                    b.Property<string>("RequestUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("requestUrl");
+
+                    b.Property<string>("StackTrace")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("stackTrace");

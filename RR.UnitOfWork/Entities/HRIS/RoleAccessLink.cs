@@ -6,7 +6,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("RoleAccessLink")]
-public class RoleAccessLink : IModel<RoleAccessLinkDto>
+public class RoleAccessLink : IModel
 {
     public RoleAccessLink()
     {
@@ -15,8 +15,8 @@ public class RoleAccessLink : IModel<RoleAccessLinkDto>
     public RoleAccessLink(RoleAccessLinkDto roleAccessLinkDto)
     {
         Id = roleAccessLinkDto.Id;
-        RoleId = roleAccessLinkDto.Role!.Id;
-        RoleAccessId = roleAccessLinkDto.RoleAccess!.Id;
+        RoleId = roleAccessLinkDto.Role?.Id ?? 0;
+        RoleAccessId = roleAccessLinkDto.RoleAccess?.Id ?? 0;
     }
 
     [Column("roleId")]

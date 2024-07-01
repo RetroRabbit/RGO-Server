@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.ATS;
@@ -9,48 +8,7 @@ using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork;
 
-public interface IDatabaseContext
-{
-    DbSet<Employee> employees { get; set; }
-    DbSet<EmployeeRole> employeeRoles { get; set; }
-    DbSet<EmployeeAddress> employeeAddresses { get; set; }
-    DbSet<EmployeeCertification> employeeCertification { get; set; }
-    DbSet<EmployeeDocument> employeeDocuments { get; set; }
-    DbSet<EmployeeProject> employeeProjects { get; set; }
-    DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }
-    DbSet<EmployeeEvaluationAudience> employeeEvaluationAudiences { get; set; }
-    DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
-    DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
-    DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
-    DbSet<EmployeeQualification> employeeQualifications { get; set; }
-    DbSet<EmployeeSalaryDetails> employeeSalaryDetails { get; set; }
-    DbSet<Role> roles { get; set; }
-    DbSet<RoleAccess> roleAccess { get; set; }
-    DbSet<Chart> Chart { get; set; }
-    DbSet<ChartRoleLink> ChartRoleLink { get; set; }
-    DbSet<FieldCode> fieldCodes { get; set; }
-    DbSet<FieldCodeOptions> fieldCodesOptions { get; set; }
-    DbSet<EmployeeData> employeeData { get; set; }
-    DbSet<EmployeeDate> employeeDate { get; set; }
-    DbSet<PropertyAccess> propertyAccesses { get; set; }
-    DbSet<RoleAccessLink> roleAccessLinks { get; set; }
-    DbSet<EmployeeBanking> employeeBanking { get; set; }
-    DbSet<Client> clients { get; set; }
-    DbSet<ClientProject> clientsProject { get; set; }
-    DbSet<MonthlyEmployeeTotal> monthlyEmployeeTotal { get; set; }
-    DbSet<ErrorLogging> errorLogging { get; set; }
-    DbSet<Candidate> candidate { get; set; }
-    DbSet<WorkExperience> workExperience { get; set; }
-    DbSet<Termination> termination { get; set; }
-    DbSet<DataReport> dataReport { get; set; }
-    DbSet<DataReportColumnMenu> dataReportColumnMenu { get; set; }
-    DbSet<DataReportColumns> dataReportColumns { get; set; }
-    DbSet<DataReportFilter> dataReportFilter { get; set; }
-    DbSet<DataReportValues> dataReportValues { get; set; }
-    DbSet<DataReportAccess> dataReportAccess { get; set; }
-}
-
-public class DatabaseContext : DbContext, IDatabaseContext
+public class DatabaseContext : DbContext
 {
     public DatabaseContext()
     {
@@ -100,6 +58,8 @@ public class DatabaseContext : DbContext, IDatabaseContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if(optionsBuilder.IsConfigured)
+            return;
         optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__Default"));
     }
 

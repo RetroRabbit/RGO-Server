@@ -20,7 +20,7 @@ public class EmployeeTypeService : IEmployeeTypeService
         var newEmployeeType = await _db.EmployeeType
                                        .Add(new EmployeeType(employeeTypeDto));
 
-        return newEmployeeType;
+        return newEmployeeType.ToDto();
     }
 
     public async Task<EmployeeTypeDto> DeleteEmployeeType(string name)
@@ -30,12 +30,12 @@ public class EmployeeTypeService : IEmployeeTypeService
         var deletedEmployeeType = await _db.EmployeeType
                                            .Delete(existingEmployeeType.Id);
 
-        return deletedEmployeeType;
+        return deletedEmployeeType.ToDto();
     }
 
     public async Task<List<EmployeeTypeDto>> GetAllEmployeeType()
     {
-        return await _db.EmployeeType.GetAll();
+        return (await _db.EmployeeType.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
     public async Task<EmployeeTypeDto> GetEmployeeType(string name)
@@ -53,11 +53,11 @@ public class EmployeeTypeService : IEmployeeTypeService
         var updatedEmployeeType = await _db.EmployeeType
                                            .Update(new EmployeeType(employeeTypeDto));
 
-        return updatedEmployeeType;
+        return updatedEmployeeType.ToDto();
     }
 
     public async Task<List<EmployeeTypeDto>> GetEmployeeTypes()
     {
-        return await _db.EmployeeType.GetAll();
+        return (await _db.EmployeeType.GetAll()).Select(x => x.ToDto()).ToList();
     }
 }

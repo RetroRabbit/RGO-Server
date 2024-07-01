@@ -27,11 +27,13 @@ public class CandidateService : ICandidateService
             throw new Exception("Candidate already exists");
 
         Candidate newCandidate = new Candidate(candidate);
-        return await _db.Candidate.Add(newCandidate);
+        return (await _db.Candidate.Add(newCandidate)).ToDto();
     }
 
-    public async Task<List<CandidateDto>> GetAllCandidates() => 
-        await _db.Candidate.GetAll();
+    public async Task<List<CandidateDto>> GetAllCandidates()
+    {
+        return (await _db.Candidate.GetAll()).Select(x => x.ToDto()).ToList();
+    }
 
     public async Task<CandidateDto> GetCandidateById(int id) => 
         await _db.Candidate.Get(candidate => candidate.Id == id)
@@ -47,9 +49,13 @@ public class CandidateService : ICandidateService
             .FirstAsync();
     }
 
-    public async Task<CandidateDto> UpdateCandidate(CandidateDto candidateDto) => 
-        await _db.Candidate.Update(new Candidate(candidateDto));
+    public async Task<CandidateDto> UpdateCandidate(CandidateDto candidateDto)
+    {
+        return (await _db.Candidate.Update(new Candidate(candidateDto))).ToDto();
+    }
 
-    public async Task<CandidateDto> DeleteCandidate(int id) => await 
-        _db.Candidate.Delete(id);
+    public async Task<CandidateDto> DeleteCandidate(int id)
+    {
+        return (await _db.Candidate.Delete(id)).ToDto();
+    }
 }

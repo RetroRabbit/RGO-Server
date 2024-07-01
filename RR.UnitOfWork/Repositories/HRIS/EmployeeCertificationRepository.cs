@@ -1,10 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class EmployeeCertificationRepository : BaseRepository<EmployeeCertification, EmployeeCertificationDto>, IEmployeeCertificationRepository
+public interface IEmployeeCertificationRepository : IRepository<EmployeeCertification>
+{
+}
+
+public class EmployeeCertificationRepository : BaseRepository<EmployeeCertification>, IEmployeeCertificationRepository
 {
     public EmployeeCertificationRepository(DatabaseContext db) : base(db)
     {

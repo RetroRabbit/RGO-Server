@@ -57,16 +57,11 @@ public class EmployeeController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEmployeeById([FromQuery] int id)
     {
-        try
-        {
+        
             var employee = await _employeeService.GetEmployeeById(id);
 
             return Ok(employee);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]

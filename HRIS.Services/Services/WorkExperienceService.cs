@@ -30,7 +30,7 @@ public class WorkExperienceService : IWorkExperienceService
         {
             throw _errorLoggingService.LogException(new Exception("Work experience already exists"));
         }
-        return await _db.WorkExperience.Add(new WorkExperience(workExperience));
+        return (await _db.WorkExperience.Add(new WorkExperience(workExperience))).ToDto();
     }
 
     public async Task<WorkExperienceDto> Update(WorkExperienceDto workExperience)
@@ -55,12 +55,12 @@ public class WorkExperienceService : IWorkExperienceService
             EndDate = workExperience.EndDate,
             ProjectDescription = workExperience.ProjectDescription,
         };
-        return await _db.WorkExperience.Update(new WorkExperience(workExperienceToUpdate));
+        return (await _db.WorkExperience.Update(new WorkExperience(workExperienceToUpdate))).ToDto();
     }
 
     public async Task<WorkExperienceDto> Delete(int workExperienceId)
     {
-        return await _db.WorkExperience.Delete(workExperienceId);
+        return (await _db.WorkExperience.Delete(workExperienceId)).ToDto();
     }
 
     public async Task<List<WorkExperienceDto>> GetWorkExperienceByEmployeeId(int id)

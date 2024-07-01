@@ -21,14 +21,14 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
     {
         var deletedEmployeeSalary = await _db.EmployeeSalaryDetails.Delete(employeeId);
 
-        return deletedEmployeeSalary;
+        return deletedEmployeeSalary.ToDto();
     }
     
     public async Task<List<EmployeeSalaryDetailsDto>> GetAllEmployeeSalaries()
     {
         try
         {
-            return await _db.EmployeeSalaryDetails.GetAll();
+            return (await _db.EmployeeSalaryDetails.GetAll()).Select(x => x.ToDto()).ToList();
         }
         catch (Exception)
         {
@@ -73,7 +73,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 
         var employeeSalary = await _db.EmployeeSalaryDetails.Add(new EmployeeSalaryDetails(employeeSalaryDto));
 
-        return employeeSalary;
+        return employeeSalary.ToDto();
     }
 
     public async Task<EmployeeSalaryDetailsDto> UpdateEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
@@ -89,7 +89,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         EmployeeSalaryDetails employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
         var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary);
 
-        return updatedEmployeeSalary;
+        return updatedEmployeeSalary.ToDto();
     }
 
 

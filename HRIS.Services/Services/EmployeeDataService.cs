@@ -32,7 +32,7 @@ public class EmployeeDataService : IEmployeeDataService
         }
         var newEmployeeData = await _db.EmployeeData.Add(new EmployeeData(employeeDataDto));
 
-        return newEmployeeData;
+        return newEmployeeData.ToDto();
     }
 
     public async Task<EmployeeDataDto> GetEmployeeData(int employeeId, string value)
@@ -47,7 +47,7 @@ public class EmployeeDataService : IEmployeeDataService
             var exception = new Exception("No employee data record found");
             throw _errorLoggingService.LogException(exception);
         }
-        return employeeData;
+        return employeeData.ToDto();
     }
 
     public async Task<List<EmployeeDataDto>?> GetAllEmployeeData(int employeeId)
@@ -56,7 +56,7 @@ public class EmployeeDataService : IEmployeeDataService
         var employeeData = employeesData
                            .Where(employeeData => employeeData.EmployeeId == employeeId)
                            .ToList();
-        return employeeData;
+        return employeeData.Select(x => x.ToDto()).ToList();
     }
 
     public async Task<EmployeeDataDto> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
@@ -74,12 +74,12 @@ public class EmployeeDataService : IEmployeeDataService
         }
         var updatedEmployeeData = await _db.EmployeeData.Update(new EmployeeData(employeeDataDto));
 
-        return updatedEmployeeData;
+        return updatedEmployeeData.ToDto();
     }
 
     public async Task<EmployeeDataDto> DeleteEmployeeData(int employeeDataId)
     {
         var deletedData = await _db.EmployeeData.Delete(employeeDataId);
-        return deletedData;
+        return deletedData.ToDto();
     }
 }

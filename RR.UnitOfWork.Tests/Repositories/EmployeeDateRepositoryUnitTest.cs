@@ -160,7 +160,7 @@ public class EmployeeDateRepositoryUnitTest : BaseRepositoryUnitTest
         Assert.NotNull(result);
         Assert.Single(result);
         var expectedResult = employeeDateEntities.Where(e => e.Id == 1).Select(e => e.ToDto());
-        Assert.Equal(expectedResult, result);
+        Assert.Equal(expectedResult, result.Select(x => x.ToDto()).ToList());
     }
 
     [Fact(Skip = "Awaiting consultation")]
