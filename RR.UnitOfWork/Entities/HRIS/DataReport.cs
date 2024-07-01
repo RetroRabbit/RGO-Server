@@ -7,7 +7,7 @@ using HRIS.Models.Report;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("DataReport")]
-public class DataReport : IModel<DataReportDto>
+public class DataReport : IModel
 {
     [Key]
     [Column("id")]

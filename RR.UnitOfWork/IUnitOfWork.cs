@@ -1,4 +1,3 @@
-using HRIS.Models;
 using Npgsql;
 using RR.UnitOfWork.Repositories;
 using RR.UnitOfWork.Repositories.ATS;

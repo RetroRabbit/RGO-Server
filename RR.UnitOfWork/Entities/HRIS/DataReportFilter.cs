@@ -7,7 +7,7 @@ using HRIS.Models.Report;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("DataReportFilter")]
-public class DataReportFilter : IModel<DataReportFilterDto>
+public class DataReportFilter : IModel
 {
     public DataReportFilter()
     {

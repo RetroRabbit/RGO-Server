@@ -1,14 +1,19 @@
 ﻿using HRIS.Models.Enums;
-using HRIS.Models.Report;
 using HRIS.Models.Report.Response;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
-using System.Security.Authentication;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class DataReportRepository : BaseRepository<DataReport, DataReportDto>, IDataReportRepository
+public interface IDataReportRepository : IRepository<DataReport>
+{
+    Task<DataReport?> GetReport(string code);
+    Task<DataReport?> GetReport(int id);
+    Task ConfirmAccessToReport(int reportId, int employeeId);
+    Task<List<DataReportListResponse>?> GetReportsForEmployee(string employeeEmail);
+}
+
+public class DataReportRepository : BaseRepository<DataReport>, IDataReportRepository
 {
     public DataReportRepository(DatabaseContext db) : base(db)
     {

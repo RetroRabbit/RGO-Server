@@ -6,7 +6,7 @@ using HRIS.Models.Report;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("DataReportValues")]
-public class DataReportValues : IModel<DataReportValuesDto>
+public class DataReportValues : IModel
 {
     public DataReportValues()
     {

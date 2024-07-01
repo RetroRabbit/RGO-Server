@@ -3,13 +3,11 @@ using Xunit;
 using System.Linq.Expressions;
 using HRIS.Models.Enums;
 using HRIS.Models;
-using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
-using Moq;
 using RR.UnitOfWork;
 using RR.Tests.Data;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Tests.Factory.Charts;
 

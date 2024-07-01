@@ -1,10 +1,12 @@
-﻿using HRIS.Models.Report;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class DataReportColumnMenuRepository : BaseRepository<DataReportColumnMenu, DataReportColumnMenuDto>,
+public interface IDataReportColumnMenuRepository : IRepository<DataReportColumnMenu>
+{
+}
+
+public class DataReportColumnMenuRepository : BaseRepository<DataReportColumnMenu>,
     IDataReportColumnMenuRepository
 {
     public DataReportColumnMenuRepository(DatabaseContext db) : base(db)

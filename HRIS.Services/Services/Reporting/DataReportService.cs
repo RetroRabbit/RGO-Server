@@ -89,7 +89,7 @@ public class DataReportService : IDataReportService
         if (item != null)
         {
             item.Input = input.Input;
-            await _db.DataReportValues.Update(new DataReportValues(item));
+            await _db.DataReportValues.Update(item);
             return;
         }
 

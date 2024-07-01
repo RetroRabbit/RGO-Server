@@ -49,20 +49,19 @@ public class BaseRepository<T> : IRepository<T> where T : class, IModel
                .ToList();
     }
 
-    public async Task<T?> FirstOrDefault(Expression<Func<TK, bool>> criteria)
+    public async Task<T?> FirstOrDefault(Expression<Func<T, bool>> criteria)
     {
         var value = (criteria == null
             ? await _entity.FirstOrDefaultAsync()
             : await _entity.Where(criteria).FirstOrDefaultAsync());
 
-        return value == null ? default(T) : value.ToDto();
+        return value;
     }
 
     public async Task<bool> Any(Expression<Func<T, bool>> criteria)
     {
         return await _entity.AnyAsync(criteria);
     }
-
 
     public async Task<T> Add(T entity)
     {

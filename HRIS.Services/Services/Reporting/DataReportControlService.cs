@@ -104,7 +104,7 @@ public class DataReportControlService : IDataReportControlService
         {
             entity.Status = ItemStatus.Active;
             entity.Menu = menu;
-            return await _db.DataReportColumns.Update(entity);
+            return (await _db.DataReportColumns.Update(entity))?.ToDto();
         }
 
         var columnType = input.GetColumnType();
@@ -121,7 +121,7 @@ public class DataReportControlService : IDataReportControlService
             Status = ItemStatus.Active,
             Menu = menu
         };
-        return await _db.DataReportColumns.Add(entity);
+        return (await _db.DataReportColumns.Add(entity))?.ToDto();
     }
 
     public async Task ArchiveColumnFromReport(int columnId)
