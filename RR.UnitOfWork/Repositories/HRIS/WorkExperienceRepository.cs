@@ -1,11 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
-
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class WorkExperienceRepository : BaseRepository<WorkExperience, WorkExperienceDto>, IWorkExperienceRepository
+public interface IWorkExperienceRepository : IRepository<WorkExperience>
+{
+}
+
+public class WorkExperienceRepository : BaseRepository<WorkExperience>, IWorkExperienceRepository
 {
     public WorkExperienceRepository(DatabaseContext db) : base(db)
     { }

@@ -19,12 +19,12 @@ public class EmployeeAddressControllerUnitTests
     { 
         _employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
         _controller = new EmployeeAddressController(_employeeAddressServiceMock.Object);
-        _employeeAddressDto = EmployeeAddressTestData.EmployeeAddressDto;
+        _employeeAddressDto = EmployeeAddressTestData.EmployeeAddressOne.ToDto();
 
         _employeeAddressDtoList = new List<EmployeeAddressDto>
         {
-            EmployeeAddressTestData.EmployeeAddressDto2,
-            EmployeeAddressTestData.EmployeeAddressDto3
+            EmployeeAddressTestData.EmployeeAddressTwo.ToDto(),
+            EmployeeAddressTestData.EmployeeAddressThree.ToDto()
         };
     }
 

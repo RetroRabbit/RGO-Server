@@ -34,7 +34,7 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
         }
 
         var newFieldCodeOption = await _db.FieldCodeOptions.Add(new FieldCodeOptions(fieldCodeOptionsDto));
-        return newFieldCodeOption;
+        return newFieldCodeOption.ToDto();
     }
 
     public async Task<List<FieldCodeOptionsDto>> GetFieldCodeOptions(int id)
@@ -49,7 +49,7 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
 
     public async Task<List<FieldCodeOptionsDto>> GetAllFieldCodeOptions()
     {
-        return await _db.FieldCodeOptions.GetAll();
+        return (await _db.FieldCodeOptions.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
     public async Task<List<FieldCodeOptionsDto>> UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
@@ -102,6 +102,6 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
         }
 
         var deleteFieldCodeOptions = await _db.FieldCodeOptions.Delete(new FieldCodeOptions(fieldCodeOptionsDto).Id);
-        return deleteFieldCodeOptions;
+        return deleteFieldCodeOptions.ToDto();
     }
 }

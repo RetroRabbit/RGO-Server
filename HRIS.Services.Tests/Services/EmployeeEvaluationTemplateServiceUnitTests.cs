@@ -1,9 +1,8 @@
 ﻿using System.Linq.Expressions;
-using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -20,7 +19,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
     {
         _dbMock = new Mock<IUnitOfWork>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeEvaluationTemplateService = new EmployeeEvaluationTemplateService(_dbMock.Object,_errorLoggingServiceMock.Object);
+        _employeeEvaluationTemplateService = new EmployeeEvaluationTemplateService(_dbMock.Object, _errorLoggingServiceMock.Object);
     }
 
     [Fact]
@@ -56,14 +55,11 @@ public class EmployeeEvaluationTemplateServiceUnitTests
     [Fact]
     public async Task GetEmployeeEvaluationTemplatePassTest()
     {
-        var evaluationTemplates = new List<EmployeeEvaluationTemplate>
+        var evaluationTemplates = new EmployeeEvaluationTemplate
         {
-            new()
-            {
-                Id = 1,
-                Description = "template"
-            }
-        }.AsQueryable().BuildMock();
+            Id = 1,
+            Description = "template"
+        }.ToMockIQueryable();
 
         _dbMock
             .Setup(x =>
@@ -108,7 +104,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
             .ReturnsAsync(false);
 
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Add(It.IsAny<EmployeeEvaluationTemplate>()))
-               .ReturnsAsync(evaluationTemplate.ToDto());
+               .ReturnsAsync(evaluationTemplate);
 
         var result = await _employeeEvaluationTemplateService.Save("template");
 
@@ -150,7 +146,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
             .ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Update(It.IsAny<EmployeeEvaluationTemplate>()))
-               .ReturnsAsync(evaluationTemplate.ToDto());
+               .ReturnsAsync(evaluationTemplate);
 
         var result = await _employeeEvaluationTemplateService.Update(evaluationTemplate.ToDto());
 
@@ -173,14 +169,11 @@ public class EmployeeEvaluationTemplateServiceUnitTests
     [Fact]
     public async Task DeleteEmployeeEvaluationTemplatePassTest()
     {
-        var evaluationTemplates = new List<EmployeeEvaluationTemplate>
+        var evaluationTemplates = new EmployeeEvaluationTemplate
         {
-            new()
-            {
-                Id = 1,
-                Description = "template"
-            }
-        }.AsQueryable().BuildMock();
+            Id = 1,
+            Description = "template"
+        }.ToMockIQueryable();
 
         _dbMock
             .SetupSequence(x =>
@@ -195,7 +188,7 @@ public class EmployeeEvaluationTemplateServiceUnitTests
             .Returns(evaluationTemplates.Where(x => x.Description == evaluationTemplates.First().Description));
 
         _dbMock.Setup(x => x.EmployeeEvaluationTemplate.Delete(It.IsAny<int>()))
-               .ReturnsAsync(evaluationTemplates.First().ToDto());
+               .ReturnsAsync(evaluationTemplates.First());
 
         var result = await _employeeEvaluationTemplateService.Delete("template");
 
@@ -205,14 +198,11 @@ public class EmployeeEvaluationTemplateServiceUnitTests
     [Fact]
     public async Task GetAllEmployeeEvaluationTemplatesTest()
     {
-        var evaluationTemplates = new List<EmployeeEvaluationTemplateDto>
+        var evaluationTemplates = new EmployeeEvaluationTemplate
         {
-            new EmployeeEvaluationTemplate
-            {
-                Id = 1,
-                Description = "template"
-            }.ToDto()
-        };
+            Id = 1,
+            Description = "template"
+        }.EntityToList();
 
         _dbMock
             .Setup(x =>

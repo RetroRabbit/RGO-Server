@@ -47,8 +47,11 @@ public class FieldCodeService : IFieldCodeService
             }
 
         var options = await _fieldCodeOptionsService.GetFieldCodeOptions(newFieldCode!.Id);
-        newFieldCode.Options = options;
-        return newFieldCode;
+
+        var dto = newFieldCode.ToDto();
+
+        dto.Options = options;
+        return dto;
     }
 
     public async Task<FieldCodeDto?> GetFieldCode(string name)
@@ -56,7 +59,7 @@ public class FieldCodeService : IFieldCodeService
         var fieldCodes = await _db.FieldCode.GetAll();
         var fieldCode = fieldCodes
                         .Where(fieldCode => fieldCode.Name == name && fieldCode.Status == ItemStatus.Active)
-                        .Select(fieldCode => fieldCode)
+                        .Select(fieldCode => fieldCode.ToDto())
                         .FirstOrDefault();
 
         if (fieldCode != null)
@@ -72,7 +75,7 @@ public class FieldCodeService : IFieldCodeService
     {
         var fieldCodes = await _db.FieldCode.GetAll();
         var fieldCode = fieldCodes
-                        .Select(fieldCode => fieldCode)
+                        .Select(fieldCode => fieldCode.ToDto())
                         .ToList();
         if (fieldCode.Count != 0)
             foreach (var item in fieldCode)
@@ -117,9 +120,9 @@ public class FieldCodeService : IFieldCodeService
             Required = ifFieldCode.Required
         };
 
-        var fieldCode = await _db.FieldCode.Update(new FieldCode(newFieldCodeDto));
+        var fieldCode = (await _db.FieldCode.Update(new FieldCode(newFieldCodeDto))).ToDto();
         var options = await _fieldCodeOptionsService.GetFieldCodeOptions(fieldCode.Id);
-        fieldCode.Options = options;
+        fieldCode.Options = options ?? new List<FieldCodeOptionsDto>();
         return fieldCode;
     }
 

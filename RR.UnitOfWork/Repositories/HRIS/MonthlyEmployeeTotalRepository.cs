@@ -1,11 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class MonthlyEmployeeTotalRepository : BaseRepository<MonthlyEmployeeTotal, MonthlyEmployeeTotalDto>,
-                                              IMonthlyEmployeeTotalRepository
+public interface IMonthlyEmployeeTotalRepository : IRepository<MonthlyEmployeeTotal>
+{
+}
+
+public class MonthlyEmployeeTotalRepository : BaseRepository<MonthlyEmployeeTotal>, IMonthlyEmployeeTotalRepository
 {
     public MonthlyEmployeeTotalRepository(DatabaseContext db) : base(db)
     {

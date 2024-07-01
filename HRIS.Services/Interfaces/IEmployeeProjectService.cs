@@ -24,13 +24,7 @@ public interface IEmployeeProjectService
     /// <param name="name"></param>
     /// <returns></returns>
     Task<EmployeeProjectDto> GetEmployeeProject(string name);
-
-    /// <summary>
-    ///     Get All Employee Projects
-    /// </summary>
-    /// <returns></returns>
-    Task<List<EmployeeProjectDto>> GetAllEmployeeProjects();
-
+    
     /// <summary>
     ///     Update Employee Project
     /// </summary>

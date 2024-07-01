@@ -1,10 +1,12 @@
-﻿using ATS.Models;
-using RR.UnitOfWork.Entities;
-using RR.UnitOfWork.Interfaces;
+﻿using RR.UnitOfWork.Entities;
 
 namespace RR.UnitOfWork.Repositories;
 
-public class ErrorLoggingRepository: BaseRepository<ErrorLogging,ErrorLoggingDto>, IErrorLoggingRepository
+public interface IErrorLoggingRepository : IRepository<ErrorLogging>
+{
+}
+
+public class ErrorLoggingRepository: BaseRepository<ErrorLogging>, IErrorLoggingRepository
 {
     public ErrorLoggingRepository(DatabaseContext db) : base(db)
     { }

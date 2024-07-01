@@ -1,17 +1,14 @@
-﻿using HRIS.Models;
-using Microsoft.EntityFrameworkCore;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class PropertyAccessRepository : BaseRepository<PropertyAccess, PropertyAccessDto>, IPropertyAccessRepository
+public interface IPropertyAccessRepository : IRepository<PropertyAccess>
 {
-    private readonly DatabaseContext _db;
+}
 
+public class PropertyAccessRepository : BaseRepository<PropertyAccess>, IPropertyAccessRepository
+{
     public PropertyAccessRepository(DatabaseContext db) : base(db)
     {
-        _db = db;
     }
-
 }

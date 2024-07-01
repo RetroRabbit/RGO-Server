@@ -17,7 +17,7 @@ public class ClientService : IClientService
     {
         var clients = await _db.Client.GetAll();
         var allClients = clients
-                         .Select(client => client)
+                         .Select(client => client.ToDto())
                          .ToList();
         return allClients;
     }

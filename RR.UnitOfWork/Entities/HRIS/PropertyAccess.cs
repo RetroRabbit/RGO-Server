@@ -7,7 +7,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("PropertyAccess")]
-public class PropertyAccess : IModel<PropertyAccessDto>
+public class PropertyAccess : IModel
 {
     public PropertyAccess()
     {

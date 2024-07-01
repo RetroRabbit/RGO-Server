@@ -76,7 +76,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             DocumentType = docType,
         };
 
-        return await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
+        return (await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument))).ToDto();
     }
 
     public async Task<EmployeeDocumentDto> addNewAdditionalDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
@@ -110,7 +110,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         var newEmployeeDocument = await _db.EmployeeDocument.Add(new EmployeeDocument(employeeDocument));
 
-        return newEmployeeDocument;
+        return newEmployeeDocument.ToDto();
     }
 
     public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename, DocumentType documentType)
@@ -190,14 +190,14 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
 
-        return updatedEmployeeDocument;
+        return updatedEmployeeDocument.ToDto();
     }
 
     public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(int documentId)
     {
         var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(documentId);
 
-        return deletedEmployeeDocument;
+        return deletedEmployeeDocument.ToDto();
     }
 
     public async Task<List<EmployeeDocumentDto>> GetEmployeeDocumentsByStatus(int employeeId, DocumentStatus status)

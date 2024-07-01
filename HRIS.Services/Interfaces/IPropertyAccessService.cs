@@ -1,6 +1,5 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
-using HRIS.Models.Update;
 
 namespace HRIS.Services.Interfaces;
 

@@ -3,8 +3,8 @@ using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -31,7 +31,7 @@ public class PropertyAccessServiceUnitTests
     public async Task GetAllTest()
     {
         _dbMock.Setup(p => p.PropertyAccess.Get(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
-               .Returns(PropertyAccessTestData.PropertyAccessList.AsQueryable().BuildMock());
+               .Returns(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable());
 
         var result = await propertyAccessService.GetAll();
 
@@ -45,7 +45,7 @@ public class PropertyAccessServiceUnitTests
     public void GetAccessListByEmployeeIdTest()
     {
         _dbMock.Setup(e => e.PropertyAccess.Get(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
-               .Returns(PropertyAccessTestData.PropertyAccessList.AsQueryable().BuildMock());
+               .Returns(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable());
 
         var result = propertyAccessService.GetAccessListByEmployeeId(1);
 
@@ -55,7 +55,7 @@ public class PropertyAccessServiceUnitTests
     public void GetAccessListByRoleIdTest()
     {
         _dbMock.Setup(e => e.PropertyAccess.Get(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
-               .Returns(PropertyAccessTestData.PropertyAccessList.AsQueryable().BuildMock());
+               .Returns(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable());
 
 
         var result = propertyAccessService.GetAccessListByRoleId(1);
@@ -66,11 +66,11 @@ public class PropertyAccessServiceUnitTests
     [Fact]
     public async Task UpdatePropertyAccess()
     {
-        _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.EmployeeTable1.Id, PropertyAccessLevel.read));
+        _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
                               
         _dbMock.Setup(r => r.PropertyAccess.Update(It.IsAny<PropertyAccess>()))
-               .Returns(Task.FromResult(PropertyAccessTestData.EmployeeTable1.ToDto()));
+               .ReturnsAsync(PropertyAccessTestData.PropertyAccessOne);
 
-            await propertyAccessService.UpdatePropertyAccess(PropertyAccessTestData.EmployeeTable1.Id, PropertyAccessLevel.read);
+            await propertyAccessService.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read);
     }
 }

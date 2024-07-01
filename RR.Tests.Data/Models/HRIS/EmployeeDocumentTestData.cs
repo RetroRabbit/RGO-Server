@@ -1,15 +1,16 @@
 ﻿using HRIS.Models.Enums;
 using HRIS.Models;
 using RR.Tests.Data.Models.HRIS;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RGO.Tests.Data.Models;
 
 public class EmployeeDocumentTestData
 {
-    public static EmployeeDocumentDto EmployeeDocumentPending = new EmployeeDocumentDto
+    public static EmployeeDocument EmployeeDocumentPending = new()
     {
         Id = 1,
-        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        EmployeeId = EmployeeTestData.EmployeeOne.Id,
         Reference = null,
         FileName = "TestFile.pdf",
         FileCategory = FileCategory.EmploymentContract,
@@ -22,10 +23,10 @@ public class EmployeeDocumentTestData
         LastUpdatedDate = DateTime.Now
     };
 
-    public static EmployeeDocumentDto EmployeeDocumentApproved = new EmployeeDocumentDto
+    public static EmployeeDocument EmployeeDocumentApproved = new()
     {
         Id = 2,
-        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        EmployeeId = EmployeeTestData.EmployeeOne.Id,
         Reference = null,
         FileName = "TestFile.pdf",
         FileCategory = FileCategory.EmploymentContract,
@@ -35,13 +36,14 @@ public class EmployeeDocumentTestData
         Reason = null,
         CounterSign = false,
         DocumentType = DocumentType.StarterKit,
-        LastUpdatedDate = DateTime.Now
+        LastUpdatedDate = DateTime.Now,
+        Employee = EmployeeTestData.EmployeeOne
     };
 
-    public static EmployeeDocumentDto EmployeeDocumentRejected = new EmployeeDocumentDto
+    public static EmployeeDocument EmployeeDocumentRejected = new()
     {
         Id = 3,
-        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        EmployeeId = EmployeeTestData.EmployeeOne.Id,
         Reference = null,
         FileName = "TestFile.pdf",
         FileCategory = FileCategory.EmploymentContract,
@@ -54,10 +56,10 @@ public class EmployeeDocumentTestData
         LastUpdatedDate = DateTime.Now
     };
 
-    public static EmployeeDocumentDto EmployeeDocumentActionRequired = new EmployeeDocumentDto
+    public static EmployeeDocument EmployeeDocumentActionRequired = new()
     {
         Id = 4,
-        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        EmployeeId = EmployeeTestData.EmployeeOne.Id,
         Reference = null,
         FileName = "TestFile.pdf",
         FileCategory = FileCategory.EmploymentContract,
@@ -69,10 +71,10 @@ public class EmployeeDocumentTestData
         DocumentType = DocumentType.StarterKit,
     };
 
-    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new SimpleEmployeeDocumentDto
+    public static SimpleEmployeeDocumentDto SimpleDocumentDto = new()
     {
         Id = 1,
-        EmployeeId = EmployeeTestData.EmployeeDto.Id,
+        EmployeeId = EmployeeTestData.EmployeeOne.Id,
         FileName = "TestFile.pdf",
         FileCategory = FileCategory.EmploymentContract,
         Blob = "TestFileContent",

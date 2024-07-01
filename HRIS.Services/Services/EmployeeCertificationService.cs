@@ -35,7 +35,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
             EmployeeId = employeeCertificationDto.EmployeeId
         };
 
-        return await _db.EmployeeCertification.Add(new EmployeeCertification(employeeCertificationDto));
+        return (await _db.EmployeeCertification.Add(new EmployeeCertification(employeeCertificationDto))).ToDto();
     }
 
     public async Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId, int certificationId)
@@ -86,11 +86,11 @@ public class EmployeeCertificationService : IEmployeeCertificationService
             var exception = new Exception("Employee not found");
             throw _errorLoggingService.LogException(exception);
         }
-        return await _db.EmployeeCertification.Update(new EmployeeCertification(employeeCertificationDto));
+        return (await _db.EmployeeCertification.Update(new EmployeeCertification(employeeCertificationDto))).ToDto();
     }
 
     public async Task<EmployeeCertificationDto> DeleteEmployeeCertification(int id) 
-        => await _db.EmployeeCertification.Delete(id);
+        => (await _db.EmployeeCertification.Delete(id)).ToDto();
     
 
     public async Task<bool> CheckEmployeeExists(int employeeId)

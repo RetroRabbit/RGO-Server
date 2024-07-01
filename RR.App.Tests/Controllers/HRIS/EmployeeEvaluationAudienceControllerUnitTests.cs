@@ -29,14 +29,14 @@ public class EmployeeEvaluationAudienceControllerUnitTests
                 Evaluation = new EmployeeEvaluationDto
                 {
                     Id = 1,
-                    Employee = EmployeeTestData.EmployeeDto,
+                    Employee = EmployeeTestData.EmployeeOne.ToDto(),
                     Template = new EmployeeEvaluationTemplateDto{ Id = 1, Description = "Employee Evaluation Template 1" },
-                    Owner = EmployeeTestData.EmployeeDto2,
+                    Owner = EmployeeTestData.EmployeeTwo.ToDto(),
                     Subject = "Employee Evaluation Subject",
                     StartDate = new DateOnly(2022, 1, 1),
                     EndDate = new DateOnly(2022, 2, 1)
                 },
-                Employee = EmployeeTestData.EmployeeDto3
+                Employee = EmployeeTestData.EmployeeThree.ToDto()
             }
         };
 
@@ -55,15 +55,15 @@ public class EmployeeEvaluationAudienceControllerUnitTests
             Evaluation = new EmployeeEvaluationDto
             {
                 Id = 1,
-                Employee = EmployeeTestData.EmployeeDto,
+                Employee = EmployeeTestData.EmployeeOne.ToDto(),
                 Template = new EmployeeEvaluationTemplateDto { Id = 1, Description = "Employee Evaluation Template 1" },
-                Owner = EmployeeTestData.EmployeeDto2,
+                Owner = EmployeeTestData.EmployeeTwo.ToDto(),
                 Subject = "Employee Evaluation Subject",
                 StartDate = new DateOnly(2022, 1, 1),
                 EndDate = new DateOnly(2022, 2, 1)
             },
 
-            Employee = EmployeeTestData.EmployeeDto3
+            Employee = EmployeeTestData.EmployeeThree.ToDto()
         };
     }
 

@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RR.UnitOfWork.Entities.ATS;
 
 [Table("Candidate")]
-public class Candidate : IModel<CandidateDto>
+public class Candidate : IModel
 {
     public Candidate() { }
 

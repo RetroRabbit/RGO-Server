@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("ClientProject")]
-public class ClientProject : IModel<ClientProjectsDto>
+public class ClientProject : IModel
 {
     public ClientProject()
     {

@@ -1,13 +1,10 @@
 ﻿using HRIS.Models;
-using HRIS.Models.Enums.QualificationEnums;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using RGO.Tests.Data.Models;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
-using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -24,7 +21,7 @@ public class EmployeeQualificationControllerUnitTests
 
         _employeeQualificationController = new EmployeeQualificationController(new AuthorizeIdentityMock(), _mockEmployeeQualificationService.Object);
 
-        _employeeQualificationDto = EmployeeQualificationTestData.EmployeeQualification;
+        _employeeQualificationDto = EmployeeQualificationTestData.EmployeeQualification.ToDto();
     }
 
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
@@ -95,7 +92,7 @@ public class EmployeeQualificationControllerUnitTests
     public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
     {
         _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(_employeeQualificationDto.Id))
-            .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
+            .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification.ToDto);
 
         var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(_employeeQualificationDto.Id);
 

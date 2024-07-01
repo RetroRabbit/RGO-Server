@@ -3,8 +3,8 @@ using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -28,7 +28,7 @@ public class LeaveIntervalTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
-                                .Returns(Task.FromResult(employeeTypeDto));
+                                .ReturnsAsync(employeeTypeDto);
 
         employeeAddressDto = new EmployeeAddressDto
         {
@@ -100,7 +100,7 @@ public class LeaveIntervalTypeUnitTest
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
@@ -119,7 +119,7 @@ public class LeaveIntervalTypeUnitTest
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
@@ -138,7 +138,7 @@ public class LeaveIntervalTypeUnitTest
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
@@ -160,11 +160,11 @@ public class LeaveIntervalTypeUnitTest
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
-               .Returns(Task.FromResult(false));
+               .ReturnsAsync(false);
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(Task.FromResult(false));
+               .ReturnsAsync(false);
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
@@ -186,11 +186,11 @@ public class LeaveIntervalTypeUnitTest
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
-               .Returns(Task.FromResult(false));
+               .ReturnsAsync(false);
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(Task.FromResult(false));
+               .ReturnsAsync(false);
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);
@@ -212,11 +212,11 @@ public class LeaveIntervalTypeUnitTest
         };
 
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
-               .Returns(Task.FromResult(false));
+               .ReturnsAsync(false);
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(Task.FromResult(false));
+               .ReturnsAsync(false);
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result2 = leaveIntervalType.GenerateData(employeeDto, realServiceProvider);

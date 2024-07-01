@@ -1,27 +1,26 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS;
 
 public class EmployeeRoleTestData
 {
-    static public RoleDto RoleDtoEmployee = new RoleDto { Id = 2, Description = "Employee" };
-    static public RoleDto RoleDtoAdmin = new RoleDto { Id = 3, Description = "Admin" };
-    static public List<EmployeeRole> EmployeeRolesList = new List<EmployeeRole> {
-        new EmployeeRole(
-            new EmployeeRoleDto{ Id = 1, Employee = EmployeeTestData.EmployeeDto, Role = EmployeeRoleTestData.RoleDtoAdmin }
-        )
+    public static Role RoleDtoEmployee = new() { Id = 2, Description = "Employee" };
+    public static Role RoleDtoAdmin = new() { Id = 3, Description = "Admin" };
+    public static List<EmployeeRole> EmployeeRolesList = new()
+    {
+        new()
+        {
+            Id = 1,
+            EmployeeId = EmployeeTestData.EmployeeOne.Id,
+            Employee = EmployeeTestData.EmployeeOne,
+            RoleId = EmployeeRoleTestData.RoleDtoAdmin.Id,
+            Role = EmployeeRoleTestData.RoleDtoAdmin,
+        }
     };
-    static public EmployeeRoleDto EmployeeRoleDto = new EmployeeRoleDto
+    public static EmployeeRole EmployeeRoleDto = new()
     {
         Id = 1,
-        Employee = EmployeeTestData.EmployeeDto,
+        Employee = EmployeeTestData.EmployeeOne,
         Role = EmployeeRoleTestData.RoleDtoAdmin
     };
 }

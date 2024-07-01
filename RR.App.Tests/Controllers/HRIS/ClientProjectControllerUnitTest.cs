@@ -10,14 +10,14 @@ public class ClientProjectControllerUnitTest
 {
     private readonly ClientProjectsController _controller;
     private readonly Mock<IClientProjectService> _mockClientProjectService;
-    public List<ClientProjectsDto> _clientProjectsList;
-    public ClientProjectsDto _clientProjectDto;
+    public List<ClientProjectsDto> ClientProjectsList;
+    public ClientProjectsDto ClientProjectDto;
     public ClientProjectControllerUnitTest()
     {
         _mockClientProjectService = new Mock<IClientProjectService>();
         _controller = new ClientProjectsController(_mockClientProjectService.Object);
 
-        _clientProjectsList = new List<ClientProjectsDto>
+        ClientProjectsList = new List<ClientProjectsDto>
             { new ClientProjectsDto
                {
                   Id = 1,
@@ -30,7 +30,7 @@ public class ClientProjectControllerUnitTest
                }
             };
 
-        _clientProjectDto = new ClientProjectsDto
+        ClientProjectDto = new ClientProjectsDto
         {
             Id = 1,
             EmployeeId = 1,
@@ -46,18 +46,18 @@ public class ClientProjectControllerUnitTest
     public async Task GetAllClientProjects_ReturnsOkResult_WithListOfClientProjects()
     {
         _mockClientProjectService.Setup(ex => ex.GetAllClientProjects())
-          .ReturnsAsync(_clientProjectsList);
+          .ReturnsAsync(ClientProjectsList);
 
         var result = await _controller.GetAllClientProjects();
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(_clientProjectsList, okResult.Value);
+        Assert.Equal(ClientProjectsList, okResult.Value);
     }
 
     [Fact]
     public async Task GetAllClientProjects_ReturnsNotFound_WhenExceptionIsThrown()
     {
-        _mockClientProjectService.Setup(Exception => Exception.GetAllClientProjects())
+        _mockClientProjectService.Setup(exception => exception.GetAllClientProjects())
           .ThrowsAsync(new Exception("Test exception"));
 
         var result = await _controller.GetAllClientProjects();
@@ -70,14 +70,14 @@ public class ClientProjectControllerUnitTest
     public async Task GetClientProjectById_ReturnsOkResult_WithClientProjectsDto()
     {
         _mockClientProjectService.Setup(ex => ex.GetClientProjectById(1))
-          .ReturnsAsync(_clientProjectDto);
+          .ReturnsAsync(ClientProjectDto);
 
         var result = await _controller.GetClientProjectById(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.NotNull(okResult);
         var returnValue = Assert.IsType<ClientProjectsDto>(okResult.Value);
-        Assert.Equal(_clientProjectDto, returnValue);
+        Assert.Equal(ClientProjectDto, returnValue);
     }
 
     [Fact]
@@ -96,23 +96,23 @@ public class ClientProjectControllerUnitTest
     [Fact]
     public async Task SaveClientProject_ReturnsOkResult_WithCreatedClientProject()
     {
-        _mockClientProjectService.Setup(ex => ex.CreateClientProject(_clientProjectDto))
-         .ReturnsAsync(_clientProjectDto);
+        _mockClientProjectService.Setup(ex => ex.CreateClientProject(ClientProjectDto))
+         .ReturnsAsync(ClientProjectDto);
 
-        var result = await _controller.SaveClientProject(_clientProjectDto);
+        var result = await _controller.SaveClientProject(ClientProjectDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<ClientProjectsDto>(okResult.Value);
-        Assert.Equal(_clientProjectDto, returnValue);
+        Assert.Equal(ClientProjectDto, returnValue);
     }
 
     [Fact]
     public async Task SaveClientProject_ReturnsNotFound_WhenExceptionIsThrown()
     {
-        _mockClientProjectService.Setup(ex => ex.CreateClientProject(_clientProjectDto))
+        _mockClientProjectService.Setup(ex => ex.CreateClientProject(ClientProjectDto))
         .ThrowsAsync(new Exception("Test exception"));
 
-        var result = await _controller.SaveClientProject(_clientProjectDto);
+        var result = await _controller.SaveClientProject(ClientProjectDto);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("Test exception", notFoundResult.Value);
@@ -121,23 +121,23 @@ public class ClientProjectControllerUnitTest
     [Fact]
     public async Task UpdateClientProject_ReturnsOkResult_WithUpdatedClientProject()
     {
-        _mockClientProjectService.Setup(ex => ex.UpdateClientProject(_clientProjectDto))
-         .ReturnsAsync(_clientProjectDto);
+        _mockClientProjectService.Setup(ex => ex.UpdateClientProject(ClientProjectDto))
+         .ReturnsAsync(ClientProjectDto);
 
-        var result = await _controller.UpdateClientProject(_clientProjectDto);
+        var result = await _controller.UpdateClientProject(ClientProjectDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<ClientProjectsDto>(okResult.Value);
-        Assert.Equal(_clientProjectDto, returnValue);
+        Assert.Equal(ClientProjectDto, returnValue);
     }
 
     [Fact]
     public async Task UpdateClientProject_ReturnsNotFound_WhenExceptionIsThrown()
     {
-        _mockClientProjectService.Setup(ex => ex.UpdateClientProject(_clientProjectDto))
+        _mockClientProjectService.Setup(ex => ex.UpdateClientProject(ClientProjectDto))
          .ThrowsAsync(new Exception("Test exception"));
 
-        var result = await _controller.UpdateClientProject(_clientProjectDto);
+        var result = await _controller.UpdateClientProject(ClientProjectDto);
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("Test exception", notFoundResult.Value);
@@ -147,15 +147,15 @@ public class ClientProjectControllerUnitTest
     public async Task DeleteClientProject_ReturnsOkResult_WhenProjectIsDeleted()
     {
         _mockClientProjectService.Setup(service => service.GetClientProjectById(1))
-         .ReturnsAsync(_clientProjectDto);
+         .ReturnsAsync(ClientProjectDto);
         _mockClientProjectService.Setup(ex => ex.DeleteClientProject(1))
-         .ReturnsAsync(_clientProjectDto);
+         .ReturnsAsync(ClientProjectDto);
 
         var result = await _controller.DeleteClientProject(1);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<ClientProjectsDto>(okResult.Value);
-        Assert.Equal(_clientProjectDto, returnValue);
+        Assert.Equal(ClientProjectDto, returnValue);
     }
 
     [Fact]

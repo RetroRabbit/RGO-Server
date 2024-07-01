@@ -8,6 +8,7 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 using MockQueryable.Moq;
+using RR.Tests.Data;
 
 namespace HRIS.Services.Tests.Services
 {
@@ -22,9 +23,9 @@ namespace HRIS.Services.Tests.Services
         private readonly EmployeeQualificationDto _employeeQualificationDto;
         private readonly EmployeeQualification _employeeQualification;
 
-        private const int _employeeId = 1;
-        private const int _qualificationId = 1;
-        private const int _nonExistingQualificationId = 9999;
+        private const int EmployeeId = 1;
+        private const int QualificationId = 1;
+        private const int NonExistingQualificationId = 9999;
 
         public EmployeeQualificationServiceUnitTests()
         {
@@ -38,7 +39,7 @@ namespace HRIS.Services.Tests.Services
 
             _employeeDto = new EmployeeDto { Id = 1, EmployeeNumber = "EMP001" };
 
-            _employeeQualificationDto = new EmployeeQualificationDto
+            _employeeQualification = new EmployeeQualification
             {
                 Id = 1,
                 EmployeeId = 1,
@@ -51,27 +52,17 @@ namespace HRIS.Services.Tests.Services
                 DocumentName = "DocumentName"
             };
 
-            _employeeQualification = new EmployeeQualification
-            {
-                Id = _employeeQualificationDto.Id,
-                EmployeeId = _employeeQualificationDto.EmployeeId,
-                HighestQualification = _employeeQualificationDto.HighestQualification,
-                School = _employeeQualificationDto.School,
-                FieldOfStudy = _employeeQualificationDto.FieldOfStudy,
-                NQFLevel = _employeeQualificationDto.NQFLevel,
-                Year = _employeeQualificationDto.Year
-            };
-
+            _employeeQualificationDto = _employeeQualification.ToDto();
         }
 
         private void SetupEmployeeExists()
         {
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync(_employeeDto);
+            _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId)).ReturnsAsync(_employeeDto);
         }
 
         private void SetupEmployeeDoesNotExist()
         {
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ReturnsAsync((EmployeeDto)null);
+            _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId)).ReturnsAsync((EmployeeDto)null!);
         }
 
         private void SetupLogException()
@@ -91,12 +82,12 @@ namespace HRIS.Services.Tests.Services
 
         private void VerifyGetEmployeeByIdCalled(Func<Times> times)
         {
-            _employeeServiceMock.Verify(x => x.GetEmployeeById(_employeeId), times);
+            _employeeServiceMock.Verify(x => x.GetEmployeeById(EmployeeId), times);
         }
 
         private void VerifyDeleteQualificationCalled(Func<Times> times)
         {
-            _unitOfWorkMock.Verify(x => x.EmployeeQualification.Delete(_qualificationId), times);
+            _unitOfWorkMock.Verify(x => x.EmployeeQualification.Delete(QualificationId), times);
         }
 
         [Fact]
@@ -106,12 +97,12 @@ namespace HRIS.Services.Tests.Services
             SetupLogException();
 
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()))
-                .ReturnsAsync(_employeeQualificationDto);
+                .ReturnsAsync(_employeeQualification);
 
-            var result = await _employeeQualificationService.SaveEmployeeQualification(_employeeQualificationDto, _employeeId);
+            var result = await _employeeQualificationService.SaveEmployeeQualification(_employeeQualificationDto, EmployeeId);
 
             Assert.NotNull(result);
-            Assert.Equal(_employeeQualificationDto, result);
+            Assert.Equivalent(_employeeQualificationDto, result);
 
             VerifyGetEmployeeByIdCalled(Times.Once);
             VerifyLogExceptionCalled(Times.Never);
@@ -124,7 +115,7 @@ namespace HRIS.Services.Tests.Services
             SetupLogException();
             SetupEmployeeDoesNotExist();
 
-            async Task Act() => await _employeeQualificationService.SaveEmployeeQualification(_employeeQualificationDto, _employeeId);
+            async Task Act() => await _employeeQualificationService.SaveEmployeeQualification(_employeeQualificationDto, EmployeeId);
             var exception = await Assert.ThrowsAsync<Exception>(Act);
 
             Assert.NotNull(exception);
@@ -137,14 +128,14 @@ namespace HRIS.Services.Tests.Services
             SetupLogException();
 
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.GetAll(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-                .ReturnsAsync(new List<EmployeeQualificationDto> { _employeeQualificationDto });
+                .ReturnsAsync(new List<EmployeeQualification> { _employeeQualification });
 
             var result = await _employeeQualificationService.GetAllEmployeeQualifications();
 
             Assert.NotNull(result);
             Assert.Single(result);
             var expectedQualification = result.First();
-            Assert.Equal(_employeeQualificationDto, expectedQualification);
+            Assert.Equivalent(_employeeQualificationDto, expectedQualification);
         }
 
         [Fact]
@@ -168,14 +159,14 @@ namespace HRIS.Services.Tests.Services
 
             var mockQualifications = new List<EmployeeQualification>
             {
-                new EmployeeQualification { EmployeeId = _employeeId, HighestQualification = HighestQualification.Bachelor },
-                new EmployeeQualification { EmployeeId = _employeeId, HighestQualification = HighestQualification.Master }
-            }.AsQueryable().BuildMock();
+                new() { EmployeeId = EmployeeId, HighestQualification = HighestQualification.Bachelor },
+                new() { EmployeeId = EmployeeId, HighestQualification = HighestQualification.Master }
+            }.ToMockIQueryable();
 
             _unitOfWorkMock.Setup(u => u.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
                            .Returns(mockQualifications);
 
-            var result = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
+            var result = await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(EmployeeId);
 
             Assert.NotNull(result);
             Assert.Equal(HighestQualification.Bachelor, result.HighestQualification);
@@ -186,11 +177,11 @@ namespace HRIS.Services.Tests.Services
         {
             SetupLogException();
 
-            _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeId)).ThrowsAsync(new InvalidOperationException("Test exception"));
+            _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId)).ThrowsAsync(new InvalidOperationException("Test exception"));
 
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
+                await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(EmployeeId);
             });
         }
 
@@ -202,7 +193,7 @@ namespace HRIS.Services.Tests.Services
 
             await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
             {
-                await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
+                await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(EmployeeId);
             });
 
             VerifyGetEmployeeByIdCalled(Times.Once);
@@ -220,7 +211,7 @@ namespace HRIS.Services.Tests.Services
 
             var ex = await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(_employeeId);
+                await _employeeQualificationService.GetAllEmployeeQualificationsByEmployeeId(EmployeeId);
             });
 
             Assert.Equal("Test exception", ex.Message);
@@ -241,7 +232,7 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Setup(u => u.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
                 .Returns(mockQualificationQuery);
 
-            var result = await _employeeQualificationService.GetEmployeeQualificationById(_qualificationId);
+            var result = await _employeeQualificationService.GetEmployeeQualificationById(QualificationId);
 
             Assert.NotNull(result);
             Assert.Equal(_employeeQualificationDto.Id, result.Id);
@@ -258,14 +249,10 @@ namespace HRIS.Services.Tests.Services
         {
             SetupLogException();
 
-            var mockQualifications = new List<EmployeeQualification>().AsQueryable().BuildMock();
-
             _unitOfWorkMock.Setup(u => u.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-               .Returns(mockQualifications);
+               .Returns(new List<EmployeeQualification>().ToMockIQueryable());
 
-            var service = new EmployeeQualificationService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
-
-            await Assert.ThrowsAsync<Exception>(async () => await _employeeQualificationService.GetEmployeeQualificationById(_nonExistingQualificationId));
+            await Assert.ThrowsAsync<Exception>(async () => await _employeeQualificationService.GetEmployeeQualificationById(NonExistingQualificationId));
         }
 
         [Fact]
@@ -274,9 +261,9 @@ namespace HRIS.Services.Tests.Services
             SetupLogException();
             SetupEmployeeDoesNotExist();
 
-            var exception = await Assert.ThrowsAsync<NullReferenceException>(async () =>
+            await Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await _employeeQualificationService.GetEmployeeQualificationById(_qualificationId);
+                await _employeeQualificationService.GetEmployeeQualificationById(QualificationId);
             });
         }
 
@@ -284,15 +271,15 @@ namespace HRIS.Services.Tests.Services
         public async Task UpdateEmployeeQualification_Success()
         {
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-               .ReturnsAsync(_employeeQualificationDto);
+               .ReturnsAsync(_employeeQualification);
 
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.Update(It.IsAny<EmployeeQualification>()))
-                .ReturnsAsync(_employeeQualificationDto);
-                
+                .ReturnsAsync(_employeeQualification);
+
             var result = await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
 
             Assert.NotNull(result);
-            Assert.Equal(_employeeQualificationDto, result);
+            Assert.Equivalent(_employeeQualificationDto, result);
         }
 
         [Fact]
@@ -301,8 +288,8 @@ namespace HRIS.Services.Tests.Services
             SetupLogException();
 
             _unitOfWorkMock.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-                .ReturnsAsync((EmployeeQualificationDto)null); 
-            
+                .ReturnsAsync((EmployeeQualification)null!);
+
             var exception = await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
             {
                 await _employeeQualificationService.UpdateEmployeeQualification(_employeeQualificationDto);
@@ -315,15 +302,15 @@ namespace HRIS.Services.Tests.Services
         [Fact]
         public async Task DeleteEmployeeQualification_Success()
         {
-            var deletedQualificationDto = new EmployeeQualificationDto { Id = _qualificationId }; 
-           
-            _unitOfWorkMock.Setup(x => x.EmployeeQualification.Delete(_qualificationId))
-                .ReturnsAsync(deletedQualificationDto);
-            
-            var result = await _employeeQualificationService.DeleteEmployeeQualification(_qualificationId);
+            var deletedQualification = new EmployeeQualification { Id = QualificationId };
+
+            _unitOfWorkMock.Setup(x => x.EmployeeQualification.Delete(QualificationId))
+                .ReturnsAsync(deletedQualification);
+
+            var result = await _employeeQualificationService.DeleteEmployeeQualification(QualificationId);
 
             Assert.NotNull(result);
-            Assert.Equal(_qualificationId, result.Id);
+            Assert.Equal(QualificationId, result.Id);
 
             VerifyDeleteQualificationCalled(Times.Once);
         }
@@ -333,12 +320,12 @@ namespace HRIS.Services.Tests.Services
         {
             SetupLogException();
 
-            _unitOfWorkMock.Setup(x => x.EmployeeQualification.Delete(_qualificationId))
+            _unitOfWorkMock.Setup(x => x.EmployeeQualification.Delete(QualificationId))
                 .ThrowsAsync(new Exception("Delete operation failed"));
 
             var exception = await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _employeeQualificationService.DeleteEmployeeQualification(_qualificationId);
+                await _employeeQualificationService.DeleteEmployeeQualification(QualificationId);
             });
 
             Assert.Equal("Delete operation failed", exception.Message);

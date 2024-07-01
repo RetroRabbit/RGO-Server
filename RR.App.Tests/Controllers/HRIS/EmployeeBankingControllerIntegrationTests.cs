@@ -1,4 +1,4 @@
-﻿/*using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -6,7 +6,6 @@ using HRIS.Services.Services;
 using IUnitOfWork = RR.UnitOfWork.IUnitOfWork;
 using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 using RR.Tests.Data.Models.HRIS;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -25,7 +24,6 @@ public class FakePolicyEvaluatorAllRolesPolicy : IPolicyEvaluator
 {
     public virtual async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
     {
-        GlobalVariables.SetRunningTests(true);
         var principal = new ClaimsPrincipal();
 
         principal.AddIdentity(new ClaimsIdentity(new[]
@@ -124,7 +122,6 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
 
     public EmployeeBankingControllerIntegrationTests(WebApplicationFactory<RR.App.Program> factory)
     {
-        GlobalVariables.SetRunningTests(true);
         _factory = factory;
 
         var configBuilder = new ConfigurationBuilder()
@@ -167,10 +164,10 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
-    [Fact]
+    [Fact(Skip = "Needs Work")]
     public async Task CreateReadUpdateDeleteEmployeeBanking_ReturnsOkResult()
     {
-        var employeeDto = EmployeeTestData.EmployeeDtoNew;
+        var employeeDto = EmployeeTestData.EmployeeNew;
         var jsonContentEmployee = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
         var response = await _client.PostAsync("/employees", jsonContentEmployee);
@@ -230,4 +227,3 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }
-*/

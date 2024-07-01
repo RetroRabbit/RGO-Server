@@ -1,10 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class EmployeeAddressRepository : BaseRepository<EmployeeAddress, EmployeeAddressDto>, IEmployeeAddressRepository
+public interface IEmployeeAddressRepository : IRepository<EmployeeAddress>
+{
+}
+
+public class EmployeeAddressRepository : BaseRepository<EmployeeAddress>, IEmployeeAddressRepository
 {
     public EmployeeAddressRepository(DatabaseContext db) : base(db)
     {

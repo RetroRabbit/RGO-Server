@@ -1,9 +1,4 @@
 ﻿using ATS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HRIS.Services.Interfaces
 {
@@ -49,5 +44,8 @@ namespace HRIS.Services.Interfaces
         /// <param name="exception"></param>
         /// <returns>A logged exception</returns>
         Exception LogException(Exception exception);
+
+        Task LogException(ErrorLoggingDto error);
+
     }
 }

@@ -1,16 +1,11 @@
 ﻿using HRIS.Models.Enums.QualificationEnums;
-using HRIS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS
 {
     public class EmployeeQualificationTestData
     {
-        public static EmployeeQualificationDto EmployeeQualification = new EmployeeQualificationDto
+        public static EmployeeQualification EmployeeQualification = new()
         {
             Id = 1,
             EmployeeId = 1,

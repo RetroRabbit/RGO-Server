@@ -1,14 +1,10 @@
-﻿using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HRIS.Services.Services;
 
@@ -152,7 +148,7 @@ public partial class ChartService : IChartService
             chart.Subtype = "standard";
             chart.Datasets = new List<ChartDataSet> { chartDataSet };
         }
-        return await _db.Chart.Add(chart);
+        return (await _db.Chart.Add(chart)).ToDto();
     }
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
@@ -194,7 +190,7 @@ public partial class ChartService : IChartService
 
     public async Task<ChartDto> DeleteChart(int chartId)
     {
-        return await _db.Chart.Delete(chartId);
+        return (await _db.Chart.Delete(chartId)).ToDto();
     }
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
@@ -216,7 +212,7 @@ public partial class ChartService : IChartService
         }
         var updatedChart = await _db.Chart.Update(new Chart(chartDto));
 
-        return updatedChart;
+        return updatedChart.ToDto();
     }
 
     public string[] GetColumnsFromTable()
@@ -282,7 +278,7 @@ public partial class ChartService : IChartService
                 if (BaseDataType.HasCustom(dataType))
                 {
                     var obj = BaseDataType.GetCustom(dataType);
-                    var val = obj.GenerateData(employee, _services);
+                    var val = obj.GenerateData(employee.ToDto(), _services);
 
                     if (val != null)
                         formattedData += $",{val.Replace(",", "").Trim()}";

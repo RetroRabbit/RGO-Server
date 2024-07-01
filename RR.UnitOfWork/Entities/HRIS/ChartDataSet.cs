@@ -1,17 +1,12 @@
 ﻿using HRIS.Models;
 using RR.UnitOfWork.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("ChartDataSet")]
-public class ChartDataSet : IModel<ChartDataSetDto>
+public class ChartDataSet : IModel
 {
     public ChartDataSet() { }
     public ChartDataSet(ChartDataSetDto chartDataSetDto)

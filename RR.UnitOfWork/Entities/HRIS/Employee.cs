@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.Design;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
@@ -9,7 +7,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("Employee")]
-public class Employee : IModel<EmployeeDto>
+public class Employee : IModel
 {
     public Employee()
     {
