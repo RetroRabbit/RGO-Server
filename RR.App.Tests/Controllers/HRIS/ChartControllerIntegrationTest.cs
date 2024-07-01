@@ -10,6 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using RR.UnitOfWork;
 using Xunit;
 using HRIS.Services.Services;
+using Microsoft.Extensions.Configuration.UserSecrets;
+using RR.Tests.Data;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace RR.App.Tests.Controllers.HRIS
 {
@@ -17,6 +21,7 @@ namespace RR.App.Tests.Controllers.HRIS
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
+        private readonly OAuthHelper _oauthHelper;
 
         public ChartControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
@@ -49,11 +54,19 @@ namespace RR.App.Tests.Controllers.HRIS
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<DatabaseContext>();
             }
+
+            var clientId = Environment.GetEnvironmentVariable("AuthManagement__ClientId");
+            var clientSecret = Environment.GetEnvironmentVariable("AuthManagement__ClientSecret");
+            var issuer = Environment.GetEnvironmentVariable("AuthManagement__Issuer");
+            var audience = Environment.GetEnvironmentVariable("AuthManagement__Audience");
+            _oauthHelper = new OAuthHelper(clientId!, clientSecret!, issuer!, new[] { audience! });
         }
 
-         [Fact(Skip = "Unauthorised error")]
+        [Fact]
         public async Task GetAllCharts_ReturnsOk_WithCharts()
         {
+            var token = await _oauthHelper.GetAccessTokenAsync();
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync("/charts");
 
             response.EnsureSuccessStatusCode();
