@@ -40,9 +40,9 @@ public class EmployeeQualificationController : ControllerBase
         return Ok(updatedQualification);
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
-    public async Task<ActionResult<List<EmployeeQualificationDto>>> GetAllEmployeeQualifications()
+    public async Task<IActionResult> GetAllEmployeeQualifications()
     {
         var qualifications = await _employeeQualificationService.GetAllEmployeeQualifications();
         return Ok(qualifications);
