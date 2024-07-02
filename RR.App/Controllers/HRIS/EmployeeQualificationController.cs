@@ -50,7 +50,7 @@ public class EmployeeQualificationController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("{employeeId}")]
-    public async Task<ActionResult<List<EmployeeQualificationDto>>> GetEmployeeQualificationByEmployeeId(int employeeId)
+    public async Task<IActionResult> GetEmployeeQualificationByEmployeeId(int employeeId)
     {
         if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
