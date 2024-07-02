@@ -39,6 +39,18 @@ public class EmployeeQualificationControllerUnitTests
     }
 
     [Fact]
+    public async Task SaveEmployeeQualificationFail()
+    {
+        _mockEmployeeQualificationService.Setup(x => x.SaveEmployeeQualification(_employeeQualificationDto, _employeeQualificationDto.EmployeeId))
+            .ThrowsAsync(new CustomException("Unauthorized Access."));
+
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _employeeQualificationController.SaveEmployeeQualification(_employeeQualificationDto));
+
+        Assert.Equal("Unauthorized Access.", exception.Message);
+    }
+
+    [Fact]
     public async Task UpdateEmployeeQualificationReturnsOkObjectResultWithUpdatedQualification()
     {
         _mockEmployeeQualificationService.Setup(x => x.UpdateEmployeeQualification(_employeeQualificationDto))
@@ -50,6 +62,7 @@ public class EmployeeQualificationControllerUnitTests
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
         Assert.Equal(_employeeQualificationDto, returnValue);
     }
+
     [Fact]
     public async Task UpdateEmployeeQualificationFail()
     {
