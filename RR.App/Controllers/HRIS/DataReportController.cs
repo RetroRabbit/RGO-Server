@@ -60,7 +60,7 @@ public class DataReportController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete("ui/archive-column-from-report")]
-    public async Task<IActionResult> ArchiveColumnFromReport(int columnId)
+    public async Task<IActionResult> ArchiveColumnFromReport([FromQuery] int columnId)
     {
         await _control.ArchiveColumnFromReport(columnId);
         return Ok();
@@ -100,7 +100,7 @@ public class DataReportController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete("archive-report-access")]
-    public async Task<IActionResult> ArchiveReportAccess([FromBody] int accessId)
+    public async Task<IActionResult> ArchiveReportAccess([FromQuery] int accessId)
     {
         await _access.ArchiveReportAccess(accessId);
         return Ok();
