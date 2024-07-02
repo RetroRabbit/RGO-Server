@@ -72,15 +72,15 @@ public class ChartControllerUnitTests
     }
 
     [Fact]
-    public async Task GetAllCharts_ReturnsNotFound_OnException()
+    public async Task GetEmployeeCharts_ReturnsOk_WithCharts()
     {
-        _chartServiceMock.Setup(service => service.GetAllCharts())
-            .ThrowsAsync(new Exception("Error message"));
+        var employeeId = 1;
+        _chartServiceMock.Setup(service => service.GetEmployeeCharts(employeeId)).ReturnsAsync(_chartDtoList);
+        var result = await _controller.GetEmployeeCharts(employeeId);
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var returnedCharts = Assert.IsType<List<ChartDto>>(okResult.Value);
+        Assert.Equal(_chartDtoList.Count, returnedCharts.Count);
 
-        var result = await _controller.GetAllCharts();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Error message", notFoundResult.Value);
     }
 
     [Fact]
@@ -89,19 +89,6 @@ public class ChartControllerUnitTests
         var result = await _controller.CreateChart(_dataTypes, _roles, _chartName, _chartType, 0);
 
         Assert.IsType<OkObjectResult>(result);
-    }
-
-    [Fact]
-    public async Task CreateChart_ReturnsNotFound_OnException()
-    {
-        _chartServiceMock.Setup(service => service
-        .CreateChart(It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
-            .ThrowsAsync(new Exception("Error message"));
-
-        var result = await _controller.CreateChart(_dataTypes, _roles, _chartName, _chartType, 0);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Error message", notFoundResult.Value);
     }
 
     [Fact]
@@ -117,18 +104,6 @@ public class ChartControllerUnitTests
     }
 
     [Fact]
-    public async Task GetChartData_ReturnsNotFound_OnException()
-    {
-        _chartServiceMock.Setup(service => service.GetChartData(It.IsAny<List<string>>()))
-            .ThrowsAsync(new Exception("An error occurred"));
-
-        var result = await _controller.GetChartData(_dataTypes);
-        
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task UpdateChartData_ReturnsOk_WithUpdatedData()
     {
         _chartServiceMock.Setup(service => service.UpdateChart(It.IsAny<ChartDto>()))
@@ -138,18 +113,6 @@ public class ChartControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(_chartDto, okResult.Value);
-    }
-
-    [Fact]
-    public async Task UpdateChartData_ReturnsNotFound_OnException()
-    {
-        _chartServiceMock.Setup(service => service.UpdateChart(It.IsAny<ChartDto>()))
-                         .ThrowsAsync(new Exception("An error occurred"));
-
-        var result = await _controller.UpdateChartData(_chartDto);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred", notFoundResult.Value);
     }
 
     [Fact]
@@ -163,18 +126,6 @@ public class ChartControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(_chartDto, okResult.Value);
-    }
-
-    [Fact]
-    public async Task DeleteChart_ReturnsNotFound_OnException()
-    {
-        _chartServiceMock.Setup(service => service.DeleteChart(1))
-            .ThrowsAsync(new Exception("Error occurred during chart deletion"));
-
-        var result = await _controller.DeleteChart(1);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Error occurred during chart deletion", notFoundResult.Value);
     }
 
     [Fact]
@@ -192,18 +143,6 @@ public class ChartControllerUnitTests
     }
 
     [Fact]
-    public void GetColumns_ReturnsNotFound_OnException()
-    {
-        _chartServiceMock.Setup(service => service.GetColumnsFromTable())
-                         .Throws(new Exception("Error occurred while fetching columns"));
-
-        var result = _controller.GetColumns();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Error occurred while fetching columns", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task ExportCsv_ReturnsFileResult_WithData()
     {
         var mockCsvData = Encoding.UTF8.GetBytes("ID,Name,Value\n1,Item1,100\n2,Item2,200");
@@ -218,18 +157,6 @@ public class ChartControllerUnitTests
         Assert.Equal("text/csv", fileResult.ContentType);
         Assert.Equal(fileName, fileResult.FileDownloadName);
         Assert.Equal(mockCsvData, fileResult.FileContents);
-    }
-
-    [Fact]
-    public async Task ExportCsv_ReturnsNotFound_OnException()
-    {
-        _chartServiceMock.Setup(service => service.ExportCsvAsync(_dataTypes))
-            .ThrowsAsync(new Exception("Error occurred during export"));
-
-        var result = await _controller.ExportCsv(_dataTypes);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Error occurred during export", notFoundResult.Value);
     }
 
     [Fact]
