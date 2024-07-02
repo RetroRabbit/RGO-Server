@@ -1,15 +1,12 @@
-﻿using HRIS.Models;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
 using HRIS.Models.Report;
 using HRIS.Models.Report.Request;
-using HRIS.Models.Update;
 using HRIS.Services.Extensions;
 using HRIS.Services.Interfaces.Reporting;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Migrations;
 
 namespace HRIS.Services.Services.Reporting;
 
@@ -31,19 +28,19 @@ public class DataReportControlService : IDataReportControlService
         var employee = await _db.DataReportColumnMenu
             .Get(x => x.Status == ItemStatus.Active && x.ParentId == null)
             .Include(x => x.Children)!
-            .ThenInclude(x => x.Children)!
+            .ThenInclude(x => x.Children)
             .Include(x => x.FieldCode)
             .OrderBy(x => x.Name)
             .Select(x => x.ToDto())
             .ToListAsync();
         var custom = new List<DataReportColumnMenuDto>
         {
-            new DataReportColumnMenuDto
+            new()
             {
                 Name = "Text",
                 Prop = "Text"
             },
-            new DataReportColumnMenuDto
+            new()
             {
                 Name = "CheckBox",
                 Prop = "CheckBox"
@@ -52,13 +49,13 @@ public class DataReportControlService : IDataReportControlService
 
         var menu = new List<DataReportColumnMenuDto>
         {
-            new DataReportColumnMenuDto
+            new()
             {
                 Name = "Employee",
                 Children = employee,
                 Prop = "Employee"
             },
-            new DataReportColumnMenuDto
+            new()
             {
                 Name = "Custom",
                 Prop = "Custom",
@@ -68,7 +65,7 @@ public class DataReportControlService : IDataReportControlService
 
         return new List<DataReportColumnMenuDto>
         {
-            new DataReportColumnMenuDto
+            new()
             {
                 Name = "+",
                 Children = menu,
@@ -79,12 +76,12 @@ public class DataReportControlService : IDataReportControlService
 
     public async Task<DataReportColumnsDto?> AddColumnToReport(ReportColumnRequest input)
     {
-        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
 
         var report = await _db.DataReport.GetReport(input.ReportId);
 
         if (report == null)
-            throw new Exception("The report does not seem to exist.");
+            throw new CustomException("The report does not seem to exist.");
 
         var entity = await _db.DataReportColumns
             .Get(x => x.ReportId == report.Id && (x.MenuId == input.MenuId ||
@@ -92,19 +89,19 @@ public class DataReportControlService : IDataReportControlService
                                                   x.CustomName == input.Name))
             .FirstOrDefaultAsync();
 
-        if (entity != null && entity.Status == ItemStatus.Active)
-            throw new Exception("The column already exist in the table.");
+        if (entity is { Status: ItemStatus.Active })
+            throw new CustomException("The column already exist in the table.");
 
         var menu = await _db.DataReportColumnMenu
             .Get(x => x.Id == input.MenuId)
             .Include(x => x.FieldCode)
             .FirstOrDefaultAsync();
 
-        if (entity != null && entity.Status == ItemStatus.Archive)
+        if (entity is { Status: ItemStatus.Archive })
         {
             entity.Status = ItemStatus.Active;
             entity.Menu = menu;
-            return (await _db.DataReportColumns.Update(entity))?.ToDto();
+            return (await _db.DataReportColumns.Update(entity)).ToDto();
         }
 
         var columnType = input.GetColumnType();
@@ -121,7 +118,7 @@ public class DataReportControlService : IDataReportControlService
             Status = ItemStatus.Active,
             Menu = menu
         };
-        return (await _db.DataReportColumns.Add(entity))?.ToDto();
+        return (await _db.DataReportColumns.Add(entity)).ToDto();
     }
 
     public async Task ArchiveColumnFromReport(int columnId)
@@ -133,9 +130,9 @@ public class DataReportControlService : IDataReportControlService
         .FirstOrDefaultAsync();
 
         if (column == null)
-            throw new Exception("Could not locate column to archive.");
+            throw new CustomException("Could not locate column to archive.");
 
-        await _db.DataReport.ConfirmAccessToReport(column.ReportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(column.ReportId, _identity.EmployeeId);
 
         column.Status = ItemStatus.Archive;
         await _db.DataReportColumns.Update(column);
@@ -143,23 +140,23 @@ public class DataReportControlService : IDataReportControlService
 
     public async Task<DataReportColumnsDto?> MoveColumnOnReport(ReportColumnRequest input)
     {
-        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
 
         var report = await _db.DataReport.GetReport(input.ReportId);
 
         if (report == null)
-            throw new Exception("The report does not seem to exist.");
+            throw new CustomException("The report does not seem to exist.");
 
         if (report.DataReportColumns == null)
-            throw new Exception($"Report '{report.Code}' has no columns");
+            throw new CustomException($"Report '{report.Code}' has no columns");
 
         var column = report.DataReportColumns.FirstOrDefault(x => x.Id == input.Id);
 
         if (column == null)
-            throw new Exception("Could not locate column to update.");
+            throw new CustomException("Could not locate column to update.");
 
         if (input.Sequence < 0 || input.Sequence > report.DataReportColumns.Count - 1)
-            throw new Exception("Column order is out of range");
+            throw new CustomException("Column order is out of range");
 
         var sequence = 0;
         foreach (var c in report.DataReportColumns.OrderBy(x => x.Sequence))
@@ -169,16 +166,14 @@ public class DataReportControlService : IDataReportControlService
             if (c.Sequence == input.Sequence)
                 c.Sequence = sequence++;
 
-            if (c.Id == input.Id)
-            {
-                c.Sequence = input.Sequence;
-                sequence--;
-            }
+            if (c.Id != input.Id) continue;
+            c.Sequence = input.Sequence;
+            sequence--;
         }
 
         foreach (var c in report.DataReportColumns)
         {
-            await _db.DataReportColumns.Update(column);
+            await _db.DataReportColumns.Update(c);
         }
 
         return column.ToDto();

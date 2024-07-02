@@ -1,6 +1,7 @@
 ﻿using HRIS.Models.Enums;
 using HRIS.Models.Report;
 using HRIS.Services.Interfaces.Helper;
+using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -19,13 +20,13 @@ public class DataReportHelper : IDataReportHelper
     public async Task<List<int>> GetEmployeeIdListForReport(DataReport report)
     {
         if (report.DataReportFilter == null)
-            throw new Exception($"Report '{report.Code}' has no filters");
+            throw new CustomException($"Report '{report.Code}' has no filters");
 
         var employeeIds = await _db.RawSqlForIntList("SELECT \"id\" FROM \"Employee\"", "id");
 
         foreach (var g in report.DataReportFilter.GroupBy(x => x.Table))
         {
-            var selector = g.FirstOrDefault()?.Select ?? throw new Exception($"No Selector for {g.Key} to filter on");
+            var selector = g.FirstOrDefault()?.Select ?? throw new CustomException($"No Selector for {g.Key} to filter on");
             var conditions = g.Aggregate(string.Empty,
                 (current, dto) => current + $"AND \"{dto.Column}\" {dto.Condition} {dto.Value ?? ""}")[3..];
             var sql = $"SELECT \"{selector}\" FROM \"{g.Key}\" WHERE {conditions}";
@@ -55,7 +56,7 @@ public class DataReportHelper : IDataReportHelper
     public List<Dictionary<string, object?>> MapEmployeeData(DataReport report, List<Employee> employeeDataList)
     {
         if (report.DataReportColumns == null)
-            throw new Exception($"Report '{report.Code}' has no columns");
+            throw new CustomException($"Report '{report.Code}' has no columns");
 
         var mappingList = report.DataReportColumns;
 

@@ -1,6 +1,5 @@
 ﻿using HRIS.Models.Report.Request;
 using HRIS.Models.Report.Response;
-using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Interfaces.Reporting;
 

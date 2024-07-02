@@ -1,5 +1,4 @@
-﻿using HRIS.Models;
-using HRIS.Models.Report;
+﻿using HRIS.Models.Report;
 using HRIS.Models.Report.Request;
 
 namespace HRIS.Services.Interfaces.Reporting;

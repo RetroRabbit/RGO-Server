@@ -2,7 +2,6 @@
 using HRIS.Models.Report.Request;
 using HRIS.Models.Report.Response;
 using HRIS.Services.Extensions;
-using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Interfaces.Reporting;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +23,9 @@ public class DataReportAccessService : IDataReportAccessService
 
     public async Task AddOrUpdateReportAccess(UpdateReportAccessRequest input)
     {
-        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
 
-        var report = await _db.DataReport.GetReport(input.ReportId) ?? throw new Exception("The report does not seem to exist.");
+        var report = await _db.DataReport.GetReport(input.ReportId) ?? throw new CustomException("The report does not seem to exist.");
 
         report.DataReportAccess ??= new List<DataReportAccess>();
 
@@ -64,6 +63,8 @@ public class DataReportAccessService : IDataReportAccessService
 
     public async Task<List<ReportAccessResponse>> GetAccessListForReport(int reportId)
     {
+        await _db.DataReport.ConfirmEditAccess(reportId, _identity.EmployeeId);
+
         var access = (await _db.DataReportAccess
             .Get(x => x.ReportId == reportId && x.Status == ItemStatus.Active)
             .AsNoTracking()
@@ -89,7 +90,7 @@ public class DataReportAccessService : IDataReportAccessService
 
     public async Task<object> GetReportAccessAvailability(int reportId)
     {
-        await _db.DataReport.ConfirmAccessToReport(reportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(reportId, _identity.EmployeeId);
 
         var report = await _db.DataReport.GetReport(reportId);
 
@@ -98,7 +99,7 @@ public class DataReportAccessService : IDataReportAccessService
             .Select(x => x.RoleId)
             .ToList();
 
-        var existingEmployees = report!.DataReportAccess!
+        var existingEmployees = report.DataReportAccess!
             .Where(x => x.Status == ItemStatus.Active && x.EmployeeId.HasValue && x.ReportId == reportId)
             .Select(x => x.EmployeeId)
             .ToList();
@@ -125,7 +126,7 @@ public class DataReportAccessService : IDataReportAccessService
         var a = await _db.DataReportAccess.Get(x => x.Id == accessId).FirstOrDefaultAsync();
         if(a == null)
             return;
-        await _db.DataReport.ConfirmAccessToReport(a.ReportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(a.ReportId, _identity.EmployeeId);
         a.Status = ItemStatus.Archive;
         await _db.DataReportAccess.Update(a);
     }

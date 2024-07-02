@@ -1,9 +1,5 @@
-﻿using HRIS.Models;
-using HRIS.Models.Enums;
-using HRIS.Models.Report;
-using HRIS.Models.Report.Response;
+﻿using HRIS.Models.Report.Response;
 using HRIS.Models.Update;
-using HRIS.Services.Extensions;
 using HRIS.Services.Interfaces.Reporting;
 using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Session;
@@ -30,14 +26,14 @@ public class DataReportService : IDataReportService
 
     public async Task<List<DataReportListResponse>> GetDataReportList()
     {
-        return await _db.DataReport.GetReportsForEmployee(_identity.Email) ?? throw new Exception("Not reports found");
+        return await _db.DataReport.GetReportsForEmployee(_identity.Email) ?? throw new CustomException("Not reports found");
     }
 
     public async Task<object> GetDataReport(string code)
     {
-        var report = await _db.DataReport.GetReport(code) ?? throw new Exception($"Report '{code}' not found");
+        var report = await _db.DataReport.GetReport(code) ?? throw new CustomException($"Report '{code}' not found");
 
-        await _db.DataReport.ConfirmAccessToReport(report.Id, _identity.EmployeeId);
+        await _db.DataReport.ConfirmAnyAccess(report.Id, _identity.EmployeeId);
 
         var viewOnly = await IsReportViewOnlyForEmployee(report.Id);
 
@@ -80,11 +76,10 @@ public class DataReportService : IDataReportService
 
     public async Task UpdateReportInput(UpdateReportCustomValue input)
     {
-        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
 
         var item = await _db.DataReportValues
-            .FirstOrDefault(x =>
-                x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId);
+            .FirstOrDefault(x => x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId);
 
         if (item != null)
         {

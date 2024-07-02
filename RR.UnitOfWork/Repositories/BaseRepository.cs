@@ -9,7 +9,7 @@ public interface IRepository<T> where T : IModel
     Task<T?> GetById(int id);
     IQueryable<T> Get(Expression<Func<T, bool>>? criteria = null);
     Task<List<T>> GetAll(Expression<Func<T, bool>>? criteria = null);
-    Task<T> FirstOrDefault(Expression<Func<T, bool>> criteria);
+    Task<T?> FirstOrDefault(Expression<Func<T, bool>> criteria);
     Task<bool> Any(Expression<Func<T, bool>> criteria);
     Task<T> Add(T entity);
     Task<T> Delete(int id);

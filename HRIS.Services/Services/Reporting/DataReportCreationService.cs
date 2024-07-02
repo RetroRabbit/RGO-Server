@@ -35,9 +35,9 @@ public class DataReportCreationService : IDataReportCreationService
 
     public async Task UpdateReport(UpdateReportRequest input)
     {
-        await _db.DataReport.ConfirmAccessToReport(input.ReportId, _identity.EmployeeId);
+        await _db.DataReport.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
 
-        var report = await _db.DataReport.GetReport(input.ReportId) ?? throw new Exception($"Failed to create report");
+        var report = await _db.DataReport.GetReport(input.ReportId) ?? throw new CustomException($"Failed to update report");
         report.Name = input.Name;
         report.Code = input.Code;
         await _db.DataReport.Update(report);
