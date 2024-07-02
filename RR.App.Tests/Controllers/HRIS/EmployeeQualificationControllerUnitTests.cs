@@ -62,7 +62,7 @@ public class EmployeeQualificationControllerUnitTests
         Assert.Equal("An error occurred while updating qualifications", exception.Message);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
     {
         _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(_employeeQualificationDto.Id))
