@@ -1,9 +1,11 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data;
+using RR.Tests.Data.Models.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -17,45 +19,47 @@ public class EmployeeDataControllerUnitTests
     public EmployeeDataControllerUnitTests()
     {
         _employeeDataServiceMock = new Mock<IEmployeeDataService>();
-        _controller = new EmployeeDataController(new AuthorizeIdentityMock(), _employeeDataServiceMock.Object);
+        _controller = new EmployeeDataController(new AuthorizeIdentityMock(1), _employeeDataServiceMock.Object);
 
         _employeeDataDtoList = new List<EmployeeDataDto>
         {
-            new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" },
-            new EmployeeDataDto { Id = 2, EmployeeId = 2, FieldCodeId = 1, Value = "example 1" }
+             EmployeeDataTestData.EmployeeDataOne.ToDto(),
+             EmployeeDataTestData.EmployeeDataTwo.ToDto(),
         };
-
-        _employeeDataDto = new EmployeeDataDto { Id = 1, EmployeeId = 1, FieldCodeId = 1, Value = "example 1" };
+        _employeeDataDto = EmployeeDataTestData.EmployeeDataOne.ToDto();
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeeDataReturnsOkResult()
     {
-        _employeeDataServiceMock.Setup(service => service.GetAllEmployeeData(1))
+        _employeeDataServiceMock.Setup(service => service.GetAllEmployeeData(_employeeDataDto.EmployeeId))
                                .ReturnsAsync(_employeeDataDtoList);
 
-        var result = await _controller.GetEmployeeData(1);
+        var result = await _controller.GetEmployeeData(_employeeDataDto.EmployeeId);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsType<List<EmployeeDataDto>>(okResult.Value);
-        _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(1), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(_employeeDataDto.EmployeeId), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task GetEmployeeDataReturnsNotFoundResult()
     {
         _employeeDataServiceMock.Setup(service => service.GetAllEmployeeData(1))
                                .ReturnsAsync((List<EmployeeDataDto>?)null);
 
-        var result = await _controller.GetEmployeeData(1);
+        // var result = await _controller.GetEmployeeData(1);
+       // var notfoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        var exception = await Assert.ThrowsAsync<CustomException>(async() =>await _controller.GetEmployeeData(1));
+        //var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        //var errorMessage = Assert.IsType<string>(notFoundResult. );
+        // Assert.Equal("Employee data not found", errorMessage);
+        // _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(1), Times.Once);
+        Assert.Equal("Employee data not found", exception.Message) ;
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal("Employee data not found", errorMessage);
-        _employeeDataServiceMock.Verify(service => service.GetAllEmployeeData(1), Times.Once);
     }
 
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
+    [Fact]
     public async Task SaveEmployeeDataReturnsOkResult()
     {
         _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
