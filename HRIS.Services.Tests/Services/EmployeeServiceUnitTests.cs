@@ -29,6 +29,7 @@ public class EmployeeServiceUnitTests
     };
 
     private readonly EmployeeService employeeService;
+    private readonly Mock<IEmailService> _emailService;
 
     public EmployeeServiceUnitTests()
     {
@@ -37,8 +38,11 @@ public class EmployeeServiceUnitTests
         employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        _emailService = new Mock<IEmailService>();
         roleServiceMock = new Mock<IRoleService>();
-        employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object, employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object);
+        employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
+            employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object,
+            _emailService.Object);
     }
 
     [Fact]
@@ -140,21 +144,6 @@ public class EmployeeServiceUnitTests
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
     }
-
-
-    [Fact]
-    public void PushToProducerTestFail()
-    {
-        var employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
-                               .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
-
-        var employeeData = EmployeeTestData.EmployeeOne;
-
-        employeeService.PushToProducerAsync(employeeData);
-    }
-
 
     [Fact]
     public void GetEmployeeTest()

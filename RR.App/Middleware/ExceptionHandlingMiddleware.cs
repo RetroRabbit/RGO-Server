@@ -31,25 +31,32 @@ namespace Hris.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            var errorResponse = await GetRequestInfo(context, exception);
-            var message = "Internal Server Error. Please try again later.";
-
-            switch (exception)
+            try
             {
-                case CustomException:
-                    errorResponse.StatusCode = StatusCodes.Status404NotFound;
-                    message = exception.Message;
-                    break;
-                default:
-                    errorResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                    _errorLoggingService.LogException(errorResponse);
-                    break;
+                var errorResponse = await GetRequestInfo(context, exception);
+                var message = "Internal Server Error. Please try again later.";
+
+                switch (exception)
+                {
+                    case CustomException:
+                        errorResponse.StatusCode = StatusCodes.Status404NotFound;
+                        message = exception.Message;
+                        break;
+                    default:
+                        errorResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                        await _errorLoggingService.LogException(errorResponse);
+                        break;
+                }
+
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)errorResponse.StatusCode;
+
+                await context.Response.WriteAsync(message);
             }
-
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)errorResponse.StatusCode;
-
-            await context.Response.WriteAsync(message);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private async Task<ErrorLoggingDto> GetRequestInfo(HttpContext context, Exception exception)
@@ -67,7 +74,6 @@ namespace Hris.Middleware
                 RequestUrl = context.Request.GetDisplayUrl(),
                 RequestMethod = context.Request.Method,
                 RequestContentType = context.Request.ContentType,
-                
             };
 
             var bodyAsString = string.Empty;

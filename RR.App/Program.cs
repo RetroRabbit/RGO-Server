@@ -2,17 +2,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using HRIS.Services;
 using RR.UnitOfWork;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
-using HRIS.Services.Services;
 using Newtonsoft.Json;
 using Hris.Middleware;
 using HRIS.Services.Session;
+using HRIS.Services;
 
 namespace RR.App
 {
@@ -43,11 +42,6 @@ namespace RR.App
             configuration.AddJsonFile("appsettings.json");
             configuration.AddUserSecrets<Program>();
 
-            var serviceBusConnectionString = Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString");
-            var queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
-            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
-
-            builder.Services.AddSingleton<EmployeeDataConsumer>(new EmployeeDataConsumer(serviceBusClient, queueName));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddHttpContextAccessor();

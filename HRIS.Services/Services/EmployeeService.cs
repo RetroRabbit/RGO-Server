@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Mail;
+using System.Text;
 using Azure.Messaging.ServiceBus;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
@@ -11,22 +12,23 @@ namespace HRIS.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private readonly ServiceBusClient serviceBusClient = new (Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
-    private readonly string queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IRoleService _roleService;
     private readonly IErrorLoggingService _errorLoggingService;
+    private readonly IEmailService _emailService;
 
     public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
-                           IEmployeeAddressService employeeAddressService, IRoleService roleService, IErrorLoggingService errorLoggingService)
+                           IEmployeeAddressService employeeAddressService, IRoleService roleService,
+                           IErrorLoggingService errorLoggingService, IEmailService emailService)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
         _employeeAddressService = employeeAddressService;
         _roleService = roleService;
         _errorLoggingService = errorLoggingService;
+        _emailService = emailService;
     }
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
@@ -49,19 +51,13 @@ public class EmployeeService : IEmployeeService
 
         try
         {
-            var ExistingEmployeeType = await _employeeTypeService
+            var existingEmployeeType = await _employeeTypeService
                 .GetEmployeeType(employeeDto.EmployeeType!.Name);
 
-            employee = new Employee(employeeDto, ExistingEmployeeType);
+            employee = new Employee(employeeDto, existingEmployeeType);
 
-            try
-            {
-                 PushToProducerAsync(employee);
-            }
-            catch (Exception ex)
-            {
-               _errorLoggingService.LogException(ex);
-            }
+            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
+                "WelcomeLetter", employeeDto);
         }
         catch (Exception ex)
         {
@@ -100,7 +96,7 @@ public class EmployeeService : IEmployeeService
         employee.Active = true;
         var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee.ToDto(), Role = roleDto };
+        var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee.ToDto(), Role = roleDto };
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
@@ -422,24 +418,6 @@ public class EmployeeService : IEmployeeService
                         .OrderBy(employee => employee.Name)
                         .Select(employee => employee.ToDto())
                         .ToListAsync();
-    }
-
-    public async void PushToProducerAsync(Employee employeeData)
-    {
-        try
-        {
-            {
-                var messageBody = JsonConvert.SerializeObject(employeeData);
-                var body = Encoding.UTF8.GetBytes(messageBody);
-
-                 await using var sender = serviceBusClient.CreateSender(queueName);
-                 await sender.SendMessageAsync(new ServiceBusMessage(body));
-            }
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-        }
     }
 
     public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()

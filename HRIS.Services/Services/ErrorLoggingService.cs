@@ -56,7 +56,7 @@ public class ErrorLoggingService : IErrorLoggingService
             {
                 DateOfIncident = targetLocalTime,
                 Message = exception.Message,
-                StackTrace = exception.StackTrace,
+                StackTrace = exception.ToString(),
                 IpAddress = "",
                 RequestBody = "",
                 RequestUrl = "",
