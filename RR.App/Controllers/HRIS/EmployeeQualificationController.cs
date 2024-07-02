@@ -42,7 +42,7 @@ public class EmployeeQualificationController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
-    public async Task<ActionResult<List<EmployeeQualificationDto>>> GetAllEmployeeQualifications()
+    public async Task<IActionResult> GetAllEmployeeQualifications()
     {
         var qualifications = await _employeeQualificationService.GetAllEmployeeQualifications();
         return Ok(qualifications);
