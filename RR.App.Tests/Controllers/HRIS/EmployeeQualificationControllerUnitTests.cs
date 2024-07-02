@@ -83,7 +83,7 @@ public class EmployeeQualificationControllerUnitTests
 
         var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(_employeeQualificationDto.Id);
 
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
         Assert.Equivalent(_employeeQualificationDto, returnValue);
     }
@@ -115,7 +115,7 @@ public class EmployeeQualificationControllerUnitTests
 
         var result = await _employeeQualificationController.GetAllEmployeeQualifications();
 
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<List<EmployeeQualificationDto>>(okResult.Value);
         Assert.Equal(listOfEmployeeQualificationDto, returnValue);
     }
