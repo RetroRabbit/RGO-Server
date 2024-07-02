@@ -107,6 +107,8 @@ public class EmployeeService : IEmployeeService
         return newEmployee.ToDto();
     }
 
+
+
     public async Task<bool> CheckUserExist(string? email)
     {
         return await _db.Employee
@@ -225,6 +227,29 @@ public class EmployeeService : IEmployeeService
         var employee = await _db.Employee.GetById(employeeId);
         return employee.ToDto();
     }
+
+    public async Task<double> CalculateEmployeeGrowthRate()
+    {
+        var currentMonthTotal = await GetEmployeeCurrentMonthTotal();
+        var previousMonthTotal = await GetEmployeePreviousMonthTotal();
+
+        if (previousMonthTotal == null || currentMonthTotal == null)
+        {
+            throw new Exception("Employee totals for current or previous month are not available");
+        }
+
+        int currentTotal = currentMonthTotal.EmployeeTotal;
+        int previousTotal = previousMonthTotal.EmployeeTotal;
+
+        if (previousTotal == 0)
+        {
+            return 0;
+        }
+
+        double growthRate = ((double)(currentTotal - previousTotal) / previousTotal) * 100;
+        return Math.Round(growthRate, 2);
+    }
+
 
     public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
     {
