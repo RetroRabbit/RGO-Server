@@ -20,11 +20,13 @@ public class AuthorizeIdentityMock : AuthorizeIdentity
         Role = role;
         EmployeeId = employeeId;
     }
+
     public AuthorizeIdentityMock(int employeeId)
-    : this()
+       : this()
     {
-       EmployeeId = employeeId;
+        EmployeeId = employeeId;
     }
+
     public AuthorizeIdentityMock(IUnitOfWork db, IHttpContextAccessor httpAccessor) 
         : base(db, httpAccessor)
     {
