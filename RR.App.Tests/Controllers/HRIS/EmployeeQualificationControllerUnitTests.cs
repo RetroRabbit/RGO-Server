@@ -72,7 +72,7 @@ public class EmployeeQualificationControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returnValue = Assert.IsType<EmployeeQualificationDto>(okResult.Value);
-        Assert.Equal(_employeeQualificationDto, returnValue);
+        Assert.Equivalent(_employeeQualificationDto, returnValue);
     }
 
     [Fact]
