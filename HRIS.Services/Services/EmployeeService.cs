@@ -285,7 +285,8 @@ public class EmployeeService : IEmployeeService
             TotalNumberOfEmployeesOnBench = totalNumberOfEmployeesOnBench.TotalNumberOfEmployeesOnBench,
             BillableEmployeesPercentage = Math.Round(billableEmployeesPercentage, 0),
             EmployeeTotalDifference = employeeTotalDifference,
-            isIncrease = isIncrease
+            isIncrease = isIncrease,
+            TotalNumberOfEmployeesOnClient = totalNumberOfEmployeesOnClients
         };
     }
 

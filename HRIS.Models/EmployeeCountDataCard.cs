@@ -13,4 +13,5 @@ public class EmployeeCountDataCard
     public double BillableEmployeesPercentage { get; set; }
     public int EmployeeTotalDifference { get; set; }
     public bool isIncrease { get; set; }
+    public int TotalNumberOfEmployeesOnClient { get; set; }
 }
