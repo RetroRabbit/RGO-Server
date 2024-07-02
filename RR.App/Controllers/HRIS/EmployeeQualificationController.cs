@@ -40,7 +40,7 @@ public class EmployeeQualificationController : ControllerBase
         return Ok(updatedQualification);
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllEmployeeQualifications()
     {
