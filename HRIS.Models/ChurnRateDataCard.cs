@@ -4,6 +4,8 @@ public class ChurnRateDataCardDto
 {
     public double ChurnRate { get; set; }
 
+    public double PreviousPeriodChurnRate { get; set; }
+
     public double DeveloperChurnRate { get; set; }
 
     public double DesignerChurnRate { get; set; }

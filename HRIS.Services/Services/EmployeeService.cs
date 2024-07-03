@@ -308,6 +308,21 @@ public class EmployeeService : IEmployeeService
         };
     }
 
+    public async Task<MonthlyEmployeeTotalDto> GetEmployeePreviousMonthTotal()
+    {
+        var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
+
+        var previousEmployeeTotal = _db.MonthlyEmployeeTotal
+                                       .Get()
+                                       .Where(e => e.Month == previousMonth)
+                                       .FirstOrDefault();
+
+        if (previousEmployeeTotal == null) return await GetEmployeeCurrentMonthTotal();
+
+        return previousEmployeeTotal.ToDto();
+    }
+
+
     private double CalculateChurnRate(int employeeCurrentMonthTotal, int employeePreviousMonthTotal)
     {
         return Math.Round((employeePreviousMonthTotal > 0)
@@ -507,19 +522,6 @@ public class EmployeeService : IEmployeeService
         return totalOfDevsDesignersAndScrumsOnClients;
     }
 
-    public async Task<MonthlyEmployeeTotalDto> GetEmployeePreviousMonthTotal()
-    {
-        var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
-
-        var previousEmployeeTotal = _db.MonthlyEmployeeTotal
-                                       .Get()
-                                       .Where(e => e.Month == previousMonth)
-                                       .FirstOrDefault();
-
-        if (previousEmployeeTotal == null) return await GetEmployeeCurrentMonthTotal();
-
-        return previousEmployeeTotal.ToDto();
-    }
 
     public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
     {
