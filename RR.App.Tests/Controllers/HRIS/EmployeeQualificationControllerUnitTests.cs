@@ -78,7 +78,7 @@ public class EmployeeQualificationControllerUnitTests
     [Fact]
     public async Task GetEmployeeQualificationByEmployeeIdReturnsOkObjectResultWithQualifications()
     {
-        _mockEmployeeQualificationService.Setup(x => x.GetAllEmployeeQualificationsByEmployeeId(_employeeQualificationDto.Id))
+        _mockEmployeeQualificationService.Setup(x => x.GetEmployeeQualificationsByEmployeeId(_employeeQualificationDto.Id))
             .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification.ToDto);
 
         var result = await _employeeQualificationController.GetEmployeeQualificationByEmployeeId(_employeeQualificationDto.Id);
