@@ -24,8 +24,8 @@ namespace RR.App
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
 
-            ConfigureConfigurationSources(configuration);
-            RegisterServices(builder.Services, configuration);
+            SetupConfiguration(configuration);
+            SetupDependencyInjection(builder.Services, configuration);
             ConfigureSwagger(builder.Services);
             ConfigureAuthentication(builder.Services, configuration);
             ConfigureAuthorizationPolicies(builder.Services, configuration);
@@ -36,14 +36,14 @@ namespace RR.App
             await app.RunAsync();
         }
 
-        private static void ConfigureConfigurationSources(ConfigurationManager configuration)
+        private static void SetupConfiguration(ConfigurationManager configuration)
         {
             configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             configuration.AddUserSecrets<Program>();
             configuration.AddEnvironmentVariables();
         }
 
-        private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
+        private static void SetupDependencyInjection(IServiceCollection services, IConfiguration configuration)
         {
             var serviceBusConnectionString = configuration["NewEmployeeQueue:ConnectionString"];
             var serviceBusQueueName = configuration["ServiceBus:QueueName"];
@@ -105,8 +105,8 @@ namespace RR.App
                         ClockSkew = TimeSpan.Zero,
                         ValidIssuer = authSettings["Issuer"],
                         ValidAudience = authSettings["Audience"],
-                        IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
-                            LazyJsonWebKeySet.Value?.Keys ?? throw new InvalidOperationException("JsonWebKeySet is not available.")
+                        IssuerSigningKeyResolver = (_, _, _, _) =>
+                            LazyJsonWebKeySet.Value.Keys ?? throw new InvalidOperationException("JsonWebKeySet is not available.")
                     };
 
                     options.Events = new JwtBearerEvents
@@ -130,14 +130,14 @@ namespace RR.App
         {
             var policies = configuration.GetSection("Security:AuthorizationPolicies:Policies").Get<List<PolicySettings>>();
 
-            policies.ForEach(policySettings =>
+            policies?.ForEach(policySettings =>
             {
                 services.AddAuthorization(options =>
                 {
                     options.AddPolicy(policySettings.Name, policy =>
                     {
                         policy.RequireRole(policySettings.Roles);
-                        if (policySettings.Permissions?.Any() == true)
+                        if (policySettings.Permissions.Any())
                         {
                             policy.RequireClaim("permissions", policySettings.Permissions);
                         }
