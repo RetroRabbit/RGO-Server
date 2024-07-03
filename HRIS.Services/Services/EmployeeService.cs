@@ -170,21 +170,14 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> GetEmployeeById(int id)
     {
-        var employee = await _db.Employee
+        return await _db.Employee
                                 .Get(employee => employee.Id == id)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
                                 .Include(employee => employee.PhysicalAddress)
                                 .Include(employee => employee.PostalAddress)
                                 .Select(employee => employee.ToDto())
-                                .FirstOrDefaultAsync();
-
-        if (employee == null)
-        {
-            throw new CustomException("Employee not found");
-        }
-
-        return employee;
+                                .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
     }
 
 
