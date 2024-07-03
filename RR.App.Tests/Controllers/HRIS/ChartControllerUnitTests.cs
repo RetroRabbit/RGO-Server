@@ -14,10 +14,8 @@ public class ChartControllerUnitTests
     private readonly Mock<IChartService> _chartServiceMock;
     private readonly List<string> _roles;
     private readonly List<string> _dataTypes;
-    private readonly List<string> _labels;
     private readonly string _chartName;
     private readonly string _chartType;
-    private readonly ChartDataSetDto _chartDataSetDto;
     private readonly ChartDto _chartDto;
     private readonly List<ChartDto> _chartDtoList;
     private readonly ChartDataDto _chartDataDto;
@@ -29,11 +27,11 @@ public class ChartControllerUnitTests
         _controller = new ChartsController(_chartServiceMock.Object);
         _roles = new List<string> { "Developer" };
         _dataTypes = new List<string> { "Type1", "Type2", "Type3" };
-        _labels = new List<string> { "Label1", "Label2", "Label3" };
         _chartName = "Sample Chart";
         _chartType = "Bar";
+        var labels = new List<string> { "Label1", "Label2", "Label3" };
 
-        _chartDataSetDto = new ChartDataSetDto
+        var chartDataSetDto = new ChartDataSetDto
         {
             Label = "Lable 1",
             Data = new List<int> { 10, 20, 30 }
@@ -45,9 +43,9 @@ public class ChartControllerUnitTests
             Name = _chartName,
             Type = _chartType,
             DataTypes = _dataTypes,
-            Labels = _labels,
+            Labels = labels,
             Roles = new List<string> { "All" },
-            Datasets = new List<ChartDataSetDto> { _chartDataSetDto }
+            Datasets = new List<ChartDataSetDto> { chartDataSetDto }
         };
 
         _chartDtoList = new List<ChartDto> 
