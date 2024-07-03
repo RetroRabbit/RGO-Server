@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
 using EntityFrameworkCore.EncryptColumn.Attribute;
-using Google.Apis.Gmail.v1.Data;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
 

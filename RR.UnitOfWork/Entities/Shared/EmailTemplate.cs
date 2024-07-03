@@ -9,7 +9,6 @@ public class EmailTemplate : IModel
 {
     public EmailTemplate()
     {
-
     }
 
     [Key]

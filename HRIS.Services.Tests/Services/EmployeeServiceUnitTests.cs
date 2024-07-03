@@ -15,34 +15,31 @@ namespace HRIS.Services.Tests.Services;
 public class EmployeeServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IEmployeeAddressService> employeeAddressServiceMock;
-    private readonly Mock<IEmployeeTypeService> employeeTypeServiceMock;
-    private readonly Mock<IRoleService> roleServiceMock;
+    private readonly Mock<IEmployeeAddressService> _employeeAddressServiceMock;
+    private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
+    private readonly Mock<IRoleService> _roleServiceMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
 
-
-    private readonly EmployeeRole employeeRoleDto = new()
+    private readonly EmployeeRole _employeeRoleDto = new()
     {
         Id = 0,
         Employee = EmployeeTestData.EmployeeOne,
         Role = EmployeeRoleTestData.RoleDtoEmployee
     };
 
-    private readonly EmployeeService employeeService;
-    private readonly Mock<IEmailService> _emailService;
+    private readonly EmployeeService _employeeService;
 
     public EmployeeServiceUnitTests()
     {
-        Environment.SetEnvironmentVariable("NewEmployeeQueue__ConnectionString", "Endpoint=sb://blahblah.servicebus.windows.net/;SharedAccessKeyName=SomeKey;SharedAccessKey=etehtetjetjjrykrykry");
         _dbMock = new Mock<IUnitOfWork>();
-        employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
+        _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
+        _employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _emailService = new Mock<IEmailService>();
-        roleServiceMock = new Mock<IRoleService>();
-        employeeService = new EmployeeService(employeeTypeServiceMock.Object, _dbMock.Object,
-            employeeAddressServiceMock.Object, roleServiceMock.Object, _errorLoggingServiceMock.Object,
-            _emailService.Object);
+        Mock<IEmailService> emailService = new();
+        _roleServiceMock = new Mock<IRoleService>();
+        _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
+            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+            emailService.Object);
     }
 
     [Fact]
@@ -51,7 +48,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
         _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<Exception>(() => employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto()));
+        await Assert.ThrowsAsync<Exception>(() => _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto()));
     }
 
     [Fact]
@@ -59,23 +56,23 @@ public class EmployeeServiceUnitTests
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
 
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>())).Throws(new Exception());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>())).Throws(new Exception());
 
-        employeeTypeServiceMock.Setup(r => r.SaveEmployeeType(It.IsAny<EmployeeTypeDto>())).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
+        _employeeTypeServiceMock.Setup(r => r.SaveEmployeeType(It.IsAny<EmployeeTypeDto>())).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
-        employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
             .ReturnsAsync(false)
             .ReturnsAsync(false);
 
-        employeeAddressServiceMock.SetupSequence(r => r.Save(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.SetupSequence(r => r.Save(It.IsAny<EmployeeAddressDto>()))
             .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto())
             .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
         _dbMock.Setup(r => r.Employee.Add(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(employeeRoleDto);
+        _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(_employeeRoleDto);
 
-        roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
-        var result = await employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
+        _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
+        var result = await _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
 
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
 
@@ -87,28 +84,28 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
                .ReturnsAsync(false);
 
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>()))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>()))
             .Throws(new Exception());
 
-        employeeTypeServiceMock.Setup(r => r.SaveEmployeeType(It.IsAny<EmployeeTypeDto>()))
+        _employeeTypeServiceMock.Setup(r => r.SaveEmployeeType(It.IsAny<EmployeeTypeDto>()))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
-        employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(EmployeeAddressTestData.EmployeeAddressOne.ToDto()))
+        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(EmployeeAddressTestData.EmployeeAddressOne.ToDto()))
                                   .ReturnsAsync(true)
                                   .ReturnsAsync(true);
 
-        employeeAddressServiceMock.Setup(x => x.Get(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(x => x.Get(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
-        employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
         _dbMock.Setup(r => r.Employee.Add(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(employeeRoleDto);
+        _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(_employeeRoleDto);
 
-        roleServiceMock.Setup(r => r.GetRole(It.IsAny<string>())).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
+        _roleServiceMock.Setup(r => r.GetRole(It.IsAny<string>())).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
 
-        var result = await employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
+        var result = await _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
 
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
     }
@@ -116,7 +113,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task SaveEmployeeTest()
     {
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
         var employeeRole = new EmployeeRole
         {
@@ -125,22 +122,22 @@ public class EmployeeServiceUnitTests
             Role = EmployeeRoleTestData.RoleDtoEmployee
         };
 
-        employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(false)
                                   .ReturnsAsync(true);
 
-        employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
-        employeeAddressServiceMock.Setup(r => r.Get(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(r => r.Get(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
-        roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
+        _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
 
         _dbMock.Setup(r => r.Employee.Add(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
         _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(employeeRole);
 
-        var result = await employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
+        var result = await _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
     }
@@ -156,7 +153,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.ToMockIQueryable());
 
-        var result = employeeService.GetEmployee("dm@retrorabbit.co.za");
+        var result = _employeeService.GetEmployee("dm@retrorabbit.co.za");
 
         Assert.NotNull(result);
     }
@@ -164,7 +161,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task DeleteEmployeeTest()
     {
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         var employeeList = new List<Employee>
@@ -178,7 +175,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.Employee.Delete(EmployeeTestData.EmployeeOne.Id))
                .ReturnsAsync(EmployeeTestData.EmployeeOne);
 
-        var result = await employeeService.DeleteEmployee(EmployeeTestData.EmployeeOne.Email!);
+        var result = await _employeeService.DeleteEmployee(EmployeeTestData.EmployeeOne.Email!);
         Assert.NotNull(result);
     }
 
@@ -195,7 +192,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employees.ToMockIQueryable());
 
-        var result = await employeeService.GetAll();
+        var result = await _employeeService.GetAll();
 
         Assert.NotNull(result);
         Assert.IsType<List<EmployeeDto>>(result);
@@ -234,7 +231,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(expectedEmployees.ToMockIQueryable());
 
-        var journeyEmployees = await employeeService.GetAll(EmployeeTestData.EmployeeTwo.Email!);
+        var journeyEmployees = await _employeeService.GetAll(EmployeeTestData.EmployeeTwo.Email!);
 
         Assert.Single(journeyEmployees);
     }
@@ -244,7 +241,7 @@ public class EmployeeServiceUnitTests
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
 
-        var result = employeeService.CheckUserExist("dm@retrorabbit.co.za");
+        var result = _employeeService.CheckUserExist("dm@retrorabbit.co.za");
 
         Assert.NotNull(result);
     }
@@ -252,14 +249,14 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task UpdateEmployeeTestOwnProfile()
     {
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>()))
                .ReturnsAsync(EmployeeTestData.EmployeeOne);
 
         var result =
-            await employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTestData.EmployeeOne.Email!);
+            await _employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTestData.EmployeeOne.Email!);
 
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
     }
@@ -276,7 +273,7 @@ public class EmployeeServiceUnitTests
         List<EmployeeRole> empRoles = new() { empRole };
         List<Role> roles = new() { roleDto };
 
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name)).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name)).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
         _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employees.ToMockIQueryable());
@@ -284,7 +281,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>())).Returns(empRoles.ToMockIQueryable());
         _dbMock.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>())).Returns(roles.ToMockIQueryable());
 
-        var result = await employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(), "admin@retrorabbit.co.za");
+        var result = await _employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(), "admin@retrorabbit.co.za");
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
@@ -299,7 +296,7 @@ public class EmployeeServiceUnitTests
         var empRoles = new List<EmployeeRole> { empRole };
         var roles = new List<Role> { EmployeeRoleTestData.RoleDtoEmployee };
 
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>()))
@@ -316,7 +313,7 @@ public class EmployeeServiceUnitTests
 
         var exception = await Assert.ThrowsAsync<Exception>(
                                                     async () =>
-                                                        await employeeService
+                                                        await _employeeService
                                                             .UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(),
                                                              "unauthorized.email@retrorabbit.co.za"));
 
@@ -329,7 +326,7 @@ public class EmployeeServiceUnitTests
         var emp = EmployeeTestData.EmployeeTwo;
         var employees = new List<Employee> { emp };
 
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
         _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>()))
                .ReturnsAsync(EmployeeTestData.EmployeeOne);
@@ -341,7 +338,7 @@ public class EmployeeServiceUnitTests
 
         var exception = await Assert.ThrowsAsync<Exception>(
                                                             async () =>
-                                                                await employeeService
+                                                                await _employeeService
                                                                     .UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(),
                                                                      "unauthorized.email@retrorabbit.co.za"));
 
@@ -354,14 +351,14 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(x => x.Employee.GetById(EmployeeTestData.EmployeeOne.Id))
                .ReturnsAsync(EmployeeTestData.EmployeeOne);
 
-        var result = await employeeService.GetById(EmployeeTestData.EmployeeOne.Id);
+        var result = await _employeeService.GetById(EmployeeTestData.EmployeeOne.Id);
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
     }
 
     [Fact]
-    public async Task GetSimpleProfileWithPCAndTeamLeadAndClient()
+    public async Task GetSimpleProfileWithPcAndTeamLeadAndClient()
     {
         var allocatedClient = new ClientDto { Id = 1, Name = "FNB" };
         var clients = new List<Client> { new(allocatedClient) };
@@ -380,7 +377,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>()))
                .Returns(clients.ToMockIQueryable());
 
-        var result = await employeeService.GetSimpleProfile(EmployeeTestData.EmployeeFour.Email!);
+        var result = await _employeeService.GetSimpleProfile(EmployeeTestData.EmployeeFour.Email!);
 
         Assert.NotNull(result);
         Assert.Equal(EmployeeTestData.EmployeeFour.TeamLead, result.TeamLeadId);
@@ -396,7 +393,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employees.ToMockIQueryable());
 
-        var result = await employeeService.GetEmployeeById(EmployeeTestData.EmployeeOne.Id);
+        var result = await _employeeService.GetEmployeeById(EmployeeTestData.EmployeeOne.Id);
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
@@ -412,7 +409,7 @@ public class EmployeeServiceUnitTests
 
         _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<CustomException>(() => employeeService.GetEmployeeById(2));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeById(2));
     }
 
     [Fact]
@@ -444,7 +441,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
                .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
 
-        var result = await employeeService.GetEmployeeCurrentMonthTotal();
+        var result = await _employeeService.GetEmployeeCurrentMonthTotal();
 
         Assert.NotNull(result);
         Assert.Equal(monthlyEmployeeTotalDto.Month, result.Month);
@@ -482,7 +479,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await employeeService.GetEmployeeCurrentMonthTotal();
+        var result = await _employeeService.GetEmployeeCurrentMonthTotal();
 
         _dbMock.Verify(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()), Times.Once);
 
@@ -505,7 +502,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
                .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
 
-        var result = await employeeService.GetEmployeePreviousMonthTotal();
+        var result = await _employeeService.GetEmployeePreviousMonthTotal();
 
         Assert.NotNull(result);
         Assert.Equal(monthlyEmployeeTotalDto.EmployeeTotal, result.EmployeeTotal);
@@ -543,7 +540,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await employeeService.GetEmployeePreviousMonthTotal();
+        var result = await _employeeService.GetEmployeePreviousMonthTotal();
 
         Assert.NotNull(result);
         Assert.Equal(1, result.EmployeeTotal);
@@ -591,7 +588,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await employeeService.CalculateEmployeeChurnRate();
+        var result = await _employeeService.CalculateEmployeeChurnRate();
 
         Assert.NotNull(result);
         Assert.Equal(churnRateDto.ChurnRate, result.ChurnRate);
@@ -639,7 +636,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await employeeService.CalculateEmployeeChurnRate();
+        var result = await _employeeService.CalculateEmployeeChurnRate();
 
         Assert.NotNull(result);
         Assert.Equal(churnRateDto.ChurnRate, result.ChurnRate);
@@ -713,7 +710,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
            .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await employeeService.GenerateDataCardInformation();
+        var result = await _employeeService.GenerateDataCardInformation();
 
         Assert.NotNull(result);
         Assert.Equivalent(1, result.DevsCount);
