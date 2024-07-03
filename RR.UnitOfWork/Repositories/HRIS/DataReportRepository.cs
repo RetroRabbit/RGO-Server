@@ -101,50 +101,21 @@ public class DataReportRepository : BaseRepository<DataReport>, IDataReportRepos
 
     public async Task ConfirmEditAccess(int reportId, int employeeId)
     {
-        var employee = (await (
-            from e in _db.employees
-            where e.Id == employeeId
-            select e).FirstOrDefaultAsync()) ?? throw new UnauthorizedAccessException("Unauthorized Access");
+        var access = await GetAccessByReportIdAndEmployeeId(reportId, employeeId);
 
-        var roles = await (
-            from r in _db.employeeRoles
-            where r.EmployeeId == employee.Id
-            select r.RoleId).ToListAsync();
-
-        var access = await (from a in _db.dataReportAccess
-            where a.RoleId == reportId && 
-                  a.Status == ItemStatus.Active && 
-                  a.ViewOnly == false &&
-                  (roles.Contains(a.RoleId ?? 0) || a.EmployeeId == employee.Id)
-            select a).ToListAsync();
-
-        if (!access.Any())
+        if (access.Any(x => x.ViewOnly))
             throw new UnauthorizedAccessException("Unauthorized Access");
     }
 
     public async Task ConfirmAnyAccess(int reportId, int employeeId)
     {
-        var employee = (await (
-            from e in _db.employees
-            where e.Id == employeeId
-            select e).FirstOrDefaultAsync()) ?? throw new UnauthorizedAccessException("Unauthorized Access");
-
-        var roles = await (
-            from r in _db.employeeRoles
-            where r.EmployeeId == employee.Id
-            select r.RoleId).ToListAsync();
-
-        var access = await (from a in _db.dataReportAccess
-            where a.RoleId == reportId &&
-                  a.Status == ItemStatus.Active &&
-                  (roles.Contains(a.RoleId ?? 0) || a.EmployeeId == employee.Id)
-                            select a).ToListAsync();
+        var access = await GetAccessByReportIdAndEmployeeId(reportId, employeeId);
 
         if (!access.Any())
             throw new UnauthorizedAccessException("Unauthorized Access");
     }
 
-    public async Task ConfirmAccessToReport(int reportId, int employeeId)
+    private async Task<List<DataReportAccess>> GetAccessByReportIdAndEmployeeId(int reportId, int employeeId)
     {
         var employee = (await (
             from e in _db.employees
@@ -157,14 +128,12 @@ public class DataReportRepository : BaseRepository<DataReport>, IDataReportRepos
             select r.RoleId).ToListAsync();
 
         var access = await (from a in _db.dataReportAccess
-            where a.RoleId == reportId &&
+            where a.ReportId == reportId &&
                   a.Status == ItemStatus.Active &&
-                  a.ViewOnly == true &&
                   (roles.Contains(a.RoleId ?? 0) || a.EmployeeId == employee.Id)
             select a).ToListAsync();
 
-        if (!access.Any())
-            throw new UnauthorizedAccessException("Unauthorized Access");
+        return access;
     }
 
     private async Task<List<DataReportColumns>> GetColumns(int reportId)

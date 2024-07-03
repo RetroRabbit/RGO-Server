@@ -1,5 +1,8 @@
-﻿using HRIS.Models.Enums;
+﻿using System.ComponentModel;
+using System.Reflection;
+using HRIS.Models.Enums;
 using HRIS.Models.Report;
+using HRIS.Services.Extensions;
 using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
@@ -120,8 +123,20 @@ public class DataReportHelper : IDataReportHelper
                 if (property == null)
                     return null;
 
-                currentObject = property.GetValue(currentObject);
-                currentType = property.PropertyType;
+                currentType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+
+                if (currentType.IsEnum)
+                {
+                    currentObject = property.GetValue(currentObject)?.ToString();
+                }
+                else if (currentType == typeof(DateTime))
+                {
+                    currentObject = ((DateTime?)property.GetValue(currentObject))?.ToString("dd-MM-yyyy");
+                }
+                else
+                {
+                    currentObject = property.GetValue(currentObject);
+                }
             }
             catch
             {
@@ -130,6 +145,14 @@ public class DataReportHelper : IDataReportHelper
         }
 
         return currentObject;
+    }
+
+    public static string GetEnumDescription(Enum? value)
+    {
+        if (value == null) return null;
+        FieldInfo field = value.GetType().GetField(value.ToString());
+        DescriptionAttribute attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
+        return attribute == null ? value.ToString() : attribute.Description;
     }
 
     public List<DataReportColumnsDto> MapReportColumns(DataReport report)
