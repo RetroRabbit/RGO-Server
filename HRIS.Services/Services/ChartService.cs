@@ -25,7 +25,7 @@ public partial class ChartService : IChartService
 
     public async Task<List<ChartDto>> GetAllCharts()
     {
-        var charts =  await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
+        var charts = await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
         for (int i = 0; i < charts.Count; i++)
         {
             for (int j = 0; j < charts[i].DataTypes!.Count; j++)
@@ -49,7 +49,6 @@ public partial class ChartService : IChartService
                 charts[i].DataTypes![j] = CapitalLetters().Replace(charts[i].DataTypes![j], "$1 $2");
             }
         }
-
         return charts;
     }
 
@@ -118,7 +117,7 @@ public partial class ChartService : IChartService
             );
 
             var labels = roleDictionaries.Values.SelectMany(dict => dict.Keys).Distinct().OrderBy(label => label).ToList();
-            
+
 
             foreach (var rolePair in roleDictionaries)
             {
@@ -260,7 +259,6 @@ public partial class ChartService : IChartService
         {
             quantifiableColumnNames[i] = CapitalLetters().Replace(quantifiableColumnNames[i], "$1 $2");
         }
-
         return quantifiableColumnNames;
     }
 
