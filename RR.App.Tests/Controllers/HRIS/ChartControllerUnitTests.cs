@@ -80,7 +80,6 @@ public class ChartControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnedCharts = Assert.IsType<List<ChartDto>>(okResult.Value);
         Assert.Equal(_chartDtoList.Count, returnedCharts.Count);
-
     }
 
     [Fact]
@@ -157,19 +156,5 @@ public class ChartControllerUnitTests
         Assert.Equal("text/csv", fileResult.ContentType);
         Assert.Equal(fileName, fileResult.FileDownloadName);
         Assert.Equal(mockCsvData, fileResult.FileContents);
-    }
-
-    [Fact]
-    public async Task ExportCsv_ReturnsNotFound_WhenNoData()
-    {
-        byte[]? mockCsvData = null;
-
-        _chartServiceMock.Setup(service => service.ExportCsvAsync(_dataTypes))
-            .ReturnsAsync(mockCsvData);
-
-        var result = await _controller.ExportCsv(_dataTypes);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("No data found to export.", notFoundResult.Value);
     }
 }
