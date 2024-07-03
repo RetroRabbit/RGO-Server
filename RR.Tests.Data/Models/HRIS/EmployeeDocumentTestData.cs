@@ -82,4 +82,11 @@ public class EmployeeDocumentTestData
         Reference = null,
         LastUpdatedDate = DateTime.Now
     };
+
+    public static SimpleEmployeeDocumentGetAllDto SimpleGetAllDto = new()
+    {
+        EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(),
+        Name = EmployeeTestData.EmployeeOne.Name,
+        Surname = EmployeeTestData.EmployeeOne.Surname,
+    };
 }
