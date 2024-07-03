@@ -8,8 +8,9 @@ public interface IEmployeeQualificationService
     /// Saves a new employee qualification.
     /// </summary>
     /// <param name="employeeQualificationDto">Qualification data to be saved.</param>
-    /// <param name="employeeId">ID of the employee to whom the qualification belongs.</param>
+    /// <param name="employeeId">id of the employee to whom the qualification belongs.</param>
     /// <returns>The saved employee qualification data transfer object.</returns>
+    /// <exception cref="HRIS.Services.Services.CustomException"></exception>
     Task<EmployeeQualificationDto> SaveEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId);
 
     /// <summary>
@@ -19,30 +20,26 @@ public interface IEmployeeQualificationService
     Task<List<EmployeeQualificationDto>> GetAllEmployeeQualifications();
 
     /// <summary>
-    /// Retrieves a specific employee qualification by its ID.
-    /// </summary>
-    /// <param name="id">The ID of the qualification to retrieve.</param>
-    /// <returns>The requested employee qualification data transfer object.</returns>
-    Task<EmployeeQualificationDto> GetEmployeeQualificationById(int id);
-
-    /// <summary>
     /// Retrieves all qualifications associated with a specific employee.
     /// </summary>
-    /// <param name="employeeId">The ID of the employee for whom to retrieve all qualifications.</param>
+    /// <param name="employeeId">The id of the employee for whom to retrieve all qualifications.</param>
     /// <returns>The requested employee qualification data transfer object.</returns>
-    Task<EmployeeQualificationDto> GetAllEmployeeQualificationsByEmployeeId(int employeeId);
+    /// <exception cref="HRIS.Services.Services.CustomException"></exception>
+    Task<EmployeeQualificationDto> GetEmployeeQualificationsByEmployeeId(int employeeId);
 
     /// <summary>
     /// Updates an existing employee qualification.
     /// </summary>
     /// <param name="employeeQualificationDto">Updated qualification data.</param>
     /// <returns>The updated employee qualification data transfer object.</returns>
+    /// <exception cref="HRIS.Services.Services.CustomException"></exception>
     Task<EmployeeQualificationDto> UpdateEmployeeQualification(EmployeeQualificationDto employeeQualificationDto);
 
     /// <summary>
-    /// Deletes an employee qualification by its ID.
+    /// Deletes an employee qualification by its id.
     /// </summary>
     /// <param name="id">The ID of the qualification to delete.</param>
-    /// <returns></returns>
+    /// <returns>The deleted employee qualification data transfer object</returns>
+    /// <exception cref="HRIS.Services.Services.CustomException"></exception>
     Task<EmployeeQualificationDto> DeleteEmployeeQualification(int id);
 }
