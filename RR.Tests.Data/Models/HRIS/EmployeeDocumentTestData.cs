@@ -85,7 +85,7 @@ public class EmployeeDocumentTestData
 
     public static SimpleEmployeeDocumentGetAllDto SimpleGetAllDto = new()
     {
-        EmployeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(),
+        EmployeeDocumentDto = EmployeeDocumentPending.ToDto(),
         Name = EmployeeTestData.EmployeeOne.Name,
         Surname = EmployeeTestData.EmployeeOne.Surname,
     };

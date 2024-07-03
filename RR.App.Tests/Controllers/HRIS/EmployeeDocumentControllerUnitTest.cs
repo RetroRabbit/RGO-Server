@@ -1,7 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Session;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RGO.Tests.Data.Models;
@@ -20,8 +19,6 @@ public class EmployeeDocumentControllerUnitTest
     private readonly EmployeeDocumentController _controller;
     private readonly List<EmployeeDocumentDto> _employeeDocumentDtoList;
     private readonly EmployeeDocumentDto _employeeDocumentDto;
-    private readonly AuthorizeIdentity _identity;
-
 
     public EmployeeDocumentControllerUnitTest()
     {
@@ -83,7 +80,7 @@ public class EmployeeDocumentControllerUnitTest
         _employeeMockDocumentService.Setup(c => c.SaveEmployeeDocument(_simpleEmployeeDocument, _authorizeIdentityMock.Email, 0))
             .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto());
 
-        var result = await _controller.Save(_simpleEmployeeDocument!, 0);
+        var result = await _controller.Save(_simpleEmployeeDocument, 0);
 
         var okresult = Assert.IsType<OkObjectResult>(result);
         var actualSavedEmployeeDocument = Assert.IsType<EmployeeDocumentDto>(okresult.Value);
