@@ -60,19 +60,18 @@ public class PropertyAccessController : ControllerBase
     [HttpGet("user-id")]
     public async Task<IActionResult> GetUserId(string email)
     {
-        if (!string.IsNullOrEmpty(_identity.Email))
-        {
-            if (email == _identity.Email)
-            {
-                return Ok(_identity.EmployeeId);
-            }
+        if (string.IsNullOrEmpty(_identity.Email))
+            throw new CustomException("Error retrieving employee.");
 
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                var employee = await _employeeService.GetEmployee(email);
-                return Ok(employee!.Id);
-            }
-        }
-        throw new CustomException("Error retrieving employee.");
+        if (email == _identity.Email)
+            return Ok(_identity.EmployeeId);
+
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
+            throw new CustomException("Error retrieving employee.");
+
+        var employee = await _employeeService.GetEmployee(email);
+        return employee == null
+            ? throw new CustomException("Error retrieving employee.")
+            : Ok(employee.Id);
     }
 }
