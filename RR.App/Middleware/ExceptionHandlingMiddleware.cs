@@ -55,7 +55,9 @@ namespace Hris.Middleware
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine(e);
+                Console.ResetColor();
             }
         }
 
