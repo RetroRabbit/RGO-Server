@@ -9,7 +9,6 @@ using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
-using Hris.Middleware;
 using HRIS.Services.Session;
 using HRIS.Services;
 
@@ -17,39 +16,54 @@ namespace RR.App
 {
     public class Program
     {
-        private static Lazy<JsonWebKeySet> LazyJwksSet = new Lazy<JsonWebKeySet>(() =>
-        {
-            try
-            {
-                var jwksUrl = Environment.GetEnvironmentVariable("AuthManagement__Issuer") + ".well-known/jwks.json";
-                using (var httpClient = new HttpClient())
-                {
-                    var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
-                    return new JsonWebKeySet(jwksResponse);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error fetching JWKS: {ex.Message}");
-                throw;
-            }
-        });
+        private static readonly Lazy<JsonWebKeySet> LazyJsonWebKeySet = new Lazy<JsonWebKeySet>(FetchJsonWebKeySet);
 
-        public static async Task Main(params string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            ConfigurationManager configuration = builder.Configuration;
-            configuration.AddJsonFile("appsettings.json");
+            var configuration = builder.Configuration;
+
+            SetupConfiguration(configuration);
+            SetupDependencyInjection(builder.Services, configuration);
+            ConfigureSwagger(builder.Services);
+            ConfigureAuthentication(builder.Services, configuration);
+            ConfigureAuthorizationPolicies(builder.Services, configuration);
+
+            var app = builder.Build();
+            ConfigureApp(app);
+
+            await app.RunAsync();
+        }
+
+        private static void SetupConfiguration(ConfigurationManager configuration)
+        {
+            configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             configuration.AddUserSecrets<Program>();
+            configuration.AddEnvironmentVariables();
+        }
 
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddHttpContextAccessor();
+        private static void SetupDependencyInjection(IServiceCollection services, IConfiguration configuration)
+        {
+            var serviceBusConnectionString = configuration["NewEmployeeQueue:ConnectionString"];
+            var serviceBusQueueName = configuration["ServiceBus:QueueName"];
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
 
-            /// <summary>
-            /// Adds Swagger to the project and configures it to use JWT Bearer Authentication
-            /// </summary>
-            builder.Services.AddSwaggerGen(opt =>
+            services.AddSingleton(new EmployeeDataConsumer(serviceBusClient, serviceBusQueueName));
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddHttpContextAccessor();
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
+
+            services.RegisterRepository();
+            services.RegisterServicesHRIS();
+            services.RegisterServicesATS();
+            services.AddScoped<AuthorizeIdentity>();
+        }
+
+        private static void ConfigureSwagger(IServiceCollection services)
+        {
+            services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "HRIS API", Version = "v1" });
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -61,55 +75,37 @@ namespace RR.App
                     BearerFormat = "JWT",
                     Scheme = "bearer"
                 });
-
                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference{Type = ReferenceType.SecurityScheme, Id = "Bearer"}
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
                         },
                         Array.Empty<string>()
                     }
                 });
             });
+        }
 
-            var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Default");
-            builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(connectionString), ServiceLifetime.Transient);
-            builder.Services.RegisterRepository();
-            builder.Services.RegisterServicesHRIS();
-            builder.Services.RegisterServicesATS();
-            builder.Services.AddScoped<AuthorizeIdentity>();
+        private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
+        {
+            var authSettings = configuration.GetSection("AuthManagement");
 
-            /// <summary>
-            /// Add authentication with JWT bearer token to the application
-            /// and set the token validation parameters.
-            /// </summary>
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new()
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-
-                        ValidIssuer = Environment.GetEnvironmentVariable("AuthManagement__Issuer"),
-                        ValidAudience = Environment.GetEnvironmentVariable("AuthManagement__Audience"),
-                        IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
-                        {
-                            var jwksSet = LazyJwksSet.Value;
-                            if (jwksSet != null)
-                            {
-                                return jwksSet.Keys;
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("JsonWebKeySet is not available.");
-                            }
-                        }
+                        ValidIssuer = authSettings["Issuer"],
+                        ValidAudience = authSettings["Audience"],
+                        IssuerSigningKeyResolver = (_, _, _, _) =>
+                            LazyJsonWebKeySet.Value.Keys ?? throw new InvalidOperationException("JsonWebKeySet is not available.")
                     };
 
                     options.Events = new JwtBearerEvents
@@ -117,112 +113,77 @@ namespace RR.App
                         OnTokenValidated = context =>
                         {
                             var claimsIdentity = context.Principal!.Identity as ClaimsIdentity;
-
-                            Claim? roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                            var roleClaims = claimsIdentity!.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
                             if (roleClaims != null)
                             {
-                                try
-                                {
-                                    var roles = JArray.Parse(roleClaims.Value);
-                                    foreach (var role in roles)
-                                    {
-                                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
-                                    }
-                                }
-                                catch (JsonReaderException)
-                                {
-                                    var roles = roleClaims.Value.Split(',');
-                                    foreach (var role in roles)
-                                    {
-                                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
-                                    }
-                                }
+                                AddRolesToClaims(claimsIdentity, roleClaims);
                                 claimsIdentity.RemoveClaim(roleClaims);
                             }
                             return Task.CompletedTask;
                         }
                     };
                 });
+        }
 
-            /// <summary>
-            /// Authorization policies
-            /// e.g: options.AddPolicy([Policy Name], policy => policy.RequireRole([Role in DB and enum]));
-            /// </summary>
+        private static void ConfigureAuthorizationPolicies(IServiceCollection services, IConfiguration configuration)
+        {
+            var policies = configuration.GetSection("Security:AuthorizationPolicies:Policies").Get<List<PolicySettings>>();
 
-            var confBuilder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .AddUserSecrets<Program>()
-                .Build();
-
-            var policies = confBuilder
-                .AsEnumerable()
-                .Where(x => x.Key.Contains("Security") && x.Value?.Length > 0)
-                .GroupBy(x =>
-                {
-                    var split = x.Key.Split(":");
-                    return $"{split[0]}:{split[1]}:{split[2]}:{split[3]}";
-                })
-                .ToDictionary(x => x.Key, x =>
-                    x.GroupBy(y => y.Key.Split(":")[4])
-                    .ToDictionary(
-                        y => y.Key,
-                        y => y.Select(x => x.Value).ToList()));
-
-            policies
-                .Where(p => p.Value.Count == 2)
-                .Select(p => p.Key)
-                .ToList()
-                .ForEach(key =>
-                {
-                    policies[key]["Permissions"] = new List<string?>();
-                });
-
-            new AuthorizationPolicySettings
+            policies?.ForEach(policySettings =>
             {
-                Policies = policies
-                .Select(policy => new PolicySettings {
-                    Name = policy.Value["Name"].First(),
-                    Roles = policy.Value["Roles"],
-                    Permissions = policy.Value["Permissions"]})
-
-                .ToList()
-            }.Policies.ForEach(policySettings =>
-            {
-                builder.Services.AddAuthorization(options =>
+                services.AddAuthorization(options =>
                 {
-                    options.AddPolicy(
-                        policySettings.Name,
-                        policy =>
+                    options.AddPolicy(policySettings.Name, policy =>
+                    {
+                        policy.RequireRole(policySettings.Roles);
+                        if (policySettings.Permissions.Any())
                         {
-                            policy.RequireRole(policySettings.Roles);
-                            if (policySettings.Permissions.Count > 0)
-                                policy.RequireClaim("permissions", policySettings.Permissions);
-                        });
+                            policy.RequireClaim("permissions", policySettings.Permissions);
+                        }
+                    });
                 });
             });
+        }
 
-            var app = builder.Build();
+        private static void ConfigureApp(WebApplication app)
+        {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             app.UseSwagger();
             app.UseSwaggerUI();
-
-            app.UseCors(x => x
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-
-            app.UseMiddleware<ExceptionHandlingMiddleware>();
-
+            app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
+        }
 
-            app.Run();
+        private static JsonWebKeySet FetchJsonWebKeySet()
+        {
+            var jwksUrl = $"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}.well-known/jwks.json";
+            using var httpClient = new HttpClient();
+            var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
+            return new JsonWebKeySet(jwksResponse);
+        }
+
+        private static void AddRolesToClaims(ClaimsIdentity claimsIdentity, Claim roleClaims)
+        {
+            try
+            {
+                var roles = JArray.Parse(roleClaims.Value);
+                foreach (var role in roles)
+                {
+                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
+                }
+            }
+            catch (JsonReaderException)
+            {
+                var roles = roleClaims.Value.Split(',');
+                foreach (var role in roles)
+                {
+                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
+                }
+            }
         }
     }
 }
