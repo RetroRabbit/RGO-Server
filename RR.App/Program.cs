@@ -2,16 +2,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using HRIS.Services;
 using RR.UnitOfWork;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using HRIS.Models;
 using ATS.Services;
 using Azure.Messaging.ServiceBus;
-using HRIS.Services.Services;
 using Newtonsoft.Json;
 using HRIS.Services.Session;
+using HRIS.Services;
 
 namespace RR.App
 {
@@ -45,11 +44,6 @@ namespace RR.App
 
         private static void SetupDependencyInjection(IServiceCollection services, IConfiguration configuration)
         {
-            var serviceBusConnectionString = configuration["NewEmployeeQueue:ConnectionString"];
-            var serviceBusQueueName = configuration["ServiceBus:QueueName"];
-            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
-
-            services.AddSingleton(new EmployeeDataConsumer(serviceBusClient, serviceBusQueueName));
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();

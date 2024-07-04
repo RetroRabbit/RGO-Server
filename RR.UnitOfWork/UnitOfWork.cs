@@ -4,6 +4,7 @@ using Npgsql;
 using RR.UnitOfWork.Repositories;
 using RR.UnitOfWork.Repositories.ATS;
 using RR.UnitOfWork.Repositories.HRIS;
+using RR.UnitOfWork.Repositories.Shared;
 
 namespace RR.UnitOfWork;
 
@@ -52,6 +53,8 @@ public class UnitOfWork : IUnitOfWork
         DataReportValues = new DataReportValuesRepository(_db);
         DataReportColumnMenu = new DataReportColumnMenuRepository(_db);
         DataReportAccess = new DataReportAccessRepository(_db);
+        EmailTemplate = new EmailTemplateRepository(_db);
+        EmailHistory = new EmailHistoryRepository(_db);
     }
 
     public IEmployeeAddressRepository EmployeeAddress { get; }
@@ -92,6 +95,8 @@ public class UnitOfWork : IUnitOfWork
     public IDataReportValuesRepository DataReportValues { get; }
     public IDataReportColumnMenuRepository DataReportColumnMenu { get; }
     public IDataReportAccessRepository DataReportAccess { get; }
+    public IEmailTemplateRepository EmailTemplate { get; }
+    public IEmailHistoryRepository EmailHistory { get; }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {

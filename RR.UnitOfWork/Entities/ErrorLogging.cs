@@ -31,7 +31,7 @@ namespace RR.UnitOfWork.Entities
         [Column("ipAddress")] public string IpAddress { get; set; }
         [Column("requestUrl")] public string RequestUrl { get; set; }
         [Column("requestMethod")] public string RequestMethod { get; set; }
-        [Column("requestContentType")] public string RequestContentType { get; set; }
+        [Column("requestContentType")] public string? RequestContentType { get; set; }
         [Column("requestBody")] public string? RequestBody { get; set; }
 
         public ErrorLoggingDto ToDto()

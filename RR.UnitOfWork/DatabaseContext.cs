@@ -4,7 +4,7 @@ using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.ATS;
 using HRIS.Models;
 using HRIS.Models.Enums;
-using RR.UnitOfWork.Interfaces;
+using RR.UnitOfWork.Entities.Shared;
 
 namespace RR.UnitOfWork;
 
@@ -55,6 +55,8 @@ public class DatabaseContext : DbContext
     public DbSet<DataReportFilter> dataReportFilter { get; set; }
     public DbSet<DataReportValues> dataReportValues { get; set; }
     public DbSet<DataReportAccess> dataReportAccess { get; set; }
+    public DbSet<EmailTemplate> emailTemplate { get; set; }
+    public DbSet<EmailHistory> emailHistory { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
