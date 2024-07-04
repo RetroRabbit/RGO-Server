@@ -44,11 +44,6 @@ namespace RR.App
 
         private static void SetupDependencyInjection(IServiceCollection services, IConfiguration configuration)
         {
-            var serviceBusConnectionString = configuration["NewEmployeeQueue:ConnectionString"];
-            var serviceBusQueueName = configuration["ServiceBus:QueueName"];
-            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
-
-            services.AddSingleton(new EmployeeDataConsumer(serviceBusClient, serviceBusQueueName));
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();
