@@ -18,6 +18,7 @@ public class EmployeeControllerUnitTests
     private readonly EmployeeController _controller;
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDto _employee;
+    private readonly EmployeeFilterResponse _employeeFilter;
     private readonly SimpleEmployeeProfileDto _simpleEmployee;
     private readonly Mock<IEmployeeService> _employeeMockService;
     private readonly EmployeeAddressDto _employeeAddressDto;
@@ -68,6 +69,22 @@ public class EmployeeControllerUnitTests
             CellphoneNo = "0123456789",
             PhysicalAddress = _employeeAddressDto,
             PostalAddress = _employeeAddressDto
+        };
+
+        _employeeFilter = new EmployeeFilterResponse
+        {
+            Email = _employee.Email,
+            EngagementDate = _employee.EngagementDate,
+            InactiveReason = _employee.InactiveReason,
+            TerminationDate = _employee.TerminationDate,
+            ClientAllocated = "Test",
+            Id = _employee.Id,
+            RoleId = 1,
+            RoleDescription = "Test Role",
+            Level = _employee.Level,
+            Name = _employee.Name,
+            Position = "Test Position",
+            Surname = _employee.Surname
         };
 
         _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto{
@@ -420,13 +437,13 @@ public class EmployeeControllerUnitTests
     public async Task FilterEmployeesSuccessTest()
     {
         _employeeMockService.Setup(service => service.FilterEmployees(1, 0,true))
-                            .ReturnsAsync(new List<EmployeeDto> { _employee });
+                            .ReturnsAsync(new List<EmployeeFilterResponse> { _employeeFilter });
 
         var result = await _controller.FilterEmployees(1, 0);
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(new List<EmployeeDto> { _employee }, (List<EmployeeDto>)okObjectResult.Value!);
+        Assert.Equal(new List<EmployeeFilterResponse> { _employeeFilter }, (List<EmployeeFilterResponse>)okObjectResult.Value!);
     }
 
     [Fact]

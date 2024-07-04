@@ -149,6 +149,7 @@ public class Employee : IModel
     [Column("inactiveReason")] public string? InactiveReason { get; set; }
 
     public virtual EmployeeType? EmployeeType { get; set; }
+    public virtual EmployeeRole? EmployeeRole { get; set; }
     public virtual Employee? ChampionEmployee { get; set; }
     public virtual Employee? TeamLeadAssigned { get; set; }
     public virtual Client? ClientAssigned { get; set; }
