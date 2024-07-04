@@ -137,7 +137,7 @@ namespace RR.App
                     options.AddPolicy(policySettings.Name, policy =>
                     {
                         policy.RequireRole(policySettings.Roles);
-                        if (policySettings.Permissions.Any())
+                        if (policySettings.Permissions?.Any() ?? false)
                         {
                             policy.RequireClaim("permissions", policySettings.Permissions);
                         }
