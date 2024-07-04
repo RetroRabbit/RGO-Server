@@ -29,6 +29,12 @@ public class DataReportService : IDataReportService
         return await _db.DataReport.GetReportsForEmployee(_identity.Email) ?? throw new CustomException("Not reports found");
     }
 
+    public async Task<DataReport> DeleteReportfromList(string code)
+    {
+        var report = await _db.DataReport.GetReport(code);
+        return await _db.DataReport.Delete(report.Id) ?? throw new CustomException("report not found");
+    }
+
     public async Task<object> GetDataReport(string code)
     {
         var report = await _db.DataReport.GetReport(code) ?? throw new CustomException($"Report '{code}' not found");

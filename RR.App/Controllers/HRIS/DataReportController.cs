@@ -105,4 +105,12 @@ public class DataReportController : ControllerBase
         await _access.ArchiveReportAccess(accessId);
         return Ok();
     }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpDelete("delete-report")]
+    public async Task<IActionResult> DeleteReport([FromQuery] string code)
+    {
+        await _service.DeleteReportfromList(code);
+        return Ok();
+    }
 }
