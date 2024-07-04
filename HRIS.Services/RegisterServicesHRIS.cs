@@ -48,5 +48,7 @@ public static class RegisterServicesExtension
         services.AddScoped<IDataReportCreationService, DataReportCreationService>();
         services.AddScoped<IDataReportHelper, DataReportHelper>();
         services.AddScoped<IDataReportAccessService, DataReportAccessService>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IEmailHelper, EmailHelper>();
     }
 }

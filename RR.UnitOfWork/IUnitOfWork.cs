@@ -2,6 +2,7 @@ using Npgsql;
 using RR.UnitOfWork.Repositories;
 using RR.UnitOfWork.Repositories.ATS;
 using RR.UnitOfWork.Repositories.HRIS;
+using RR.UnitOfWork.Repositories.Shared;
 
 namespace RR.UnitOfWork;
 
@@ -45,6 +46,8 @@ public interface IUnitOfWork
     IDataReportValuesRepository DataReportValues { get; }
     IDataReportColumnMenuRepository DataReportColumnMenu { get; }
     IDataReportAccessRepository DataReportAccess { get; }
+    IEmailTemplateRepository EmailTemplate { get; }
+    IEmailHistoryRepository EmailHistory { get; }
 
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<List<int>> RawSqlForIntList(string sql, string column, params NpgsqlParameter[] parameters);
