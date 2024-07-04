@@ -186,4 +186,21 @@ public class PropertyAccessControllerUnitTests
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
         Assert.Equal("Error retrieving employee.", notFoundResult.Value);
     }
+
+    [Fact]
+    public async Task GetPropertiesWithAccessThrowsExceptionForUnauthorizedRole()
+    {
+        var employeeId = 2;
+        var identity = new Mock<AuthorizeIdentity>(null, null);
+        identity.SetupGet(x => x.Role).Returns("Inactive");
+        identity.SetupGet(x => x.EmployeeId).Returns(1);
+
+        var controller = new PropertyAccessController(identity.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await controller.GetPropertiesWithAccess(employeeId));
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
+        Assert.Equal("Error retrieving employee.", notFoundResult.Value);
+    }
 }
