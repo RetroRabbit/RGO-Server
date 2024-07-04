@@ -2,6 +2,7 @@
 using RR.UnitOfWork.Entities.HRIS;
 using RR.UnitOfWork.Entities;
 using RR.UnitOfWork.Entities.ATS;
+using RR.UnitOfWork.Entities.Shared;
 
 namespace RR.UnitOfWork;
 
@@ -46,6 +47,8 @@ public class DatabaseContext : DbContext
     public DbSet<Candidate> candidate { get; set; }
     public DbSet<WorkExperience> workExperience { get; set; }
     public DbSet<Termination> termination { get; set; }
+    public DbSet<EmailTemplate> emailTemplate { get; set; }
+    public DbSet<EmailHistory> emailHistory { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
