@@ -296,18 +296,24 @@ public class EmployeeService : IEmployeeService
             .Where(e => e.EngagementDate < twelveMonthsAgo && (e.TerminationDate == null || e.TerminationDate >= twelveMonthsAgo))
             .GroupBy(e => e.EmployeeType)
             .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
+            .ToList()
+            .Cast<dynamic>()
             .ToList();
 
         var employeeEndOfPeriod = employeeData
             .Where(e => e.EngagementDate < today && (e.TerminationDate == null || e.TerminationDate >= today))
             .GroupBy(e => e.EmployeeType)
             .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
+            .ToList()
+            .Cast<dynamic>()
             .ToList();
 
         var terminationsDuringPeriod = employeeData
             .Where(e => e.TerminationDate >= twelveMonthsAgo && e.TerminationDate < today)
             .GroupBy(e => e.EmployeeType)
             .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
+            .ToList()
+            .Cast<dynamic>()
             .ToList();
 
         int GetCount(List<dynamic> data, int employeeType) => data.FirstOrDefault(x => x.EmployeeType == employeeType)?.Count ?? 0;
