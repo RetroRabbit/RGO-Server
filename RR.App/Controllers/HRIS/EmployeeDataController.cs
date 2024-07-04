@@ -29,7 +29,7 @@ public class EmployeeDataController : ControllerBase
            throw new CustomException("User data being accessed does not match user making the request.");
       
            var data = await _employeeDataService.GetAllEmployeeData(id);
-           return data == null ? throw new CustomException("Employee data not found") : Ok(data);
+           return Ok(data);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
@@ -40,7 +40,7 @@ public class EmployeeDataController : ControllerBase
           throw new CustomException("User data being accessed does not match user making the request.");
 
           var data = await _employeeDataService.SaveEmployeeData(employeeDataDto);
-          return data == null ? throw new CustomException("Employee data not saved") : Ok(data);
+          return Ok(data);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
@@ -51,7 +51,7 @@ public class EmployeeDataController : ControllerBase
          throw new CustomException("User data being accessed does not match user making the request.");
 
          var data = await _employeeDataService.UpdateEmployeeData(employeeDataDto);
-         return data == null ? throw new CustomException("Employee data not updated") : Ok(data);
+         return Ok(data);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -59,6 +59,6 @@ public class EmployeeDataController : ControllerBase
     public async Task<IActionResult> DeleteEmployeeData(int employeeDataId)
     {
         var data = await _employeeDataService.DeleteEmployeeData(employeeDataId);
-        return data == null ? throw new CustomException("Data could not be deleted"): Ok(data);
+        return Ok(data);
     }
 }

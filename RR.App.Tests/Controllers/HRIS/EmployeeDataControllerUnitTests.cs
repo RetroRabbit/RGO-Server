@@ -34,15 +34,14 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task GetEmployeeDataReturnsOkResult()
     {
-         _employeeDataServiceMock.Setup(x => x.GetAllEmployeeData(_employeeDataDto.Id))
+         _employeeDataServiceMock.Setup(x => x.GetAllEmployeeData(_employeeDataDto.EmployeeId))
                                .ReturnsAsync(_employeeDataDtoList);
 
-        var result = await _controller.GetEmployeeData(_employeeDataDto.Id);
+        var result = await _controller.GetEmployeeData(_employeeDataDto.EmployeeId);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<List<EmployeeDataDto>>(okResult.Value);
-        Assert.NotNull(result);
-        Assert.Equivalent(_employeeDataDtoList, returnValue);
+        Assert.Equal(_employeeDataDtoList, returnValue);
     }
 
     [Fact]
