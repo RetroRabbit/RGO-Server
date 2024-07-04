@@ -25,14 +25,31 @@ public partial class ChartService : IChartService
 
     public async Task<List<ChartDto>> GetAllCharts()
     {
-        return await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
+        var charts = await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
+        for (int i = 0; i < charts.Count; i++)
+        {
+            for (int j = 0; j < charts[i].DataTypes!.Count; j++)
+            {
+                charts[i].DataTypes![j] = CapitalLetters().Replace(charts[i].DataTypes![j], "$1 $2");
+            }
+        }
+        return charts;
     }
 
     public async Task<List<ChartDto>> GetEmployeeCharts(int employeeId)
     {
-        return await _db.Chart.Get()
+        var charts = await _db.Chart.Get()
             .Where(chart => chart.EmployeeId == employeeId)
             .Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
+
+        for (int i = 0; i < charts.Count; i++)
+        {
+            for (int j = 0; j < charts[i].DataTypes!.Count; j++)
+            {
+                charts[i].DataTypes![j] = CapitalLetters().Replace(charts[i].DataTypes![j], "$1 $2");
+            }
+        }
+        return charts;
     }
 
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName,
@@ -100,7 +117,7 @@ public partial class ChartService : IChartService
             );
 
             var labels = roleDictionaries.Values.SelectMany(dict => dict.Keys).Distinct().OrderBy(label => label).ToList();
-            
+
 
             foreach (var rolePair in roleDictionaries)
             {
@@ -237,6 +254,11 @@ public partial class ChartService : IChartService
                                                 .Select(p => p.Name)
                                                 .ToArray();
         quantifiableColumnNames = quantifiableColumnNames.Concat(new[] { "Age" }).ToArray();
+
+        for (int i = 0; i < quantifiableColumnNames.Length; i++)
+        {
+            quantifiableColumnNames[i] = CapitalLetters().Replace(quantifiableColumnNames[i], "$1 $2");
+        }
         return quantifiableColumnNames;
     }
 
@@ -347,4 +369,7 @@ public partial class ChartService : IChartService
 
         return dataDictionary;
     }
+
+    [GeneratedRegex("([a-z])([A-Z])")]
+    private static partial Regex CapitalLetters();
 }
