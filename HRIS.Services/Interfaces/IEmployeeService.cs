@@ -102,4 +102,6 @@ public interface IEmployeeService
     /// <param name="employeeId"></param>
     /// <returns></returns>
     Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId);
+
+    Task<double> CalculateEmployeeGrowthRate();
 }

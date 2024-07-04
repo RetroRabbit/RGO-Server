@@ -215,6 +215,28 @@ public class EmployeeService : IEmployeeService
         return employee.ToDto();
     }
 
+    public async Task<double> CalculateEmployeeGrowthRate()
+    {
+        var currentMonthTotal = await GetEmployeeCurrentMonthTotal();
+        var previousMonthTotal = await GetEmployeePreviousMonthTotal();
+
+        if (previousMonthTotal == null || currentMonthTotal == null)
+        {
+            throw new Exception("Employee totals for current or previous month are not available");
+        }
+
+        int currentTotal = currentMonthTotal.EmployeeTotal;
+        int previousTotal = previousMonthTotal.EmployeeTotal;
+
+        if (previousTotal == 0)
+        {
+            return 0;
+        }
+
+        double growthRate = ((double)(currentTotal - previousTotal) / previousTotal) * 100;
+        return Math.Round(growthRate, 2);
+    }
+
     public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
     {
         var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
@@ -253,30 +275,56 @@ public class EmployeeService : IEmployeeService
         };
     }
 
+    private double CalculateChurnRate(int employeeStartOfPeriodTotal, int terminationsDuringPeriod)
+    {
+        return Math.Round((employeeStartOfPeriodTotal > 0)
+            ? (double)terminationsDuringPeriod / employeeStartOfPeriodTotal * 100
+            : 0, 0);
+    }
+
     public async Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate()
     {
-        var employeeCurrentMonthTotal = await GetEmployeeCurrentMonthTotal();
+        var today = DateTime.Today;
+        var twelveMonthsAgo = today.AddMonths(-12);
 
-        var employeePreviousMonthTotal = await GetEmployeePreviousMonthTotal();
+        var employeeData = await _db.Employee
+            .Get()
+            .Where(e => e.EngagementDate <= today && (e.TerminationDate == null || e.TerminationDate >= twelveMonthsAgo))
+            .ToListAsync();
+
+        var employeeStartOfPeriod = employeeData
+            .Where(e => e.EngagementDate < twelveMonthsAgo && (e.TerminationDate == null || e.TerminationDate >= twelveMonthsAgo))
+            .GroupBy(e => e.EmployeeType)
+            .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
+            .ToList();
+
+        var employeeEndOfPeriod = employeeData
+            .Where(e => e.EngagementDate < today && (e.TerminationDate == null || e.TerminationDate >= today))
+            .GroupBy(e => e.EmployeeType)
+            .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
+            .ToList();
+
+        var terminationsDuringPeriod = employeeData
+            .Where(e => e.TerminationDate >= twelveMonthsAgo && e.TerminationDate < today)
+            .GroupBy(e => e.EmployeeType)
+            .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
+            .ToList();
+
+        int GetCount(List<dynamic> data, int employeeType) => data.FirstOrDefault(x => x.EmployeeType == employeeType)?.Count ?? 0;
+
+        var totalAtStartOfPeriod = employeeStartOfPeriod.Sum(x => x.Count);
+        var totalTerminationsDuringPeriod = terminationsDuringPeriod.Sum(x => x.Count);
 
         return new ChurnRateDataCardDto
         {
-            ChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.EmployeeTotal ?? 0, employeePreviousMonthTotal?.EmployeeTotal ?? 0),
-            DeveloperChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.DeveloperTotal ?? 0, employeePreviousMonthTotal?.DeveloperTotal ?? 0),
-            DesignerChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.DesignerTotal ?? 0, employeePreviousMonthTotal?.DesignerTotal ?? 0),
-            ScrumMasterChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.ScrumMasterTotal ?? 0, employeePreviousMonthTotal?.ScrumMasterTotal ?? 0),
-            BusinessSupportChurnRate = CalculateChurnRate(employeeCurrentMonthTotal?.BusinessSupportTotal ?? 0, employeePreviousMonthTotal?.BusinessSupportTotal ?? 0),
-            Month = employeePreviousMonthTotal?.Month ?? DateTime.Now.AddMonths(-1).ToString("MMMM"),
-            Year = employeePreviousMonthTotal?.Year ?? DateTime.Now.Year
+            ChurnRate = CalculateChurnRate(totalAtStartOfPeriod, totalTerminationsDuringPeriod),
+            DeveloperChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 1), GetCount(terminationsDuringPeriod, 1)),
+            DesignerChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 2), GetCount(terminationsDuringPeriod, 2)),
+            ScrumMasterChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 3), GetCount(terminationsDuringPeriod, 3)),
+            BusinessSupportChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 4), GetCount(terminationsDuringPeriod, 4)),
+            Month = twelveMonthsAgo.ToString("MMMM"),
+            Year = twelveMonthsAgo.Year
         };
-    }
-
-    private double CalculateChurnRate(int employeeCurrentMonthTotal, int employeePreviousMonthTotal)
-    {
-        return Math.Round((employeePreviousMonthTotal > 0)
-            ? (double)(employeeCurrentMonthTotal - employeePreviousMonthTotal)
-              / employeePreviousMonthTotal * 100
-            : 0, 0);
     }
 
     public async Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal()
