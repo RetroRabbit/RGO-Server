@@ -2,6 +2,7 @@ using Npgsql;
 using RR.UnitOfWork.Repositories;
 using RR.UnitOfWork.Repositories.ATS;
 using RR.UnitOfWork.Repositories.HRIS;
+using RR.UnitOfWork.Repositories.Shared;
 
 namespace RR.UnitOfWork;
 
@@ -39,6 +40,9 @@ public interface IUnitOfWork
     IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     IWorkExperienceRepository WorkExperience { get; }
     ITerminationRepository Termination { get; }
+    IEmailTemplateRepository EmailTemplate { get; }
+    IEmailHistoryRepository EmailHistory { get; }
+
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<string> RawSqlGet(string sql, params NpgsqlParameter[] parameters);
     Task<List<string>> GetColumnNames(string tableName);

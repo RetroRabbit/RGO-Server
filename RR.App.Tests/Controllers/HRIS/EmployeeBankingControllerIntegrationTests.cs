@@ -155,7 +155,7 @@ public class EmployeeBankingControllerIntegrationTests : IClassFixture<WebApplic
         }
     }
 
-    [Fact(Skip = "Middleware might be breaking integration tests need investigation")]
+    [Fact]
     public async Task Get_ReturnsOkResult()
     {
         var response = await _client.GetAsync("/employee-banking");
