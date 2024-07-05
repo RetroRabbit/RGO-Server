@@ -7,7 +7,6 @@ using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using HRIS.Models;
 using ATS.Services;
-using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
 using HRIS.Services.Session;
 using HRIS.Services;
@@ -48,7 +47,7 @@ namespace RR.App
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
+                options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__Default")), ServiceLifetime.Transient);
 
             services.RegisterRepository();
             services.RegisterServicesHRIS();
@@ -85,8 +84,6 @@ namespace RR.App
 
         private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
         {
-            var authSettings = configuration.GetSection("AuthManagement");
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -97,8 +94,8 @@ namespace RR.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = authSettings["Issuer"],
-                        ValidAudience = authSettings["Audience"],
+                        ValidIssuer = Environment.GetEnvironmentVariable("AuthManagement__Issuer"),
+                        ValidAudience = Environment.GetEnvironmentVariable("AuthManagement__Audience"),
                         IssuerSigningKeyResolver = (_, _, _, _) =>
                             LazyJsonWebKeySet.Value.Keys ?? throw new InvalidOperationException("JsonWebKeySet is not available.")
                     };
