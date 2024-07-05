@@ -147,43 +147,7 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("growth-rate")]
-    public async Task<IActionResult> CalculateEmployeeGrowthRate()
-    {
-        var growthRate = await _employeeService.CalculateEmployeeGrowthRate();
-        return Ok(growthRate);
-    }
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("card-count")]
-    public async Task<IActionResult> GetEmployeesCount()
-    {
-        try
-        {
-            var employeesCount = await _employeeService.GenerateDataCardInformation();
-            return Ok(employeesCount);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("churn-rate")]
-    public async Task<IActionResult> GetChurnRate()
-    {
-        try
-        {
-            var churnRate = await _employeeService.CalculateEmployeeChurnRate();
-            return Ok(churnRate);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
+   
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)

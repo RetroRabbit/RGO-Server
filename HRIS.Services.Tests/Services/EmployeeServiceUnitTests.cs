@@ -28,6 +28,7 @@ public class EmployeeServiceUnitTests
     };
 
     private readonly EmployeeService _employeeService;
+    private readonly DashboardService _dashboardService;
 
     public EmployeeServiceUnitTests()
     {
@@ -441,7 +442,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
                .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
 
-        var result = await _employeeService.GetEmployeeCurrentMonthTotal();
+        var result = await _dashboardService.GetEmployeeCurrentMonthTotal();
 
         Assert.NotNull(result);
         Assert.Equal(monthlyEmployeeTotalDto.Month, result.Month);
@@ -479,7 +480,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await _employeeService.GetEmployeeCurrentMonthTotal();
+        var result = await _dashboardService.GetEmployeeCurrentMonthTotal();
 
         _dbMock.Verify(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()), Times.Once);
 
@@ -502,7 +503,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
                .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
 
-        var result = await _employeeService.GetEmployeePreviousMonthTotal();
+        var result = await _dashboardService.GetEmployeePreviousMonthTotal();
 
         Assert.NotNull(result);
         Assert.Equal(monthlyEmployeeTotalDto.EmployeeTotal, result.EmployeeTotal);
@@ -540,7 +541,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await _employeeService.GetEmployeePreviousMonthTotal();
+        var result = await _dashboardService.GetEmployeePreviousMonthTotal();
 
         Assert.NotNull(result);
         Assert.Equal(1, result.EmployeeTotal);
@@ -588,7 +589,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await _employeeService.CalculateEmployeeChurnRate();
+        var result = await _dashboardService.CalculateEmployeeChurnRate();
 
         Assert.NotNull(result);
         Assert.Equal(churnRateDto.ChurnRate, result.ChurnRate);
@@ -636,7 +637,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await _employeeService.CalculateEmployeeChurnRate();
+        var result = await _dashboardService.CalculateEmployeeChurnRate();
 
         Assert.NotNull(result);
         Assert.Equal(churnRateDto.ChurnRate, result.ChurnRate);
@@ -710,7 +711,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
            .ReturnsAsync(monthlyEmployeeTotalDto);
 
-        var result = await _employeeService.GenerateDataCardInformation();
+        var result = await _dashboardService.GenerateDataCardInformation();
 
         Assert.NotNull(result);
         Assert.Equivalent(1, result.DevsCount);

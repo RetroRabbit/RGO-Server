@@ -66,23 +66,7 @@ public interface IEmployeeService
     /// <returns>SimpeEmployeeProfileDto</returns>
     Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
 
-    /// <summary>
-    ///     Returns Employees data count
-    /// </summary>
-    /// <returns>EmployeeDataCard</returns>
-    Task<EmployeeCountDataCard> GenerateDataCardInformation();
-
-    /// <summary>
-    ///     Get the total number of employees for the current month
-    /// </summary>
-    /// <returns>MonthlyEmployeeTotalDto</returns>
-    Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal();
-
-    /// <summary>
-    ///     Calculates employee chrunRate over a month
-    /// </summary>
-    /// <returns>ChurnRateDataCard</returns>
-    Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate();
+   
 
     /// <summary>
     ///     Get Employees filtered by Peoples champion or employee type
@@ -102,6 +86,4 @@ public interface IEmployeeService
     /// <param name="employeeId"></param>
     /// <returns></returns>
     Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId);
-
-    Task<double> CalculateEmployeeGrowthRate();
 }
