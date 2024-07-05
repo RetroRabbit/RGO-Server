@@ -2,8 +2,10 @@
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Transaction;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.App.Tests.Helper;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using System.Security.Claims;
@@ -67,7 +69,7 @@ public class EmployeeCertificationControllerUnitTests
         Assert.Equal(model, _employeeCertificationDtoList);
     }
 
-    [Fact(Skip = "Middleware takes care of this")]
+    [Fact]
     public async Task GetAllEmployeelCertiificatesFail()
     {
         var newController = new EmployeeCertificationController(new AuthorizeIdentityMock(), _employeeCertificationServiceMock.Object);
@@ -75,10 +77,10 @@ public class EmployeeCertificationControllerUnitTests
         _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id + 1))
             .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
-        var result = await newController.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeOne.Id + 1);
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeOne.Id + 1));
 
-        var notFoundException = Assert.IsType<Exception>(result);
-        Assert.Equal("User data being accessed does not match user making the request.", notFoundException.Message);
+        var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User data being accessed does not match user making the request.", objectResult.Value);
     }
 
     [Fact]
@@ -91,18 +93,6 @@ public class EmployeeCertificationControllerUnitTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(_employeeCertificationDto, okResult.Value);
-    }
-
-    [Fact(Skip = "Middleware takes care of this")]
-    public async Task SaveEmployeelCertiificatesFail()
-    {
-        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(_employeeCertificationDto))
-            .ThrowsAsync(new Exception("Employee not found"));
-
-        var result = await _controller.SaveEmployeeCertificate(_employeeCertificationDto);
-
-        var notFoundResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Employee not found", notFoundResult.Value);
     }
 
     [Fact]
@@ -131,7 +121,7 @@ public class EmployeeCertificationControllerUnitTests
         Assert.Equal(_employeeCertificationDto, okResult.Value);
     }
 
-    [Fact(Skip = "Middleware takes care of this")]
+    [Fact]
     public async Task GetEmployeelCertiificatesFail()
     {
         var newController = new EmployeeCertificationController(new AuthorizeIdentityMock(), _employeeCertificationServiceMock.Object);
@@ -139,7 +129,8 @@ public class EmployeeCertificationControllerUnitTests
         _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
-        var result = await newController.GetEmployeeCertificate(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id);
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetEmployeeCertificate(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
