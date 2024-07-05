@@ -16,10 +16,9 @@ public class EmployeeControllerUnitTests
 {
     private readonly Mock<IChartService> _chartMockService;
     private readonly EmployeeController _controller;
-    private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDto _employee;
-    private readonly SimpleEmployeeProfileDto _simpleEmployee;
     private readonly Mock<IEmployeeService> _employeeMockService;
+    private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeAddressDto _employeeAddressDto;
     private readonly EmployeeTypeDto _employeeTypeDto;
     private readonly List<Claim> _claims;
@@ -310,32 +309,7 @@ public class EmployeeControllerUnitTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact]
-    public async Task GetEmployeeCountSuccessTest()
-    {
-        var expectedCount = new EmployeeCountDataCard { EmployeeTotalDifference = 42 };
-        _employeeMockService.Setup(service => service.GenerateDataCardInformation())
-                            .ReturnsAsync(expectedCount);
-
-        var result = await _controller.GetEmployeesCount();
-
-        var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(expectedCount.EmployeeTotalDifference, ((EmployeeCountDataCard)okObjectResult.Value!).EmployeeTotalDifference);
-    }
-
-    [Fact]
-    public async Task GetEmployeesCountFailTest()
-    {
-        _employeeMockService.Setup(service => service.GenerateDataCardInformation())
-                            .ThrowsAsync(new Exception("Failed to generate data card"));
-
-        var result = await _controller.GetEmployeesCount();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-        Assert.Equal("Failed to generate data card", notFoundResult.Value);
-    }
+    
 
     [Fact]
     public async Task GetEmployeeByIdSuccessTest()
@@ -439,32 +413,5 @@ public class EmployeeControllerUnitTests
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetChurnRateSuccessTest()
-    {
-        var expectedChurnRate = new ChurnRateDataCardDto { ChurnRate = 0.15 };
-        _employeeMockService.Setup(service => service.CalculateEmployeeChurnRate())
-                            .ReturnsAsync(expectedChurnRate);
-
-        var result = await _controller.GetChurnRate();
-
-        var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(expectedChurnRate.ChurnRate, ((ChurnRateDataCardDto)okObjectResult.Value!).ChurnRate);
-    }
-
-    [Fact]
-    public async Task GetChurnRateFailTest()
-    {
-        _employeeMockService.Setup(service => service.CalculateEmployeeChurnRate())
-                            .ThrowsAsync(new Exception("Failed to calculate churn rate"));
-
-        var result = await _controller.GetChurnRate();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-        Assert.Equal("Failed to calculate churn rate", notFoundResult.Value);
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS
 {
+    [Route("dashboard")]
+    [ApiController]
     public class DasboardController : ControllerBase
     {
         private readonly AuthorizeIdentity _identity;

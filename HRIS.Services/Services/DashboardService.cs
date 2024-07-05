@@ -3,17 +3,11 @@ using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HRIS.Services.Services
 {
     public class DashboardService : IDashboardService
     {
-
         private readonly IUnitOfWork _db;
         private readonly IEmployeeAddressService _employeeAddressService;
         private readonly IEmployeeTypeService _employeeTypeService;
@@ -71,7 +65,6 @@ namespace HRIS.Services.Services
                 Year = twelveMonthsAgo.Year
             };
         }
-
 
         public async Task<double> CalculateEmployeeGrowthRate()
         {
