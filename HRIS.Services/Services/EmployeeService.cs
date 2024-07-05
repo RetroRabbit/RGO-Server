@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Net.Mail;
 using System.Text;
 using Azure.Messaging.ServiceBus;
 using HRIS.Models;
@@ -12,22 +12,23 @@ namespace HRIS.Services.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private readonly ServiceBusClient serviceBusClient = new (Environment.GetEnvironmentVariable("NewEmployeeQueue__ConnectionString"));
-    private readonly string queueName = Environment.GetEnvironmentVariable("ServiceBus__QueueName");
     private readonly IUnitOfWork _db;
     private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IRoleService _roleService;
     private readonly IErrorLoggingService _errorLoggingService;
+    private readonly IEmailService _emailService;
 
     public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
-                           IEmployeeAddressService employeeAddressService, IRoleService roleService, IErrorLoggingService errorLoggingService)
+                           IEmployeeAddressService employeeAddressService, IRoleService roleService,
+                           IErrorLoggingService errorLoggingService, IEmailService emailService)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
         _employeeAddressService = employeeAddressService;
         _roleService = roleService;
         _errorLoggingService = errorLoggingService;
+        _emailService = emailService;
     }
 
     public async Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto)
@@ -50,19 +51,13 @@ public class EmployeeService : IEmployeeService
 
         try
         {
-            var ExistingEmployeeType = await _employeeTypeService
+            var existingEmployeeType = await _employeeTypeService
                 .GetEmployeeType(employeeDto.EmployeeType!.Name);
 
-            employee = new Employee(employeeDto, ExistingEmployeeType);
+            employee = new Employee(employeeDto, existingEmployeeType);
 
-            try
-            {
-                 PushToProducerAsync(employee);
-            }
-            catch (Exception ex)
-            {
-               _errorLoggingService.LogException(ex);
-            }
+            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
+                "WelcomeLetter", employeeDto);
         }
         catch (Exception ex)
         {
@@ -101,11 +96,11 @@ public class EmployeeService : IEmployeeService
         employee.Active = true;
         var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto{Id = 0,Employee = newEmployee, Role = roleDto };
+        var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee.ToDto(), Role = roleDto };
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
-        return newEmployee;
+        return newEmployee.ToDto();
     }
 
     public async Task<bool> CheckUserExist(string? email)
@@ -118,7 +113,7 @@ public class EmployeeService : IEmployeeService
     {
         var existingEmployee = await GetEmployee(email);
 
-        return await _db.Employee.Delete(existingEmployee!.Id);
+        return (await _db.Employee.Delete(existingEmployee!.Id)).ToDto();
     }
 
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
@@ -171,23 +166,16 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto> GetEmployeeById(int id)
     {
-        var employee = await _db.Employee
+        return await _db.Employee
                                 .Get(employee => employee.Id == id)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
                                 .Include(employee => employee.PhysicalAddress)
                                 .Include(employee => employee.PostalAddress)
                                 .Select(employee => employee.ToDto())
-                                .FirstOrDefaultAsync();
-
-        if (employee == null)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
-
-        return employee;
+                                .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
     }
+
 
     public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
     {
@@ -218,13 +206,13 @@ public class EmployeeService : IEmployeeService
             }
         }
 
-        return await _db.Employee.Update(employee);
+        return (await _db.Employee.Update(employee)).ToDto();
     }
 
     public async Task<EmployeeDto?> GetById(int employeeId)
     {
         var employee = await _db.Employee.GetById(employeeId);
-        return employee;
+        return employee.ToDto();
     }
 
     public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
@@ -321,7 +309,7 @@ public class EmployeeService : IEmployeeService
             };
             var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
-            return await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
+            return (await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal)).ToDto();
         }
         return currentEmployeeTotal.ToDto();
     }
@@ -409,38 +397,35 @@ public class EmployeeService : IEmployeeService
         return simpleProfile;
     }
 
-    public async Task<List<EmployeeDto>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true)
+    public async Task<List<EmployeeFilterResponse>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true)
     {
         return await _db.Employee
-                        .Get(employee => true)
-                        .Where(employee =>
+                        .Get(employee =>
                                    (peopleChampId == 0 || employee.PeopleChampion == peopleChampId)
                                    && (employeeType == 0 || employee.EmployeeType!.Id == employeeType)
                                    && (employee.Active == activeStatus))
                         .Include(employee => employee.EmployeeType)
                         .Include(employee => employee.PhysicalAddress)
                         .Include(employee => employee.PostalAddress)
+                        .Include(employee => employee.EmployeeRole)
+                            .ThenInclude(role => role.Role)
                         .OrderBy(employee => employee.Name)
-                        .Select(employee => employee.ToDto())
+                        .Select(x => new EmployeeFilterResponse
+                        {
+                            Name = x.Name,
+                            Surname = x.Surname,
+                            ClientAllocated = x.ClientAssigned == null ? null : x.ClientAssigned.Name,
+                            Level = x.Level,
+                            Id = x.Id,
+                            RoleId = x.EmployeeRole == null ? 0 : x.EmployeeRole.RoleId,
+                            RoleDescription = x.EmployeeRole == null || x.EmployeeRole.Role == null ? "" : x.EmployeeRole.Role.Description ?? "",
+                            Email = x.Email,
+                            EngagementDate = x.EngagementDate,
+                            TerminationDate = x.TerminationDate,
+                            InactiveReason = x.InactiveReason,
+                            Position = x.EmployeeType == null ? null : x.EmployeeType.Name
+                        })
                         .ToListAsync();
-    }
-
-    public async void PushToProducerAsync(Employee employeeData)
-    {
-        try
-        {
-            {
-                var messageBody = JsonConvert.SerializeObject(employeeData);
-                var body = Encoding.UTF8.GetBytes(messageBody);
-
-                 await using var sender = serviceBusClient.CreateSender(queueName);
-                 await sender.SendMessageAsync(new ServiceBusMessage(body));
-            }
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-        }
     }
 
     public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()

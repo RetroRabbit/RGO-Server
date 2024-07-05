@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFrameworkCore.EncryptColumn" Version="6.0.8" />
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.62.0.3105" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
@@ -29,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Entities\ATS\" />
-    <Folder Include="Interfaces\ATS\" />
     <Folder Include="Repositories\ATS\" />
   </ItemGroup>
 

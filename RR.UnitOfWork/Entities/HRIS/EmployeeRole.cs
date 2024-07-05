@@ -6,7 +6,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeRole")]
-public class EmployeeRole : IModel<EmployeeRoleDto>
+public class EmployeeRole : IModel
 {
     public EmployeeRole()
     {

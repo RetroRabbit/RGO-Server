@@ -1,15 +1,10 @@
 using System.Data;
-using HRIS.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using RR.UnitOfWork.Entities;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces;
-using RR.UnitOfWork.Interfaces.ATS;
-using RR.UnitOfWork.Interfaces.HRIS;
 using RR.UnitOfWork.Repositories;
 using RR.UnitOfWork.Repositories.ATS;
 using RR.UnitOfWork.Repositories.HRIS;
+using RR.UnitOfWork.Repositories.Shared;
 
 namespace RR.UnitOfWork;
 
@@ -52,6 +47,8 @@ public class UnitOfWork : IUnitOfWork
         WorkExperience = new WorkExperienceRepository(_db);
         EmployeeSalaryDetails = new EmployeeSalaryDetailsRepository(_db);
         Termination = new TerminationRepository(_db);
+        EmailTemplate = new EmailTemplateRepository(_db);
+        EmailHistory = new EmailHistoryRepository(_db);
     }
 
     public IEmployeeAddressRepository EmployeeAddress { get; }
@@ -86,6 +83,8 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeSalaryDetails EmployeeSalaryDetails { get; }
     public IWorkExperienceRepository WorkExperience { get; }
     public ITerminationRepository Termination { get; }
+    public IEmailTemplateRepository EmailTemplate { get; }
+    public IEmailHistoryRepository EmailHistory { get; }
 
     public async Task RawSql(string sql, params NpgsqlParameter[] parameters)
     {

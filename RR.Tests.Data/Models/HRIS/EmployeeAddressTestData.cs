@@ -1,11 +1,10 @@
-﻿using HRIS.Models;
-using HRIS.Models.Enums;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS;
 
 public class EmployeeAddressTestData
 {
-    public static EmployeeAddressDto EmployeeAddressDto = new EmployeeAddressDto
+    public static EmployeeAddress EmployeeAddressOne = new()
     {
         Id = 1,
         UnitNumber = "2",
@@ -18,7 +17,7 @@ public class EmployeeAddressTestData
         PostalCode = "1620"
     };
 
-    public static EmployeeAddressDto EmployeeAddressDto2 = new EmployeeAddressDto
+    public static EmployeeAddress EmployeeAddressTwo = new()
     {
         Id = 1,
         UnitNumber = "1",
@@ -31,7 +30,7 @@ public class EmployeeAddressTestData
         PostalCode = "0001"
     };
 
-    public static EmployeeAddressDto EmployeeAddressDto3 = new EmployeeAddressDto
+    public static EmployeeAddress EmployeeAddressThree = new()
     {
         Id = 2,
         UnitNumber = "2",
@@ -43,7 +42,7 @@ public class EmployeeAddressTestData
         Province = "Province 2",
         PostalCode = "0002"
     };
-    public static EmployeeAddressDto EmployeeAddressDtoNew = new EmployeeAddressDto
+    public static EmployeeAddress EmployeeAddressNew = new()
     {
         Id = 0,
         UnitNumber = "56",
@@ -55,9 +54,10 @@ public class EmployeeAddressTestData
         Province = "Province",
         PostalCode = "1620"
     };
-    public static EmployeeAddressDto GetModifiedEmployeeAdressDtoWithAddressId(int addressId)
+
+    public static EmployeeAddress GetModifiedEmployeeAdressDtoWithAddressId(int addressId)
     {
-        return new EmployeeAddressDto
+        return new EmployeeAddress
         {
             Id = addressId,
             UnitNumber = "56",

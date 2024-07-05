@@ -35,7 +35,7 @@ public class TerminationControllerUnitTests
     }
 
     [Fact]
-    public async Task saveTerminationReturnsOk()
+    public async Task SaveTerminationReturnsOk()
     {
         _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ReturnsAsync(_terminationDto);
 
@@ -47,7 +47,7 @@ public class TerminationControllerUnitTests
     }
 
     [Fact]
-    public async Task saveTerminationReturnsBadRequest()
+    public async Task SaveTerminationReturnsBadRequest()
     {
         _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ThrowsAsync(new Exception("exists"));
 
@@ -57,7 +57,7 @@ public class TerminationControllerUnitTests
     }
 
     [Fact]
-    public async Task saveTerminationReturnsProblem()
+    public async Task SaveTerminationReturnsProblem()
     {
         _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ThrowsAsync(new Exception());
 

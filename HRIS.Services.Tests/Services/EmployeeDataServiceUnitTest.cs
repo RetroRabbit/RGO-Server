@@ -1,7 +1,9 @@
-﻿using HRIS.Models;
+﻿using System.Linq.Expressions;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
+using RR.Tests.Data;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -11,104 +13,83 @@ namespace RGO.Tests.Services;
 public class EmployeeDataServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
-
-    private readonly EmployeeDataDto _employeeDataDto;
-    private readonly EmployeeDataDto _employeeDataDto2;
     private readonly EmployeeDataService _employeeDataService;
 
     public EmployeeDataServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeDataService = new EmployeeDataService(_dbMock.Object, _errorLoggingServiceMock.Object);
-        _employeeDataDto = new EmployeeDataDto
-        {
-            Id = 0,
-            EmployeeId = 0,
-            FieldCodeId = 0,
-            Value = "string"
-        };
-
-        _employeeDataDto2 = new EmployeeDataDto
-        {
-            Id = 0,
-            EmployeeId = 1,
-            FieldCodeId = 1,
-            Value = "string"
-        };
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-
+        Mock<IErrorLoggingService> errorLoggingServiceMock = new();
+        _employeeDataService = new EmployeeDataService(_dbMock.Object, errorLoggingServiceMock.Object);
     }
 
     [Fact]
     public async Task GetAllEmployeeDataTest()
     {
-        var employee = new List<EmployeeDataDto> { _employeeDataDto };
+        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
 
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).Returns(Task.FromResult(employee));
-        var result = await _employeeDataService.GetAllEmployeeData(_employeeDataDto.Id);
+        _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(employee);
+        var result = await _employeeDataService.GetAllEmployeeData(EmployeeDataTestData.EmployeeDataOne.EmployeeId);
 
         Assert.NotNull(result);
         Assert.Single(result);
-        Assert.Equal(employee, result);
+        Assert.Equivalent(employee.Select(x => x.ToDto()).ToList(), result);
     }
 
     [Fact]
     public async Task GetEmployeeDataTest()
     {
-        var employee = new List<EmployeeDataDto> { _employeeDataDto };
+        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
 
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).Returns(Task.FromResult(employee));
-        var result = await _employeeDataService.GetEmployeeData(_employeeDataDto.Id, _employeeDataDto.Value);
+        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
+        var result = await _employeeDataService.GetEmployeeData(EmployeeDataTestData.EmployeeDataOne.EmployeeId, EmployeeDataTestData.EmployeeDataOne.Value);
 
         Assert.NotNull(result);
-        Assert.Equal(_employeeDataDto, result);
+        Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
         _dbMock.Verify(x => x.EmployeeData.GetAll(null), Times.Once);
     }
 
     [Fact]
     public async Task SaveEmployeeDataTest()
     {
-        var employee = new List<EmployeeDataDto> { _employeeDataDto };
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).Returns(Task.FromResult(employee));
+        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
+        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
 
         _dbMock.Setup(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()))
-               .Returns(Task.FromResult(_employeeDataDto));
+               .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
 
-        var result = await _employeeDataService.SaveEmployeeData(_employeeDataDto2);
+        var result = await _employeeDataService.SaveEmployeeData(EmployeeDataTestData.EmployeeDataTwo.ToDto());
         Assert.NotNull(result);
-        Assert.Equal(_employeeDataDto, result);
+        Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
         _dbMock.Verify(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()), Times.Once);
     }
 
     [Fact]
     public async Task UpdateEmployeeDataTest()
     {
-        var employee = new List<EmployeeDataDto> { _employeeDataDto };
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).Returns(Task.FromResult(employee));
+        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
+        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
 
         _dbMock.Setup(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()))
-               .Returns(Task.FromResult(_employeeDataDto));
+               .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
 
-        var result = await _employeeDataService.UpdateEmployeeData(_employeeDataDto);
+        var result = await _employeeDataService.UpdateEmployeeData(EmployeeDataTestData.EmployeeDataOne.ToDto());
         Assert.NotNull(result);
-        Assert.Equal(_employeeDataDto, result);
+        Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
         _dbMock.Verify(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()), Times.Once);
     }
 
     [Fact]
     public async Task DeleteEmployeeDataTest()
     {
-        var employee = new List<EmployeeDataDto> { _employeeDataDto };
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).Returns(Task.FromResult(employee));
+        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
+        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
 
         _dbMock.Setup(x => x.EmployeeData.Delete(It.IsAny<int>()))
-               .Returns(Task.FromResult(_employeeDataDto));
+               .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
 
-        var result = await _employeeDataService.DeleteEmployeeData(_employeeDataDto.Id);
+        var result = await _employeeDataService.DeleteEmployeeData(EmployeeDataTestData.EmployeeDataOne.Id);
         Assert.NotNull(result);
-        Assert.Equal(_employeeDataDto, result);
+        Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
         _dbMock.Verify(r => r.EmployeeData.Delete(It.IsAny<int>()), Times.Once);
     }
 }

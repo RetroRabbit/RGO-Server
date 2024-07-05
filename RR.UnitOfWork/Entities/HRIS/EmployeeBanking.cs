@@ -7,7 +7,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeBanking")]
-public class EmployeeBanking : IModel<EmployeeBankingDto>
+public class EmployeeBanking : IModel
 {
     public EmployeeBanking()
     {

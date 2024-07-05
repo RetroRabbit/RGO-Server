@@ -46,7 +46,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
 
         var deletedEmployeeEvaluation = await _db.EmployeeEvaluation.Delete(evaluation.Id);
 
-        return deletedEmployeeEvaluation;
+        return deletedEmployeeEvaluation.ToDto();
     }
 
     public async Task<List<EmployeeEvaluationDto>> GetAllByEmployee(string email)
@@ -205,7 +205,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
 
         var savedEmployeeEvaluation = await _db.EmployeeEvaluation.Add(new EmployeeEvaluation(employeeEvaluationDto));
 
-        return savedEmployeeEvaluation;
+        return savedEmployeeEvaluation.ToDto();
     }
 
     public async Task<EmployeeEvaluationDto> Update(
@@ -245,6 +245,6 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var updatedEmployeeEvaluation =
             await _db.EmployeeEvaluation.Update(new EmployeeEvaluation(newEmployeeEvauation));
 
-        return updatedEmployeeEvaluation;
+        return updatedEmployeeEvaluation.ToDto();
     }
 }

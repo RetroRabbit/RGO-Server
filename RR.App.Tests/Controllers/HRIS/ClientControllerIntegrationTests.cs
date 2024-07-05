@@ -7,7 +7,6 @@ using HRIS.Services.Services;
 using IClientService = HRIS.Services.Interfaces.IClientService;
 using Microsoft.Extensions.Configuration;
 using RR.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
 
 namespace RR.App.Tests.Controllers
 {

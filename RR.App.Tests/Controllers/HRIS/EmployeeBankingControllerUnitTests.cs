@@ -57,7 +57,7 @@ public class EmployeeBankingControllerUnitTests
             File = "File.pdf"
         };
 
-        _employeeBankingDto = EmployeeBankingTestData.EmployeeBankingDto;
+        _employeeBankingDto = EmployeeBankingTestData.EmployeeBankingOne.ToDto();
     }
 
     [Fact]

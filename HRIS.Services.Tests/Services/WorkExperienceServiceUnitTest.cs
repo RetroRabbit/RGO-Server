@@ -1,10 +1,8 @@
 ﻿using System.Linq.Expressions;
-using HRIS.Models;
-using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -14,7 +12,7 @@ namespace RGO.Tests.Services;
 public class WorkExperienceServiceUnitTest
 {
     private readonly WorkExperienceService _workExperienceService;
-    private readonly WorkExperienceDto _workExperienceDto;
+    private readonly WorkExperience _workExperience;
     private readonly Mock<IUnitOfWork> _mockDb;
     private readonly Mock<IErrorLoggingService> _errorLogggingServiceMock;
 
@@ -24,7 +22,7 @@ public class WorkExperienceServiceUnitTest
         _errorLogggingServiceMock = new Mock<IErrorLoggingService>();
         _workExperienceService = new WorkExperienceService(_mockDb.Object, _errorLogggingServiceMock.Object);
 
-        _workExperienceDto = new WorkExperienceDto
+        _workExperience = new WorkExperience
         {
             Id = 1,
             ClientName = "Capitec",
@@ -44,18 +42,7 @@ public class WorkExperienceServiceUnitTest
         _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
                .ReturnsAsync(false);
 
-        var exists = await _workExperienceService.CheckIfExists(new WorkExperienceDto
-        {
-            Id = 2,
-            ClientName = "Capitec",
-            ProjectName = "Project1",
-            SkillSet = new List<string> { "front-end", "back-end" },
-            Software = new List<string> { "c#", "java" },
-            EmployeeId = 1,
-            StartDate = new DateTime(2022, 1, 1),
-            EndDate = new DateTime(2024, 1, 1),
-            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
-        });
+        var exists = await _workExperienceService.CheckIfExists(_workExperience.ToDto());
 
         Assert.False(exists);
     }
@@ -66,18 +53,7 @@ public class WorkExperienceServiceUnitTest
         _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
                .ReturnsAsync(true);
 
-        var exists = await _workExperienceService.CheckIfExists(new WorkExperienceDto
-        {
-            Id = 1,
-            ClientName = "Capitec",
-            ProjectName = "Project1",
-            SkillSet = new List<string> { "front-end", "back-end" },
-            Software = new List<string> { "c#", "java" },
-            EmployeeId = 1,
-            StartDate = new DateTime(2022, 1, 1),
-            EndDate = new DateTime(2024, 1, 1),
-            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
-        });
+        var exists = await _workExperienceService.CheckIfExists(_workExperience.ToDto());
 
         Assert.True(exists);
     }
@@ -90,38 +66,19 @@ public class WorkExperienceServiceUnitTest
 
         _errorLogggingServiceMock.Setup(err => err.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Save(new WorkExperienceDto
-        {
-            Id = 1,
-            ClientName = "Capitec",
-            ProjectName = "Project1",
-            SkillSet = new List<string> { "front-end", "back-end" },
-            Software = new List<string> { "c#", "java" },
-            EmployeeId = 1,
-            StartDate = new DateTime(2022, 1, 1),
-            EndDate = new DateTime(2024, 1, 1),
-            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
-        }));
+        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Save(_workExperience.ToDto()));
     }
 
     [Fact]
-    public async Task SavePasstest()
+    public async Task SavePassTest()
     {
         _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
              .ReturnsAsync(false);
+        
+        _mockDb.Setup(x => x.WorkExperience.Add(It.IsAny<WorkExperience>()))
+             .ReturnsAsync(_workExperience);
 
-        await _workExperienceService.Save(new WorkExperienceDto
-        {
-            Id = 1,
-            ClientName = "Capitec",
-            ProjectName = "Project1",
-            SkillSet = new List<string> { "front-end", "back-end" },
-            Software = new List<string> { "c#", "java" },
-            EmployeeId = 1,
-            StartDate = new DateTime(2022, 1, 1),
-            EndDate = new DateTime(2024, 1, 1),
-            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
-        });
+        await _workExperienceService.Save(_workExperience.ToDto());
 
         _mockDb.Verify(x => x.WorkExperience.Add(It.IsAny<WorkExperience>()), Times.Once);
     }
@@ -129,12 +86,8 @@ public class WorkExperienceServiceUnitTest
     [Fact]
     public async Task DeleteWorkExperiencePassTest()
     {
-
-        _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
-               .ReturnsAsync(true);
-
-        _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
-               .Returns(new List<WorkExperience> { new(_workExperienceDto) }.AsQueryable().BuildMock());
+        _mockDb.Setup(x => x.WorkExperience.Delete(It.IsAny<int>()))
+               .ReturnsAsync(_workExperience);
 
         await _workExperienceService.Delete(1);
 
@@ -147,18 +100,10 @@ public class WorkExperienceServiceUnitTest
         _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
                .ReturnsAsync(true);
 
-        await _workExperienceService.Update(new WorkExperienceDto
-        {
-            Id = 1,
-            ClientName = "Capitec",
-            ProjectName = "Project1",
-            SkillSet = new List<string> { "front-end", "back-end" },
-            Software = new List<string> { "c#", "java" },
-            EmployeeId = 1,
-            StartDate = new DateTime(2022, 1, 1),
-            EndDate = new DateTime(2024, 1, 1),
-            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
-        });
+        _mockDb.Setup(x => x.WorkExperience.Update(It.IsAny<WorkExperience>()))
+            .ReturnsAsync(_workExperience);
+
+        await _workExperienceService.Update(_workExperience.ToDto());
 
         _mockDb.Verify(x => x.WorkExperience.Update(It.IsAny<WorkExperience>()), Times.Once);
     }
@@ -171,18 +116,7 @@ public class WorkExperienceServiceUnitTest
 
         _errorLogggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Update(new WorkExperienceDto
-        {
-            Id = 1,
-            ClientName = "Capitec",
-            ProjectName = "Project1",
-            SkillSet = new List<string> { "front-end", "back-end" },
-            Software = new List<string> { "c#", "java" },
-            EmployeeId = 1,
-            StartDate = new DateTime(2022, 1, 1),
-            EndDate = new DateTime(2024, 1, 1),
-            ProjectDescription = "This project was a payment distribution and invoicing system, which was designed to run debit orders"
-        }));
+        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Update(_workExperience.ToDto()));
     }
 
     [Fact]
@@ -199,7 +133,7 @@ public class WorkExperienceServiceUnitTest
     [Fact]
     public async Task GetByIdPassTest()
     {
-        var workExperience = new WorkExperienceDto
+        var workExperience = new WorkExperience
         {
             Id = 1,
             ClientName = "Capitec",
@@ -213,7 +147,7 @@ public class WorkExperienceServiceUnitTest
         };
 
         _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
-               .Returns(new List<WorkExperience> { new(workExperience) }.AsQueryable().BuildMock());
+               .Returns(workExperience.ToMockIQueryable());
 
         await _workExperienceService.GetWorkExperienceByEmployeeId(1);
 

@@ -1,9 +1,7 @@
-﻿using Auth0.ManagementApi.Models;
-using HRIS.Models;
+﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Services;
 
@@ -52,19 +50,19 @@ public class RoleService : IRoleService
         {
             await _authService.CreateRoleAsync(roleDto.Description, roleDto.Description);
         }
-        return await _db.Role.Add(new RR.UnitOfWork.Entities.HRIS.Role(roleDto));
+        return (await _db.Role.Add(new RR.UnitOfWork.Entities.HRIS.Role(roleDto))).ToDto();
     }
 
     public async Task<RoleDto> DeleteRole(int roleId)
     {
         var deletedRole = await _db.Role.Delete(roleId);
 
-        return deletedRole;
+        return deletedRole.ToDto();
     }
 
     public async Task<List<RoleDto>> GetAll()
     {
-        return await _db.Role.GetAll();
+        return (await _db.Role.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
     public async Task<RoleDto> GetRole(string name)
@@ -90,7 +88,7 @@ public class RoleService : IRoleService
         var updatedRole = await _db.Role
                                    .Update(new RR.UnitOfWork.Entities.HRIS.Role(existingRole));
 
-        return updatedRole;
+        return updatedRole.ToDto();
     }
 
     public Task<bool> CheckRole(string name)

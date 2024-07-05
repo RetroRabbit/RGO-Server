@@ -7,7 +7,7 @@ using HRIS.Models.Enums.QualificationEnums;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeQualifications")]
-public class EmployeeQualification : IModel<EmployeeQualificationDto>
+public class EmployeeQualification : IModel
 {
     public EmployeeQualification()
     {

@@ -1,5 +1,4 @@
-﻿using HRIS.Models;
-using HRIS.Services.Interfaces;
+﻿using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
 using RR.UnitOfWork;
@@ -14,14 +13,14 @@ public class ClientProjectServiceUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly ClientProjectService _clientProjectService;
-    private readonly ClientProjectsDto _clientProjectsDto;
+    private readonly ClientProject _clientProject;
 
     public ClientProjectServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _clientProjectService = new ClientProjectService(_dbMock.Object, _errorLoggingServiceMock.Object);
-        _clientProjectsDto = new ClientProjectsDto
+        _clientProject = new ClientProject
         {
             Id = 1,
             EmployeeId = 1,
@@ -36,20 +35,20 @@ public class ClientProjectServiceUnitTest
     [Fact]
     public async Task GetAllClientProjectsTest()
     {
-        var clientProject = new List<ClientProjectsDto> { _clientProjectsDto };
+        var clientProjects = new List<ClientProject> { _clientProject };
 
-        _dbMock.Setup(ex => ex.ClientProject.GetAll(null)).Returns(Task.FromResult(clientProject));
+        _dbMock.Setup(ex => ex.ClientProject.GetAll(null)).ReturnsAsync(clientProjects);
         var result = await _clientProjectService.GetAllClientProjects();
 
         Assert.NotNull(result);
         Assert.Single(result);
-        Assert.Equal(clientProject, result);
+        Assert.Equivalent(clientProjects.Select(x => x.ToDto()), result);
     }
 
     [Fact]
     public async Task GetClientProjectById_ThrowsExceptionWhenNotFound()
     {
-        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync((ClientProjectsDto)null);
+        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync((ClientProject)null);
         _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
             .Returns(new Exception("Client project not found"));
 
@@ -61,36 +60,36 @@ public class ClientProjectServiceUnitTest
     [Fact]
     public async Task GetClientProjectById_ReturnsProjectWhenFound()
     {
-        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProjectsDto);
+        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProject);
 
         var result = await _clientProjectService.GetClientProjectById(1);
 
         Assert.NotNull(result);
-        Assert.Equal(_clientProjectsDto.Id, result.Id);
+        Assert.Equal(_clientProject.Id, result.Id);
     }
 
     [Fact]
     public async Task CreateClientProject_SuccessfullyCreatesProject()
     {
-        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync((ClientProjectsDto)null);
-        _dbMock.Setup(ex => ex.ClientProject.Add(It.IsAny<ClientProject>())).ReturnsAsync(_clientProjectsDto);
+        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync((ClientProject)null);
+        _dbMock.Setup(ex => ex.ClientProject.Add(It.IsAny<ClientProject>())).ReturnsAsync(_clientProject);
 
-        var result = await _clientProjectService.CreateClientProject(_clientProjectsDto);
+        var result = await _clientProjectService.CreateClientProject(_clientProject.ToDto());
 
         Assert.NotNull(result);
-        Assert.Equal(_clientProjectsDto.Id, result.Id);
-        Assert.Equal(_clientProjectsDto.ClientName, result.ClientName);
+        Assert.Equal(_clientProject.Id, result.Id);
+        Assert.Equal(_clientProject.ClientName, result.ClientName);
     }
 
     [Fact]
     public async Task CreateClientProject_ThrowsExceptionWhenProjectExists()
     {
-        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProjectsDto);
+        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProject);
         _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
             .Returns(new Exception("Client Project already exists"));
 
         var exception = await Assert.ThrowsAsync<Exception>(() =>
-            _clientProjectService.CreateClientProject(_clientProjectsDto));
+            _clientProjectService.CreateClientProject(_clientProject.ToDto()));
 
         Assert.Equal("Client Project already exists", exception.Message);
     }
@@ -98,7 +97,7 @@ public class ClientProjectServiceUnitTest
     [Fact]
     public async Task DeleteClientProject_SuccessfullyDeletesProject()
     {
-        _dbMock.Setup(ex => ex.ClientProject.Delete(1)).ReturnsAsync(_clientProjectsDto);
+        _dbMock.Setup(ex => ex.ClientProject.Delete(1)).ReturnsAsync(_clientProject);
 
         var result = await _clientProjectService.DeleteClientProject(1);
 
@@ -109,14 +108,14 @@ public class ClientProjectServiceUnitTest
     [Fact]
     public async Task UpdateClientProject_ThrowsExceptionWhenNotFound()
     {
-        _dbMock.Setup(ex => ex.ClientProject.FirstOrDefault(q => q.Id == _clientProjectsDto.Id)).ReturnsAsync((ClientProjectsDto)null);
+        _dbMock.Setup(ex => ex.ClientProject.FirstOrDefault(q => q.Id == _clientProject.Id))!.ReturnsAsync((ClientProject)null);
         _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-            .Returns(new KeyNotFoundException($"No client Project found with ID {_clientProjectsDto.Id}."));
+            .Returns(new KeyNotFoundException($"No client Project found with ID {_clientProject.Id}."));
 
         var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
-            _clientProjectService.UpdateClientProject(_clientProjectsDto));
+            _clientProjectService.UpdateClientProject(_clientProject.ToDto()));
 
-        Assert.Equal($"No client Project found with ID {_clientProjectsDto.Id}.", exception.Message);
+        Assert.Equal($"No client Project found with ID {_clientProject.Id}.", exception.Message);
     }
 
     [Fact]
@@ -132,21 +131,21 @@ public class ClientProjectServiceUnitTest
     public async Task UpdateClientProject_ReturnsUpdatedClientProjectsDto_WhenClientProjectIsFound()
     {
         _dbMock.Setup(ex => ex.ClientProject.FirstOrDefault(It.IsAny<Expression<Func<ClientProject, bool>>>()))
-            .ReturnsAsync(_clientProjectsDto);
+            .ReturnsAsync(_clientProject);
 
         _dbMock.Setup(ex => ex.ClientProject.Update(It.IsAny<ClientProject>()))
-            .ReturnsAsync(_clientProjectsDto);
+            .ReturnsAsync(_clientProject);
 
-        var result = await _clientProjectService.UpdateClientProject(_clientProjectsDto);
+        var result = await _clientProjectService.UpdateClientProject(_clientProject.ToDto());
 
         Assert.NotNull(result);
-        Assert.Equal(_clientProjectsDto.Id, result.Id);
+        Assert.Equal(_clientProject.Id, result.Id);
     }
 
     [Fact]
     public async Task CheckIfExists_ReturnsTrue_WhenProjectExists()
     {
-        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProjectsDto);
+        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProject);
 
         var exists = await _clientProjectService.CheckIfExists(1);
 
@@ -156,7 +155,7 @@ public class ClientProjectServiceUnitTest
     [Fact]
     public async Task CheckIfExists_ReturnsFalse_WhenProjectDoesNotExist()
     {
-        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync((ClientProjectsDto)null);
+        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync((ClientProject)null);
 
         var exists = await _clientProjectService.CheckIfExists(1);
 

@@ -1,7 +1,6 @@
 ﻿namespace RR.UnitOfWork.Interfaces;
 
-public interface IModel<T>
+public interface IModel
 {
     int Id { get; set; }
-    T ToDto();
 }

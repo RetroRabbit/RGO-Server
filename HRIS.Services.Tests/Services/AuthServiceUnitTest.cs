@@ -1,16 +1,4 @@
-﻿using System.Linq.Expressions;
-using HRIS.Models;
-using HRIS.Models.Enums;
-using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
-using Microsoft.Extensions.Configuration;
-using MockQueryable.Moq;
-using Moq;
-using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
-using Xunit;
-
-namespace HRIS.Services.Tests.Services;
+﻿namespace HRIS.Services.Tests.Services;
 
 public class AuthServiceUnitTest
 {

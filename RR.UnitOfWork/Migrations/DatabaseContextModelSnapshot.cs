@@ -133,16 +133,39 @@ namespace RR.UnitOfWork.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("dateOfIncident")
+                    b.Property<DateTime>("DateOfIncident")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("dateOfIncident");
 
-                    b.Property<string>("message")
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ipAddress");
+
+                    b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("message");
 
-                    b.Property<string>("stackTrace")
+                    b.Property<string>("RequestBody")
+                        .HasColumnType("text")
+                        .HasColumnName("requestBody");
+
+                    b.Property<string>("RequestContentType")
+                        .HasColumnType("text")
+                        .HasColumnName("requestContentType");
+
+                    b.Property<string>("RequestMethod")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("requestMethod");
+
+                    b.Property<string>("RequestUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("requestUrl");
+
+                    b.Property<string>("StackTrace")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("stackTrace");
@@ -1449,6 +1472,82 @@ namespace RR.UnitOfWork.Migrations
                     b.ToTable("WorkExperience");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.Shared.EmailHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bcc")
+                        .HasColumnType("text")
+                        .HasColumnName("bcc");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("body");
+
+                    b.Property<string>("Cc")
+                        .HasColumnType("text")
+                        .HasColumnName("cc");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("subject");
+
+                    b.Property<int?>("TemplateId")
+                        .HasColumnType("integer")
+                        .HasColumnName("templateId");
+
+                    b.Property<string>("To")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("to");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.ToTable("EmailHistory");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.Shared.EmailTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("body");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("subject");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailTemplate");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.ChartDataSet", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Chart", null)
@@ -1721,7 +1820,7 @@ namespace RR.UnitOfWork.Migrations
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.FieldCodeOptions", b =>
                 {
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.FieldCode", "FieldCode")
-                        .WithMany()
+                        .WithMany("Options")
                         .HasForeignKey("FieldCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1781,9 +1880,23 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("RR.UnitOfWork.Entities.Shared.EmailHistory", b =>
+                {
+                    b.HasOne("RR.UnitOfWork.Entities.Shared.EmailTemplate", "EmailTemplate")
+                        .WithMany()
+                        .HasForeignKey("TemplateId");
+
+                    b.Navigation("EmailTemplate");
+                });
+
             modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.Chart", b =>
                 {
                     b.Navigation("Datasets");
+                });
+
+            modelBuilder.Entity("RR.UnitOfWork.Entities.HRIS.FieldCode", b =>
+                {
+                    b.Navigation("Options");
                 });
 #pragma warning restore 612, 618
         }

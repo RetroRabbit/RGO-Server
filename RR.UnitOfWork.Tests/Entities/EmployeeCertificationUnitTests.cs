@@ -24,7 +24,7 @@ public class EmployeeCertificationUnitTests
         _employeeCertificate = new EmployeeCertificationDto
         {
             Id = 1,
-            EmployeeId = EmployeeTestData.EmployeeDto.Id,
+            EmployeeId = EmployeeTestData.EmployeeOne.Id,
             IssueDate = DateTime.Now,
             IssueOrganization= "String",
             CertificateDocument = "as",

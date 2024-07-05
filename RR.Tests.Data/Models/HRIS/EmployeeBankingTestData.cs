@@ -1,11 +1,11 @@
-﻿using HRIS.Models;
-using HRIS.Models.Enums;
+﻿using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS;
 
 public class EmployeeBankingTestData
 {
-    public static EmployeeBankingDto EmployeeBankingDto = new EmployeeBankingDto
+    public static EmployeeBanking EmployeeBankingOne = new()
     {
         Id = 1,
         EmployeeId = 1,
@@ -20,7 +20,7 @@ public class EmployeeBankingTestData
         PendingUpdateDate = new DateOnly()
     };
 
-    public static EmployeeBankingDto EmployeeBankingDto2 = new EmployeeBankingDto
+    public static EmployeeBanking EmployeeBankingTwo = new()
     {
         Id = 2,
         EmployeeId = 2,
@@ -35,7 +35,7 @@ public class EmployeeBankingTestData
         PendingUpdateDate = new DateOnly()
     };
 
-    public static EmployeeBankingDto EmployeeBankingDto3 = new EmployeeBankingDto
+    public static EmployeeBanking EmployeeBankingThree = new()
     {
         Id = 3,
         EmployeeId = 3,
@@ -50,7 +50,7 @@ public class EmployeeBankingTestData
         PendingUpdateDate = new DateOnly()
     };
 
-    public static EmployeeBankingDto EmployeeBankingDtoNew = new EmployeeBankingDto()
+    public static EmployeeBanking EmployeeBankingNew = new()
     {
         Id = 0,
         EmployeeId = 4,
@@ -65,9 +65,9 @@ public class EmployeeBankingTestData
         PendingUpdateDate = new DateOnly()
     };
 
-    public static EmployeeBankingDto GetModifiedEmployeeBankingDtoWithEmployeeId(int employeeId)
+    public static EmployeeBanking GetModifiedEmployeeBankingDtoWithEmployeeId(int employeeId)
     {
-        return new EmployeeBankingDto
+        return new EmployeeBanking
         {
             Id = 0,
             EmployeeId = employeeId,
@@ -83,9 +83,9 @@ public class EmployeeBankingTestData
         };
     }
     
-    public static EmployeeBankingDto GetModifiedEmployeeBankingDtoWithEmployeeIdAndBankingId(int bankingId, int employeeId)
+    public static EmployeeBanking GetModifiedEmployeeBankingDtoWithEmployeeIdAndBankingId(int bankingId, int employeeId)
     {
-        return new EmployeeBankingDto
+        return new EmployeeBanking
         {
             Id = bankingId,
             EmployeeId = employeeId,

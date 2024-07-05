@@ -40,7 +40,7 @@ public class EmployeeRoleService : IEmployeeRoleService
         if (newEmployeeRole.Employee == null || newEmployeeRole.Role == null)
             newEmployeeRole = await _db.EmployeeRole.GetById(newEmployeeRole.Id);
 
-        return newEmployeeRole!;
+        return newEmployeeRole!.ToDto();
     }
 
     public async Task<EmployeeRoleDto> DeleteEmployeeRole(string email, string role)
@@ -63,13 +63,12 @@ public class EmployeeRoleService : IEmployeeRoleService
         var deletedEmployeeRole = await _db.EmployeeRole
                                            .Delete(toDelete!.Id);
 
-        return deletedEmployeeRole;
+        return deletedEmployeeRole.ToDto();
     }
 
-    public Task<List<EmployeeRoleDto>> GetAllEmployeeRoles()
+    public async Task<List<EmployeeRoleDto>> GetAllEmployeeRoles()
     {
-        return _db.EmployeeRole
-                  .GetAll();
+        return (await _db.EmployeeRole.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
     public async Task<List<EmployeeRoleDto>> GetEmployeeRoles(string email)
@@ -100,7 +99,7 @@ public class EmployeeRoleService : IEmployeeRoleService
         var updatedEmployeeRole = await _db.EmployeeRole
                                            .Update(new EmployeeRole(employeeRoleDto));
 
-        return updatedEmployeeRole;
+        return updatedEmployeeRole.ToDto();
     }
 
     public async Task<EmployeeRoleDto> GetEmployeeRole(string email)

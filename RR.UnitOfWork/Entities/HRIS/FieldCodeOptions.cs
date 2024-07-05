@@ -6,7 +6,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("FieldCodeOptions")]
-public class FieldCodeOptions : IModel<FieldCodeOptionsDto>
+public class FieldCodeOptions : IModel
 {
     public FieldCodeOptions()
     {

@@ -28,7 +28,7 @@ public class EmployeeAddressService : IEmployeeAddressService
     public async Task<EmployeeAddressDto> Delete(int addressId)
     {
         var address = await _db.EmployeeAddress.Delete(addressId);
-        return address;
+        return address.ToDto();
     }
 
     public async Task<EmployeeAddressDto> Get(EmployeeAddressDto employeeAddressDto)
@@ -41,12 +41,12 @@ public class EmployeeAddressService : IEmployeeAddressService
             throw _errorLoggingService.LogException(exception);
         }
 
-        return await _db.EmployeeAddress.FirstOrDefault(address => address.Id == employeeAddressDto.Id);
+        return (await _db.EmployeeAddress.FirstOrDefault(address => address.Id == employeeAddressDto.Id)).ToDto();
     }
 
     public async Task<List<EmployeeAddressDto>> GetAll()
     {
-        return await _db.EmployeeAddress.GetAll();
+        return (await _db.EmployeeAddress.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
     public async Task<EmployeeAddressDto> Save(EmployeeAddressDto employeeAddressDto)
@@ -61,7 +61,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         var address = await _db.EmployeeAddress.Add(new EmployeeAddress(employeeAddressDto));
 
-        return address;
+        return address.ToDto();
     }
 
     public async Task<EmployeeAddressDto> Update(EmployeeAddressDto employeeAddressDto)
@@ -76,6 +76,6 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         var address = await _db.EmployeeAddress.Update(new EmployeeAddress(employeeAddressDto));
 
-        return address;
+        return address.ToDto();
     }
 }

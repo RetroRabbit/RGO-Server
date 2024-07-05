@@ -1,13 +1,12 @@
 ﻿using ATS.Models;
 using ATS.Services.Services;
-using Microsoft.AspNetCore.Mvc;
-using MockQueryable.Moq;
 using Moq;
 using Newtonsoft.Json;
 using RR.Tests.Data.Models.ATS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.ATS;
 using System.Linq.Expressions;
+using RR.Tests.Data;
 using Xunit;
 
 namespace ATS.Services.Tests.Services
@@ -28,9 +27,9 @@ namespace ATS.Services.Tests.Services
         {
             _mockUnitOfWork
                 .Setup(u => u.Candidate.Any(It.IsAny<Expression<Func<Candidate, bool>>>()))
-           .Returns(Task.FromResult(true));
+           .ReturnsAsync(true);
 
-            var serviceResult = await _applicantService.CheckCandidateExists(CandidateDtoTestData.CandidateDto.PersonalEmail);
+            var serviceResult = await _applicantService.CheckCandidateExists(CandidateTestData.CandidateOne.PersonalEmail);
             var actionResult = Xunit.Assert.IsType<bool>(serviceResult);
 
             Xunit.Assert.True(actionResult);
@@ -39,42 +38,41 @@ namespace ATS.Services.Tests.Services
         [Fact]
         public async Task SaveCandidatePass()
         {
-            var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
-            _mockUnitOfWork.Setup(x => x.Candidate.GetAll(null)).Returns(Task.FromResult(candidates));
+            var candidates = new List<Candidate> { CandidateTestData.CandidateOne, CandidateTestData.CandidateTwo };
+            _mockUnitOfWork.Setup(x => x.Candidate.GetAll(null)).ReturnsAsync(candidates);
 
-            _mockUnitOfWork.Setup(x => x.Candidate.Add(It.IsAny<Candidate>()))
-                   .Returns(Task.FromResult(CandidateDtoTestData.CandidateDto));
+            _mockUnitOfWork.Setup(x => x.Candidate.Add(It.IsAny<Candidate>())).ReturnsAsync(CandidateTestData.CandidateOne);
 
-            var serviceResult = await _applicantService.SaveCandidate(CandidateDtoTestData.CandidateDto);
+            var serviceResult = await _applicantService.SaveCandidate(CandidateTestData.CandidateOne.ToDto());
             var actionResult = Xunit.Assert.IsType<CandidateDto>(serviceResult);
 
-            Xunit.Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult);
+            Xunit.Assert.Equivalent(CandidateTestData.CandidateOne.ToDto(), actionResult);
         }
 
         [Fact]
         public async Task SaveCandidateFail()
         {
-            var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
-            _mockUnitOfWork.Setup(x => x.Candidate.GetAll(null)).Returns(Task.FromResult(candidates));
+            var candidates = new List<Candidate> { CandidateTestData.CandidateOne, CandidateTestData.CandidateTwo };
+            _mockUnitOfWork.Setup(x => x.Candidate.GetAll(null)).ReturnsAsync(candidates);
 
             _mockUnitOfWork.Setup(x => x.Candidate.Any(It.IsAny<Expression<Func<Candidate, bool>>>()))
                    .ReturnsAsync(true);
 
-            await Assert.ThrowsAsync<Exception>(() => _applicantService.SaveCandidate(CandidateDtoTestData.CandidateDto));
+            await Assert.ThrowsAsync<Exception>(() => _applicantService.SaveCandidate(CandidateTestData.CandidateOne.ToDto()));
         }
 
         [Fact]
         public async Task GetAllCandidatesPass()
         {
-            var candidates = new List<CandidateDto> { CandidateDtoTestData.CandidateDto, CandidateDtoTestData.CandidateDtoTwo };
+            var candidates = new List<Candidate> { CandidateTestData.CandidateOne, CandidateTestData.CandidateTwo };
 
             _mockUnitOfWork
                 .Setup(u => u.Candidate.GetAll(null))
-           .Returns(Task.FromResult(candidates));
+           .ReturnsAsync(candidates);
 
             var serviceResult = await _applicantService.GetAllCandidates();
 
-            List<CandidateDto>? fetchedCandidates = serviceResult as List<CandidateDto>;
+            var fetchedCandidates = serviceResult as List<CandidateDto>;
 
             Xunit.Assert.NotNull(fetchedCandidates);
             Xunit.Assert.Equal(2, fetchedCandidates.Count);
@@ -84,35 +82,35 @@ namespace ATS.Services.Tests.Services
          public async Task GetCandidateByIdPass()
          {
              var candidates = new List<Candidate> { 
-                 new Candidate(CandidateDtoTestData.CandidateDto)
+                 CandidateTestData.CandidateOne
              };
 
              _mockUnitOfWork
                  .Setup(u => u.Candidate.Get(It.IsAny<Expression<Func<Candidate, bool>>>()))
-            .Returns(candidates.AsQueryable().BuildMock());
+            .Returns(candidates.ToMockIQueryable());
 
-             var serviceResult = await _applicantService.GetCandidateById(CandidateDtoTestData.CandidateDto.Id);
+             var serviceResult = await _applicantService.GetCandidateById(CandidateTestData.CandidateOne.Id);
 
              Assert.NotNull(serviceResult);
-             Assert.Equivalent(CandidateDtoTestData.CandidateDto, serviceResult);
+             Assert.Equivalent(CandidateTestData.CandidateOne.ToDto(), serviceResult);
          }
 
         [Fact]
         public async Task GetCandidateByEmailPass()
         {
             var candidates = new List<Candidate> {
-                 new Candidate(CandidateDtoTestData.CandidateDto)
+                 CandidateTestData.CandidateOne
              };
             
              _mockUnitOfWork
                  .Setup(u => u.Candidate.Get(It.IsAny<Expression<Func<Candidate, bool>>>()))
-            .Returns(candidates.AsQueryable().BuildMock());
+            .Returns(candidates.ToMockIQueryable());
 
-            var serviceResult = await _applicantService.GetCandidateByEmail(CandidateDtoTestData.CandidateDto.PersonalEmail);
+            var serviceResult = await _applicantService.GetCandidateByEmail(CandidateTestData.CandidateOne.PersonalEmail);
 
             Assert.NotNull(serviceResult); 
             var actualResult = JsonConvert.SerializeObject(serviceResult);
-            var expectedResult = JsonConvert.SerializeObject(CandidateDtoTestData.CandidateDto);
+            var expectedResult = JsonConvert.SerializeObject(CandidateTestData.CandidateOne);
 
             Assert.Equal(actualResult, expectedResult);
         }
@@ -121,12 +119,12 @@ namespace ATS.Services.Tests.Services
         public async Task UpdateCandidatePass()
         {
             _mockUnitOfWork.Setup(x => x.Candidate.Update(It.IsAny<Candidate>()))
-                   .Returns(Task.FromResult(CandidateDtoTestData.CandidateDto));
+                   .ReturnsAsync(CandidateTestData.CandidateOne);
 
-            var serviceResult = await _applicantService.UpdateCandidate(CandidateDtoTestData.CandidateDto);
+            var serviceResult = await _applicantService.UpdateCandidate(CandidateTestData.CandidateOne.ToDto());
             var actionResult = Assert.IsType<CandidateDto>(serviceResult);
 
-            Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult);
+            Assert.Equivalent(CandidateTestData.CandidateOne.ToDto(), actionResult);
 
             _mockUnitOfWork.Verify(x => x.Candidate.Update(It.IsAny<Candidate>()), Times.Once);
         }
@@ -135,12 +133,12 @@ namespace ATS.Services.Tests.Services
         public async Task DeleteCandidatePass()
         {
             _mockUnitOfWork.Setup(x => x.Candidate.Delete(It.IsAny<int>()))
-                   .Returns(Task.FromResult(CandidateDtoTestData.CandidateDto));
+                   .ReturnsAsync(CandidateTestData.CandidateOne);
 
-            var serviceResult = await _applicantService.DeleteCandidate(CandidateDtoTestData.CandidateDto.Id);
+            var serviceResult = await _applicantService.DeleteCandidate(CandidateTestData.CandidateOne.Id);
             var actionResult = Assert.IsType<CandidateDto>(serviceResult);
 
-            Assert.Equal(CandidateDtoTestData.CandidateDto, actionResult);
+            Assert.Equivalent(CandidateTestData.CandidateOne.ToDto(), actionResult);
 
             _mockUnitOfWork.Verify(x => x.Candidate.Delete(It.IsAny<int>()), Times.Once);
         }

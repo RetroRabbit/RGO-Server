@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 using HRIS.Models;
 using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("Chart")]
-public class Chart : IModel<ChartDto>
+public class Chart : IModel
 {
     public Chart()
     {

@@ -1,10 +1,12 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Interfaces.HRIS;
+﻿using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.UnitOfWork.Repositories.HRIS;
 
-public class EmployeeRoleRepository : BaseRepository<EmployeeRole, EmployeeRoleDto>, IEmployeeRoleRepository
+public interface IEmployeeRoleRepository : IRepository<EmployeeRole>
+{
+}
+
+public class EmployeeRoleRepository : BaseRepository<EmployeeRole>, IEmployeeRoleRepository
 {
     public EmployeeRoleRepository(DatabaseContext db) : base(db)
     {

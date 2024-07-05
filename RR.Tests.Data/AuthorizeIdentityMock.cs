@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using Google.Apis.Gmail.v1.Data;
-using HRIS.Services.Session;
+﻿using HRIS.Services.Session;
 using Microsoft.AspNetCore.Http;
 using RR.UnitOfWork;
 
@@ -20,6 +18,12 @@ public class AuthorizeIdentityMock : AuthorizeIdentity
         Email = email;
         NameIdentifier = nameIdentifier;
         Role = role;
+        EmployeeId = employeeId;
+    }
+
+    public AuthorizeIdentityMock(int employeeId)
+       : this()
+    {
         EmployeeId = employeeId;
     }
 

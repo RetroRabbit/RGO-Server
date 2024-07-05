@@ -3,8 +3,8 @@ using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using MockQueryable.Moq;
 using Moq;
+using RR.Tests.Data;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -30,7 +30,7 @@ public class AgeTypeUnitTest
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto{ Id = 3, Description = "Employee" };
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
-                                .Returns(Task.FromResult(employeeTypeDto));
+                                .ReturnsAsync(employeeTypeDto);
 
         employeeAddressDto =  new EmployeeAddressDto
         {
@@ -103,7 +103,7 @@ public class AgeTypeUnitTest
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.AsQueryable().BuildMock());
+               .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
         var result = ageType.GenerateData(employeeDto, realServiceProvider);

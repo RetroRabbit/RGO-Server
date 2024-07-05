@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.Design;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
@@ -9,7 +7,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("Employee")]
-public class Employee : IModel<EmployeeDto>
+public class Employee : IModel
 {
     public Employee()
     {
@@ -151,6 +149,7 @@ public class Employee : IModel<EmployeeDto>
     [Column("inactiveReason")] public string? InactiveReason { get; set; }
 
     public virtual EmployeeType? EmployeeType { get; set; }
+    public virtual EmployeeRole? EmployeeRole { get; set; }
     public virtual Employee? ChampionEmployee { get; set; }
     public virtual Employee? TeamLeadAssigned { get; set; }
     public virtual Client? ClientAssigned { get; set; }
