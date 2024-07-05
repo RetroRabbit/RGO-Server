@@ -397,19 +397,34 @@ public class EmployeeService : IEmployeeService
         return simpleProfile;
     }
 
-    public async Task<List<EmployeeDto>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true)
+    public async Task<List<EmployeeFilterResponse>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true)
     {
         return await _db.Employee
-                        .Get(employee => true)
-                        .Where(employee =>
+                        .Get(employee =>
                                    (peopleChampId == 0 || employee.PeopleChampion == peopleChampId)
                                    && (employeeType == 0 || employee.EmployeeType!.Id == employeeType)
                                    && (employee.Active == activeStatus))
                         .Include(employee => employee.EmployeeType)
                         .Include(employee => employee.PhysicalAddress)
                         .Include(employee => employee.PostalAddress)
+                        .Include(employee => employee.EmployeeRole)
+                            .ThenInclude(role => role.Role)
                         .OrderBy(employee => employee.Name)
-                        .Select(employee => employee.ToDto())
+                        .Select(x => new EmployeeFilterResponse
+                        {
+                            Name = x.Name,
+                            Surname = x.Surname,
+                            ClientAllocated = x.ClientAssigned == null ? null : x.ClientAssigned.Name,
+                            Level = x.Level,
+                            Id = x.Id,
+                            RoleId = x.EmployeeRole == null ? 0 : x.EmployeeRole.RoleId,
+                            RoleDescription = x.EmployeeRole == null || x.EmployeeRole.Role == null ? "" : x.EmployeeRole.Role.Description ?? "",
+                            Email = x.Email,
+                            EngagementDate = x.EngagementDate,
+                            TerminationDate = x.TerminationDate,
+                            InactiveReason = x.InactiveReason,
+                            Position = x.EmployeeType == null ? null : x.EmployeeType.Name
+                        })
                         .ToListAsync();
     }
 
