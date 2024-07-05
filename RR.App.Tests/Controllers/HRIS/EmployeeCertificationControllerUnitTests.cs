@@ -1,14 +1,11 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Transaction;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.App.Tests.Helper;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
-using System.Security.Claims;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
