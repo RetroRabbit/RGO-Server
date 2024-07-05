@@ -24,12 +24,9 @@ public class EmployeeCertificationController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllEmployeelCertiificates(int employeeId)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
+        if ((_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey")) && employeeId != _identity.EmployeeId)
         {
-            if (employeeId != _identity.EmployeeId)
-            {
-                throw new CustomException("User data being accessed does not match user making the request.");
-            }
+            throw new CustomException("User data being accessed does not match user making the request.");
         }
          
         var certificates = await _employeeCertificationService.GetAllEmployeeCertifications(employeeId);
@@ -49,12 +46,9 @@ public class EmployeeCertificationController : ControllerBase
     [HttpGet("employee-certificate")]
     public async Task<IActionResult> GetEmployeeCertificate(int employeeId, int certificationId)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
+        if ((_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey")) && employeeId != _identity.EmployeeId)
         {
-            if (employeeId != _identity.EmployeeId)
-            {
-                throw new CustomException("User data being accessed does not match user making the request.");
-            }
+            throw new CustomException("User data being accessed does not match user making the request.");
         }
          
         var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
