@@ -43,7 +43,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
     {
         var employee = await _employeeService.GetEmployeeById(employeeId);
         var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == employee.Id);
-        return qualifications?.ToDto() ?? throw new CustomException("Unable to Load Employee Qualifications");
+        return qualifications?.ToDto();
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(
