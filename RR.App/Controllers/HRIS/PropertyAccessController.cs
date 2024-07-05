@@ -1,5 +1,6 @@
 ﻿using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,101 +25,53 @@ public class PropertyAccessController : ControllerBase
     [HttpGet("role-access")]
     public async Task<IActionResult> GetPropertiesWithAccess(int employeeId)
     {
-        try
-        {
-            if (!string.IsNullOrEmpty(_identity.Email))
-            {
-                if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-                {
-                    var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
-                    return Ok(accessList);
-                }
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeId != _identity.EmployeeId)
+            throw new CustomException("Error retrieving employee.");
 
-                if (employeeId == _identity.EmployeeId)
-                {
-                    var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
-                    return Ok(accessList);
-                }
-            }
-
-            return NotFound("Tampering found!");
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
+        return Ok(accessList);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllPropertyAccess()
     {
-        try
-        {
-            var accessList = await _propertyAccessService.GetAll();
-            return Ok(accessList);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var accessList = await _propertyAccessService.GetAll();
+        return Ok(accessList);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut]
-    public async Task<IActionResult> UpdatePropertyRoleAccess(int propertyId,[FromBody] PropertyAccessLevel propertyAccess)
+    public async Task<IActionResult> UpdatePropertyRoleAccess(int propertyId, [FromBody] PropertyAccessLevel propertyAccess)
     {
-        try
-        {
-            await _propertyAccessService.UpdatePropertyAccess(propertyId, propertyAccess);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        await _propertyAccessService.UpdatePropertyAccess(propertyId, propertyAccess);
+        return Ok();
     }
 
     [Authorize(Policy = "AdminOrEmployeePolicy")]
     [HttpGet("seed-properties")]
     public async Task<IActionResult> Seed()
     {
-        try
-        {
-            await _propertyAccessService.CreatePropertyAccessEntries();
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        await _propertyAccessService.CreatePropertyAccessEntries();
+        return Ok();
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("user-id")]
     public async Task<IActionResult> GetUserId(string email)
     {
-        try
-        {
-            if (!string.IsNullOrEmpty(_identity.Email))
-            {
-                if (email == _identity.Email)
-                {
-                    return Ok(_identity.EmployeeId);
-                }
+        if (string.IsNullOrEmpty(_identity.Email))
+            throw new CustomException("Error retrieving employee.");
 
-                if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-                {
-                    var employee = await _employeeService.GetEmployee(email);
-                    return Ok(employee!.Id);
-                }
-            }
+        if (email == _identity.Email)
+            return Ok(_identity.EmployeeId);
 
-            return NotFound("Tampering found!");
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
+            throw new CustomException("Error retrieving employee.");
+
+        var employee = await _employeeService.GetEmployee(email);
+        return employee == null
+            ? throw new CustomException("Error retrieving employee.")
+            : Ok(employee.Id);
     }
 }
