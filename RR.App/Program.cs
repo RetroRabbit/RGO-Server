@@ -48,7 +48,7 @@ namespace RR.App
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
+                options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__Default")), ServiceLifetime.Transient);
 
             services.RegisterRepository();
             services.RegisterServicesHRIS();
