@@ -60,13 +60,11 @@ public class PropertyAccessControllerUnitTests
         var employeeId = 1;
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Admin");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(employeeId);
-
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-
+        
         _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(employeeId))
                                   .ReturnsAsync(new List<PropertyAccessDto>());
 
-        var result = await controller.GetPropertiesWithAccess(employeeId);
+        var result = await _propertyAccessController.GetPropertiesWithAccess(employeeId);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<List<PropertyAccessDto>>(okResult.Value);
@@ -79,10 +77,8 @@ public class PropertyAccessControllerUnitTests
         var employeeId = 2;
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Inactive");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(1);
-
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await controller.GetPropertiesWithAccess(employeeId));
+        
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetPropertiesWithAccess(employeeId));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
@@ -97,13 +93,11 @@ public class PropertyAccessControllerUnitTests
         var employeeId = 2;
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Admin");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(employeeId);
-
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-
+        
         _propertyAccessMockService.Setup(service => service.GetAccessListByEmployeeId(employeeId))
                                   .ThrowsAsync(new CustomException("Error retrieving employee."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await controller.GetPropertiesWithAccess(employeeId));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetPropertiesWithAccess(employeeId));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
@@ -167,8 +161,7 @@ public class PropertyAccessControllerUnitTests
         _authorizeIdentityMock.SetupGet(x => x.Email).Returns(email);
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(1);
 
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-        var result = await controller.GetUserId(email);
+        var result = await _propertyAccessController.GetUserId(email);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var employeeId = Assert.IsType<int>(okResult.Value);
@@ -186,8 +179,7 @@ public class PropertyAccessControllerUnitTests
         _employeeMockService.Setup(service => service.GetEmployee(email))
                             .ReturnsAsync(new EmployeeDto { Id = employeeId });
 
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-        var result = await controller.GetUserId(email);
+        var result = await _propertyAccessController.GetUserId(email);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnedEmployeeId = Assert.IsType<int>(okResult.Value);
@@ -203,8 +195,7 @@ public class PropertyAccessControllerUnitTests
         _authorizeIdentityMock.SetupGet(x => x.Email).Returns("another@example.com");
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("User");
 
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await controller.GetUserId(email));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetUserId(email));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
@@ -218,9 +209,7 @@ public class PropertyAccessControllerUnitTests
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Inactive");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(1);
 
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await controller.GetPropertiesWithAccess(employeeId));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetPropertiesWithAccess(employeeId));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
@@ -236,9 +225,7 @@ public class PropertyAccessControllerUnitTests
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Inactive");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(1);
 
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await controller.GetPropertiesWithAccess(employeeId));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetPropertiesWithAccess(employeeId));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
@@ -253,9 +240,7 @@ public class PropertyAccessControllerUnitTests
         var email = "";
         _authorizeIdentityMock.SetupGet(x => x.Email).Returns(email);
 
-        var controller = new PropertyAccessController(_authorizeIdentityMock.Object, _propertyAccessMockService.Object, _employeeMockService.Object);
-
-        var result = await Assert.ThrowsAsync<CustomException>(() => controller.GetUserId(email));
+        var result = await Assert.ThrowsAsync<CustomException>(() => _propertyAccessController.GetUserId(email));
         Assert.Equal("Error retrieving employee.", result.Message);
     }
 }
