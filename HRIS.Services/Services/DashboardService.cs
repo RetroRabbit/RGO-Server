@@ -139,6 +139,7 @@ namespace HRIS.Services.Services
 
             return previousEmployeeTotal.ToDto();
         }
+
         public async Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal()
         {
             var currentMonth = DateTime.Now.ToString("MMMM");
