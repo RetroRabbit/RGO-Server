@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,19 +24,17 @@ public class EmployeeCertificationController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllEmployeelCertiificates(int employeeId)
     {
-        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
         {
-            var certificates = await _employeeCertificationService.GetAllEmployeeCertifications(employeeId);
-            return Ok(certificates);
+            if (employeeId == _identity.EmployeeId)
+            {
+                throw new CustomException("User data being accessed does not match user making the request.");
+            }
         }
-            
-        if (employeeId == _identity.EmployeeId)
-        {
-            var certificates = await _employeeCertificationService.GetAllEmployeeCertifications(employeeId);
-            return Ok(certificates);
-        }
+         
+        var certificates = await _employeeCertificationService.GetAllEmployeeCertifications(employeeId);
+        return Ok(certificates);
 
-        return NotFound("User data being accessed does not match user making the request.");
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -50,19 +49,17 @@ public class EmployeeCertificationController : ControllerBase
     [HttpGet("employee-certificate")]
     public async Task<IActionResult> GetEmployeeCertificate(int employeeId, int certificationId)
     {
-        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
         {
-            var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
-            return Ok(certificate);
+            if (employeeId == _identity.EmployeeId)
+            {
+                throw new CustomException("User data being accessed does not match user making the request.");
+            }
         }
-            
-        if (employeeId == _identity.EmployeeId)
-        {
-            var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
-            return Ok(certificate);
-        }
+         
+        var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
+        return Ok(certificate);
 
-        return NotFound("User data being accessed does not match user making the request.");
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
