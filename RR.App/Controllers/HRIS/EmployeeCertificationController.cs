@@ -26,7 +26,7 @@ public class EmployeeCertificationController : ControllerBase
     {
         if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
         {
-            if (employeeId == _identity.EmployeeId)
+            if (employeeId != _identity.EmployeeId)
             {
                 throw new CustomException("User data being accessed does not match user making the request.");
             }
@@ -51,7 +51,7 @@ public class EmployeeCertificationController : ControllerBase
     {
         if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
         {
-            if (employeeId == _identity.EmployeeId)
+            if (employeeId != _identity.EmployeeId)
             {
                 throw new CustomException("User data being accessed does not match user making the request.");
             }
