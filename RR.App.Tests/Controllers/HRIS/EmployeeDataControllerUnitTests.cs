@@ -20,7 +20,7 @@ public class EmployeeDataControllerUnitTests
     public EmployeeDataControllerUnitTests()
     {
         _employeeDataServiceMock = new Mock<IEmployeeDataService>();
-        _identity = new Mock<AuthorizeIdentityMock>(MockBehavior.Strict, null, null);
+        _identity = new Mock<AuthorizeIdentityMock>();
         _controller = new EmployeeDataController(_identity.Object, _employeeDataServiceMock.Object);
 
         _employeeDataDtoList = new List<EmployeeDataDto>
@@ -68,12 +68,10 @@ public class EmployeeDataControllerUnitTests
         _identity.Setup(i => i.Role).Returns("Developer");
         _identity.SetupGet(i => i.EmployeeId).Returns(5);
 
-        var newController = new EmployeeDataController(new AuthorizeIdentityMock(), _employeeDataServiceMock.Object);
-
         _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
                               .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.SaveEmployeeData(_employeeDataDto));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.SaveEmployeeData(_employeeDataDto));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
@@ -116,12 +114,10 @@ public class EmployeeDataControllerUnitTests
     [Fact]
     public async Task updateUnauthorized()
     {
-        var newController = new EmployeeDataController(new AuthorizeIdentityMock(), _employeeDataServiceMock.Object);
-
         _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
                               .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.UpdateEmployeeData(_employeeDataDto));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployeeData(_employeeDataDto));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
