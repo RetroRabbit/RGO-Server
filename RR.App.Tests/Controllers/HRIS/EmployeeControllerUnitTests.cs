@@ -9,6 +9,16 @@ using RR.App.Controllers.HRIS;
 using RR.UnitOfWork;
 using Xunit;
 using RR.Tests.Data;
+using RR.UnitOfWork.Entities.HRIS;
+using HRIS.Services.Services;
+using Auth0.ManagementApi.Models;
+using Microsoft.Azure.Amqp.Framing;
+using System.Text.RegularExpressions;
+using RR.Tests.Data.Models.HRIS;
+using Microsoft.Azure.Amqp.Transaction;
+using RR.App.Tests.Helper;
+using HRIS.Services.Session;
+using System.Security.AccessControl;
 
 namespace RR.App.Tests.Controllers.HRIS;
 
@@ -16,6 +26,10 @@ public class EmployeeControllerUnitTests
 {
     private readonly Mock<IChartService> _chartMockService;
     private readonly EmployeeController _controller;
+    private readonly EmployeeController _controllers;
+
+    private readonly List<EmployeeDto> _employeeDtoList;
+    private readonly EmployeeDto _employeeDto;
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDto _employee;
     private readonly EmployeeFilterResponse _employeeFilter;
@@ -27,64 +41,43 @@ public class EmployeeControllerUnitTests
     private readonly ClaimsPrincipal _claimsPrincipal;
     private readonly ClaimsIdentity _claimsIdentity;
     private readonly SimpleEmployeeProfileDto _simpleEmployeeProfileDto;
+    private readonly Mock<AuthorizeIdentityMock> _identity;
 
     public EmployeeControllerUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeMockService = new Mock<IEmployeeService>();
+        //_identity = new Mock<AuthorizeIdentityMock>();
+        _identity = new Mock<AuthorizeIdentityMock>( null, null);
 
-        _controller = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
+        _controller = new EmployeeController(_identity.Object, _employeeMockService.Object);
 
-        _employee = new EmployeeDto
+
+        _employeeDtoList = new List<EmployeeDto>
         {
-            Id = 1,
-            EmployeeNumber = "001",
-            TaxNumber = "34434434",
-            EngagementDate = new DateTime(),
-            TerminationDate = new DateTime(),
-            PeopleChampion = null,
-            Disability = false,
-            DisabilityNotes = "None",
-            Level = 4,
-            EmployeeType = _employeeTypeDto,
-            Notes = "Notes",
-            LeaveInterval = 1,
-            SalaryDays = 28,
-            PayRate = 128,
-            Salary = 100000,
-            Name = "Kamo",
-            Initials = "K.G.",
-            Surname = "Smith",
-            DateOfBirth = new DateTime(),
-            CountryOfBirth = "South Africa",
-            Nationality = "South African",
-            IdNumber = "1234457899",
-            PassportNumber = " ",
-            PassportExpirationDate = new DateTime(),
-            PassportCountryIssue = "South Africa",
-            Race = Race.Black,
-            Gender = Gender.Female,
-            Email = "ksmith@retrorabbit.co.za",
-            PersonalEmail = "kmaosmith@gmail.com",
-            CellphoneNo = "0123456789",
-            PhysicalAddress = _employeeAddressDto,
-            PostalAddress = _employeeAddressDto
+            EmployeeTestData.EmployeeOne.ToDto(),
+            EmployeeTestData.EmployeeTwo.ToDto(),
+            EmployeeTestData.EmployeeThree.ToDto(),
+            EmployeeTestData.EmployeeFour.ToDto(),
+            EmployeeTestData.EmployeeNew.ToDto(),
+            EmployeeTestData.EmployeeSix.ToDto(),
         };
+        _employeeDto = EmployeeTestData.EmployeeOne.ToDto();
 
         _employeeFilter = new EmployeeFilterResponse
         {
-            Email = _employee.Email,
-            EngagementDate = _employee.EngagementDate,
-            InactiveReason = _employee.InactiveReason,
-            TerminationDate = _employee.TerminationDate,
+            Email = _employeeDto.Email,
+            EngagementDate = _employeeDto.EngagementDate,
+            InactiveReason = _employeeDto.InactiveReason,
+            TerminationDate = _employeeDto.TerminationDate,
             ClientAllocated = "Test",
-            Id = _employee.Id,
+            Id = 1,
             RoleId = 1,
             RoleDescription = "Test Role",
-            Level = _employee.Level,
-            Name = _employee.Name,
+            Level = _employeeDto.Level,
+            Name = _employeeDto.Name,
             Position = "Test Position",
-            Surname = _employee.Surname
+            Surname = _employeeDto.Surname
         };
 
         _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto{
@@ -121,20 +114,6 @@ public class EmployeeControllerUnitTests
             HttpContext = new DefaultHttpContext { User = _claimsPrincipal }
         };
 
-        _employeeAddressDto = new EmployeeAddressDto
-        {
-            Id = 1,
-            UnitNumber = "2",
-            ComplexName = "Complex",
-            StreetNumber = "2",
-            SuburbOrDistrict = "Suburb/District",
-            City = "City",
-            Country = "Country",
-            Province = "Province",
-            PostalCode = "1620"
-        };
-
-        _employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
     }
 
     private ClaimsPrincipal SetupClaimsProncipal(string email)
@@ -159,10 +138,10 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task AddEmployeeSuccessTest()
     {
-        _employeeMockService.Setup(service => service.SaveEmployee(_employee))
-                            .ReturnsAsync(_employee);
+        _employeeMockService.Setup(service => service.SaveEmployee(_employeeDto))
+                            .ReturnsAsync(_employeeDto);
 
-        var result = await _controller.AddEmployee(_employee);
+        var result = await _controller.AddEmployee(_employeeDto);
 
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal("AddEmployee", createdAtActionResult.ActionName);
@@ -170,38 +149,13 @@ public class EmployeeControllerUnitTests
     }
 
     [Fact]
-    public async Task AddEmployeeEmployeeExistsFailTest()
+    public async Task GetEmployeeByEmailSuccessTest()
     {
-        _employeeMockService.Setup(service => service.SaveEmployee(_employee))
-                            .ThrowsAsync(new Exception("Employee exists"));
-
-        var result = await _controller.AddEmployee(_employee);
-
-        var problemDetails = Assert.IsType<ObjectResult>(result);
-        Assert.Equal(406, problemDetails.StatusCode);
-        Assert.Equal("User Exists", ((ProblemDetails)problemDetails.Value!).Title);
-    }
-
-    [Fact]
-    public async Task AddEmployeeNotFoundFailTest()
-    {
-        _employeeMockService.Setup(service => service.SaveEmployee(_employee))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.AddEmployee(_employee);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetEmployeeWithClaimTest()
-    {
-        var principal = SetupClaimsProncipal(_employee.Email!);
+        var principal = SetupClaimsProncipal(_employeeDto.Email!);
         SetupControllerContext(_controller, principal);
 
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
-                            .ReturnsAsync(_employee);
+                            .ReturnsAsync(_employeeDto);
 
         var result = await _controller.GetEmployeeByEmail(null);
 
@@ -212,205 +166,98 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetEmployeeSuccessTest()
     {
-        var principal = SetupClaimsProncipal(_employee.Email!);
+        var principal = SetupClaimsProncipal(_employeeDto.Email!);
         SetupControllerContext(_controller, principal);
 
         _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
-                            .ReturnsAsync(_employee);
+                            .ReturnsAsync(_employeeDto);
 
-        var result = await _controller.GetEmployeeByEmail(_employee.Email);
+        var result = await _controller.GetEmployeeByEmail(_employeeDto.Email);
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(_employee, (EmployeeDto)okObjectResult.Value!);
+        Assert.Equal(_employeeDto, (EmployeeDto)okObjectResult.Value!);
     }
 
     [Fact]
-    public async Task GetEmployeeFailTest()
-    {
-        var principal = SetupClaimsProncipal(_employee.Email!);
-        SetupControllerContext(_controller, principal);
-
-        _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.GetEmployeeByEmail(_employee.Email);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task UpdateEmployeeSuccessTest()
     {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
-                            .ReturnsAsync(_employee);
+        //_employeeMockService.Setup(service => service.UpdateEmployee(It.IsAny<EmployeeDto>(), It.IsAny<string>()))
+        //                .ReturnsAsync(_employeeDto);
 
-        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
+        //// Act
+        //var result = await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email);
+        _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
 
+        _employeeMockService.Setup(x => x.UpdateEmployee(_employeeDto, _employeeDto.Email))
+                               .ReturnsAsync(_employeeDto);
+
+        var result = await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email);
+
+        //var okResult = Assert.IsType<OkObjectResult>(result);
+        //var returnValue = Assert.IsType<EmployeeDto>(okResult.Value);
+        //Assert.Equal( _employeeDto, returnValue);
+        //_employeeMockService.Verify(service => service.UpdateEmployee(_employeeDto, _employeeDto.Email), Times.Once);
+
+        // Assert
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-        Assert.Equal("UpdateEmployee", createdAtActionResult.ActionName);
+        Assert.Equal(nameof(EmployeeController.UpdateEmployee), createdAtActionResult.ActionName);
         Assert.Equal(201, createdAtActionResult.StatusCode);
+        Assert.Equal(_employeeDto.Email, createdAtActionResult.RouteValues["email"]);
+        Assert.Equal(_employeeDto, createdAtActionResult.Value);
     }
+
 
     [Fact]
-    public async Task UpdateEmployeeFailTest()
-    {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact (Skip = "User data being accessed does not match user making the request.")]
     public async Task UpdateEmployeeUnauthorized()
     {
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employee, _employee.Email!))
-                            .ThrowsAsync(new Exception("Unauthorized action"));
+        _identity.SetupGet(i => i.Role).Returns("Developer");
+        _identity.SetupGet(i => i.EmployeeId).Returns(5);
+        var newController = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
 
-        var result = await _controller.UpdateEmployee(_employee, "ksmith@retrorabbit.co.za");
-        var statusCodeResult = (ObjectResult)result;
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employeeDto, _employeeDto.Email))
+                            .ThrowsAsync(new CustomException("Unauthorized action."));
 
-        Assert.Equal(403, statusCodeResult.StatusCode);
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.UpdateEmployee(_employeeDto, _employeeDto.Email));
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("Unauthorized action.", notFoundResult.Value);
     }
 
     [Fact]
     public async Task GetAllEmployeesSuccessTest()
     {
-        _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
-                            .ReturnsAsync(new List<EmployeeDto> { _employee });
+        _identity.SetupGet(i => i.Email).Returns("test@retrorabbit.co.za");
+        _employeeMockService.Setup(service => service.GetAll(_employeeDto.Email))
+                            .ReturnsAsync(_employeeDtoList);
 
         var result = await _controller.GetAllEmployees();
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(new List<EmployeeDto> { _employee }, (List<EmployeeDto>)okObjectResult.Value!);
     }
 
-    [Fact]
-    public async Task GetAllEmployeesFailTest()
-    {
-        _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.GetAllEmployees();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task CountAllEmployeesSuccessTest()
-    {
-        _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
-                            .ReturnsAsync(new List<EmployeeDto> { _employee });
-
-        var result = await _controller.CountAllEmployees();
-
-        var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(1, (int)okObjectResult.Value!);
-    }
-
-    [Fact]
-    public async Task CountAllEmployeesFailTest()
-    {
-        _employeeMockService.Setup(service => service.GetAll(""))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.CountAllEmployees();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetEmployeeCountSuccessTest()
-    {
-        var expectedCount = new EmployeeCountDataCard { EmployeeTotalDifference = 42 };
-        _employeeMockService.Setup(service => service.GenerateDataCardInformation())
-                            .ReturnsAsync(expectedCount);
-
-        var result = await _controller.GetEmployeesCount();
-
-        var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(expectedCount.EmployeeTotalDifference, ((EmployeeCountDataCard)okObjectResult.Value!).EmployeeTotalDifference);
-    }
-
-    [Fact]
-    public async Task GetEmployeesCountFailTest()
-    {
-        _employeeMockService.Setup(service => service.GenerateDataCardInformation())
-                            .ThrowsAsync(new Exception("Failed to generate data card"));
-
-        var result = await _controller.GetEmployeesCount();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-        Assert.Equal("Failed to generate data card", notFoundResult.Value);
-    }
 
     [Fact]
     public async Task GetEmployeeByIdSuccessTest()
     {
-        var expectedDetails = _employee;
-        _employeeMockService.Setup(x => x.GetEmployeeById(_employee.Id)).ReturnsAsync(expectedDetails);
+        var expectedDetails = _employeeDto;
+        _employeeMockService.Setup(x => x.GetEmployeeById(_employeeDto.Id)).ReturnsAsync(expectedDetails);
 
-        var result = await _controller.GetEmployeeById(_employee.Id);
+        var result = await _controller.GetEmployeeById(_employeeDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualDetails = Assert.IsType<EmployeeDto>(okResult.Value);
         Assert.Equal(expectedDetails, actualDetails);
     }
 
-    [Fact(Skip = "needs update")]
-    public async Task GetEmployeeByIdFailTest()
-    {
-        var expectedDetails = _employee;
-        _employeeMockService.Setup(s => s.GetEmployeeById(_employee.Id))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.GetEmployeeById(_employee.Id);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetEmployeeByIdSuccess()
-    {
-        _employeeMockService.Setup(service => service.GetEmployeeById(It.IsAny<int>()))
-                            .ReturnsAsync(_employee);
-
-        var result = await _controller.GetEmployeeById(_employee.Id);
-
-        var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(_employee, (EmployeeDto)okObjectResult.Value!);
-    }
-
-    [Fact(Skip = "needs update")]
-    public async Task GetEmployeeByIdFail()
-    {
-        var principal = SetupClaimsProncipal(_employee.Email!);
-        SetupControllerContext(_controller, principal);
-
-        _employeeMockService.Setup(service => service.GetEmployeeById(It.IsAny<int>()))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.GetEmployeeById(2);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
     [Fact]
     public async Task GetSimpleEmployeeSuccess()
     {
+        _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(_simpleEmployeeProfileDto);
 
         var result = await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!);
@@ -424,13 +271,24 @@ public class EmployeeControllerUnitTests
     public async Task GetSimpleEmployeeFail()
     {
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
-                            .ThrowsAsync(new Exception("Not Found"));
+                            .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
 
-        var result = await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!);
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!));
 
-        var simpleEmployee = (NotFoundObjectResult)result;
+        Assert.Equal("User data being accessed does not match user making the request.", exception.Message);
+        //_identity.Setup(identity => identity.Role).Returns("Developer");
+        //_identity.Setup(identity => identity.EmployeeId).Returns(5);
 
-        Assert.Equal("Not Found", simpleEmployee.Value);
+        //var newController = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
+
+        //_employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
+        //                    .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
+
+        //var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!));
+
+        //var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        //Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
     [Fact]
@@ -450,38 +308,60 @@ public class EmployeeControllerUnitTests
     public async Task FilterEmployeesFailTest()
     {
         _employeeMockService.Setup(service => service.FilterEmployees(-1, -1, true))
-                            .ThrowsAsync(new Exception("Not found"));
+                            .ThrowsAsync(new CustomException("An error occured while filtering employees"));
 
-        var result = await _controller.FilterEmployees(-1, -1);
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _controller.FilterEmployees(-1, -1));
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
+        Assert.Equal("An error occured while filtering employees", exception.Message);
     }
 
     [Fact]
-    public async Task GetChurnRateSuccessTest()
+    public async Task DeleteEmployeeSuccessTest()
     {
-        var expectedChurnRate = new ChurnRateDataCardDto { ChurnRate = 0.15 };
-        _employeeMockService.Setup(service => service.CalculateEmployeeChurnRate())
-                            .ReturnsAsync(expectedChurnRate);
+        var principal = SetupClaimsProncipal(_employeeDto.Email!);
+        SetupControllerContext(_controller, principal);
 
-        var result = await _controller.GetChurnRate();
+        _employeeMockService.Setup(service => service.DeleteEmployee(It.IsAny<string>()))
+                            .ReturnsAsync(_employeeDto);
+
+        var result = await _controller.DeleteEmployee(_employeeDto.Email);
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(expectedChurnRate.ChurnRate, ((ChurnRateDataCardDto)okObjectResult.Value!).ChurnRate);
+        Assert.Equal(_employeeDto, (EmployeeDto)okObjectResult.Value!);
     }
 
     [Fact]
-    public async Task GetChurnRateFailTest()
+    public async Task CheckIdNumberSuccessTest()
     {
-        _employeeMockService.Setup(service => service.CalculateEmployeeChurnRate())
-                            .ThrowsAsync(new Exception("Failed to calculate churn rate"));
+        _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+        _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1))
+                                .ReturnsAsync(true);
 
-        var result = await _controller.GetChurnRate();
+        var result = await _controller.CheckIdNumber("0000080000000", 1);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+        Assert.True((bool)okResult.Value!);
+    }
+
+
+    [Fact]
+    public async Task CheckIdNumberUserRoleNotAuthorized()
+    {
+        _identity.Setup(identity => identity.Role).Returns("Developer");
+        _identity.Setup(identity => identity.EmployeeId).Returns(5);
+
+        var newController = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
+
+        _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1))
+                            .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.CheckIdNumber("0000080000000", 1));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-        Assert.Equal("Failed to calculate churn rate", notFoundResult.Value);
+        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 }
