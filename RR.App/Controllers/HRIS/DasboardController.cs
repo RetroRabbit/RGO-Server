@@ -9,12 +9,10 @@ namespace RR.App.Controllers.HRIS
     [ApiController]
     public class DasboardController : ControllerBase
     {
-        private readonly AuthorizeIdentity _identity;
         private readonly IDashboardService _dashboardService;
 
-        public DasboardController(AuthorizeIdentity identity, IDashboardService dashboardService)
+        public DasboardController(IDashboardService dashboardService)
         {
-            _identity = identity;
             _dashboardService = dashboardService;
         }
 
