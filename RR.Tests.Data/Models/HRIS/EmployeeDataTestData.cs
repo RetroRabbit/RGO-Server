@@ -19,11 +19,4 @@ public class EmployeeDataTestData
         FieldCodeId = 4,
         Value = "string"
     };
-    public static EmployeeData EmployeeDataThree = new()
-    {
-        Id = 3,
-        EmployeeId = 4,
-        FieldCodeId = 5,
-        Value = "stringsssss"
-    };
 }

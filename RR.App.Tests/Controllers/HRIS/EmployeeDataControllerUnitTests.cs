@@ -16,7 +16,6 @@ public class EmployeeDataControllerUnitTests
     private readonly EmployeeDataController _controller;
     private readonly List<EmployeeDataDto> _employeeDataDtoList;
     private readonly EmployeeDataDto _employeeDataDto;
-    private readonly EmployeeDataDto _employeeDataDto1;
     private readonly Mock<AuthorizeIdentityMock> _identity;
     public EmployeeDataControllerUnitTests()
     {
@@ -31,7 +30,6 @@ public class EmployeeDataControllerUnitTests
         };
         
         _employeeDataDto = EmployeeDataTestData.EmployeeDataOne.ToDto();
-        _employeeDataDto1 = EmployeeDataTestData.EmployeeDataThree.ToDto();
     }
 
     [Fact]
@@ -72,10 +70,10 @@ public class EmployeeDataControllerUnitTests
 
         var newController = new EmployeeDataController(new AuthorizeIdentityMock(), _employeeDataServiceMock.Object);
 
-        _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto1))
+        _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
                               .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.SaveEmployeeData(_employeeDataDto1));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.SaveEmployeeData(_employeeDataDto));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
