@@ -22,8 +22,6 @@ public class EmployeeDateController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeDate([FromBody] EmployeeDateInput employeeDateInput)
     {
-        try
-        {
             var employee = await _employeeService.GetEmployee(employeeDateInput.Email!);
             var employeeDateDto = new EmployeeDateDto
             {
@@ -35,37 +33,21 @@ public class EmployeeDateController : ControllerBase
             };
 
             await _employeeDateService.Save(employeeDateDto);
-
             return Ok();
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeDate(int employeeDateId)
     {
-        try
-        {
             await _employeeDateService.Delete(employeeDateId);
-
             return Ok();
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeDate([FromBody] EmployeeDateDto employeeDate)
     {
-        try
-        {
             var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email!);
             var employeeDateDto = new EmployeeDateDto
             {
@@ -77,13 +59,7 @@ public class EmployeeDateController : ControllerBase
             };
 
             await _employeeDateService.Update(employeeDateDto);
-
             return Ok();
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -93,8 +69,6 @@ public class EmployeeDateController : ControllerBase
         [FromQuery] string? email = null,
         [FromQuery] string? subject = null)
     {
-        try
-        {
             List<EmployeeDateDto> getAllEmployeeDate;
 
             if (date != null) getAllEmployeeDate = _employeeDateService.GetAllByDate((DateOnly)date);
@@ -103,10 +77,5 @@ public class EmployeeDateController : ControllerBase
             else getAllEmployeeDate = _employeeDateService.GetAll();
 
             return Ok(getAllEmployeeDate);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
     }
 }
