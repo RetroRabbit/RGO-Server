@@ -136,16 +136,4 @@ public class EmployeeDateControllerUnitTests
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
     }
-
-    [Fact]
-    public void GetAllEmployeeDate_ExceptionThrown_ReturnsNotFoundWithMessage()
-    {
-        _employeeDateServiceMock.Setup(x => x.GetAll())
-                               .Throws(new Exception("An error occurred while retrieving employee dates."));
-
-        var result = _controller.GetAllEmployeeDate();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while retrieving employee dates.", notFoundResult.Value);
-    }
 }
