@@ -15,7 +15,7 @@ public class DashboardController : ControllerBase
         _dashboardService = dashboardService;
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [AllowAnonymous]
     [HttpGet("growth-rate")]
     public async Task<IActionResult> CalculateEmployeeGrowthRate()
     {
