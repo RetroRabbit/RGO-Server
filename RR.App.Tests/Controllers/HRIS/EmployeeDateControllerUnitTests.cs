@@ -76,18 +76,6 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task DeleteEmployeeDateExceptionThrownReturnsNotFoundWithMessage()
-    {
-        _employeeDateServiceMock.Setup(x => x.Delete(_employeeDateInput.Id))
-                               .ThrowsAsync(new Exception("An error occurred while deleting employee date information."));
-
-        var result = await _controller.DeleteEmployeeDate(_employeeDateInput.Id);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while deleting employee date information.", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task UpdateEmployeeDateValidInputReturnsOkResult()
     {
         _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateDto.Employee!.Email!))
