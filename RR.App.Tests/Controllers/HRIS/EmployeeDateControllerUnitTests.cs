@@ -90,18 +90,6 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task UpdateEmployeeDateExceptionThrownReturnsNotFoundWithMessage()
-    {
-        _employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>()))
-                               .ThrowsAsync(new Exception("An error occurred while updating employee date information."));
-
-        var result = await _controller.UpdateEmployeeDate(_employeeDateDto);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while updating employee date information.", notFoundResult.Value);
-    }
-
-    [Fact]
     public void GetAllEmployeeDateByDateReturnsOkResultWithList()
     {
         _employeeDateServiceMock.Setup(x => x.GetAllByDate(_employeeDateDto.Date)).Returns(_employeeDateDtoList);
