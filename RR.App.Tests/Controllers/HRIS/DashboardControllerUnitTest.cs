@@ -1,10 +1,12 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.Tests.Data;
 using RR.UnitOfWork;
+using System;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -19,7 +21,7 @@ public class DashboardControllerUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _dashboardMockService = new Mock<IDashboardService>();
-        _dashboardcontroller = new DasboardController(new AuthorizeIdentityMock(), _dashboardMockService.Object);
+        _dashboardcontroller = new DasboardController(_dashboardMockService.Object);
     }
 
     [Fact]
@@ -40,13 +42,12 @@ public class DashboardControllerUnitTest
     public async Task GetEmployeesCountFailTest()
     {
         _dashboardMockService.Setup(service => service.GenerateDataCardInformation())
-                            .ThrowsAsync(new Exception("Failed to generate data card"));
+                            .ThrowsAsync(new CustomException("Failed to generate data card"));
 
-        var result = await _dashboardcontroller.GetEmployeesCount();
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _dashboardcontroller.GetEmployeesCount());
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-        Assert.Equal("Failed to generate data card", notFoundResult.Value);
+        Assert.Equal("Failed to generate data card", exception.Message);
     }
 
     [Fact]
@@ -67,13 +68,12 @@ public class DashboardControllerUnitTest
     public async Task GetChurnRateFailTest()
     {
         _dashboardMockService.Setup(service => service.CalculateEmployeeChurnRate())
-                            .ThrowsAsync(new Exception("Failed to calculate churn rate"));
+                            .ThrowsAsync(new CustomException("Failed to calculate churn rate"));
 
-        var result = await _dashboardcontroller.GetChurnRate();
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _dashboardcontroller.GetChurnRate());
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
-        Assert.Equal("Failed to calculate churn rate", notFoundResult.Value);
+        Assert.Equal("Failed to calculate churn rate", exception.Message);
     }
 }
 
