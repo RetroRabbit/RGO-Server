@@ -15,6 +15,11 @@ namespace HRIS.Services.Services
         private readonly IErrorLoggingService _errorLoggingService;
         private readonly IEmailService _emailService;
 
+        public DashboardService( IUnitOfWork db)
+        {
+            _db = db;
+        }
+
         public async Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate()
         {
             var today = DateTime.Today;
@@ -181,7 +186,6 @@ namespace HRIS.Services.Services
                 ? (double)terminationsDuringPeriod / employeeStartOfPeriodTotal * 100
                 : 0, 0);
         }
-
 
         public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
         {

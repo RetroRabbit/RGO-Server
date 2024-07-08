@@ -23,7 +23,7 @@ public class DashboardController : ControllerBase
         return Ok(growthRate);
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [AllowAnonymous]
     [HttpGet("card-count")]
     public async Task<IActionResult> GetEmployeesCount()
     {
