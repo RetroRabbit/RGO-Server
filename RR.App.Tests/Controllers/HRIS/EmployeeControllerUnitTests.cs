@@ -47,11 +47,10 @@ public class EmployeeControllerUnitTests
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeMockService = new Mock<IEmployeeService>();
-        //_identity = new Mock<AuthorizeIdentityMock>();
-        _identity = new Mock<AuthorizeIdentityMock>( null, null);
+
+        _identity = new Mock<AuthorizeIdentityMock>();
 
         _controller = new EmployeeController(_identity.Object, _employeeMockService.Object);
-
 
         _employeeDtoList = new List<EmployeeDto>
         {
@@ -182,11 +181,6 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeSuccessTest()
     {
-        //_employeeMockService.Setup(service => service.UpdateEmployee(It.IsAny<EmployeeDto>(), It.IsAny<string>()))
-        //                .ReturnsAsync(_employeeDto);
-
-        //// Act
-        //var result = await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email);
         _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
 
@@ -195,12 +189,6 @@ public class EmployeeControllerUnitTests
 
         var result = await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email);
 
-        //var okResult = Assert.IsType<OkObjectResult>(result);
-        //var returnValue = Assert.IsType<EmployeeDto>(okResult.Value);
-        //Assert.Equal( _employeeDto, returnValue);
-        //_employeeMockService.Verify(service => service.UpdateEmployee(_employeeDto, _employeeDto.Email), Times.Once);
-
-        // Assert
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(nameof(EmployeeController.UpdateEmployee), createdAtActionResult.ActionName);
         Assert.Equal(201, createdAtActionResult.StatusCode);
@@ -208,18 +196,16 @@ public class EmployeeControllerUnitTests
         Assert.Equal(_employeeDto, createdAtActionResult.Value);
     }
 
-
     [Fact]
     public async Task UpdateEmployeeUnauthorized()
     {
         _identity.SetupGet(i => i.Role).Returns("Developer");
         _identity.SetupGet(i => i.EmployeeId).Returns(5);
-        var newController = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
 
         _employeeMockService.Setup(service => service.UpdateEmployee(_employeeDto, _employeeDto.Email))
                             .ThrowsAsync(new CustomException("Unauthorized action."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.UpdateEmployee(_employeeDto, _employeeDto.Email));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("Unauthorized action.", notFoundResult.Value);
@@ -237,7 +223,6 @@ public class EmployeeControllerUnitTests
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
     }
-
 
     [Fact]
     public async Task GetEmployeeByIdSuccessTest()
@@ -270,25 +255,17 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task GetSimpleEmployeeFail()
     {
+
+        _identity.Setup(identity => identity.Role).Returns("Developer");
+        _identity.Setup(identity => identity.EmployeeId).Returns(5);
+
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
                             .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
 
-        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-            await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!));
 
-        Assert.Equal("User data being accessed does not match user making the request.", exception.Message);
-        //_identity.Setup(identity => identity.Role).Returns("Developer");
-        //_identity.Setup(identity => identity.EmployeeId).Returns(5);
-
-        //var newController = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
-
-        //_employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>()))
-        //                    .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
-
-        //var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!));
-
-        //var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        //Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
     [Fact]
@@ -347,19 +324,16 @@ public class EmployeeControllerUnitTests
         Assert.True((bool)okResult.Value!);
     }
 
-
     [Fact]
     public async Task CheckIdNumberUserRoleNotAuthorized()
     {
         _identity.Setup(identity => identity.Role).Returns("Developer");
         _identity.Setup(identity => identity.EmployeeId).Returns(5);
 
-        var newController = new EmployeeController(new AuthorizeIdentityMock(), _employeeMockService.Object);
-
         _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1))
                             .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.CheckIdNumber("0000080000000", 1));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.CheckIdNumber("0000080000000", 1));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);

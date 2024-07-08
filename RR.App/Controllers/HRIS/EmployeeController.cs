@@ -68,7 +68,7 @@ public class EmployeeController : ControllerBase
     {
 
             if (_identity.Role is not "SuperAdmin" or "Admin" or "Talent" or "Journey" && employee.Id != _identity.EmployeeId)
-            throw new CustomException("Unauthorized action.");
+                 throw new CustomException("Unauthorized action.");
             var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);
             return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
     }
@@ -108,9 +108,9 @@ public class EmployeeController : ControllerBase
     [HttpGet("id-number")]
     public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int employeeId)
     {
-        if (_identity.Role is not "SuperAdmin" or "Admin" or "Talent" or "Journey" && employeeId != _identity.EmployeeId)
-            throw new CustomException("User data being accessed does not match user making the request.");
-        var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
-        return Ok(isExisting);
+            if (_identity.Role is not "SuperAdmin" or "Admin" or "Talent" or "Journey" && employeeId != _identity.EmployeeId)
+                throw new CustomException("User data being accessed does not match user making the request.");
+            var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
+            return Ok(isExisting);
     }
 }
