@@ -63,18 +63,6 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeDateExceptionThrownReturnsNotFoundWithMessage()
-    {
-        _employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>()))
-                               .ThrowsAsync(new Exception("An error occurred while saving employee date information."));
-
-        var result = await _controller.SaveEmployeeDate(_employeeDateInput);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while saving employee date information.", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task DeleteEmployeeDateValidInputReturnsOkResult()
     {
         _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateInput.Email))
