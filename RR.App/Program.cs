@@ -10,6 +10,7 @@ using ATS.Services;
 using Newtonsoft.Json;
 using HRIS.Services.Session;
 using HRIS.Services;
+using HRIS.Services.Helpers;
 
 namespace RR.App
 {
@@ -47,7 +48,7 @@ namespace RR.App
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__Default")), ServiceLifetime.Transient);
+                options.UseNpgsql(EnvironmentVariableHelper.CONNECTION_STRINGS_DEFAULT), ServiceLifetime.Transient);
 
             services.RegisterRepository();
             services.RegisterServicesHRIS();
@@ -94,8 +95,8 @@ namespace RR.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = Environment.GetEnvironmentVariable("AuthManagement__Issuer"),
-                        ValidAudience = Environment.GetEnvironmentVariable("AuthManagement__Audience"),
+                        ValidIssuer = EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER,
+                        ValidAudience = EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE,
                         IssuerSigningKeyResolver = (_, _, _, _) =>
                             LazyJsonWebKeySet.Value.Keys ?? throw new InvalidOperationException("JsonWebKeySet is not available.")
                     };
@@ -152,7 +153,7 @@ namespace RR.App
 
         private static JsonWebKeySet FetchJsonWebKeySet()
         {
-            var jwksUrl = $"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}.well-known/jwks.json";
+            var jwksUrl = $"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}.well-known/jwks.json";
             using var httpClient = new HttpClient();
             var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
             return new JsonWebKeySet(jwksResponse);
