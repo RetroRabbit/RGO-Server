@@ -146,7 +146,6 @@ public class EmployeeController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-
    
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("simple-profile")]

@@ -13,7 +13,7 @@ namespace RR.App.Tests.Controllers.HRIS;
 
 public class DashboardControllerUnitTest
 {
-    private readonly DasboardController _dashboardcontroller;
+    private readonly DashboardController _dashboardcontroller;
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IDashboardService> _dashboardMockService;
 
@@ -21,7 +21,7 @@ public class DashboardControllerUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _dashboardMockService = new Mock<IDashboardService>();
-        _dashboardcontroller = new DasboardController(_dashboardMockService.Object);
+        _dashboardcontroller = new DashboardController(_dashboardMockService.Object);
     }
 
     [Fact]
