@@ -1,8 +1,5 @@
-﻿using Auth0.ManagementApi.Models;
-using HRIS.Models;
+﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
-using HRIS.Services.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -10,8 +7,6 @@ using RR.App.Controllers.HRIS;
 using RR.App.Tests.Helper;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
-using RR.UnitOfWork.Entities.HRIS;
-using System.Security.AccessControl;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -66,7 +61,7 @@ public class EmployeeDataControllerUnitTests
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
-        Assert.Equal("Unauthorized Access", notFoundResult.Value);
+        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
     [Fact]
@@ -78,12 +73,12 @@ public class EmployeeDataControllerUnitTests
         var newController = new EmployeeDataController(new AuthorizeIdentityMock(), _employeeDataServiceMock.Object);
 
         _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto1))
-                              .ThrowsAsync(new Exception("Unauthorized Access"));
+                              .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.SaveEmployeeData(_employeeDataDto1));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Unauthorized Access", notFoundResult.Value);
+        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
     [Fact]
@@ -126,13 +121,13 @@ public class EmployeeDataControllerUnitTests
         var newController = new EmployeeDataController(new AuthorizeIdentityMock(), _employeeDataServiceMock.Object);
 
         _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
-                              .ThrowsAsync(new Exception("Unauthorized Access"));
+                              .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.UpdateEmployeeData(_employeeDataDto));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
-        Assert.Equal("Unauthorized Access", notFoundResult.Value);
+        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
     [Fact]
