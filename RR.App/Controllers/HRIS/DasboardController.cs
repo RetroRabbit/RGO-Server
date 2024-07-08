@@ -30,30 +30,16 @@ namespace RR.App.Controllers.HRIS
         [HttpGet("card-count")]
         public async Task<IActionResult> GetEmployeesCount()
         {
-            try
-            {
-                var employeesCount = await _dashboardService.GenerateDataCardInformation();
-                return Ok(employeesCount);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var employeesCount = await _dashboardService.GenerateDataCardInformation();
+            return Ok(employeesCount);
         }
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpGet("churn-rate")]
         public async Task<IActionResult> GetChurnRate()
         {
-            try
-            {
-                var churnRate = await _dashboardService.CalculateEmployeeChurnRate();
-                return Ok(churnRate);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var churnRate = await _dashboardService.CalculateEmployeeChurnRate();
+            return Ok(churnRate);
         }
     }
 }
