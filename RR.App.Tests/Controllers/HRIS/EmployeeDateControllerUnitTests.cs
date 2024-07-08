@@ -12,9 +12,7 @@ public class EmployeeDateControllerUnitTests
 {
     private readonly Mock<IEmployeeDateService> _employeeDateServiceMock;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
-
     private readonly EmployeeDateController _controller;
-
     private readonly EmployeeDateInput _employeeDateInput;
     private readonly EmployeeDateDto _employeeDateDto;
     private readonly List<EmployeeDateDto> _employeeDateDtoList;
@@ -58,7 +56,6 @@ public class EmployeeDateControllerUnitTests
                                .Returns(Task.CompletedTask);
 
         var result = await _controller.SaveEmployeeDate(_employeeDateInput);
-
         Assert.IsType<OkResult>(result);
     }
 
@@ -71,7 +68,6 @@ public class EmployeeDateControllerUnitTests
         _employeeDateServiceMock.Setup(x => x.Delete(_employeeDateInput.Id)).Returns(Task.CompletedTask);
 
         var result = await _controller.DeleteEmployeeDate(_employeeDateInput.Id);
-
         Assert.IsType<OkResult>(result);
     }
 
@@ -85,7 +81,6 @@ public class EmployeeDateControllerUnitTests
                                .Returns(Task.CompletedTask);
 
         var result = await _controller.UpdateEmployeeDate(_employeeDateDto);
-
         Assert.IsType<OkResult>(result);
     }
 
@@ -95,7 +90,6 @@ public class EmployeeDateControllerUnitTests
         _employeeDateServiceMock.Setup(x => x.GetAllByDate(_employeeDateDto.Date)).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate(_employeeDateDto.Date);
-
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
@@ -107,7 +101,6 @@ public class EmployeeDateControllerUnitTests
         _employeeDateServiceMock.Setup(x => x.GetAllByEmployee(_employeeDateInput.Email)).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate(email: _employeeDateInput.Email);
-
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
@@ -119,7 +112,6 @@ public class EmployeeDateControllerUnitTests
         _employeeDateServiceMock.Setup(x => x.GetAllBySubject(_employeeDateInput.Subject)).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate(subject: _employeeDateInput.Subject);
-
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
@@ -131,7 +123,6 @@ public class EmployeeDateControllerUnitTests
         _employeeDateServiceMock.Setup(x => x.GetAll()).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate();
-
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
