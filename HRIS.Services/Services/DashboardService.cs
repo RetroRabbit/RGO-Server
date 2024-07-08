@@ -15,9 +15,13 @@ namespace HRIS.Services.Services
         private readonly IErrorLoggingService _errorLoggingService;
         private readonly IEmailService _emailService;
 
-        public DashboardService( IUnitOfWork db)
+        public DashboardService(IUnitOfWork db)
         {
             _db = db;
+        }
+
+        public DashboardService()
+        {
         }
 
         public async Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate()
@@ -124,6 +128,7 @@ namespace HRIS.Services.Services
                 DevsOnBenchCount = totalNumberOfEmployeesOnBench.DevsOnBenchCount,
                 DesignersOnBenchCount = totalNumberOfEmployeesOnBench.DesignersOnBenchCount,
                 ScrumMastersOnBenchCount = totalNumberOfEmployeesOnBench.ScrumMastersOnBenchCount,
+                TotalNumberOfEmployeesOnClients = totalNumberOfEmployeesOnClients,
                 TotalNumberOfEmployeesOnBench = totalNumberOfEmployeesOnBench.TotalNumberOfEmployeesOnBench,
                 BillableEmployeesPercentage = Math.Round(billableEmployeesPercentage, 0),
                 EmployeeTotalDifference = employeeTotalDifference,
