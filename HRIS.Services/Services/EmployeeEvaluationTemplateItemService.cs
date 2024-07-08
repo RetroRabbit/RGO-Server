@@ -9,17 +9,14 @@ namespace HRIS.Services.Services;
 public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplateItemService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmployeeEvaluationTemplateService _employeeEvaluationTemplateService;
 
     public EmployeeEvaluationTemplateItemService(
         IUnitOfWork db,
-        IEmployeeEvaluationTemplateService employeeEvaluationTemplateService,
-        IErrorLoggingService errorLoggingService)
+        IEmployeeEvaluationTemplateService employeeEvaluationTemplateService)
     {
         _db = db;
         _employeeEvaluationTemplateService = employeeEvaluationTemplateService;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<bool> CheckIfExists(string template, string section, string question)
@@ -37,10 +34,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         var exists = await CheckIfExists(template, section, question);
 
         if (!exists)
-        {
-            var exception = new Exception("Employee Evaluation Template Item not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Evaluation Template Item not found");
 
         var employeeEvaluationTemplateItemDto = await Get(template, section, question);
 
@@ -79,10 +73,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         var exists = await _employeeEvaluationTemplateService.CheckIfExists(template);
 
         if (!exists)
-        {
-            var exception = new Exception($"Employee Evaluation Template {template} not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException($"Employee Evaluation Template {template} not found");
 
         var employeeEvaluationTemplateItems = await _db.EmployeeEvaluationTemplateItem
                                                        .Get(x => x.Template.Description == template)
@@ -99,10 +90,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         var exists = await CheckIfExists(template, section, question);
 
         if (!exists)
-        {
-            var exception = new Exception("Employee Evaluation Template Item not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Evaluation Template Item not found");
 
         var employeeEvaluationTemplateItem = await _db.EmployeeEvaluationTemplateItem
                                                       .Get(x => x.Template.Description == template
@@ -120,10 +108,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
         var exists = await CheckIfExists(template, section, question);
 
         if (exists)
-        {
-            var exception = new Exception("Employee Evaluation Template Item already exists");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Evaluation Template Item already exists");
 
         var employeeEvaluationTemplateItemDto = new EmployeeEvaluationTemplateItemDto
         {
@@ -149,10 +134,7 @@ public class EmployeeEvaluationTemplateItemService : IEmployeeEvaluationTemplate
                                          employeeEvaluationTemplateItemDto.Question);
 
         if (!exists)
-        {
-            var exception = new Exception("Employee Evaluation Template Item not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Evaluation Template Item not found");
 
         var updatedEmployeeEvaluationTemplateItem = await _db.EmployeeEvaluationTemplateItem
                                                              .Update(new

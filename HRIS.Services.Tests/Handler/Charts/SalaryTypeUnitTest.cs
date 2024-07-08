@@ -1,36 +1,32 @@
-﻿using Moq;
-using Xunit;
-using System.Linq.Expressions;
-using HRIS.Models.Enums;
+﻿using System.Linq.Expressions;
 using HRIS.Models;
+using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork;
+using Moq;
 using RR.Tests.Data;
+using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
+using Xunit;
 
-namespace RGO.Services.Tests.Handler.Charts;
+namespace HRIS.Services.Tests.Handler.Charts;
 
 public class SalaryTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private SalaryType salaryType;
-    EmployeeTypeDto employeeTypeDto;
-    EmployeeType employeeType;
-    RoleDto roleDto;
-    EmployeeAddressDto employeeAddressDto;
+    private readonly SalaryType _salaryType;
+    readonly EmployeeTypeDto _employeeTypeDto;
+    readonly EmployeeAddressDto _employeeAddressDto;
 
     public SalaryTypeUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        salaryType = new SalaryType();
-        employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
-        employeeType = new EmployeeType(employeeTypeDto);
-        roleDto = new RoleDto{ Id = 3, Description = "Employee"};
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!)).ReturnsAsync(employeeTypeDto);
-        employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
+        Mock<IEmployeeTypeService> employeeTypeServiceMock = new();
+        _salaryType = new SalaryType();
+        _employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
+        var employeeType = new EmployeeType(_employeeTypeDto);
+        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!)).ReturnsAsync(_employeeTypeDto);
+        _employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
     private EmployeeDto CreateEmployee(int? salary)
@@ -46,7 +42,7 @@ public class SalaryTypeUnitTest
             Disability = false,
             DisabilityNotes = "None",
             Level = 1,
-            EmployeeType = employeeTypeDto,
+            EmployeeType = _employeeTypeDto,
             Notes = "Notes",
             LeaveInterval = 1,
             SalaryDays = 28,
@@ -70,8 +66,8 @@ public class SalaryTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
+            PhysicalAddress = _employeeAddressDto,
+            PostalAddress = _employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null
@@ -92,7 +88,7 @@ public class SalaryTypeUnitTest
             .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = salaryType.GenerateData(employeeDto, realServiceProvider);
+        var result = _salaryType.GenerateData(employeeDto, realServiceProvider);
         Assert.Null(result);
     }
 
@@ -110,7 +106,7 @@ public class SalaryTypeUnitTest
             .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = salaryType.GenerateData(employeeDto, realServiceProvider);
+        var result = _salaryType.GenerateData(employeeDto, realServiceProvider);
         Assert.NotNull(result);
         Assert.Equal("Salary 3, ", result);
     }
@@ -124,7 +120,7 @@ public class SalaryTypeUnitTest
             .Returns(employeeList.ToMockIQueryable());
 
         var realServiceProvider = Mock.Of<IServiceProvider>();
-        var result = salaryType.GenerateData(null, realServiceProvider);
+        var result = _salaryType.GenerateData(null, realServiceProvider);
         Assert.Null(result);
     }
 }

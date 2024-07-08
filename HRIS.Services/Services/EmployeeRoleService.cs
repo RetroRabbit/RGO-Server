@@ -9,31 +9,23 @@ namespace HRIS.Services.Services;
 public class EmployeeRoleService : IEmployeeRoleService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeRoleService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
+    public EmployeeRoleService(IUnitOfWork db)
     {
         _db = db;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<EmployeeRoleDto> SaveEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
         if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
-        {
-            var exception = new Exception("Employee or Role not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee or Role not found");
 
         var isEmployeeRoleExist = await _db.EmployeeRole
                                            .Any(employeeRole =>
                                                     employeeRole.Employee!.Email == employeeRoleDto.Employee.Email);
 
         if (isEmployeeRoleExist)
-        {
-            var exception = new Exception("Employee Role already exist");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Role already exist");
 
         var newEmployeeRole = await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
@@ -48,10 +40,7 @@ public class EmployeeRoleService : IEmployeeRoleService
         var isEmployeeRoleExist = await CheckEmployeeRole(email, role);
 
         if (!isEmployeeRoleExist)
-        {
-            var exception = new Exception("Employee Role not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Role not found");
 
         var employeeRoles = await GetEmployeeRoles(email);
 
@@ -91,10 +80,7 @@ public class EmployeeRoleService : IEmployeeRoleService
                               .Any(employeeRole => employeeRole.Employee!.Email == employeeRoleDto.Employee!.Email);
 
         if (!exists)
-        {
-            var exception = new Exception("Employee Role not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Role not found");
 
         var updatedEmployeeRole = await _db.EmployeeRole
                                            .Update(new EmployeeRole(employeeRoleDto));
