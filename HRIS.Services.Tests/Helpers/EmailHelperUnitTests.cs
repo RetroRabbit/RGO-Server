@@ -19,7 +19,7 @@ public class EmailHelperUnitTests
         _helper = new EmailHelper(_db.Object);
     }
 
-    [Fact(Skip="Needs to be fixed/updated")]
+    [Fact]
     public void CompileMessageTest()
     {
         var mailAddress = new MailAddress("test@domain.com", "Jane Doe");
