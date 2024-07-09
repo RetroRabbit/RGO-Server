@@ -4,7 +4,6 @@ using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -25,11 +24,11 @@ public class EmployeeDataController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEmployeeData([FromQuery] int id)
     {
-           if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && id != _identity.EmployeeId)
-           throw new CustomException("User data being accessed does not match user making the request.");
-      
-           var data = await _employeeDataService.GetAllEmployeeData(id);
-           return Ok(data);
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && id != _identity.EmployeeId)
+            throw new CustomException("User data being accessed does not match user making the request.");
+
+        var data = await _employeeDataService.GetAllEmployeeData(id);
+        return Ok(data);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
