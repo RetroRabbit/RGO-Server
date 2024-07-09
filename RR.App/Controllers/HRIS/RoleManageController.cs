@@ -1,5 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,7 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class RoleManageController : ControllerBase
 {
+    private readonly AuthorizeIdentity _identity;
     private readonly IRoleAccessLinkService? _roleAccessLinkService;
     private readonly IRoleAccessService? _roleAccessService;
     private readonly IRoleService? _roleService;
@@ -33,7 +36,18 @@ public class RoleManageController : ControllerBase
             return BadRequest("Invalid input");
         }
 
-        try
+        var foundRole = await _roleService.CheckRole(role)
+                ? await _roleService.GetRole(role)
+                : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
+
+        var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
+            ? await _roleAccessService.GetRoleAccess(permission)
+            : await _roleAccessService.SaveRoleAccess(new RoleAccessDto { Id = 0, Permission = permission, Grouping = grouping });
+
+        var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto { Id = 0, Role = foundRole, RoleAccess = roleAccess });
+
+        return CreatedAtAction(nameof(AddPermission), roleAccessLink);
+        /*try
         {
             var foundRole = await _roleService.CheckRole(role)
                 ? await _roleService.GetRole(role)
@@ -50,7 +64,7 @@ public class RoleManageController : ControllerBase
         catch (Exception ex)
         {
             return NotFound(ex.Message);
-        }
+        }*/
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -65,9 +79,7 @@ public class RoleManageController : ControllerBase
             return BadRequest("Invalid input");
         }
 
-        try
-        {
-            var foundRole = await _roleService.CheckRole(role)
+        var foundRole = await _roleService.CheckRole(role)
                 ? await _roleService.GetRole(role)
                 : await _roleService.SaveRole(new RoleDto{ Id = 0, Description = role});
 
@@ -78,11 +90,6 @@ public class RoleManageController : ControllerBase
             var roleAccessLink = await _roleAccessLinkService.Delete(role, permission);
 
             return CreatedAtAction(nameof(RemovePermission), roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -96,16 +103,9 @@ public class RoleManageController : ControllerBase
             return BadRequest("Invalid input");
         }
 
-        try
-        {
-            var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
+        var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
 
-            return Ok(roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccessLink);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -117,16 +117,9 @@ public class RoleManageController : ControllerBase
             return BadRequest("Invalid input");
         }
 
-        try
-        {
-            var roleAccessLink = await _roleAccessLinkService.GetAll();
+        var roleAccessLink = await _roleAccessLinkService.GetAll();
 
-            return Ok(roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccessLink);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -138,16 +131,9 @@ public class RoleManageController : ControllerBase
             return BadRequest("Invalid input");
         }
 
-        try
-        {
-            var roleAccessLink = await _roleAccessLinkService.GetAllRoleAccessLink();
+        var roleAccessLink = await _roleAccessLinkService.GetAllRoleAccessLink();
 
-            return Ok(roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccessLink);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -159,16 +145,9 @@ public class RoleManageController : ControllerBase
             return BadRequest("Invalid input");
         }
 
-        try
-        {
-            var roleAccesses = await _roleAccessService.GetAllRoleAccess();
+        var roleAccesses = await _roleAccessService.GetAllRoleAccess();
 
-            return Ok(roleAccesses);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccesses);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -180,15 +159,8 @@ public class RoleManageController : ControllerBase
             return BadRequest("Invalid input");
         }
 
-        try
-        {
-            var roles = await _roleService.GetAll();
+        var roles = await _roleService.GetAll();
 
-            return Ok(roles);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roles);
     }
 }
