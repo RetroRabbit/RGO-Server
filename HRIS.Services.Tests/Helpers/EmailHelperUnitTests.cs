@@ -39,7 +39,7 @@ public class EmailHelperUnitTests
         Assert.Equal("This is a dynamic body. 2027/07/02", message.Body);
     }
 
-    [Fact(Skip = "Needs to be fixed/updated")]
+    [Fact]
     public void CompileStringTest()
     {
         var message = _helper.CompileString("This is a dynamic body. {{Date}}", new { Date = "2027/07/02" });
