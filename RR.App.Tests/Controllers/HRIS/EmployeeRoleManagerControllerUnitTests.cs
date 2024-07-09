@@ -1,871 +1,265 @@
-﻿namespace RR.App.Tests.Controllers.HRIS;
+﻿using HRIS.Models;
+using HRIS.Services.Interfaces;
+using Moq;
+using RR.App.Controllers.HRIS;
+using Xunit;
+using Microsoft.AspNetCore.Mvc;
+using RR.App.Tests.Helper;
+using HRIS.Services.Services;
+using Auth0.ManagementApi.Paging;
+using Auth0.ManagementApi.Models;
 
-public class EmployeeRoleManagerControllerUnitTests
+namespace RR.App.Tests.Controllers.HRIS
 {
-    //private static EmployeeDto CreateEmployee(string email)
-    //{
-    //return new EmployeeDto
-    //       {
-    //        Id = 1,
-    //        EmployeeNumber = "Emp123",
-    //        TaxNumber = "Tax123",
-    //        EngagementDate = new DateTime(2022, 1, 1),
-    //        TerminationDate = null,
-    //        PeopleChampion = 1,
-    //        Disability = false,
-    //        DisabilityNotes = "No disability",
-    //        Level = 2,
-    //        EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
-    //        Notes = "Notes",
-    //        LeaveInterval = 20.0f,
-    //        SalaryDays = 15.0f,
-    //        PayRate = 50.0f,
-    //        Salary = 50000,
-    //        Name = "John Doe",
-    //        Initials = "JD",
-    //        Surname = "Doe",
-    //        DateOfBirth = new DateTime(1990, 1, 1),
-    //        CountryOfBirth = "South Africa",
-    //        Nationality = "South African",
-    //        IdNumber = "123456789",
-    //        PassportNumber = "AB123456",
-    //        PassportExpirationDate = new DateTime(2025, 1, 1),
-    //        PassportCountryIssue = "South Africa",
-    //        Race = Race.White,
-    //        Gender = Gender.Male,
-    //        Photo = "photo.jpg",
-    //        Email = email, 
-    //        PersonalEmail = "john.doe.personal@example.com",
-    //        CellphoneNo = "1234567890",
-    //            PhysicalAddress = new EmployeeAddressDto
-    //            {
-    //                Id = 1,
-    //                UnitNumber = "Unit 1",
-    //                ComplexName = "Complex A",
-    //                StreetNumber = "123",
-    //                SuburbOrDistrict = "Suburb",
-    //                City = "City",
-    //                Country = "Country",
-    //                Province = "Province",
-    //                PostalCode = "12345"
-    //            },
-    //            PostalAddress = new EmployeeAddressDto
-    //            {
-    //                Id = 2, 
-    //                UnitNumber = "P.O. Box 123",
-    //                StreetNumber = "456",
-    //                SuburbOrDistrict = "Suburb",
-    //                City = "City",
-    //                Country = "Country",
-    //                Province = "Province",
-    //                PostalCode = "54321"
-    //            },
-    //        HouseNo = "12",
-    //        EmergencyContactName = "Emergency Contact",
-    //        EmergencyContactNo = "987654321"
-    //       };
-    //}
-
-    //[Fact]
-    //public async Task AddRoleValidInputReturnsCreatedAtAction()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var roleServiceMock = new Mock<IRoleService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Admin";
-
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
-
-    //    roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-    //    roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 1, Description = "Admin" });
-
-    //    employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
-    //                           .ReturnsAsync(new EmployeeRoleDto
-    //                           {
-    //                               Id = 1,
-    //                               Employee = new EmployeeDto
-    //                               {
-    //                                   Id = 1,
-    //                                   EmployeeNumber = "Emp123",
-    //                                   TaxNumber = "Tax123",
-    //                                   EngagementDate = new DateTime(2022, 1, 1),
-    //                                   TerminationDate = null,
-    //                                   PeopleChampion = 1,
-    //                                   Disability = false,
-    //                                   DisabilityNotes = "No disability",
-    //                                   Level = 2,
-    //                                   EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
-    //                                   Notes = "Notes",
-    //                                   LeaveInterval = 20.0f,
-    //                                   SalaryDays = 15.0f,
-    //                                   PayRate = 50.0f,
-    //                                   Salary = 50000,
-    //                                   Name = "John Doe",
-    //                                   Initials = "JD",
-    //                                   Surname = "Doe",
-    //                                   DateOfBirth = new DateTime(1990, 1, 1),
-    //                                   CountryOfBirth = "South Africa",
-    //                                   Nationality = "South African",
-    //                                   IdNumber = "123456789",
-    //                                   PassportNumber = "AB123456",
-    //                                   PassportExpirationDate = new DateTime(2025, 1, 1),
-    //                                   PassportCountryIssue = "South Africa",
-    //                                   Race = Race.White,
-    //                                   Gender = Gender.Male,
-    //                                   Photo = "photo.jpg",
-    //                                   Email = email,
-    //                                   PersonalEmail = "john.doe.personal@example.com",
-    //                                   CellphoneNo = "1234567890",
-    //                                   PhysicalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 1,
-    //                                       UnitNumber = "Unit 1",
-    //                                       ComplexName = "Complex A",
-    //                                       StreetNumber = "123",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "12345"
-    //                                   },
-    //                                   PostalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 2,
-    //                                       UnitNumber = "P.O. Box 123",
-    //                                       StreetNumber = "456",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "54321"
-    //                                   },
-    //                                   HouseNo = "12",
-    //                                   EmergencyContactName = "Emergency Contact",
-    //                                   EmergencyContactNo = "987654321"
-    //                               },
-
-    //                               Role = new RoleDto { Id = 1, Description = "Admin" }
-    //                           });
-
-    //    var result = await controller.AddRole(email, role);
-
-    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-
-    //    Assert.Equal(nameof(EmployeeRoleManageController.AddRole), createdAtActionResult.ActionName);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.CheckRole(role), Times.Once);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task AddRoleExistingRoleReturnsCreatedAtAction()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Super Admin";
-
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
-
-    //    roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-    //    roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 1, Description = "Super Admin" });
-
-    //    employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
-    //                           .ReturnsAsync(new EmployeeRoleDto
-    //                           {
-    //                               Id = 1,
-    //                               Employee = new EmployeeDto
-    //                               {
-    //                                   Id = 1,
-    //                                   EmployeeNumber = "Emp123",
-    //                                   TaxNumber = "Tax123",
-    //                                   EngagementDate = new DateTime(2022, 1, 1),
-    //                                   TerminationDate = null,
-    //                                   PeopleChampion = 1,
-    //                                   Disability = false,
-    //                                   DisabilityNotes = "No disability",
-    //                                   Level = 2,
-    //                                   EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
-    //                                   Notes = "Notes",
-    //                                   LeaveInterval = 20.0f,
-    //                                   SalaryDays = 15.0f,
-    //                                   PayRate = 50.0f,
-    //                                   Salary = 50000,
-    //                                   Name = "John Doe",
-    //                                   Initials = "JD",
-    //                                   Surname = "Doe",
-    //                                   DateOfBirth = new DateTime(1990, 1, 1),
-    //                                   CountryOfBirth = "South Africa",
-    //                                   Nationality = "South African",
-    //                                   IdNumber = "123456789",
-    //                                   PassportNumber = "AB123456",
-    //                                   PassportExpirationDate = new DateTime(2025, 1, 1),
-    //                                   PassportCountryIssue = "South Africa",
-    //                                   Race = Race.White,
-    //                                   Gender = Gender.Male,
-    //                                   Photo = "photo.jpg",
-    //                                   Email = email,
-    //                                   PersonalEmail = "john.doe.personal@example.com",
-    //                                   CellphoneNo = "1234567890",
-    //                                   PhysicalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 1,
-    //                                       UnitNumber = "Unit 1",
-    //                                       ComplexName = "Complex A",
-    //                                       StreetNumber = "123",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "12345"
-    //                                   },
-    //                                   PostalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 2,
-    //                                       UnitNumber = "P.O. Box 123",
-    //                                       StreetNumber = "456",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "54321"
-    //                                   },
-    //                                   HouseNo = "12",
-    //                                   EmergencyContactName = "Emergency Contact",
-    //                                   EmergencyContactNo = "987654321"
-    //                               },
-
-    //                               Role = new RoleDto { Id = 1, Description = "Admin" }
-    //                           });
-
-    //    var result = await controller.AddRole(email, role);
-
-    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-    //    Assert.Equal(nameof(EmployeeRoleManageController.AddRole), createdAtActionResult.ActionName);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.CheckRole(role), Times.Once);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task AddRoleUnknownRoleReturnsCreatedAtAction()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Unknown Role";
-
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
-
-    //    roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(false);
-    //    employeeRoleServiceMock.Setup(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()))
-    //                           .ReturnsAsync(new EmployeeRoleDto
-    //                           {
-    //                               Id = 1,
-    //                               Employee = new EmployeeDto
-    //                               {
-    //                                   Id = 1,
-    //                                   EmployeeNumber = "Emp123",
-    //                                   TaxNumber = "Tax123",
-    //                                   EngagementDate = new DateTime(2022, 1, 1),
-    //                                   TerminationDate = null,
-    //                                   PeopleChampion = 1,
-    //                                   Disability = false,
-    //                                   DisabilityNotes = "No disability",
-    //                                   Level = 2,
-    //                                   EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
-    //                                   Notes = "Notes",
-    //                                   LeaveInterval = 20.0f,
-    //                                   SalaryDays = 15.0f,
-    //                                   PayRate = 50.0f,
-    //                                   Salary = 50000,
-    //                                   Name = "John Doe",
-    //                                   Initials = "JD",
-    //                                   Surname = "Doe",
-    //                                   DateOfBirth = new DateTime(1990, 1, 1),
-    //                                   CountryOfBirth = "South Africa",
-    //                                   Nationality = "South African",
-    //                                   IdNumber = "123456789",
-    //                                   PassportNumber = "AB123456",
-    //                                   PassportExpirationDate = new DateTime(2025, 1, 1),
-    //                                   PassportCountryIssue = "South Africa",
-    //                                   Race = Race.White,
-    //                                   Gender = Gender.Male,
-    //                                   Photo = "photo.jpg",
-    //                                   Email = email,
-    //                                   PersonalEmail = "john.doe.personal@example.com",
-    //                                   CellphoneNo = "1234567890",
-    //                                   PhysicalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 1,
-    //                                       UnitNumber = "Unit 1",
-    //                                       ComplexName = "Complex A",
-    //                                       StreetNumber = "123",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "12345"
-    //                                   },
-    //                                   PostalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 2,
-    //                                       UnitNumber = "P.O. Box 123",
-    //                                       StreetNumber = "456",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "54321"
-    //                                   },
-    //                                   HouseNo = "12",
-    //                                   EmergencyContactName = "Emergency Contact",
-    //                                   EmergencyContactNo = "987654321"
-    //                               },
-
-    //                               Role = new RoleDto { Id = 1, Description = "Admin" }
-    //                           });
-
-    //    var result = await controller.AddRole(email, role);
-
-    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-    //    Assert.Equal(nameof(EmployeeRoleManageController.AddRole), createdAtActionResult.ActionName);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.CheckRole(role), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task AddRoleInvalidInputReturnsBadRequest()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var invalidEmail = string.Empty;
-    //    string? invalidRole = null;
-    //    var result = await controller.AddRole(invalidEmail, invalidRole!);
-
-    //    Assert.IsType<BadRequestObjectResult>(result);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(It.IsAny<string>()), Times.Never);
-    //    roleServiceMock.Verify(x => x.CheckRole(It.IsAny<string>()), Times.Never);
-    //    roleServiceMock.Verify(x => x.GetRole(It.IsAny<string>()), Times.Never);
-    //    employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Never);
-    //}
-
-    //[Fact]
-    //public async Task AddRoleExceptionReturnsBadRequest()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Employee";
-
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email))
-    //                       .ThrowsAsync(new Exception("An error occurred adding role"));
-
-    //    var result = await controller.AddRole(email, role);
-
-    //    var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-    //    Assert.Equal("An error occurred adding role", badRequestResult.Value);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.CheckRole(role), Times.Never);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Never);
-    //    employeeRoleServiceMock.Verify(x => x.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Never);
-    //}
-
-    //[Fact]
-    //public async Task UpdateRoleValidInputReturnsCreatedAtAction()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Employee";
-
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(CreateEmployee(email));
-
-    //    roleServiceMock.Setup(x => x.CheckRole(role)).ReturnsAsync(true);
-    //    roleServiceMock.Setup(x => x.GetRole(role)).ReturnsAsync(new RoleDto { Id = 0, Description = "Employee" });
-
-    //    var existingEmployeeRole = new EmployeeRoleDto
-    //    {
-    //        Id = 1,
-    //        Employee = new EmployeeDto
-    //        {
-    //            Id = 1,
-    //            EmployeeNumber = "Emp123",
-    //            TaxNumber = "Tax123",
-    //            EngagementDate = new DateTime(2022, 1, 1),
-    //            TerminationDate = null,
-    //            PeopleChampion = 1,
-    //            Disability = false,
-    //            DisabilityNotes = "No disability",
-    //            Level = 2,
-    //            EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
-    //            Notes = "Notes",
-    //            LeaveInterval = 20.0f,
-    //            SalaryDays = 15.0f,
-    //            PayRate = 50.0f,
-    //            Salary = 50000,
-    //            Name = "John Doe",
-    //            Initials = "JD",
-    //            Surname = "Doe",
-    //            DateOfBirth = new DateTime(1990, 1, 1),
-    //            CountryOfBirth = "South Africa",
-    //            Nationality = "South African",
-    //            IdNumber = "123456789",
-    //            PassportNumber = "AB123456",
-    //            PassportExpirationDate = new DateTime(2025, 1, 1),
-    //            PassportCountryIssue = "South Africa",
-    //            Race = Race.White,
-    //            Gender = Gender.Male,
-    //            Photo = "photo.jpg",
-    //            Email = email,
-    //            PersonalEmail = "john.doe.personal@example.com",
-    //            CellphoneNo = "1234567890",
-    //            PhysicalAddress = new EmployeeAddressDto
-    //            {
-    //                Id = 1,
-    //                UnitNumber = "Unit 1",
-    //                ComplexName = "Complex A",
-    //                StreetNumber = "123",
-    //                SuburbOrDistrict = "Suburb",
-    //                City = "City",
-    //                Country = "Country",
-    //                Province = "Province",
-    //                PostalCode = "12345"
-    //            },
-    //            PostalAddress = new EmployeeAddressDto
-    //            {
-    //                Id = 2,
-    //                UnitNumber = "P.O. Box 123",
-    //                StreetNumber = "456",
-    //                SuburbOrDistrict = "Suburb",
-    //                City = "City",
-    //                Country = "Country",
-    //                Province = "Province",
-    //                PostalCode = "54321"
-    //            },
-    //            HouseNo = "12",
-    //            EmergencyContactName = "Emergency Contact",
-    //            EmergencyContactNo = "987654321"
-    //        },
-    //        Role = new RoleDto { Id = 1, Description = "Employee Role" }
-    //    };
-
-    //    employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ReturnsAsync(existingEmployeeRole);
-    //    employeeRoleServiceMock.Setup(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()))
-    //                           .ReturnsAsync(existingEmployeeRole);
-
-    //    var result = await controller.UpdateRole(email, role);
-
-    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-    //    Assert.Equal(nameof(EmployeeRoleManageController.UpdateRole), createdAtActionResult.ActionName);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.CheckRole(role), Times.Once);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task UpdateRoleExceptionReturnsBadRequest()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Journey";
-
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email))
-    //                       .ThrowsAsync(new Exception("An error occurred updating role"));
-
-    //    var result = await controller.UpdateRole(email, role);
-
-    //    var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-    //    Assert.Equal("An error occurred updating role", badRequestResult.Value);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.CheckRole(role), Times.Never);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Never);
-    //    employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Never);
-    //    employeeRoleServiceMock.Verify(x => x.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>()), Times.Never);
-    //}
-
-    //[Fact]
-    //public async Task RemoveRoleValidInputReturnsOk()
-    //{
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Journey";
-
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var employeeDto = new EmployeeDto
-    //    {
-    //        Id = 1,
-    //        EmployeeNumber = "Emp123",
-    //        TaxNumber = "Tax123",
-    //        EngagementDate = new DateTime(2022, 1, 1),
-    //        TerminationDate = null,
-    //        PeopleChampion = 1,
-    //        Disability = false,
-    //        DisabilityNotes = "No disability",
-    //        Level = 2,
-    //        EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
-    //        Notes = "Notes",
-    //        LeaveInterval = 20.0f,
-    //        SalaryDays = 15.0f,
-    //        PayRate = 50.0f,
-    //        Salary = 50000,
-    //        Name = "John Doe",
-    //        Initials = "JD",
-    //        Surname = "Doe",
-    //        DateOfBirth = new DateTime(1990, 1, 1),
-    //        CountryOfBirth = "South Africa",
-    //        Nationality = "South African",
-    //        IdNumber = "123456789",
-    //        PassportNumber = "AB123456",
-    //        PassportExpirationDate = new DateTime(2025, 1, 1),
-    //        PassportCountryIssue = "South Africa",
-    //        Race = Race.White,
-    //        Gender = Gender.Male,
-    //        Photo = "photo.jpg",
-    //        Email = email,
-    //        PersonalEmail = "john.doe.personal@example.com",
-    //        CellphoneNo = "1234567890",
-    //        PhysicalAddress = new EmployeeAddressDto
-    //        {
-    //            Id = 1,
-    //            UnitNumber = "Unit 1",
-    //            ComplexName = "Complex A",
-    //            StreetNumber = "123",
-    //            SuburbOrDistrict = "Suburb",
-    //            City = "City",
-    //            Country = "Country",
-    //            Province = "Province",
-    //            PostalCode = "12345"
-    //        },
-    //        PostalAddress = new EmployeeAddressDto
-    //        {
-    //            Id = 2,
-    //            UnitNumber = "P.O. Box 123",
-    //            StreetNumber = "456",
-    //            SuburbOrDistrict = "Suburb",
-    //            City = "City",
-    //            Country = "Country",
-    //            Province = "Province",
-    //            PostalCode = "54321"
-    //        },
-    //        HouseNo = "12",
-    //        EmergencyContactName = "Emergency Contact",
-    //        EmergencyContactNo = "987654321"
-    //    };
-
-    //    var roleDto = new RoleDto { Id = 0, Description = "Employee" };
-
-    //    employeeRoleServiceMock.Setup(x => x.DeleteEmployeeRole(email, role))
-    //                           .ReturnsAsync(new EmployeeRoleDto { Id = 1, Employee = employeeDto, Role = roleDto });
-
-    //    var result = await controller.RemoveRole(email, role);
-
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var returnedDto = Assert.IsType<EmployeeRoleDto>(okResult.Value);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
-    //    employeeRoleServiceMock.Verify(x => x.DeleteEmployeeRole(email, role), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task RemoveRoleExceptionReturnsBadRequest()
-    //{
-    //    var employeeServiceMock = new Mock<IEmployeeService>();
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, employeeServiceMock.Object,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    var email = "test@retrorabbit.co.za";
-    //    var role = "Employee";
-
-    //    employeeServiceMock.Setup(x => x.GetEmployee(email))
-    //                       .ThrowsAsync(new Exception("An error occurred getting roles"));
-
-    //    var result = await controller.RemoveRole(email, role);
-
-    //    var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-    //    Assert.Equal("An error occurred getting roles", badRequestResult.Value);
-
-    //    employeeServiceMock.Verify(x => x.GetEmployee(email), Times.Once);
-    //    roleServiceMock.Verify(x => x.GetRole(role), Times.Never);
-    //    employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Never);
-    //    employeeRoleServiceMock.Verify(x => x.DeleteEmployeeRole(email, role), Times.Never);
-    //}
-
-    //[Fact]
-    //public async Task GetEmployeeRoleValidInputReturnsOk()
-    //{
-    //    var email = "test@retrorabbit.co.za";
-    //    var expectedRoleDescription = "Employee Role";
-
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, null);
-
-    //    employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email))
-    //                           .ReturnsAsync(new EmployeeRoleDto
-    //                           {
-    //                               Id = 1,
-    //                               Employee = new EmployeeDto
-    //                               {
-    //                                   Id = 1,
-    //                                   EmployeeNumber = "Emp123",
-    //                                   TaxNumber = "Tax123",
-    //                                   EngagementDate = new DateTime(2022, 1, 1),
-    //                                   TerminationDate = null,
-    //                                   PeopleChampion = 1,
-    //                                   Disability = false,
-    //                                   DisabilityNotes = "No disability",
-    //                                   Level = 2,
-    //                                   EmployeeType = new EmployeeTypeDto { Id = 1, Name = "Full Time" },
-    //                                   Notes = "Notes",
-    //                                   LeaveInterval = 20.0f,
-    //                                   SalaryDays = 15.0f,
-    //                                   PayRate = 50.0f,
-    //                                   Salary = 50000,
-    //                                   Name = "John Doe",
-    //                                   Initials = "JD",
-    //                                   Surname = "Doe",
-    //                                   DateOfBirth = new DateTime(1990, 1, 1),
-    //                                   CountryOfBirth = "South Africa",
-    //                                   Nationality = "South African",
-    //                                   IdNumber = "123456789",
-    //                                   PassportNumber = "AB123456",
-    //                                   PassportExpirationDate = new DateTime(2025, 1, 1),
-    //                                   PassportCountryIssue = "South Africa",
-    //                                   Race = Race.White,
-    //                                   Gender = Gender.Male,
-    //                                   Photo = "photo.jpg",
-    //                                   Email = email,
-    //                                   PersonalEmail = "john.doe.personal@example.com",
-    //                                   CellphoneNo = "1234567890",
-    //                                   PhysicalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 1,
-    //                                       UnitNumber = "Unit 1",
-    //                                       ComplexName = "Complex A",
-    //                                       StreetNumber = "123",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "12345"
-    //                                   },
-    //                                   PostalAddress = new EmployeeAddressDto
-    //                                   {
-    //                                       Id = 2,
-    //                                       UnitNumber = "P.O. Box 123",
-    //                                       StreetNumber = "456",
-    //                                       SuburbOrDistrict = "Suburb",
-    //                                       City = "City",
-    //                                       Country = "Country",
-    //                                       Province = "Province",
-    //                                       PostalCode = "54321"
-    //                                   },
-    //                                   HouseNo = "12",
-    //                                   EmergencyContactName = "Emergency Contact",
-    //                                   EmergencyContactNo = "987654321"
-    //                               },
-    //                               Role = new RoleDto { Id = 1, Description = "Employee Role" }
-    //                           });
-
-    //    var result = await controller.GetEmployeeRole(email);
-
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var returnedRole = Assert.IsType<string[]>(okResult.Value);
-
-    //    Assert.Single(returnedRole);
-    //    Assert.Equal(expectedRoleDescription, returnedRole[0]);
-
-    //    employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task GetAllRolesReturnsOk()
-    //{
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var controller = new EmployeeRoleManageController(null, null,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-    //    var roles = new List<RoleDto>
-    //    {
-    //        new RoleDto{ Id = 1, Description = "Super Admin" },
-    //        new RoleDto{Id = 2, Description = "Admin"},
-    //    };
-
-    //    roleServiceMock.Setup(x => x.GetAll()).ReturnsAsync(roles);
-
-
-    //    var result = await controller.GetAllRoles();
-
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var returnedRoles = Assert.IsType<List<string>>(okResult.Value);
-
-    //    Assert.Equal(roles.Count, returnedRoles.Count);
-    //    Assert.All(returnedRoles,
-    //               roleDescription => Assert.Contains(roleDescription, roles.Select(role => role.Description)));
-
-    //    roleServiceMock.Verify(x => x.GetAll(), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task GetAllRolesReturnsNotFoundOnError()
-    //{
-    //    var roleServiceMock = new Mock<IRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-
-    //    var controller = new EmployeeRoleManageController(null, null,
-    //                                                      roleServiceMock.Object, employeeAuthServiceMock.Object);
-
-    //    roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("An error occurred getting all roles."));
-
-    //    var result = await controller.GetAllRoles();
-
-    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-    //    Assert.Equal("An error occurred getting all roles.", notFoundResult.Value?.ToString());
-
-    //    roleServiceMock.Verify(x => x.GetAll(), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task GetAllEmployeeOnRolesReturnsOk()
-    //{
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, employeeAuthServiceMock.Object);
-
-    //    var roleId = 1;
-    //    var employeeRoles = new List<EmployeeRoleDto>
-    //    {
-    //       new EmployeeRoleDto
-    //       {
-    //            Id = 1,
-    //            Employee = null,
-    //            Role = new RoleDto { Id = 0, Description = "Super Admin" }
-    //       },
-    //       new EmployeeRoleDto
-    //       {
-    //            Id = 2,
-    //            Employee = null,
-    //            Role = new RoleDto { Id = 0, Description = "Admin" }
-    //       }
-    //    };
-
-    //    employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId)).ReturnsAsync(employeeRoles);
-
-    //    var result = await controller.GetAllEmployeeOnRoles(roleId);
-
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    var returnedEmployeeRoles = Assert.IsType<List<EmployeeRoleDto>>(okResult.Value);
-
-    //    Assert.Equal(employeeRoles.Count, returnedEmployeeRoles.Count);
-
-    //    employeeRoleServiceMock.Verify(x => x.GetAllEmployeeOnRoles(roleId), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task GetAllEmployeeOnRolesReturnsNotFoundOnError()
-    //{
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, employeeAuthServiceMock.Object);
-
-    //    var roleId = 1;
-
-    //    employeeRoleServiceMock.Setup(x => x.GetAllEmployeeOnRoles(roleId))
-    //                           .ThrowsAsync(new Exception("An error occurred getting role."));
-
-    //    var result = await controller.GetAllEmployeeOnRoles(roleId);
-
-    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-    //    Assert.Equal("An error occurred getting role.", notFoundResult.Value?.ToString());
-
-    //    employeeRoleServiceMock.Verify(x => x.GetAllEmployeeOnRoles(roleId), Times.Once);
-    //}
-
-    //[Fact]
-    //public async Task GetEmployeeRoleExceptionReturnsNotFound()
-    //{
-    //    var email = "test@retrorabbit.co.za";
-    //    var expectedErrorMessage = "An error occurred while processing the request.";
-
-    //    var employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-    //    var employeeAuthServiceMock = new Mock<IAuthService>();
-    //    var controller = new EmployeeRoleManageController(employeeRoleServiceMock.Object, null, null, employeeAuthServiceMock.Object);
-
-    //    employeeRoleServiceMock.Setup(x => x.GetEmployeeRole(email)).ThrowsAsync(new Exception(expectedErrorMessage));
-
-    //    var result = await controller.GetEmployeeRole(email);
-
-    //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-    //    Assert.NotNull(notFoundResult);
-    //    Assert.Equal(expectedErrorMessage, notFoundResult.Value as string);
-
-    //    employeeRoleServiceMock.Verify(x => x.GetEmployeeRole(email), Times.Once);
-    //}
+    public class EmployeeRoleManageControllerUnitTests
+    {
+        private readonly Mock<IEmployeeRoleService> _employeeRoleMockService;
+        private readonly Mock<IEmployeeService> _employeeMockService;
+        private readonly Mock<IRoleService> _roleMockService;
+        private readonly Mock<IAuthService> _authMockService;
+        private readonly EmployeeRoleManageController _controller;
+
+        public EmployeeRoleManageControllerUnitTests()
+        {
+            _employeeRoleMockService = new Mock<IEmployeeRoleService>();
+            _employeeMockService = new Mock<IEmployeeService>();
+            _roleMockService = new Mock<IRoleService>();
+            _authMockService = new Mock<IAuthService>();
+            _controller = new EmployeeRoleManageController(_employeeRoleMockService.Object, _employeeMockService.Object, _roleMockService.Object, _authMockService.Object);
+        }
+
+        [Fact]
+        public async Task AddRole_ReturnsCreatedResult()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            var employee = new EmployeeDto { Email = email };
+            var authUser = new List<Auth0.ManagementApi.Models.User>
+    {
+        new Auth0.ManagementApi.Models.User { UserId = "1" }
+    };
+
+            var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+            var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+            _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
+            _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
+            _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
+            _authMockService.Setup(service => service.AddRoleToUserAsync("1", "authRoleId")).ReturnsAsync(true);
+            _employeeRoleMockService.Setup(service => service.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(employeeRoleDto);
+
+            var result = await _controller.AddRole(email, role);
+
+            var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+            var model = Assert.IsAssignableFrom<EmployeeRoleDto>(createdResult.Value);
+            Assert.Equal(employeeRoleDto.Id, model.Id);
+        }
+
+        [Fact]
+        public async Task AddRole_InvalidInput_ThrowsException()
+        {
+            var email = "";
+            var role = "";
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.AddRole(email, role));
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Invalid input", (result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task AddRole_EmployeeNotFound_ThrowsException()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync((EmployeeDto)null);
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.AddRole(email, role));
+
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Employee not found.", (result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task AddRole_AuthServiceFails_ThrowsException()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            var employee = new EmployeeDto { Email = email };
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+            _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync((List<Auth0.ManagementApi.Models.User>)null);
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.AddRole(email, role));
+
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("User not found in authentication service.", (result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task UpdateRole_ReturnsCreatedResult()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            var employee = new EmployeeDto { Email = email };
+            var authUser = new List<Auth0.ManagementApi.Models.User>
+    {
+        new Auth0.ManagementApi.Models.User { UserId = "1" }
+    };
+            var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+            var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+            _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
+            _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
+            _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
+            _authMockService.Setup(service => service.AddRoleToUserAsync("1", "authRoleId")).ReturnsAsync(true);
+            _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync(employeeRoleDto);
+
+            // Simulate successful update
+            _employeeRoleMockService.Setup(service => service.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(employeeRoleDto);
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.UpdateRole(email, role));
+
+            var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+            var model = Assert.IsAssignableFrom<EmployeeRoleDto>(createdResult.Value);
+            Assert.Equal(employeeRoleDto.Id, model.Id);
+        }
+
+        [Fact]
+        public async Task UpdateRole_EmployeeNotFound_ThrowsException()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync((EmployeeDto)null);
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.UpdateRole(email, role));
+
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Employee not found.", (result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task RemoveRole_ReturnsOkResult()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            var employee = new EmployeeDto { Email = email };
+            var authUser = new List<Auth0.ManagementApi.Models.User>
+    {
+        new Auth0.ManagementApi.Models.User { UserId = "1" }
+    };
+
+            var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+            var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+            _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
+            _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
+            _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync(employeeRoleDto);
+            _employeeRoleMockService.Setup(service => service.DeleteEmployeeRole(email, role)).ReturnsAsync(employeeRoleDto);
+
+            // Mocking auth service to return empty roles list
+            _authMockService.Setup(x => x.GetUserRolesAsync(It.IsAny<string>())).ReturnsAsync(() =>
+            {
+                var roles = new List<Auth0.ManagementApi.Models.Role>
+                {
+                    new Auth0.ManagementApi.Models.Role { Name = "Employee", Id = "roleId" }
+                };
+
+                var pagedList = new PagedList<Auth0.ManagementApi.Models.Role>(roles);
+                return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
+            });
+
+            var result = await _controller.RemoveRole(email, role);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnedEmployeeRole = Assert.IsAssignableFrom<EmployeeRoleDto>(okResult.Value);
+
+            Assert.Equal(employeeRoleDto.Id, returnedEmployeeRole.Id);
+            Assert.Equal(employeeRoleDto.Employee.Email, returnedEmployeeRole.Employee.Email);
+            Assert.Equal(employeeRoleDto.Role.Description, returnedEmployeeRole.Role.Description);
+        }
+
+        [Fact]
+        public async Task RemoveRole_EmployeeNotFound_ThrowsException()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync((EmployeeDto)null);
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.RemoveRole(email, role));
+
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Employee not found.", (result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task RemoveRole_RoleNotFound_ThrowsException()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Email = email });
+            _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync((RoleDto)null);
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.RemoveRole(email, role));
+
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Role not found.", (result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task RemoveRole_AuthServiceFails_ThrowsException()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            var employee = new EmployeeDto { Email = email };
+            var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+            _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
+            _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync((List<Auth0.ManagementApi.Models.User>)null);
+
+            var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.RemoveRole(email, role));
+
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("User not found in authentication service.", (result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task RemoveRole_EmployeeRoleNotFound_ThrowsException()
+        {
+            var email = "test@example.com";
+            var role = "Admin";
+
+            var employee = new EmployeeDto { Email = email };
+            var authUser = new List<Auth0.ManagementApi.Models.User>
+    {
+        new Auth0.ManagementApi.Models.User { UserId = "1" }
+    };
+
+            var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+
+            _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+            _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
+            _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
+
+            // Ensure this returns null to simulate employee role not found
+            _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null);
+
+            var exception = await Assert.ThrowsAsync<CustomException>(() => _controller.RemoveRole(email, role));
+
+            Assert.Equal("User roles not found in authentication service.", exception.Message);
+        }
+
+    }
 }
