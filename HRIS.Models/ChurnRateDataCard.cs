@@ -17,4 +17,6 @@ public class ChurnRateDataCardDto
     public int Year { get; set; }
 
     public double ChurnRateDifference { get; set; }
+
+    public bool isIncrease { get; set; }
 }
