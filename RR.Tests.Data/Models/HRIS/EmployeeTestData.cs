@@ -44,7 +44,8 @@ public class EmployeeTestData
         PostalAddress = EmployeeAddressTestData.EmployeeAddressOne,
         HouseNo = null,
         EmergencyContactName = null,
-        EmergencyContactNo = null
+        EmergencyContactNo = null,
+        Active = false
     };
 
     public static Employee EmployeeTwo = new()
@@ -86,7 +87,8 @@ public class EmployeeTestData
         PostalAddress = EmployeeAddressTestData.EmployeeAddressOne,
         HouseNo = null,
         EmergencyContactName = null,
-        EmergencyContactNo = null
+        EmergencyContactNo = null,
+        Active = true
     };
 
     public static Employee EmployeeThree = new()
@@ -128,7 +130,8 @@ public class EmployeeTestData
         PostalAddress = EmployeeAddressTestData.EmployeeAddressOne,
         HouseNo = null,
         EmergencyContactName = null,
-        EmergencyContactNo = null
+        EmergencyContactNo = null,
+        Active = true
     };
 
     public static Employee EmployeeFour = new()
