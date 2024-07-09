@@ -48,17 +48,17 @@ public class EmployeeDateController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeDate([FromBody] EmployeeDateDto employeeDate)
     {
-            var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email!);
-            var employeeDateDto = new EmployeeDateDto
-            {
-                Id = employeeDate.Id,
-                Employee = employee,
-                Subject = employeeDate.Subject,
-                Note = employeeDate.Note,
-                Date = employeeDate.Date
-            };
+        var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email!);
+        var employeeDateDto = new EmployeeDateDto
+        {
+            Id = employeeDate.Id,
+            Employee = employee,
+            Subject = employeeDate.Subject,
+            Note = employeeDate.Note,
+            Date = employeeDate.Date
+        };
 
-            await _employeeDateService.Update(employeeDateDto);
+        await _employeeDateService.Update(employeeDate);
             return Ok();
     }
 

@@ -1,8 +1,10 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.App.Tests.Helper;
 using RR.Tests.Data.Models.HRIS;
 using Xunit;
 
@@ -60,6 +62,19 @@ public class EmployeeDateControllerUnitTests
     }
 
     [Fact]
+    public async Task SaveEmployeeDateValidInputFail()
+    {
+        _employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>()))
+            .ThrowsAsync(new Exception("An error occurred while saving employee date information."));
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.SaveEmployeeDate(_employeeDateInput));
+        var statusCodeResult = result as StatusCodeResult;
+
+        Assert.NotNull(statusCodeResult);
+        Assert.Equal(StatusCodes.Status500InternalServerError, statusCodeResult.StatusCode);
+    }
+
+    [Fact]
     public async Task DeleteEmployeeDateValidInputReturnsOkResult()
     {
         _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateInput.Email))
@@ -69,6 +84,19 @@ public class EmployeeDateControllerUnitTests
 
         var result = await _controller.DeleteEmployeeDate(_employeeDateInput.Id);
         Assert.IsType<OkResult>(result);
+    }
+
+    [Fact]
+    public async Task DeleteEmployeeDateValidInputFail()
+    {
+        _employeeDateServiceMock.Setup(x => x.Delete(_employeeDateInput.Id))
+                               .ThrowsAsync(new Exception("An error occurred while deleting employee date information."));
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.DeleteEmployeeDate(_employeeDateInput.Id));
+        var statusCodeResult = result as StatusCodeResult;
+
+        Assert.NotNull(statusCodeResult);
+        Assert.Equal(StatusCodes.Status500InternalServerError, statusCodeResult.StatusCode);
     }
 
     [Fact]
@@ -82,6 +110,19 @@ public class EmployeeDateControllerUnitTests
 
         var result = await _controller.UpdateEmployeeDate(_employeeDateDto);
         Assert.IsType<OkResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeDateValidInputFail()
+    {
+        _employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>()))
+                               .ThrowsAsync(new Exception("An error occurred while updating employee date information."));
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployeeDate(_employeeDateDto));
+        var statusCodeResult = result as StatusCodeResult;
+
+        Assert.NotNull(statusCodeResult);
+        Assert.Equal(StatusCodes.Status500InternalServerError, statusCodeResult.StatusCode);
     }
 
     [Fact]
