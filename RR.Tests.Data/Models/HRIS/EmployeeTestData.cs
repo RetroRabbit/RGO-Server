@@ -173,7 +173,8 @@ public class EmployeeTestData
         PostalAddress = EmployeeAddressTestData.EmployeeAddressOne,
         HouseNo = null,
         EmergencyContactName = null,
-        EmergencyContactNo = null
+        EmergencyContactNo = null,
+        Active = false
     };
 
     public static Employee EmployeeNew = new()
@@ -182,7 +183,7 @@ public class EmployeeTestData
         EmployeeNumber = "001",
         TaxNumber = "34434434",
         EngagementDate = DateTime.UtcNow,
-        TerminationDate = null,
+        TerminationDate = new DateTime(),
         PeopleChampion = null,
         Disability = false,
         DisabilityNotes = "None",
@@ -215,7 +216,8 @@ public class EmployeeTestData
         PostalAddress = EmployeeAddressTestData.EmployeeAddressOne,
         HouseNo = null,
         EmergencyContactName = null,
-        EmergencyContactNo = null
+        EmergencyContactNo = null,
+        Active = true
     };
 
     public static Employee EmployeeSix = new()

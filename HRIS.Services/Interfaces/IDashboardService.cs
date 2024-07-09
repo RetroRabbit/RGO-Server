@@ -21,6 +21,8 @@ namespace HRIS.Services.Interfaces
         /// <returns>MonthlyEmployeeTotalDto</returns>
         Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal();
 
+        Task<MonthlyEmployeeTotalDto> GetEmployeePreviousMonthTotal();
+
         /// <summary>
         ///     Calculates employee chrunRate over a month
         /// </summary>
