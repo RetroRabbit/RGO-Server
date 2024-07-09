@@ -46,7 +46,7 @@ public class EmailHelperUnitTests
         Assert.Equal("This is a dynamic body. 2027/07/02", message);
     }
 
-    [Fact(Skip = "Needs to be fixed/updated")]
+    [Fact]
 
     public async Task GetTemplateSuccess()
     {
