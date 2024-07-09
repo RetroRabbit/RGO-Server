@@ -172,6 +172,11 @@ public class DashboardServiceUnitTest
     //        BusinessSupportTotal = 4
     //    };
 
+    //    var employeeList = new List<Employee>
+    //    {
+    //        new Employee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTypeTestData.DeveloperType.ToDto())
+    //    };
+
     //    _dashboardMockService.Setup(x => x.GetEmployeeCountTotalByRole()).Returns(new EmployeeCountByRoleDataCard());
     //    _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnBench()).Returns(new EmployeeOnBenchDataCard());
     //    _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnClients()).Returns(0);
@@ -179,7 +184,11 @@ public class DashboardServiceUnitTest
     //    _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal()).ReturnsAsync(currentMonthTotalDto);
     //    _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal()).ReturnsAsync(previousMonthTotalDto);
 
-    //    _dbMock.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
+    //    _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employeeList.ToMockIQueryable());
+    //    _dbMock.Setup(mt => mt.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>())).Returns(new MonthlyEmployeeTotal(previousMonthTotalDto).ToMockIQueryable());
+    //    _dbMock.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(employeeList);
+    //    _dbMock.Setup(e => e.MonthlyEmployeeTotal.Add(new MonthlyEmployeeTotal(previousMonthTotalDto))).ReturnsAsync(new MonthlyEmployeeTotal(previousMonthTotalDto));
+
 
     //    var result = await _dashboardService.GenerateDataCardInformation();
 
