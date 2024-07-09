@@ -1,6 +1,4 @@
 ﻿using System.Net.Mail;
-using System.Text;
-using Azure.Messaging.ServiceBus;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
