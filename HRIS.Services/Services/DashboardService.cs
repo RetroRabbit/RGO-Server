@@ -183,7 +183,9 @@ namespace HRIS.Services.Services
                 };
                 var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(monthlyEmployeeTotalDto);
 
-                return (await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal)).ToDto();
+                var result = await _db.MonthlyEmployeeTotal.Add(newMonthlyEmployeeTotal);
+
+                return (result).ToDto();
             }
             return currentEmployeeTotal.ToDto();
         }
