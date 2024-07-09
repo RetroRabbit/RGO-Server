@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -69,7 +70,7 @@ public class EmployeeDataControllerUnitTests
         _identity.SetupGet(i => i.EmployeeId).Returns(5);
 
         _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
-                              .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
+                              .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.SaveEmployeeData(_employeeDataDto));
 
@@ -115,7 +116,7 @@ public class EmployeeDataControllerUnitTests
     public async Task updateUnauthorized()
     {
         _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
-                              .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
+                              .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployeeData(_employeeDataDto));
 
