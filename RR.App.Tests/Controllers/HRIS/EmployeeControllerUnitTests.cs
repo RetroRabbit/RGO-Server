@@ -79,7 +79,8 @@ public class EmployeeControllerUnitTests
             Surname = _employeeDto.Surname
         };
 
-        _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto{
+        _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto
+        {
             Id = 1,
             EmployeeNumber = "1",
             TaxNumber = "123123",
@@ -183,13 +184,12 @@ public class EmployeeControllerUnitTests
     {
         _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
-
         _employeeMockService.Setup(x => x.UpdateEmployee(_employeeDto, _employeeDto.Email))
                                .ReturnsAsync(_employeeDto);
 
         var result = await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email);
-
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+
         Assert.Equal(nameof(EmployeeController.UpdateEmployee), createdAtActionResult.ActionName);
         Assert.Equal(201, createdAtActionResult.StatusCode);
         Assert.Equal(_employeeDto.Email, createdAtActionResult.RouteValues["email"]);
@@ -201,13 +201,12 @@ public class EmployeeControllerUnitTests
     {
         _identity.SetupGet(i => i.Role).Returns("Developer");
         _identity.SetupGet(i => i.EmployeeId).Returns(5);
-
         _employeeMockService.Setup(service => service.UpdateEmployee(_employeeDto, _employeeDto.Email))
                             .ThrowsAsync(new CustomException("Unauthorized action."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email));
-
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+
         Assert.Equal("Unauthorized action.", notFoundResult.Value);
     }
 
@@ -219,8 +218,8 @@ public class EmployeeControllerUnitTests
                             .ReturnsAsync(_employeeDtoList);
 
         var result = await _controller.GetAllEmployees();
-
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
+
         Assert.Equal(200, okObjectResult.StatusCode);
     }
 
@@ -231,9 +230,9 @@ public class EmployeeControllerUnitTests
         _employeeMockService.Setup(x => x.GetEmployeeById(_employeeDto.Id)).ReturnsAsync(expectedDetails);
 
         var result = await _controller.GetEmployeeById(_employeeDto.Id);
-
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualDetails = Assert.IsType<EmployeeDto>(okResult.Value);
+
         Assert.Equal(expectedDetails, actualDetails);
     }
 
@@ -242,11 +241,9 @@ public class EmployeeControllerUnitTests
     {
         _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
-
         _employeeMockService.Setup(service => service.GetSimpleProfile(It.IsAny<string>())).ReturnsAsync(_simpleEmployeeProfileDto);
 
         var result = await _controller.GetSimpleEmployee(_simpleEmployeeProfileDto.Email!);
-
         var simpleEmployee = (ObjectResult)result;
 
         Assert.Equal(_simpleEmployeeProfileDto, simpleEmployee.Value);
@@ -271,7 +268,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task FilterEmployeesSuccessTest()
     {
-        _employeeMockService.Setup(service => service.FilterEmployees(1, 0,true))
+        _employeeMockService.Setup(service => service.FilterEmployees(1, 0, true))
                             .ReturnsAsync(new List<EmployeeFilterResponse> { _employeeFilter });
 
         var result = await _controller.FilterEmployees(1, 0);
