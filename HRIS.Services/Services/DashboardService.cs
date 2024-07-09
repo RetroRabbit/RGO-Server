@@ -54,7 +54,10 @@ namespace HRIS.Services.Services
          
             var previousChurnRate = CalculateChurnRate(employeeStartOfPreviousPeriod.Count, terminatedEmployeesEndOfPreviousPeriod.Count);
 
-            var percentageDifference = (previousChurnRate - churnRate / ((previousChurnRate + churnRate) / 2)) * 100;
+            var averageChurnRate = (previousChurnRate + churnRate) / 2;
+            var percentageDifference = averageChurnRate != 0
+                ? ((previousChurnRate - churnRate) / averageChurnRate) * 100
+                : 0;
 
             return new ChurnRateDataCardDto
             {
