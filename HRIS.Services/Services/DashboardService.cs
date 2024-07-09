@@ -188,7 +188,6 @@ namespace HRIS.Services.Services
             return currentEmployeeTotal.ToDto();
         }
 
-
         public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
         {
             var totalNumberOfDevsOnBench = _db.Employee.Get()
@@ -215,7 +214,6 @@ namespace HRIS.Services.Services
                 TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench
             };
         }
-
 
         public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
         {
