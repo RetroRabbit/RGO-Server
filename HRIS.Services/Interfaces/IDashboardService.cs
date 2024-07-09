@@ -20,8 +20,25 @@ namespace HRIS.Services.Interfaces
         /// </summary>
         /// <returns>MonthlyEmployeeTotalDto</returns>
         Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal();
-
+        /// <summary>
+        ///     Get the total number of employees for the previous month
+        /// </summary>
+        /// <returns>MonthlyEmployeeTotalDto</returns>
         Task<MonthlyEmployeeTotalDto> GetEmployeePreviousMonthTotal();
+        /// <summary>
+        ///     Get the total number of employees for roles
+        /// </summary>
+        /// <returns>MonthlyEmployeeTotalDto</returns>
+        EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole();
+        /// <summary>
+        ///     Get the total number of employees on bench
+        /// </summary>
+        /// <returns>MonthlyEmployeeTotalDto</returns>
+        EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench();
+        /// <summary>
+        ///     Get the total number of employees onn client
+        /// <returns>MonthlyEmployeeTotalDto</returns>
+        int GetTotalNumberOfEmployeesOnClients();
 
         /// <summary>
         ///     Calculates employee chrunRate over a month
