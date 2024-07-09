@@ -67,4 +67,5 @@ public class EmailHelperUnitTests
         _db.Verify(x => x.EmailTemplate.FirstOrDefault(It.IsAny<Expression<Func<EmailTemplate, bool>>>()), Times.Once);
         Assert.Equal($"Email template 'TestTemplate' does not exist", exception.Message);
     }
+    
 }
