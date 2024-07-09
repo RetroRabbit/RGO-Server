@@ -15,4 +15,6 @@ public class ChurnRateDataCardDto
     public string? Month { get; set; }
 
     public int Year { get; set; }
+
+    public double ChurnRateDifference { get; set; }
 }

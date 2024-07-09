@@ -30,49 +30,51 @@ namespace HRIS.Services.Services
             var twelveMonthsAgo = today.AddMonths(-12);
 
             var employeeData = await _db.Employee
-                .Get()
-                .Where(e => e.EngagementDate <= today && (e.TerminationDate == null || e.TerminationDate >= twelveMonthsAgo))
-                .ToListAsync();
+                .GetAll();
 
             var employeeStartOfPeriod = employeeData
-                .Where(e => e.EngagementDate < twelveMonthsAgo && (e.TerminationDate == null || e.TerminationDate >= twelveMonthsAgo))
-                .GroupBy(e => e.EmployeeType)
-                .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
-                .ToList()
-                .Cast<dynamic>()
+                .Where(e => e.EngagementDate < twelveMonthsAgo && e.Active == true)
                 .ToList();
 
-            var employeeEndOfPeriod = employeeData
-                .Where(e => e.EngagementDate < today && (e.TerminationDate == null || e.TerminationDate >= today))
-                .GroupBy(e => e.EmployeeType)
-                .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
-                .ToList()
-                .Cast<dynamic>()
+            var terminatedEmployeesEndOfPeriod = employeeData
+                .Where(e => e.Active == false && e.TerminationDate >= twelveMonthsAgo)
                 .ToList();
 
-            var terminationsDuringPeriod = employeeData
-                .Where(e => e.TerminationDate >= twelveMonthsAgo && e.TerminationDate < today)
-                .GroupBy(e => e.EmployeeType)
-                .Select(g => new { EmployeeType = g.Key, Count = g.Count() })
-                .ToList()
-                .Cast<dynamic>()
+            var employeeStartOfPreviousPeriod = employeeData
+                 .Where(e => e.EngagementDate < twelveMonthsAgo.AddMonths(-12) && e.Active == true)
                 .ToList();
 
-            int GetCount(List<dynamic> data, int employeeType) => data.FirstOrDefault(x => x.EmployeeType == employeeType)?.Count ?? 0;
+            var terminatedEmployeesEndOfPreviousPeriod = employeeData
+                .Where(e => e.Active == false && e.TerminationDate >= twelveMonthsAgo.AddMonths(-12))
+                .ToList();
 
-            var totalAtStartOfPeriod = employeeStartOfPeriod.Sum(x => x.Count);
-            var totalTerminationsDuringPeriod = terminationsDuringPeriod.Sum(x => x.Count);
+            int GetCount(List<Employee> data, int employeeType) => data.Count(x => x.EmployeeTypeId == employeeType);
+
+            var churnRate = CalculateChurnRate(employeeStartOfPeriod.Count, terminatedEmployeesEndOfPeriod.Count);
+         
+            var previousChurnRate = CalculateChurnRate(employeeStartOfPreviousPeriod.Count, terminatedEmployeesEndOfPreviousPeriod.Count);
+
+            var percentageDifference = (previousChurnRate - churnRate / ((previousChurnRate + churnRate) / 2)) * 100;
 
             return new ChurnRateDataCardDto
             {
-                ChurnRate = CalculateChurnRate(totalAtStartOfPeriod, totalTerminationsDuringPeriod),
-                DeveloperChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 1), GetCount(terminationsDuringPeriod, 1)),
-                DesignerChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 2), GetCount(terminationsDuringPeriod, 2)),
-                ScrumMasterChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 3), GetCount(terminationsDuringPeriod, 3)),
-                BusinessSupportChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 4), GetCount(terminationsDuringPeriod, 4)),
+                ChurnRate = churnRate,
+                DeveloperChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 1), GetCount(terminatedEmployeesEndOfPeriod, 1)),
+                DesignerChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 2), GetCount(terminatedEmployeesEndOfPeriod, 2)),
+                ScrumMasterChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 3), GetCount(terminatedEmployeesEndOfPeriod, 3)),
+                BusinessSupportChurnRate = CalculateChurnRate(GetCount(employeeStartOfPeriod, 4), GetCount(terminatedEmployeesEndOfPeriod, 4)),
                 Month = twelveMonthsAgo.ToString("MMMM"),
-                Year = twelveMonthsAgo.Year
+                Year = twelveMonthsAgo.Year,
+                ChurnRateDifference = percentageDifference
             };
+        }
+
+        private double CalculateChurnRate(int employeeStartOfPeriodTotal, int terminationsDuringPeriod)
+        {
+            return Math.Round((employeeStartOfPeriodTotal > 0)
+
+                ? (double)terminationsDuringPeriod / employeeStartOfPeriodTotal * 100
+                : 0, 0);
         }
 
         public async Task<double> CalculateEmployeeGrowthRate()
@@ -185,12 +187,6 @@ namespace HRIS.Services.Services
             return currentEmployeeTotal.ToDto();
         }
 
-        private double CalculateChurnRate(int employeeStartOfPeriodTotal, int terminationsDuringPeriod)
-        {
-            return Math.Round((employeeStartOfPeriodTotal > 0)
-                ? (double)terminationsDuringPeriod / employeeStartOfPeriodTotal * 100
-                : 0, 0);
-        }
 
         public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
         {
