@@ -74,8 +74,21 @@ public class DashboardServiceUnitTest
             BusinessSupportTotal = 5
         };
 
+        var employeeList = new List<Employee>
+        {
+            EmployeeTestData.EmployeeOne,
+            EmployeeTestData.EmployeeTwo,
+            EmployeeTestData.EmployeeThree,
+            EmployeeTestData.EmployeeFour,
+        };
+
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()));
-        _dbMock.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()));
+        _dbMock.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(employeeList);
+
+        var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(currentMonthTotalDto);
+
+        _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
+               .ReturnsAsync(newMonthlyEmployeeTotal);
 
         _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal())
             .ReturnsAsync(currentMonthTotalDto);
@@ -83,13 +96,12 @@ public class DashboardServiceUnitTest
         _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal())
             .ReturnsAsync(currentMonthTotalDto);
 
-        // Act
         var result = await _dashboardService.CalculateEmployeeGrowthRate();
 
-        // Assert
         Assert.NotNull(result);
-        Assert.Equal(20.0, result); // Replace with your expected growth rate
+        Assert.Equal(0, result);
     }
+
 
     [Fact]
     public async Task GetCurrentMonthTotalReturnsExistingTotalTest()
