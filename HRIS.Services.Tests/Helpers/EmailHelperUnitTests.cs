@@ -47,7 +47,6 @@ public class EmailHelperUnitTests
     }
 
     [Fact]
-
     public async Task GetTemplateSuccess()
     {
         _db.Setup(x => x.EmailTemplate.FirstOrDefault(It.IsAny<Expression<Func<EmailTemplate, bool>>>())).ReturnsAsync(new EmailTemplate());
