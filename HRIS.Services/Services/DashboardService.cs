@@ -59,7 +59,7 @@ namespace HRIS.Services.Services
                 ? ((previousChurnRate - churnRate) / averageChurnRate) * 100
                 : 0;
 
-            bool isIncrease = percentageDifference > 0 ? true : false;
+            bool isIncrease = percentageDifference > 0;
 
             return new ChurnRateDataCardDto
             {
@@ -71,7 +71,7 @@ namespace HRIS.Services.Services
                 Month = twelveMonthsAgo.ToString("MMMM"),
                 Year = twelveMonthsAgo.Year,
                 ChurnRateDifference = percentageDifference,
-                isIncrease = isIncrease,
+                IsIncrease = isIncrease,
             };
         }
 
