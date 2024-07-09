@@ -168,4 +168,15 @@ public class EmployeeDateControllerUnitTests
         var actualEmployeeDates = Assert.IsType<List<EmployeeDateDto>>(okResult.Value);
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
     }
+
+    [Fact]
+    public async Task GetAllEmployeeDateServiceFail()
+    {
+        _employeeDateServiceMock.Setup(x => x.GetAll()).Throws(new Exception("An error occurred while retrieving employee dates."));
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => Task.FromResult(_controller.GetAllEmployeeDate()));
+
+        Assert.IsType<StatusCodeResult>(result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
+    }
 }
