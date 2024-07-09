@@ -27,7 +27,6 @@ public class EmployeeController : ControllerBase
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
         var employee = await _employeeService.SaveEmployee(newEmployee);
-        var employeeExists = await _employeeService.CheckUserExist(employee.Email);
         return CreatedAtAction(nameof(AddEmployee), new { email = employee.Email }, employee);
     }
 
@@ -51,7 +50,7 @@ public class EmployeeController : ControllerBase
     [HttpGet("by-email")]
     public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
     {
-        var employee = await _employeeService.GetEmployee(_identity.Email);
+        var employee = await _employeeService.GetEmployee(email ?? _identity.Email);
         return Ok(employee);
     }
 
@@ -59,7 +58,7 @@ public class EmployeeController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string userEmail)
     {
-        if (_identity.Role is not "SuperAdmin" or "Admin" or "Talent" or "Journey" && employee.Id != _identity.EmployeeId)
+        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" == false && employee.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized action.");
         var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);
         return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
@@ -77,7 +76,7 @@ public class EmployeeController : ControllerBase
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
     {
-        if (_identity.Role is not "SuperAdmin" or "Admin" or "Talent" or "Journey" && employeeEmail != _identity.Email)
+        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" == false && employeeEmail != _identity.Email)
             throw new CustomException("User data being accessed does not match user making the request.");
         var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
         return Ok(simpleProfile);
@@ -95,7 +94,7 @@ public class EmployeeController : ControllerBase
     [HttpGet("id-number")]
     public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int employeeId)
     {
-        if (_identity.Role is not "SuperAdmin" or "Admin" or "Talent" or "Journey" && employeeId != _identity.EmployeeId)
+        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" == false && employeeId != _identity.EmployeeId)
             throw new CustomException("User data being accessed does not match user making the request.");
         var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
         return Ok(isExisting);
