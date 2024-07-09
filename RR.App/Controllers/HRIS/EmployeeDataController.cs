@@ -4,7 +4,6 @@ using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
 
 namespace RR.App.Controllers.HRIS;
 
