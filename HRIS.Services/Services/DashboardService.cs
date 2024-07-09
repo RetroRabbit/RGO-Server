@@ -19,11 +19,6 @@ namespace HRIS.Services.Services
         {
             _db = db;
         }
-
-        public DashboardService()
-        {
-        }
-
         public async Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate()
         {
             var today = DateTime.Today;
