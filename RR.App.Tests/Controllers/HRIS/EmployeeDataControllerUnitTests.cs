@@ -112,7 +112,7 @@ public class EmployeeDataControllerUnitTests
     }
 
     [Fact]
-    public async Task updateUnauthorized()
+    public async Task UpdateUnauthorized()
     {
         _employeeDataServiceMock.Setup(service => service.UpdateEmployeeData(_employeeDataDto))
                               .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
