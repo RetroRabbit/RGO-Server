@@ -1,11 +1,9 @@
-﻿using System.Security.Claims;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS;
 
