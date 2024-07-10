@@ -17,7 +17,6 @@ public class DashboardServiceUnitTest
     private readonly Mock<IDashboardService> _dashboardMockService;
     private readonly DashboardService _dashboardService;
 
-
     public DashboardServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
@@ -102,7 +101,6 @@ public class DashboardServiceUnitTest
         Assert.Equal(0, result);
     }
 
-
     [Fact]
     public async Task GenerateDataCardInformation_ReturnsExpectedDataCard()
     {
@@ -184,7 +182,6 @@ public class DashboardServiceUnitTest
     [Fact]
     public async Task GetCurrentMonthTotalReturnsExistingTotalTest()
     {
-
         var employeeList = new List<Employee>
         {
             EmployeeTestData.EmployeeOne
@@ -219,7 +216,6 @@ public class DashboardServiceUnitTest
     [Fact]
     public async Task GetCurrentMonthTotalCreateNewTotalTest()
     {
-
         var employeeList = new List<Employee>
         {
             EmployeeTestData.EmployeeOne
@@ -317,7 +313,6 @@ public class DashboardServiceUnitTest
     [Fact]
     public void GetTotalNumberOfEmployeesOnClients_ReturnsExpectedCount()
     {
-
         var employees = new List<Employee>
         {
             new Employee { EmployeeTypeId = 2, ClientAllocated = 2 },
