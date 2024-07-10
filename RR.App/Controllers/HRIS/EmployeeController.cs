@@ -4,6 +4,7 @@ using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
