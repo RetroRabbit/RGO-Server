@@ -1,6 +1,5 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -9,11 +8,6 @@ namespace HRIS.Services.Services
     public class DashboardService : IDashboardService
     {
         private readonly IUnitOfWork _db;
-        private readonly IEmployeeAddressService _employeeAddressService;
-        private readonly IEmployeeTypeService _employeeTypeService;
-        private readonly IRoleService _roleService;
-        private readonly IErrorLoggingService _errorLoggingService;
-        private readonly IEmailService _emailService;
 
         public DashboardService(IUnitOfWork db)
         {

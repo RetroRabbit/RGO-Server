@@ -39,13 +39,38 @@ public class DashboardControllerUnitTest
     }
 
     [Fact]
+    public async Task CalculateEmployeeGrowthRate_ReturnsOkResult()
+    {
+        double expectedGrowthRate = 5.5;
+        _dashboardMockService.Setup(service => service.CalculateEmployeeGrowthRate())
+                             .ReturnsAsync(expectedGrowthRate);
+
+        var result = await _dashboardcontroller.CalculateEmployeeGrowthRate();
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(expectedGrowthRate, okResult.Value);
+    }
+
+    [Fact]
+    public async Task CalculateEmployeeGrowthRate_Returns500_WhenExceptionIsThrown()
+    {
+        _dashboardMockService.Setup(service => service.CalculateEmployeeGrowthRate())
+                             .ThrowsAsync(new CustomException("Some error occurred"));
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+             _dashboardcontroller.CalculateEmployeeGrowthRate());
+
+        Assert.Equal("Some error occurred", exception.Message);
+    }
+
+    [Fact]
     public async Task GetEmployeesCountFailTest()
     {
         _dashboardMockService.Setup(service => service.GenerateDataCardInformation())
                             .ThrowsAsync(new CustomException("Failed to generate data card"));
 
-        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-            await _dashboardcontroller.GetEmployeesCount());
+        var exception = await Assert.ThrowsAsync<CustomException>( () =>
+             _dashboardcontroller.GetEmployeesCount());
 
         Assert.Equal("Failed to generate data card", exception.Message);
     }

@@ -23,7 +23,6 @@ public class DashboardServiceUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         _dashboardMockService = new Mock<IDashboardService>();
         _dashboardService = new DashboardService(_dbMock.Object);
-
     }
 
     [Fact]
@@ -103,109 +102,100 @@ public class DashboardServiceUnitTest
         Assert.Equal(0, result);
     }
 
-    //[Fact]
-    //public async Task CalculateEmployeeGrowthRate_ThrowsCustomException_WhenTotalsAreNotAvailable()
-    //{
-    //    // Arrange
-    //    _dbMock.Setup(x => x.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
-    //           .Returns(new List<MonthlyEmployeeTotal>().AsQueryable());
+    [Fact]
+    public async Task CalculateEmployeeGrowthRate_ThrowsCustomException_WhenTotalsAreNotAvailable()
+    {
+        _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal())
+                             .ReturnsAsync((MonthlyEmployeeTotalDto)null);
 
-    //    _dbMock.Setup(x => x.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
-    //           .ReturnsAsync((MonthlyEmployeeTotal)null);
-
-    //    _dbMock.Setup(x => x.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(new List<Employee>());
-
-    //    var dashboardService = new Mock<DashboardService>(_dbMock.Object)
-    //    {
-    //        CallBase = true
-    //    };
-
-    //    dashboardService.Setup(x => x.GetEmployeeCurrentMonthTotal())
-    //                    .ReturnsAsync((MonthlyEmployeeTotalDto)null);
-
-    //    dashboardService.Setup(x => x.GetEmployeePreviousMonthTotal())
-    //                    .ReturnsAsync((MonthlyEmployeeTotalDto)null);
-
-    //    // Act & Assert
-    //    var exception = await Assert.ThrowsAsync<CustomException>(() => dashboardService.Object.CalculateEmployeeGrowthRate());
-    //    Assert.Equal("Employee totals for current or previous month are not available", exception.Message);
-    //}
-
-    //[Fact]
-    //public async Task GenerateDataCardInformation_ReturnsExpectedDataCard()
-    //{
-    //    var employeeCountTotalsByRole = new EmployeeCountByRoleDataCard
-    //    {
-    //        DevsCount = 20,
-    //        DesignersCount = 10,
-    //        ScrumMastersCount = 5,
-    //        BusinessSupportCount = 15
-    //    };
-
-    //    var totalNumberOfEmployeesOnBench = new EmployeeOnBenchDataCard
-    //    {
-    //        DevsOnBenchCount = 2,
-    //        DesignersOnBenchCount = 1,
-    //        ScrumMastersOnBenchCount = 1,
-    //        TotalNumberOfEmployeesOnBench = 4
-    //    };
-
-    //    int totalNumberOfEmployeesOnClients = 36;
-
-    //    var currentMonthTotalDto = new MonthlyEmployeeTotalDto
-    //    {
-    //        Id = 1,
-    //        EmployeeTotal = 40,
-    //        DeveloperTotal = 20,
-    //        DesignerTotal = 10,
-    //        ScrumMasterTotal = 5,
-    //        BusinessSupportTotal = 5
-    //    };
-
-    //    var previousMonthTotalDto = new MonthlyEmployeeTotalDto
-    //    {
-    //        Id = 2,
-    //        EmployeeTotal = 35,
-    //        DeveloperTotal = 18,
-    //        DesignerTotal = 9,
-    //        ScrumMasterTotal = 4,
-    //        BusinessSupportTotal = 4
-    //    };
-
-    //    var employeeList = new List<Employee>
-    //    {
-    //        new Employee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTypeTestData.DeveloperType.ToDto())
-    //    };
-
-    //    _dashboardMockService.Setup(x => x.GetEmployeeCountTotalByRole()).Returns(new EmployeeCountByRoleDataCard());
-    //    _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnBench()).Returns(new EmployeeOnBenchDataCard());
-    //    _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnClients()).Returns(0);
-
-    //    _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal()).ReturnsAsync(currentMonthTotalDto);
-    //    _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal()).ReturnsAsync(previousMonthTotalDto);
-
-    //    _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employeeList.ToMockIQueryable());
-    //    _dbMock.Setup(mt => mt.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>())).Returns(new MonthlyEmployeeTotal(previousMonthTotalDto).ToMockIQueryable());
-    //    _dbMock.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(employeeList);
-    //    _dbMock.Setup(e => e.MonthlyEmployeeTotal.Add(new MonthlyEmployeeTotal(previousMonthTotalDto))).ReturnsAsync(new MonthlyEmployeeTotal(previousMonthTotalDto));
+        _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal())
+                             .ReturnsAsync((MonthlyEmployeeTotalDto)null);
 
 
-    //    var result = await _dashboardService.GenerateDataCardInformation();
+        _dbMock.Setup(u => u.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()));
+        var exception = await Assert.ThrowsAsync<Exception>(() => _dashboardService.CalculateEmployeeGrowthRate());
 
-    //    Assert.NotNull(result);
-    //    Assert.Equal(20, result.DevsCount);
-    //    Assert.Equal(10, result.DesignersCount);
-    //    Assert.Equal(5, result.ScrumMastersCount);
-    //    Assert.Equal(15, result.BusinessSupportCount);
-    //    Assert.Equal(2, result.DevsOnBenchCount);
-    //    Assert.Equal(1, result.DesignersOnBenchCount);
-    //    Assert.Equal(1, result.ScrumMastersOnBenchCount);
-    //    Assert.Equal(36, result.TotalNumberOfEmployeesOnClients);
-    //    Assert.Equal(4, result.TotalNumberOfEmployeesOnBench);
-    //    Assert.Equal(90, result.BillableEmployeesPercentage);
-    //    Assert.Equal(5, result.EmployeeTotalDifference);
-    //    Assert.True(result.isIncrease);
-    //}
+        Assert.Equal("Employee totals for current or previous month are not available", exception.Message);
+    }
+
+
+    [Fact]
+    public async Task GenerateDataCardInformation_ReturnsExpectedDataCard()
+    {
+        var employeeCountTotalsByRole = new EmployeeCountByRoleDataCard
+        {
+            DevsCount = 20,
+            DesignersCount = 10,
+            ScrumMastersCount = 5,
+            BusinessSupportCount = 15
+        };
+
+        var totalNumberOfEmployeesOnBench = new EmployeeOnBenchDataCard
+        {
+            DevsOnBenchCount = 2,
+            DesignersOnBenchCount = 1,
+            ScrumMastersOnBenchCount = 1,
+            TotalNumberOfEmployeesOnBench = 4
+        };
+
+        int totalNumberOfEmployeesOnClients = 36;
+
+        var currentMonthTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 1,
+            EmployeeTotal = 40,
+            DeveloperTotal = 20,
+            DesignerTotal = 10,
+            ScrumMasterTotal = 5,
+            BusinessSupportTotal = 5
+        };
+
+        var previousMonthTotalDto = new MonthlyEmployeeTotalDto
+        {
+            Id = 2,
+            EmployeeTotal = 35,
+            DeveloperTotal = 18,
+            DesignerTotal = 9,
+            ScrumMasterTotal = 4,
+            BusinessSupportTotal = 4
+        };
+
+        var employeeList = new List<Employee>
+        {
+            new Employee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTypeTestData.DeveloperType.ToDto())
+        };
+
+        _dashboardMockService.Setup(x => x.GetEmployeeCountTotalByRole()).Returns(new EmployeeCountByRoleDataCard());
+        _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnBench()).Returns(new EmployeeOnBenchDataCard());
+        _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnClients()).Returns(0);
+
+        _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal()).ReturnsAsync(currentMonthTotalDto);
+        _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal()).ReturnsAsync(previousMonthTotalDto);
+
+        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employeeList.ToMockIQueryable());
+        _dbMock.Setup(mt => mt.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>())).Returns(new MonthlyEmployeeTotal(previousMonthTotalDto).ToMockIQueryable());
+        _dbMock.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(employeeList);
+        
+         var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(currentMonthTotalDto);
+
+        _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
+               .ReturnsAsync(newMonthlyEmployeeTotal);
+        var result = await _dashboardService.GenerateDataCardInformation();
+
+        Assert.NotNull(result);
+        Assert.Equal(0, result.DevsCount);
+        Assert.Equal(0, result.DesignersCount);
+        Assert.Equal(0, result.ScrumMastersCount);
+        Assert.Equal(0,result.BusinessSupportCount);
+        Assert.Equal(0, result.DevsOnBenchCount);
+        Assert.Equal(0, result.DesignersOnBenchCount);
+        Assert.Equal(0, result.ScrumMastersOnBenchCount);
+        Assert.Equal(0, result.TotalNumberOfEmployeesOnClients);
+        Assert.Equal(0, result.TotalNumberOfEmployeesOnBench);
+        Assert.Equal(0, result.BillableEmployeesPercentage);
+        Assert.Equal(0, result.EmployeeTotalDifference);
+        Assert.False(result.isIncrease);
+    }
 
     [Fact]
     public async Task GetCurrentMonthTotalReturnsExistingTotalTest()
