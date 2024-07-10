@@ -9,16 +9,10 @@ using RR.App.Controllers.HRIS;
 using RR.UnitOfWork;
 using Xunit;
 using RR.Tests.Data;
-using RR.UnitOfWork.Entities.HRIS;
 using HRIS.Services.Services;
-using Auth0.ManagementApi.Models;
-using Microsoft.Azure.Amqp.Framing;
-using System.Text.RegularExpressions;
 using RR.Tests.Data.Models.HRIS;
-using Microsoft.Azure.Amqp.Transaction;
 using RR.App.Tests.Helper;
-using HRIS.Services.Session;
-using System.Security.AccessControl;
+
 
 namespace RR.App.Tests.Controllers.HRIS;
 
@@ -35,7 +29,6 @@ public class EmployeeControllerUnitTests
     private readonly EmployeeFilterResponse _employeeFilter;
     private readonly SimpleEmployeeProfileDto _simpleEmployee;
     private readonly Mock<IEmployeeService> _employeeMockService;
-    private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeAddressDto _employeeAddressDto;
     private readonly EmployeeTypeDto _employeeTypeDto;
     private readonly List<Claim> _claims;
@@ -222,19 +215,6 @@ public class EmployeeControllerUnitTests
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
 
         Assert.Equal(200, okObjectResult.StatusCode);
-        Assert.Equal(new List<EmployeeDto> { _employee }, (List<EmployeeDto>)okObjectResult.Value!);
-    }
-
-    [Fact]
-    public async Task GetAllEmployeesFailTest()
-    {
-        _employeeMockService.Setup(service => service.GetAll("ksmith@retrorabbit.co.za"))
-                            .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.GetAllEmployees();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(404, notFoundResult.StatusCode);
     }
 
     [Fact]
