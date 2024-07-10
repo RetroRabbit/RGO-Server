@@ -102,22 +102,6 @@ public class DashboardServiceUnitTest
         Assert.Equal(0, result);
     }
 
-    [Fact]
-    public async Task CalculateEmployeeGrowthRate_ThrowsCustomException_WhenTotalsAreNotAvailable()
-    {
-        _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal())
-                             .ReturnsAsync((MonthlyEmployeeTotalDto)null);
-
-        _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal())
-                             .ReturnsAsync((MonthlyEmployeeTotalDto)null);
-
-
-        _dbMock.Setup(u => u.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()));
-        var exception = await Assert.ThrowsAsync<Exception>(() => _dashboardService.CalculateEmployeeGrowthRate());
-
-        Assert.Equal("Employee totals for current or previous month are not available", exception.Message);
-    }
-
 
     [Fact]
     public async Task GenerateDataCardInformation_ReturnsExpectedDataCard()
