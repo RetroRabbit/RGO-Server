@@ -47,24 +47,6 @@ public class RoleManageController : ControllerBase
         var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto { Id = 0, Role = foundRole, RoleAccess = roleAccess });
 
         return CreatedAtAction(nameof(AddPermission), roleAccessLink);
-        /*try
-        {
-            var foundRole = await _roleService.CheckRole(role)
-                ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto{Id = 0, Description = role });
-
-            var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
-                ? await _roleAccessService.GetRoleAccess(permission)
-                : await _roleAccessService.SaveRoleAccess(new RoleAccessDto { Id = 0, Permission = permission, Grouping = grouping });
-
-            var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto { Id = 0, Role = foundRole, RoleAccess = roleAccess });
-
-            return CreatedAtAction(nameof(AddPermission), roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }*/
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
