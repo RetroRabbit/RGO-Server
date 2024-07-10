@@ -16,12 +16,15 @@ namespace RR.App
 {
     public class Program
     {
-        private static readonly Lazy<JsonWebKeySet> LazyJsonWebKeySet = new Lazy<JsonWebKeySet>(FetchJsonWebKeySet);
 
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
+
+            builder.Services.Configure<AuthManagement>(builder.Configuration.GetSection("AuthManagement"));
+            builder.Services.Configure<SMTPSettings>(builder.Configuration.GetSection("SMTP"));
+
 
             SetupConfiguration(configuration);
             SetupDependencyInjection(builder.Services, configuration);
@@ -44,11 +47,12 @@ namespace RR.App
 
         private static void SetupDependencyInjection(IServiceCollection services, IConfiguration configuration)
         {
+            var connectionString = configuration.GetConnectionString("Default");
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseNpgsql(EnvironmentVariableHelper.CONNECTION_STRINGS_DEFAULT), ServiceLifetime.Transient);
+                options.UseNpgsql(connectionString ?? EnvironmentVariableHelper.CONNECTION_STRINGS_DEFAULT), ServiceLifetime.Transient);
 
             services.RegisterRepository();
             services.RegisterServicesHRIS();
@@ -85,6 +89,7 @@ namespace RR.App
 
         private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
         {
+            Lazy<JsonWebKeySet> LazyJsonWebKeySet = new Lazy<JsonWebKeySet>(FetchJsonWebKeySet(configuration));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -95,8 +100,8 @@ namespace RR.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER,
-                        ValidAudience = EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE,
+                        ValidIssuer = configuration.GetValue<String>("AuthManagement:Issuer") ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER,
+                        ValidAudience = configuration.GetValue<String>("AuthManagement:Audience") ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE,
                         IssuerSigningKeyResolver = (_, _, _, _) =>
                             LazyJsonWebKeySet.Value.Keys ?? throw new InvalidOperationException("JsonWebKeySet is not available.")
                     };
@@ -151,9 +156,9 @@ namespace RR.App
             app.MapControllers();
         }
 
-        private static JsonWebKeySet FetchJsonWebKeySet()
+        private static JsonWebKeySet FetchJsonWebKeySet(IConfiguration configuration)
         {
-            var jwksUrl = $"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}.well-known/jwks.json";
+            var jwksUrl = $"{configuration.GetValue<String>("AuthManagement:Issuer") ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}.well-known/jwks.json";
             using var httpClient = new HttpClient();
             var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
             return new JsonWebKeySet(jwksResponse);

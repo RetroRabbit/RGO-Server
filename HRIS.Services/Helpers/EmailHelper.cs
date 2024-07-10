@@ -5,26 +5,30 @@ using HandlebarsDotNet;
 using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Services;
 using RR.UnitOfWork.Entities.Shared;
+using HRIS.Models;
+using Microsoft.Extensions.Options;
 
 namespace HRIS.Services.Helpers;
 
 public class EmailHelper : IEmailHelper
 {
     private readonly IUnitOfWork _db;
+    private readonly SMTPSettings _smtpSettings;
     private readonly string _fromHost;
     private readonly string _fromName;
     private readonly string _fromMail;
     private readonly string _fromPassword;
     private readonly int _fromPort;
 
-    public EmailHelper(IUnitOfWork db)
+    public EmailHelper(IUnitOfWork db, IOptions<SMTPSettings> options)
     {
         _db = db;
-        _fromHost = EnvironmentVariableHelper.SMTP_HOST!;
-        _fromName = EnvironmentVariableHelper.SMTP_NAME!;
-        _fromMail = EnvironmentVariableHelper.SMTP_MAIL!;
-        _fromPassword = EnvironmentVariableHelper.SMTP_PASSWORD!;
-        _fromPort = int.Parse(EnvironmentVariableHelper.SMTP_PORT!);
+        _smtpSettings = options.Value;
+        _fromHost = _smtpSettings.Host ?? EnvironmentVariableHelper.SMTP_HOST!;
+        _fromName = _smtpSettings.Name ?? EnvironmentVariableHelper.SMTP_NAME!;
+        _fromMail = _smtpSettings.Mail ?? EnvironmentVariableHelper.SMTP_MAIL!;
+        _fromPassword = _smtpSettings.Password ?? EnvironmentVariableHelper.SMTP_PASSWORD!;
+        _fromPort = int.Parse(_smtpSettings.Port ?? EnvironmentVariableHelper.SMTP_PORT!);
     }
 
     public async Task SendMailAsync(MailMessage message)
