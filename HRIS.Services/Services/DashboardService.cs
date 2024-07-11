@@ -196,7 +196,7 @@ namespace HRIS.Services.Services
                 DevsOnBenchCount = totalNumberOfDevsOnBench,
                 DesignersOnBenchCount = totalNumberOfDesignersOnBench,
                 ScrumMastersOnBenchCount = totalNumberOfScrumMastersOnBench,
-                TotalNumberOfEmployeesOnBench = totalnumberOfEmployeesOnBench
+                TotalNumberOfEmployeesOnBench = totalNumberOfEmployeesOnBench
             };
         }
 
