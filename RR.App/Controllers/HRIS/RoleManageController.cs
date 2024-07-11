@@ -15,9 +15,9 @@ public class RoleManageController : ControllerBase
     private readonly IRoleService _roleService;
 
     public RoleManageController(
-        IRoleAccessLinkService? roleAccessLinkService,
-        IRoleService? roleService,
-        IRoleAccessService? roleAccessService)
+        IRoleAccessLinkService roleAccessLinkService,
+        IRoleService roleService,
+        IRoleAccessService roleAccessService)
     {
         _roleAccessLinkService = roleAccessLinkService;
         _roleService = roleService;
