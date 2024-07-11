@@ -67,8 +67,7 @@ namespace HRIS.Services.Services
 
         private double CalculateChurnRate(int employeeStartOfPeriodTotal, int terminationsDuringPeriod)
         {
-            return Math.Round((employeeStartOfPeriodTotal > 0)
-
+            return Math.Round(employeeStartOfPeriodTotal > 0
                 ? (double)terminationsDuringPeriod / employeeStartOfPeriodTotal * 100
                 : 0, 0);
         }
