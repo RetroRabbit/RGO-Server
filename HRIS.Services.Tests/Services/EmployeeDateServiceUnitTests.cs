@@ -16,12 +16,13 @@ public class EmployeeDateServiceUnitTests
     private readonly Employee _employee;
     private readonly Mock<IUnitOfWork> _mockDb;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
+    private readonly Mock<IEmployeeService> _employeeServiceMock;
 
     public EmployeeDateServiceUnitTests()
     {
         _mockDb = new Mock<IUnitOfWork>();
         _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeDateService = new EmployeeDateService(_mockDb.Object, _errorLoggingServiceMock.Object);
+        _employeeDateService = new EmployeeDateService(_mockDb.Object, _errorLoggingServiceMock.Object, _employeeServiceMock.Object);
         _employee = EmployeeTestData.EmployeeOne;
     }
 
