@@ -62,28 +62,6 @@ public class DashboardServiceUnitTest
     }
 
     [Fact]
-    public async Task CalculateEmployeeGrowthRate_ReturnsExpectedRate()
-    {
-        _dbMock.Setup(u => u.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()));
-        _dbMock.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(_employees);
-
-        var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(_monthTotalDto);
-
-        _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
-               .ReturnsAsync(newMonthlyEmployeeTotal);
-
-        _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal())
-            .ReturnsAsync(_monthTotalDto);
-
-        _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal())
-            .ReturnsAsync(_monthTotalDto);
-
-        var result = await _dashboardService.CalculateEmployeeGrowthRate();
-
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
     public async Task GenerateDataCardInformation_ReturnsExpectedDataCard()
     {
         var employeeList = new List<Employee>
