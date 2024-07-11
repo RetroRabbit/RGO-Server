@@ -47,8 +47,6 @@ public class DashboardServiceUnitTest
     [Fact]
     public async Task CalculateChurnRateTest()
     {
-        var today = DateTime.Today;
-
         _dbMock.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(_employees);
 
         var result = await _dashboardService.CalculateEmployeeChurnRate();
