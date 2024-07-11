@@ -43,5 +43,6 @@ public static class RegisterServicesExtension
         services.AddScoped<ITerminationService, TerminationService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IEmailHelper, EmailHelper>();
+        services.AddScoped<IDashboardService, DashboardService>();
     }
 }

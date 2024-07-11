@@ -12,14 +12,12 @@ namespace HRIS.Services.Tests.Services;
 public class EmployeeAddressServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeAddressService _employeeAddressService;
 
     public EmployeeAddressServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeAddressService = new EmployeeAddressService(_dbMock.Object, _errorLoggingServiceMock.Object);
+        _employeeAddressService = new EmployeeAddressService(_dbMock.Object);
     }
 
     private EmployeeAddress CreateAddress(int id = 1)
@@ -79,11 +77,10 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress();
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
         _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Get(address.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Get(address.ToDto()));
     }
 
     [Fact]
@@ -130,12 +127,11 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress();
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
         _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
         _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Save(address.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Save(address.ToDto()));
     }
 
     [Fact]
@@ -155,10 +151,9 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress();
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
         _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddress?)null);
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeAddressService.Update(address.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Update(address.ToDto()));
     }
 
     [Fact]

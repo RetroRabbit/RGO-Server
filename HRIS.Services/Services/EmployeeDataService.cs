@@ -8,12 +8,10 @@ namespace HRIS.Services.Services;
 public class EmployeeDataService : IEmployeeDataService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeDataService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
+    public EmployeeDataService(IUnitOfWork db)
     {
         _db = db;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto)
@@ -26,10 +24,8 @@ public class EmployeeDataService : IEmployeeDataService
                            .FirstOrDefault();
 
         if (employeeData != null)
-        {
-            var exception = new Exception("Existing employee data record found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Existing employee data record found");
+
         var newEmployeeData = await _db.EmployeeData.Add(new EmployeeData(employeeDataDto));
 
         return newEmployeeData.ToDto();
@@ -43,10 +39,8 @@ public class EmployeeDataService : IEmployeeDataService
                            .Select(employeeData => employeeData)
                            .FirstOrDefault();
         if (employeeData == null)
-        {
-            var exception = new Exception("No employee data record found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("No employee data record found");
+
         return employeeData.ToDto();
     }
 
@@ -68,10 +62,8 @@ public class EmployeeDataService : IEmployeeDataService
                            .FirstOrDefault();
 
         if (employeeData == null)
-        {
-            var exception = new Exception("No employee data record found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("No employee data record found");
+
         var updatedEmployeeData = await _db.EmployeeData.Update(new EmployeeData(employeeDataDto));
 
         return updatedEmployeeData.ToDto();
