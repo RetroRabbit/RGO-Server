@@ -92,7 +92,7 @@ public class DashboardServiceUnitTest
         };
 
         _dashboardMockService.Setup(x => x.GetEmployeeCountTotalByRole()).Returns(new EmployeeCountByRoleDataCard());
-        _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnBench()).Returns(new EmployeeOnBenchDataCard());
+        _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnBench()).ReturnsAsync(new EmployeeOnBenchDataCard());
         _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnClients()).Returns(0);
 
         _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal()).ReturnsAsync(_monthTotalDto);
@@ -247,7 +247,7 @@ public class DashboardServiceUnitTest
     }
 
     [Fact]
-    public void GetTotalNumberOfEmployeesOnBench_ReturnsExpectedCounts()
+    public async Task GetTotalNumberOfEmployeesOnBench_ReturnsExpectedCountsAsync()
     {
         var employees = new List<Employee>
         {
@@ -261,7 +261,7 @@ public class DashboardServiceUnitTest
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
               .Returns(employees.ToMockIQueryable());
 
-        var result = _dashboardService.GetTotalNumberOfEmployeesOnBench();
+        var result = await _dashboardService.GetTotalNumberOfEmployeesOnBench();
 
         Assert.NotNull(result);
         Assert.Equal(1, result.DevsOnBenchCount);

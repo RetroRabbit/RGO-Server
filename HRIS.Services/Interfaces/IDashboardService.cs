@@ -34,7 +34,7 @@ namespace HRIS.Services.Interfaces
         ///     Get the total number of employees on bench
         /// </summary>
         /// <returns>MonthlyEmployeeTotalDto</returns>
-        EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench();
+        Task<EmployeeOnBenchDataCard> GetTotalNumberOfEmployeesOnBench();
         /// <summary>
         ///     Get the total number of employees onn client
         /// <returns>MonthlyEmployeeTotalDto</returns>

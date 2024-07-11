@@ -94,7 +94,7 @@ namespace HRIS.Services.Services
         {
             var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
 
-            var totalNumberOfEmployeesOnBench = GetTotalNumberOfEmployeesOnBench();
+            var totalNumberOfEmployeesOnBench = await GetTotalNumberOfEmployeesOnBench();
 
             var totalNumberOfEmployeesOnClients = GetTotalNumberOfEmployeesOnClients();
 
@@ -188,7 +188,7 @@ namespace HRIS.Services.Services
 
 
             var totalNumberOfScrumMastersOnBench = await _db.Employee.Get()
-                                                      .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 4)            
+                                                      .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 4);        
 
             var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
                                                 totalNumberOfDesignersOnBench +
