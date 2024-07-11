@@ -1,6 +1,5 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +10,9 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class RoleManageController : ControllerBase
 {
-    private readonly AuthorizeIdentity _identity;
-    private readonly IRoleAccessLinkService? _roleAccessLinkService;
-    private readonly IRoleAccessService? _roleAccessService;
-    private readonly IRoleService? _roleService;
+    private readonly IRoleAccessLinkService _roleAccessLinkService;
+    private readonly IRoleAccessService _roleAccessService;
+    private readonly IRoleService _roleService;
 
     public RoleManageController(
         IRoleAccessLinkService? roleAccessLinkService,
@@ -51,10 +49,6 @@ public class RoleManageController : ControllerBase
     public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission,
                                                       string grouping)
     {
-        var foundRole = await _roleService.CheckRole(role)
-                ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto{ Id = 0, Description = role});
-
             var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
                 ? await _roleAccessService.GetRoleAccess(permission)
                 : await _roleAccessService.SaveRoleAccess(new RoleAccessDto { Id = 0, Permission = permission, Grouping = grouping });
