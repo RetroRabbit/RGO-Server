@@ -42,7 +42,7 @@ public class EmployeeCertificationController : ControllerBase
         return Ok(certificate);
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("employee-certificate")]
     public async Task<IActionResult> GetEmployeeCertificate(int employeeId, int certificationId)
     {
