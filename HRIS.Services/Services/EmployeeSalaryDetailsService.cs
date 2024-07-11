@@ -9,12 +9,10 @@ namespace HRIS.Services.Services;
 public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeSalaryDetailsService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
+    public EmployeeSalaryDetailsService(IUnitOfWork db)
     {
         _db = db;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(int employeeId)
@@ -32,8 +30,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         }
         catch (Exception)
         {
-            var exception = new Exception("Employee salary details not found");
-            throw _errorLoggingService.LogException(exception);
+            throw new CustomException("Employee salary details not found");
         }
     }
 
@@ -42,10 +39,8 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
         if (!ifEmployeeExists)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee not found");
+
         try
         {
             return await _db.EmployeeSalaryDetails
@@ -56,8 +51,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         }
         catch (Exception)
         {
-            var exception = new Exception("Employee salary details not found");
-            throw _errorLoggingService.LogException(exception);
+            throw new CustomException("Employee salary details not found");
         }
     }
 
@@ -66,10 +60,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         var exists = await CheckIfExists(employeeSalaryDto);
 
         if (exists)
-        {
-            var exception = new Exception("Employee salary already exists");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee salary already exists");
 
         var employeeSalary = await _db.EmployeeSalaryDetails.Add(new EmployeeSalaryDetails(employeeSalaryDto));
 
@@ -81,10 +72,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
         var ifEmployeeExists = await CheckEmployee(employeeSalaryDto.EmployeeId);
 
         if (!ifEmployeeExists)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee not found");
 
         EmployeeSalaryDetails employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
         var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary);

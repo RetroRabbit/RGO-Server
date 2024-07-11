@@ -3,7 +3,6 @@ using ATS.Models;
 using HRIS.Services.Services;
 using Microsoft.AspNetCore.Http.Extensions;
 
-
 namespace Hris.Middleware
 {
     public class ExceptionHandlingMiddleware
@@ -27,6 +26,14 @@ namespace Hris.Middleware
             {
                 await HandleExceptionAsync(context, ex);
             }
+            finally
+            {
+                if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+                {
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync("Unauthorized Access");
+                }
+            }
         }
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -44,10 +51,10 @@ namespace Hris.Middleware
                         break;
                     default:
                         errorResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                        await _errorLoggingService.LogException(errorResponse);
                         break;
                 }
 
+                await _errorLoggingService.LogException(errorResponse);
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)errorResponse.StatusCode;
 
@@ -63,9 +70,9 @@ namespace Hris.Middleware
 
         private async Task<ErrorLoggingDto> GetRequestInfo(HttpContext context, Exception exception)
         {
-            DateTime utcNow = DateTime.UtcNow;
-            TimeZoneInfo targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
-            DateTime targetLocalTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, targetTimeZone);
+            var utcNow = DateTime.UtcNow;
+            var targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+            var targetLocalTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, targetTimeZone);
 
             var log = new ErrorLoggingDto
             {
@@ -83,10 +90,10 @@ namespace Hris.Middleware
 
             if (context.Request.Body != null)
             {
-                context.Request.Body.Position = 0;  
-                using StreamReader requestStream = new StreamReader(context.Request.Body, leaveOpen: true);
+                context.Request.Body.Position = 0;
+                using var requestStream = new StreamReader(context.Request.Body, leaveOpen: true);
                 bodyAsString = await requestStream.ReadToEndAsync();
-                context.Request.Body.Position = 0;  
+                context.Request.Body.Position = 0;
             }
             log.RequestBody = bodyAsString;
 

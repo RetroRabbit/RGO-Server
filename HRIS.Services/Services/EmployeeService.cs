@@ -2,7 +2,6 @@
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -33,57 +32,28 @@ public class EmployeeService : IEmployeeService
     {
         var exists = await CheckUserExist(employeeDto.Email);
         if (exists)
-        {
-            var exception = new Exception("User already exists");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Email Is Already in Use");
 
-        // TODO: After new employee bug is fixed, test if this condition can ever be reached and update accordingly
         if (employeeDto.EmployeeType == null)
-        {
-            var exception = new Exception("Employee type missing");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Type Missing");
 
-        Employee employee;
+        var existingEmployeeType = await _employeeTypeService.GetEmployeeType(employeeDto.EmployeeType.Name);
 
-        try
-        {
-            var existingEmployeeType = await _employeeTypeService
-                .GetEmployeeType(employeeDto.EmployeeType!.Name);
-
-            employee = new Employee(employeeDto, existingEmployeeType);
-
-            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
-                "WelcomeLetter", employeeDto);
-        }
-        catch (Exception ex)
-        {
-            var newEmployeeType = await _employeeTypeService
-                .SaveEmployeeType(new EmployeeTypeDto { Id = 0, Name = employeeDto.EmployeeType!.Name });
-
-            _errorLoggingService.LogException(ex);
-            employee = new Employee(employeeDto, newEmployeeType);
-        }
-
-        var physicalAddressExist = await _employeeAddressService
-            .CheckIfExists(employeeDto.PhysicalAddress!);
+        var employee = new Employee(employeeDto, existingEmployeeType);
 
         EmployeeAddressDto physicalAddress;
 
-        if (!physicalAddressExist)
+        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!))
             physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
         else
             physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
 
         employee.PhysicalAddressId = physicalAddress.Id;
 
-        var postalAddressExist = await _employeeAddressService
-            .CheckIfExists(employeeDto.PostalAddress!);
-
         EmployeeAddressDto postalAddress;
 
-        if (!postalAddressExist)
+        if (!await _employeeAddressService
+                .CheckIfExists(employeeDto.PostalAddress!))
             postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
         else
             postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
@@ -98,13 +68,22 @@ public class EmployeeService : IEmployeeService
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
+        try
+        {
+            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
+                "WelcomeLetter", employeeDto);
+        }
+        catch (Exception ex)
+        {
+            _errorLoggingService.LogException(ex);
+        }
+
         return newEmployee.ToDto();
     }
 
     public async Task<bool> CheckUserExist(string? email)
     {
-        return await _db.Employee
-                        .Any(employee => employee.Email == email);
+        return await _db.Employee.Any(employee => employee.Email == email);
     }
 
     public async Task<EmployeeDto> DeleteEmployee(string email)
@@ -154,10 +133,7 @@ public class EmployeeService : IEmployeeService
                                 .FirstOrDefaultAsync();
 
         if (employee == null)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Unable to Load Employee");
 
         return employee;
     }
@@ -174,35 +150,47 @@ public class EmployeeService : IEmployeeService
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
     }
 
-
-    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string userEmail)
+    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email)
     {
-        EmployeeTypeDto employeeTypeDto = await _employeeTypeService
-            .GetEmployeeType(employeeDto.EmployeeType!.Name);
-        Employee? employee = null;
-        if (employeeDto.Email == userEmail)
-        {
-            employee = CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
-        }
-        else
-        {
-            if (await CheckUserExist(userEmail))
-            {
-                if (await IsAdmin(userEmail))
-                    employee = CreateNewEmployeeEntity(employeeDto, employeeTypeDto);
-                else
-                {
-                    var exception = new Exception("Unauthorized action: You are not an Admin");
-                    throw _errorLoggingService.LogException(exception);
-                }
+        var employee = await _db.Employee
+            .Get(employee => employee.Email == employeeDto.Email)
+            .FirstOrDefaultAsync();
 
-            }
-            else
-            {
-                var exception = new Exception("User already exists");
-                throw _errorLoggingService.LogException(exception);
-            }
-        }
+        if (employee == null)
+            throw new CustomException("Unable to Load Employee");
+
+        if (employee.Email != email && !await IsAdmin(email)) 
+            throw new CustomException("Unauthorized Access");
+
+        employee.TaxNumber = employeeDto.TaxNumber;
+        employee.PeopleChampion = employeeDto.PeopleChampion;
+        employee.Disability = employeeDto.Disability;
+        employee.DisabilityNotes = employeeDto.DisabilityNotes;
+        employee.Level = employeeDto.Level;
+        employee.EmployeeTypeId = employeeDto.EmployeeType?.Id ?? employee.EmployeeTypeId;
+        employee.Notes = employeeDto.Notes;
+        employee.Initials = employeeDto.Initials;
+        employee.Name = employeeDto.Name;
+        employee.Surname = employeeDto.Surname;
+        employee.DateOfBirth = employeeDto.DateOfBirth;
+        employee.CountryOfBirth = employeeDto.CountryOfBirth;
+        employee.Nationality = employeeDto.Nationality;
+        employee.IdNumber = employeeDto.IdNumber;
+        employee.PassportNumber = employeeDto.PassportNumber;
+        employee.PassportExpirationDate = employeeDto.PassportExpirationDate;
+        employee.PassportCountryIssue = employeeDto.PassportCountryIssue;
+        employee.Race = employeeDto.Race;
+        employee.Gender = employeeDto.Gender;
+        employee.Email = employeeDto.Email;
+        employee.PersonalEmail = employeeDto.PersonalEmail;
+        employee.CellphoneNo = employeeDto.CellphoneNo;
+        employee.ClientAllocated = employeeDto.ClientAllocated;
+        employee.TeamLead = employeeDto.TeamLead;
+        employee.PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
+        employee.PostalAddressId = employeeDto.PostalAddress?.Id;
+        employee.HouseNo = employeeDto.HouseNo;
+        employee.EmergencyContactName = employeeDto.EmergencyContactName;
+        employee.EmergencyContactNo = employeeDto.EmergencyContactNo;
 
         return (await _db.Employee.Update(employee)).ToDto();
     }
@@ -355,16 +343,6 @@ public class EmployeeService : IEmployeeService
                             .FirstOrDefaultAsync();
 
         return role!.Description is "Journey";
-    }
-
-    private Employee CreateNewEmployeeEntity(EmployeeDto employeeDto, EmployeeTypeDto employeeTypeDto)
-    {
-        var employee = new Employee(employeeDto, employeeTypeDto)
-        {
-            Email = employeeDto.Email
-        };
-
-        return employee;
     }
 
     public async Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId)

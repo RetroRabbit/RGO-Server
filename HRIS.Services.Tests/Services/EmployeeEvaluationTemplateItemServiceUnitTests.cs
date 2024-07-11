@@ -7,23 +7,21 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeEvaluationTemplateItemServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeEvaluationTemplateItemService _employeeEvaluationTemplateItemService;
     private readonly Mock<IEmployeeEvaluationTemplateService> _employeeEvaluationTemplateServiceMock;
 
     public EmployeeEvaluationTemplateItemServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _employeeEvaluationTemplateServiceMock = new Mock<IEmployeeEvaluationTemplateService>();
         _employeeEvaluationTemplateItemService = new EmployeeEvaluationTemplateItemService(
          _dbMock.Object,
-         _employeeEvaluationTemplateServiceMock.Object, _errorLoggingServiceMock.Object);
+         _employeeEvaluationTemplateServiceMock.Object);
     }
 
     [Fact]
@@ -52,9 +50,7 @@ public class EmployeeEvaluationTemplateItemServiceUnitTests
                                                                 Func<EmployeeEvaluationTemplateItem, bool>>>()))
             .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                                                 _employeeEvaluationTemplateItemService.Get("template", "section",
                                                  "question"));
     }
@@ -102,9 +98,7 @@ public class EmployeeEvaluationTemplateItemServiceUnitTests
                                                                 Func<EmployeeEvaluationTemplateItem, bool>>>()))
             .ReturnsAsync(true);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                                                 _employeeEvaluationTemplateItemService.Save("template", "section",
                                                  "question"));
     }
@@ -166,9 +160,7 @@ public class EmployeeEvaluationTemplateItemServiceUnitTests
         _employeeEvaluationTemplateServiceMock.Setup(x => x.Get(It.IsAny<string>()))
                                               .ReturnsAsync(evaluationTemplateItem.Template!.ToDto());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                                                 _employeeEvaluationTemplateItemService.Update(evaluationTemplateItem
                                                     .ToDto()));
     }
@@ -213,9 +205,7 @@ public class EmployeeEvaluationTemplateItemServiceUnitTests
                                                                 Func<EmployeeEvaluationTemplateItem, bool>>>()))
             .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                                                 _employeeEvaluationTemplateItemService.Delete("template", "section",
                                                  "question"));
     }
@@ -317,9 +307,7 @@ public class EmployeeEvaluationTemplateItemServiceUnitTests
         _employeeEvaluationTemplateServiceMock.Setup(x => x.CheckIfExists(It.IsAny<string>()))
                                               .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationTemplateItemService.GetAllByTemplate("template"));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeEvaluationTemplateItemService.GetAllByTemplate("template"));
     }
 
     [Fact]

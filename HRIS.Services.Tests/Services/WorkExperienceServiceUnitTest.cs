@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
@@ -7,20 +6,18 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class WorkExperienceServiceUnitTest
 {
     private readonly WorkExperienceService _workExperienceService;
     private readonly WorkExperience _workExperience;
     private readonly Mock<IUnitOfWork> _mockDb;
-    private readonly Mock<IErrorLoggingService> _errorLogggingServiceMock;
 
     public WorkExperienceServiceUnitTest()
     {
         _mockDb = new Mock<IUnitOfWork>();
-        _errorLogggingServiceMock = new Mock<IErrorLoggingService>();
-        _workExperienceService = new WorkExperienceService(_mockDb.Object, _errorLogggingServiceMock.Object);
+        _workExperienceService = new WorkExperienceService(_mockDb.Object);
 
         _workExperience = new WorkExperience
         {
@@ -64,9 +61,7 @@ public class WorkExperienceServiceUnitTest
         _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
             .ReturnsAsync(true);
 
-        _errorLogggingServiceMock.Setup(err => err.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Save(_workExperience.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _workExperienceService.Save(_workExperience.ToDto()));
     }
 
     [Fact]
@@ -109,25 +104,21 @@ public class WorkExperienceServiceUnitTest
     }
 
     [Fact]
-    public async Task UpdateWorkExperienceFailtest()
+    public async Task UpdateWorkExperienceFailTest()
     {
         _mockDb.Setup(x => x.WorkExperience.Any(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
                .ReturnsAsync(false);
 
-        _errorLogggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.Update(_workExperience.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _workExperienceService.Update(_workExperience.ToDto()));
     }
 
     [Fact]
     public async Task GetByIdFailTest()
     {
         _mockDb.Setup(x => x.WorkExperience.Get(It.IsAny<Expression<Func<WorkExperience, bool>>>()))
-               .Throws(new Exception("Simulated database exception"));
+               .Throws(new CustomException("Simulated database exception"));
 
-        _errorLogggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()));
-
-        await Assert.ThrowsAsync<Exception>(() => _workExperienceService.GetWorkExperienceByEmployeeId(1));
+        await Assert.ThrowsAsync<CustomException>(() => _workExperienceService.GetWorkExperienceByEmployeeId(1));
     }
 
     [Fact]

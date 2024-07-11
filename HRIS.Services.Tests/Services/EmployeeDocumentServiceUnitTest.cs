@@ -13,12 +13,12 @@ using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
+
 public class EmployeeDocumentServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly Mock<IEmployeeDocumentService> _employeeDocumentServiceMock;
 
     private readonly EmployeeDocumentService _employeeDocumentService;
@@ -27,9 +27,8 @@ public class EmployeeDocumentServiceUnitTest
     {
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _employeeServiceMock = new Mock<IEmployeeService>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _employeeDocumentServiceMock = new Mock<IEmployeeDocumentService>();
-        _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+        _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
     }
 
@@ -128,15 +127,8 @@ public class EmployeeDocumentServiceUnitTest
         _employeeServiceMock.Setup(x => x.GetById(employeeDocDto.EmployeeId))
             .ReturnsAsync((EmployeeDto)null!);
 
-        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-            .Throws(new Exception("employee not found"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(() => _employeeDocumentService
+         await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
             .addNewAdditionalDocument(employeeDocDto, "test@retrorabbit.co.za", 1));
-
-        Assert.Equal("employee not found", exception.Message);
-
-        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]
@@ -144,14 +136,9 @@ public class EmployeeDocumentServiceUnitTest
     {
         _employeeServiceMock.Setup(x => x.GetById(EmployeeId))
                             .ReturnsAsync((EmployeeDto?)null);
-
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-            .Throws(new Exception("employee not found"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(() => _employeeDocumentService
+        
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
             .SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
-
-        Assert.Equal("employee not found", exception.Message);
 
         _employeeServiceMock.Verify(x => x.GetById(EmployeeId), Times.Once);
     }
@@ -170,7 +157,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet.Object);
 
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.GetEmployeeDocument(EmployeeId, fileName, DocumentType.StarterKit);
 
@@ -196,14 +183,8 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                        .Returns(Enumerable.Empty<EmployeeDocument>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                         _employeeDocumentService.GetEmployeeDocument(employeeId, filename, documentType));
-
-        Assert.Equal("Employee not found", exception.Message);
-
-        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]
@@ -223,14 +204,8 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
             .Returns(new List<EmployeeDocument>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>()))
-            .Throws(new Exception("Employee certification record not found"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                     _employeeDocumentService.GetEmployeeDocument(employeeId, filename, documentType));
-
-        Assert.Equal("Employee certification record not found", exception.Message);
-        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]
@@ -250,7 +225,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet.Object);
 
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.GetEmployeeDocuments(EmployeeId, DocumentType.StarterKit);
 
@@ -277,14 +252,8 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                        .Returns(Enumerable.Empty<EmployeeDocument>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                         _employeeDocumentService.GetEmployeeDocuments(employeeId, documentType));
-
-        Assert.Equal("Employee not found", exception.Message);
-
-        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]
@@ -299,7 +268,7 @@ public class EmployeeDocumentServiceUnitTest
                       .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
         SetupMockRoles();
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), "test@retrorabbit.co.za");
 
@@ -322,14 +291,8 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                        .Returns(Enumerable.Empty<EmployeeDocument>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                         _employeeDocumentService.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved.ToDto(), "test@retrorabbit.co.za"));
-
-        Assert.Equal("Employee not found", exception.Message);
-
-        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]
@@ -342,7 +305,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Delete(It.IsAny<int>()))
                       .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, _errorLoggingServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
 
         var result = await service.DeleteEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id);
 
@@ -386,14 +349,8 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                        .Returns(Enumerable.Empty<EmployeeDocument>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee not found"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                         _employeeDocumentService.GetEmployeeDocumentsByStatus(employeeId, DocumentStatus.Approved));
-
-        Assert.Equal("Employee not found", exception.Message);
-
-        _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
     }
 
     [Fact]

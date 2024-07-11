@@ -10,12 +10,11 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeEvaluationServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeDto _employee;
     private readonly EmployeeEvaluationService _employeeEvaluationService;
     private readonly EmployeeEvaluationTemplateDto _employeeEvaluationTemplate;
@@ -25,13 +24,12 @@ public class EmployeeEvaluationServiceUnitTests
     public EmployeeEvaluationServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _employeeEvaluationTemplateServiceMock = new Mock<IEmployeeEvaluationTemplateService>();
         _employeeEvaluationService = new EmployeeEvaluationService(
                                                                    _dbMock.Object,
                                                                    _employeeServiceMock.Object,
-                                                                   _employeeEvaluationTemplateServiceMock.Object, _errorLoggingServiceMock.Object);
+                                                                   _employeeEvaluationTemplateServiceMock.Object);
 
         var employeeTypeDto = new EmployeeTypeDto { Id = 1, Name = "Developer" };
         var employeeAddressDto =
@@ -131,9 +129,7 @@ public class EmployeeEvaluationServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.Get(
+        await Assert.ThrowsAsync<CustomException>(() => _employeeEvaluationService.Get(
                                              evaluationInput.EmployeeEmail,
                                              evaluationInput.OwnerEmail,
                                              evaluationInput.Template,
@@ -177,9 +173,7 @@ public class EmployeeEvaluationServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.Delete(evaluationInput));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeEvaluationService.Delete(evaluationInput));
     }
 
     [Fact]
@@ -205,21 +199,19 @@ public class EmployeeEvaluationServiceUnitTests
     [Fact]
     public async Task SaveFailTest()
     {
-        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" }; ;
+        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" };
         _ = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.SetupSequence(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(true);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.Save(evaluationInput));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeEvaluationService.Save(evaluationInput));
     }
 
     [Fact]
     public async Task SavePassTest()
     {
-        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" }; ;
+        var evaluationInput = new EmployeeEvaluationInput { Id = 0, OwnerEmail = "owner", EmployeeEmail = "employee", Template = "template", Subject = "subject" };
         var employeeEvaluation = CreateEmployeeEvaluation(_employee, _employee, _employeeEvaluationTemplate);
 
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
@@ -266,9 +258,7 @@ public class EmployeeEvaluationServiceUnitTests
         _dbMock.Setup(x => x.EmployeeEvaluation.Any(It.IsAny<Expression<Func<EmployeeEvaluation, bool>>>()))
                .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                                                 _employeeEvaluationService.Update(oldEvaluationInput,
                                                  newEvaluationInput));
     }
@@ -349,9 +339,7 @@ public class EmployeeEvaluationServiceUnitTests
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
                             .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByEmployee(_employee.Email!));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeEvaluationService.GetAllByEmployee(_employee.Email!));
     }
 
     [Fact]
@@ -381,9 +369,7 @@ public class EmployeeEvaluationServiceUnitTests
         _employeeServiceMock.Setup(x => x.CheckUserExist(It.IsAny<string>()))
                             .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() => _employeeEvaluationService.GetAllByOwner(_employee.Email!));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeEvaluationService.GetAllByOwner(_employee.Email!));
     }
 
     [Fact]
@@ -413,9 +399,7 @@ public class EmployeeEvaluationServiceUnitTests
         _employeeEvaluationTemplateServiceMock.Setup(x => x.CheckIfExists(It.IsAny<string>()))
                                               .ReturnsAsync(false);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                                                 _employeeEvaluationService.GetAllByTemplate(_employeeEvaluationTemplate
                                                     .Description));
     }
