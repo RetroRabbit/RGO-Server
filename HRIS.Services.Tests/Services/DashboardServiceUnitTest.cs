@@ -115,7 +115,7 @@ public class DashboardServiceUnitTest
         };
 
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
-               .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
+               .Returns(monthlyEmployeeTotalList.ToMockIQueryable());
 
         var result = await _dashboardService.GetEmployeeCurrentMonthTotal();
 
@@ -139,7 +139,7 @@ public class DashboardServiceUnitTest
         };
 
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
-               .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
+               .Returns(monthlyEmployeeTotalList.ToMockIQueryable());
 
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
@@ -164,7 +164,7 @@ public class DashboardServiceUnitTest
         };
 
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
-               .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
+               .Returns(monthlyEmployeeTotalList.ToMockIQueryable());
 
         var result = await _dashboardService.GetEmployeePreviousMonthTotal();
 
@@ -190,7 +190,7 @@ public class DashboardServiceUnitTest
         };
 
         _dbMock.Setup(e => e.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>()))
-               .Returns(montlhyEmployeeTotalList.ToMockIQueryable());
+               .Returns(monthlyEmployeeTotalList.ToMockIQueryable());
 
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(monthlyEmployeeTotalDto);
