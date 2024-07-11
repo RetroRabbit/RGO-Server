@@ -4,6 +4,7 @@ using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -70,6 +71,23 @@ public class EmployeeController : ControllerBase
         return Ok(employees);
     }
 
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet("count")]
+    public async Task<IActionResult> CountAllEmployees()
+    {
+        try
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var employees = await _employeeService.GetAll(claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value!);
+
+            return Ok(employees.Count);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+   
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
