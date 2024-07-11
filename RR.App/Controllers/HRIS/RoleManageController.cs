@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,14 +10,14 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class RoleManageController : ControllerBase
 {
-    private readonly IRoleAccessLinkService? _roleAccessLinkService;
-    private readonly IRoleAccessService? _roleAccessService;
-    private readonly IRoleService? _roleService;
+    private readonly IRoleAccessLinkService _roleAccessLinkService;
+    private readonly IRoleAccessService _roleAccessService;
+    private readonly IRoleService _roleService;
 
     public RoleManageController(
-        IRoleAccessLinkService? roleAccessLinkService,
-        IRoleService? roleService,
-        IRoleAccessService? roleAccessService)
+        IRoleAccessLinkService roleAccessLinkService,
+        IRoleService roleService,
+        IRoleAccessService roleAccessService)
     {
         _roleAccessLinkService = roleAccessLinkService;
         _roleService = roleService;
@@ -28,29 +29,17 @@ public class RoleManageController : ControllerBase
     public async Task<IActionResult> AddPermission([FromQuery] string role, [FromQuery] string permission,
                                                    [FromQuery] string grouping)
     {
-        if (_roleService == null || _roleAccessService == null || _roleAccessLinkService == null)
-        {
-            return BadRequest("Invalid input");
-        }
-
-        try
-        {
-            var foundRole = await _roleService.CheckRole(role)
+        var foundRole = await _roleService.CheckRole(role)
                 ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto{Id = 0, Description = role });
+                : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
 
-            var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
-                ? await _roleAccessService.GetRoleAccess(permission)
-                : await _roleAccessService.SaveRoleAccess(new RoleAccessDto { Id = 0, Permission = permission, Grouping = grouping });
+        var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
+            ? await _roleAccessService.GetRoleAccess(permission)
+            : await _roleAccessService.SaveRoleAccess(new RoleAccessDto { Id = 0, Permission = permission, Grouping = grouping });
 
-            var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto { Id = 0, Role = foundRole, RoleAccess = roleAccess });
+        var roleAccessLink = await _roleAccessLinkService.Save(new RoleAccessLinkDto { Id = 0, Role = foundRole, RoleAccess = roleAccess });
 
-            return CreatedAtAction(nameof(AddPermission), roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return CreatedAtAction(nameof(AddPermission), roleAccessLink);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -60,17 +49,6 @@ public class RoleManageController : ControllerBase
     public async Task<IActionResult> RemovePermission([FromQuery] string role, [FromQuery] string permission,
                                                       string grouping)
     {
-        if (_roleService == null || _roleAccessService == null || _roleAccessLinkService == null)
-        {
-            return BadRequest("Invalid input");
-        }
-
-        try
-        {
-            var foundRole = await _roleService.CheckRole(role)
-                ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto{ Id = 0, Description = role});
-
             var roleAccess = await _roleAccessService.CheckRoleAccess(permission)
                 ? await _roleAccessService.GetRoleAccess(permission)
                 : await _roleAccessService.SaveRoleAccess(new RoleAccessDto { Id = 0, Permission = permission, Grouping = grouping });
@@ -78,11 +56,6 @@ public class RoleManageController : ControllerBase
             var roleAccessLink = await _roleAccessLinkService.Delete(role, permission);
 
             return CreatedAtAction(nameof(RemovePermission), roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
@@ -91,104 +64,44 @@ public class RoleManageController : ControllerBase
     [HttpGet("permissions")]
     public async Task<IActionResult> GetRolePermissions([FromQuery] string role)
     {
-        if (_roleAccessLinkService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+        var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
 
-        try
-        {
-            var roleAccessLink = await _roleAccessLinkService.GetByRole(role);
-
-            return Ok(roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccessLink);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllRoleAccessLink()
     {
-        if (_roleAccessLinkService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+        var roleAccessLink = await _roleAccessLinkService.GetAll();
 
-        try
-        {
-            var roleAccessLink = await _roleAccessLinkService.GetAll();
-
-            return Ok(roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccessLink);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("role-access-links")]
     public async Task<IActionResult> GetAllRoleAccessLinks()
     {
-        if (_roleAccessLinkService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+        var roleAccessLink = await _roleAccessLinkService.GetAllRoleAccessLink();
 
-        try
-        {
-            var roleAccessLink = await _roleAccessLinkService.GetAllRoleAccessLink();
-
-            return Ok(roleAccessLink);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccessLink);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("role-accesses")]
     public async Task<IActionResult> GetAllRoleAccesses()
     {
-        if (_roleAccessService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+        var roleAccesses = await _roleAccessService.GetAllRoleAccess();
 
-        try
-        {
-            var roleAccesses = await _roleAccessService.GetAllRoleAccess();
-
-            return Ok(roleAccesses);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roleAccesses);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("roles")]
     public async Task<IActionResult> GetAllRoles()
     {
-        if (_roleService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+        var roles = await _roleService.GetAll();
 
-        try
-        {
-            var roles = await _roleService.GetAll();
-
-            return Ok(roles);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(roles);
     }
 }

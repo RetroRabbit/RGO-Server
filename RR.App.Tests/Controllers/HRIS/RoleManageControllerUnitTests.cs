@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using Xunit;
+using HRIS.Services.Services;
 
 namespace RR.App.Tests.Controllers.HRIS;
 
@@ -50,13 +51,11 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task AddPermissionHandlesExceptionReturnsNotFound()
     {
-        _roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>())).ThrowsAsync(new Exception("Error adding permission"));
+        _roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>())).ThrowsAsync(new CustomException("Error adding permission"));
 
-        var result = await _controller.AddPermission("Super Admin", "Permission 1", "Grouping 1");
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.AddPermission("Super Admin", "Permission 1", "Grouping 1"));
 
-        var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
-        Assert.Equal("Error adding permission", errorMessage);
+        Assert.Equal("Error adding permission", exception.Message);
     }
 
     [Fact]
@@ -81,13 +80,11 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task RemovePermissionHandlesExceptionReturnsBadRequest()
     {
-        _roleAccessLinkServiceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("Error removing permission"));
+        _roleAccessLinkServiceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new CustomException("Error removing permission"));
 
-        var result = await _controller.RemovePermission("Super Admin", "Permission 1", "Grouping 1");
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.RemovePermission("Super Admin", "Permission 1", "Grouping 1"));
 
-        var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(badRequestObjectResult.Value);
-        Assert.Equal("Error removing permission", errorMessage);
+        Assert.Equal("Error removing permission", exception.Message);
     }
 
     [Fact]
@@ -109,13 +106,11 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetRolePermissionsHandlesExceptionReturnsNotFound()
     {
-        _roleAccessLinkServiceMock.Setup(x => x.GetByRole(It.IsAny<string>())).ThrowsAsync(new Exception("Error getting role permissions"));
+        _roleAccessLinkServiceMock.Setup(x => x.GetByRole(It.IsAny<string>())).ThrowsAsync(new CustomException("Error getting role permissions"));
 
-        var result = await _controller.GetRolePermissions("Super Admin");
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.GetRolePermissions("Super Admin"));
 
-        var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
-        Assert.Equal("Error getting role permissions", errorMessage);
+        Assert.Equal("Error getting role permissions", exception.Message);
     }
 
 
@@ -137,13 +132,11 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessLinkHandlesExceptionReturnsNotFound()
     {
-        _roleAccessLinkServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("Error getting all role access link"));
+        _roleAccessLinkServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new CustomException("Error getting all role access link"));
 
-        var result = await _controller.GetAllRoleAccessLink();
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.GetAllRoleAccessLink());
 
-        var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
-        Assert.Equal("Error getting all role access link", errorMessage);
+        Assert.Equal("Error getting all role access link", exception.Message);
     }
 
     [Fact]
@@ -161,13 +154,11 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessLinksHandlesExceptionReturnsNotFound()
     {
-        _roleAccessLinkServiceMock.Setup(x => x.GetAllRoleAccessLink()).ThrowsAsync(new Exception("Error getting all role access link"));
+        _roleAccessLinkServiceMock.Setup(x => x.GetAllRoleAccessLink()).ThrowsAsync(new CustomException("Error getting all role access link"));
 
-        var result = await _controller.GetAllRoleAccessLinks();
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.GetAllRoleAccessLinks());
 
-        var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
-        Assert.Equal("Error getting all role access link", errorMessage);
+        Assert.Equal("Error getting all role access link", exception.Message);
     }
 
     [Fact]
@@ -185,13 +176,11 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRoleAccessesHandlesExceptionReturnsNotFound()
     {
-        _roleAccessServiceMock.Setup(x => x.GetAllRoleAccess()).ThrowsAsync(new Exception("Error getting all role access"));
+        _roleAccessServiceMock.Setup(x => x.GetAllRoleAccess()).ThrowsAsync(new CustomException("Error getting all role access"));
 
-        var result = await _controller.GetAllRoleAccesses();
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.GetAllRoleAccesses());
 
-        var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
-        Assert.Equal("Error getting all role access", errorMessage);
+        Assert.Equal("Error getting all role access", exception.Message);
     }
 
     [Fact]
@@ -209,12 +198,10 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task GetAllRolesHandlesExceptionReturnsNotFound()
     {
-        _roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new Exception("Error getting all roles"));
+        _roleServiceMock.Setup(x => x.GetAll()).ThrowsAsync(new CustomException("Error getting all roles"));
 
-        var result = await _controller.GetAllRoles();
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.GetAllRoles());
 
-        var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundObjectResult.Value);
-        Assert.Equal("Error getting all roles", errorMessage);
+        Assert.Equal("Error getting all roles", exception.Message);
     }
 }
