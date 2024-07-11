@@ -13,6 +13,7 @@ namespace HRIS.Services.Services
         {
             _db = db;
         }
+        
         public async Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate()
         {
             var today = DateTime.Today;
@@ -48,7 +49,7 @@ namespace HRIS.Services.Services
                 ? ((previousChurnRate - churnRate) / averageChurnRate) * 100
                 : 0;
 
-            bool isIncrease = percentageDifference > 0;
+            var isIncrease = percentageDifference > 0;
 
             return new ChurnRateDataCardDto
             {
@@ -66,8 +67,7 @@ namespace HRIS.Services.Services
 
         private double CalculateChurnRate(int employeeStartOfPeriodTotal, int terminationsDuringPeriod)
         {
-            return Math.Round((employeeStartOfPeriodTotal > 0)
-
+            return Math.Round(employeeStartOfPeriodTotal > 0
                 ? (double)terminationsDuringPeriod / employeeStartOfPeriodTotal * 100
                 : 0, 0);
         }
@@ -77,15 +77,15 @@ namespace HRIS.Services.Services
             var currentMonthTotal = await GetEmployeeCurrentMonthTotal();
             var previousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-            int currentTotal = currentMonthTotal.EmployeeTotal;
-            int previousTotal = previousMonthTotal.EmployeeTotal;
+            var currentTotal = currentMonthTotal.EmployeeTotal;
+            var previousTotal = previousMonthTotal.EmployeeTotal;
 
             if (previousTotal == 0)
             {
                 return 0;
             }
 
-            double growthRate = ((double)(currentTotal - previousTotal) / previousTotal) * 100;
+            var growthRate = ((double)(currentTotal - previousTotal) / previousTotal) * 100;
             return Math.Round(growthRate, 2);
         }
 
@@ -179,9 +179,8 @@ namespace HRIS.Services.Services
 
         public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
         {
-            var totalNumberOfDevsOnBench = _db.Employee.Get()
-                                              .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 2)
-                                              .ToList().Count;
+            var totalNumberOfDevsOnBench = await _db.Employee.Get()
+                                              .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 2);
 
             var totalNumberOfDesignersOnBench = _db.Employee.Get()
                                                    .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 3)

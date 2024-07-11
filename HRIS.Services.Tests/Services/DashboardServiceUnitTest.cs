@@ -48,7 +48,6 @@ public class DashboardServiceUnitTest
     public async Task CalculateChurnRateTest()
     {
         var today = DateTime.Today;
-        var twelveMonthsAgo = today.AddMonths(-12);
 
         _dbMock.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(_employees);
 
@@ -81,30 +80,12 @@ public class DashboardServiceUnitTest
 
         var result = await _dashboardService.CalculateEmployeeGrowthRate();
 
-        Assert.NotNull(result);
         Assert.Equal(0, result);
     }
 
     [Fact]
     public async Task GenerateDataCardInformation_ReturnsExpectedDataCard()
     {
-        var employeeCountTotalsByRole = new EmployeeCountByRoleDataCard
-        {
-            DevsCount = 20,
-            DesignersCount = 10,
-            ScrumMastersCount = 5,
-            BusinessSupportCount = 15
-        };
-
-        var totalNumberOfEmployeesOnBench = new EmployeeOnBenchDataCard
-        {
-            DevsOnBenchCount = 2,
-            DesignersOnBenchCount = 1,
-            ScrumMastersOnBenchCount = 1,
-            TotalNumberOfEmployeesOnBench = 4
-        };
-
-        int totalNumberOfEmployeesOnClients = 36;
         var employeeList = new List<Employee>
         {
             new Employee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTypeTestData.DeveloperType.ToDto())
@@ -220,15 +201,6 @@ public class DashboardServiceUnitTest
     [Fact]
     public async Task GetPreviousMonthTotalCreateNewTotalTest()
     {
-        var employeeList = new List<Employee>
-        {
-            EmployeeTestData.EmployeeOne
-        };
-
-        var employee = new List<Employee>
-        {
-            EmployeeTestData.EmployeeOne
-        };
 
         _dbMock.Setup(u => u.Employee.GetAll(null)).ReturnsAsync(_employees);
 

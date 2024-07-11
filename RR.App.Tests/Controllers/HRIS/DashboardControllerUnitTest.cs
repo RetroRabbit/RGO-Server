@@ -4,17 +4,14 @@ using HRIS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
-using RR.Tests.Data;
 using RR.UnitOfWork;
-using System;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
 
 public class DashboardControllerUnitTest
 {
-    private readonly DashboardController _dashboardcontroller;
-    private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly DashboardController _dashboardController;
     private readonly Mock<IDashboardService> _dashboardMockService;
 
     public DashboardControllerUnitTest()
@@ -41,7 +38,7 @@ public class DashboardControllerUnitTest
     [Fact]
     public async Task CalculateEmployeeGrowthRate_ReturnsOkResult()
     {
-        double expectedGrowthRate = 5.5;
+        var expectedGrowthRate = 5.5;
         _dashboardMockService.Setup(service => service.CalculateEmployeeGrowthRate())
                              .ReturnsAsync(expectedGrowthRate);
 
