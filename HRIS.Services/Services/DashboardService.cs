@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -177,18 +178,17 @@ namespace HRIS.Services.Services
             return currentEmployeeTotal.ToDto();
         }
 
-        public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
+        public async Task<EmployeeOnBenchDataCard> GetTotalNumberOfEmployeesOnBench()
         {
             var totalNumberOfDevsOnBench = await _db.Employee.Get()
                                               .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 2);
 
-            var totalNumberOfDesignersOnBench = _db.Employee.Get()
-                                                   .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 3)
-                                                   .ToList().Count;
+            var totalNumberOfDesignersOnBench = await _db.Employee.Get()
+                                                   .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 3);
 
-            var totalNumberOfScrumMastersOnBench = _db.Employee.Get()
-                                                      .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 4)
-                                                      .ToList().Count;
+
+            var totalNumberOfScrumMastersOnBench = await _db.Employee.Get()
+                                                      .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 4)            
 
             var totalnumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
                                                 totalNumberOfDesignersOnBench +
