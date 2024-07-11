@@ -4,7 +4,6 @@ using HRIS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
-using RR.Tests.Data;
 using RR.UnitOfWork;
 using System;
 using Xunit;
