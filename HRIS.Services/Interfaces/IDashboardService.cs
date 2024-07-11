@@ -14,7 +14,6 @@ namespace HRIS.Services.Interfaces
         /// </summary>
         /// <returns>EmployeeDataCard</returns>
         Task<EmployeeCountDataCard> GenerateDataCardInformation();
-
         /// <summary>
         ///     Get the total number of employees for the current month
         /// </summary>
@@ -39,13 +38,11 @@ namespace HRIS.Services.Interfaces
         ///     Get the total number of employees onn client
         /// <returns>MonthlyEmployeeTotalDto</returns>
         int GetTotalNumberOfEmployeesOnClients();
-
         /// <summary>
         ///     Calculates employee chrunRate over a month
         /// </summary>
         /// <returns>ChurnRateDataCard</returns>
         Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate();
-
         Task<double> CalculateEmployeeGrowthRate();
     }
 }
