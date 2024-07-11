@@ -49,7 +49,7 @@ namespace HRIS.Services.Services
                 ? ((previousChurnRate - churnRate) / averageChurnRate) * 100
                 : 0;
 
-            bool isIncrease = percentageDifference > 0;
+            var isIncrease = percentageDifference > 0;
 
             return new ChurnRateDataCardDto
             {
