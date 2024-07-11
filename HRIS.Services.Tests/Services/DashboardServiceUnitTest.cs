@@ -48,7 +48,6 @@ public class DashboardServiceUnitTest
     public async Task CalculateChurnRateTest()
     {
         var today = DateTime.Today;
-        var twelveMonthsAgo = today.AddMonths(-12);
 
         _dbMock.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(_employees);
 
