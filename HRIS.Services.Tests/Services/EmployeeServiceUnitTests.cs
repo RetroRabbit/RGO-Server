@@ -20,7 +20,6 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IRoleService> _roleServiceMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeService _employeeService;
-    private readonly DashboardService _dashboardService;
 
     private readonly EmployeeRole _employeeRoleDto = new()
     {
