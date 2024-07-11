@@ -175,7 +175,7 @@ namespace HRIS.Services.Services
             return currentEmployeeTotal.ToDto();
         }
 
-        public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
+        public async Task<EmployeeOnBenchDataCard> GetTotalNumberOfEmployeesOnBench()
         {
             var totalNumberOfDevsOnBench = await _db.Employee.Get()
                                               .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 2);
