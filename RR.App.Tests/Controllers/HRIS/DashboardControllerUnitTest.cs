@@ -38,7 +38,7 @@ public class DashboardControllerUnitTest
     [Fact]
     public async Task CalculateEmployeeGrowthRate_ReturnsOkResult()
     {
-        double expectedGrowthRate = 5.5;
+        var expectedGrowthRate = 5.5;
         _dashboardMockService.Setup(service => service.CalculateEmployeeGrowthRate())
                              .ReturnsAsync(expectedGrowthRate);
 
