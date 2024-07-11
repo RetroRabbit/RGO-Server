@@ -179,9 +179,8 @@ namespace HRIS.Services.Services
 
         public EmployeeOnBenchDataCard GetTotalNumberOfEmployeesOnBench()
         {
-            var totalNumberOfDevsOnBench = _db.Employee.Get()
-                                              .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 2)
-                                              .ToList().Count;
+            var totalNumberOfDevsOnBench = await _db.Employee.Get()
+                                              .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 2);
 
             var totalNumberOfDesignersOnBench = _db.Employee.Get()
                                                    .Where(c => c.ClientAllocated == null && c.EmployeeTypeId == 3)
