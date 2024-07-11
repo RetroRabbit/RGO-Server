@@ -36,9 +36,9 @@ public class EmployeeRoleManageControllerUnitTests
 
         var employee = new EmployeeDto { Email = email };
         var authUser = new List<Auth0.ManagementApi.Models.User>
-            {
+        {
                  new Auth0.ManagementApi.Models.User { UserId = "1" }
-            };
+        };
 
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
         var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
@@ -107,9 +107,9 @@ public class EmployeeRoleManageControllerUnitTests
 
         var employee = new EmployeeDto { Email = email };
         var authUser = new List<Auth0.ManagementApi.Models.User>
-            {
+        {
                new Auth0.ManagementApi.Models.User { UserId = "1" }
-            };
+        };
 
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
         var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
@@ -169,9 +169,9 @@ public class EmployeeRoleManageControllerUnitTests
 
         var employee = new EmployeeDto { Email = email };
         var authUser = new List<Auth0.ManagementApi.Models.User>
-            {
+        {
                  new Auth0.ManagementApi.Models.User { UserId = "1" }
-            };
+        };
 
         _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
@@ -187,6 +187,51 @@ public class EmployeeRoleManageControllerUnitTests
     }
 
     [Fact]
+    public async Task UpdateRole_AuthRolesExist_RemovesPreviousRole()
+    {
+        var email = "test@example.com";
+        var role = "Admin";
+
+        var employee = new EmployeeDto { Email = email };
+        var authUser = new List<Auth0.ManagementApi.Models.User>
+        {
+            new Auth0.ManagementApi.Models.User { UserId = "1" }
+        };
+
+        var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+        var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
+
+        var previousRole = new Role { Id = "previousRoleId", Description = "User" };
+        var authRoles = new List<Auth0.ManagementApi.Models.Role> { previousRole, new Role { Id = "authRoleId", Description = role } };
+
+        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
+        _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
+        _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
+        _authMockService.Setup(service => service.AddRoleToUserAsync("1", "authRoleId")).ReturnsAsync(true);
+        _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync(employeeRoleDto);
+        _authMockService.Setup(x => x.GetUserRolesAsync(It.IsAny<string>())).ReturnsAsync(() =>
+        {
+            var roles = new List<Auth0.ManagementApi.Models.Role>
+            {
+                new Auth0.ManagementApi.Models.Role { Name = "Employee", Id = "roleId" }
+            };
+
+            var pagedList = new PagedList<Auth0.ManagementApi.Models.Role>(roles);
+            return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
+        });
+
+        _authMockService.Setup(service => service.RemoveRoleFromUserAsync("1", previousRole.Id)).ReturnsAsync(true);
+        _employeeRoleMockService.Setup(service => service.UpdateEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(employeeRoleDto);
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.UpdateRole(email, role));
+
+        var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+        var model = Assert.IsAssignableFrom<EmployeeRoleDto>(createdResult.Value);
+        Assert.Equal(employeeRoleDto.Id, model.Id);
+    }
+
+    [Fact]
     public async Task RemoveRole_ReturnsOkResult()
     {
         var email = "test@example.com";
@@ -194,9 +239,9 @@ public class EmployeeRoleManageControllerUnitTests
 
         var employee = new EmployeeDto { Email = email };
         var authUser = new List<Auth0.ManagementApi.Models.User>
-            {
+        {
               new Auth0.ManagementApi.Models.User { UserId = "1" }
-            };
+        };
 
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
         var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
@@ -210,9 +255,9 @@ public class EmployeeRoleManageControllerUnitTests
         _authMockService.Setup(x => x.GetUserRolesAsync(It.IsAny<string>())).ReturnsAsync(() =>
         {
             var roles = new List<Auth0.ManagementApi.Models.Role>
-                {
+            {
                     new Auth0.ManagementApi.Models.Role { Name = "Employee", Id = "roleId" }
-                };
+            };
 
             var pagedList = new PagedList<Auth0.ManagementApi.Models.Role>(roles);
             return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
@@ -277,6 +322,33 @@ public class EmployeeRoleManageControllerUnitTests
     }
 
     [Fact]
+    public async Task RemoveRole_UserRoleNotFound_ThrowsException()
+    {
+        var email = "test@example.com";
+        var role = "Admin";
+
+        var employee = new EmployeeDto { Email = email };
+        var authUser = new List<Auth0.ManagementApi.Models.User>
+        {
+               new Auth0.ManagementApi.Models.User { UserId = "1" }
+        };
+
+        var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
+
+        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
+        _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
+        _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null);
+        _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null);
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.RemoveRole(email, role));
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() => _controller.RemoveRole(email, role));
+
+        Assert.Equal("User roles not found in authentication service.", exception.Message);
+    }
+
+    [Fact]
     public async Task RemoveRole_EmployeeRoleNotFound_ThrowsException()
     {
         var email = "test@example.com";
@@ -284,26 +356,34 @@ public class EmployeeRoleManageControllerUnitTests
 
         var employee = new EmployeeDto { Email = email };
         var authUser = new List<Auth0.ManagementApi.Models.User>
-            {
+        {
                new Auth0.ManagementApi.Models.User { UserId = "1" }
-            };
+        };
 
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
-        //var authRoles = new List<Role>
-        //{
-        //    RoleTestData.TalentRole
-        //};
 
         _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
-        //   _authMockService.Setup(service => service.GetUserRolesAsync("1")).ReturnsA(true);
+        _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null);
+        _authMockService.Setup(x => x.GetUserRolesAsync(It.IsAny<string>())).ReturnsAsync(() =>
+        {
+            var roles = new List<Auth0.ManagementApi.Models.Role>
+            {
+                    new Auth0.ManagementApi.Models.Role { Name = "Employee", Id = "roleId" }
+            };
+
+            var pagedList = new PagedList<Auth0.ManagementApi.Models.Role>(roles);
+            return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
+        });
 
         _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null);
 
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.RemoveRole(email, role));
+
         var exception = await Assert.ThrowsAsync<CustomException>(() => _controller.RemoveRole(email, role));
 
-        Assert.Equal("User roles not found in authentication service.", exception.Message);
+        Assert.Equal("Employee role not found.", (result as NotFoundObjectResult).Value);
     }
 
     [Fact]
@@ -342,10 +422,10 @@ public class EmployeeRoleManageControllerUnitTests
     public async Task GetAllRoles_ReturnsOkResult_WithRolesDescriptions()
     {
         var roles = new List<RoleDto>
-            {
+        {
                new RoleDto { Description = "Admin" },
                new RoleDto { Description = "User" }
-            };
+        };
 
         _roleMockService.Setup(service => service.GetAll()).ReturnsAsync(roles);
 
@@ -373,10 +453,10 @@ public class EmployeeRoleManageControllerUnitTests
     {
         var roleId = 1;
         var employeeRoles = new List<EmployeeRoleDto>
-            {
+        {
                new EmployeeRoleDto { Id = 1 },
                new EmployeeRoleDto { Id = 2 }
-            };
+        };
 
         _employeeRoleMockService.Setup(service => service.GetAllEmployeeOnRoles(roleId)).ReturnsAsync(employeeRoles);
 
@@ -397,4 +477,3 @@ public class EmployeeRoleManageControllerUnitTests
         Assert.Equal("Invalid input", exception.Message);
     }
 }
-
