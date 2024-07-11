@@ -132,10 +132,9 @@ namespace HRIS.Services.Services
         {
             var previousMonth = DateTime.Now.AddMonths(-1).ToString("MMMM");
 
-            var previousEmployeeTotal = _db.MonthlyEmployeeTotal
+            var previousEmployeeTotal = await _db.MonthlyEmployeeTotal
                                            .Get()
-                                           .Where(e => e.Month == previousMonth)
-                                           .FirstOrDefault();
+                                           .FirstOrDefaultAsync(e => e.Month == previousMonth);
 
             if (previousEmployeeTotal == null) return await GetEmployeeCurrentMonthTotal();
 
