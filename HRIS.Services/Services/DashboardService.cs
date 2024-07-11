@@ -147,10 +147,9 @@ namespace HRIS.Services.Services
 
             var currentYear = DateTime.Now.Year;
 
-            var currentEmployeeTotal = _db.MonthlyEmployeeTotal
+            var currentEmployeeTotal = await _db.MonthlyEmployeeTotal
                                           .Get()
-                                          .Where(e => e.Month == currentMonth && e.Year == currentYear)
-                                          .FirstOrDefault();
+                                          .FirstOrDefaultAsync(e => e.Month == currentMonth && e.Year == currentYear);
 
             if (currentEmployeeTotal == null)
             {
