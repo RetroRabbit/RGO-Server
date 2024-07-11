@@ -193,7 +193,6 @@ public class EmployeeService : IEmployeeService
         employee.EmergencyContactNo = employeeDto.EmergencyContactNo;
 
         return (await _db.Employee.Update(employee)).ToDto();
-
     }
 
     public async Task<EmployeeDto?> GetById(int employeeId)

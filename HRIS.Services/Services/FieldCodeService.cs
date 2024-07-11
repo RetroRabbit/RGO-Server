@@ -28,7 +28,7 @@ public class FieldCodeService : IFieldCodeService
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
 
 
-        if (ifFieldCode != null) throw new Exception("Field with that name found");
+        if (ifFieldCode != null) throw new CustomException("Field with that name found");
 
 
         var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
