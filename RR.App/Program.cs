@@ -25,7 +25,6 @@ namespace RR.App
             builder.Services.Configure<AuthManagement>(builder.Configuration.GetSection("AuthManagement"));
             builder.Services.Configure<SMTPSettings>(builder.Configuration.GetSection("SMTP"));
 
-
             SetupConfiguration(configuration);
             SetupDependencyInjection(builder.Services, configuration);
             ConfigureSwagger(builder.Services);

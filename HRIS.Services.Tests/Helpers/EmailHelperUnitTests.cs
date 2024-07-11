@@ -13,7 +13,6 @@ namespace HRIS.Services.Tests.Helpers;
 public class EmailHelperUnitTests
 {
     private readonly Mock<IUnitOfWork> _db;
-    /*private readonly Mock<IOptions<SMTPSettings>> _smtp;*/
     private readonly EmailHelper _helper;
 
     public EmailHelperUnitTests()
@@ -28,7 +27,6 @@ public class EmailHelperUnitTests
         });
 
         _helper = new EmailHelper(_db.Object, _smtp);
-        
     }
 
     [Fact]
