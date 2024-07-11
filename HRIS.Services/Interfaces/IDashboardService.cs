@@ -1,9 +1,4 @@
 ﻿using HRIS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HRIS.Services.Interfaces
 {
@@ -28,7 +23,7 @@ namespace HRIS.Services.Interfaces
         ///     Get the total number of employees for roles
         /// </summary>
         /// <returns>MonthlyEmployeeTotalDto</returns>
-        EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole();
+        Task<EmployeeCountByRoleDataCard> GetEmployeeCountTotalByRole();
         /// <summary>
         ///     Get the total number of employees on bench
         /// </summary>
@@ -37,12 +32,16 @@ namespace HRIS.Services.Interfaces
         /// <summary>
         ///     Get the total number of employees onn client
         /// <returns>MonthlyEmployeeTotalDto</returns>
-        int GetTotalNumberOfEmployeesOnClients();
+        Task<int> GetTotalNumberOfEmployeesOnClients();
         /// <summary>
         ///     Calculates employee chrunRate over a month
         /// </summary>
         /// <returns>ChurnRateDataCard</returns>
         Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate();
+        /// <summary>
+        ///     Calculates employeegrowth rate
+        /// </summary>
+        /// <returns>ChurnRateDataCard</returns>
         Task<double> CalculateEmployeeGrowthRate();
     }
 }

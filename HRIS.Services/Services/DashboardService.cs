@@ -92,11 +92,11 @@ namespace HRIS.Services.Services
 
         public async Task<EmployeeCountDataCard> GenerateDataCardInformation()
         {
-            var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
+            var employeeCountTotalsByRole = await GetEmployeeCountTotalByRole();
 
             var totalNumberOfEmployeesOnBench = await GetTotalNumberOfEmployeesOnBench();
 
-            var totalNumberOfEmployeesOnClients = GetTotalNumberOfEmployeesOnClients();
+            var totalNumberOfEmployeesOnClients = await GetTotalNumberOfEmployeesOnClients();
 
             var totalNumberOfEmployeesDevsScrumsAndDesigners = totalNumberOfEmployeesOnBench.TotalNumberOfEmployeesOnBench
                                                                + totalNumberOfEmployeesOnClients;
@@ -156,7 +156,7 @@ namespace HRIS.Services.Services
             {
                 var employeeTotalCount = await _db.Employee.GetAll();
 
-                var employeeCountTotalsByRole = GetEmployeeCountTotalByRole();
+                var employeeCountTotalsByRole = await GetEmployeeCountTotalByRole();
 
                 var monthlyEmployeeTotalDto = new MonthlyEmployeeTotalDto
                 {
@@ -184,7 +184,6 @@ namespace HRIS.Services.Services
             var totalNumberOfDesignersOnBench = await _db.Employee.Get()
                                                    .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 3);
 
-
             var totalNumberOfScrumMastersOnBench = await _db.Employee.Get()
                                                       .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 4);        
 
@@ -201,24 +200,21 @@ namespace HRIS.Services.Services
             };
         }
 
-        public EmployeeCountByRoleDataCard GetEmployeeCountTotalByRole()
+        public async Task<EmployeeCountByRoleDataCard> GetEmployeeCountTotalByRole()
         {
-            var devsTotal = _db.Employee.Get()
-                               .Where(e => e.EmployeeTypeId == 2)
-                               .ToList().Count;
+            var devsTotal = await _db.Employee.Get()
+                               .CountAsync(e => e.EmployeeTypeId == 2);
 
-            var designersTotal = _db.Employee.Get()
-                                    .Where(e => e.EmployeeTypeId == 3)
-                                    .ToList().Count;
+            var designersTotal = await _db.Employee.Get()
+                                    .CountAsync(e => e.EmployeeTypeId == 3);
 
-            var scrumMastersTotal = _db.Employee.Get()
-                                       .Where(e => e.EmployeeTypeId == 4)
-                                       .ToList().Count;
+            var scrumMastersTotal = await _db.Employee.Get()
+                                       .CountAsync(e => e.EmployeeTypeId == 4);
 
-            var businessSupportTotal = _db.Employee.Get()
-                                          .Where(e => e.EmployeeTypeId > 4)
-                                          .ToList().Count;
 
+            var businessSupportTotal = await _db.Employee.Get()
+                                          .CountAsync(e => e.EmployeeTypeId > 4);
+                                      
             return new EmployeeCountByRoleDataCard
             {
                 DevsCount = devsTotal,
@@ -228,17 +224,13 @@ namespace HRIS.Services.Services
             };
         }
 
-        public int GetTotalNumberOfEmployeesOnClients()
+        public async Task<int> GetTotalNumberOfEmployeesOnClients()
         {
-            var totalOfDevsDesignersAndScrumsOnClients = _db.Employee
+            var totalOfDevsDesignersAndScrumsOnClients = await _db.Employee
                                                             .Get()
-                                                            .Where(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 ||
-                                                                         e.EmployeeTypeId == 4) && e.ClientAllocated != 1)
-                                                            .ToList()
-                                                            .Count;
-
+                                                            .CountAsync(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 ||
+                                                                         e.EmployeeTypeId == 4) && e.ClientAllocated != 1);
             return totalOfDevsDesignersAndScrumsOnClients;
         }
-
     }
 }

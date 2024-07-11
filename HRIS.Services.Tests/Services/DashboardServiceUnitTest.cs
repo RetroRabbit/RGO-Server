@@ -91,9 +91,9 @@ public class DashboardServiceUnitTest
             new Employee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTypeTestData.DeveloperType.ToDto())
         };
 
-        _dashboardMockService.Setup(x => x.GetEmployeeCountTotalByRole()).Returns(new EmployeeCountByRoleDataCard());
+        _dashboardMockService.Setup(x => x.GetEmployeeCountTotalByRole()).ReturnsAsync(new EmployeeCountByRoleDataCard());
         _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnBench()).ReturnsAsync(new EmployeeOnBenchDataCard());
-        _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnClients()).Returns(0);
+        _dashboardMockService.Setup(x => x.GetTotalNumberOfEmployeesOnClients()).ReturnsAsync(0);
 
         _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal()).ReturnsAsync(_monthTotalDto);
         _dashboardMockService.Setup(x => x.GetEmployeePreviousMonthTotal()).ReturnsAsync(_monthTotalDto);
