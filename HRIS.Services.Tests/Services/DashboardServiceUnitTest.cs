@@ -109,7 +109,7 @@ public class DashboardServiceUnitTest
 
         var monthlyEmployeeTotalDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_CurrentYear_CurrentMonth;
 
-        var montlhyEmployeeTotalList = new List<MonthlyEmployeeTotal>
+        var monthlyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
             monthlyEmployeeTotalDto
         };
