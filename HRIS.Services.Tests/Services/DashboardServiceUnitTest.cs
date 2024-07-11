@@ -201,15 +201,6 @@ public class DashboardServiceUnitTest
     [Fact]
     public async Task GetPreviousMonthTotalCreateNewTotalTest()
     {
-        var employeeList = new List<Employee>
-        {
-            EmployeeTestData.EmployeeOne
-        };
-
-        var employee = new List<Employee>
-        {
-            EmployeeTestData.EmployeeOne
-        };
 
         _dbMock.Setup(u => u.Employee.GetAll(null)).ReturnsAsync(_employees);
 
