@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
 using RR.UnitOfWork;
-using System;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
