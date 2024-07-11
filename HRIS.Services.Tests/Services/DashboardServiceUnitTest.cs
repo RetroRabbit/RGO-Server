@@ -227,7 +227,7 @@ public class DashboardServiceUnitTest
     }
 
     [Fact]
-    public void GetTotalNumberOfEmployeesOnClients_ReturnsExpectedCount()
+    public async Task GetTotalNumberOfEmployeesOnClients_ReturnsExpectedCount()
     {
         var employees = new List<Employee>
         {
@@ -241,7 +241,7 @@ public class DashboardServiceUnitTest
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
              .Returns(employees.ToMockIQueryable());
 
-        var result = _dashboardService.GetTotalNumberOfEmployeesOnClients();
+        var result = await _dashboardService.GetTotalNumberOfEmployeesOnClients();
 
         Assert.Equal(3, result);
     }
