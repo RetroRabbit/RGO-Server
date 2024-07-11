@@ -13,6 +13,7 @@ namespace HRIS.Services.Services
         {
             _db = db;
         }
+        
         public async Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate()
         {
             var today = DateTime.Today;
