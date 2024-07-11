@@ -85,7 +85,7 @@ namespace HRIS.Services.Services
                 return 0;
             }
 
-            double growthRate = ((double)(currentTotal - previousTotal) / previousTotal) * 100;
+            var growthRate = ((double)(currentTotal - previousTotal) / previousTotal) * 100;
             return Math.Round(growthRate, 2);
         }
 
