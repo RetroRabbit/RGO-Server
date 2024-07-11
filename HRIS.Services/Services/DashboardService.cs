@@ -77,8 +77,8 @@ namespace HRIS.Services.Services
             var currentMonthTotal = await GetEmployeeCurrentMonthTotal();
             var previousMonthTotal = await GetEmployeePreviousMonthTotal();
 
-            int currentTotal = currentMonthTotal.EmployeeTotal;
-            int previousTotal = previousMonthTotal.EmployeeTotal;
+            var currentTotal = currentMonthTotal.EmployeeTotal;
+            var previousTotal = previousMonthTotal.EmployeeTotal;
 
             if (previousTotal == 0)
             {
