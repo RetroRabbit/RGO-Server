@@ -80,7 +80,6 @@ public class DashboardServiceUnitTest
 
         var result = await _dashboardService.CalculateEmployeeGrowthRate();
 
-        Assert.NotNull(result);
         Assert.Equal(0, result);
     }
 
