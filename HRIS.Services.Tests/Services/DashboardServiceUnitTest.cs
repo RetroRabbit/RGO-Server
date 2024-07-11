@@ -87,23 +87,6 @@ public class DashboardServiceUnitTest
     [Fact]
     public async Task GenerateDataCardInformation_ReturnsExpectedDataCard()
     {
-        var employeeCountTotalsByRole = new EmployeeCountByRoleDataCard
-        {
-            DevsCount = 20,
-            DesignersCount = 10,
-            ScrumMastersCount = 5,
-            BusinessSupportCount = 15
-        };
-
-        var totalNumberOfEmployeesOnBench = new EmployeeOnBenchDataCard
-        {
-            DevsOnBenchCount = 2,
-            DesignersOnBenchCount = 1,
-            ScrumMastersOnBenchCount = 1,
-            TotalNumberOfEmployeesOnBench = 4
-        };
-
-        int totalNumberOfEmployeesOnClients = 36;
         var employeeList = new List<Employee>
         {
             new Employee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTypeTestData.DeveloperType.ToDto())
