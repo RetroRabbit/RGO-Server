@@ -16,7 +16,6 @@ namespace HRIS.Services.Tests.Services
     public class EmployeeSalaryDetailsServiceUnitTest
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
         private readonly Mock<IEmployeeSalarayDetailsService> _employeeSalaryDetailsServiceMock;
         private readonly EmployeeSalaryDetailsService _employeeSalaryDetailsService;
 
@@ -26,9 +25,8 @@ namespace HRIS.Services.Tests.Services
         public EmployeeSalaryDetailsServiceUnitTest()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
             _employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalarayDetailsService>();
-            _employeeSalaryDetailsService = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object, _errorLoggingServiceMock.Object);
+            _employeeSalaryDetailsService = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object);
         }
 
         [Fact]
@@ -99,7 +97,7 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
                         .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            var service = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object, _errorLoggingServiceMock.Object);
+            var service = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object);
             var results = await service.UpdateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
             Assert.NotNull(results);
             Assert.Equivalent(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto(), results);
@@ -119,9 +117,7 @@ namespace HRIS.Services.Tests.Services
             _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                            .ReturnsAsync(true);
 
-            _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Employee salary already exists"));
-
-            var exception = await Assert.ThrowsAnyAsync<Exception>(() => _employeeSalaryDetailsService
+            var exception = await Assert.ThrowsAnyAsync<CustomException>(() => _employeeSalaryDetailsService
                 .SaveEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));
 
             Assert.Equal("Employee salary already exists", exception.Message);

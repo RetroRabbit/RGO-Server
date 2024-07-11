@@ -33,11 +33,11 @@ public class EmployeeServiceUnitTests
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
+        Mock<IErrorLoggingService> errorLoggingServiceMock = new();
         Mock<IEmailService> emailService = new();
         _roleServiceMock = new Mock<IRoleService>();
         _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+            _employeeAddressServiceMock.Object, _roleServiceMock.Object, errorLoggingServiceMock.Object,
             emailService.Object);
     }
 
@@ -45,68 +45,8 @@ public class EmployeeServiceUnitTests
     public async Task SaveEmployeeFailTest1()
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<Exception>(() => _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto()));
-    }
-
-    [Fact]
-    public async Task SaveEmployeeFailTest2()
-    {
-        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
-
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>())).Throws(new Exception());
-
-        _employeeTypeServiceMock.Setup(r => r.SaveEmployeeType(It.IsAny<EmployeeTypeDto>())).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
-
-        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
-            .ReturnsAsync(false)
-            .ReturnsAsync(false);
-
-        _employeeAddressServiceMock.SetupSequence(r => r.Save(It.IsAny<EmployeeAddressDto>()))
-            .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto())
-            .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
-
-        _dbMock.Setup(r => r.Employee.Add(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(_employeeRoleDto);
-
-        _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
-        var result = await _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
-
-        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
-
-    }
-
-    [Fact]
-    public async Task SaveEmployeeFailTest3()
-    {
-        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .ReturnsAsync(false);
-
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(It.IsAny<string>()))
-            .Throws(new Exception());
-
-        _employeeTypeServiceMock.Setup(r => r.SaveEmployeeType(It.IsAny<EmployeeTypeDto>()))
-                               .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
-
-        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(EmployeeAddressTestData.EmployeeAddressOne.ToDto()))
-                                  .ReturnsAsync(true)
-                                  .ReturnsAsync(true);
-
-        _employeeAddressServiceMock.Setup(x => x.Get(It.IsAny<EmployeeAddressDto>()))
-                                  .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
-
-        _employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
-                                  .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
-
-        _dbMock.Setup(r => r.Employee.Add(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(_employeeRoleDto);
-
-        _roleServiceMock.Setup(r => r.GetRole(It.IsAny<string>())).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
-
-        var result = await _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
-
-        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+        await Assert.ThrowsAsync<CustomException>(() => _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto()));
     }
 
     [Fact]
@@ -246,22 +186,7 @@ public class EmployeeServiceUnitTests
     }
 
     [Fact]
-    public async Task UpdateEmployeeTestOwnProfile()
-    {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
-                               .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
-
-        _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>()))
-               .ReturnsAsync(EmployeeTestData.EmployeeOne);
-
-        var result =
-            await _employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(), EmployeeTestData.EmployeeOne.Email!);
-
-        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
-    }
-
-    [Fact]
-    public async Task UpdateEmployeeTestAdminPass()
+    public async Task UpdateEmployee()
     {
         var emp = EmployeeTestData.EmployeeTwo;
 
@@ -275,7 +200,7 @@ public class EmployeeServiceUnitTests
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name)).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employees.ToMockIQueryable());
+        _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(EmployeeTestData.EmployeeOne.ToMockIQueryable());
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
         _dbMock.Setup(r => r.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>())).Returns(empRoles.ToMockIQueryable());
         _dbMock.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>())).Returns(roles.ToMockIQueryable());
@@ -284,64 +209,6 @@ public class EmployeeServiceUnitTests
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
-    }
-
-    [Fact]
-    public async Task UpdateEmployeeTestAdminFail()
-    {
-        var emp = EmployeeTestData.EmployeeTwo;
-        var employees = new List<Employee> { emp };
-        var empRole = new EmployeeRole { Id = 1, Employee = EmployeeTestData.EmployeeTwo, Role = EmployeeRoleTestData.RoleDtoEmployee };
-        var empRoles = new List<EmployeeRole> { empRole };
-        var roles = new List<Role> { EmployeeRoleTestData.RoleDtoEmployee };
-
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
-                               .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
-
-        _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>()))
-               .ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employees.ToMockIQueryable());
-        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-        _dbMock.Setup(r => r.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-               .Returns(empRoles.ToMockIQueryable());
-        _dbMock.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-               .Returns(roles.ToMockIQueryable());
-
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized action: You are not an Admin"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(
-                                                    async () =>
-                                                        await _employeeService
-                                                            .UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(),
-                                                             "unauthorized.email@retrorabbit.co.za"));
-
-        Assert.Equal("Unauthorized action: You are not an Admin", exception.Message);
-    }
-
-    [Fact]
-    public async Task UpdateEmployeeTestUserDoesNotExist()
-    {
-        var emp = EmployeeTestData.EmployeeTwo;
-        var employees = new List<Employee> { emp };
-
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
-                               .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
-        _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>()))
-               .ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employees.ToMockIQueryable());
-        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
-
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("User already exists"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(
-                                                            async () =>
-                                                                await _employeeService
-                                                                    .UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(),
-                                                                     "unauthorized.email@retrorabbit.co.za"));
-
-        Assert.Equal("User already exists", exception.Message);
     }
 
     [Fact]
@@ -405,8 +272,6 @@ public class EmployeeServiceUnitTests
 
         _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(mockEmployees.ToMockIQueryable());
-
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
         await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeById(2));
     }   

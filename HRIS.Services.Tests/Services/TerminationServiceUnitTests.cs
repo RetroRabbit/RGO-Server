@@ -18,7 +18,6 @@ public class TerminationServiceUnitTests
     private readonly Employee _employeeDto;
     private readonly EmployeeType _employeeTypeDto;
     private readonly Mock<IUnitOfWork> _db;
-    private readonly Mock<IErrorLoggingService> _errorLogggingServiceMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
     private readonly Mock<IAuthService> _authServiceMock;
@@ -26,11 +25,10 @@ public class TerminationServiceUnitTests
     public TerminationServiceUnitTests()
     {
         _db = new Mock<IUnitOfWork>();
-        _errorLogggingServiceMock = new Mock<IErrorLoggingService>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _authServiceMock = new Mock<IAuthService>();
-        _terminationService = new TerminationService(_db.Object, _authServiceMock.Object, _errorLogggingServiceMock.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object);
+        _terminationService = new TerminationService(_db.Object, _authServiceMock.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object);
 
         _terminationDto = new Termination
         {
@@ -129,9 +127,7 @@ public class TerminationServiceUnitTests
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(false);
 
-        _errorLogggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("termination not found"));
-
-        await Assert.ThrowsAsync<Exception>(() => _terminationService.GetTerminationByEmployeeId(_terminationDto.EmployeeId));
+        await Assert.ThrowsAsync<CustomException>(() => _terminationService.GetTerminationByEmployeeId(_terminationDto.EmployeeId));
     }
 
     [Fact]

@@ -8,13 +8,11 @@ namespace HRIS.Services.Services;
 public class RoleService : IRoleService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
     private readonly IAuthService _authService;
 
-    public RoleService(IUnitOfWork db, IErrorLoggingService errorLoggingService, IAuthService authService)
+    public RoleService(IUnitOfWork db, IAuthService authService)
     {
         _db = db;
-        _errorLoggingService = errorLoggingService;
         _authService = authService;
     }
 
@@ -24,18 +22,18 @@ public class RoleService : IRoleService
         if (isRoleExist)
         {
             var allRoles = await _authService.GetAllRolesAsync();
-            bool roleFound = allRoles.Any(role => role.Name == roleDto.Description);
+            var roleFound = allRoles.Any(role => role.Name == roleDto.Description);
             if (!roleFound) 
             {
-                if (!String.IsNullOrEmpty(roleDto.Description)) {
+                if (!string.IsNullOrEmpty(roleDto.Description)) {
                     await _authService.CreateRoleAsync(roleDto.Description, roleDto.Description);
                 }
             }
             else
             {
-                if (String.IsNullOrEmpty(roleDto.AuthRoleId))
+                if (string.IsNullOrEmpty(roleDto.AuthRoleId))
                 {
-                    RoleDto updatedRole = new RoleDto()
+                    var updatedRole = new RoleDto
                     {
                         Id = roleDto.Id,
                         AuthRoleId = allRoles.First(role => role.Name == roleDto.Description).Id,
@@ -46,7 +44,7 @@ public class RoleService : IRoleService
             }
             return await GetRole(roleDto.Description!);
         }
-        if (!String.IsNullOrEmpty(roleDto.Description))
+        if (!string.IsNullOrEmpty(roleDto.Description))
         {
             await _authService.CreateRoleAsync(roleDto.Description, roleDto.Description);
         }
@@ -73,10 +71,7 @@ public class RoleService : IRoleService
                                     .FirstOrDefaultAsync();
 
         if (existingRole == null)
-        {
-            var exception = new Exception($"Role not found({name})");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException($"Role not found({name})");
 
         return existingRole;
     }

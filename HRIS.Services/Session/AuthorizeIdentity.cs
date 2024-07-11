@@ -1,5 +1,6 @@
 ﻿using System.Security.Authentication;
 using System.Security.Claims;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Http;
 using RR.UnitOfWork;
 
@@ -29,7 +30,7 @@ public class AuthorizeIdentity
         get
         {
             _employeeId ??= _db.GetActiveEmployeeId(Email, Role).Result;
-            return _employeeId ?? throw new Exception("Unauthorized Access");
+            return _employeeId ?? throw new CustomException("Unauthorized Access");
         }
     }
 
