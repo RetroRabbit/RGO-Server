@@ -66,8 +66,6 @@ public interface IEmployeeService
     /// <returns>SimpeEmployeeProfileDto</returns>
     Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
 
-   
-
     /// <summary>
     ///     Get Employees filtered by Peoples champion or employee type
     /// </summary>
