@@ -1,17 +1,15 @@
-﻿using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
+﻿using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class FieldCodeOptionsServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly FieldCodeOptions _fieldCodeOptions;
     private readonly FieldCodeOptions _fieldCodeOptions2;
     private readonly FieldCodeOptionsService _fieldCodeOptionsService;
@@ -19,8 +17,7 @@ public class FieldCodeOptionsServiceUnitTests
     public FieldCodeOptionsServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _fieldCodeOptionsService = new FieldCodeOptionsService(_dbMock.Object, _errorLoggingServiceMock.Object);
+        _fieldCodeOptionsService = new FieldCodeOptionsService(_dbMock.Object);
         _fieldCodeOptions = new FieldCodeOptions { Id = 1, FieldCodeId = 1, Option = "string" };
         _fieldCodeOptions2 = new FieldCodeOptions { Id = 0, FieldCodeId = 1, Option = "string2" };
     }

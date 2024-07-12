@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
@@ -8,7 +7,7 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeDataServiceUnitTest
 {
@@ -18,8 +17,7 @@ public class EmployeeDataServiceUnitTest
     public EmployeeDataServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        Mock<IErrorLoggingService> errorLoggingServiceMock = new();
-        _employeeDataService = new EmployeeDataService(_dbMock.Object, errorLoggingServiceMock.Object);
+        _employeeDataService = new EmployeeDataService(_dbMock.Object);
     }
 
     [Fact]

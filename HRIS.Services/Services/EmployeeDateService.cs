@@ -9,13 +9,11 @@ namespace HRIS.Services.Services;
 public class EmployeeDateService : IEmployeeDateService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmployeeService _employeeService;
 
-    public EmployeeDateService(IUnitOfWork db, IErrorLoggingService errorLoggingService, IEmployeeService employeeService)
+    public EmployeeDateService(IUnitOfWork db, IEmployeeService employeeService)
     {
         _db = db;
-        _errorLoggingService = errorLoggingService;
         _employeeService = employeeService;
     }
 
@@ -41,10 +39,7 @@ public class EmployeeDateService : IEmployeeDateService
         var exists = await CheckIfExists(employeeDate);
 
         if (exists)
-        {
-            var exception = new Exception("Employee Date already exists");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Date already exists");
 
         await _db.EmployeeDate.Add(new EmployeeDate(employeeDate));
     }
@@ -65,10 +60,7 @@ public class EmployeeDateService : IEmployeeDateService
         var exists = await CheckIfExists(newEmployeeDate);
 
         if (!exists)
-        {
-            var exception = new Exception("Employee Date does not exist");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Date does not exist");
 
         var employeeDateToUpdate = new EmployeeDateDto
         {
@@ -100,10 +92,7 @@ public class EmployeeDateService : IEmployeeDateService
                                        .FirstOrDefaultAsync();
 
         if (employeeDateDto == null)
-        {
-            var exception = new Exception("Employee Data does not exist");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Data does not exist");
 
         return employeeDateDto;
     }
@@ -145,11 +134,11 @@ public class EmployeeDateService : IEmployeeDateService
                                                            where employeeDate.Date == Date
                                                            select new EmployeeDateDto
                                                            {
-                                                              Id = employeeDate.Id,
-                                                              Employee = employee.ToDto(),
-                                                              Subject = employeeDate.Subject,
-                                                              Note = employeeDate.Note,
-                                                              Date = employeeDate.Date
+                                                               Id = employeeDate.Id,
+                                                               Employee = employee.ToDto(),
+                                                               Subject = employeeDate.Subject,
+                                                               Note = employeeDate.Note,
+                                                               Date = employeeDate.Date
                                                            }
                                                            into employeeDateDto
                                                            orderby employeeDateDto.Date

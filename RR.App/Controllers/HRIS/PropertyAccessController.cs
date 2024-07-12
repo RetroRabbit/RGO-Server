@@ -32,7 +32,7 @@ public class PropertyAccessController : ControllerBase
         return Ok(accessList);
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllPropertyAccess()
     {

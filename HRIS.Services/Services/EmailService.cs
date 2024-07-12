@@ -37,9 +37,9 @@ public class EmailService : IEmailService
             history.Status = EmailStatus.Failed;
         }
 
-        if(history.Status == EmailStatus.Draft)
+        if (history.Status == EmailStatus.Draft)
             history.Status = EmailStatus.Sent;
-        
+
         await _db.EmailHistory.Update(history);
     }
 

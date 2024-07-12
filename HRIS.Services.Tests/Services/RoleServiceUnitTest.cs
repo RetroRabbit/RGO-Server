@@ -8,22 +8,19 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class RoleServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly Role _role;
     private readonly RoleService _roleService;
 
     public RoleServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        var _employeeAuthServiceMock = new Mock<IAuthService>();
-
-        _roleService = new RoleService(_dbMock.Object, _errorLoggingServiceMock.Object, _employeeAuthServiceMock.Object);
+        var employeeAuthServiceMock = new Mock<IAuthService>();
+        _roleService = new RoleService(_dbMock.Object, employeeAuthServiceMock.Object);
         _role = new Role { Id = 1, Description = "Employee" };
     }
 
