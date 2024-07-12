@@ -188,9 +188,4 @@ public class EmployeeDateService : IEmployeeDateService
 
         return employeeDates.ToList();
     }
-
-    object IEmployeeDateService.GetEmployeeDates(DateOnly? date, string? email, string? subject)
-    {
-        throw new NotImplementedException();
-    }
 }

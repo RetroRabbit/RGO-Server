@@ -13,5 +13,5 @@ public interface IEmployeeDateService
     List<EmployeeDateDto> GetAllByDate(DateOnly Date);
     Task UpdateEmployeeDate(EmployeeDateDto employeeDate);
     Task SaveEmployeeDate(EmployeeDateInput employeeDateInput);
-    object GetEmployeeDates(DateOnly? date, string? email, string? subject);
+    List<EmployeeDateDto> GetEmployeeDates(DateOnly? date, string? email, string? subject);
 }
