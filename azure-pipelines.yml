@@ -4,6 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
+- test
 - main
  
 pool:
@@ -19,7 +20,7 @@ variables:
 steps:
 - task: DownloadSecureFile@1
   inputs:
-      secureFile: 'client_secret.json'
+    secureFile: 'client_secret.json'
 - task: CopyFiles@2
   inputs:
     SourceFolder: $(Agent.TempDirectory)
@@ -44,5 +45,5 @@ steps:
 # Package the file and uploads them as an artifact of the build
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)' 
+    targetPath: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'rgo-server'
