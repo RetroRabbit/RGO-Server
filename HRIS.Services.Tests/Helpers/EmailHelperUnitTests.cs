@@ -5,6 +5,8 @@ using System.Net.Mail;
 using Xunit;
 using RR.UnitOfWork.Entities.Shared;
 using System.Linq.Expressions;
+using HRIS.Models;
+using Microsoft.Extensions.Options;
 
 namespace HRIS.Services.Tests.Helpers;
 
@@ -16,7 +18,15 @@ public class EmailHelperUnitTests
     public EmailHelperUnitTests()
     {
         _db = new Mock<IUnitOfWork>();
-        _helper = new EmailHelper(_db.Object);
+        var _smtp = Options.Create(new SMTPSettings{
+            Name = "test",
+            Host = "testHost",
+            Mail = "testMail@retrorabbit.co.za",
+            Password = "password",
+            Port = "54"
+        });
+
+        _helper = new EmailHelper(_db.Object, _smtp);
     }
 
     [Fact]
