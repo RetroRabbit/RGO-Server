@@ -14,7 +14,6 @@ public class EmployeeCertificationServiceUnitTests
 {
     private readonly EmployeeCertificationService _employeeCertificationService;
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
 
     private readonly EmployeeCertification _employeeCertification = new()
     {
@@ -29,8 +28,7 @@ public class EmployeeCertificationServiceUnitTests
 
     public EmployeeCertificationServiceUnitTests()
     {
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeCertificationService = new EmployeeCertificationService(_unitOfWork.Object, _errorLoggingServiceMock.Object);
+        _employeeCertificationService = new EmployeeCertificationService(_unitOfWork.Object);
     }
 
     private void MockEmployeeRepositorySetup(Employee employee)
@@ -105,13 +103,9 @@ public class EmployeeCertificationServiceUnitTests
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(new List<Employee>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-                                 .Throws(new Exception("Employee not found"));
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                     _employeeCertificationService.SaveEmployeeCertification(_employeeCertification.ToDto()));
 
-        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 
     [Fact]
@@ -178,10 +172,7 @@ public class EmployeeCertificationServiceUnitTests
         _unitOfWork.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
                    .Returns(new List<EmployeeCertification>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-                                 .Throws(new Exception("Employee certification record not found"));
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
             _employeeCertificationService.GetEmployeeCertification(_employeeCertification.EmployeeId, _employeeCertification.Id));
 
     }
@@ -192,13 +183,8 @@ public class EmployeeCertificationServiceUnitTests
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(new List<Employee>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-                                 .Throws(new Exception("Employee not found")); // Or a custom exception
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                     _employeeCertificationService.GetEmployeeCertification(0, 0));
-
-        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 
     [Fact]
@@ -207,13 +193,8 @@ public class EmployeeCertificationServiceUnitTests
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(new List<Employee>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-                                 .Throws(new Exception("Employee not found")); // Or a custom exception
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                     _employeeCertificationService.UpdateEmployeeCertification(_employeeCertification.ToDto()));
-
-        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 
 
@@ -223,12 +204,7 @@ public class EmployeeCertificationServiceUnitTests
         _unitOfWork.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .Returns(new List<Employee>().ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>()))
-                                 .Throws(new Exception("Employee not found"));
-
-        await Assert.ThrowsAsync<Exception>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
                     _employeeCertificationService.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id));
-
-        _errorLoggingServiceMock.Verify(r => r.LogException(It.Is<Exception>(ex => ex.Message == "Employee not found")));
     }
 }

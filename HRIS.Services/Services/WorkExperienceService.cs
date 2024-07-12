@@ -9,12 +9,10 @@ namespace HRIS.Services.Services;
 public class WorkExperienceService : IWorkExperienceService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
 
-    public WorkExperienceService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
+    public WorkExperienceService(IUnitOfWork db)
     {
         _db = db;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<bool> CheckIfExists(WorkExperienceDto workExperience)
@@ -27,9 +25,8 @@ public class WorkExperienceService : IWorkExperienceService
         var exists = await CheckIfExists(workExperience);
 
         if (exists)
-        {
-            throw _errorLoggingService.LogException(new Exception("Work experience already exists"));
-        }
+            throw new CustomException("Work experience already exists");
+
         return (await _db.WorkExperience.Add(new WorkExperience(workExperience))).ToDto();
     }
 
@@ -38,10 +35,7 @@ public class WorkExperienceService : IWorkExperienceService
         var exists = await CheckIfExists(workExperience);
 
         if (!exists)
-        {
-            var exception = new Exception("Employee Date does not exist");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Date does not exist");
 
         var workExperienceToUpdate = new WorkExperienceDto
         {

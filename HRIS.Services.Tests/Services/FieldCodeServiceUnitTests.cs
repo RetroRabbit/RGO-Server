@@ -9,12 +9,11 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class FieldCodeServiceUnitTests
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly FieldCode _fieldCodeDto;
     private readonly FieldCode _fieldCodeDto2;
     private readonly FieldCode _fieldCodeDto3;
@@ -27,7 +26,6 @@ public class FieldCodeServiceUnitTests
     public FieldCodeServiceUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
         _fieldCodeOptionsService = new Mock<IFieldCodeOptionsService>();
 
         _fieldCodeDto = new FieldCode
@@ -92,7 +90,7 @@ public class FieldCodeServiceUnitTests
 
         _fieldCodeOptionsDto = new FieldCodeOptions { Id = 1, FieldCodeId = 1, Option = "string" };
         _fieldCodeOptionsDto2 = new FieldCodeOptions { Id = 2, FieldCodeId = 1, Option = "string" };
-        _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object, _errorLoggingServiceMock.Object);
+        _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object);
     }
 
     [Fact]
@@ -249,22 +247,18 @@ public class FieldCodeServiceUnitTests
         _dbMock.Setup(x => x.FieldCode.Update(It.IsAny<FieldCode>()))
                .ReturnsAsync(_fieldCodeDto);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("No field with that name found"));
         await _fieldCodeService.GetAllFieldCodes();
 
-        var exception = await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.DeleteFieldCode(newFieldCodeDto));
-        Assert.Equal("No field with that name found", exception.Message);
+        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.DeleteFieldCode(newFieldCodeDto));
     }
 
     [Fact]
     public async Task GetByCategoryFail()
     {
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
         var invalid = 4;
-        await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.GetByCategory(invalid));
+        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetByCategory(invalid));
 
         invalid = -1;
-        await Assert.ThrowsAsync<Exception>(async () => await _fieldCodeService.GetByCategory(invalid));
+        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetByCategory(invalid));
     }
 }

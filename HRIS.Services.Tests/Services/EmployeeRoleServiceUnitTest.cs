@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
-using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
@@ -9,19 +8,17 @@ using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
-namespace RGO.Tests.Services;
+namespace HRIS.Services.Tests.Services;
 
 public class EmployeeRoleServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeRoleService _employeeRoleService;
 
     public EmployeeRoleServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeRoleService = new EmployeeRoleService(_dbMock.Object, _errorLoggingServiceMock.Object);
+        _employeeRoleService = new EmployeeRoleService(_dbMock.Object);
     }
 
     [Fact]
@@ -90,9 +87,8 @@ public class EmployeeRoleServiceUnitTest
                .ReturnsAsync(employeeRoleList[2])
                .ReturnsAsync(employeeRoleList[3]);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
 
-        await Assert.ThrowsAsync<Exception>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
+        await Assert.ThrowsAsync<CustomException>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
         {
             Id = employeeRoleList[0].Id,
             Employee = employeeRoleList[0].Employee!.ToDto(),
@@ -104,7 +100,7 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[1].ToDto(), result);
         result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[2].ToDto());
         Assert.Equivalent(employeeRoleList[2].ToDto(), result);
-        await Assert.ThrowsAsync<Exception>(() => _employeeRoleService.SaveEmployeeRole(employeeRoleList[3].ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService.SaveEmployeeRole(employeeRoleList[3].ToDto()));
     }
 
     [Fact]
@@ -170,12 +166,10 @@ public class EmployeeRoleServiceUnitTest
                .ReturnsAsync(employeeRoleList.Where(e => e.Role!.Description == roleList[0].Description).Select(e => e).FirstOrDefault()!)
                .ReturnsAsync(employeeRoleList.Where(e => e.Role!.Description == roleList[1].Description).Select(e => e).FirstOrDefault()!);
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
-
         var result1 = await _employeeRoleService.DeleteEmployeeRole(email, roleList[0].Description!);
 
         Assert.NotNull(result1);
-        await Assert.ThrowsAsync<Exception>(() => _employeeRoleService.DeleteEmployeeRole("", ""));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService.DeleteEmployeeRole("", ""));
     }
 
     [Fact]

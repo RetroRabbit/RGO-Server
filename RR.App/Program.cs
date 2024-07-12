@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using HRIS.Services.Session;
 using HRIS.Services;
 using HRIS.Services.Helpers;
+using Hris.Middleware;
 
 namespace RR.App
 {
@@ -149,6 +150,7 @@ namespace RR.App
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
