@@ -28,7 +28,7 @@ public class AuthService : IAuthService
         _clientSecret = _authManagement.ClientSecret ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_SECRET;
         _issuer = _authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER;
         _audience = _authManagement.Audience ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE;
-        Console.WriteLine("_issuer " + _issuer);
+       
 
 
     }
