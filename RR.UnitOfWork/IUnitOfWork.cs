@@ -48,7 +48,6 @@ public interface IUnitOfWork
     IDataReportAccessRepository DataReportAccess { get; }
     IEmailTemplateRepository EmailTemplate { get; }
     IEmailHistoryRepository EmailHistory { get; }
-
     Task RawSql(string sql, params NpgsqlParameter[] parameters);
     Task<List<int>> RawSqlForIntList(string sql, string column, params NpgsqlParameter[] parameters);
     Task<List<string>> GetColumnNames(string tableName);

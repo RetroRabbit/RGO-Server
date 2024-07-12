@@ -1,6 +1,7 @@
 ﻿using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Auth0.ManagementApi.Paging;
+using HRIS.Services.Helpers;
 using HRIS.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -11,7 +12,7 @@ public class AuthService : IAuthService
     private readonly IErrorLoggingService _errorLoggingService;
     private readonly HttpClient client = new();
     private static string _cachedAccessToken = string.Empty;
- 
+
     public AuthService(IErrorLoggingService errorLoggingService)
     {
         _errorLoggingService = errorLoggingService;
@@ -44,13 +45,13 @@ public class AuthService : IAuthService
                 return _cachedAccessToken;
             }
         }
-        var tokenEndpoint = $"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}oauth/token";
+        var tokenEndpoint = $"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}oauth/token";
         var requestBody = new Dictionary<string, string>
         {
-            { "client_id",  Environment.GetEnvironmentVariable("AuthManagement__ClientId")},
-            { "client_secret", Environment.GetEnvironmentVariable("AuthManagement__ClientSecret") },
+            { "client_id",  EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_ID},
+            { "client_secret", EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_SECRET },
             { "grant_type", "client_credentials" },
-            { "audience", $"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2/" }
+            { "audience", $"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2/" }
         };
 
         var response = await client.PostAsync(tokenEndpoint, new FormUrlEncodedContent(requestBody));
@@ -73,7 +74,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
             var request = new GetRolesRequest();
             var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
             return await client.Roles.GetAllAsync(request, pagination);
@@ -90,7 +91,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
             var request = new GetUsersRequest();
             var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
             return await client.Users.GetAllAsync(request, pagination);
@@ -107,7 +108,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
             var user = await client.Users.GetUsersByEmailAsync(email);
             return user;
         }
@@ -128,7 +129,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 var users = await client.Roles.GetUsersAsync(roleId, new PaginationInfo(0, 50));
                 return users;
             }
@@ -151,7 +152,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 return await client.Users.GetRolesAsync(userId);
             }
             catch (Exception ex)
@@ -176,7 +177,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 await client.Users.AssignRolesAsync(userId, new AssignRolesRequest
                 {
                     Roles = new[] { roleId }
@@ -188,7 +189,7 @@ public class AuthService : IAuthService
                 _errorLoggingService.LogException(ex);
                 return false;
             }
-        } 
+        }
         return false;
     }
 
@@ -205,7 +206,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 await client.Users.RemoveRolesAsync(userId, new AssignRolesRequest
                 {
                     Roles = new[] { roleId }
@@ -239,7 +240,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
             temporaryRole = await client.Roles.CreateAsync(new RoleCreateRequest
             {
                 Name = roleName,
@@ -264,7 +265,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 await client.Roles.DeleteAsync(roleId);
                 return true;
             }
@@ -287,7 +288,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 var temporaryRole = await client.Roles.UpdateAsync(roleId, new RoleUpdateRequest
                 {
                     Name = roleName,
@@ -314,7 +315,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 var permissions = await client.Roles.GetPermissionsAsync(roleId, new PaginationInfo());
                 return permissions;
             }
@@ -337,11 +338,11 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
 
                 var permissions = new List<PermissionIdentity>
             {
-                new PermissionIdentity { Name = permissionName, Identifier = Environment.GetEnvironmentVariable("AuthManagement__Audience") }
+                new PermissionIdentity { Name = permissionName, Identifier = EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE }
             };
 
                 await client.Roles.RemovePermissionsAsync(roleId, new AssignPermissionsRequest
@@ -371,11 +372,11 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
 
                 var permissions = new List<PermissionIdentity>
                 {
-                new PermissionIdentity { Name = permissionName, Identifier = Environment.GetEnvironmentVariable("AuthManagement__Audience") }
+                new PermissionIdentity { Name = permissionName, Identifier =EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE }
                 };
 
                 await client.Roles.AssignPermissionsAsync(roleId, new AssignPermissionsRequest
@@ -406,7 +407,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
             await client.Users.CreateAsync(request);
             return true;
         }
@@ -427,7 +428,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
                 var user = await client.Users.GetAsync(userId);
                 return user;
             }
@@ -442,14 +443,14 @@ public class AuthService : IAuthService
 
     public async Task<bool> DeleteUser(string userId)
     {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
-            var existingUser = GetUserById(userId);
-            if (existingUser != null)
-            {
-                await client.Users.DeleteAsync(userId);
-            }
-            return true;
+        var token = await GetAuth0ManagementAccessToken();
+        var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+        var existingUser = GetUserById(userId);
+        if (existingUser != null)
+        {
+            await client.Users.DeleteAsync(userId);
+        }
+        return true;
     }
 
     public async Task<bool> UpdateUser(string userId, UserUpdateRequest request)
@@ -464,7 +465,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
             await client.Users.UpdateAsync(userId, request);
             return true;
         }

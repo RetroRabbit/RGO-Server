@@ -50,5 +50,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IDataReportAccessService, DataReportAccessService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IEmailHelper, EmailHelper>();
+        services.AddScoped<IDashboardService, DashboardService>();
     }
 }

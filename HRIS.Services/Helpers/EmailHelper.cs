@@ -20,11 +20,11 @@ public class EmailHelper : IEmailHelper
     public EmailHelper(IUnitOfWork db)
     {
         _db = db;
-        _fromHost = Environment.GetEnvironmentVariable("SMTP__Host")!;
-        _fromName = Environment.GetEnvironmentVariable("SMTP__Name")!;
-        _fromMail = Environment.GetEnvironmentVariable("SMTP__Mail")!;
-        _fromPassword = Environment.GetEnvironmentVariable("SMTP__Password")!;
-        _fromPort = int.Parse(Environment.GetEnvironmentVariable("SMTP__Port")!);
+        _fromHost = EnvironmentVariableHelper.SMTP_HOST!;
+        _fromName = EnvironmentVariableHelper.SMTP_NAME!;
+        _fromMail = EnvironmentVariableHelper.SMTP_MAIL!;
+        _fromPassword = EnvironmentVariableHelper.SMTP_PASSWORD!;
+        _fromPort = int.Parse(EnvironmentVariableHelper.SMTP_PORT!);
     }
 
     public async Task SendMailAsync(MailMessage message)

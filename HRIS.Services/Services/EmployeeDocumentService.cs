@@ -11,13 +11,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
-    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService, IErrorLoggingService errorLoggingService)
+    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService)
     {
         _db = db;
         _employeeService = employeeService;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
@@ -25,12 +23,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
 
         if (employee == null)
-        {
-            var exception = new Exception("employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("employee not found");
 
-        bool sameEmail = email.Equals(employee.Email);
+        var sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
         var docType = DocumentType.StarterKit;
@@ -84,12 +79,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
 
         if (employee == null)
-        {
-            var exception = new Exception("employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("employee not found");
 
-        bool sameEmail = email.Equals(employee.Email);
+        var sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
         var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
         var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.MyDocuments;
@@ -118,10 +110,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
         if (!ifEmployeeExists)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee not found");
 
         var employeeDocument = await _db.EmployeeDocument
             .Get(employeeDocument =>
@@ -135,10 +124,8 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .FirstOrDefaultAsync();
 
         if (employeeDocument == null)
-        {
-            var exception = new Exception("Employee certification record not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee certification record not found");
+
         return employeeDocument;
     }
 
@@ -147,10 +134,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
         if (!ifEmployeeExists)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee not found");
 
         var employeeDocuments = await _db.EmployeeDocument
                .Get(employeeDocument => true)
@@ -170,23 +154,20 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
         if (!ifEmployeeExists)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee not found");
 
-        string employeeEmail = await _db.Employee
+        var employeeEmail = await _db.Employee
             .Get(employee => employee.Id == employeeDocumentDto.EmployeeId)
             .AsNoTracking()
             .Select(employee => employee.Email)
             .FirstAsync();
 
-     
-        bool sameEmail = email.Equals(employeeEmail);
+
+        var sameEmail = email.Equals(employeeEmail);
         var isAdmin = await IsAdmin(email);
         if (isAdmin && !sameEmail) employeeDocumentDto.Status = DocumentStatus.ActionRequired;
 
-        EmployeeDocument employeeDocument = new EmployeeDocument(employeeDocumentDto);
+        var employeeDocument = new EmployeeDocument(employeeDocumentDto);
 
         var updatedEmployeeDocument = await _db.EmployeeDocument.Update(employeeDocument);
 
@@ -205,10 +186,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
         if (!ifEmployeeExists)
-        {
-            var exception = new Exception("Employee not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee not found");
 
         var employeeDocuments = await _db.EmployeeDocument
             .Get(employeeDocument => employeeDocument.EmployeeId == employeeId &&
@@ -227,19 +205,18 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         .Get(employee => employee.Id == employeeId)
         .FirstOrDefaultAsync();
 
-        if (employee == null) { return false; }
-        else { return true; }
+        return employee != null;
     }
 
     public async Task<bool> IsAdmin(string email)
     {
-        EmployeeDto checkingEmployee = (await _employeeService.GetEmployee(email))!;
+        var checkingEmployee = (await _employeeService.GetEmployee(email))!;
 
-        EmployeeRole empRole = (await _db.EmployeeRole
+        var empRole = (await _db.EmployeeRole
             .Get(role => role.EmployeeId == checkingEmployee!.Id)
             .FirstOrDefaultAsync())!;
 
-        Role role = (await _db.Role
+        var role = (await _db.Role
             .Get(role => role.Id == empRole!.RoleId)
             .FirstOrDefaultAsync())!;
 
@@ -249,16 +226,16 @@ public class EmployeeDocumentService : IEmployeeDocumentService
     public async Task<List<SimpleEmployeeDocumentGetAllDto>> GetAllDocuments()
     {
         return await _db.EmployeeDocument
-            .Get(EmployeeDocument => true)
+            .Get(employeeDocument => true)
             .AsNoTracking()
             .Include(entry => entry.Employee)
             .Include(entry => entry.Employee.EmployeeType)
-            .OrderBy(EmployeeDocument => EmployeeDocument.EmployeeId)
-            .Select(EmployeeDocument => new SimpleEmployeeDocumentGetAllDto
+            .OrderBy(employeeDocument => employeeDocument.EmployeeId)
+            .Select(employeeDocument => new SimpleEmployeeDocumentGetAllDto
             {
-                EmployeeDocumentDto = EmployeeDocument.ToDto(),
-                Name = EmployeeDocument.Employee.Name,
-                Surname = EmployeeDocument.Employee.Surname
+                EmployeeDocumentDto = employeeDocument.ToDto(),
+                Name = employeeDocument.Employee.Name,
+                Surname = employeeDocument.Employee.Surname
             })
             .ToListAsync();
     }

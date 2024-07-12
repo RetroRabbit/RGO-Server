@@ -7,10 +7,11 @@ using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using HRIS.Models;
 using ATS.Services;
-using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
 using HRIS.Services.Session;
 using HRIS.Services;
+using HRIS.Services.Helpers;
+using Hris.Middleware;
 
 namespace RR.App
 {
@@ -48,7 +49,7 @@ namespace RR.App
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
+                options.UseNpgsql(EnvironmentVariableHelper.CONNECTION_STRINGS_DEFAULT), ServiceLifetime.Transient);
 
             services.RegisterRepository();
             services.RegisterServicesHRIS();
@@ -85,8 +86,6 @@ namespace RR.App
 
         private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
         {
-            var authSettings = configuration.GetSection("AuthManagement");
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -97,8 +96,8 @@ namespace RR.App
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = authSettings["Issuer"],
-                        ValidAudience = authSettings["Audience"],
+                        ValidIssuer = EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER,
+                        ValidAudience = EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE,
                         IssuerSigningKeyResolver = (_, _, _, _) =>
                             LazyJsonWebKeySet.Value.Keys ?? throw new InvalidOperationException("JsonWebKeySet is not available.")
                     };
@@ -147,6 +146,7 @@ namespace RR.App
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -155,7 +155,7 @@ namespace RR.App
 
         private static JsonWebKeySet FetchJsonWebKeySet()
         {
-            var jwksUrl = $"{Environment.GetEnvironmentVariable("AuthManagement__Issuer")}.well-known/jwks.json";
+            var jwksUrl = $"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}.well-known/jwks.json";
             using var httpClient = new HttpClient();
             var jwksResponse = httpClient.GetStringAsync(jwksUrl).Result;
             return new JsonWebKeySet(jwksResponse);

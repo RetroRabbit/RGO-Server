@@ -67,24 +67,6 @@ public interface IEmployeeService
     Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
 
     /// <summary>
-    ///     Returns Employees data count
-    /// </summary>
-    /// <returns>EmployeeDataCard</returns>
-    Task<EmployeeCountDataCard> GenerateDataCardInformation();
-
-    /// <summary>
-    ///     Get the total number of employees for the current month
-    /// </summary>
-    /// <returns>MonthlyEmployeeTotalDto</returns>
-    Task<MonthlyEmployeeTotalDto> GetEmployeeCurrentMonthTotal();
-
-    /// <summary>
-    ///     Calculates employee chrunRate over a month
-    /// </summary>
-    /// <returns>ChurnRateDataCard</returns>
-    Task<ChurnRateDataCardDto> CalculateEmployeeChurnRate();
-
-    /// <summary>
     ///     Get Employees filtered by Peoples champion or employee type
     /// </summary>
     /// <param name="peopleChampId"></param>
@@ -93,7 +75,7 @@ public interface IEmployeeService
     ///     Filtered list of Employees based on assigned Peoples Champion or Employee Type if 0 is passed as parameter it
     ///     will ignore the filter
     /// </returns>
-    Task<List<EmployeeDto>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true);
+    Task<List<EmployeeFilterResponse>> FilterEmployees(int peopleChampId = 0, int employeeType = 0, bool activeStatus = true);
 
     /// <summary>
     ///     Checks for any existing id numbers that does not exist on the current employee

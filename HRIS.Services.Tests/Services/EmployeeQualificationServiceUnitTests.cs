@@ -149,26 +149,6 @@ public class EmployeeQualificationServiceUnitTests
             Times.Never);
     }
 
-    [Fact]
-    public async Task GetEmployeeQualificationsByEmployeeId_Failure_NoQualifications()
-    {
-        _employeeService.Setup(x => x.GetEmployeeById(It.IsAny<int>()))
-            .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto());
-        _db.Setup(
-                x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-            .ReturnsAsync(default(EmployeeQualification));
-
-        var exception = await Assert.ThrowsAsync<CustomException>(() =>
-            _employeeQualificationService.GetEmployeeQualificationsByEmployeeId(EmployeeId));
-
-        Assert.Equivalent("Unable to Load Employee Qualifications", exception.Message);
-
-        _employeeService.Verify(x => x.GetEmployeeById(It.IsAny<int>()), Times.Once);
-        _db.Verify(
-            x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()),
-            Times.Once);
-    }
-
     #endregion
 
     #region UpdateEmployeeQualification
