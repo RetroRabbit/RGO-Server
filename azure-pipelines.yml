@@ -1,11 +1,7 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
+- dev
 - main
- 
+
 pool:
   vmImage: ubuntu-latest
 
@@ -14,35 +10,67 @@ variables:
   dotNetFramework: 'net7.0'
   dotNetVersion: '7.0.x'
   targetRuntime: 'linux-x64'
+  TEST_SERVER_USER: $(TEST_SERVER_USER)
+  TEST_SERVER_IP: $(TEST_SERVER_IP)
+  TARGET_DIRECTORY: $(TARGET_DIRECTORY)
+  ARTIFACT_NAME: 'rgo-server'
 
-# Build the app for .NET 7 framework
-steps:
-- task: DownloadSecureFile@1
-  inputs:
-      secureFile: 'client_secret.json'
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: $(Agent.TempDirectory)
-    Contents: 'client_secret.json'
-    TargetFolder: $(Build.SourcesDirectory)
-- task: UseDotNet@2
-  inputs:
-    version: $(dotNetVersion)
-    includePreviewVersions: true
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'Build .NET 7 Application'
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: 'client_secret.json'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Agent.TempDirectory)
+        Contents: 'client_secret.json'
+        TargetFolder: $(Build.SourcesDirectory)
+    - task: UseDotNet@2
+      inputs:
+        version: $(dotNetVersion)
+        includePreviewVersions: true
+    - script: dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build .NET 7 Application'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        publishWebProjects: true
+        arguments: '--configuration $(BuildConfiguration) --framework $(dotNetFramework) --runtime $(targetRuntime) --self-contained --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: true
+        modifyOutputPath: false
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: '$(ARTIFACT_NAME)'
 
-# Publish it as .NET 7 self-contained application for linux runtime
-- task: DotNetCoreCLI@2
-  inputs:
-    command: publish
-    publishWebProjects: true
-    arguments: '--configuration $(BuildConfiguration) --framework $(dotNetFramework) --runtime $(targetRuntime) --self-contained --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: true
-    modifyOutputPath: false
+- stage: DeployToTest
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  jobs:
+  - job: DeployToTest
+    steps:
+    - script: echo Deploying to Test Server
+    - script: ./deploy-to-test.sh
+      displayName: 'Deploy to Test'
+      env:
+        TEST_SERVER_USER: $(TEST_SERVER_USER)
+        TEST_SERVER_IP: $(TEST_SERVER_IP)
+        TARGET_DIRECTORY: $(TARGET_DIRECTORY)
+        ARTIFACT_NAME: $(ARTIFACT_NAME)
 
-# Package the file and uploads them as an artifact of the build
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'rgo-server'
+- stage: DeployToProduction
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployToProduction
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo Deploying to Production
+          - script: ./deploy-to-production.sh
+            displayName: 'Deploy to Production'
