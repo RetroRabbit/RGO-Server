@@ -54,7 +54,7 @@ public class EmployeeDateControllerUnitTests
         _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateInput.Email))
                            .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto());
 
-        _employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>()))
+        _employeeDateServiceMock.Setup(x => x.SaveEmployeeDate(It.IsAny<EmployeeDateInput>()))
                                .Returns(Task.CompletedTask);
 
         var result = await _controller.SaveEmployeeDate(_employeeDateInput);
@@ -64,7 +64,7 @@ public class EmployeeDateControllerUnitTests
     [Fact]
     public async Task SaveEmployeeDateValidInputFail()
     {
-        _employeeDateServiceMock.Setup(x => x.Save(It.IsAny<EmployeeDateDto>()))
+        _employeeDateServiceMock.Setup(x => x.SaveEmployeeDate(It.IsAny<EmployeeDateInput>()))
             .ThrowsAsync(new Exception("An error occurred while saving employee date information."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.SaveEmployeeDate(_employeeDateInput));
@@ -103,7 +103,7 @@ public class EmployeeDateControllerUnitTests
         _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateDto.Employee!.Email!))
                            .ReturnsAsync(_employeeDateDto.Employee);
 
-        _employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>()))
+        _employeeDateServiceMock.Setup(x => x.UpdateEmployeeDate(It.IsAny<EmployeeDateDto>()))
                                .Returns(Task.CompletedTask);
 
         var result = await _controller.UpdateEmployeeDate(_employeeDateDto);
@@ -113,7 +113,7 @@ public class EmployeeDateControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeDateValidInputFail()
     {
-        _employeeDateServiceMock.Setup(x => x.Update(It.IsAny<EmployeeDateDto>()))
+        _employeeDateServiceMock.Setup(x => x.UpdateEmployeeDate(It.IsAny<EmployeeDateDto>()))
                                .ThrowsAsync(new Exception("An error occurred while updating employee date information."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployeeDate(_employeeDateDto));
