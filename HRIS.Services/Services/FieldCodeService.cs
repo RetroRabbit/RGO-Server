@@ -10,14 +10,12 @@ namespace HRIS.Services.Services;
 public class FieldCodeService : IFieldCodeService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
     private readonly IFieldCodeOptionsService _fieldCodeOptionsService;
 
-    public FieldCodeService(IUnitOfWork db, IFieldCodeOptionsService fieldCodeOptionsService, IErrorLoggingService errorLoggingService)
+    public FieldCodeService(IUnitOfWork db, IFieldCodeOptionsService fieldCodeOptionsService)
     {
         _db = db;
         _fieldCodeOptionsService = fieldCodeOptionsService;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto)
@@ -30,7 +28,7 @@ public class FieldCodeService : IFieldCodeService
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
 
 
-        if (ifFieldCode != null) throw new Exception("Field with that name found");
+        if (ifFieldCode != null) throw new CustomException("Field with that name found");
 
 
         var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
@@ -100,10 +98,7 @@ public class FieldCodeService : IFieldCodeService
     {
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
         if (ifFieldCode == null)
-        {
-            var exception = new Exception("No field with that name found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("No field with that name found");
 
         var newFieldCodeDto = new FieldCodeDto
         {
@@ -129,10 +124,7 @@ public class FieldCodeService : IFieldCodeService
     public async Task<List<FieldCodeDto>> GetByCategory(int categoryIndex)
     {
         if (categoryIndex < 0 || categoryIndex > 3)
-        {
-            var exception = new Exception("Invalid Index");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Invalid Index");
 
         var type = FieldCodeCategory.Profile;
         switch (categoryIndex)

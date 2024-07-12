@@ -16,15 +16,13 @@ public class EmployeeBankingServiceTest
     private readonly EmployeeBankingService _employeeBankingService;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly List<Employee> _employeeList;
     private readonly List<EmployeeBanking> _employeeBankingList;
 
     public EmployeeBankingServiceTest()
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
-        _errorLoggingServiceMock = new Mock<IErrorLoggingService>();
-        _employeeBankingService = new EmployeeBankingService(_mockUnitOfWork.Object, _errorLoggingServiceMock.Object);
+        _employeeBankingService = new EmployeeBankingService(_mockUnitOfWork.Object);
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeList = EmployeeTestData.EmployeeOne.EntityToList();
         _employeeBankingList = EmployeeBankingTestData.EmployeeBankingOne.EntityToList();
@@ -148,15 +146,11 @@ public class EmployeeBankingServiceTest
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roles.ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized access"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(
+        await Assert.ThrowsAsync<CustomException>(
                                                             async () =>
                                                                 await _employeeBankingService
                                                                     .Update(EmployeeBankingTestData.EmployeeBankingOne.ToDto(),
                                                                             "unauthorized.email@example.com"));
-
-        Assert.Equal("Unauthorized access", exception.Message);
     }
 
     [Fact]
@@ -241,15 +235,11 @@ public class EmployeeBankingServiceTest
             .Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roles.ToMockIQueryable());
 
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception("Unauthorized access"));
-
-        var exception = await Assert.ThrowsAsync<Exception>(
+        await Assert.ThrowsAsync<CustomException>(
                                                             async () =>
                                                                 await _employeeBankingService
                                                                     .Save(EmployeeBankingTestData.EmployeeBankingOne.ToDto(),
                                                                           "unauthorized.email@example.com"));
-
-        Assert.Equal("Unauthorized access", exception.Message);
     }
 
     [Fact]
@@ -271,10 +261,9 @@ public class EmployeeBankingServiceTest
     {
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.FirstOrDefault(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
-            .Throws<Exception>();
-        _errorLoggingServiceMock.Setup(r => r.LogException(It.IsAny<Exception>())).Throws(new Exception());
+            .Throws<CustomException>();
 
-        await Assert.ThrowsAsync<Exception>(async () => await _employeeBankingService.GetBanking(2));
+        await Assert.ThrowsAsync<CustomException>(async () => await _employeeBankingService.GetBanking(2));
     }
 
     [Fact]

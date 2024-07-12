@@ -10,12 +10,10 @@ namespace HRIS.Services.Services;
 public class EmployeeBankingService : IEmployeeBankingService
 {
     private readonly IUnitOfWork _db;
-    private readonly IErrorLoggingService _errorLoggingService;
 
-    public EmployeeBankingService(IUnitOfWork db, IErrorLoggingService errorLoggingService)
+    public EmployeeBankingService(IUnitOfWork db)
     {
         _db = db;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<List<EmployeeBanking>> Get(int approvalStatus)
@@ -37,60 +35,57 @@ public class EmployeeBankingService : IEmployeeBankingService
         return address.ToDto();
     }
 
-   public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail)
-{
-
-    var empDto = await _db.Employee
-                          .Get(employee => employee.Id == newEntry.EmployeeId)
-                          .AsNoTracking()
-                          .Include(employee => employee.EmployeeType)
-                          .Select(employee => employee.ToDto())
-                          .FirstOrDefaultAsync();
-
-    var empBankingDto = await _db.EmployeeBanking
-                                     .Get(banking => banking.Id == newEntry.Id)
-                                     .AsNoTracking()
-                                     .Select(banking => banking.ToDto())
-                                     .FirstOrDefaultAsync();
-
-    if (empDto?.Email == userEmail || await IsAdmin(userEmail))
+    public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail)
     {
-        var bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
-        var existingBankingRecords = await _db.EmployeeBanking
-            .Get(b => b.EmployeeId == newEntry.EmployeeId)
-            .OrderBy(b => b.LastUpdateDate)
-            .ToListAsync();
 
-        if (existingBankingRecords.Count > 1)
+        var empDto = await _db.Employee
+                              .Get(employee => employee.Id == newEntry.EmployeeId)
+                              .AsNoTracking()
+                              .Include(employee => employee.EmployeeType)
+                              .Select(employee => employee.ToDto())
+                              .FirstOrDefaultAsync();
+
+        var empBankingDto = await _db.EmployeeBanking
+                                         .Get(banking => banking.Id == newEntry.Id)
+                                         .AsNoTracking()
+                                         .Select(banking => banking.ToDto())
+                                         .FirstOrDefaultAsync();
+
+        if (empDto?.Email == userEmail || await IsAdmin(userEmail))
         {
-            var oldestRecord = existingBankingRecords.First();
-            await _db.EmployeeBanking.Delete(oldestRecord.Id);
+            var bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
+            var existingBankingRecords = await _db.EmployeeBanking
+                .Get(b => b.EmployeeId == newEntry.EmployeeId)
+                .OrderBy(b => b.LastUpdateDate)
+                .ToListAsync();
+
+            if (existingBankingRecords.Count > 1)
+            {
+                var oldestRecord = existingBankingRecords.First();
+                await _db.EmployeeBanking.Delete(oldestRecord.Id);
+            }
+
+            var newBankingDetails = new EmployeeBanking
+            {
+                EmployeeId = newEntry.EmployeeId,
+                BankName = newEntry.BankName,
+                Branch = newEntry.Branch,
+                AccountNo = newEntry.AccountNo,
+                AccountType = newEntry.AccountType,
+                Status = newEntry.Status,
+                DeclineReason = newEntry.DeclineReason,
+                File = newEntry.File,
+                LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
+                PendingUpdateDate = newEntry.PendingUpdateDate
+            };
+
+            await _db.EmployeeBanking.Add(newBankingDetails);
+
+            return bankingDto;
         }
 
-        var newBankingDetails = new EmployeeBanking
-        {
-            EmployeeId = newEntry.EmployeeId,
-            BankName = newEntry.BankName,
-            Branch = newEntry.Branch,
-            AccountNo = newEntry.AccountNo,
-            AccountType = newEntry.AccountType,
-            Status = newEntry.Status,
-            DeclineReason = newEntry.DeclineReason,
-            File = newEntry.File,
-            LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
-            PendingUpdateDate = newEntry.PendingUpdateDate
-        };
-
-        await _db.EmployeeBanking.Add(newBankingDetails);
-
-        return bankingDto;
+        throw new CustomException("Unauthorized access.");
     }
-    else
-    {
-        var exception = new UnauthorizedAccessException("Unauthorized access");
-        throw _errorLoggingService.LogException(exception);
-    }
-}
 
     public async Task<List<EmployeeBankingDto>> GetBanking(int employeeId)
     {
@@ -107,16 +102,13 @@ public class EmployeeBankingService : IEmployeeBankingService
         }
         catch (Exception)
         {
-            var exception = new Exception("Employee banking details not found");
-            throw _errorLoggingService.LogException(exception);
+            throw new CustomException("Employee banking details not found");
         }
     }
 
     public async Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry, string userEmail)
     {
-        EmployeeBanking bankingDetails;
-
-        bankingDetails = new EmployeeBanking(newEntry);
+        var bankingDetails = new EmployeeBanking(newEntry);
 
         var employee = await _db.Employee
                                 .Get(employee => employee.Id == newEntry.EmployeeId)
@@ -124,7 +116,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                                 .Select(employee => employee)
                                 .FirstAsync();
 
-        EmployeeBankingDto? newEntryDto = null;
+        EmployeeBankingDto? newEntryDto;
 
         if (employee.Email == userEmail)
         {
@@ -135,11 +127,7 @@ public class EmployeeBankingService : IEmployeeBankingService
             if (await IsAdmin(userEmail))
                 newEntryDto = (await _db.EmployeeBanking.Add(bankingDetails)).ToDto();
             else
-            {
-                var exception = new Exception("Unauthorized access");
-                throw _errorLoggingService.LogException(exception);
-            }
-
+                throw new CustomException("Unauthorized access");
         }
 
         bankingDetails.Employee = employee;
@@ -165,10 +153,9 @@ public class EmployeeBankingService : IEmployeeBankingService
         return role!.Description is "Admin" or "SuperAdmin";
     }
 
-    private EmployeeBankingDto CreateEmployeeBankingDto(EmployeeBankingDto newEntry,
-                                                                    EmployeeBankingDto empBankingDto)
+    private EmployeeBankingDto CreateEmployeeBankingDto(EmployeeBankingDto newEntry, EmployeeBankingDto empBankingDto)
     {
-        var Bankingdto = new EmployeeBankingDto
+        var banking = new EmployeeBankingDto
         {
             Id = newEntry.Id,
             EmployeeId = newEntry.EmployeeId,
@@ -182,6 +169,6 @@ public class EmployeeBankingService : IEmployeeBankingService
             LastUpdateDate = empBankingDto.LastUpdateDate,
             PendingUpdateDate = newEntry.PendingUpdateDate
         };
-        return Bankingdto;
+        return banking;
     }
 }

@@ -11,18 +11,15 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
     private readonly IUnitOfWork _db;
     private readonly IEmployeeEvaluationTemplateService _employeeEvaluationTemplateService;
     private readonly IEmployeeService _employeeService;
-    private readonly IErrorLoggingService _errorLoggingService;
 
     public EmployeeEvaluationService(
         IUnitOfWork db,
         IEmployeeService employeeService,
-        IEmployeeEvaluationTemplateService employeeEvaluationTemplateService,
-        IErrorLoggingService errorLoggingService)
+        IEmployeeEvaluationTemplateService employeeEvaluationTemplateService)
     {
         _db = db;
         _employeeService = employeeService;
         _employeeEvaluationTemplateService = employeeEvaluationTemplateService;
-        _errorLoggingService = errorLoggingService;
     }
 
     public async Task<bool> CheckIfExists(EmployeeEvaluationInput evaluationInput)
@@ -54,10 +51,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var exists = await _employeeService.CheckUserExist(email);
 
         if (!exists)
-        {
-            var exception = new Exception($"Employee with {email} not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException($"Employee with {email} not found");
 
         var employeeEvaluations = await _db.EmployeeEvaluation
                                            .Get(x => x.Employee.Email == email)
@@ -78,10 +72,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var exists = await _employeeService.CheckUserExist(email);
 
         if (!exists)
-        {
-            var exception = new Exception($"Employee with {email} not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException($"Employee with {email} not found");
 
         var employeeEvaluations = await _db.EmployeeEvaluation
                                            .Get(x => x.Owner.Email == email)
@@ -102,10 +93,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var exists = await _employeeEvaluationTemplateService.CheckIfExists(template);
 
         if (!exists)
-        {
-            var exception = new Exception($"Employee Evaluation Template {template} not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException($"Employee Evaluation Template {template} not found");
 
         var employeeEvaluations = await _db.EmployeeEvaluation
                                            .Get(x => x.Template.Description == template)
@@ -156,10 +144,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var exists = await CheckIfExists(evaluationInput);
 
         if (!exists)
-        {
-            var exception = new Exception("Employee Evaluation not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Evaluation not found");
 
         var employeeEvaluation = await _db.EmployeeEvaluation
                                           .Get(evaluation =>
@@ -183,10 +168,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var exists = await CheckIfExists(evaluationInput);
 
         if (exists)
-        {
-            var exception = new Exception("Employee Evaluation already exists");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Evaluation already exists");
 
         var employeeDto = await _employeeService.GetEmployee(evaluationInput.EmployeeEmail);
         var ownerDto = await _employeeService.GetEmployee(evaluationInput.OwnerEmail);
@@ -215,10 +197,7 @@ public class EmployeeEvaluationService : IEmployeeEvaluationService
         var oldExists = await CheckIfExists(oldEvaluation);
 
         if (!oldExists)
-        {
-            var exception = new Exception("Employee Evaluation not found");
-            throw _errorLoggingService.LogException(exception);
-        }
+            throw new CustomException("Employee Evaluation not found");
 
         var employeeEvaluation = await Get(
                                            oldEvaluation.EmployeeEmail,

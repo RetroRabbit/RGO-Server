@@ -3,22 +3,15 @@ using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 
-
 namespace HRIS.Services.Services;
 
 public class BankingAndStarterKitService : IBankingAndStarterKitService
 {
     private readonly IUnitOfWork _db;
-    private readonly IEmployeeService _employeeService;
-    private readonly IEmployeeBankingService _employeeBankingService;
-    private readonly IErrorLoggingService _errorLoggingService;
 
-    public BankingAndStarterKitService(IUnitOfWork db, IEmployeeService employeeService, IEmployeeBankingService employeeBankingService ,IErrorLoggingService errorLoggingService)
+    public BankingAndStarterKitService(IUnitOfWork db)
     {
         _db = db;
-        _employeeService = employeeService;
-        _employeeBankingService = employeeBankingService;
-        _errorLoggingService = errorLoggingService;
     }
     public async Task<List<BankingAndStarterKitDto>> GetBankingAndStarterKitAsync()
     {
@@ -38,7 +31,7 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
             .Select(group => group.OrderByDescending(banking => banking).FirstOrDefault())
             .ToListAsync();
 
-        var combinedResults =new List<BankingAndStarterKitDto>();
+        var combinedResults = new List<BankingAndStarterKitDto>();
         combinedResults.AddRange(employeeDocumentQuery.Select(document => new BankingAndStarterKitDto
         {
             EmployeeDocumentDto = document.ToDto(),
@@ -54,7 +47,7 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
             Surname = banking?.Employee?.Surname,
             EmployeeId = banking.EmployeeId
         }));
-        
+
         return combinedResults;
     }
 }

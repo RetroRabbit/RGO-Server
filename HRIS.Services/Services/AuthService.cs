@@ -12,7 +12,7 @@ public class AuthService : IAuthService
     private readonly IErrorLoggingService _errorLoggingService;
     private readonly HttpClient client = new();
     private static string _cachedAccessToken = string.Empty;
- 
+
     public AuthService(IErrorLoggingService errorLoggingService)
     {
         _errorLoggingService = errorLoggingService;
@@ -189,7 +189,7 @@ public class AuthService : IAuthService
                 _errorLoggingService.LogException(ex);
                 return false;
             }
-        } 
+        }
         return false;
     }
 
@@ -443,14 +443,14 @@ public class AuthService : IAuthService
 
     public async Task<bool> DeleteUser(string userId)
     {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
-            var existingUser = GetUserById(userId);
-            if (existingUser != null)
-            {
-                await client.Users.DeleteAsync(userId);
-            }
-            return true;
+        var token = await GetAuth0ManagementAccessToken();
+        var client = new ManagementApiClient(token, new Uri($"{EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+        var existingUser = GetUserById(userId);
+        if (existingUser != null)
+        {
+            await client.Users.DeleteAsync(userId);
+        }
+        return true;
     }
 
     public async Task<bool> UpdateUser(string userId, UserUpdateRequest request)
