@@ -15,11 +15,22 @@ public class AuthService : IAuthService
     private readonly AuthManagement _authManagement;
     private readonly HttpClient client = new();
     private static string _cachedAccessToken = string.Empty;
+    private static string _clientId = string.Empty;
+    private static string _clientSecret = string.Empty;
+    private static string _issuer = string.Empty;
+    private static string _audience = string.Empty;
 
     public AuthService(IErrorLoggingService errorLoggingService, IOptions<AuthManagement> options)
     {
         _errorLoggingService = errorLoggingService;
         _authManagement = options.Value;
+        _clientId = _authManagement.ClientId ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_ID;
+        _clientSecret = _authManagement.ClientSecret ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_SECRET;
+        _issuer = _authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER;
+        _audience = _authManagement.Audience ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE;
+        Console.WriteLine("_issuer " + _issuer);
+
+
     }
 
     private static bool IsTokenExpired(string token)
@@ -49,13 +60,13 @@ public class AuthService : IAuthService
                 return _cachedAccessToken;
             }
         }
-        var tokenEndpoint = $"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}oauth/token";
+        var tokenEndpoint = $"{_issuer}oauth/token";
         var requestBody = new Dictionary<string, string>
         {
-            { "client_id",  _authManagement.ClientId ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_ID},
-            { "client_secret", _authManagement.ClientSecret ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_SECRET },
+            { "client_id",  _clientId},
+            { "client_secret", _clientSecret },
             { "grant_type", "client_credentials" },
-            { "audience", $"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2/" }
+            { "audience", $"{_issuer}api/v2/" }
         };
 
         var response = await client.PostAsync(tokenEndpoint, new FormUrlEncodedContent(requestBody));
@@ -78,7 +89,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
             var request = new GetRolesRequest();
             var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
             return await client.Roles.GetAllAsync(request, pagination);
@@ -95,7 +106,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
             var request = new GetUsersRequest();
             var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
             return await client.Users.GetAllAsync(request, pagination);
@@ -112,7 +123,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
             var user = await client.Users.GetUsersByEmailAsync(email);
             return user;
         }
@@ -133,7 +144,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 var users = await client.Roles.GetUsersAsync(roleId, new PaginationInfo(0, 50));
                 return users;
             }
@@ -156,7 +167,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 return await client.Users.GetRolesAsync(userId);
             }
             catch (Exception ex)
@@ -181,7 +192,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 await client.Users.AssignRolesAsync(userId, new AssignRolesRequest
                 {
                     Roles = new[] { roleId }
@@ -210,7 +221,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 await client.Users.RemoveRolesAsync(userId, new AssignRolesRequest
                 {
                     Roles = new[] { roleId }
@@ -244,7 +255,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
             temporaryRole = await client.Roles.CreateAsync(new RoleCreateRequest
             {
                 Name = roleName,
@@ -269,7 +280,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 await client.Roles.DeleteAsync(roleId);
                 return true;
             }
@@ -292,7 +303,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 var temporaryRole = await client.Roles.UpdateAsync(roleId, new RoleUpdateRequest
                 {
                     Name = roleName,
@@ -319,7 +330,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 var permissions = await client.Roles.GetPermissionsAsync(roleId, new PaginationInfo());
                 return permissions;
             }
@@ -342,11 +353,11 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
 
                 var permissions = new List<PermissionIdentity>
             {
-                new PermissionIdentity { Name = permissionName, Identifier =_authManagement.Audience ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE }
+                new PermissionIdentity { Name = permissionName, Identifier = _audience}
             };
 
                 await client.Roles.RemovePermissionsAsync(roleId, new AssignPermissionsRequest
@@ -376,11 +387,11 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
 
                 var permissions = new List<PermissionIdentity>
                 {
-                new PermissionIdentity { Name = permissionName, Identifier = _authManagement.Audience ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE }
+                new PermissionIdentity { Name = permissionName, Identifier = _audience}
                 };
 
                 await client.Roles.AssignPermissionsAsync(roleId, new AssignPermissionsRequest
@@ -411,7 +422,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
             await client.Users.CreateAsync(request);
             return true;
         }
@@ -432,7 +443,7 @@ public class AuthService : IAuthService
             try
             {
                 var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
                 var user = await client.Users.GetAsync(userId);
                 return user;
             }
@@ -448,7 +459,7 @@ public class AuthService : IAuthService
     public async Task<bool> DeleteUser(string userId)
     {
         var token = await GetAuth0ManagementAccessToken();
-        var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+        var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
         var existingUser = GetUserById(userId);
         if (existingUser != null)
         {
@@ -469,7 +480,7 @@ public class AuthService : IAuthService
         try
         {
             var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER}api/v2"));
+            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
             await client.Users.UpdateAsync(userId, request);
             return true;
         }
