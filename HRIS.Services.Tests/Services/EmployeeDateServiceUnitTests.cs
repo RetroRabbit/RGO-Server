@@ -29,7 +29,7 @@ public class EmployeeDateServiceUnitTests
         _employee = EmployeeTestData.EmployeeOne;
         _employeeDate = new EmployeeDate { Id = 1, EmployeeId = _employee.Id, Employee = _employee, Subject = "Subject", Note = "Note", Date = new DateOnly() };
         _employeeDateDto = new EmployeeDate { Id = 1, Employee = _employee, Subject = "Subject", Note = "Note", Date = new DateOnly() }.ToDto();
-        _employeeDateInput = new EmployeeDateInput { Id = 1, Email = "email@gmail.com", Subject = "Subject", Note = "Note", Date = new DateOnly() };
+        _employeeDateInput = new EmployeeDateInput { Id = 1, Email = "email@retrorabbit.co.za", Subject = "Subject", Note = "Note", Date = new DateOnly() };
     }
 
     [Fact]
