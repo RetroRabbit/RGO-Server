@@ -23,7 +23,6 @@ public class EmployeeDateService : IEmployeeDateService
         return exists;
     }
 
-    //----------------------------------//
     public async Task SaveEmployeeDate(EmployeeDateInput employeeDateInput)
     {
         var employee = await _employeeService.GetEmployee(employeeDateInput.Email!);
@@ -44,7 +43,6 @@ public class EmployeeDateService : IEmployeeDateService
         await _db.EmployeeDate.Add(new EmployeeDate(employeeDate));
     }
 
-    //----------------------------------//
     public async Task UpdateEmployeeDate(EmployeeDateDto employeeDate)
     {
         var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email!);
@@ -97,7 +95,6 @@ public class EmployeeDateService : IEmployeeDateService
         return employeeDateDto;
     }
 
-    //----------------------------------//
     public List<EmployeeDateDto> GetEmployeeDates(DateOnly? date, string? email, string? subject)
     {
         if (date != null)
