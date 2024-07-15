@@ -69,6 +69,7 @@ public class EmployeeDateServiceUnitTests
 
         await _employeeDateService.SaveEmployeeDate(_employeeDateInput);
         _mockDb.Verify(x => x.EmployeeDate.Add(It.IsAny<EmployeeDate>()), Times.Once);
+        _mockDb.Verify(x => x.SaveChangesAsync(), Times.Once);
     }
 
     [Fact]

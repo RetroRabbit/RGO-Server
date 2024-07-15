@@ -115,10 +115,10 @@ public class EmployeeDateControllerUnitTests
         Assert.Equal(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
     }
 
-    [Fact(Skip = "Fix this test")]
+    [Fact]
     public void GetAllEmployeeDateByDateReturnsOkResultWithList()
     {
-        _employeeDateServiceMock.Setup(x => x.GetAllByDate(_employeeDateDto.Date)).Returns(_employeeDateDtoList);
+        _employeeDateServiceMock.Setup(x => x.GetEmployeeDates(_employeeDateDto.Date, null, null)).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate(_employeeDateDto.Date);
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -126,10 +126,10 @@ public class EmployeeDateControllerUnitTests
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
     }
 
-    [Fact(Skip = "Fix this test")]
+    [Fact]
     public void GetAllEmployeeDateByEmployeeReturnsOkResultWithList()
     {
-        _employeeDateServiceMock.Setup(x => x.GetAllByEmployee(_employeeDateInput.Email)).Returns(_employeeDateDtoList);
+        _employeeDateServiceMock.Setup(x => x.GetEmployeeDates(null, _employeeDateInput.Email, null)).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate(email: _employeeDateInput.Email);
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -137,10 +137,10 @@ public class EmployeeDateControllerUnitTests
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
     }
 
-    [Fact(Skip = "Fix this test")]
+    [Fact]
     public void GetAllEmployeeDateBySubjectReturnsOkResultWithList()
     {
-        _employeeDateServiceMock.Setup(x => x.GetAllBySubject(_employeeDateInput.Subject)).Returns(_employeeDateDtoList);
+        _employeeDateServiceMock.Setup(x => x.GetEmployeeDates(null, null, _employeeDateInput.Subject)).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate(subject: _employeeDateInput.Subject);
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -148,10 +148,10 @@ public class EmployeeDateControllerUnitTests
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
     }
 
-    [Fact(Skip = "Fix this test")]
+    [Fact]
     public void GetAllEmployeeDateNoFiltersReturnsOkResultWithList()
     {
-        _employeeDateServiceMock.Setup(x => x.GetAll()).Returns(_employeeDateDtoList);
+        _employeeDateServiceMock.Setup(x => x.GetEmployeeDates(null, null, null)).Returns(_employeeDateDtoList);
 
         var result = _controller.GetAllEmployeeDate();
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -159,10 +159,10 @@ public class EmployeeDateControllerUnitTests
         Assert.Equal(_employeeDateDtoList, actualEmployeeDates);
     }
 
-    [Fact(Skip = "Fix this test")]
+    [Fact]
     public async Task GetAllEmployeeDateServiceFail()
     {
-        _employeeDateServiceMock.Setup(x => x.GetAll()).Throws(new Exception("An error occurred while retrieving employee dates."));
+        _employeeDateServiceMock.Setup(x => x.GetEmployeeDates(null, null, null)).Throws(new Exception("An error occurred while retrieving employee dates."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => Task.FromResult(_controller.GetAllEmployeeDate()));
 
