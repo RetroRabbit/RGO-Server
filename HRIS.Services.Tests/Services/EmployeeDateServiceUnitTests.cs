@@ -61,14 +61,22 @@ public class EmployeeDateServiceUnitTests
         await Assert.ThrowsAsync<CustomException>(() => _employeeDateService.SaveEmployeeDate(_employeeDateInput));
     }
 
-    [Fact(Skip = "Fix this test")]
+    [Fact]
     public async Task SavePassTest()
     {
+        _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateInput.Email))
+                            .ReturnsAsync(_employee.ToDto);
+
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .ReturnsAsync(false);
 
         await _employeeDateService.SaveEmployeeDate(_employeeDateInput);
-        _mockDb.Verify(x => x.EmployeeDate.Add(It.IsAny<EmployeeDate>()), Times.Once);
+
+        _mockDb.Verify(x => x.EmployeeDate.Add(It.Is<EmployeeDate>(e =>
+            e.EmployeeId == _employee.Id &&
+            e.Subject == _employeeDateInput.Subject &&
+            e.Note == _employeeDateInput.Note &&
+            e.Date == _employeeDateInput.Date)), Times.Once);
     }
 
     [Fact]
@@ -80,14 +88,23 @@ public class EmployeeDateServiceUnitTests
         await Assert.ThrowsAsync<CustomException>(() => _employeeDateService.UpdateEmployeeDate(_employeeDate.ToDto()));
     }
 
-    [Fact(Skip = "Fix this test")]
+    [Fact]
     public async Task UpdatePassTest()
     {
+        _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateDto.Employee.Email))
+                            .ReturnsAsync(_employee.ToDto);
+
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .ReturnsAsync(true);
 
         await _employeeDateService.UpdateEmployeeDate(_employeeDateDto);
-        _mockDb.Verify(x => x.EmployeeDate.Update(It.IsAny<EmployeeDate>()), Times.Once);
+
+        _mockDb.Verify(x => x.EmployeeDate.Update(It.Is<EmployeeDate>(e =>
+            e.Id == _employeeDateDto.Id &&
+            e.EmployeeId == _employee.Id &&
+            e.Subject == _employeeDateDto.Subject &&
+            e.Note == _employeeDateDto.Note &&
+            e.Date == _employeeDateDto.Date)), Times.Once);
     }
 
     [Fact]
