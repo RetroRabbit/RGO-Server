@@ -24,14 +24,7 @@ public class EmployeeDateControllerUnitTests
         _employeeDateServiceMock = new Mock<IEmployeeDateService>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _controller = new EmployeeDateController(_employeeDateServiceMock.Object, _employeeServiceMock.Object);
-
-        _employeeDateInput = new EmployeeDateInput
-        {
-            Email = "test@retrorabbit.co.za",
-            Subject = "Test Subject",
-            Note = "Test Note",
-            Date = new DateOnly(2023, 1, 1)
-        };
+        _employeeDateInput = new EmployeeDateInput { Email = "test@retrorabbit.co.za", Subject = "Test Subject", Note = "Test Note", Date = new DateOnly(2023, 1, 1) };
 
         _employeeDateDto = new EmployeeDateDto
         {
