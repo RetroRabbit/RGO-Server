@@ -4,7 +4,7 @@ using HRIS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
-using RR.UnitOfWork;
+using RR.Tests.Data.Models.HRIS;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -96,6 +96,17 @@ public class DashboardControllerUnitTest
 
         Assert.Equal("Failed to calculate churn rate", exception.Message);
     }
+
+    [Fact]
+    public async Task CountAllEmployeesSuccessTest()
+    {
+        _dashboardMockService.Setup(service => service.GetAllActiveEmployees())
+            .ReturnsAsync(new List<EmployeeDto> { EmployeeTestData.EmployeeOne.ToDto(), EmployeeTestData.EmployeeTwo.ToDto() });
+
+        var result = await _dashboardController.CountAllEmployees();
+
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okObjectResult.StatusCode);
+        //.Equal(expectedChurnRate.ChurnRate, ((ChurnRateDataCardDto)okObjectResult.Value!).ChurnRate);
+    }
 }
-
-

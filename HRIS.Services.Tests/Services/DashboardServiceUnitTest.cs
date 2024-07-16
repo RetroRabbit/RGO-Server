@@ -77,8 +77,8 @@ public class DashboardServiceUnitTest
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employeeList.ToMockIQueryable());
         _dbMock.Setup(mt => mt.MonthlyEmployeeTotal.Get(It.IsAny<Expression<Func<MonthlyEmployeeTotal, bool>>>())).Returns(new MonthlyEmployeeTotal(_monthTotalDto).ToMockIQueryable());
         _dbMock.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(_employees);
-        
-         var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(_monthTotalDto);
+
+        var newMonthlyEmployeeTotal = new MonthlyEmployeeTotal(_monthTotalDto);
 
         _dbMock.Setup(u => u.MonthlyEmployeeTotal.Add(It.IsAny<MonthlyEmployeeTotal>()))
                .ReturnsAsync(newMonthlyEmployeeTotal);
@@ -88,7 +88,7 @@ public class DashboardServiceUnitTest
         Assert.Equal(0, result.DevsCount);
         Assert.Equal(0, result.DesignersCount);
         Assert.Equal(0, result.ScrumMastersCount);
-        Assert.Equal(0,result.BusinessSupportCount);
+        Assert.Equal(0, result.BusinessSupportCount);
         Assert.Equal(0, result.DevsOnBenchCount);
         Assert.Equal(0, result.DesignersOnBenchCount);
         Assert.Equal(0, result.ScrumMastersOnBenchCount);
@@ -172,7 +172,6 @@ public class DashboardServiceUnitTest
         Assert.Equal(monthlyEmployeeTotalDto.EmployeeTotal, result.EmployeeTotal);
     }
 
-
     [Fact]
     public async Task GetPreviousMonthTotalCreateNewTotalTest()
     {
@@ -206,11 +205,11 @@ public class DashboardServiceUnitTest
     {
         var employees = new List<Employee>
         {
-            new Employee { EmployeeTypeId = 2, ClientAllocated = 2 },
-            new Employee { EmployeeTypeId = 3, ClientAllocated = 3 },
-            new Employee { EmployeeTypeId = 4, ClientAllocated = 4 },
-            new Employee { EmployeeTypeId = 2, ClientAllocated = 1 },
-            new Employee { EmployeeTypeId = 1, ClientAllocated = 2 },
+            new Employee { EmployeeTypeId = 2, ClientAllocated = 2 , Active = true },
+            new Employee { EmployeeTypeId = 3, ClientAllocated = 3 , Active = true},
+            new Employee { EmployeeTypeId = 4, ClientAllocated = 4 , Active = true},
+            new Employee { EmployeeTypeId = 2, ClientAllocated = 1 , Active = true},
+            new Employee { EmployeeTypeId = 1, ClientAllocated = 2 , Active = true},
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -226,11 +225,11 @@ public class DashboardServiceUnitTest
     {
         var employees = new List<Employee>
         {
-            new Employee { EmployeeTypeId = 2, ClientAllocated = null },
-            new Employee { EmployeeTypeId = 3, ClientAllocated = null },
-            new Employee { EmployeeTypeId = 4, ClientAllocated = null },
-            new Employee { EmployeeTypeId = 2, ClientAllocated = 1 },
-            new Employee { EmployeeTypeId = 1, ClientAllocated = null },
+            new Employee { EmployeeTypeId = 2, ClientAllocated = null , Active = true},
+            new Employee { EmployeeTypeId = 3, ClientAllocated = null , Active = true},
+            new Employee { EmployeeTypeId = 4, ClientAllocated = null , Active = true},
+            new Employee { EmployeeTypeId = 2, ClientAllocated = 1 , Active = true},
+            new Employee { EmployeeTypeId = 1, ClientAllocated = null , Active = true},
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -244,5 +243,31 @@ public class DashboardServiceUnitTest
         Assert.Equal(1, result.ScrumMastersOnBenchCount);
         Assert.Equal(3, result.TotalNumberOfEmployeesOnBench);
     }
-}
 
+    [Fact]
+    public async Task GetAllActiveEmployees_ReturnsExpectedResult()
+    {
+        var employees = new List<Employee>
+        {
+            new Employee { EmployeeTypeId = 2, ClientAllocated = null , Active = true},
+            new Employee { EmployeeTypeId = 3, ClientAllocated = null , Active = true},
+            new Employee { EmployeeTypeId = 4, ClientAllocated = null , Active = true},
+            new Employee { EmployeeTypeId = 2, ClientAllocated = 1 , Active = true},
+            new Employee { EmployeeTypeId = 1, ClientAllocated = null , Active = false},
+        };
+
+        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(employees.ToMockIQueryable());
+
+        var result = await _dashboardService.GetAllActiveEmployees();
+
+        Assert.NotNull(result);
+        Assert.Equal(4, result.FindAll(e => e.Active == true).Count);
+    }
+
+    [Fact]
+    public async Task CalculateEmployeeGrowthRate_ReturnsExpectedResult()
+    {
+
+    }
+}
