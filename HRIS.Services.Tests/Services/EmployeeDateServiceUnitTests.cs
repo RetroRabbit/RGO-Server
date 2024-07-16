@@ -257,7 +257,7 @@ public class EmployeeDateServiceUnitTests
 
         var result = _employeeDateService.GetEmployeeDates(null, null, subject);
 
-        Assert.Equivalent(_employeeDateDto, result.First());    
+        Assert.Equivalent(_employeeDateDto, result.First());
     }
 
     [Fact]

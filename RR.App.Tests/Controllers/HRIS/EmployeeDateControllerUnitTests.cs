@@ -61,7 +61,7 @@ public class EmployeeDateControllerUnitTests
             .ThrowsAsync(new Exception("An error occurred while saving employee date information."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.SaveEmployeeDate(_employeeDateInput));
-        
+
         Assert.IsType<StatusCodeResult>(result);
         Assert.Equal(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
     }
@@ -85,7 +85,7 @@ public class EmployeeDateControllerUnitTests
                                .ThrowsAsync(new Exception("An error occurred while deleting employee date information."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.DeleteEmployeeDate(_employeeDateInput.Id));
-        
+
         Assert.IsType<StatusCodeResult>(result);
         Assert.Equal(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
     }
@@ -110,7 +110,7 @@ public class EmployeeDateControllerUnitTests
                                .ThrowsAsync(new Exception("An error occurred while updating employee date information."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployeeDate(_employeeDateDto));
-        
+
         Assert.IsType<StatusCodeResult>(result);
         Assert.Equal(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
     }

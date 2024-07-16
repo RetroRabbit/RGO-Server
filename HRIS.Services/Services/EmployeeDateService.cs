@@ -34,7 +34,7 @@ public class EmployeeDateService : IEmployeeDateService
             Note = employeeDateInput.Note,
             Date = employeeDateInput.Date
         };
-        
+
         var exists = await CheckIfExists(employeeDate);
 
         if (exists)
@@ -54,7 +54,7 @@ public class EmployeeDateService : IEmployeeDateService
             Note = employeeDate.Note,
             Date = employeeDate.Date
         };
-        
+
         var exists = await CheckIfExists(newEmployeeDate);
 
         if (!exists)
