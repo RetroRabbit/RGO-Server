@@ -28,7 +28,7 @@ public class EmployeeDateServiceUnitTests
         _employeeDateService = new EmployeeDateService(_mockDb.Object, _employeeServiceMock.Object);
         _employee = EmployeeTestData.EmployeeOne;
         _employeeDate = new EmployeeDate { Id = 1, EmployeeId = _employee.Id, Employee = _employee, Subject = "Subject", Note = "Note", Date = new DateOnly() };
-        _employeeDateDto = new EmployeeDate { Id = 1, Employee = _employee, Subject = "Subject", Note = "Note", Date = new DateOnly() }.ToDto();
+        _employeeDateDto = new EmployeeDate { Id = 1, Employee = _employee, Subject = "Subject", Note = "Note", Date = new DateOnly(2023, 1, 1) }.ToDto();
         _employeeDateInput = new EmployeeDateInput { Id = 1, Email = "email@retrorabbit.co.za", Subject = "Subject", Note = "Note", Date = new DateOnly() };
     }
 
@@ -209,44 +209,22 @@ public class EmployeeDateServiceUnitTests
         Assert.Equivalent(employeeDateList.Count, result.Count);
     }
 
-    [Fact(Skip = "fix test")]
+    [Fact]
     public void GetEmployeeDates_ByDate()
     {
+        var date = new DateOnly(2023, 1, 1);
         var employeeDates = new List<EmployeeDateDto> { _employeeDateDto };
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .Returns(employeeDates.Select(ed => new EmployeeDate(ed)).AsQueryable());
 
-        var result = _employeeDateService.GetEmployeeDates(_employeeDateDto.Date, null, null);
+        _mockDb.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(new List<Employee> { _employee }.AsQueryable());
 
-        Assert.Equal(_employeeDateDto, result.First());
+        var result = _employeeDateService.GetEmployeeDates(date, null, null);
+
+        Assert.Equivalent(_employeeDateDto, result.First());
     }
-
-    //[Fact]
-    //public void GetEmployeeDates_ByDate()
-    //{
-    //    // Arrange
-    //    //var date = new DateOnly(2024, 7, 15);
-    //    var employeeDates = new List<EmployeeDateDto>
-    //        {
-    //            //new EmployeeDateDto { Id = 1, Subject = "Subject", Note = "Note", Date = date }
-    //            _employeeDateDto
-    //        };
-
-    //    _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
-    //           .Returns(employeeDates.Select(ed => new EmployeeDate
-    //           {
-    //               Id = ed.Id,
-    //               Subject = ed.Subject,
-    //               Note = ed.Note,
-    //               Date = ed.Date
-    //           }).AsQueryable());
-
-    //    var result = _employeeDateService.GetEmployeeDates(_employeeDate.Date, null, null);
-
-    //    Assert.Single(result);
-    //    Assert.Equal(employeeDates.First().Id, result.First().Id);
-    //}
 
     [Fact]
     public void GetEmployeeDates_ByEmail()
@@ -265,18 +243,21 @@ public class EmployeeDateServiceUnitTests
         Assert.Equivalent(_employeeDateDto, result.First());
     }
 
-    [Fact(Skip = "Fix test")]
+    [Fact]
     public void GetEmployeeDates_BySubject()
     {
-        var subject = _employeeDateDto.Subject;
+        var subject = "Subject";
         var employeeDates = new List<EmployeeDateDto> { _employeeDateDto };
 
         _mockDb.Setup(x => x.EmployeeDate.Get(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
                .Returns(employeeDates.Select(ed => new EmployeeDate(ed)).AsQueryable());
 
+        _mockDb.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(new List<Employee> { _employee }.AsQueryable());
+
         var result = _employeeDateService.GetEmployeeDates(null, null, subject);
 
-        Assert.Equal(_employeeDateDto, result.First());
+        Assert.Equivalent(_employeeDateDto, result.First());    
     }
 
     [Fact]
