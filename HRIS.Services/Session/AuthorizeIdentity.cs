@@ -25,6 +25,12 @@ public class AuthorizeIdentity
     public virtual string Email => _email ??= GetEmail();
     public virtual string NameIdentifier => _nameIdentifier ??= GetNameIdentifier();
     public virtual string Role => _role ??= GetRole();
+
+    public bool IsAdmin => Role is "Admin" or "SuperAdmin";
+    public bool IsTalent => Role is "Talent";
+    public bool IsJourney => Role is "Journey";
+    public bool IsSupport => IsAdmin || IsTalent || IsJourney;
+
     public virtual int EmployeeId
     {
         get
