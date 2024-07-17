@@ -11,7 +11,7 @@ public class EmployeeDateController : ControllerBase
 {
     private readonly IEmployeeDateService _employeeDateService;
 
-    public EmployeeDateController(IEmployeeDateService employeeDateService, IEmployeeService employeeService)
+    public EmployeeDateController(IEmployeeDateService employeeDateService)
     {
         _employeeDateService = employeeDateService;
     }
