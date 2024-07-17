@@ -19,8 +19,8 @@ public interface IRepository<T> where T : IModel
 
 public class BaseRepository<T> : IRepository<T> where T : class, IModel
 {
-    protected readonly DatabaseContext _db;
-    protected readonly DbSet<T> _entity;
+    private readonly DatabaseContext _db;
+    private readonly DbSet<T> _entity;
 
     public BaseRepository(DatabaseContext db)
     {

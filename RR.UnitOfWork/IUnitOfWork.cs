@@ -15,11 +15,6 @@ public interface IUnitOfWork
     IEmployeeDateRepository EmployeeDate { get; }
     IEmployeeProjectRepository EmployeeProject { get; }
     IEmployeeQualificationRepository EmployeeQualification { get; }
-    IEmployeeEvaluationRepository EmployeeEvaluation { get; }
-    IEmployeeEvaluationAudienceRepository EmployeeEvaluationAudience { get; }
-    IEmployeeEvaluationRatingRepository EmployeeEvaluationRating { get; }
-    IEmployeeEvaluationTemplateRepository EmployeeEvaluationTemplate { get; }
-    IEmployeeEvaluationTemplateItemRepository EmployeeEvaluationTemplateItem { get; }
     IEmployeeRepository Employee { get; }
     IEmployeeRoleRepository EmployeeRole { get; }
     IEmployeeTypeRepository EmployeeType { get; }
