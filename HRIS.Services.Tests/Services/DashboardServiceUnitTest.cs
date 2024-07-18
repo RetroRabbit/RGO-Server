@@ -131,7 +131,7 @@ public class DashboardServiceUnitTest
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(_employees.ToMockIQueryable());
 
-        var monthlyEmployeeTotalDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviuosMonth_CurrentYear;
+        var monthlyEmployeeTotalDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviousMonth_CurrentYear;
 
         var monthlyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {
@@ -156,7 +156,7 @@ public class DashboardServiceUnitTest
     [Fact]
     public async Task GetPreviousMonthTotalReturnsExistingTotalTest()
     {
-        var monthlyEmployeeTotalDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviuosMonth_CurrentYear;
+        var monthlyEmployeeTotalDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviousMonth_CurrentYear;
 
         var monthlyEmployeeTotalList = new List<MonthlyEmployeeTotal>
         {

@@ -15,7 +15,7 @@ namespace RR.Tests.Data.Models.HRIS
             Year = DateTime.Now.Year
         };
 
-        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviuosMonth_CurrentYear = new()
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviousMonth_CurrentYear = new()
         {
             Id = 1,
             EmployeeTotal = 1,
@@ -26,7 +26,7 @@ namespace RR.Tests.Data.Models.HRIS
             Year = DateTime.Now.Year
         };
 
-        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviuosMonth_FurtureYear = new()
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviousMonth_FurtureYear = new()
         {
             Id = 1,
             EmployeeTotal = 1,
