@@ -15,7 +15,7 @@ namespace RR.Tests.Data.Models.HRIS
             Year = DateTime.Now.Year
         };
 
-        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviuosMonth_CurrentYear = new()
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviousMonth_CurrentYear = new()
         {
             Id = 1,
             EmployeeTotal = 1,
@@ -26,7 +26,7 @@ namespace RR.Tests.Data.Models.HRIS
             Year = DateTime.Now.Year
         };
 
-        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviuosMonth_FurtureYear = new()
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviousMonth_FurtureYear = new()
         {
             Id = 1,
             EmployeeTotal = 1,
@@ -45,6 +45,17 @@ namespace RR.Tests.Data.Models.HRIS
             ScrumMasterTotal = 1,
             BusinessSupportTotal = 1,
             Month = "November",
+            Year = DateTime.Now.Year
+        };
+
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviousMonth_Zero = new()
+        {
+            Id = 1,
+            EmployeeTotal = 0,
+            DeveloperTotal = 0,
+            ScrumMasterTotal = 0,
+            BusinessSupportTotal = 0,
+            Month = DateTime.Now.AddMonths(-1).ToString("MMMM"),
             Year = DateTime.Now.Year
         };
     }
