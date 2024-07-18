@@ -289,7 +289,7 @@ public class DashboardServiceUnitTest
                .Returns(monthlyEmployeeTotalCurrentList.ToMockIQueryable());
         _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal()).ReturnsAsync(monthlyEmployeeTotalCurrentDto.ToDto());
 
-        var monthlyEmployeeTotalPreviousDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviuosMonth_CurrentYear;
+        var monthlyEmployeeTotalPreviousDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviousMonth_CurrentYear;
 
         var monthlyEmployeeTotalPreviousList = new List<MonthlyEmployeeTotal>
         {
@@ -330,7 +330,7 @@ public class DashboardServiceUnitTest
                .Returns(monthlyEmployeeTotalCurrentList.ToMockIQueryable());
         _dashboardMockService.Setup(x => x.GetEmployeeCurrentMonthTotal()).ReturnsAsync(monthlyEmployeeTotalCurrentDto.ToDto());
 
-        var monthlyEmployeeTotalPreviousDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviuosMonth_Zero;
+        var monthlyEmployeeTotalPreviousDto = MonthlyEmployeeTotalTestData.MonthlyEmployeeTotal_PreviousMonth_Zero;
 
         var monthlyEmployeeTotalPreviousList = new List<MonthlyEmployeeTotal>
         {
