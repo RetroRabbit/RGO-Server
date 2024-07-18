@@ -107,6 +107,5 @@ public class DashboardControllerUnitTest
 
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okObjectResult.StatusCode);
-        //.Equal(expectedChurnRate.ChurnRate, ((ChurnRateDataCardDto)okObjectResult.Value!).ChurnRate);
     }
 }
