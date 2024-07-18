@@ -47,5 +47,16 @@ namespace RR.Tests.Data.Models.HRIS
             Month = "November",
             Year = DateTime.Now.Year
         };
+
+        public static MonthlyEmployeeTotal MonthlyEmployeeTotal_PreviuosMonth_Zero = new()
+        {
+            Id = 1,
+            EmployeeTotal = 0,
+            DeveloperTotal = 0,
+            ScrumMasterTotal = 0,
+            BusinessSupportTotal = 0,
+            Month = DateTime.Now.AddMonths(-1).ToString("MMMM"),
+            Year = DateTime.Now.Year
+        };
     }
 }
