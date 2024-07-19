@@ -45,6 +45,23 @@ docker run -itd --name pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@postgres.com -e PG
 
 ## Environment Variables
 
+You can either `set up environment variables on visual studio` or `add Environment Vaiables on your machine`
+
+### On Visual Studio
+
+Right click on the RR.App and select Manage User Secretes
+
+![Image of User secretes location](./README/ManageUserSecretes.png)
+
+![Image of User secretes.json file](./README/sectresLocation.png)
+
+_With the respective values in the redacted (#######) spaces_
+
+Obtain the AuthManagement values from the Auth0 Identity provider or project contributors on the Retro Rabbit team.
+
+
+### Add Environment Vaiables on your machine
+
 You need to add environment variables onto your machine.
 
 ![Image of System Environment Variables](./README/SystemProperties1.png)
