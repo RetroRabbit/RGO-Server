@@ -43,7 +43,7 @@ public class EmployeeService : IEmployeeService
 
         EmployeeAddressDto physicalAddress;
 
-        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!))
+        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!.Id))
             physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
         else
             physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
@@ -53,7 +53,7 @@ public class EmployeeService : IEmployeeService
         EmployeeAddressDto postalAddress;
 
         if (!await _employeeAddressService
-                .CheckIfExists(employeeDto.PostalAddress!))
+                .CheckIfExists(employeeDto.PostalAddress!.Id))
             postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
         else
             postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);

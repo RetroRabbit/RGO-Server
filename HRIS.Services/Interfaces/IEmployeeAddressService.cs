@@ -9,7 +9,7 @@ public interface IEmployeeAddressService
     /// </summary>
     /// <param name="employeeAddressDto"></param>
     /// <returns>True or False</returns>
-    Task<bool> CheckIfExists(EmployeeAddressDto employeeAddressDto);
+    Task<bool> CheckIfExists(int id);
 
     /// <summary>
     ///     Save Employee Address

@@ -61,7 +61,7 @@ public class EmployeeServiceUnitTests
             Role = EmployeeRoleTestData.RoleDtoEmployee
         };
 
-        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<int>()))
                                   .ReturnsAsync(false)
                                   .ReturnsAsync(true);
 

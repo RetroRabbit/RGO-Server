@@ -14,25 +14,33 @@ public class EmployeeAddressService : IEmployeeAddressService
         _db = db;
     }
 
-    public async Task<bool> CheckIfExists(EmployeeAddressDto employeeAddressDto)
+    public async Task<bool> CheckIfExists(int id)
     {
-        if (employeeAddressDto.Id == 0)
+        if (id == 0)
         {
             return false;
         }
-        var exists = await _db.EmployeeAddress.GetById(employeeAddressDto.Id);
-        return exists != null;
+
+        var returnVal = await _db.EmployeeAddress.Any(ea => ea.Id == id);
+        return returnVal;
     }
 
     public async Task<EmployeeAddressDto> Delete(int addressId)
     {
+        var exists = await CheckIfExists(addressId);
+
+        if (!exists)
+        {
+            throw new CustomException("Employee Address Does Not Exist");
+        }
+
         var address = await _db.EmployeeAddress.Delete(addressId);
         return address.ToDto();
     }
 
     public async Task<EmployeeAddressDto> Get(EmployeeAddressDto employeeAddressDto)
     {
-        var exists = await CheckIfExists(employeeAddressDto);
+        var exists = await CheckIfExists(employeeAddressDto.Id);
 
         if (!exists)
         {
@@ -49,7 +57,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
     public async Task<EmployeeAddressDto> Save(EmployeeAddressDto employeeAddressDto)
     {
-        var exists = await CheckIfExists(employeeAddressDto);
+        var exists = await CheckIfExists(employeeAddressDto.Id);
 
         if (exists)
         {
@@ -63,7 +71,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
     public async Task<EmployeeAddressDto> Update(EmployeeAddressDto employeeAddressDto)
     {
-        var exists = await CheckIfExists(employeeAddressDto);
+        var exists = await CheckIfExists(employeeAddressDto.Id);
 
         if (!exists)
         {

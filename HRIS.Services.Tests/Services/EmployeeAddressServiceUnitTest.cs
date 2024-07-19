@@ -4,6 +4,7 @@ using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
 using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.ATS;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
 
@@ -43,7 +44,7 @@ public class EmployeeAddressServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddress?)null);
 
-        var result = await _employeeAddressService.CheckIfExists(address.ToDto());
+        var result = await _employeeAddressService.CheckIfExists(address.ToDto().Id);
 
         Assert.False(result);
     }
@@ -53,9 +54,9 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress();
 
-        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
+        _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
-        var result = await _employeeAddressService.CheckIfExists(address.ToDto());
+        var result = await _employeeAddressService.CheckIfExists(address.ToDto().Id);
 
         Assert.True(result);
     }
@@ -65,9 +66,9 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress(0);
 
-        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
+        _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(false);
 
-        var result = await _employeeAddressService.CheckIfExists(address.ToDto());
+        var result = await _employeeAddressService.CheckIfExists(address.ToDto().Id);
 
         Assert.False(result);
     }
@@ -107,7 +108,7 @@ public class EmployeeAddressServiceUnitTest
     {
         var address = CreateAddress();
 
-        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync(address);
+        _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>())).ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeAddress.FirstOrDefault(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(address);
