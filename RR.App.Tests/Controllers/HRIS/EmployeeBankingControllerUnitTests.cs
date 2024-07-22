@@ -23,11 +23,7 @@ public class EmployeeBankingControllerUnitTests
     private readonly ClaimsIdentity _claimsIdentity;
     private readonly Mock<AuthorizeIdentityMock> _identity;
     private readonly List<EmployeeBankingDto> _employeeBankingDtoList;
-
     private readonly Mock<IEmployeeBankingService> _employeeBankingServiceMock;
-
-    private readonly SimpleEmployeeBankingDto _simpleEmployeeBankingDto;
-
     private readonly EmployeeBankingDto _employeeBankingDto;
 
     public EmployeeBankingControllerUnitTests()
