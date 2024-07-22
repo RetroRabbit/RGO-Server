@@ -17,11 +17,9 @@ public class TerminationServiceUnitTests
     private readonly Termination _termination;
     private readonly Employee _employeeDto;
     private readonly EmployeeDate _employeeDate;
-    private readonly AuthorizeIdentityMock _identityMock;
     private readonly EmployeeType _employeeTypeDto;
     private readonly Mock<IUnitOfWork> _db;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private readonly Mock<ITerminationService> _terminationServiceMock;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
     private readonly Mock<IAuthService> _authServiceMock;
 
@@ -32,10 +30,9 @@ public class TerminationServiceUnitTests
         _employeeServiceMock = new Mock<IEmployeeService>();
         _authServiceMock = new Mock<IAuthService>();
         _employeeDate = new EmployeeDate();
-        _terminationServiceMock = new Mock<ITerminationService>();
-        _terminationService = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
-        _employeeDate = new EmployeeDate();
-
+        
+        _terminationService = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object,
+            new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
 
         _termination = new Termination
         {

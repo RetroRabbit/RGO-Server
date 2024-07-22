@@ -24,4 +24,10 @@ public interface ITerminationService
     /// <param name="employeeId">employeeId</param>
     /// <returns>TerminationDto</returns>
     Task<TerminationDto> GetTerminationByEmployeeId(int employeeId);
+    /// <summary>
+    ///     Checks if model exists
+    /// </summary>
+    /// <param name="Id">employeeId</param>
+    /// <returns>bool</returns>
+    Task<bool> CheckIfModelExists(int id);
 }
