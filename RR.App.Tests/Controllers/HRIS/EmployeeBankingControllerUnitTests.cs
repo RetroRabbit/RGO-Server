@@ -4,6 +4,7 @@ using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
@@ -21,16 +22,15 @@ public class EmployeeBankingControllerUnitTests
     private readonly ClaimsPrincipal _claimsPrincipal;
     private readonly EmployeeBankingController _controller;
     private readonly ClaimsIdentity _claimsIdentity;
-    private readonly Mock<AuthorizeIdentityMock> _identity;
+    private readonly AuthorizeIdentityMock _identity;
     private readonly List<EmployeeBankingDto> _employeeBankingDtoList;
     private readonly Mock<IEmployeeBankingService> _employeeBankingServiceMock;
     private readonly EmployeeBankingDto _employeeBankingDto;
 
     public EmployeeBankingControllerUnitTests()
     {
-        _identity = new Mock<AuthorizeIdentityMock>();
         _employeeBankingServiceMock = new Mock<IEmployeeBankingService>();
-        _controller = new EmployeeBankingController(_identity.Object, _employeeBankingServiceMock.Object);
+        _controller = new EmployeeBankingController(new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1), _employeeBankingServiceMock.Object);
 
         _claimList = new List<Claim>
         {
@@ -105,10 +105,6 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task GetBankingDetailsReturnsOkResult()
     {
-        _identity.Setup(i => i.Role).Returns("Admin");
-        _identity.SetupGet(i => i.EmployeeId).Returns(2);
-        _identity.SetupGet(i => i.Email).Returns("admin@example.com");
-
         _employeeBankingServiceMock.Setup(x => x.GetBanking(_employeeBankingDto.EmployeeId))
                                    .ReturnsAsync(_employeeBankingDtoList);
 
@@ -123,24 +119,15 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task GetBankingUnauthorizedAccess()
     {
-        _identity.Setup(i => i.Role).Returns("Talent");
-        _identity.SetupGet(i => i.EmployeeId).Returns(5);
-        _identity.SetupGet(i => i.Email).Returns("talent@example.com");
-
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.GetBankingDetails(2));
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
-        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.GetBankingDetails(3));
+        Assert.Equal("Unauthorized Action", exception.Message);
     }
 
     [Fact]
     public async Task GetBankingDetailsAsSuperAdminReturnsOkResult()
     {
-        _identity.Setup(i => i.Role).Returns("SuperAdmin");
-        _identity.SetupGet(i => i.EmployeeId).Returns(2);
-        _identity.SetupGet(i => i.Email).Returns("superadmin@example.com");
-
         _employeeBankingServiceMock.Setup(x => x.GetBanking(It.IsAny<int>()))
                                    .ReturnsAsync(_employeeBankingDtoList);
 

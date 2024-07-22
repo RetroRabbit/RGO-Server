@@ -61,9 +61,7 @@ public class EmployeeBankingController : ControllerBase
     public async Task<IActionResult> GetBankingDetails([FromQuery] int id)
     {
         if (_identity.Role is not ("SuperAdmin" or "Admin") && _identity.EmployeeId != id)
-        {
-            return new NotFoundObjectResult("User data being accessed does not match user making the request.");
-        }
+            throw new CustomException("Unauthorized Action");
 
         var employeeBanking = await _employeeBankingService.GetBanking(id);
         return Ok(employeeBanking);
