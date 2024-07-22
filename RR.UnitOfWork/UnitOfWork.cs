@@ -20,7 +20,6 @@ public class UnitOfWork : IUnitOfWork
         EmployeeDocument = new EmployeeDocumentRepository(_db);
         EmployeeData = new EmployeeDataRepository(_db);
         EmployeeDate = new EmployeeDateRepository(_db);
-        EmployeeProject = new EmployeeProjectRepository(_db);
         EmployeeQualification = new EmployeeQualificationRepository(_db);
         Employee = new EmployeeRepository(_db);
         EmployeeRole = new EmployeeRoleRepository(_db);
@@ -51,7 +50,6 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeDataRepository EmployeeData { get; }
     public IEmployeeDateRepository EmployeeDate { get; }
     public IEmployeeDocumentRepository EmployeeDocument { get; }
-    public IEmployeeProjectRepository EmployeeProject { get; }
     public IEmployeeQualificationRepository EmployeeQualification { get; }
     public IEmployeeRepository Employee { get; }
     public IEmployeeRoleRepository EmployeeRole { get; }
