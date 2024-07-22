@@ -32,17 +32,13 @@ public class TerminationService : ITerminationService
     {
         var modelExists = await CheckIfModelExists(terminationDto.Id);
 
-        if(!modelExists) throw new CustomException("This model doe snot exist yet");
+        if (!modelExists) throw new CustomException("This model does not exist yet");
 
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && terminationDto.EmployeeId != _identity.EmployeeId)
+        if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
-        var exists = await CheckTerminationExist(terminationDto.EmployeeId);
-        if (exists)
-        {
-            var updatedTermination = await UpdateTermination(terminationDto);
-            return updatedTermination;
-        }
+        if (_identity.EmployeeId == terminationDto.EmployeeId)
+            throw new CustomException("You cannot terminate yourself.");
 
         var currentEmployee = await _employeeService.GetEmployeeById(terminationDto.EmployeeId);
         currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
@@ -62,7 +58,7 @@ public class TerminationService : ITerminationService
 
         if (!modelExists) throw new CustomException("This model does not exist yet");
 
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && terminationDto.EmployeeId != _identity.EmployeeId)
+        if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
         return (await _db.Termination.Update(new Termination(terminationDto))).ToDto();
     }
@@ -73,7 +69,7 @@ public class TerminationService : ITerminationService
 
         if (!modelExists) throw new CustomException("This model does not exist yet");
 
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeId != _identity.EmployeeId)
+        if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
         var exists = await CheckTerminationExist(employeeId);

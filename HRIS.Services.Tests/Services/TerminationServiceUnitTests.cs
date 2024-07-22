@@ -8,16 +8,16 @@ using RR.UnitOfWork.Entities.HRIS;
 using System.Linq.Expressions;
 using RR.Tests.Data.Models;
 using Xunit;
-using HRIS.Services.Session;
 
 namespace HRIS.Services.Tests.Services;
 
 public class TerminationServiceUnitTests
 {
     private readonly TerminationService _terminationService;
-    private readonly Termination _terminationDto;
+    private readonly Termination _termination;
     private readonly Employee _employeeDto;
     private readonly EmployeeDate _employeeDate;
+    private readonly AuthorizeIdentityMock _identityMock;
     private readonly EmployeeType _employeeTypeDto;
     private readonly Mock<IUnitOfWork> _db;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
@@ -33,13 +33,14 @@ public class TerminationServiceUnitTests
         _authServiceMock = new Mock<IAuthService>();
         _employeeDate = new EmployeeDate();
         _terminationServiceMock = new Mock<ITerminationService>();
-        _terminationService = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, new AuthorizeIdentityMock());
+        _terminationService = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
         _employeeDate = new EmployeeDate();
 
-        _terminationDto = new Termination
+
+        _termination = new Termination
         {
             Id = 1,
-            EmployeeId = 1,
+            EmployeeId = 3,
             TerminationOption = 0,
             DayOfNotice = new DateTime(),
             LastDayOfEmployment = new DateTime(),
@@ -53,6 +54,32 @@ public class TerminationServiceUnitTests
 
         _employeeDto = EmployeeTestData.EmployeeOne;
         _employeeTypeDto = EmployeeTypeTestData.DeveloperType;
+    }
+
+    [Fact]
+    public async Task CheckIfModelExistsReturnsTrue()
+    {
+        int testId = 1;
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
+            .ReturnsAsync(true);
+
+        var result = await _terminationService.CheckIfModelExists(testId);
+
+        Assert.True(result);
+        _db.Verify(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CheckIfModelExistsReturnsFalse()
+    {
+        int testId = 1;
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
+            .ReturnsAsync(false);
+
+        var result = await _terminationService.CheckIfModelExists(testId);
+
+        Assert.False(result);
+        _db.Verify(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()), Times.Once);
     }
 
     [Fact]
@@ -78,8 +105,9 @@ public class TerminationServiceUnitTests
     [Fact]
     public async Task SavePassTest()
     {
+
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
-            .ReturnsAsync(false);
+           .ReturnsAsync(true);
 
         _db.Setup(e => e.Employee.Update(It.IsAny<Employee>()))
             .ReturnsAsync(EmployeeTestData.EmployeeOne);
@@ -97,7 +125,7 @@ public class TerminationServiceUnitTests
             .Returns(RoleTestData.EmployeeRole.ToMockIQueryable());
 
         _db.Setup(r => r.Termination.Add(It.IsAny<Termination>()))
-            .ReturnsAsync(new Termination());
+            .ReturnsAsync(_termination);
 
         _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
             .ReturnsAsync(_employeeDto.ToDto);
@@ -110,7 +138,7 @@ public class TerminationServiceUnitTests
 
         _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
 
-        await _terminationService.SaveTermination(_terminationDto.ToDto());
+        await _terminationService.SaveTermination(_termination.ToDto());
 
         _db.Verify(x => x.Termination.Add(It.IsAny<Termination>()), Times.Once);
     }
@@ -119,11 +147,11 @@ public class TerminationServiceUnitTests
     public async Task UpdatePassTest()
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(true);
-
+      
         _db.Setup(r => r.Termination.Update(It.IsAny<Termination>()))
-            .ReturnsAsync(new Termination());
+            .ReturnsAsync(_termination);
 
-        await _terminationService.SaveTermination(_terminationDto.ToDto());
+        await _terminationService.UpdateTermination(_termination.ToDto());
 
         _db.Verify(x => x.Termination.Update(It.IsAny<Termination>()), Times.Once);
     }
@@ -140,11 +168,12 @@ public class TerminationServiceUnitTests
     public async Task GetByIdPassTest()
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(true);
+        _db.Setup(x => x.Termination.FirstOrDefault(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(_termination);
 
-        _db.Setup(x => x.Termination.FirstOrDefault(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(_terminationDto);
-
-        await _terminationService.GetTerminationByEmployeeId(1);
+        var result = await _terminationService.GetTerminationByEmployeeId(1);
 
         _db.Verify(x => x.Termination.FirstOrDefault(It.IsAny<Expression<Func<Termination, bool>>>()), Times.Once);
+        Assert.NotNull(result);
     }
+
 }
