@@ -9,7 +9,7 @@ public interface IRepository<T> where T : IModel
     Task<T?> GetById(int id);
     IQueryable<T> Get(Expression<Func<T, bool>>? criteria = null);
     Task<List<T>> GetAll(Expression<Func<T, bool>>? criteria = null);
-    Task<T> FirstOrDefault(Expression<Func<T, bool>> criteria);
+    Task<T?> FirstOrDefault(Expression<Func<T, bool>> criteria);
     Task<bool> Any(Expression<Func<T, bool>> criteria);
     Task<T> Add(T entity);
     Task<T> Delete(int id);
@@ -19,8 +19,8 @@ public interface IRepository<T> where T : IModel
 
 public class BaseRepository<T> : IRepository<T> where T : class, IModel
 {
-    protected readonly DatabaseContext _db;
-    protected readonly DbSet<T> _entity;
+    private readonly DatabaseContext _db;
+    private readonly DbSet<T> _entity;
 
     public BaseRepository(DatabaseContext db)
     {
@@ -49,7 +49,7 @@ public class BaseRepository<T> : IRepository<T> where T : class, IModel
                .ToList();
     }
 
-    public async Task<T> FirstOrDefault(Expression<Func<T, bool>> criteria)
+    public async Task<T?> FirstOrDefault(Expression<Func<T, bool>> criteria)
     {
         return (criteria == null
                 ? await _entity.FirstOrDefaultAsync()

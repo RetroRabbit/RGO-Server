@@ -43,5 +43,11 @@ namespace HRIS.Services.Interfaces
         /// </summary>
         /// <returns>ChurnRateDataCard</returns>
         Task<double> CalculateEmployeeGrowthRate();
+
+        /// <summary>
+        ///     Get Total Number of Active Employees
+        /// </summary>
+        /// <returns>List<Employee></returns>
+        Task<List<EmployeeDto>> GetAllActiveEmployees();
     }
 }
