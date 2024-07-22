@@ -60,7 +60,7 @@ public class EmployeeBankingController : ControllerBase
     [HttpGet("details")]
     public async Task<IActionResult> GetBankingDetails([FromQuery] int id)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin") && _identity.EmployeeId != id)
+        if (_identity.Role is not ("SuperAdmin" or "Admin") || _identity.EmployeeId != id)
             throw new CustomException("Unauthorized Action");
 
         var employeeBanking = await _employeeBankingService.GetBanking(id);
