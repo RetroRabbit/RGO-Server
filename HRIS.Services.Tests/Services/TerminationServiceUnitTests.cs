@@ -8,6 +8,7 @@ using RR.UnitOfWork.Entities.HRIS;
 using System.Linq.Expressions;
 using RR.Tests.Data.Models;
 using Xunit;
+using HRIS.Models;
 
 namespace HRIS.Services.Tests.Services;
 
@@ -141,6 +142,44 @@ public class TerminationServiceUnitTests
     }
 
     [Fact]
+    public async Task SaveFailTest_UnauthorizedAccess()
+    {
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
+           .ReturnsAsync(false);
+
+        _db.Setup(e => e.Employee.Update(It.IsAny<Employee>()))
+            .ReturnsAsync(EmployeeTestData.EmployeeOne);
+
+        _db.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(EmployeeTestData.EmployeeOne.ToMockIQueryable());
+
+        _db.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
+
+        _db.Setup(er => er.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+            .Returns(new EmployeeRole { Id = 1, Employee = EmployeeTestData.EmployeeOne, Role = RoleTestData.EmployeeRole }.ToMockIQueryable());
+
+        _db.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Returns(RoleTestData.EmployeeRole.ToMockIQueryable());
+
+        _db.Setup(r => r.Termination.Add(It.IsAny<Termination>()))
+            .ReturnsAsync(_termination);
+
+        _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
+            .ReturnsAsync(_employeeDto.ToDto);
+
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType!.Name))
+            .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
+
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employeeDto.EmployeeType!.Name))
+            .ReturnsAsync(_employeeTypeDto.ToDto);
+
+        _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => _terminationService.SaveTermination(_termination.ToDto()));
+    }
+
+    [Fact]
     public async Task UpdatePassTest()
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(true);
@@ -151,6 +190,18 @@ public class TerminationServiceUnitTests
         await _terminationService.UpdateTermination(_termination.ToDto());
 
         _db.Verify(x => x.Termination.Update(It.IsAny<Termination>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateFailTest_ModelNotFound()
+    {
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
+           .ReturnsAsync(false);
+
+        _db.Setup(r => r.Termination.Update(It.IsAny<Termination>()))
+            .ReturnsAsync(_termination);
+
+        await Assert.ThrowsAsync<CustomException>(() => _terminationService.UpdateTermination(_termination.ToDto()));
     }
 
     [Fact]
