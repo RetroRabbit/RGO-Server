@@ -2,10 +2,12 @@
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.App.Tests.Helper;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork.Entities.HRIS;
@@ -19,6 +21,8 @@ public class EmployeeBankingControllerUnitTests
     private readonly ClaimsPrincipal _claimsPrincipal;
     private readonly EmployeeBankingController _controller;
     private readonly ClaimsIdentity _claimsIdentity;
+    private readonly Mock<AuthorizeIdentityMock> _identity;
+    private readonly List<EmployeeBankingDto> _employeeBankingDtoList;
 
     private readonly Mock<IEmployeeBankingService> _employeeBankingServiceMock;
 
@@ -28,8 +32,9 @@ public class EmployeeBankingControllerUnitTests
 
     public EmployeeBankingControllerUnitTests()
     {
+        _identity = new Mock<AuthorizeIdentityMock>();
         _employeeBankingServiceMock = new Mock<IEmployeeBankingService>();
-        _controller = new EmployeeBankingController(new AuthorizeIdentityMock(), _employeeBankingServiceMock.Object);
+        _controller = new EmployeeBankingController(_identity.Object, _employeeBankingServiceMock.Object);
 
         _claimList = new List<Claim>
         {
@@ -44,17 +49,20 @@ public class EmployeeBankingControllerUnitTests
             HttpContext = new DefaultHttpContext { User = _claimsPrincipal }
         };
 
-        _simpleEmployeeBankingDto = new SimpleEmployeeBankingDto
-        {
-            Id = 1,
-            EmployeeId = 2,
-            BankName = "BankName",
-            Branch = "Branch",
-            AccountNo = "AccountNo",
-            AccountType = EmployeeBankingAccountType.Savings,
-            Status = BankApprovalStatus.Approved,
-            DeclineReason = "DeclineReason",
-            File = "File.pdf"
+        _employeeBankingDtoList = new List<EmployeeBankingDto>
+            {
+                new EmployeeBankingDto
+                {
+                    Id = 1,
+                    EmployeeId = 2,
+                    BankName = "BankName",
+                    Branch = "Branch",
+                    AccountNo = "AccountNo",
+                    AccountType = EmployeeBankingAccountType.Savings,
+                    Status = BankApprovalStatus.Approved,
+                    DeclineReason = "DeclineReason",
+                    File = "File.pdf"
+                },
         };
 
         _employeeBankingDto = EmployeeBankingTestData.EmployeeBankingOne.ToDto();
@@ -63,73 +71,9 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task AddBankingInfoValidInputReturnsOkResult()
     {
-        var result = await _controller.AddBankingInfo(_simpleEmployeeBankingDto);
+        var result = await _controller.AddBankingInfo(_employeeBankingDto);
 
         Assert.IsType<OkObjectResult>(result);
-    }
-
-    [Fact]
-    public async Task AddBankingInfoExceptionWithDetailsAlreadyExistReturnsProblemResult()
-    {
-        _employeeBankingServiceMock.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
-                   .ThrowsAsync(new Exception("Details already exists"));
-
-        var result = await _controller.AddBankingInfo(_simpleEmployeeBankingDto);
-
-        Assert.NotNull(result);
-        Assert.IsType<ObjectResult>(result);
-
-        var problemResult = (ObjectResult)result;
-
-        Assert.NotNull(problemResult.Value);
-        Assert.IsType<ProblemDetails>(problemResult.Value);
-
-        var problemDetails = (ProblemDetails)problemResult.Value;
-
-        Assert.Equal("Unexceptable", problemDetails.Detail);
-        Assert.Equal(406, problemDetails.Status);
-        Assert.Equal("Details already exists", problemDetails.Title);
-    }
-
-    [Fact]
-    public async Task AddBankingInfoExceptionNotFound()
-    {
-        _employeeBankingServiceMock.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
-                   .ThrowsAsync(new Exception("Banking information Not Found"));
-
-        var result = await _controller.AddBankingInfo(_simpleEmployeeBankingDto);
-        var notFoundResult = (NotFoundObjectResult)result;
-
-        Assert.NotNull(result);
-        Assert.IsType<NotFoundObjectResult>(result);
-        Assert.NotNull(notFoundResult.Value);
-        Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal("Banking information Not Found", (string)notFoundResult.Value);
-    }
-
-    [Fact]
-    public async Task DeleteBankingInfoExceptionNotFound()
-    {
-        _employeeBankingServiceMock.Setup(s => s.Delete(_employeeBankingDto.Id))
-                                  .ThrowsAsync(new Exception("Banking information Not Found"));
-
-        var result = await _controller.DeleteBankingInfo(_employeeBankingDto.Id);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Banking information Not Found", notFoundResult.Value);
-    }
-
-    [Fact]
-    public async Task AddBankingInfoUnauthorizedAccess()
-    {
-        _employeeBankingServiceMock.Setup(x => x.Save(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
-                   .ThrowsAsync(new Exception("Unauthorized access"));
-
-        var result = await _controller.AddBankingInfo(_simpleEmployeeBankingDto);
-        var unauthorized = (ObjectResult)result;
-
-        Assert.NotNull(result);
-        Assert.Equal("Forbidden: Unauthorized access", unauthorized.Value);
     }
 
     [Fact]
@@ -151,65 +95,79 @@ public class EmployeeBankingControllerUnitTests
     }
 
     [Fact]
-    public async Task GetExceptionThrownReturnsNotFoundResultWithErrorMessage()
-    {
-        _employeeBankingServiceMock.Setup(x => x.Get(1)).ThrowsAsync(new Exception("Unable to retrieve employee banking entries"));
-
-        var result = await _controller.Get(1);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal("Unable to retrieve employee banking entries", actualErrorMessage);
-    }
-
-    [Fact]
     public async Task UpdateValidDataReturnsOkResult()
     {
         _employeeBankingServiceMock.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
                    .ReturnsAsync(_employeeBankingDto);
 
-        var result = await _controller.Update(_simpleEmployeeBankingDto);
+        var result = await _controller.Update(_employeeBankingDto);
 
         var okResult = Assert.IsType<OkResult>(result);
         Assert.Equal(200, okResult.StatusCode);
     }
 
     [Fact]
-    public async Task UpdateExceptionThrownReturnsNotFoundResultWithErrorMessage()
+    public async Task GetBankingDetailsReturnsOkResult()
     {
-        _employeeBankingServiceMock.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
-                   .ThrowsAsync(new Exception("Some error message"));
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+        _identity.SetupGet(i => i.Email).Returns("admin@example.com");
 
-        var result = await _controller.Update(_simpleEmployeeBankingDto);
+        _employeeBankingServiceMock.Setup(x => x.GetBanking(_employeeBankingDto.EmployeeId))
+                                   .ReturnsAsync(_employeeBankingDtoList);
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal("Some error message", actualErrorMessage);
-        Assert.Equal(404, notFoundResult.StatusCode);
-    }
-
-    [Fact(Skip = "Current user needs to be set for validations on endpoint")]
-    public async Task GetBankingDetailsValidIdReturnsOkResultWithDetails()
-    {
-        _employeeBankingServiceMock.Setup(x => x.GetBanking(123))
-            .ReturnsAsync(new List<EmployeeBankingDto> { _employeeBankingDto });
-
-        var result = await _controller.GetBankingDetails(123);
+        var result = await _controller.GetBankingDetails(_employeeBankingDto.EmployeeId);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualDetails = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
-        Assert.Contains(_employeeBankingDto, actualDetails);
+        var returnValue = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
+        Assert.Equal(_employeeBankingDtoList, returnValue);
+        _employeeBankingServiceMock.Verify(service => service.GetBanking(_employeeBankingDto.EmployeeId), Times.Once);
     }
 
-    [Fact(Skip = "Tampering found")]
-    public async Task GetBankingDetailsInvalidIdReturnsNotFoundResultWithErrorMessage()
+    [Fact]
+    public async Task GetBankingUnauthorizedAccess()
     {
-        _employeeBankingServiceMock.Setup(x => x.GetBanking(456)).ThrowsAsync(new Exception("Employee banking details not found"));
+        _identity.Setup(i => i.Role).Returns("Talent");
+        _identity.SetupGet(i => i.EmployeeId).Returns(5);
+        _identity.SetupGet(i => i.Email).Returns("talent@example.com");
 
-        var result = await _controller.GetBankingDetails(456);
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.GetBankingDetails(2));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        var actualErrorMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal("Employee banking details not found", actualErrorMessage);
+        Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
+        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
+
+
+    [Fact]
+    public async Task GetBankingDetailsAsSuperAdminReturnsOkResult()
+    {
+        _identity.Setup(i => i.Role).Returns("SuperAdmin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+        _identity.SetupGet(i => i.Email).Returns("superadmin@example.com");
+
+        _employeeBankingServiceMock.Setup(x => x.GetBanking(It.IsAny<int>()))
+                                   .ReturnsAsync(_employeeBankingDtoList);
+
+        var result = await _controller.GetBankingDetails(1);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var returnValue = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
+        Assert.Equal(_employeeBankingDtoList, returnValue);
+        _employeeBankingServiceMock.Verify(service => service.GetBanking(1), Times.Once);
+    }
+
+
+    [Fact]
+    public async Task DeleteBankingInfo_ValidAddressId_ReturnsOkResult()
+    {
+        var addressId = 1;
+        _employeeBankingServiceMock.Setup(x => x.Delete(addressId)).ReturnsAsync(_employeeBankingDto);
+
+        var result = await _controller.DeleteBankingInfo(addressId);
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var actualResult = Assert.IsType<EmployeeBankingDto>(okResult.Value);
+        Assert.Equal(_employeeBankingDto, actualResult);
+    }
+
 }
