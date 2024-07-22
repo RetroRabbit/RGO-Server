@@ -8,6 +8,7 @@ using RR.UnitOfWork.Entities.HRIS;
 using System.Linq.Expressions;
 using RR.Tests.Data.Models;
 using Xunit;
+using HRIS.Services.Session;
 
 namespace HRIS.Services.Tests.Services;
 
@@ -16,9 +17,11 @@ public class TerminationServiceUnitTests
     private readonly TerminationService _terminationService;
     private readonly Termination _terminationDto;
     private readonly Employee _employeeDto;
+    private readonly EmployeeDate _employeeDate;
     private readonly EmployeeType _employeeTypeDto;
     private readonly Mock<IUnitOfWork> _db;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
+    private readonly Mock<ITerminationService> _terminationServiceMock;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
     private readonly Mock<IAuthService> _authServiceMock;
 
@@ -28,7 +31,10 @@ public class TerminationServiceUnitTests
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _authServiceMock = new Mock<IAuthService>();
-        _terminationService = new TerminationService(_db.Object, _authServiceMock.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object);
+        _employeeDate = new EmployeeDate();
+        _terminationServiceMock = new Mock<ITerminationService>();
+        _terminationService = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, new AuthorizeIdentityMock());
+        _employeeDate = new EmployeeDate();
 
         _terminationDto = new Termination
         {
@@ -127,7 +133,7 @@ public class TerminationServiceUnitTests
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<CustomException>(() => _terminationService.GetTerminationByEmployeeId(_terminationDto.EmployeeId));
+        await Assert.ThrowsAsync<CustomException>(() => _terminationService.GetTerminationByEmployeeId(0));
     }
 
     [Fact]

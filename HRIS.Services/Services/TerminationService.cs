@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -11,17 +12,31 @@ public class TerminationService : ITerminationService
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IEmployeeService _employeeService;
     private readonly IAuthService _authService;
+    private readonly AuthorizeIdentity _identity;
 
-    public TerminationService(IUnitOfWork db, IAuthService authService, IEmployeeTypeService employeeTypeService, IEmployeeService employeeService)
+    public TerminationService(IUnitOfWork db, IEmployeeTypeService employeeTypeService, IEmployeeService employeeService, IAuthService authService, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeTypeService = employeeTypeService;
         _employeeService = employeeService;
         _authService = authService;
+        _identity = identity;
+    }
+
+    public async Task<bool> CheckIfModelExists(int id)
+    {
+        return await _db.Termination.Any(x => x.Id == id);
     }
 
     public async Task<TerminationDto> SaveTermination(TerminationDto terminationDto)
     {
+        var modelExists = await CheckIfModelExists(terminationDto.Id);
+
+        if(!modelExists) throw new CustomException("This model doe snot exist yet");
+
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && terminationDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var exists = await CheckTerminationExist(terminationDto.EmployeeId);
         if (exists)
         {
@@ -43,11 +58,24 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
     {
+        var modelExists = await CheckIfModelExists(terminationDto.Id);
+
+        if (!modelExists) throw new CustomException("This model does not exist yet");
+
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && terminationDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
         return (await _db.Termination.Update(new Termination(terminationDto))).ToDto();
     }
 
     public async Task<TerminationDto> GetTerminationByEmployeeId(int employeeId)
     {
+        var modelExists = await CheckIfModelExists(employeeId);
+
+        if (!modelExists) throw new CustomException("This model does not exist yet");
+
+        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var exists = await CheckTerminationExist(employeeId);
         if (!exists)
             throw new CustomException("termination not found");
