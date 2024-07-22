@@ -134,7 +134,6 @@ public class EmployeeBankingControllerUnitTests
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
-
     [Fact]
     public async Task GetBankingDetailsAsSuperAdminReturnsOkResult()
     {
@@ -152,7 +151,6 @@ public class EmployeeBankingControllerUnitTests
         Assert.Equal(_employeeBankingDtoList, returnValue);
         _employeeBankingServiceMock.Verify(service => service.GetBanking(1), Times.Once);
     }
-
 
     [Fact]
     public async Task DeleteBankingInfo_ValidAddressId_ReturnsOkResult()
