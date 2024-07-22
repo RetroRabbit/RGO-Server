@@ -6,44 +6,46 @@ using HRIS.Services.Helpers;
 using HRIS.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
 
 namespace HRIS.Services.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IErrorLoggingService _errorLoggingService;
+    private readonly IManagementApiClient _managementApiClient;
     private readonly AuthManagement _authManagement;
-    private readonly HttpClient client = new();
-    private static string _cachedAccessToken = string.Empty;
-    private static string _clientId = string.Empty;
-    private static string _clientSecret = string.Empty;
-    private static string _issuer = string.Empty;
-    private static string _audience = string.Empty;
+    private string _cachedAccessToken;
+    private string _clientId;
+    private string _clientSecret;
+    private string _issuer;
+    private string _audience;
+    private HttpClient _httpClient;
 
-    public AuthService(IErrorLoggingService errorLoggingService, IOptions<AuthManagement> options)
+    public AuthService(IOptions<AuthManagement> options)
     {
-        _errorLoggingService = errorLoggingService;
         _authManagement = options.Value;
         _clientId = _authManagement.ClientId ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_ID;
         _clientSecret = _authManagement.ClientSecret ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_SECRET;
         _issuer = _authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER;
         _audience = _authManagement.Audience ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE;
+        _cachedAccessToken = string.Empty;
+        _managementApiClient = new ManagementApiClient(_cachedAccessToken, new Uri($"{_issuer}api/v2"));
+        _httpClient = new HttpClient();
     }
 
-    private static bool IsTokenExpired(string token)
+    public static bool IsTokenExpired(string token)
     {
         var jwtHandler = new JwtSecurityTokenHandler();
         var jwtToken = jwtHandler.ReadJwtToken(token);
         var expClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "exp")?.Value;
 
-        if (!string.IsNullOrEmpty(expClaim))
-        {
-            var exp = long.Parse(expClaim);
-            var expDateTime = DateTimeOffset.FromUnixTimeSeconds(exp).UtcDateTime;
+        if (string.IsNullOrEmpty(expClaim))
+            return true;
 
-            return expDateTime <= DateTime.UtcNow;
-        }
-        return true;
+        var exp = long.Parse(expClaim);
+        var expDateTime = DateTimeOffset.FromUnixTimeSeconds(exp).UtcDateTime;
+
+        return expDateTime <= DateTime.UtcNow;
     }
 
     public async Task<string?> GetAuth0ManagementAccessToken()
@@ -65,173 +67,145 @@ public class AuthService : IAuthService
             { "grant_type", "client_credentials" },
             { "audience", $"{_issuer}api/v2/" }
         };
-
-        var response = await client.PostAsync(tokenEndpoint, new FormUrlEncodedContent(requestBody));
+        var response = await _httpClient.PostAsync(tokenEndpoint, new FormUrlEncodedContent(requestBody));
         var content = await response.Content.ReadAsStringAsync();
 
-        if (response.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
+            throw new CustomException($"Failed response from auth provider: {content}");
+
+        var jsonDoc = System.Text.Json.JsonDocument.Parse(content);
+
+        if (jsonDoc.RootElement.TryGetProperty("access_token", out JsonElement accessTokenElement))
         {
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(content);
-            _cachedAccessToken = jsonDoc.RootElement.GetProperty("access_token").GetString();
+            _cachedAccessToken = accessTokenElement.ToString();
             return _cachedAccessToken;
         }
-        else
-        {
-            throw new Exception($"Failed response from auth provider: {content}");
-        }
+
+        throw new CustomException($"Failed response from auth provider. access_token key not found.");
     }
 
-    public async Task<IPagedList<Role>> GetAllRolesAsync()
+    public async Task<IPagedList<Auth0.ManagementApi.Models.Role>> GetAllRolesAsync()
     {
-        try
-        {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-            var request = new GetRolesRequest();
-            var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
-            return await client.Roles.GetAllAsync(request, pagination);
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return null;
-        }
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var request = new GetRolesRequest();
+        var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
+
+        var allRoles = await _managementApiClient.Roles.GetAllAsync(request, pagination);
+        if (allRoles == null)
+            throw new CustomException("Failed to retrieve roles.");
+
+        return allRoles;
     }
 
-    public async Task<IPagedList<User>> GetAllUsersAsync()
+    public async Task<IPagedList<Auth0.ManagementApi.Models.User>> GetAllUsersAsync()
     {
-        try
-        {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-            var request = new GetUsersRequest();
-            var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
-            return await client.Users.GetAllAsync(request, pagination);
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return null;
-        }
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var request = new GetUsersRequest();
+        var pagination = new PaginationInfo(pageNo: 0, perPage: 50);
+
+        var allUsers = await _managementApiClient.Users.GetAllAsync(request, pagination);
+        if (allUsers == null)
+            throw new CustomException("Failed to retrieve roles.");
+
+        return allUsers;
     }
 
-    public async Task<IList<User>> GetUsersByEmailAsync(string email)
+    public async Task<IList<Auth0.ManagementApi.Models.User>> GetUsersByEmailAsync(string email)
     {
-        try
-        {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-            var user = await client.Users.GetUsersByEmailAsync(email);
-            return user;
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return null;
-        }
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var user = await _managementApiClient.Users.GetUsersByEmailAsync(email);
+        if (user == null)
+            throw new CustomException("Failed to retrieve user by email.");
+
+        return user;
     }
 
-    public async Task<IPagedList<AssignedUser>> GetUsersByRoleAsync(string roleId)
+    public async Task<IPagedList<Auth0.ManagementApi.Models.AssignedUser>> GetUsersByRoleAsync(string roleId)
     {
         var allRoles = await GetAllRolesAsync();
-        bool roleFound = allRoles.Any(role => role.Id == roleId);
 
-        if (roleFound)
-        {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                var users = await client.Roles.GetUsersAsync(roleId, new PaginationInfo(0, 50));
-                return users;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return null;
-            }
-        }
-        return null;
+        var role = allRoles.FirstOrDefault(r => r.Id == roleId);
+        if (role == null)
+            throw new CustomException($"Role with id '{roleId}' not found.");
+
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var users = await _managementApiClient.Roles.GetUsersAsync(roleId, new PaginationInfo(0, 50));
+        if (users == null)
+            throw new CustomException("Failed to retrieve users.");
+
+        return users;
     }
 
-    public async Task<IPagedList<Role>> GetUserRolesAsync(string userId)
+    public async Task<IPagedList<Auth0.ManagementApi.Models.Role>> GetUserRolesAsync(string userId)
     {
         var allUsers = await GetAllUsersAsync();
-        bool userFound = allUsers.Any(user => user.UserId == userId);
 
-        if (userFound)
-        {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                return await client.Users.GetRolesAsync(userId);
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return null;
-            }
-        }
-        return null;
+        var users = allUsers.FirstOrDefault(r => r.UserId == userId);
+        if (users == null)
+            throw new CustomException($"User with id '{userId}' not found.");
+
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var userRoles = await _managementApiClient.Users.GetRolesAsync(userId);
+        if (userRoles == null)
+            throw new CustomException($"User role found.");
+
+        return userRoles;
     }
 
     public async Task<bool> AddRoleToUserAsync(string userId, string roleId)
     {
         var allUsers = await GetAllUsersAsync();
-        bool userFound = allUsers.Any(user => user.UserId == userId);
+
+        var users = allUsers.FirstOrDefault(r => r.UserId == userId);
+        if (users == null)
+            throw new CustomException($"User with id '{userId}' not found.");
 
         var allRoles = await GetAllRolesAsync();
-        bool roleFound = allRoles.Any(role => role.Id == roleId);
+        var role = allRoles.FirstOrDefault(r => r.Id == roleId);
+        if (role == null)
+            throw new CustomException($"Role with id '{roleId}' not found.");
 
-        if (userFound && roleFound)
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        await _managementApiClient.Users.AssignRolesAsync(userId, new AssignRolesRequest
         {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                await client.Users.AssignRolesAsync(userId, new AssignRolesRequest
-                {
-                    Roles = new[] { roleId }
-                });
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return false;
-            }
-        }
-        return false;
+            Roles = new[] { roleId }
+        });
+        return true;
     }
 
     public async Task<bool> RemoveRoleFromUserAsync(string userId, string roleId)
     {
         var allUsers = await GetAllUsersAsync();
-        bool userFound = allUsers.Any(user => user.UserId == userId);
+
+        var users = allUsers.FirstOrDefault(r => r.UserId == userId);
+        if (users == null)
+            throw new CustomException($"User with id '{userId}' not found.");
 
         var allRoles = await GetAllRolesAsync();
-        bool roleFound = allRoles.Any(role => role.Id == roleId);
+        var role = allRoles.FirstOrDefault(r => r.Id == roleId);
+        if (role == null)
+            throw new CustomException($"Role with id '{roleId}' not found.");
 
-        if (userFound && roleFound)
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        await _managementApiClient.Users.RemoveRolesAsync(userId, new AssignRolesRequest
         {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                await client.Users.RemoveRolesAsync(userId, new AssignRolesRequest
-                {
-                    Roles = new[] { roleId }
-                });
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return false;
-            }
-        }
-        return false;
+            Roles = new[] { roleId }
+        });
+        return true;
     }
 
     public async Task<Role> CreateRoleAsync(string roleName, string description)
@@ -248,23 +222,14 @@ public class AuthService : IAuthService
                 return temporaryRole;
             }
         }
-
-        try
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+        temporaryRole = await _managementApiClient.Roles.CreateAsync(new RoleCreateRequest
         {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-            temporaryRole = await client.Roles.CreateAsync(new RoleCreateRequest
-            {
-                Name = roleName,
-                Description = description
-            });
-            return temporaryRole;
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return temporaryRole;
-        }
+            Name = roleName,
+            Description = description
+        });
+        return temporaryRole;
     }
 
     public async Task<bool> DeleteRoleAsync(string roleId)
@@ -272,22 +237,14 @@ public class AuthService : IAuthService
         var allRoles = await GetAllRolesAsync();
 
         bool roleFound = allRoles.Any(role => role.Id == roleId);
-        if (roleFound)
-        {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                await client.Roles.DeleteAsync(roleId);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return false;
-            };
-        }
-        return false;
+        if (!roleFound)
+            return false;
+
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        await _managementApiClient.Roles.DeleteAsync(roleId);
+        return true;
     }
 
     public async Task<bool> UpdateRoleAsync(string roleId, string roleName, string description)
@@ -295,26 +252,18 @@ public class AuthService : IAuthService
         var allRoles = await GetAllRolesAsync();
 
         bool roleFound = allRoles.Any(role => role.Id == roleId);
-        if (roleFound)
+        if (!roleFound)
+            return false;
+
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var temporaryRole = await _managementApiClient.Roles.UpdateAsync(roleId, new RoleUpdateRequest
         {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                var temporaryRole = await client.Roles.UpdateAsync(roleId, new RoleUpdateRequest
-                {
-                    Name = roleName,
-                    Description = description
-                });
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return false;
-            }
-        }
-        return false;
+            Name = roleName,
+            Description = description
+        });
+        return true;
     }
 
     public async Task<IPagedList<Permission>> GetPermissionsByRoleAsync(string roleId)
@@ -322,22 +271,14 @@ public class AuthService : IAuthService
         var allRoles = await GetAllRolesAsync();
 
         bool roleFound = allRoles.Any(role => role.Id == roleId);
-        if (roleFound)
-        {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                var permissions = await client.Roles.GetPermissionsAsync(roleId, new PaginationInfo());
-                return permissions;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return null;
-            }
-        }
-        return null;
+        if (!roleFound)
+            throw new CustomException($"Role not found.");
+
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var permissions = await _managementApiClient.Roles.GetPermissionsAsync(roleId, new PaginationInfo());
+        return permissions;
     }
 
     public async Task<bool> RemovePermissionsFromRoleAsync(string roleId, string permissionName)
@@ -345,33 +286,24 @@ public class AuthService : IAuthService
         var allRoles = await GetAllRolesAsync();
 
         bool roleFound = allRoles.Any(role => role.Id == roleId);
-        if (roleFound)
-        {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
+        if (!roleFound)
+            return false;
 
-                var permissions = new List<PermissionIdentity>
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var permissions = new List<PermissionIdentity>
             {
                 new PermissionIdentity { Name = permissionName, Identifier = _audience}
             };
 
-                await client.Roles.RemovePermissionsAsync(roleId, new AssignPermissionsRequest
-                {
-                    Permissions = permissions,
+        await _managementApiClient.Roles.RemovePermissionsAsync(roleId, new AssignPermissionsRequest
+        {
+            Permissions = permissions,
 
-                });
+        });
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return false;
-            }
-        }
-        return false;
+        return true;
     }
 
     public async Task<bool> AddPermissionsToRoleAsync(string roleId, string permissionName)
@@ -379,32 +311,23 @@ public class AuthService : IAuthService
         var allRoles = await GetAllRolesAsync();
 
         bool roleFound = allRoles.Any(role => role.Id == roleId);
-        if (roleFound)
-        {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
+        if (!roleFound)
+            return false;
 
-                var permissions = new List<PermissionIdentity>
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+
+        var permissions = new List<PermissionIdentity>
                 {
                 new PermissionIdentity { Name = permissionName, Identifier = _audience}
                 };
 
-                await client.Roles.AssignPermissionsAsync(roleId, new AssignPermissionsRequest
-                {
-                    Permissions = permissions
-                });
+        await _managementApiClient.Roles.AssignPermissionsAsync(roleId, new AssignPermissionsRequest
+        {
+            Permissions = permissions
+        });
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return false;
-            }
-        }
-        return false;
+        return true;
     }
 
     public async Task<bool> CreateUser(UserCreateRequest request)
@@ -412,22 +335,13 @@ public class AuthService : IAuthService
         var allUsers = await GetAllUsersAsync();
         bool userFound = allUsers.Any(user => user.UserId == request.UserId);
 
-        if (userFound || request == null)
-        {
+        if (userFound)
             return false;
-        }
-        try
-        {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-            await client.Users.CreateAsync(request);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return false;
-        }
+
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+        await _managementApiClient.Users.CreateAsync(request);
+        return true;
     }
 
     public async Task<User> GetUserById(string userId)
@@ -435,33 +349,23 @@ public class AuthService : IAuthService
         var allUsers = await GetAllUsersAsync();
         bool userFound = allUsers.Any(user => user.UserId == userId);
 
-        if (userFound)
-        {
-            try
-            {
-                var token = await GetAuth0ManagementAccessToken();
-                var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-                var user = await client.Users.GetAsync(userId);
-                return user;
-            }
-            catch (Exception ex)
-            {
-                _errorLoggingService.LogException(ex);
-                return null;
-            }
-        }
-        return null;
+        if (!userFound)
+            throw new CustomException($"User not found.");
+
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+        var user = await _managementApiClient.Users.GetAsync(userId);
+        return user;
     }
 
     public async Task<bool> DeleteUser(string userId)
     {
         var token = await GetAuth0ManagementAccessToken();
-        var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
+        _managementApiClient.UpdateAccessToken(token);
         var existingUser = GetUserById(userId);
         if (existingUser != null)
-        {
-            await client.Users.DeleteAsync(userId);
-        }
+            await _managementApiClient.Users.DeleteAsync(userId);
+
         return true;
     }
 
@@ -470,22 +374,12 @@ public class AuthService : IAuthService
         var allUsers = await GetAllUsersAsync();
         bool userFound = allUsers.Any(user => user.UserName == request.UserName);
 
-        if (!userFound || request != null)
-        {
+        if (!userFound)
             return false;
-        }
-        try
-        {
-            var token = await GetAuth0ManagementAccessToken();
-            var client = new ManagementApiClient(token, new Uri($"{_issuer}api/v2"));
-            await client.Users.UpdateAsync(userId, request);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return false;
-        }
-    }
 
+        var token = await GetAuth0ManagementAccessToken();
+        _managementApiClient.UpdateAccessToken(token);
+        await _managementApiClient.Users.UpdateAsync(userId, request);
+        return true;
+    }
 }
