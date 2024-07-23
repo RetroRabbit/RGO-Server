@@ -64,8 +64,8 @@ public class AuthenticationController : ControllerBase
                 return BadRequest("User not found.");
             }
 
-            var userExists = await _employeeService.CheckUserExist(authEmail);
-            if (!userExists)
+            var emailExists = await _employeeService.CheckUserEmailExist(authEmail);
+            if (!emailExists)
             {
                 await _authService.DeleteUser(authId);
                 var exception = new Exception("User not found");

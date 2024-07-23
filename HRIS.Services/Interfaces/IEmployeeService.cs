@@ -5,11 +5,18 @@ namespace HRIS.Services.Interfaces;
 public interface IEmployeeService
 {
     /// <summary>
-    ///     Check if user exist
+    ///     Check if Email exists
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
-    Task<bool> CheckUserExist(string email);
+    Task<bool> CheckUserEmailExist(string email);
+
+    /// <summary>
+    ///     Check if Model exists
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<bool> CheckModelExist(int id);
 
     /// <summary>
     ///     Get all employees
@@ -36,7 +43,7 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="employeeDto"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto);
+    Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto);
 
     /// <summary>
     ///     Update employee

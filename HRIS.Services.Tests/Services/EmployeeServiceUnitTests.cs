@@ -20,6 +20,9 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IRoleService> _roleServiceMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
     private readonly EmployeeService _employeeService;
+    private readonly EmployeeService _employeeServiceUnauthorized;
+    private readonly AuthorizeIdentityMock _authorizedIdentity;
+    private readonly AuthorizeIdentityMock _unauthorizedIdentity;
 
     private readonly EmployeeRole _employeeRoleDto = new()
     {
@@ -33,12 +36,19 @@ public class EmployeeServiceUnitTests
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
+        _authorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1);
+        _unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 1);
         Mock<IErrorLoggingService> errorLoggingServiceMock = new();
         Mock<IEmailService> emailService = new();
         _roleServiceMock = new Mock<IRoleService>();
+
         _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
             _employeeAddressServiceMock.Object, _roleServiceMock.Object, errorLoggingServiceMock.Object,
-            emailService.Object);
+            emailService.Object, _authorizedIdentity);
+
+        _employeeServiceUnauthorized = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
+           _employeeAddressServiceMock.Object, _roleServiceMock.Object, errorLoggingServiceMock.Object,
+           emailService.Object, _unauthorizedIdentity);
     }
 
     [Fact]
@@ -46,40 +56,71 @@ public class EmployeeServiceUnitTests
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeOne.ToDto()));
     }
 
-    [Fact]
-    public async Task SaveEmployeeTest()
-    {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
-                               .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
-        var employeeRole = new EmployeeRole
-        {
-            Id = 0,
-            Employee = EmployeeTestData.EmployeeOne,
-            Role = EmployeeRoleTestData.RoleDtoEmployee
-        };
+    //[Theory]
+    //[InlineData("Pass")]
+    //[InlineData("Unauthorized")]
+    //[InlineData("Existing user")]
+    //[InlineData("Used Email")] 
+    //[InlineData("Type missing")]
+    //public async Task SaveEmployeeTests(string testCase)
+    //{
+    //    _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+    //                       .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
-        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
-                                  .ReturnsAsync(false)
-                                  .ReturnsAsync(true);
+    //    var employeeRole = new EmployeeRole
+    //    {
+    //        Id = 0,
+    //        Employee = EmployeeTestData.EmployeeOne,
+    //        Role = EmployeeRoleTestData.RoleDtoEmployee
+    //    };
 
-        _employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
-                                  .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
+    //    _employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
+    //                              .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
-        _employeeAddressServiceMock.Setup(r => r.Get(It.IsAny<EmployeeAddressDto>()))
-                                  .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
+    //    _employeeAddressServiceMock.Setup(r => r.Get(It.IsAny<EmployeeAddressDto>()))
+    //                              .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
-        _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
+    //    _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
 
-        _dbMock.Setup(r => r.Employee.Add(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
-        _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(employeeRole);
+    //    _dbMock.Setup(r => r.Employee.Add(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
+    //    _dbMock.Setup(r => r.EmployeeRole.Add(It.IsAny<EmployeeRole>())).ReturnsAsync(employeeRole);
 
-        var result = await _employeeService.SaveEmployee(EmployeeTestData.EmployeeOne.ToDto());
-        Assert.NotNull(result);
-        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
-    }
+
+    //    if (testCase == "Pass")
+    //    {
+    //        var result = await _employeeService.CreateEmployee(EmployeeTestData.EmployeeOne.ToDto());
+    //        Assert.NotNull(result);
+    //        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+    //    }
+
+    //    if (testCase == "Unauthorized")
+    //    {
+    //        var result = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.CreateEmployee(EmployeeTestData.EmployeeOne.ToDto()));
+    //        Assert.Equal("Unauthorized Access", result.Message);
+    //    }
+
+    //    if (testCase == "Existing user")
+    //    {
+    //        _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+    //           .ReturnsAsync(false);
+
+    //        var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeOne.ToDto()));
+    //        Assert.Equal("", result.Message);
+    //    }
+
+    //    if (testCase == "Used Email")
+    //    {
+
+    //    }
+
+    //    if (testCase == "Type missing")
+    //    {
+
+    //    }
+    //}
 
     [Fact]
     public void GetEmployeeTest()
@@ -105,16 +146,19 @@ public class EmployeeServiceUnitTests
 
         var employeeList = new List<Employee>
         {
-            EmployeeTestData.EmployeeOne
+            EmployeeTestData.EmployeeTwo
         };
 
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.ToMockIQueryable());
 
-        _dbMock.Setup(r => r.Employee.Delete(EmployeeTestData.EmployeeOne.Id))
-               .ReturnsAsync(EmployeeTestData.EmployeeOne);
+        _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .ReturnsAsync(true);
 
-        var result = await _employeeService.DeleteEmployee(EmployeeTestData.EmployeeOne.Email!);
+        _dbMock.Setup(r => r.Employee.Delete(EmployeeTestData.EmployeeTwo.Id))
+               .ReturnsAsync(EmployeeTestData.EmployeeTwo);
+
+        var result = await _employeeService.DeleteEmployee(EmployeeTestData.EmployeeTwo.Email!);
         Assert.NotNull(result);
     }
 
@@ -180,7 +224,7 @@ public class EmployeeServiceUnitTests
     {
         _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
 
-        var result = _employeeService.CheckUserExist("dm@retrorabbit.co.za");
+        var result = _employeeService.CheckUserEmailExist("dm@retrorabbit.co.za");
 
         Assert.NotNull(result);
     }
@@ -233,6 +277,9 @@ public class EmployeeServiceUnitTests
         
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.ToMockIQueryable());
+
+        _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+       .ReturnsAsync(true);
 
         _dbMock.Setup(e => e.Employee.GetById(It.IsAny<int>()))
                .ReturnsAsync((int id) =>

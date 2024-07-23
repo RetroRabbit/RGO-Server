@@ -25,7 +25,7 @@ public class EmployeeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
-        var employee = await _employeeService.SaveEmployee(newEmployee);
+        var employee = await _employeeService.CreateEmployee(newEmployee);
         return CreatedAtAction(nameof(AddEmployee), new { email = employee.Email }, employee);
     }
 

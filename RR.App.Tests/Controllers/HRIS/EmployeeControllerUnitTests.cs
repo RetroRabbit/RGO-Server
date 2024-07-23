@@ -73,27 +73,7 @@ public class EmployeeControllerUnitTests
             Surname = _employeeDto.Surname
         };
 
-        _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto
-        {
-            Id = 1,
-            EmployeeNumber = "1",
-            TaxNumber = "123123",
-            EngagementDate = new DateTime(),
-            Disability = false,
-            DisabilityNotes = "",
-            Level = 3,
-            EmployeeType = _employeeTypeDto,
-            Name = "John",
-            Initials = "J",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(),
-            IdNumber = "123",
-            Email = "ksmith@retrorabbit.co.za",
-            PersonalEmail = "ba@gmail.com",
-            CellphoneNo = "123",
-            PhysicalAddress = _employeeAddressDto,
-            PostalAddress = _employeeAddressDto
-        };
+        _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto(_employeeDto);
 
         _claims = new List<Claim>
         {
@@ -132,7 +112,7 @@ public class EmployeeControllerUnitTests
     [Fact]
     public async Task AddEmployeeSuccessTest()
     {
-        _employeeMockService.Setup(service => service.SaveEmployee(_employeeDto))
+        _employeeMockService.Setup(service => service.CreateEmployee(_employeeDto))
                             .ReturnsAsync(_employeeDto);
 
         var result = await _controller.AddEmployee(_employeeDto);
