@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -10,24 +11,34 @@ public class EmployeeQualificationService : IEmployeeQualificationService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeQualificationService(IUnitOfWork db, IEmployeeService employeeService)
+    public EmployeeQualificationService(IUnitOfWork db, IEmployeeService employeeService, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeService = employeeService;
+        _identity = identity;
+    }
+
+    public async Task<bool> CheckIfExists(int Id)
+    {
+        return await _db.EmployeeQualification.Any(x => x.Id == Id);
     }
 
     public async Task<EmployeeQualificationDto> SaveEmployeeQualification(
         EmployeeQualificationDto employeeQualificationDto, int employeeId)
     {
-        var employee = await _employeeService.GetEmployeeById(employeeId);
+        var exists = await CheckIfExists(employeeQualificationDto.Id);
 
-        var existing = await _db.EmployeeQualification.Any(x => x.EmployeeId == employee.Id);
-        if (existing) throw new CustomException("Employee Already Have Existing Qualifications Saved");
+        if (exists)
+            throw new CustomException("Employee Already Have Existing Qualifications Saved");
+
+        if (_identity.IsSupport == false && _identity.EmployeeId != employeeQualificationDto.EmployeeId)
+            throw new CustomException("Unauthorized access.");
 
         var model = new EmployeeQualification(employeeQualificationDto)
         {
-            EmployeeId = employee.Id
+            EmployeeId = _identity.EmployeeId
         };
         model = await _db.EmployeeQualification.Add(model);
 
@@ -41,20 +52,27 @@ public class EmployeeQualificationService : IEmployeeQualificationService
 
     public async Task<EmployeeQualificationDto> GetEmployeeQualificationsByEmployeeId(int employeeId)
     {
-        var employee = await _employeeService.GetEmployeeById(employeeId);
-        var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == employee.Id);
+        if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
+            throw new CustomException("Unauthorized access.");
+
+        var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == _identity.EmployeeId);
         return qualifications?.ToDto();
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(
         EmployeeQualificationDto employeeQualificationDto)
     {
-        var employee = await _employeeService.GetEmployeeById(employeeQualificationDto.EmployeeId);
+        var exists = await CheckIfExists(employeeQualificationDto.Id);
+
+        if (!exists)
+            throw new CustomException("Employee Does Not Have Existing Qualifications Saved");
+
+        if (_identity.IsSupport == false && _identity.EmployeeId != employeeQualificationDto.EmployeeId)
+            throw new CustomException("Unauthorized access.");
 
         var qualification = await _db.EmployeeQualification.FirstOrDefault(x => x.Id == employeeQualificationDto.Id);
-        if (qualification == null) throw new CustomException("Employee Does Not Have Existing Qualifications Saved");
 
-        qualification.EmployeeId = employee.Id;
+        qualification.EmployeeId = _identity.EmployeeId;
         qualification.HighestQualification = employeeQualificationDto.HighestQualification;
         qualification.School = employeeQualificationDto.School;
         qualification.FieldOfStudy = employeeQualificationDto.FieldOfStudy;
@@ -70,8 +88,13 @@ public class EmployeeQualificationService : IEmployeeQualificationService
 
     public async Task<EmployeeQualificationDto> DeleteEmployeeQualification(int id)
     {
-        var existing = await _db.EmployeeQualification.Any(x => x.Id == id);
-        if (!existing) throw new CustomException("Employee Does Not Have Existing Qualifications Saved");
+        var exists = await CheckIfExists(id);
+
+        if (!exists) throw new CustomException("Employee Does Not Have Existing Qualifications Saved");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized access.");
+
         var deleted = await _db.EmployeeQualification.Delete(id);
         return deleted.ToDto();
     }
