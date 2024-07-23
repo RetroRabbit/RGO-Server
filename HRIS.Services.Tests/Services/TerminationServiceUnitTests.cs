@@ -268,7 +268,7 @@ public class TerminationServiceUnitTests
     [Fact]
     public async Task SaveFailTest_SelfTermination()
     {
-        var identityTerminatingSelf = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", _termination.EmployeeId); // EmployeeId same as termination
+        var identityTerminatingSelf = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", _termination.EmployeeId);
         var terminationServiceWithSelfTerminatingIdentity = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, identityTerminatingSelf);
 
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
