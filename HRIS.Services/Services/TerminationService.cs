@@ -30,7 +30,7 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> CreateTermination(TerminationDto terminationDto)
     {
-        var modelExists = await CheckTerminationExist(terminationDto.Id);
+        var modelExists = await TerminationExists(terminationDto.Id);
 
         if (!modelExists) throw new CustomException("This model does not exist yet");
 
@@ -54,7 +54,7 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
     {
-        var modelExists = await CheckTerminationExist(terminationDto.Id);
+        var modelExists = await TerminationExists(terminationDto.Id);
 
         if (!modelExists) throw new CustomException("This model does not exist yet");
 
@@ -65,16 +65,12 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> GetTerminationByEmployeeId(int employeeId)
     {
-        var modelExists = await CheckTerminationExist(employeeId);
+        var modelExists = await TerminationExists(employeeId);
 
-        if (!modelExists) throw new CustomException("This model does not exist yet");
+        if (!modelExists) throw new CustomException("This termination does not exist.");
 
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
-
-        var exists = await CheckTerminationExist(employeeId);
-        if (!exists)
-            throw new CustomException("termination not found");
 
         return (await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId)).ToDto();
     }
