@@ -101,7 +101,7 @@ public class TerminationServiceUnitTests
     public async Task SavePassTest()
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
-           .ReturnsAsync(true);
+           .ReturnsAsync(false);
 
         _db.Setup(e => e.Employee.Update(It.IsAny<Employee>()))
             .ReturnsAsync(EmployeeTestData.EmployeeOne);
@@ -110,7 +110,7 @@ public class TerminationServiceUnitTests
             .Returns(EmployeeTestData.EmployeeOne.ToMockIQueryable());
 
         _db.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(false);
 
         _db.Setup(er => er.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
             .Returns(new EmployeeRole { Id = 1, Employee = EmployeeTestData.EmployeeOne, Role = RoleTestData.EmployeeRole }.ToMockIQueryable());
@@ -141,7 +141,7 @@ public class TerminationServiceUnitTests
     public async Task SaveFailTest_UnauthorizedAccess()
     {
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
-           .ReturnsAsync(false);
+           .ReturnsAsync(true);
 
         _db.Setup(e => e.Employee.Update(It.IsAny<Employee>()))
             .ReturnsAsync(EmployeeTestData.EmployeeOne);
