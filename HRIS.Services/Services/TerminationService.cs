@@ -23,7 +23,7 @@ public class TerminationService : ITerminationService
         _identity = identity;
     }
 
-    public async Task<bool> CheckIfModelExists(int id)
+    public async Task<bool> TerminationExists(int id)
     {
         return await _db.Termination.Any(x => x.Id == id);
     }
