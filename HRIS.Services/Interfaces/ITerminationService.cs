@@ -25,6 +25,13 @@ public interface ITerminationService
     /// <returns>TerminationDto</returns>
     Task<TerminationDto> GetTerminationByEmployeeId(int employeeId);
     /// <summary>
+    ///     Update an existing termination.
+    /// </summary>
+    /// <param name="terminationDto">The Termination DTO.</param>
+    /// <returns>The updated Termination DTO.</returns>
+    Task<TerminationDto> UpdateTerminationAsync(TerminationDto terminationDto);
+    
+    /// <summary>
     ///     Checks if model exists
     /// </summary>
     /// <param name="Id">employeeId</param>
