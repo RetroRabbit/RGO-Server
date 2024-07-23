@@ -103,7 +103,6 @@ public class TerminationServiceUnitTests
     [Fact]
     public async Task SavePassTest()
     {
-
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
            .ReturnsAsync(true);
 
