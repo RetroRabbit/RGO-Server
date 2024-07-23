@@ -37,7 +37,7 @@ public class TerminationControllerUnitTests
     [Fact]
     public async Task SaveTerminationReturnsOk()
     {
-        _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ReturnsAsync(_terminationDto);
+        _terminationServiceMock.Setup(x => x.CreateTermination(_terminationDto)).ReturnsAsync(_terminationDto);
 
         var controllerResult = await _controller.AddTermination(_terminationDto);
 
@@ -49,7 +49,7 @@ public class TerminationControllerUnitTests
     [Fact]
     public async Task SaveTerminationReturnsBadRequest()
     {
-        _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ThrowsAsync(new Exception("exists"));
+        _terminationServiceMock.Setup(x => x.CreateTermination(_terminationDto)).ThrowsAsync(new Exception("exists"));
 
         var controllerResult = await _controller.AddTermination(_terminationDto);
 
@@ -59,7 +59,7 @@ public class TerminationControllerUnitTests
     [Fact]
     public async Task SaveTerminationReturnsProblem()
     {
-        _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ThrowsAsync(new Exception());
+        _terminationServiceMock.Setup(x => x.CreateTermination(_terminationDto)).ThrowsAsync(new Exception());
 
         var controllerResult = await _controller.AddTermination(_terminationDto);
 

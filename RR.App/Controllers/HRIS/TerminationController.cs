@@ -23,7 +23,7 @@ public class TerminationController : ControllerBase
     {
         try
         {
-            var termination = await _terminationService.SaveTermination(newTerminationDto);
+            var termination = await _terminationService.CreateTermination(newTerminationDto);
             return CreatedAtAction(nameof(AddTermination), new { Id = termination.Id}, termination);
         }
         catch (Exception ex)
