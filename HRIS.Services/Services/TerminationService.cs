@@ -28,7 +28,7 @@ public class TerminationService : ITerminationService
         return await _db.Termination.Any(x => x.Id == id);
     }
 
-    public async Task<TerminationDto> SaveTermination(TerminationDto terminationDto)
+    public async Task<TerminationDto> CreateTermination(TerminationDto terminationDto)
     {
         var modelExists = await CheckIfModelExists(terminationDto.Id);
 
