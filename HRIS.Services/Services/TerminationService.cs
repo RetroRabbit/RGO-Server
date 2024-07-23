@@ -30,7 +30,7 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> CreateTermination(TerminationDto terminationDto)
     {
-        var modelExists = await CheckIfModelExists(terminationDto.Id);
+        var modelExists = await CheckTerminationExist(terminationDto.Id);
 
         if (!modelExists) throw new CustomException("This model does not exist yet");
 
@@ -54,7 +54,7 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> UpdateTermination(TerminationDto terminationDto)
     {
-        var modelExists = await CheckIfModelExists(terminationDto.Id);
+        var modelExists = await CheckTerminationExist(terminationDto.Id);
 
         if (!modelExists) throw new CustomException("This model does not exist yet");
 
@@ -65,7 +65,7 @@ public class TerminationService : ITerminationService
 
     public async Task<TerminationDto> GetTerminationByEmployeeId(int employeeId)
     {
-        var modelExists = await CheckIfModelExists(employeeId);
+        var modelExists = await CheckTerminationExist(employeeId);
 
         if (!modelExists) throw new CustomException("This model does not exist yet");
 

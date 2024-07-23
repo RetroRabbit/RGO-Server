@@ -16,7 +16,7 @@ public interface ITerminationService
     /// </summary>
     /// <param name="terminationDto">TerminationDto</param>
     /// <returns>TerminationDto</returns>
-    Task<TerminationDto> SaveTermination(TerminationDto terminationDto);
+    Task<TerminationDto> CreateTermination(TerminationDto terminationDto);
 
     /// <summary>
     ///     Get Termination by employeeid
@@ -29,12 +29,5 @@ public interface ITerminationService
     /// </summary>
     /// <param name="terminationDto">The Termination DTO.</param>
     /// <returns>The updated Termination DTO.</returns>
-    Task<TerminationDto> UpdateTerminationAsync(TerminationDto terminationDto);
-    
-    /// <summary>
-    ///     Checks if model exists
-    /// </summary>
-    /// <param name="Id">employeeId</param>
-    /// <returns>bool</returns>
-    Task<bool> CheckIfModelExists(int id);
+    Task<TerminationDto> UpdateTermination(TerminationDto terminationDto);
 }
