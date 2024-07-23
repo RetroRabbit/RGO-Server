@@ -68,7 +68,7 @@ public class TerminationServiceUnitTests
     [Fact]
     public async Task CheckIfModelExistsReturnsFalse()
     {
-        int testId = 1;
+        var testId = 1;
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
             .ReturnsAsync(false);
 
