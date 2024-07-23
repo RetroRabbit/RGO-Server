@@ -48,8 +48,8 @@ public class TerminationServiceUnitTests
             TerminationComments = "termination comment",
         };
 
-        _employeeDto = EmployeeTestData.EmployeeOne;
-        _employeeTypeDto = EmployeeTypeTestData.DeveloperType;
+        _employee = EmployeeTestData.EmployeeOne;
+        _employeeType = EmployeeTypeTestData.DeveloperType;
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class TerminationServiceUnitTests
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
             .ReturnsAsync(true);
 
-        var result = await _terminationService.CheckIfModelExists(testId);
+        var result = await _terminationService.CheckTerminationExist(testId);
 
         Assert.True(result);
         _db.Verify(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()), Times.Once);
@@ -72,7 +72,7 @@ public class TerminationServiceUnitTests
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
             .ReturnsAsync(false);
 
-        var result = await _terminationService.CheckIfModelExists(testId);
+        var result = await _terminationService.CheckTerminationExist(testId);
 
         Assert.False(result);
         _db.Verify(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()), Times.Once);
@@ -123,17 +123,17 @@ public class TerminationServiceUnitTests
             .ReturnsAsync(_termination);
 
         _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
-            .ReturnsAsync(_employeeDto.ToDto);
+            .ReturnsAsync(_employee.ToDto);
 
         _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType!.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employeeDto.EmployeeType!.Name))
-            .ReturnsAsync(_employeeTypeDto.ToDto);
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employee.EmployeeType!.Name))
+            .ReturnsAsync(_employeeType.ToDto);
 
         _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
 
-        await _terminationService.SaveTermination(_termination.ToDto());
+        await _terminationService.CreateTermination(_termination.ToDto());
 
         _db.Verify(x => x.Termination.Add(It.IsAny<Termination>()), Times.Once);
     }
@@ -163,17 +163,17 @@ public class TerminationServiceUnitTests
             .ReturnsAsync(_termination);
 
         _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
-            .ReturnsAsync(_employeeDto.ToDto);
+            .ReturnsAsync(_employee.ToDto);
 
         _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType!.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employeeDto.EmployeeType!.Name))
-            .ReturnsAsync(_employeeTypeDto.ToDto);
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employee.EmployeeType!.Name))
+            .ReturnsAsync(_employeeType.ToDto);
 
         _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() => _terminationService.SaveTermination(_termination.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _terminationService.CreateTermination(_termination.ToDto()));
     }
 
     [Fact]
