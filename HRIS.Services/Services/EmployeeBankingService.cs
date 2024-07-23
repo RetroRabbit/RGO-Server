@@ -2,7 +2,6 @@
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Update;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
