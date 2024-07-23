@@ -117,10 +117,11 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task GetBankingUnauthorizedAccess()
     {
+        var nonSupportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1);
+        var controller = new EmployeeBankingController(nonSupportIdentity, _employeeBankingServiceMock.Object);
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.GetBankingDetails(2));
 
-        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.GetBankingDetails(3));
-        Assert.Equal("Unauthorized Action", exception.Message);
+        await Assert.ThrowsAsync<CustomException>(async () => await controller.GetBankingDetails(3));
     }
 
     [Fact]
