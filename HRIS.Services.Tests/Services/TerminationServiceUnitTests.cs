@@ -16,7 +16,6 @@ public class TerminationServiceUnitTests
     private readonly TerminationService _terminationService;
     private readonly Termination _termination;
     private readonly Employee _employee;
-    private readonly EmployeeDate _employeeDate;
     private readonly EmployeeType _employeeType;
     private readonly Mock<IUnitOfWork> _db;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
