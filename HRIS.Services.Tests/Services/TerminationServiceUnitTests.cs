@@ -30,7 +30,6 @@ public class TerminationServiceUnitTests
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _authServiceMock = new Mock<IAuthService>();
-        _employeeDate = new EmployeeDate();
         
         _terminationService = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object,
             new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
