@@ -32,7 +32,7 @@ public class TerminationService : ITerminationService
     {
         var modelExists = await TerminationExists(terminationDto.Id);
 
-        if (!modelExists) throw new CustomException("This model does not exist yet");
+        if (modelExists) throw new CustomException("This model already exists");
 
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
