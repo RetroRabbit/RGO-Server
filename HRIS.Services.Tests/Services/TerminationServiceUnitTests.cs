@@ -8,7 +8,6 @@ using RR.UnitOfWork.Entities.HRIS;
 using System.Linq.Expressions;
 using RR.Tests.Data.Models;
 using Xunit;
-using HRIS.Models;
 
 namespace HRIS.Services.Tests.Services;
 
