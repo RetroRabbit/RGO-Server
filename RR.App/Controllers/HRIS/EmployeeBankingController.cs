@@ -25,7 +25,6 @@ public class EmployeeBankingController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddBankingInfo([FromBody] EmployeeBankingDto newEntry)
     {
-        var claimsIdentity = User.Identity as ClaimsIdentity;
         var employeeBankingDto =
             await _employeeBankingService.Save(newEntry, _identity.Email);
         return Ok(employeeBankingDto);
