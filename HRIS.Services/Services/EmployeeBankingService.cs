@@ -108,21 +108,6 @@ public class EmployeeBankingService : IEmployeeBankingService
 
     public async Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry, string userEmail)
     {
-        var Bankingdto = new EmployeeBankingDto
-        {
-            Id = newEntry.Id,
-            EmployeeId = newEntry.EmployeeId,
-            BankName = newEntry.BankName,
-            Branch = newEntry.Branch,
-            AccountNo = newEntry.AccountNo,
-            AccountType = newEntry.AccountType,
-            Status = newEntry.Status,
-            DeclineReason = newEntry.DeclineReason,
-            File = newEntry.File,
-            LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
-            PendingUpdateDate = DateOnly.FromDateTime(DateTime.Now)
-        };
-
         var bankingDetails = new EmployeeBanking(newEntry);
 
         var employee = await _db.Employee
