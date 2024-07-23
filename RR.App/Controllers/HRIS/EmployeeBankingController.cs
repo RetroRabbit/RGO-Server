@@ -50,7 +50,7 @@ public class EmployeeBankingController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] EmployeeBankingDto updateEntry)
     {
-        await _employeeBankingService.Update(updateEntry, claimsIdentity!.FindFirst(ClaimTypes.Email)!.Value);
+        await _employeeBankingService.Update(updateEntry, _identity.Email);
         return Ok();
     }
 
