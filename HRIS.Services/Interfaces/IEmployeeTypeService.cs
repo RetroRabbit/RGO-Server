@@ -23,7 +23,7 @@ public interface IEmployeeTypeService
     /// </summary>
     /// <param Id="Id"></param>
     /// <returns></returns>
-    Task<EmployeeTypeDto> GetEmployeeType(string name);
+    Task<EmployeeTypeDto> GetEmployeeTypeByName(string name);
 
     /// <summary>
     ///     Get All Employee Type
