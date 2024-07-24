@@ -215,6 +215,17 @@ public class EmployeeDataServiceUnitTest
         _dbMock.Verify(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()), Times.Once);
     }
 
+    [Fact]
+    public async Task UpdateEmployeeDataFail_Unauthorized()
+    {
+        var dataServiceWithNonSupportIdentity = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+           .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.UpdateEmployeeData(_employeeData.ToDto()));
+    }
+
     //[Fact(Skip = "Fix unit test")]
     //public async Task UpdateEmployeeDataTest()
     //{
@@ -246,6 +257,19 @@ public class EmployeeDataServiceUnitTest
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
         _dbMock.Verify(x => x.EmployeeData.Delete(It.IsAny<int>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteEmployeeDataFail_Unauthorized()
+    {
+        var employeeDataId = EmployeeDataTestData.EmployeeDataOne.Id;
+
+        var dataServiceWithNonSupportIdentity = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+           .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.DeleteEmployeeData(employeeDataId));
     }
 
     //[Fact(Skip = "Fix unit test")]
