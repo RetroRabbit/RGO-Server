@@ -49,6 +49,13 @@ public class EmployeeDataService : IEmployeeDataService
 
     public async Task<EmployeeDataDto> GetEmployeeData(int employeeId, string value)
     {
+        var modelExists = await EmployeeDataExists(employeeId);
+
+        if (!modelExists) throw new CustomException("Employee data does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var employeesData = await _db.EmployeeData.GetAll();
         var employeeData = employeesData
                            .Where(employeeData => employeeData.EmployeeId == employeeId && employeeData.Value == value)
@@ -62,6 +69,13 @@ public class EmployeeDataService : IEmployeeDataService
 
     public async Task<List<EmployeeDataDto>?> GetAllEmployeeData(int employeeId)
     {
+        var modelExists = await EmployeeDataExists(employeeId);
+
+        if (!modelExists) throw new CustomException("No employee data exists");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var employeesData = await _db.EmployeeData.GetAll();
         var employeeData = employeesData
                            .Where(employeeData => employeeData.EmployeeId == employeeId)
