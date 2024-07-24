@@ -56,14 +56,6 @@ public class EmployeeAddressService : IEmployeeAddressService
         return (await _db.EmployeeAddress.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
-    public async Task<EmployeeAddressDto> GetAllByEmployeeId(int employeeId)
-    {
-        var employee = await _db.Employee.FirstOrDefault(emp => emp.Id == employeeId);
-
-        var address = await _db.EmployeeAddress.FirstOrDefault(address => address.Id == employee.PhysicalAddressId);
-        return address!.ToDto();
-    }
-
     public async Task<EmployeeAddressDto> Create(EmployeeAddressDto employeeAddressDto)
     {
         var exists = await CheckIfExists(employeeAddressDto.Id);

@@ -124,6 +124,16 @@ public class EmployeeAddressServiceUnitTest
     }
 
     [Fact]
+    public async Task DeleteFailTest()
+    {
+        var address = CreateAddress();
+
+        _dbMock.Setup(x => x.EmployeeAddress.GetById(It.IsAny<int>())).ReturnsAsync((EmployeeAddress?)null);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Delete(address.Id));
+    }
+
+    [Fact]
     public async Task SaveFailTest()
     {
         var address = CreateAddress();

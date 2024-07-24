@@ -45,11 +45,4 @@ public interface IEmployeeAddressService
     /// <param></param>
     /// <returns>List of all EmployeesDto</returns>
     Task<List<EmployeeAddressDto>> GetAll();
-
-    /// <summary>
-    /// Get all Employee Adresses for a specific employee
-    /// </summary>
-    /// <param name="employeeId"></param>
-    /// <returns></returns>
-    Task<EmployeeAddressDto> GetAllByEmployeeId(int employeeId);
 }
