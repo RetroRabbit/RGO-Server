@@ -36,7 +36,6 @@ public class FieldCodeService : IFieldCodeService
 
         if (ifFieldCode != null) throw new CustomException("Field with that name found");
 
-
         var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
         if (newFieldCode != null && fieldCodeDto.Options!.Count > 0)
             foreach (var option in fieldCodeDto.Options)
@@ -165,7 +164,6 @@ public class FieldCodeService : IFieldCodeService
                               .Get(field => field.Category == type)
                               .Select(field => field.ToDto())
                               .ToListAsync();
-
         return fields;
     }
 }
