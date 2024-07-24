@@ -43,7 +43,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(r => r.EmployeeType.Add(It.IsAny<EmployeeType>())).ReturnsAsync(employeeType);
         _dbMock.Setup(x => x.EmployeeType.Add(employeeType)).ReturnsAsync(employeeType);
 
-        var result = await employeeTypeService.CreateEmployeeType(employeeTypeDto);
+        var result = await _employeeTypeService.CreateEmployeeType(employeeTypeDto);
 
         Assert.NotNull(result);
         Assert.Equal(employeeTypeDto.Id, result.Id);
@@ -61,7 +61,7 @@ public class EmployeeTypesServiceUnitTest
 
         _dbMock.Setup(r => r.EmployeeType.Add(It.IsAny<EmployeeType>())).ReturnsAsync(employeeType);
 
-        await Assert.ThrowsAsync<CustomException>(() => employeeTypeService.CreateEmployeeType(employeeTypeDto));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeTypeService.CreateEmployeeType(employeeTypeDto));
 
         _dbMock.Verify(x => x.EmployeeType.Add(It.IsAny<EmployeeType>()), Times.Never);
         _dbMock.Verify(x => x.EmployeeType.FirstOrDefault(It.IsAny<Expression<Func<EmployeeType, bool>>>()), Times.Never);
@@ -86,7 +86,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(x => x.EmployeeType.Add(employeeType)).ReturnsAsync(employeeType);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-            employeeTypeService.CreateEmployeeType(EmployeeTypeTestData.DeveloperType.ToDto()));
+            _employeeTypeService.CreateEmployeeType(EmployeeTypeTestData.DeveloperType.ToDto()));
 
         Assert.Equivalent("Unauthorized Access.", exception.Message);
     }
@@ -104,7 +104,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .ReturnsAsync(employeeTypes);
 
-        var result = await employeeTypeService.GetEmployeeTypes();
+        var result = await _employeeTypeService.GetEmployeeTypes();
 
         Assert.NotNull(result);
         Assert.IsType<List<EmployeeTypeDto>>(result);
@@ -129,7 +129,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .ReturnsAsync(employeeTypesDtos);
 
-        var result = await employeeTypeService.GetEmployeeTypes();
+        var result = await _employeeTypeService.GetEmployeeTypes();
 
         Assert.NotNull(result);
         Assert.IsType<List<EmployeeTypeDto>>(result);
@@ -155,7 +155,7 @@ public class EmployeeTypesServiceUnitTest
                .ReturnsAsync(true);
         _dbMock.Setup(x => x.EmployeeType.Delete(employeeTypeList[0].Id)).ReturnsAsync(employeeType);
 
-        var result = await employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Id);
+        var result = await _employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Id);
 
         Assert.NotNull(result);
         Assert.Equivalent(employeeTypeDto, result);
@@ -176,7 +176,7 @@ public class EmployeeTypesServiceUnitTest
 
         _dbMock.Setup(r => r.EmployeeType.Delete(employeeTypeList[0].Id)).ReturnsAsync(employeeType);
 
-        await Assert.ThrowsAsync<CustomException>(() => employeeTypeService.DeleteEmployeeType(employeeTypeDto.Id));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeTypeService.DeleteEmployeeType(employeeTypeDto.Id));
 
         _dbMock.Verify(x => x.EmployeeType.Delete(employeeTypeList[0].Id), Times.Never);
         _dbMock.Verify(x => x.EmployeeType.FirstOrDefault(It.IsAny<Expression<Func<EmployeeType, bool>>>()), Times.Never);
@@ -204,7 +204,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(x => x.EmployeeType.Delete(employeeTypeList[0].Id)).ReturnsAsync(employeeType);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-            employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Id!));
+            _employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Id!));
 
         Assert.Equivalent("Unauthorized Access.", exception.Message);
     }
@@ -222,7 +222,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(e => e.EmployeeType.Get(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .Returns(employeeTypeList.ToMockIQueryable());
 
-        var result = await employeeTypeService.GetEmployeeType(employeeTypeDto.Name);
+        var result = await _employeeTypeService.GetEmployeeType(employeeTypeDto.Name);
 
         Assert.NotNull(result);
         Assert.Equivalent(employeeTypeDto, result);
@@ -247,7 +247,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(e => e.EmployeeType.Get(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .Returns(employeeTypeList.ToMockIQueryable());
 
-        var result = await employeeTypeService.GetEmployeeType(employeeTypeList[0].Name!);
+        var result = await _employeeTypeService.GetEmployeeType(employeeTypeList[0].Name!);
 
         Assert.NotNull(result);
         Assert.Equal(employeeTypeDto.Id, result.Id);
@@ -267,7 +267,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .ReturnsAsync(employeeTypes);
 
-        var result = await employeeTypeService.GetAllEmployeeType();
+        var result = await _employeeTypeService.GetAllEmployeeType();
 
         Assert.NotNull(result);
         Assert.IsType<List<EmployeeTypeDto>>(result);
@@ -292,7 +292,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(r => r.EmployeeType.GetAll(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .ReturnsAsync(employeeTypes);
 
-        var result = await employeeTypeService.GetAllEmployeeType();
+        var result = await _employeeTypeService.GetAllEmployeeType();
 
         Assert.NotNull(result);
         Assert.IsType<List<EmployeeTypeDto>>(result);
@@ -323,7 +323,7 @@ public class EmployeeTypesServiceUnitTest
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
 
-        var result = await employeeTypeService.UpdateEmployeeType(employeeTypeDto);
+        var result = await _employeeTypeService.UpdateEmployeeType(employeeTypeDto);
 
         Assert.NotNull(result);
         Assert.Equivalent(employeeTypeDto, result);
@@ -340,7 +340,7 @@ public class EmployeeTypesServiceUnitTest
 
         _dbMock.Setup(r => r.EmployeeType.Update(It.IsAny<EmployeeType>())).ReturnsAsync(employeeType);
 
-        await Assert.ThrowsAsync<CustomException>(() => employeeTypeService.UpdateEmployeeType(employeeTypeDto));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeTypeService.UpdateEmployeeType(employeeTypeDto));
 
         _dbMock.Verify(x => x.EmployeeType.Update(It.IsAny<EmployeeType>()), Times.Never);
         _dbMock.Verify(x => x.EmployeeType.FirstOrDefault(It.IsAny<Expression<Func<EmployeeType, bool>>>()), Times.Never);
@@ -363,7 +363,7 @@ public class EmployeeTypesServiceUnitTest
                               .ReturnsAsync(employeeTypeDto);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-             employeeTypeService.UpdateEmployeeType(EmployeeTypeTestData.DeveloperType.ToDto()));
+             _employeeTypeService.UpdateEmployeeType(EmployeeTypeTestData.DeveloperType.ToDto()));
 
         Assert.Equivalent("Unauthorized Access.", exception.Message);
     }
@@ -375,7 +375,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(r => r.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .ReturnsAsync(true);
 
-        var result = await employeeTypeService.EmployeeTypeExists(testId);
+        var result = await _employeeTypeService.EmployeeTypeExists(testId);
 
         Assert.True(result);
         _dbMock.Verify(x => x.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()), Times.Once);
@@ -388,7 +388,7 @@ public class EmployeeTypesServiceUnitTest
         _dbMock.Setup(x => x.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()))
                .ReturnsAsync(false);
 
-        var result = await employeeTypeService.EmployeeTypeExists(testId);
+        var result = await _employeeTypeService.EmployeeTypeExists(testId);
 
         Assert.False(result);
         _dbMock.Verify(x => x.EmployeeType.Any(It.IsAny<Expression<Func<EmployeeType, bool>>>()), Times.Once);

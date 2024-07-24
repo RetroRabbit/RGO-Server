@@ -20,7 +20,7 @@ public class EmployeeTypeService : IEmployeeTypeService
 
     public async Task<bool> EmployeeTypeExists(int id)
     {
-        return await _db.EmployeeType.Any(x => x.Id == Id);
+        return await _db.EmployeeType.Any(x => x.Id == id);
     }
 
     public async Task<EmployeeTypeDto> CreateEmployeeType(EmployeeTypeDto employeeTypeDto)
@@ -41,16 +41,16 @@ public class EmployeeTypeService : IEmployeeTypeService
 
     public async Task<EmployeeTypeDto> DeleteEmployeeType(int id)
     {
-        var employeeTypeExists = await EmployeeTypeExists(Id);
+        var employeeTypeExists = await EmployeeTypeExists(id);
 
         if (!employeeTypeExists)
             throw new CustomException("Employee Type does not exist");
 
-        if (_identity.IsSupport == false && Id != _identity.EmployeeId)
+        if (_identity.IsSupport == false && id != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
         
         var deletedEmployeeType = await _db.EmployeeType
-                                           .Delete(Id);
+                                           .Delete(id);
  
         return deletedEmployeeType.ToDto();
     }
