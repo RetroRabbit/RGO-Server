@@ -155,7 +155,7 @@ public class EmployeeTypesServiceUnitTest
                .ReturnsAsync(true);
         _dbMock.Setup(x => x.EmployeeType.Delete(employeeTypeList[0].Id)).ReturnsAsync(employeeType);
 
-        var result = await employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Id!);
+        var result = await employeeTypeService.DeleteEmployeeType(employeeTypeList[0].Id);
 
         Assert.NotNull(result);
         Assert.Equivalent(employeeTypeDto, result);
