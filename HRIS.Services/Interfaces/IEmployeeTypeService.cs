@@ -9,19 +9,19 @@ public interface IEmployeeTypeService
     /// </summary>
     /// <param name="employeeTypeDto"></param>
     /// <returns></returns>
-    Task<EmployeeTypeDto> SaveEmployeeType(EmployeeTypeDto employeeTypeDto);
+    Task<EmployeeTypeDto> CreateEmployeeType(EmployeeTypeDto employeeTypeDto);
 
     /// <summary>
     ///     Delete Employee Type
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<EmployeeTypeDto> DeleteEmployeeType(string name);
+    Task<EmployeeTypeDto> DeleteEmployeeType(int Id);
 
     /// <summary>
     ///     Get Employee Type
     /// </summary>
-    /// <param name="name"></param>
+    /// <param Id="Id"></param>
     /// <returns></returns>
     Task<EmployeeTypeDto> GetEmployeeType(string name);
 
@@ -37,4 +37,5 @@ public interface IEmployeeTypeService
     /// <param name="employeeTypeDto"></param>
     /// <returns></returns>
     Task<EmployeeTypeDto> UpdateEmployeeType(EmployeeTypeDto employeeTypeDto);
+    Task<bool> EmployeeTypeExists(int id);
 }
