@@ -80,8 +80,6 @@ public class FieldCodeServiceUnitTests
         _db.Verify(x => x.FieldCode.Add(It.IsAny<FieldCode>()), Times.Exactly(2));
     }
 
-
-
     [Fact]
     public async Task UpdateFieldCodeTest()
     {

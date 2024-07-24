@@ -119,5 +119,4 @@ public class FieldCodeTestData
         Required = false,
         Options = fieldCodeOptionsList
     };
-
 }
