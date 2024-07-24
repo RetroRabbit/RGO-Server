@@ -14,12 +14,17 @@ public class EmployeeDataServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDataService _employeeDataService;
+    private readonly AuthorizeIdentityMock _supportIdentity;
+    private readonly AuthorizeIdentityMock _nonSupportIdentity;
+    private readonly EmployeeData _employeeData = EmployeeDataTestData.EmployeeDataOne;
 
     public EmployeeDataServiceUnitTest()
     {
+        _supportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1);
+        _nonSupportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1);
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeDataService = new EmployeeDataService(_dbMock.Object,
-            new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
+        _employeeDataService = new EmployeeDataService(_dbMock.Object, _supportIdentity);
+        _employeeData = EmployeeDataTestData.EmployeeDataOne;
     }
 
     [Fact]
