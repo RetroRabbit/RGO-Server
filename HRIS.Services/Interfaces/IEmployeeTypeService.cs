@@ -16,7 +16,7 @@ public interface IEmployeeTypeService
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<EmployeeTypeDto> DeleteEmployeeType(int Id);
+    Task<EmployeeTypeDto> DeleteEmployeeType(int id);
 
     /// <summary>
     ///     Get Employee Type
