@@ -15,7 +15,7 @@ public class EmployeeTypesServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private readonly EmployeeTypeService employeeTypeService;
+    private readonly EmployeeTypeService _employeeTypeService;
     private readonly Mock<AuthorizeIdentityMock> _identity;
 
     public EmployeeTypesServiceUnitTest()
