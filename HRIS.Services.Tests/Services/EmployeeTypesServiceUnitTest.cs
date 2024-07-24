@@ -23,7 +23,7 @@ public class EmployeeTypesServiceUnitTest
         _identity = new Mock<AuthorizeIdentityMock>();
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
-        employeeTypeService = new EmployeeTypeService(_dbMock.Object, _identity.Object);
+        _employeeTypeService = new EmployeeTypeService(_dbMock.Object, _identity.Object);
     }
 
     [Fact]
