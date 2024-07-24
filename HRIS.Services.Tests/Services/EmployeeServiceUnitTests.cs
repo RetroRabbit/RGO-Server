@@ -65,10 +65,10 @@ public class EmployeeServiceUnitTests
                                   .ReturnsAsync(false)
                                   .ReturnsAsync(true);
 
-        _employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(r => r.Create(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
-        _employeeAddressServiceMock.Setup(r => r.Get(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(r => r.Get(It.IsAny<int>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
         _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());

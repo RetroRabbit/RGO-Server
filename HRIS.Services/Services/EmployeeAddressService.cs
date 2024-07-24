@@ -38,16 +38,17 @@ public class EmployeeAddressService : IEmployeeAddressService
         return address.ToDto();
     }
 
-    public async Task<EmployeeAddressDto> Get(EmployeeAddressDto employeeAddressDto)
+    public async Task<EmployeeAddressDto> Get(int id)
     {
-        var exists = await CheckIfExists(employeeAddressDto.Id);
+        var exists = await CheckIfExists(id);
 
         if (!exists)
         {
             throw new CustomException("Employee Address Does Not Exist");
         }
 
-        return (await _db.EmployeeAddress.FirstOrDefault(address => address.Id == employeeAddressDto.Id)).ToDto();
+        var address = await _db.EmployeeAddress.FirstOrDefault(address => address.Id == id);
+        return address!.ToDto();
     }
 
     public async Task<List<EmployeeAddressDto>> GetAll()
@@ -55,7 +56,15 @@ public class EmployeeAddressService : IEmployeeAddressService
         return (await _db.EmployeeAddress.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
-    public async Task<EmployeeAddressDto> Save(EmployeeAddressDto employeeAddressDto)
+    public async Task<EmployeeAddressDto> GetAllByEmployeeId(int employeeId)
+    {
+        var employee = await _db.Employee.FirstOrDefault(emp => emp.Id == employeeId);
+
+        var address = await _db.EmployeeAddress.FirstOrDefault(address => address.Id == employee.PhysicalAddressId);
+        return address!.ToDto();
+    }
+
+    public async Task<EmployeeAddressDto> Create(EmployeeAddressDto employeeAddressDto)
     {
         var exists = await CheckIfExists(employeeAddressDto.Id);
 

@@ -81,7 +81,7 @@ public class EmployeeAddressServiceUnitTest
         _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Get(address.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Get(address.ToDto().Id));
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class EmployeeAddressServiceUnitTest
         _dbMock.Setup(x => x.EmployeeAddress.FirstOrDefault(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(address);
 
-        var result = await _employeeAddressService.Get(address.ToDto());
+        var result = await _employeeAddressService.Get(address.ToDto().Id);
 
         Assert.NotNull(result);
         Assert.Equivalent(address.ToDto(), result);
@@ -132,7 +132,7 @@ public class EmployeeAddressServiceUnitTest
         _dbMock.Setup(x => x.EmployeeAddress.Any(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Save(address.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeAddressService.Create(address.ToDto()));
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class EmployeeAddressServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeAddress.Add(It.IsAny<EmployeeAddress>())).ReturnsAsync(address);
 
-        var result = await _employeeAddressService.Save(address.ToDto());
+        var result = await _employeeAddressService.Create(address.ToDto());
 
         Assert.Equivalent(address.ToDto(), result);
     }

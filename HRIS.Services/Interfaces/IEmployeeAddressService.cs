@@ -16,14 +16,14 @@ public interface IEmployeeAddressService
     /// </summary>
     /// <param name="employeeAddressDto"></param>
     /// <returns>Employee Address</returns>
-    Task<EmployeeAddressDto> Save(EmployeeAddressDto employeeAddressDto);
+    Task<EmployeeAddressDto> Create(EmployeeAddressDto employeeAddressDto);
 
     /// <summary>
     ///     Get Employee Address
     /// </summary>
     /// <param name="employeeId"></param>
     /// <returns>Employee Address</returns>
-    Task<EmployeeAddressDto> Get(EmployeeAddressDto employeeAddressDto);
+    Task<EmployeeAddressDto> Get(int id);
 
     /// <summary>
     ///     Update Employee Address
@@ -45,4 +45,11 @@ public interface IEmployeeAddressService
     /// <param></param>
     /// <returns>List of all EmployeesDto</returns>
     Task<List<EmployeeAddressDto>> GetAll();
+
+    /// <summary>
+    /// Get all Employee Adresses for a specific employee
+    /// </summary>
+    /// <param name="employeeId"></param>
+    /// <returns></returns>
+    Task<EmployeeAddressDto> GetAllByEmployeeId(int employeeId);
 }
