@@ -859,20 +859,30 @@ public class AuthServiceUnitTests
     [Theory]
     [InlineData("existingUser", "test1@retrorabbit.co.za", true, true)]
     [InlineData("nonexistentUser", null, false, false)]
+    [InlineData("", null, false, false)]
+    [InlineData(null, null, false, false)]
     public async Task DeleteUser_Test(string userId, string userEmail, bool userExists, bool expectedResult)
     {
         var validToken = CreateJwtToken();
         SetPrivateField(_authService, "_cachedAccessToken", validToken);
 
-        var expectedUser = userExists ? new Auth0.ManagementApi.Models.User { UserId = userId, Email = userEmail } : null;
-
-        _usersClientMock.Setup(client => client.GetAsync(userId, null, true, It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(expectedUser);
-
-        if (userExists)
+        if (!string.IsNullOrEmpty(userId))
         {
-            _usersClientMock.Setup(client => client.DeleteAsync(userId))
-                            .Returns(Task.CompletedTask);
+            var expectedUser = userExists ? new Auth0.ManagementApi.Models.User { UserId = userId, Email = userEmail } : null;
+
+            _usersClientMock.Setup(client => client.GetAsync(userId, null, true, It.IsAny<CancellationToken>()))
+                            .ReturnsAsync(expectedUser);
+
+            if (userExists)
+            {
+                _usersClientMock.Setup(client => client.DeleteAsync(userId))
+                                .Returns(Task.CompletedTask);
+            }
+        }
+        else
+        {
+            _usersClientMock.Setup(client => client.GetAsync(It.IsAny<string>(), null, true, It.IsAny<CancellationToken>()))
+                            .ThrowsAsync(new ArgumentException("Invalid userId"));
         }
 
         _managementApiClientMock.Setup(client => client.Users).Returns(_usersClientMock.Object);
@@ -881,13 +891,20 @@ public class AuthServiceUnitTests
 
         Assert.Equal(expectedResult, result);
 
-        if (userExists)
+        if (!string.IsNullOrEmpty(userId))
         {
-            _usersClientMock.Verify(client => client.DeleteAsync(userId), Times.Once);
+            if (userExists)
+            {
+                _usersClientMock.Verify(client => client.DeleteAsync(userId), Times.Once);
+            }
+            else
+            {
+                _usersClientMock.Verify(client => client.DeleteAsync(userId), Times.Never);
+            }
         }
         else
         {
-            _usersClientMock.Verify(client => client.DeleteAsync(userId), Times.Never);
+            _usersClientMock.Verify(client => client.DeleteAsync(It.IsAny<string>()), Times.Never);
         }
     }
 

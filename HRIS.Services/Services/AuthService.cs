@@ -363,6 +363,9 @@ public class AuthService : IAuthService
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
 
+        if (string.IsNullOrEmpty(userId))
+            return false;
+
         var existingUser = await _managementApiClient.Users.GetAsync(userId, null, true);
         if (existingUser == null)
             return false;
