@@ -362,19 +362,21 @@ public class AuthService : IAuthService
     {
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
-        var existingUser = GetUserById(userId);
-        if (existingUser != null)
-            await _managementApiClient.Users.DeleteAsync(userId);
 
+        var existingUser = await _managementApiClient.Users.GetAsync(userId, null, true);
+        if (existingUser == null)
+            return false;
+
+        await _managementApiClient.Users.DeleteAsync(userId);
         return true;
     }
 
     public async Task<bool> UpdateUser(string userId, UserUpdateRequest request)
     {
         var allUsers = await GetAllUsersAsync();
-        bool userFound = allUsers.Any(user => user.UserName == request.UserName);
+        var userToUpdate = allUsers.FirstOrDefault(user => user.UserId == userId);
 
-        if (!userFound)
+        if (userToUpdate == null)
             return false;
 
         var token = await GetAuth0ManagementAccessToken();
