@@ -32,30 +32,29 @@ public class FieldCodeService : IFieldCodeService
         }
 
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
-
-
         if (ifFieldCode != null) throw new CustomException("Field with that name found");
 
         var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
         if (newFieldCode != null && fieldCodeDto.Options!.Count > 0)
+        {
             foreach (var option in fieldCodeDto.Options)
             {
                 var fieldCodeOptionsDto = new FieldCodeOptionsDto
                 {
-                   Id = 0,
-                   FieldCodeId = newFieldCode.Id,
-                   Option = option.Option
+                    Id = 0,
+                    FieldCodeId = newFieldCode.Id,
+                    Option = option.Option
                 };
                 await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
             }
+        }
 
         var options = await _fieldCodeOptionsService.GetFieldCodeOptions(newFieldCode!.Id);
-
         var dto = newFieldCode.ToDto();
-
         dto.Options = options;
         return dto;
     }
+
 
     public async Task<FieldCodeDto?> GetFieldCode(string name)
     {

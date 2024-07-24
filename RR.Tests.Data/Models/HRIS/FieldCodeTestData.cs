@@ -10,8 +10,7 @@ public class FieldCodeTestData
     public static FieldCodeOptions _fieldCodeOptionsDto2 = new FieldCodeOptions { Id = 2, FieldCodeId = 1, Option = "string" };
     public static List<FieldCodeOptionsDto> fieldCodeOptionsList = new List<FieldCodeOptionsDto>
     {
-        new FieldCodeOptionsDto { Id = 3, FieldCodeId = 1, Option = "another string" },
-        new FieldCodeOptionsDto { Id = 4, FieldCodeId = 1, Option = "yet another string" }
+        new FieldCodeOptionsDto { Id = 1, FieldCodeId = 1, Option = "string" },
     };
 
     public static FieldCode _fieldCodeDto = new()
@@ -77,7 +76,7 @@ public class FieldCodeTestData
 
     public static FieldCode newFieldCodeDto = new()
     {
-        Id = -1,
+        Id = 0,
         Code = "AAA000",
         Name = "RandomValue",
         Description = "string",
@@ -89,4 +88,36 @@ public class FieldCodeTestData
         Category = FieldCodeCategory.Profile,
         Required = false
     };
+
+    public static FieldCode newFieldCodeDto2 = new()
+    {
+        Id = 2,
+        Code = "AAA000",
+        Name = "string2",
+        Description = "string",
+        Regex = "string",
+        Type = FieldCodeType.String,
+        Status = ItemStatus.Archive,
+        Internal = false,
+        InternalTable = "",
+        Category = FieldCodeCategory.Profile,
+        Required = false
+    };
+
+    public static FieldCodeDto newFieldCodeDto3 = new()
+    {
+        Id = -1,
+        Code = "AAA000",
+        Name = "RandomValue",
+        Description = "string",
+        Regex = "string",
+        Type = FieldCodeType.String,
+        Status = ItemStatus.Active,
+        Internal = false,
+        InternalTable = "",
+        Category = FieldCodeCategory.Profile,
+        Required = false,
+        Options = fieldCodeOptionsList
+    };
+
 }
