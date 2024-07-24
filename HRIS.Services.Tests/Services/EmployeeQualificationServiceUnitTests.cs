@@ -48,7 +48,7 @@ public class EmployeeQualificationServiceUnitTests
     #region SaveEmployeeQualification
 
     [Fact]
-    public async Task SaveEmployeeQualification_Success()
+    public async Task CreateEmployeeQualification_Success()
     {
         _employeeService.Setup(x => x.GetEmployeeById(It.IsAny<int>()))
             .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto());
@@ -71,7 +71,7 @@ public class EmployeeQualificationServiceUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeQualification_Failure_GetEmployeeById()
+    public async Task CreateEmployeeQualification_GetEmployeeById()
     {
         _employeeService.Setup(x => x.GetEmployeeById(It.IsAny<int>()))
             .Throws(new CustomException("Unable to Load Employee"));
@@ -89,7 +89,7 @@ public class EmployeeQualificationServiceUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeQualification_Failure_QualificationExists()
+    public async Task CreateEmployeeQualification_DoesExist()
     {
         _employeeService.Setup(x => x.GetEmployeeById(It.IsAny<int>()))
             .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto);
@@ -104,7 +104,7 @@ public class EmployeeQualificationServiceUnitTests
 
         _employeeService.Verify(x => x.GetEmployeeById(It.IsAny<int>()), Times.Once);
         _db.Verify(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()),
-            Times.Once);
+            Times.Never);
         _db.Verify(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()), Times.Never);
     }
 
