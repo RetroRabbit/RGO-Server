@@ -85,6 +85,14 @@ public class EmployeeDataService : IEmployeeDataService
 
     public async Task<EmployeeDataDto> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
     {
+        var modelExists = await EmployeeDataExists(employeeDataDto.Id);
+
+        if (!modelExists) throw new CustomException("This model does not exist yet");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
+
         var employeesData = await _db.EmployeeData.GetAll();
         var employeeData = employeesData
                            .Where(employeeData => employeeData.Id == employeeDataDto.Id)
@@ -101,6 +109,13 @@ public class EmployeeDataService : IEmployeeDataService
 
     public async Task<EmployeeDataDto> DeleteEmployeeData(int employeeDataId)
     {
+        var modelExists = await EmployeeDataExists(employeeDataId);
+
+        if (!modelExists) throw new CustomException("This model does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var deletedData = await _db.EmployeeData.Delete(employeeDataId);
         return deletedData.ToDto();
     }
