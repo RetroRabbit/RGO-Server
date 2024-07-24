@@ -170,7 +170,7 @@ public class EmployeeQualificationServiceUnitTests
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
            _employeeQualificationService.GetEmployeeQualificationsByEmployeeId(EmployeeQualificationTestData.EmployeeQualification.EmployeeId));
 
-        Assert.Equivalent("Unauthorized access.", exception.Message);
+        Assert.Equivalent("Unauthorized access", exception.Message);
 
         _db.Verify(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()),
             Times.Never);
@@ -273,7 +273,7 @@ public class EmployeeQualificationServiceUnitTests
     public async Task DeleteEmployeeQualification_DoesNotExist()
     {
         _db.Setup(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(false);
 
         _db.Setup(x => x.EmployeeQualification.Delete(It.IsAny<int>()))
             .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
