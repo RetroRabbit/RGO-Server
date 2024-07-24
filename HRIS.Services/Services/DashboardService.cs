@@ -179,13 +179,13 @@ namespace HRIS.Services.Services
         public async Task<EmployeeOnBenchDataCard> GetTotalNumberOfEmployeesOnBench()
         {
             var totalNumberOfDevsOnBench = await _db.Employee.Get()
-                                              .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 2);
+                                              .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 2 && c.Active == true);
 
             var totalNumberOfDesignersOnBench = await _db.Employee.Get()
-                                                   .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 3);
+                                                   .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 3 && c.Active == true);
 
             var totalNumberOfScrumMastersOnBench = await _db.Employee.Get()
-                                                      .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 4);        
+                                                      .CountAsync(c => c.ClientAllocated == null && c.EmployeeTypeId == 4 && c.Active == true);        
 
             var totalNumberOfEmployeesOnBench = totalNumberOfDevsOnBench +
                                                 totalNumberOfDesignersOnBench +
@@ -203,17 +203,17 @@ namespace HRIS.Services.Services
         public async Task<EmployeeCountByRoleDataCard> GetEmployeeCountTotalByRole()
         {
             var devsTotal = await _db.Employee.Get()
-                               .CountAsync(e => e.EmployeeTypeId == 2);
+                               .CountAsync(e => e.EmployeeTypeId == 2 && e.Active == true);
 
             var designersTotal = await _db.Employee.Get()
-                                    .CountAsync(e => e.EmployeeTypeId == 3);
+                                    .CountAsync(e => e.EmployeeTypeId == 3 && e.Active == true);
 
             var scrumMastersTotal = await _db.Employee.Get()
-                                       .CountAsync(e => e.EmployeeTypeId == 4);
+                                       .CountAsync(e => e.EmployeeTypeId == 4 && e.Active == true);
 
 
             var businessSupportTotal = await _db.Employee.Get()
-                                          .CountAsync(e => e.EmployeeTypeId > 4);
+                                          .CountAsync(e => e.EmployeeTypeId > 4 && e.Active == true);
                                       
             return new EmployeeCountByRoleDataCard
             {
@@ -229,8 +229,21 @@ namespace HRIS.Services.Services
             var totalOfDevsDesignersAndScrumsOnClients = await _db.Employee
                                                             .Get()
                                                             .CountAsync(e => (e.EmployeeTypeId == 2 || e.EmployeeTypeId == 3 ||
-                                                                         e.EmployeeTypeId == 4) && e.ClientAllocated != 1);
+                                                                         e.EmployeeTypeId == 4) && e.ClientAllocated != 1 && e.Active == true);
             return totalOfDevsDesignersAndScrumsOnClients;
+        }
+
+        public async Task<List<EmployeeDto>> GetAllActiveEmployees()
+        {
+            return await _db.Employee
+                            .Get(employee => employee.Active == true)
+                            .AsNoTracking()
+                            .Include(employee => employee.EmployeeType)
+                            .Include(employee => employee.PhysicalAddress)
+                            .Include(employee => employee.PostalAddress)
+                            .OrderBy(employee => employee.Name)
+                            .Select(employee => employee.ToDto())
+                            .ToListAsync();
         }
     }
 }
