@@ -25,6 +25,13 @@ public class EmployeeDataService : IEmployeeDataService
 
     public async Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto)
     {
+        var modelExists = await EmployeeDataExists(employeeDataDto.Id);
+
+        if (!modelExists) throw new CustomException("This model does not exist yet");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var employeesData = await _db.EmployeeData.GetAll();
         var employeeData = employeesData
                            .Where(employeeData => employeeData.EmployeeId == employeeDataDto.EmployeeId &&
