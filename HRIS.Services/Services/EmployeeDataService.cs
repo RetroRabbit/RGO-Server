@@ -1,5 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
+using Microsoft.EntityFrameworkCore.Metadata;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -8,10 +10,17 @@ namespace HRIS.Services.Services;
 public class EmployeeDataService : IEmployeeDataService
 {
     private readonly IUnitOfWork _db;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeDataService(IUnitOfWork db)
+    public EmployeeDataService(IUnitOfWork db, AuthorizeIdentity identity)
     {
         _db = db;
+        _identity = identity;
+    }
+
+    public async Task<bool> EmployeeDataExists(int id)
+    { 
+        return await _db.EmployeeData.Any(x => x.Id == id);
     }
 
     public async Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto)
