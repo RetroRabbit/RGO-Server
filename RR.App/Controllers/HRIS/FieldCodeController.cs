@@ -20,77 +20,39 @@ public class FieldCodeController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllFieldCodes()
     {
-        try
-        {
-            var getFieldCodes = await _fieldCodeService.GetAllFieldCodes();
-
-            if (getFieldCodes == null) throw new Exception("No field codes found");
-
-            return Ok(getFieldCodes);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var getFieldCodes = await _fieldCodeService.GetAllFieldCodes();
+        return Ok(getFieldCodes);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveFieldCode([FromBody] FieldCodeDto fieldCodeDto)
     {
-        try
-        {
-            var savedFieldCode = await _fieldCodeService.SaveFieldCode(fieldCodeDto);
-            return Ok(savedFieldCode);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var savedFieldCode = await _fieldCodeService.SaveFieldCode(fieldCodeDto);
+        return Ok(savedFieldCode);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateFieldCode([FromBody] FieldCodeDto fieldCodeDto)
     {
-        try
-        {
-            var updatedFieldCode = await _fieldCodeService.UpdateFieldCode(fieldCodeDto);
-            return Ok(updatedFieldCode);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var updatedFieldCode = await _fieldCodeService.UpdateFieldCode(fieldCodeDto);
+        return Ok(updatedFieldCode);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteFieldCode([FromBody] FieldCodeDto fieldCodeDto)
     {
-        try
-        {
-            var deletedFieldCode = await _fieldCodeService.DeleteFieldCode(fieldCodeDto);
-            return Ok(deletedFieldCode);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var deletedFieldCode = await _fieldCodeService.DeleteFieldCode(fieldCodeDto);
+        return Ok(deletedFieldCode);
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpGet("category")]
     public async Task<IActionResult> GetByCategory([FromQuery] int category)
     {
-        try
-        {
-            var categoryCodes = await _fieldCodeService.GetByCategory(category);
-            return Ok(categoryCodes);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var categoryCodes = await _fieldCodeService.GetByCategory(category);
+        return Ok(categoryCodes);
     }
 }

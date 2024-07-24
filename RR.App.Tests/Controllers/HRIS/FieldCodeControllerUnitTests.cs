@@ -55,17 +55,6 @@ public class FieldCodeControllerTests
     }
 
     [Fact]
-    public async Task GetAllFieldCodesReturnsNotFoundResultWhenNoFieldCodesFound()
-    {
-        _fieldCodeServiceMock.Setup(s => s.GetAllFieldCodes()).ReturnsAsync((List<FieldCodeDto>?)null);
-
-        var result = await _controller.GetAllFieldCodes();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("No field codes found", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task SaveFieldCodeReturnsOkResultWithSavedFieldCode()
     {
         _fieldCodeServiceMock.Setup(s => s.SaveFieldCode(_fieldCodeDto)).ReturnsAsync(_fieldCodeDto);
@@ -75,17 +64,6 @@ public class FieldCodeControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<FieldCodeDto>(okResult.Value);
         Assert.Equal(_fieldCodeDto, model);
-    }
-
-    [Fact]
-    public async Task SaveFieldCodeReturnsNotFoundResultWhenExceptionThrown()
-    {
-        _fieldCodeServiceMock.Setup(s => s.SaveFieldCode(_fieldCodeDto)).ThrowsAsync(new Exception("An error occurred"));
-
-        var result = await _controller.SaveFieldCode(_fieldCodeDto);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred", notFoundResult.Value);
     }
 
     [Fact]
@@ -101,17 +79,6 @@ public class FieldCodeControllerTests
     }
 
     [Fact]
-    public async Task UpdateFieldCodeReturnsNotFoundResultWhenExceptionThrown()
-    {
-        _fieldCodeServiceMock.Setup(s => s.UpdateFieldCode(_fieldCodeDto)).ThrowsAsync(new Exception("An error occurred"));
-
-        var result = await _controller.UpdateFieldCode(_fieldCodeDto);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task DeleteFieldCodeReturnsOkResultWithDeletedFieldCode()
     {
         _fieldCodeServiceMock.Setup(s => s.DeleteFieldCode(_fieldCodeDto)).ReturnsAsync(_fieldCodeDto);
@@ -121,17 +88,6 @@ public class FieldCodeControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<FieldCodeDto>(okResult.Value);
         Assert.Equal(_fieldCodeDto, model);
-    }
-
-    [Fact]
-    public async Task DeleteFieldCodeReturnsNotFoundResultWhenExceptionThrown()
-    {
-        _fieldCodeServiceMock.Setup(s => s.DeleteFieldCode(_fieldCodeDto)).ThrowsAsync(new Exception("An error occurred"));
-
-        var result = await _controller.DeleteFieldCode(_fieldCodeDto);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred", notFoundResult.Value);
     }
 
     [Fact]
@@ -145,17 +101,5 @@ public class FieldCodeControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualCategoryCodes = Assert.IsAssignableFrom<List<FieldCodeDto>>(okResult.Value);
         Assert.Equal(_fieldCodeDtoList, actualCategoryCodes);
-    }
-
-    [Fact]
-    public async Task GetByCategoryInvalidCategoryReturnsNotFoundResult()
-    {
-        _fieldCodeServiceMock.Setup(s => s.GetByCategory(-1))
-                            .ThrowsAsync(new Exception("Invalid Index"));
-
-        var result = await _controller.GetByCategory(-1);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Invalid Index", notFoundResult.Value);
     }
 }

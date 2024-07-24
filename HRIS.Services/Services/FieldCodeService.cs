@@ -1,6 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -11,15 +12,20 @@ public class FieldCodeService : IFieldCodeService
 {
     private readonly IUnitOfWork _db;
     private readonly IFieldCodeOptionsService _fieldCodeOptionsService;
+    private readonly AuthorizeIdentity _identity;
 
-    public FieldCodeService(IUnitOfWork db, IFieldCodeOptionsService fieldCodeOptionsService)
+    public FieldCodeService(IUnitOfWork db, IFieldCodeOptionsService fieldCodeOptionsService, AuthorizeIdentity identity)
     {
         _db = db;
         _fieldCodeOptionsService = fieldCodeOptionsService;
+        _identity = identity;
     }
 
     public async Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         if (fieldCodeDto.Id != 0)
         {
             return await UpdateFieldCode(fieldCodeDto);
@@ -75,6 +81,9 @@ public class FieldCodeService : IFieldCodeService
         var fieldCode = fieldCodes
                         .Select(fieldCode => fieldCode.ToDto())
                         .ToList();
+        if (fieldCodes == null)
+            throw new CustomException("No field codes found.");
+
         if (fieldCode.Count != 0)
             foreach (var item in fieldCode)
             {
