@@ -21,7 +21,7 @@ public class FieldCodeService : IFieldCodeService
         _identity = identity;
     }
 
-    public async Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto)
+    public async Task<FieldCodeDto> CreateFieldCode(FieldCodeDto fieldCodeDto)
     {
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");

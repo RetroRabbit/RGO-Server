@@ -9,7 +9,7 @@ public interface IFieldCodeService
     /// </summary>
     /// <param name="fieldCodeDto"></param>
     /// <returns></returns>
-    Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto);
+    Task<FieldCodeDto> CreateFieldCode(FieldCodeDto fieldCodeDto);
 
     /// <summary>
     ///     Get field code by name
