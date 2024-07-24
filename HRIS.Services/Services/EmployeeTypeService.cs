@@ -19,7 +19,7 @@ public class EmployeeTypeService : IEmployeeTypeService
         _identity = identity;
     }
 
-    public async Task<bool> EmployeeTypeExists(int Id)
+    public async Task<bool> EmployeeTypeExists(int id)
     {
         return await _db.EmployeeType.Any(x => x.Id == Id);
     }
