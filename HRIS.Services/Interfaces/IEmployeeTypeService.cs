@@ -11,11 +11,11 @@ public interface IEmployeeTypeService
     /// <returns></returns>
     Task<EmployeeTypeDto> CreateEmployeeType(EmployeeTypeDto employeeTypeDto);
 
-    /// <summary>
-    ///     Delete Employee Type
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
+        /// <summary>
+        ///     Deletes an existing employee type by id.
+        /// </summary>
+        /// <param name="id">The id of the employee type to delete.</param>
+        /// <returns>The deleted EmployeeTypeDto object.</returns>
     Task<EmployeeTypeDto> DeleteEmployeeType(int id);
 
     /// <summary>
