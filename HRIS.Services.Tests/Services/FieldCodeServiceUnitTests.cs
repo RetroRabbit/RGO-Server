@@ -85,21 +85,6 @@ public class FieldCodeServiceUnitTests
     [Fact]
     public async Task SaveFieldCodeFailTest()
     {
-        var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
-        var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
-
-        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
-        _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
-           .ReturnsAsync(FieldCodeTestData.newFieldCodeDto);
-        _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
-           .ReturnsAsync(_fieldCodeDto2);
-
-        _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
-                                .ReturnsAsync(_fieldCodeOptionsDto.ToDto());
-
-        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
-                                .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
-
         await Assert.ThrowsAsync<CustomException>(() => _nonSupportfieldCodeService.CreateFieldCode(_fieldCodeDto.ToDto()));
     }
 
@@ -126,6 +111,12 @@ public class FieldCodeServiceUnitTests
     }
 
     [Fact]
+    public async Task UpdateFieldCodeFailTest()
+    {
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportfieldCodeService.UpdateFieldCode(_fieldCodeDto.ToDto()));
+    }
+
+    [Fact]
     public async Task DeleteFieldCodeTest()
     {
         var fields = new List<FieldCode> { _fieldCodeDto };
@@ -139,6 +130,12 @@ public class FieldCodeServiceUnitTests
         _fieldCodeDto4.Options = null;
         Assert.Equivalent(_fieldCodeDto4.ToDto(), result);
         _db.Verify(r => r.FieldCode.Update(It.IsAny<FieldCode>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteFieldCodeFailTest()
+    {
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportfieldCodeService.DeleteFieldCode(_fieldCodeDto.ToDto()));
     }
 
     [Theory]
@@ -166,6 +163,16 @@ public class FieldCodeServiceUnitTests
 
         Assert.NotNull(result);
         Assert.Single(result);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task GetByCategoryFailUnauthorized(int categoryNumber)
+    {
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportfieldCodeService.GetByCategory(categoryNumber));
     }
 
     [Fact]

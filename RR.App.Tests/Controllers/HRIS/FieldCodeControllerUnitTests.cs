@@ -57,7 +57,7 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task SaveFieldCodeReturnsOkResultWithSavedFieldCode()
     {
-        _fieldCodeServiceMock.Setup(s => s.SaveFieldCode(_fieldCodeDto)).ReturnsAsync(_fieldCodeDto);
+        _fieldCodeServiceMock.Setup(s => s.CreateFieldCode(_fieldCodeDto)).ReturnsAsync(_fieldCodeDto);
 
         var result = await _controller.SaveFieldCode(_fieldCodeDto);
 

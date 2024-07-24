@@ -28,7 +28,7 @@ public class FieldCodeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SaveFieldCode([FromBody] FieldCodeDto fieldCodeDto)
     {
-        var savedFieldCode = await _fieldCodeService.SaveFieldCode(fieldCodeDto);
+        var savedFieldCode = await _fieldCodeService.CreateFieldCode(fieldCodeDto);
         return Ok(savedFieldCode);
     }
 
