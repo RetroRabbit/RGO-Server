@@ -178,7 +178,7 @@ public class EmployeeTypesServiceUnitTest
 
         await Assert.ThrowsAsync<CustomException>(() => employeeTypeService.DeleteEmployeeType(employeeTypeDto.Id));
 
-        _dbMock.Verify(x => x.EmployeeType.Delete(employeeTypeList[0].Id!), Times.Never);
+        _dbMock.Verify(x => x.EmployeeType.Delete(employeeTypeList[0].Id), Times.Never);
         _dbMock.Verify(x => x.EmployeeType.FirstOrDefault(It.IsAny<Expression<Func<EmployeeType, bool>>>()), Times.Never);
     }
 
