@@ -13,8 +13,6 @@ namespace HRIS.Services.Tests.Services;
 
 public class EmployeeQualificationServiceUnitTests
 {
-    private const int EmployeeId = 1;
-    private const int QualificationId = 1;
     private readonly Mock<IUnitOfWork> _db;
     private readonly IEmployeeQualificationService _employeeQualificationService;
     private readonly Mock<IEmployeeService> _employeeService;
@@ -26,16 +24,15 @@ public class EmployeeQualificationServiceUnitTests
         _db = new Mock<IUnitOfWork>();
         _identity = new Mock<AuthorizeIdentityMock>();
         _employeeService = new Mock<IEmployeeService>();
-        _employeeQualificationService = new EmployeeQualificationService(_db.Object, _employeeService.Object, _identity.Object);
+        _employeeQualificationService = new EmployeeQualificationService(_db.Object, _identity.Object);
     }
     [Fact]
     public async Task CheckIfModelExistsReturnsTrue()
     {
-        var Id = 1;
         _db.Setup(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
             .ReturnsAsync(true);
 
-        var result = await _employeeQualificationService.CheckIfExists(Id);
+        var result = await _employeeQualificationService.CheckIfExists(1);
 
         Assert.True(result);
         _db.Verify(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()), Times.Once);
@@ -44,11 +41,10 @@ public class EmployeeQualificationServiceUnitTests
     [Fact]
     public async Task CheckIfModelExistsReturnsFalse()
     {
-        var Id = 10;
         _db.Setup(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
             .ReturnsAsync(false);
 
-        var result = await _employeeQualificationService.CheckIfExists(Id);
+        var result = await _employeeQualificationService.CheckIfExists(2);
 
         Assert.False(result);
         _db.Verify(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()), Times.Once);
@@ -66,8 +62,7 @@ public class EmployeeQualificationServiceUnitTests
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeQualificationTestData.EmployeeQualification.ToDto(), result[0]);
 
-        _db.Verify(x => x.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()),
-            Times.Once);
+        _db.Verify(x => x.EmployeeQualification.Get(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()),Times.Once);
     }
 
     #endregion
@@ -75,7 +70,7 @@ public class EmployeeQualificationServiceUnitTests
     #region SaveEmployeeQualification
 
     [Fact]
-    public async Task SaveEmployeeQualification_Success()
+    public async Task CreateEmployeeQualification_Success()
     {
         _identity.Setup(i => i.Role).Returns("Admin");
         _identity.SetupGet(i => i.EmployeeId).Returns(1);
@@ -85,8 +80,7 @@ public class EmployeeQualificationServiceUnitTests
         _db.Setup(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()))
             .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
 
-        var result = await _employeeQualificationService.SaveEmployeeQualification(
-                EmployeeQualificationTestData.EmployeeQualification.ToDto(), 1);
+        var result = await _employeeQualificationService.CreateEmployeeQualification(EmployeeQualificationTestData.EmployeeQualification.ToDto(), 1);
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeQualificationTestData.EmployeeQualification.ToDto(), result);
@@ -97,7 +91,7 @@ public class EmployeeQualificationServiceUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeQualification_UnauthorizedAccessFail()
+    public async Task CreateEmployeeQualification_UnauthorizedAccess()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
@@ -109,7 +103,7 @@ public class EmployeeQualificationServiceUnitTests
         .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualification);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-           _employeeQualificationService.SaveEmployeeQualification(EmployeeQualificationTestData.EmployeeQualification.ToDto(), 1));
+           _employeeQualificationService.CreateEmployeeQualification(EmployeeQualificationTestData.EmployeeQualification.ToDto(), 1));
 
         Assert.Equivalent("Unauthorized access.", exception.Message);
 
@@ -119,7 +113,7 @@ public class EmployeeQualificationServiceUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeQualificationDoesNotExist()
+    public async Task CreateEmployeeQualification_DoesExist()
     {
         _db.Setup(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
           .ReturnsAsync(true);
@@ -127,7 +121,7 @@ public class EmployeeQualificationServiceUnitTests
         _db.Setup(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()))
         .ReturnsAsync(EmployeeQualificationTestData.EmployeeQualificationTwo);
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeQualificationService.SaveEmployeeQualification(EmployeeQualificationTestData
+        await Assert.ThrowsAsync<CustomException>(() => _employeeQualificationService.CreateEmployeeQualification(EmployeeQualificationTestData
                 .EmployeeQualificationNew.ToDto(),1));
 
         _db.Verify(x => x.EmployeeQualification.Add(It.IsAny<EmployeeQualification>()), Times.Never);
@@ -162,7 +156,7 @@ public class EmployeeQualificationServiceUnitTests
 
     #endregion
     [Fact]
-    public async Task GetEmployeeQualificationsByEmployeeId_unAuthorizedAccess()
+    public async Task GetEmployeeQualificationsByEmployeeId_UnauthorizedAccess()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
@@ -213,7 +207,7 @@ public class EmployeeQualificationServiceUnitTests
     }
 
     [Fact]
-    public async Task UpdateEmployeeQaulificationDoesNotExist()
+    public async Task UpdateEmployeeQaulification_DoesNotExist()
     {
         _db.Setup(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
            .ReturnsAsync(false);
@@ -230,7 +224,7 @@ public class EmployeeQualificationServiceUnitTests
     #endregion
 
     [Fact]
-    public async Task UpdateEmployeeQualification_UnauthorizedAccessFail()
+    public async Task UpdateEmployeeQualification_UnauthorizedAccess()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
@@ -276,7 +270,7 @@ public class EmployeeQualificationServiceUnitTests
     }
 
     [Fact]
-    public async Task DeleteEmployeeQualification_Failure_QualificationNotExists()
+    public async Task DeleteEmployeeQualification_DoesNotExist()
     {
         _db.Setup(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
             .ReturnsAsync(true);
@@ -295,7 +289,7 @@ public class EmployeeQualificationServiceUnitTests
     #endregion
 
     [Fact]
-    public async Task DeleteEmployeeQualification_UnauthorizedAccessFail()
+    public async Task DeleteEmployeeQualification_UnauthorizedAccess()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
 

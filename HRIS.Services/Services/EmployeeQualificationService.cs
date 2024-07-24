@@ -10,13 +10,10 @@ namespace HRIS.Services.Services;
 public class EmployeeQualificationService : IEmployeeQualificationService
 {
     private readonly IUnitOfWork _db;
-    private readonly IEmployeeService _employeeService;
     private readonly AuthorizeIdentity _identity;
-
-    public EmployeeQualificationService(IUnitOfWork db, IEmployeeService employeeService, AuthorizeIdentity identity)
+    public EmployeeQualificationService(IUnitOfWork db, AuthorizeIdentity identity)
     {
         _db = db;
-        _employeeService = employeeService;
         _identity = identity;
     }
 
@@ -25,8 +22,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
         return await _db.EmployeeQualification.Any(x => x.Id == Id);
     }
 
-    public async Task<EmployeeQualificationDto> SaveEmployeeQualification(
-        EmployeeQualificationDto employeeQualificationDto, int employeeId)
+    public async Task<EmployeeQualificationDto> CreateEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId)
     {
         var exists = await CheckIfExists(employeeQualificationDto.Id);
 
@@ -53,10 +49,10 @@ public class EmployeeQualificationService : IEmployeeQualificationService
     public async Task<EmployeeQualificationDto> GetEmployeeQualificationsByEmployeeId(int employeeId)
     {
         if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
-            throw new CustomException("Unauthorized access.");
+            throw new CustomException("Unauthorized access");
 
         var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == _identity.EmployeeId);
-        return qualifications?.ToDto();
+        return qualifications.ToDto();
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(

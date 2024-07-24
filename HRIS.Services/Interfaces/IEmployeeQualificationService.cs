@@ -19,7 +19,7 @@ public interface IEmployeeQualificationService
     /// <param name="employeeId">id of the employee to whom the qualification belongs.</param>
     /// <returns>The saved employee qualification data transfer object.</returns>
     /// <exception cref="HRIS.Services.Services.CustomException"></exception>
-    Task<EmployeeQualificationDto> SaveEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId);
+    Task<EmployeeQualificationDto> CreateEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId);
 
     /// <summary>
     /// Retrieves all employee qualifications.
