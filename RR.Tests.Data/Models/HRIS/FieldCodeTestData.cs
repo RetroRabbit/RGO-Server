@@ -59,9 +59,25 @@ public class FieldCodeTestData
         Options = fieldCodeOptionsList
     };
 
-    public static FieldCode _fieldCodeDto4 = new()
+    public static FieldCodeDto _fieldCodeDto4 = new()
     {
         Id = 1,
+        Code = "CCC222",
+        Name = "string3",
+        Description = "string",
+        Regex = "string",
+        Type = FieldCodeType.String,
+        Status = ItemStatus.Active,
+        Internal = false,
+        InternalTable = "",
+        Category = FieldCodeCategory.Banking,
+        Required = false,
+        Options = fieldCodeOptionsList
+    };
+
+    public static FieldCode _fieldCode4 = new()
+    {
+        Id = 0,
         Code = "AAA000",
         Name = "string",
         Description = "string",
