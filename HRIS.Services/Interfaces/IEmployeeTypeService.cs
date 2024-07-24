@@ -5,25 +5,25 @@ namespace HRIS.Services.Interfaces;
 public interface IEmployeeTypeService
 {
     /// <summary>
-    ///     Save Employee Type
+    ///     Create Employee Type
     /// </summary>
-    /// <param name="employeeTypeDto"></param>
-    /// <returns></returns>
+    /// <param name="employeeTypeDto">The employeeTypeDto of the employee to save.</param>
+    /// <returns>The saved EmployeeTypeDto object</returns>
     Task<EmployeeTypeDto> CreateEmployeeType(EmployeeTypeDto employeeTypeDto);
 
-        /// <summary>
-        ///     Deletes an existing employee type by id.
-        /// </summary>
-        /// <param name="id">The id of the employee type to delete.</param>
-        /// <returns>The deleted EmployeeTypeDto object.</returns>
-    Task<EmployeeTypeDto> DeleteEmployeeType(int id);
+    /// <summary>
+    ///     Deletes an existing employee type by id.
+    /// </summary>
+    /// <param name="id">The id of the employee type to delete.</param>
+    /// <returns>The deleted EmployeeTypeDto object.</returns>
+    Task<EmployeeTypeDto> DeleteEmployeeType(int Id);
 
     /// <summary>
-    ///     Get Employee Type
+    ///     Get Employee Type by Name
     /// </summary>
-    /// <param Id="Id"></param>
-    /// <returns></returns>
-    Task<EmployeeTypeDto> GetEmployeeTypeByName(string name);
+    /// <param Id="Id">The id of the employe type to get</param>
+    /// <returns>The ExistingEmployeeType.</returns>
+    Task<EmployeeTypeDto> GetEmployeeType(string name);
 
     /// <summary>
     ///     Get All Employee Type
@@ -34,8 +34,14 @@ public interface IEmployeeTypeService
     /// <summary>
     ///     Update Employee Type
     /// </summary>
-    /// <param name="employeeTypeDto"></param>
-    /// <returns></returns>
+    /// <param name="employeeTypeDto">The employeeTypeDto of the employee to update.</param>
+    /// <returns>The updated EmployeeTypeDto object.</returns>
     Task<EmployeeTypeDto> UpdateEmployeeType(EmployeeTypeDto employeeTypeDto);
+
+    /// <summary>
+    ///     Employee Type Exists
+    /// </summary>
+    /// <param name="id">Check if employee type exist by id.</param>
+    /// <returns>True/False based on whether employee type exists.</returns>
     Task<bool> EmployeeTypeExists(int id);
 }
