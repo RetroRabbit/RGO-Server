@@ -8,6 +8,7 @@ using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
+using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace HRIS.Services.Tests.Services;
 
@@ -71,6 +72,36 @@ public class FieldCodeServiceUnitTests
                                 .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
 
         var newSave = await _fieldCodeService.CreateFieldCode(FieldCodeTestData.newFieldCodeDto.ToDto());
+        var result = await _fieldCodeService.CreateFieldCode(_fieldCodeDto3);
+
+        Assert.NotNull(newSave);
+        Assert.Equivalent(FieldCodeTestData.newFieldCodeDto2.ToDto(), newSave);
+
+        Assert.NotNull(result);
+        Assert.Equivalent(_fieldCodeDto2.ToDto(), result);
+
+        _db.Verify(x => x.FieldCode.Add(It.IsAny<FieldCode>()), Times.Exactly(2));
+    }
+
+    [Fact]
+    public async Task SaveFieldCodeFailIdTest()
+    {
+        var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
+        var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
+
+        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
+        _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
+           .ReturnsAsync(FieldCodeTestData.newFieldCodeDto);
+        _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
+           .ReturnsAsync(_fieldCodeDto2);
+
+        _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
+                                .ReturnsAsync(_fieldCodeOptionsDto.ToDto());
+
+        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+                                .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
+
+        var newSave = await _fieldCodeService.CreateFieldCode(_fieldCodeDto3);
         var result = await _fieldCodeService.CreateFieldCode(_fieldCodeDto3);
 
         Assert.NotNull(newSave);
@@ -188,6 +219,15 @@ public class FieldCodeServiceUnitTests
 
         await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.DeleteFieldCode(FieldCodeTestData._fieldCodeDto3));
     }
+
+    //[Fact]
+    //public async Task GetAllFieldCodesFail()
+    //{
+
+    //    var fields = new List<FieldCode> {null};
+    //    _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
+    //    await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetAllFieldCodes());
+    //}
 
     [Fact]
     public async Task GetByCategoryFail()
