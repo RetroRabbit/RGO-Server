@@ -2,7 +2,6 @@
 using HRIS.Services.Interfaces.Reporting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using HRIS.Models.Report.Request;
 
 namespace RR.App.Controllers.HRIS;
@@ -78,6 +77,7 @@ public class DataReportController : ControllerBase
     [HttpPut("update-report")]
     public async Task<IActionResult> AddOrUpdateReport([FromBody] UpdateReportRequest input)
     {
+        Console.WriteLine("Does it even get here");
         await _control.AddOrUpdateReport(input);
         return Ok();
     }
@@ -111,6 +111,22 @@ public class DataReportController : ControllerBase
     public async Task<IActionResult> DeleteReport([FromQuery] string code)
     {
         await _service.DeleteReportfromList(code);
+        return Ok();
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPut("update-data-report-filter")]
+    public async Task<IActionResult> GetDataReportFilter([FromQuery] ReportFilterRequest request)
+    {
+        await _control.AddOrUpdateReportFilter(request);
+        return Ok();
+    }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpPut("archive-data-report-filter")]
+    public async Task<IActionResult> ArchiveDataReportFilter([FromQuery] int id)
+    {
+        await _control.DeleteReportFilterfromList(id);
         return Ok();
     }
 }

@@ -15,12 +15,14 @@ public class DataReportControlService : IDataReportControlService
     private readonly AuthorizeIdentity _identity;
     private readonly IUnitOfWork _db;
     private readonly IDataReportCreationService _creation;
+    private readonly IDataReportFilterService _filter;
 
-    public DataReportControlService(AuthorizeIdentity identity, IUnitOfWork db, IDataReportCreationService creation)
+    public DataReportControlService(AuthorizeIdentity identity, IUnitOfWork db, IDataReportCreationService creation, IDataReportFilterService filter)
     {
         _identity = identity;
         _db = db;
         _creation = creation;
+        _filter = filter;
     }
 
     public async Task<List<DataReportColumnMenuDto>> GetColumnMenu()
@@ -185,5 +187,18 @@ public class DataReportControlService : IDataReportControlService
             await _creation.UpdateReport(input);
         else
             await _creation.AddReport(input);
+    }
+
+    public async Task AddOrUpdateReportFilter(ReportFilterRequest input)
+    {
+        if (input.ReportFilterId > 0)
+            await _filter.UpdateReportFilter(input);
+        else
+            await _filter.AddReportFilter(input);
+    }
+
+    public async Task DeleteReportFilterfromList(int id)
+    {
+        await _filter.ArchiveReportFilter(id) ;
     }
 }

@@ -10,4 +10,6 @@ public interface IDataReportControlService
     Task ArchiveColumnFromReport(int columnId);
     Task<DataReportColumnsDto?> MoveColumnOnReport(ReportColumnRequest input);
     Task AddOrUpdateReport(UpdateReportRequest input);
+    Task AddOrUpdateReportFilter(ReportFilterRequest input);
+    Task DeleteReportFilterfromList(int id);
 }
