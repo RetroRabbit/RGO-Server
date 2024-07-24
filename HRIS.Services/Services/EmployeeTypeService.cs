@@ -40,7 +40,7 @@ public class EmployeeTypeService : IEmployeeTypeService
         return newEmployeeType.ToDto();
     }
 
-    public async Task<EmployeeTypeDto> DeleteEmployeeType(int Id)
+    public async Task<EmployeeTypeDto> DeleteEmployeeType(int id)
     {
         var employeeTypeExists = await EmployeeTypeExists(Id);
 
