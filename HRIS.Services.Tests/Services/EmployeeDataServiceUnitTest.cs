@@ -14,13 +14,38 @@ public class EmployeeDataServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDataService _employeeDataService;
-    private readonly Mock<AuthorizeIdentityMock> _identity;
 
     public EmployeeDataServiceUnitTest()
     {
-        _identity = new Mock<AuthorizeIdentityMock>();
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeDataService = new EmployeeDataService(_dbMock.Object, _identity.Object);
+        _employeeDataService = new EmployeeDataService(_dbMock.Object,
+            new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
+    }
+
+    [Fact]
+    public async Task CheckIfModelExistsReturnsTrue()
+    {
+        var testId = 1;
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
+
+        var result = await _employeeDataService.EmployeeDataExists(testId);
+
+        Assert.True(result);
+        _dbMock.Verify(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CheckIfModelExistsReturnsFalse()
+    {
+        var testId = 1;
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(false);
+
+        var result = await _employeeDataService.EmployeeDataExists(testId);
+
+        Assert.False(result);
+        _dbMock.Verify(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()), Times.Once);
     }
 
     [Fact(Skip = "Fix unit test")]
