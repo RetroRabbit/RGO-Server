@@ -96,6 +96,9 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto> UpdateFieldCode(FieldCodeDto fieldCodeDto)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         await _db.FieldCode.Update(new FieldCode(fieldCodeDto));
         if (fieldCodeDto.Options!.Count > 0) await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
 
@@ -105,6 +108,9 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto> DeleteFieldCode(FieldCodeDto fieldCodeDto)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
         if (ifFieldCode == null)
             throw new CustomException("No field with that name found");
@@ -132,6 +138,9 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<List<FieldCodeDto>> GetByCategory(int categoryIndex)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         if (categoryIndex < 0 || categoryIndex > 3)
             throw new CustomException("Invalid Index");
 

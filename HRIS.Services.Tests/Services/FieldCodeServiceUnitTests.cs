@@ -3,6 +3,7 @@ using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
+using HRIS.Services.Session;
 using Moq;
 using RR.Tests.Data;
 using RR.UnitOfWork;
@@ -22,6 +23,7 @@ public class FieldCodeServiceUnitTests
     private readonly FieldCodeOptions _fieldCodeOptionsDto2;
     private readonly Mock<IFieldCodeOptionsService> _fieldCodeOptionsService;
     private readonly FieldCodeService _fieldCodeService;
+    private readonly AuthorizeIdentity _identity;
 
     public FieldCodeServiceUnitTests()
     {
@@ -90,7 +92,7 @@ public class FieldCodeServiceUnitTests
 
         _fieldCodeOptionsDto = new FieldCodeOptions { Id = 1, FieldCodeId = 1, Option = "string" };
         _fieldCodeOptionsDto2 = new FieldCodeOptions { Id = 2, FieldCodeId = 1, Option = "string" };
-        _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object);
+        _fieldCodeService = new FieldCodeService(_dbMock.Object, _fieldCodeOptionsService.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
     }
 
     [Fact]
