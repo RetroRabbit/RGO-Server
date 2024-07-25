@@ -85,6 +85,34 @@ public class FieldCodeServiceUnitTests
     }
 
     [Fact]
+    public async Task SaveFieldCode_WithExistingId_ShouldCallUpdateFieldCode()
+    {
+        var existingFieldCodeDto = FieldCodeTestData._fieldCodeDto4; 
+        
+        var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
+        var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
+
+        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(new List<FieldCode>
+        {
+            FieldCodeTestData._fieldCodeDto
+        });
+
+        _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
+                                .ReturnsAsync(FieldCodeTestData._fieldCodeOptionsDto.ToDto());
+        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+                                .ReturnsAsync(new List<FieldCodeOptionsDto> { FieldCodeTestData._fieldCodeOptionsDto.ToDto() });
+        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+                               .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
+
+        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
+
+        await _fieldCodeService.CreateFieldCode(existingFieldCodeDto);
+
+        _db.Verify(x => x.FieldCode.Update(It.IsAny<FieldCode>()), Times.Once);
+    }
+
+
+    [Fact]
     public async Task SaveFieldCodeFailTest()
     {
         await Assert.ThrowsAsync<CustomException>(() => _nonSupportfieldCodeService.CreateFieldCode(_fieldCodeDto.ToDto()));
