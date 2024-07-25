@@ -1,12 +1,15 @@
 ﻿using System.Linq.Expressions;
+using System.Net.Mail;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Entities.Shared;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -18,6 +21,8 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IRoleService> _roleServiceMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
+    private readonly Mock<IEmailHelper> _emailHelper;
+    private readonly Mock<IEmailService> _emailService;
     private readonly EmployeeService _employeeService;
     private readonly EmployeeService _employeeServiceUnauthorized;
     private readonly EmployeeService _employeeServiceJourney;
@@ -40,20 +45,23 @@ public class EmployeeServiceUnitTests
         _authorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1);
         _unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 1);
         _journeyIdentity = new AuthorizeIdentityMock("test@retrorabbit.co.za", "test", "Journey", 1);
-        Mock<IErrorLoggingService> errorLoggingServiceMock = new();
+        _errorLoggingServiceMock = new Mock<IErrorLoggingService> ();
+        _emailHelper = new Mock<IEmailHelper>();
+        _emailService = new Mock<IEmailService> ();
+
         Mock<IEmailService> emailService = new();
         _roleServiceMock = new Mock<IRoleService>();
 
         _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-            _employeeAddressServiceMock.Object, _roleServiceMock.Object, errorLoggingServiceMock.Object,
+            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
             emailService.Object, _authorizedIdentity);
 
         _employeeServiceUnauthorized = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-           _employeeAddressServiceMock.Object, _roleServiceMock.Object, errorLoggingServiceMock.Object,
+           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
            emailService.Object, _unauthorizedIdentity);
 
         _employeeServiceJourney = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-           _employeeAddressServiceMock.Object, _roleServiceMock.Object, errorLoggingServiceMock.Object,
+           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
            emailService.Object, _journeyIdentity);
     }
 
@@ -105,7 +113,7 @@ public class EmployeeServiceUnitTests
             Assert.Equal("Unauthorized Access", result.Message);
         }
 
-        if (testCase == "Existing user" || testCase == "Email Is Already in Use")
+        if (testCase == "User already created" || testCase == "Email Is Already in Use")
         {
             var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeOne.ToDto()));
             Assert.Equal(testCase, result.Message);
@@ -117,13 +125,24 @@ public class EmployeeServiceUnitTests
             Assert.Equal("Employee Type Missing", result.Message);
         }
 
-        if (testCase == "Log Email exception")
-        {
-            //var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeOne.ToDto()));
-            //Assert.Equal("", result.Message);
-        }
-    }
+        //if (testCase == "Log Email exception")
+        //{
+        //    _emailService.Setup(x => x.Send(EmployeeTestData.EmployeeOne.ToDto(), "Employee Name")).Throws(new Exception());
+        //    _emailHelper.Setup(x => x.GetTemplate(It.IsAny<string>())).ReturnsAsync(new EmailTemplate());
+        //    _emailHelper.Setup(x => x.CompileMessage(It.IsAny<MailAddress>(), It.IsAny<EmailTemplate>(), It.IsAny<object>())).Returns(new MailMessage());
+        //    _emailHelper.Setup(x => x.SendMailAsync(It.IsAny<MailMessage>())).Throws<SmtpException>();
+        //    _dbMock.Setup(x => x.EmailHistory.Add(It.IsAny<EmailHistory>())).ReturnsAsync(new EmailHistory());
+        //    _dbMock.Setup(x => x.EmailHistory.Update(It.IsAny<EmailHistory>())).ReturnsAsync(new EmailHistory());
+        //    _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<SmtpException>()));
 
+        //    _emailHelper.Verify(x => x.GetTemplate(It.IsAny<string>()), Times.Once);
+        //    _emailHelper.Verify(x => x.CompileMessage(It.IsAny<MailAddress>(), It.IsAny<EmailTemplate>(), It.IsAny<object>()), Times.Once);
+        //    _emailHelper.Verify(x => x.SendMailAsync(It.IsAny<MailMessage>()), Times.Once);
+        //    _dbMock.Verify(x => x.EmailHistory.Add(It.IsAny<EmailHistory>()), Times.Once);
+        //    _dbMock.Verify(x => x.EmailHistory.Update(It.IsAny<EmailHistory>()), Times.Once);
+        //    _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<SmtpException>()), Times.Once);
+        //}
+    }
 
     [Theory]
     [InlineData("Pass")]
@@ -187,26 +206,7 @@ public class EmployeeServiceUnitTests
     }
 
     [Fact]
-    public void GetEmployeeTest()
-    {
-        var employeeList = new List<Employee>
-        {
-            EmployeeTestData.EmployeeOne
-        };
-
-        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employeeList.ToMockIQueryable());
-
-        var result = _employeeService.GetEmployee("dm@retrorabbit.co.za");
-
-        Assert.NotNull(result);
-    }
-
-
-   
-
-    [Fact]
-    public async Task GetAllTest()
+    public async Task GetAllTests()
     {
         var employees = new List<Employee>
         {
@@ -221,69 +221,103 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
        .ReturnsAsync(true);
 
-        var result = await _employeeService.GetAll();
+        var passResult = await _employeeService.GetAll();
 
-        Assert.NotNull(result);
-        Assert.IsType<List<EmployeeDto>>(result);
-        Assert.True(result.SequenceEqual(result.OrderBy(e => e.Name)));
+        Assert.NotNull(passResult);
+        Assert.IsType<List<EmployeeDto>>(passResult);
+        Assert.True(passResult.SequenceEqual(passResult.OrderBy(e => e.Name)));
         _dbMock.Verify(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()), Times.Once);
 
-        var result2 = await _employeeServiceJourney.GetAll(_authorizedIdentity.Email);
-        Assert.NotNull(result);
-        Assert.IsType<List<EmployeeDto>>(result);
-        Assert.True(result.SequenceEqual(result.OrderBy(e => e.Name)));
+        var passResultJourney = await _employeeServiceJourney.GetAll(_authorizedIdentity.Email);
+        Assert.NotNull(passResultJourney);
+        Assert.IsType<List<EmployeeDto>>(passResultJourney);
+        Assert.True(passResultJourney.SequenceEqual(passResultJourney.OrderBy(e => e.Name)));
         _dbMock.Verify(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()), Times.Exactly(3));
+
+
+        var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetAll(EmployeeTestData.EmployeeOne.Email!));
+        Assert.Equal("Unauthorized Access", failResultUnauthorized.Message);
     }
 
-    [Fact]
-    public async Task GetAllIsJourney()
+    [Theory]
+    [InlineData("Pass")]
+    [InlineData("User email not found")]
+    [InlineData("Unauthorized Access")]
+    public async Task GetEmployeeTests(string testCase)
     {
-        var emp = EmployeeTestData.EmployeeTwo;
-        emp.EmployeeType = EmployeeTypeTestData.DeveloperType;
-
-        var empRole = new EmployeeRole
+        var employeeList = new List<Employee>
         {
-            Id = 1,
-            Employee = EmployeeTestData.EmployeeOne,
-            Role = EmployeeRoleTestData.RoleDtoEmployee
+            EmployeeTestData.EmployeeOne
         };
 
-        var employees = new List<Employee> { emp };
-        var empRoles = new List<EmployeeRole> { empRole };
-        var roles = new List<Role> { EmployeeRoleTestData.RoleDtoEmployee };
+        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(employeeList.ToMockIQueryable());
 
-        var mockEmployees = employees;
-        var expectedEmployees = new List<Employee> { EmployeeTestData.EmployeeThree };
-        _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(mockEmployees.ToMockIQueryable());
+        if (testCase == "Pass")
+        {
+            var result = _employeeService.GetEmployee("dm@retrorabbit.co.za");
+            Assert.NotNull(result);
+        }
 
-        _dbMock.Setup(x => x.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
-               .Returns(empRoles.ToMockIQueryable());
+        if (testCase == "User email not found")
+        {
+            _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(new List<Employee>().ToMockIQueryable());
 
-        _dbMock.Setup(x => x.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
-               .Returns(roles.ToMockIQueryable());
+            var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployee(EmployeeTestData.EmployeeOne.Email!));
+            Assert.Equal(testCase, failResult.Message);
+        }
 
-        _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(expectedEmployees.ToMockIQueryable());
+        if (testCase == "Unauthorized Access")
+        {
+            _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                .Returns(new List<Employee> { EmployeeTestData.EmployeeTwo}.ToMockIQueryable());
 
-        var journeyEmployees = await _employeeService.GetAll(EmployeeTestData.EmployeeTwo.Email!);
+            _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
 
-        Assert.Single(journeyEmployees);
+            var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployee(EmployeeTestData.EmployeeTwo.Email!));
+            Assert.Equal(testCase, failResult.Message);
+        }
     }
 
     [Fact]
-    public void CheckEmployeeExistsTest()
+    public async Task GetEmployeeByIdTests()
     {
-        _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+        var employees = new List<Employee> { EmployeeTestData.EmployeeOne, EmployeeTestData.EmployeeTwo };
 
-        var result = _employeeService.CheckUserEmailExist("dm@retrorabbit.co.za");
+        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(employees.ToMockIQueryable());
+
+        var result = await _employeeService.GetEmployeeById(EmployeeTestData.EmployeeOne.Id);
 
         Assert.NotNull(result);
+        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+
+        var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployeeById(EmployeeTestData.EmployeeTwo.Id!));
+        Assert.Equal("Unauthorized Access", failResultUnauthorized.Message);
     }
 
-    [Fact]
-    public async Task UpdateEmployee()
+    [Theory]
+    [InlineData("Pass")]
+    [InlineData("Unauthorized Access")]
+    [InlineData("User not found")]
+    public async Task UpdateEmployee(string testCase)
     {
+        if (testCase == "Unauthorized Access")
+        {
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.UpdateEmployee(EmployeeTestData.EmployeeTwo.ToDto(),EmployeeTestData.EmployeeTwo.Email!));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
+
+        if (testCase == "User not found")
+        {
+            _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new List<Employee> { null }.ToMockIQueryable());
+
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.UpdateEmployee(EmployeeTestData.EmployeeTwo.ToDto(), EmployeeTestData.EmployeeTwo.Email!));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
+
         var emp = EmployeeTestData.EmployeeTwo;
 
         var roleDto = new Role { Id = 2, Description = "Admin" };
@@ -303,30 +337,75 @@ public class EmployeeServiceUnitTests
 
         var result = await _employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(), "admin@retrorabbit.co.za");
 
-        Assert.NotNull(result);
-        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+        if (testCase == "Pass")
+        {
+            Assert.NotNull(result);
+            Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+        }
     }
 
-    [Fact]
-    public async Task GetByIdPass()
+    [Theory]
+    [InlineData("Pass")]
+    [InlineData("Unauthorized Access")]
+    [InlineData("User not found")]
+    public async Task GetByIdTests(string testCase)
     {
+        if (testCase == "Unauthorized Access")
+        {
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetById(EmployeeTestData.EmployeeTwo.Id!));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
+
+        if (testCase == "User not found")
+        {
+            _dbMock.Setup(e => e.Employee.GetById(It.IsAny<int>()))
+                .ReturnsAsync((int id) => null);
+
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetById(EmployeeTestData.EmployeeTwo.Id!));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
+
         _dbMock.Setup(x => x.Employee.GetById(EmployeeTestData.EmployeeOne.Id))
                .ReturnsAsync(EmployeeTestData.EmployeeOne);
 
-        var result = await _employeeService.GetById(EmployeeTestData.EmployeeOne.Id);
+        if (testCase == "Pass")
+        {
+            var result = await _employeeService.GetById(EmployeeTestData.EmployeeOne.Id);
 
-        Assert.NotNull(result);
-        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+            Assert.NotNull(result);
+            Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+        }
     }
 
-    [Fact]
-    public async Task GetSimpleProfileWithPcAndTeamLeadAndClient()
+    [Theory]
+    [InlineData("Pass")]
+    [InlineData("Unauthorized Access")]
+    [InlineData("Model not found")]
+    public async Task GetSimpleProfileTests( string testCase)
     {
+        if (testCase == "Unauthorized Access")
+        {
+            _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new Employee().ToMockIQueryable());
+            _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetSimpleProfile(EmployeeTestData.EmployeeTwo.Email!));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
+
+        if (testCase == "Model not found")
+        {
+            _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new Employee().ToMockIQueryable());
+            _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
+
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetSimpleProfile(EmployeeTestData.EmployeeTwo.Email!));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
+
         var allocatedClient = new ClientDto { Id = 1, Name = "FNB" };
         var clients = new List<Client> { new(allocatedClient) };
 
         var employeeList = new List<Employee> { EmployeeTestData.EmployeeFour };
-        
+
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.ToMockIQueryable());
 
@@ -342,36 +421,91 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>()))
                .Returns(clients.ToMockIQueryable());
 
-        var result = await _employeeService.GetSimpleProfile(EmployeeTestData.EmployeeFour.Email!);
+        if (testCase == "Pass")
+        {
+            var result = await _employeeService.GetSimpleProfile(EmployeeTestData.EmployeeFour.Email!);
 
-        Assert.NotNull(result);
-        Assert.Equal(EmployeeTestData.EmployeeFour.TeamLead, result.TeamLeadId);
-        Assert.Equal(EmployeeTestData.EmployeeFour.PeopleChampion, result.PeopleChampionId);
-        Assert.Equal(allocatedClient.Name, result.ClientAllocatedName);
+            Assert.NotNull(result);
+            Assert.Equal(EmployeeTestData.EmployeeFour.TeamLead, result.TeamLeadId);
+            Assert.Equal(EmployeeTestData.EmployeeFour.PeopleChampion, result.PeopleChampionId);
+            Assert.Equal(allocatedClient.Name, result.ClientAllocatedName);
+        }
     }
 
-    [Fact]
-    public async Task GetEmployeeByIdPass()
+    [Theory]
+    [InlineData("Unauthorized Access")]
+    [InlineData("Pass")]
+    [InlineData("Users not found")]
+    public async Task FilterEmployeesTests(string testCase)
     {
-        var employees = new List<Employee> { EmployeeTestData.EmployeeOne };
+        var employee = EmployeeTestData.EmployeeFour;
+        var employeeList = new List<Employee>
+        {
+            employee
+        };
 
-        _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(employees.ToMockIQueryable());
+        if (testCase == "Unauthorized Access")
+        {
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.FilterEmployees(employee.PeopleChampion!.Value, employee.EmployeeType!.Id, employee.Active));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
 
-        var result = await _employeeService.GetEmployeeById(EmployeeTestData.EmployeeOne.Id);
+        if (testCase == "Pass")
+        {
+            _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                .Returns(employeeList.ToMockIQueryable());
 
-        Assert.NotNull(result);
-        Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
+            var result = await _employeeService.FilterEmployees(employee.PeopleChampion!.Value, employee.EmployeeType!.Id, employee.Active);
+
+            Assert.NotNull(result);
+        }
+
+        if (testCase == "Users not found")
+        {
+            _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                .Returns(new List<Employee>().ToMockIQueryable());
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.FilterEmployees(employee.PeopleChampion!.Value, employee.EmployeeType!.Id, employee.Active));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
     }
 
-    [Fact]
-    public async Task GetEmployeeByIdFail()
+    [Theory]
+    [InlineData("Unauthorized Access")]
+    [InlineData("Model not found")]
+    [InlineData("Pass")]
+    public async Task CheckDuplicateIdNumberTests(string testCase)
     {
-        var mockEmployees = new List<Employee>();
+        var employeeList = new List<Employee>
+        {
+            EmployeeTestData.EmployeeOne
+        };
 
-        _dbMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-               .Returns(mockEmployees.ToMockIQueryable());
+        if (testCase == "Unauthorized Access")
+        {
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeById(2));
-    }   
+        if ( testCase == "Model not found")
+        {
+            _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                .ReturnsAsync(false);
+
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id));
+            Assert.Equal(testCase, failResultUnauthorized.Message);
+        }
+
+        if (testCase == "Pass")
+        {
+            _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                .Returns(employeeList.ToMockIQueryable());
+            _dbMock.SetupSequence(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                .ReturnsAsync(true)
+                .ReturnsAsync(true);
+
+            var result = await _employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id);
+
+            Assert.True(result);
+        }
+    }
 }

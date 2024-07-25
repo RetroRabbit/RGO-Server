@@ -141,9 +141,6 @@ public class EmployeeService : IEmployeeService
                                 .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
-        if (employee == null)
-            throw new CustomException("User not found");
-
         if (_identity.IsSupport == false && _identity.EmployeeId != employee.Id)
             throw new CustomException("Unauthorized Access");
 
@@ -216,13 +213,13 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeDto?> GetById(int employeeId)
     {
+        if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
+            throw new CustomException("Unauthorized Access");
+
         var employee = await _db.Employee.GetById(employeeId);
 
         if (employee == null)
             throw new CustomException("User not found");
-
-        if (_identity.IsSupport == false && _identity.EmployeeId != employee.Id)
-            throw new CustomException("Unauthorized Access");
 
         return employee.ToDto();
     }
@@ -234,9 +231,6 @@ public class EmployeeService : IEmployeeService
             throw new CustomException("Model not found");
 
         var employeeDto = await GetEmployee(employeeEmail);
-
-        if (_identity.IsSupport == false && _identity.EmployeeId != employeeDto.Id)
-            throw new CustomException("Unauthorized Access");
 
         var teamLeadName = "";
         var peopleChampionName = "";

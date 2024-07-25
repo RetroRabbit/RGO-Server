@@ -1,4 +1,5 @@
 ﻿using HRIS.Models.Enums;
+using HRIS.Services.Services;
 using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.Tests.Data.Models.HRIS;
