@@ -24,7 +24,7 @@ namespace HRIS.Services.Services
             if (exists)
                 throw new CustomException("Client Project Already Exists");
 
-            if(_identity.IsSupport == false && clientProjectsDto.EmployeeId == _identity.EmployeeId)
+            if(_identity.IsSupport == false && clientProjectsDto.EmployeeId != _identity.EmployeeId)
                 throw new CustomException("Unauthorized Access.");
 
             var createdProject = await _db.ClientProject.Add(new ClientProject(clientProjectsDto));
@@ -66,18 +66,17 @@ namespace HRIS.Services.Services
             if (!exists)
                 throw new CustomException($"No client Project found with ID {clientProjectsDto.Id}.");
 
-            if (_identity.IsSupport == false && clientProjectsDto.EmployeeId == _identity.EmployeeId)
+            if (_identity.IsSupport == false && clientProjectsDto.EmployeeId != _identity.EmployeeId)
                 throw new CustomException("Unauthorized Access.");
 
-            var clientProject = new ClientProject(clientProjectsDto);
-            var updatedClientProjectDto = await _db.ClientProject.Update(clientProject);
+            var clientProject = await _db.ClientProject.FirstOrDefault(x => x.Id == clientProjectsDto.Id);
 
-            return updatedClientProjectDto.ToDto();
+            return (await _db.ClientProject.Update(clientProject)).ToDto();
         }
-   
+
         public async Task<bool> CheckIfExists(int id)
         {
-            return await _db.WorkExperience.Any(x => x.Id == id);
+            return await _db.ClientProject.Any(x => x.Id == id);
         }
     }
 }
