@@ -46,7 +46,7 @@ public class EmployeeService : IEmployeeService
         if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!.Id))
             physicalAddress = await _employeeAddressService.Create(employeeDto.PhysicalAddress!);
         else
-            physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!.Id);
+            physicalAddress = await _employeeAddressService.GetById(employeeDto.PhysicalAddress!.Id);
 
         employee.PhysicalAddressId = physicalAddress.Id;
 
@@ -56,7 +56,7 @@ public class EmployeeService : IEmployeeService
                 .CheckIfExists(employeeDto.PostalAddress!.Id))
             postalAddress = await _employeeAddressService.Create(employeeDto.PostalAddress!);
         else
-            postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!.Id);
+            postalAddress = await _employeeAddressService.GetById(employeeDto.PostalAddress!.Id);
 
         employee.PostalAddressId = postalAddress.Id;
 

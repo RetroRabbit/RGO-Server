@@ -38,7 +38,7 @@ public class EmployeeAddressService : IEmployeeAddressService
         return address.ToDto();
     }
 
-    public async Task<EmployeeAddressDto> Get(int id)
+    public async Task<EmployeeAddressDto> GetById(int id)
     {
         var exists = await CheckIfExists(id);
 
