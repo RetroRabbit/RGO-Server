@@ -55,7 +55,7 @@ public class FieldCodeServiceUnitTests
     }
 
     [Fact]
-    public async Task SaveFieldCodeTest()
+    public async Task CreateFieldCodeTest()
     {
         var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
         var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
@@ -83,31 +83,6 @@ public class FieldCodeServiceUnitTests
 
         _db.Verify(x => x.FieldCode.Add(It.IsAny<FieldCode>()), Times.Exactly(2));
     }
-
-    //[Fact]
-    //public async Task SaveFieldCodeNonNullId()
-    //{
-    //    var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
-    //    var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
-
-    //    _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
-    //    _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
-    //       .ReturnsAsync(FieldCodeTestData.newFieldCodeDto);
-    //    _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
-    //       .ReturnsAsync(_fieldCodeDto2);
-
-    //    _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
-    //                            .ReturnsAsync(_fieldCodeOptionsDto.ToDto());
-
-    //    _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
-    //                            .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
-
-    //    var result = await _fieldCodeService.CreateFieldCode(_fieldCodeDto4);
-    //    Assert.NotNull(result);
-    //    Assert.Equivalent(_fieldCodeDto2.ToDto(), result);
-
-    //    _db.Verify(x => x.FieldCode.Add(It.IsAny<FieldCode>()), Times.Exactly(2));
-    //}
 
     [Fact]
     public async Task SaveFieldCodeFailTest()
@@ -215,15 +190,6 @@ public class FieldCodeServiceUnitTests
 
         await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.DeleteFieldCode(FieldCodeTestData._fieldCodeDto3));
     }
-
-    //[Fact]
-    //public async Task GetAllFieldCodesFail()
-    //{
-
-    //    var fields = new List<FieldCode> {null};
-    //    _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
-    //    await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetAllFieldCodes());
-    //}
 
     [Fact]
     public async Task GetByCategoryFail()
