@@ -192,7 +192,7 @@ public class DataReportControlService : IDataReportControlService
     public async Task AddOrUpdateReportFilter(ReportFilterRequest input)
     {
         var item = await _db.DataReportFilter
-            .FirstOrDefault(x => x.ReportId == input.ReportId && x.Status == 0);
+            .FirstOrDefault(x => x.Id == input.ReportFilterId && x.Status == 0);
 
         if (item != null)
         {
