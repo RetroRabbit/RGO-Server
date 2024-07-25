@@ -19,7 +19,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
 
     public async Task<bool> CheckIfExists(int id)
     {
-        return await _db.EmployeeQualification.Any(x => x.Id == Id);
+        return await _db.EmployeeQualification.Any(x => x.Id == id);
     }
 
     public async Task<EmployeeQualificationDto> CreateEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId)

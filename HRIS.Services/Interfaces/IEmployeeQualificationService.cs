@@ -4,13 +4,11 @@ namespace HRIS.Services.Interfaces;
 
 public interface IEmployeeQualificationService
 {
-
-
     /// <summary>
     ///     Check if user exist
     /// </summary>
     /// <param name="id"></param>
-    /// <returns>Boolean to check if the Termination exists</returns>
+    /// <returns>Boolean to check if the employee qualification exists</returns>
     Task<bool> CheckIfExists(int id);
     /// <summary>
     /// Saves a new employee qualification.
