@@ -1,7 +1,10 @@
 ﻿using System.Linq.Expressions;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using HRIS.Services.Session;
+using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
 using Moq;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
@@ -181,6 +184,53 @@ public class EmployeeCertificationServiceUnitTests
     }
 
     [Fact]
+    public async Task UpdateEmployeeCertificationFailWhenExceptionThrown()
+    {
+        var employeeCertificationDto = new EmployeeCertificationDto
+        {
+            Id = 1,
+            EmployeeId = 2,
+            CertificateDocument = "base64",
+            CertificateName = "Title",
+            IssueOrganization = "Publisher",
+            IssueDate = DateTime.UtcNow,
+        };
+
+        _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+           .ReturnsAsync(true);
+
+        var identity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 3);
+        var employeeCertificationService = new EmployeeCertificationService(_db.Object, identity);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            employeeCertificationService.UpdateEmployeeCertification(employeeCertificationDto));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeCertificationFailWhenCertificateNotFound()
+    {
+        var employeeCertificationDto = new EmployeeCertificationDto
+        {
+            Id = 1,
+            EmployeeId = 2,
+            CertificateDocument = "base64",
+            CertificateName = "Title",
+            IssueOrganization = "Publisher",
+            IssueDate = DateTime.UtcNow,
+        };
+
+        _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+           .ReturnsAsync(false);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            _employeeCertificationService.UpdateEmployeeCertification(employeeCertificationDto));
+
+        Assert.Equal("Certificate not found", exception.Message);
+    }
+
+    [Fact]
     public async Task DeleteEmployeeCertificationPass()
     {
         _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
@@ -207,15 +257,36 @@ public class EmployeeCertificationServiceUnitTests
     }
 
     [Fact]
+    public async Task DeleteEmployeeCertificationFailWhenExceptionThrown()
+    {
+        var identity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 2);
+        var employeeCertificationService = new EmployeeCertificationService(_db.Object, identity);
+
+        _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+           .ReturnsAsync(true);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            employeeCertificationService.DeleteEmployeeCertification(_employeeCertification.Id));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
+    }
+
+    [Fact]
     public async Task GetEmployeeCertificationFailWhenCertificateNotFound()
     {
-        MockEmployeeRepositorySetupWithEmployee(EmployeeTestData.EmployeeOne);
+        var employeeId = 1;
+        var certificationId = 2;
 
-        _db.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
-                   .Returns(new List<EmployeeCertification>().ToMockIQueryable());
+        _db.Setup(u => u.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+           .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() =>
-            _employeeCertificationService.GetEmployeeCertification(_employeeCertification.EmployeeId, _employeeCertification.Id));
+        _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+           .ReturnsAsync(false);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId));
+
+        Assert.Equal("Certificate not found", exception.Message);
     }
 
     [Fact]
@@ -273,5 +344,27 @@ public class EmployeeCertificationServiceUnitTests
 
         Assert.NotNull(results);
         Assert.Equal(2, results.Count);
+    }
+
+    [Fact]
+    public async Task GetEmployeeCertificationFailWhenEmployeeCertificationRecordNotFound()
+    {
+        var employeeId = 1;
+        var certificationId = 2;
+
+        _db.Setup(ex => ex.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+           .ReturnsAsync(true);
+
+        _db.Setup(ex => ex.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+           .ReturnsAsync(true);
+
+        var emptyList = new List<EmployeeCertification>().AsQueryable().BuildMock();
+        _db.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+           .Returns(emptyList);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId));
+
+        Assert.Equal("Employee certification record not found", exception.Message);
     }
 }
