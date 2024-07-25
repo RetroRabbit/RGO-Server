@@ -21,7 +21,7 @@ public interface IEmployeeTypeService
     /// <summary>
     ///     Get Employee Type by Name
     /// </summary>
-    /// <param Id="Id">The id of the employe type to get</param>
+    /// <param Id="name">The name of the employee type to get</param>
     /// <returns>The ExistingEmployeeType.</returns>
     Task<EmployeeTypeDto> GetEmployeeType(string name);
 
