@@ -8,7 +8,6 @@ using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
-using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace HRIS.Services.Tests.Services;
 
