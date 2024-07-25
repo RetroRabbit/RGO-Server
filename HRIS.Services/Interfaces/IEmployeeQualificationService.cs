@@ -11,7 +11,7 @@ public interface IEmployeeQualificationService
     /// </summary>
     /// <param name="email"></param>
     /// <returns>Boolean to check if the Termination exists</returns>
-    Task<bool> CheckIfExists(int Id);
+    Task<bool> CheckIfExists(int id);
     /// <summary>
     /// Saves a new employee qualification.
     /// </summary>
