@@ -27,7 +27,7 @@ public class LevelTypeUnitTest
         levelType = new LevelType();
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
 
         employeeAddressDto = new EmployeeAddressDto
@@ -111,7 +111,7 @@ public class LevelTypeUnitTest
     [Fact]
     public void LevelTypeNullFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
 
         var employeeDto = CreateEmployee(null);
@@ -156,7 +156,7 @@ public class LevelTypeUnitTest
     [Fact]
     public void LevelTypeValueTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
 
         var employeeDto = CreateEmployee(3);
