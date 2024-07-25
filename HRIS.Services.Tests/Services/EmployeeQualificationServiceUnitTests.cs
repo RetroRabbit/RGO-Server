@@ -208,7 +208,7 @@ public class EmployeeQualificationServiceUnitTests
     }
 
     [Fact]
-    public async Task UpdateEmployeeQaulification_DoesNotExist()
+    public async Task UpdateEmployeeQualification_DoesNotExist()
     {
         _db.Setup(x => x.EmployeeQualification.Any(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
            .ReturnsAsync(false);
