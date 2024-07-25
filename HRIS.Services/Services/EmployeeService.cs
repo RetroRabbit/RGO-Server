@@ -103,10 +103,6 @@ public class EmployeeService : IEmployeeService
 
         if (userEmail != "" && _identity.IsJourney == true)
         {
-            //var emailExists = await CheckUserEmailExist(userEmail);
-            //if (!emailExists)
-            //    throw new CustomException("Users not found");
-
             var peopleChampion = await GetEmployee(userEmail);
 
             return await _db.Employee
