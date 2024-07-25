@@ -25,6 +25,7 @@ public class EmployeeQualificationServiceUnitTests
         _employeeService = new Mock<IEmployeeService>();
         _employeeQualificationService = new EmployeeQualificationService(_db.Object, _identity.Object);
     }
+    
     [Fact]
     public async Task CheckIfModelExistsReturnsTrue()
     {
