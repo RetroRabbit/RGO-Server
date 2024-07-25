@@ -26,7 +26,7 @@ public class EmployeeDataService : IEmployeeDataService
     {
         var modelExists = await EmployeeDataExists(employeeDataDto.Id);
 
-        if (!modelExists) throw new CustomException("This model already exists");
+        if (!modelExists) throw new CustomException("This model doesnt exist yet");
 
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
