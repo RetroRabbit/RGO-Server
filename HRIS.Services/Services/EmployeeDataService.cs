@@ -1,7 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
-using Microsoft.EntityFrameworkCore.Metadata;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -19,7 +18,7 @@ public class EmployeeDataService : IEmployeeDataService
     }
 
     public async Task<bool> EmployeeDataExists(int id)
-    { 
+    {
         return await _db.EmployeeData.Any(x => x.Id == id);
     }
 
