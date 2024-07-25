@@ -17,7 +17,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
         _identity = identity;
     }
 
-    public async Task<bool> CheckIfExists(int Id)
+    public async Task<bool> CheckIfExists(int id)
     {
         return await _db.EmployeeQualification.Any(x => x.Id == Id);
     }
