@@ -191,10 +191,30 @@ public class DataReportControlService : IDataReportControlService
 
     public async Task AddOrUpdateReportFilter(ReportFilterRequest input)
     {
-        if (input.ReportFilterId > 0)
-            await _filter.UpdateReportFilter(input);
-        else
-            await _filter.AddReportFilter(input);
+        await _db.DataReportFilter.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
+
+        var item = await _db.DataReportFilter
+            .FirstOrDefault(x => x.ReportId == input.ReportId && x.Status == 0);
+
+        if (item != null)
+        {
+            item.Table = input.TableName;
+            item.Column = input.ColumnName;
+            item.Condition = input.Condition;
+            item.Value = input.Value;
+            await _db.DataReportFilter.Update(item);
+            return;
+        }
+
+        await _db.DataReportFilter.Add(new DataReportFilter
+        {
+            ReportId = input.ReportId,
+            Table = input.TableName,
+            Condition = input.Condition,
+            Value = input.Value,
+            Column = input.ColumnName,
+            Select = "id"
+        });
     }
 
     public async Task DeleteReportFilterfromList(int id)
