@@ -9,7 +9,7 @@ public interface IEmployeeQualificationService
     /// <summary>
     ///     Check if user exist
     /// </summary>
-    /// <param name="email"></param>
+    /// <param name="id"></param>
     /// <returns>Boolean to check if the Termination exists</returns>
     Task<bool> CheckIfExists(int id);
     /// <summary>
