@@ -18,7 +18,6 @@ public class EmployeeQualificationServiceUnitTests
     private readonly Mock<IEmployeeService> _employeeService;
     private readonly Mock<AuthorizeIdentityMock> _identity;
 
-
     public EmployeeQualificationServiceUnitTests()
     {
         _db = new Mock<IUnitOfWork>();
