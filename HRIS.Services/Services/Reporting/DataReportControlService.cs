@@ -191,8 +191,6 @@ public class DataReportControlService : IDataReportControlService
 
     public async Task AddOrUpdateReportFilter(ReportFilterRequest input)
     {
-        await _db.DataReportFilter.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
-
         var item = await _db.DataReportFilter
             .FirstOrDefault(x => x.ReportId == input.ReportId && x.Status == 0);
 
