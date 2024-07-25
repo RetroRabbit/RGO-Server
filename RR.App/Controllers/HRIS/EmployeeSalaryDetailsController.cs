@@ -40,7 +40,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
     [HttpGet("{employeeId}")]
     public async Task<IActionResult> GetEmployeeSalary(int employeeId)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && (employeeId != _identity.EmployeeId))
+        if (!_identity.IsSupport && (employeeId != _identity.EmployeeId))
             throw new CustomException("User data being accessed does not match user making the request.");
 
         var employeeSalaries = await _employeeSalaryDetailsService.GetEmployeeSalary(employeeId);
@@ -51,7 +51,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> AddEmployeeSalary([FromBody] EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
+        if (!_identity.IsSupport && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
             throw new CustomException("User data being accessed does not match user making the request.");
 
         var employeeSalaries = await _employeeSalaryDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
@@ -63,7 +63,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
     [HttpPut()]
     public async Task<IActionResult> UpdateSalary([FromBody] EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
+        if (!_identity.IsSupport && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
             throw new CustomException("User data being accessed does not match user making the request.");
 
         var updatedEmployeeSalary = await _employeeSalaryDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
