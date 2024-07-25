@@ -13,21 +13,20 @@ namespace HRIS.Services.Services;
 public class AuthService : IAuthService
 {
     private readonly IManagementApiClient _managementApiClient;
-    private readonly AuthManagement _authManagement;
     private string _cachedAccessToken;
-    private string _clientId;
-    private string _clientSecret;
-    private string _issuer;
-    private string _audience;
-    private HttpClient _httpClient;
+    private readonly string _clientId;
+    private readonly string _clientSecret;
+    private readonly string _issuer;
+    private readonly string _audience;
+    private readonly HttpClient _httpClient;
 
     public AuthService(IOptions<AuthManagement> options)
     {
-        _authManagement = options.Value;
-        _clientId = _authManagement.ClientId ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_ID;
-        _clientSecret = _authManagement.ClientSecret ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_SECRET;
-        _issuer = _authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER;
-        _audience = _authManagement.Audience ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE;
+        var authManagement = options.Value;
+        _clientId = authManagement.ClientId ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_ID;
+        _clientSecret = authManagement.ClientSecret ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_SECRET;
+        _issuer = authManagement.Issuer ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_ISSUER;
+        _audience = authManagement.Audience ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_AUDIENCE;
         _cachedAccessToken = string.Empty;
         _managementApiClient = new ManagementApiClient(_cachedAccessToken, new Uri($"{_issuer}api/v2"));
         _httpClient = new HttpClient();
@@ -73,7 +72,7 @@ public class AuthService : IAuthService
         if (!response.IsSuccessStatusCode)
             throw new CustomException($"Failed response from auth provider: {content}");
 
-        var jsonDoc = System.Text.Json.JsonDocument.Parse(content);
+        var jsonDoc = JsonDocument.Parse(content);
 
         if (jsonDoc.RootElement.TryGetProperty("access_token", out JsonElement accessTokenElement))
         {
@@ -84,7 +83,7 @@ public class AuthService : IAuthService
         throw new CustomException($"Failed response from auth provider. access_token key not found.");
     }
 
-    public async Task<IPagedList<Auth0.ManagementApi.Models.Role>> GetAllRolesAsync()
+    public async Task<IPagedList<Role>> GetAllRolesAsync()
     {
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
@@ -99,7 +98,7 @@ public class AuthService : IAuthService
         return allRoles;
     }
 
-    public async Task<IPagedList<Auth0.ManagementApi.Models.User>> GetAllUsersAsync()
+    public async Task<IPagedList<User>> GetAllUsersAsync()
     {
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
@@ -114,7 +113,7 @@ public class AuthService : IAuthService
         return allUsers;
     }
 
-    public async Task<IList<Auth0.ManagementApi.Models.User>> GetUsersByEmailAsync(string email)
+    public async Task<IList<User>> GetUsersByEmailAsync(string email)
     {
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
@@ -126,7 +125,7 @@ public class AuthService : IAuthService
         return user;
     }
 
-    public async Task<IPagedList<Auth0.ManagementApi.Models.AssignedUser>> GetUsersByRoleAsync(string roleId)
+    public async Task<IPagedList<AssignedUser>> GetUsersByRoleAsync(string roleId)
     {
         var allRoles = await GetAllRolesAsync();
 
@@ -144,7 +143,7 @@ public class AuthService : IAuthService
         return users;
     }
 
-    public async Task<IPagedList<Auth0.ManagementApi.Models.Role>> GetUserRolesAsync(string userId)
+    public async Task<IPagedList<Role>> GetUserRolesAsync(string userId)
     {
         var allUsers = await GetAllUsersAsync();
 
@@ -258,7 +257,7 @@ public class AuthService : IAuthService
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
 
-        var temporaryRole = await _managementApiClient.Roles.UpdateAsync(roleId, new RoleUpdateRequest
+        await _managementApiClient.Roles.UpdateAsync(roleId, new RoleUpdateRequest
         {
             Name = roleName,
             Description = description
@@ -366,7 +365,7 @@ public class AuthService : IAuthService
         if (string.IsNullOrEmpty(userId))
             return false;
 
-        var existingUser = await _managementApiClient.Users.GetAsync(userId, null, true);
+        var existingUser = await _managementApiClient.Users.GetAsync(userId);
         if (existingUser == null)
             return false;
 

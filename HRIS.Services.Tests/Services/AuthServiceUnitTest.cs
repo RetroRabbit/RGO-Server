@@ -69,10 +69,7 @@ public class AuthServiceUnitTests
     private string CreateJwtToken(bool notExpired = true, bool hasExpClaim = true)
     {
         var securityKey = new SymmetricSecurityKey(System.Text.Encoding.Default.GetBytes("test_secret_key_which_must_be_a_longer_than_128bits"));
-
-        // Note for developer: We use an asymmetric key, but for testing we can simply use a symmetric key!
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
         var claims = new List<Claim>();
 
         if (hasExpClaim)
@@ -832,7 +829,7 @@ public class AuthServiceUnitTests
         if (userExists)
         {
             _usersClientMock.Setup(client => client.GetAsync(userIdToGet, null, true, It.IsAny<CancellationToken>()))
-                            .ReturnsAsync(new Auth0.ManagementApi.Models.User { UserId = expectedUserId, Email = expectedEmail });
+                            .ReturnsAsync(new User { UserId = expectedUserId, Email = expectedEmail });
         }
         else
         {
@@ -868,7 +865,7 @@ public class AuthServiceUnitTests
 
         if (!string.IsNullOrEmpty(userId))
         {
-            var expectedUser = userExists ? new Auth0.ManagementApi.Models.User { UserId = userId, Email = userEmail } : null;
+            var expectedUser = userExists ? new User { UserId = userId, Email = userEmail } : null;
 
             _usersClientMock.Setup(client => client.GetAsync(userId, null, true, It.IsAny<CancellationToken>()))
                             .ReturnsAsync(expectedUser);
