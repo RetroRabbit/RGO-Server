@@ -5,6 +5,7 @@ using HRIS.Models.Report;
 using HRIS.Services.Extensions;
 using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -32,9 +33,11 @@ public class DataReportHelper : IDataReportHelper
             var selector = g.FirstOrDefault()?.Select ?? throw new CustomException($"No Selector for {g.Key} to filter on");
 
             var conditions = g.Aggregate(string.Empty,
-                (current, dto) => $"\"{dto.Column}\" {dto.Condition} {dto.Value ??""}" );
+            (current, dto) => current + $" AND \"{dto.Column}\" {dto.Condition} {dto.Value ?? ""}" )[4..];
 
             var sql = $"SELECT \"{selector}\" FROM \"{g.Key}\" WHERE {conditions}";
+            
+            Console.WriteLine(sql.ToString());
             var list = await _db.RawSqlForIntList(sql, selector);
             employeeIds = employeeIds.Where(list.Contains).ToList();
         }
