@@ -83,30 +83,59 @@ public class FieldCodeServiceUnitTests
         _db.Verify(x => x.FieldCode.Add(It.IsAny<FieldCode>()), Times.Exactly(2));
     }
 
-    [Fact(Skip = "black magic passes when ran individually")]
-    public async Task SaveFieldCode_WithExistingId()
+    [Fact]
+    public async Task CreateFieldCodeWithNonZeroIdTest()
     {
-        var existingFieldCodeDto = FieldCodeTestData._fieldCodeDto4; 
-        var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
-        var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
-
-        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(new List<FieldCode>
+        var fieldCodeDtoWithNonZeroId = new FieldCodeDto
         {
-            FieldCodeTestData._fieldCodeDto
-        });
+            Id = 1,
+            Name = "Test Field Code",
+            Code = "TFC",
+            Description = "Test Field Code Description",
+            Regex = "^test$",
+            Type = FieldCodeType.String,
+            Status = ItemStatus.Active,
+            Internal = false,
+            InternalTable = "TestTable",
+            Category = FieldCodeCategory.Profile,
+            Required = true,
+            Options = new List<FieldCodeOptionsDto>()
+        };
 
-        _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
-                                .ReturnsAsync(FieldCodeTestData._fieldCodeOptionsDto.ToDto());
-        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
-                                .ReturnsAsync(new List<FieldCodeOptionsDto> { FieldCodeTestData._fieldCodeOptionsDto.ToDto() });
-        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
-                               .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
+        var mockFieldCode = new FieldCode(fieldCodeDtoWithNonZeroId);
 
-        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
+        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(new List<FieldCode> { mockFieldCode });
 
-        await _fieldCodeService.CreateFieldCode(existingFieldCodeDto);
+        _db.Setup(x => x.FieldCode.Update(It.IsAny<FieldCode>()))
+           .ReturnsAsync(mockFieldCode);
+
+        _fieldCodeOptionsService.Setup(x => x.UpdateFieldCodeOptions(It.IsAny<List<FieldCodeOptionsDto>>()))
+                                .ReturnsAsync(new List<FieldCodeOptionsDto>());
+
+        var result = await _fieldCodeService.CreateFieldCode(fieldCodeDtoWithNonZeroId);
+
+        Assert.NotNull(result);
+        Assert.Equal(fieldCodeDtoWithNonZeroId.Id, result.Id);
+        Assert.Equal(fieldCodeDtoWithNonZeroId.Name, result.Name);
+        Assert.Equal(fieldCodeDtoWithNonZeroId.Code, result.Code);
+        Assert.Equal(fieldCodeDtoWithNonZeroId.Description, result.Description);
 
         _db.Verify(x => x.FieldCode.Update(It.IsAny<FieldCode>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateFieldCode_NullName_ThrowsArgumentNullException()
+    {
+        var fieldCodeDto = new FieldCodeDto { Id = 0, Name = null };
+        await Assert.ThrowsAsync<NullReferenceException>(() => _fieldCodeService.CreateFieldCode(fieldCodeDto));
+    }
+
+    [Fact]
+    public async Task CreateFieldCode_UnauthorizedAccess_ThrowsCustomException()
+    {
+        var unauthorizedFieldCodeService = new FieldCodeService(_db.Object, _fieldCodeOptionsService.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1));
+        var fieldCodeDto = new FieldCodeDto { Id = 0, Name = "Unauthorized Access" };
+        await Assert.ThrowsAsync<CustomException>(() => unauthorizedFieldCodeService.CreateFieldCode(fieldCodeDto));
     }
 
 
