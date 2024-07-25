@@ -201,4 +201,6 @@ public class DataReportControlService : IDataReportControlService
     {
         await _filter.ArchiveReportFilter(id) ;
     }
+
+    
 }

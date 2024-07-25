@@ -30,8 +30,10 @@ public class DataReportHelper : IDataReportHelper
         foreach (var g in report.DataReportFilter.GroupBy(x => x.Table))
         {
             var selector = g.FirstOrDefault()?.Select ?? throw new CustomException($"No Selector for {g.Key} to filter on");
+
             var conditions = g.Aggregate(string.Empty,
-                (current, dto) => current + $"AND \"{dto.Column}\" {dto.Condition} {dto.Value ?? ""}")[3..];
+                (current, dto) => $"\"{dto.Column}\" {dto.Condition} {dto.Value ??""}" );
+
             var sql = $"SELECT \"{selector}\" FROM \"{g.Key}\" WHERE {conditions}";
             var list = await _db.RawSqlForIntList(sql, selector);
             employeeIds = employeeIds.Where(list.Contains).ToList();
@@ -161,5 +163,13 @@ public class DataReportHelper : IDataReportHelper
             .OrderBy(x => x.Sequence)
             .Select(x => x.ToDto())
             .ToList() ?? new List<DataReportColumnsDto>();
+    }
+    public List<DataReportFilterDto> GetDataReportFilter(DataReport report)
+    {
+        return report.DataReportFilter?
+            .OrderBy(x => x.Id)
+            .Select(x => x.ToDto())
+            .Where(x => x.Status == 0)
+            .ToList() ?? new List<DataReportFilterDto>();
     }
 }

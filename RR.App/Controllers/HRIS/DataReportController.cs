@@ -129,4 +129,10 @@ public class DataReportController : ControllerBase
         await _control.DeleteReportFilterfromList(id);
         return Ok();
     }
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet("get-data-report-filter")]
+    public async Task<IActionResult> GetDataReportFilter([FromQuery] string code)
+    {
+        return Ok(await _service.GetDataReportFilters(code));
+    }
 }

@@ -11,4 +11,5 @@ public interface IDataReportHelper
     List<Dictionary<string, object?>> MapEmployeeData(DataReport report, List<Employee> employeeDataList);
     object? GetValueFromMapping(object obj, params string[] mappingList);
     List<DataReportColumnsDto> MapReportColumns(DataReport report);
+    List<DataReportFilterDto> GetDataReportFilter(DataReport report);
 }
