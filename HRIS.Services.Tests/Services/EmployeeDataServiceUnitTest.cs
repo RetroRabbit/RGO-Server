@@ -170,6 +170,22 @@ public class EmployeeDataServiceUnitTest
     }
 
     [Fact]
+    public async Task SaveEmployeeDataFail_ExistingRecord()
+    {
+        var existingEmployeeDataDto = EmployeeDataTestData.EmployeeDataOne.ToDto();
+        var employeeDataList = new List<EmployeeData> { EmployeeDataTestData.EmployeeDataOne };
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
+
+        _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(employeeDataList);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.SaveEmployeeData(existingEmployeeDataDto));
+        _dbMock.Verify(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()), Times.Never);
+    }
+
+    [Fact]
     public async Task UpdateEmployeeDataTest()
     {
         var updatedEmployeeDataDto = EmployeeDataTestData.EmployeeDataOne.ToDto();
