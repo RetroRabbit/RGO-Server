@@ -67,12 +67,8 @@ public class DataReportService : IDataReportService
     public async Task<object> GetDataReportFilters(string code)
     {
         var report = await _db.DataReport.GetReport(code) ?? throw new CustomException($"Report '{code}' not found");
-        var filters =  _helper.GetDataReportFilter(report);
-
-       
-        return new { 
-            filters };
-           
+        return _helper.GetDataReportFilter(report);
+          
     }
 
     public async Task<bool> IsReportViewOnlyForEmployee(int reportId)
