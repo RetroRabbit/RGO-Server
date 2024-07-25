@@ -85,19 +85,6 @@ public class EmployeeDataServiceUnitTest
         await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.GetAllEmployeeData(employeeId));
     }
 
-    //[Fact(Skip = "Fix unit test")]
-    //public async Task GetAllEmployeeDataTest()
-    //{
-    //    var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-
-    //    _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(employee);
-    //    var result = await _employeeDataService.GetAllEmployeeData(EmployeeDataTestData.EmployeeDataOne.EmployeeId);
-
-    //    Assert.NotNull(result);
-    //    Assert.Single(result);
-    //    Assert.Equivalent(employee.Select(x => x.ToDto()).ToList(), result);
-    //}
-
     [Fact]
     public async Task GetEmployeeDataTestPass()
     {
@@ -132,19 +119,6 @@ public class EmployeeDataServiceUnitTest
         await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.GetEmployeeData(employeeId, value));
     }
 
-    //[Fact(Skip = "Fix unit test")]
-    //public async Task GetEmployeeDataTest()
-    //{
-    //    var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-
-    //    _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
-    //    var result = await _employeeDataService.GetEmployeeData(EmployeeDataTestData.EmployeeDataOne.EmployeeId, EmployeeDataTestData.EmployeeDataOne.Value);
-
-    //    Assert.NotNull(result);
-    //    Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
-    //    _dbMock.Verify(x => x.EmployeeData.GetAll(null), Times.Once);
-    //}
-
     [Fact]
     public async Task SaveEmployeeDataTestPass()
     {
@@ -177,21 +151,6 @@ public class EmployeeDataServiceUnitTest
 
         await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.SaveEmployeeData(_employeeData.ToDto()));
     }
-
-    //[Fact(Skip = "Fix unit test")]
-    //public async Task SaveEmployeeDataTest()
-    //{
-    //    var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-    //    _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
-
-    //    _dbMock.Setup(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()))
-    //           .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
-
-    //    var result = await _employeeDataService.SaveEmployeeData(EmployeeDataTestData.EmployeeDataTwo.ToDto());
-    //    Assert.NotNull(result);
-    //    Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
-    //    _dbMock.Verify(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()), Times.Once);
-    //}
 
     [Fact]
     public async Task UpdateEmployeeDataTest()
@@ -226,21 +185,6 @@ public class EmployeeDataServiceUnitTest
         await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.UpdateEmployeeData(_employeeData.ToDto()));
     }
 
-    //[Fact(Skip = "Fix unit test")]
-    //public async Task UpdateEmployeeDataTest()
-    //{
-    //    var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-    //    _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
-
-    //    _dbMock.Setup(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()))
-    //           .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
-
-    //    var result = await _employeeDataService.UpdateEmployeeData(EmployeeDataTestData.EmployeeDataOne.ToDto());
-    //    Assert.NotNull(result);
-    //    Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
-    //    _dbMock.Verify(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()), Times.Once);
-    //}
-
     [Fact]
     public async Task DeleteEmployeeDataTest()
     {
@@ -271,19 +215,4 @@ public class EmployeeDataServiceUnitTest
 
         await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.DeleteEmployeeData(employeeDataId));
     }
-
-    //[Fact(Skip = "Fix unit test")]
-    //public async Task DeleteEmployeeDataTest()
-    //{
-    //    var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-    //    _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
-
-    //    _dbMock.Setup(x => x.EmployeeData.Delete(It.IsAny<int>()))
-    //           .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
-
-    //    var result = await _employeeDataService.DeleteEmployeeData(EmployeeDataTestData.EmployeeDataOne.Id);
-    //    Assert.NotNull(result);
-    //    Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
-    //    _dbMock.Verify(r => r.EmployeeData.Delete(It.IsAny<int>()), Times.Once);
-    //}
 }
