@@ -135,4 +135,20 @@ public class FieldCodeTestData
         Required = false,
         Options = fieldCodeOptionsList
     };
+
+    public static FieldCodeDto fieldCodeDtoWithNonZeroId = new ()
+    {
+        Id = 1,
+        Name = "Test Field Code",
+        Code = "TFC",
+        Description = "Test Field Code Description",
+        Regex = "^test$",
+        Type = FieldCodeType.String,
+        Status = ItemStatus.Active,
+        Internal = false,
+        InternalTable = "TestTable",
+        Category = FieldCodeCategory.Profile,
+        Required = true,
+        Options = new List<FieldCodeOptionsDto>()
+    };
 }
