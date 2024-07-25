@@ -52,7 +52,10 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             throw new CustomException("Unauthorized access");
 
         var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == _identity.EmployeeId);
-        return qualifications.ToDto();
+     if (qualifications == null)
+         throw new CustomException("No employee qualifications data.");
+
+     return qualifications.ToDto();
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(
