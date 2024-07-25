@@ -60,7 +60,7 @@ public class EmployeeTypeService : IEmployeeTypeService
         return (await _db.EmployeeType.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
-    public async Task<EmployeeTypeDto> GetEmployeeType(string name)
+    public async Task<EmployeeTypeDto> GetEmployeeTypeByName(string name)
     {
         var existingEmployeeType = await _db.EmployeeType
                                             .Get(employeeType => employeeType.Name == name)
