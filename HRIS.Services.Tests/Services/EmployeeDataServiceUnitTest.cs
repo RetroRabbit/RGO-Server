@@ -120,6 +120,23 @@ public class EmployeeDataServiceUnitTest
     }
 
     [Fact]
+    public async Task GetEmployeeDataFail_NoRecordFound()
+    {
+        var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
+        var value = EmployeeDataTestData.EmployeeDataOne.Value;
+        var employeeDataList = new List<EmployeeData>();
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
+
+        _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(employeeDataList);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.GetEmployeeData(employeeId, value));
+        _dbMock.Verify(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>()), Times.Once);
+    }
+
+    [Fact]
     public async Task SaveEmployeeDataTestPass()
     {
         var newEmployeeDataDto = EmployeeDataTestData.EmployeeDataTwo.ToDto();
@@ -183,6 +200,22 @@ public class EmployeeDataServiceUnitTest
            .ReturnsAsync(true);
 
         await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.UpdateEmployeeData(_employeeData.ToDto()));
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeDataFail_NoRecordFound()
+    {
+        var updatedEmployeeDataDto = EmployeeDataTestData.EmployeeDataOne.ToDto();
+        var employeeDataList = new List<EmployeeData>();
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
+
+        _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(employeeDataList);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.UpdateEmployeeData(updatedEmployeeDataDto));
+        _dbMock.Verify(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()), Times.Never);
     }
 
     [Fact]
