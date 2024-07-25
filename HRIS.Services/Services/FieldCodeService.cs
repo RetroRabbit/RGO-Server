@@ -78,8 +78,6 @@ public class FieldCodeService : IFieldCodeService
         var fieldCode = fieldCodes
                         .Select(fieldCode => fieldCode.ToDto())
                         .ToList();
-        if (fieldCodes == null)
-            throw new CustomException("No field codes found.");
 
         if (fieldCode.Count != 0)
             foreach (var item in fieldCode)
