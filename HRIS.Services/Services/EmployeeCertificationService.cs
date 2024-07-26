@@ -89,7 +89,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
 
     public async Task<EmployeeCertificationDto> DeleteEmployeeCertification(int id)
     {
-        var exists = await CheckIfCertificationExists(Id);
+        var exists = await CheckIfCertificationExists(id);
         if (!exists)
             throw new CustomException("Certificate not found");
 
