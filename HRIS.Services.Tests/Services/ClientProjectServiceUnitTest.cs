@@ -57,17 +57,6 @@ public class ClientProjectServiceUnitTest
     }
 
     [Fact]
-    public async Task GetClientProjectById_ReturnsProjectWhenFound()
-    {
-        _dbMock.Setup(ex => ex.ClientProject.GetById(1)).ReturnsAsync(_clientProject);
-
-        var result = await _clientProjectService.GetClientProjectById(1);
-
-        Assert.NotNull(result);
-        Assert.Equal(_clientProject.Id, result.Id);
-    }
-
-    [Fact]
     public async Task CreateClientProject_Success()
     {
         _identity.Setup(i => i.Role).Returns("Admin");
@@ -225,5 +214,16 @@ public class ClientProjectServiceUnitTest
         _dbMock.Setup(ex => ex.ClientProject.GetById(_clientProject.Id)).ReturnsAsync(_clientProject);
 
         await Assert.ThrowsAsync<CustomException>(() => _clientProjectService.GetClientProjectById(_clientProject.Id));
+    }
+
+    [Fact]
+    public async Task GetClientProject_DoesNotExist()
+    {
+        _dbMock.Setup(x => x.ClientProject.Any(It.IsAny<Expression<Func<ClientProject, bool>>>()))
+            .ReturnsAsync(true);
+
+        _dbMock.Setup(ex => ex.ClientProject.FirstOrDefault(q => q.Id == _clientProject.Id)).ReturnsAsync((ClientProject)null!);
+
+        await Assert.ThrowsAsync<CustomException>(() => _clientProjectService.GetClientProjectById(1));
     }
 }

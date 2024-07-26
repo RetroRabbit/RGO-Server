@@ -46,6 +46,11 @@ namespace HRIS.Services.Services
 
         public async Task<ClientProjectsDto?> GetClientProjectById(int id)
         {
+            var exists = await CheckIfExists(id);
+
+            if (!exists)
+                throw new CustomException("No client Project found");
+
             if (_identity.IsSupport == false)
                 throw new CustomException("Unauthorized Access.");
 
