@@ -26,10 +26,6 @@ public class FieldCodeService : IFieldCodeService
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
-        if (fieldCodeDto.Id != 0)
-        {
-            return await UpdateFieldCode(fieldCodeDto);
-        }
 
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
         if (ifFieldCode != null) throw new CustomException("Field with that name found");
