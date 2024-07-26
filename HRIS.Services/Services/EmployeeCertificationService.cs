@@ -98,6 +98,6 @@ public class EmployeeCertificationService : IEmployeeCertificationService
             throw new CustomException("Unauthorized access.");
         }
 
-        return (await _db.EmployeeCertification.Delete(Id)).ToDto();
+        return (await _db.EmployeeCertification.Delete(id)).ToDto();
     }
 }
