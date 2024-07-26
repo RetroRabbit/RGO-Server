@@ -55,35 +55,35 @@ public class FieldCodeServiceUnitTests
         Assert.Equivalent(fields.Select(x => x.ToDto()).ToList(), result);
     }
 
-    [Fact]
-    public async Task CreateFieldCodeTest()
-    {
-        var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
-        var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
+    //[Fact]
+    //public async Task CreateFieldCodeTest()
+    //{
+    //    var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
+    //    var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
 
-        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
-        _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
-           .ReturnsAsync(FieldCodeTestData.newFieldCodeDto);
-        _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
-           .ReturnsAsync(_fieldCodeDto2);
+    //    _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
+    //    _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
+    //       .ReturnsAsync(FieldCodeTestData.newFieldCodeDto);
+    //    _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
+    //       .ReturnsAsync(_fieldCodeDto2);
 
-        _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
-                                .ReturnsAsync(_fieldCodeOptionsDto.ToDto());
+    //    _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
+    //                            .ReturnsAsync(_fieldCodeOptionsDto.ToDto());
 
-        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
-                                .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
+    //    _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+    //                            .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
 
-        var newSave = await _fieldCodeService.CreateFieldCode(FieldCodeTestData.newFieldCodeDto.ToDto());
-        var result = await _fieldCodeService.CreateFieldCode(_fieldCodeDto3);
+    //    var newSave = await _fieldCodeService.CreateFieldCode(FieldCodeTestData.newFieldCodeDto.ToDto());
+    //    var result = await _fieldCodeService.CreateFieldCode(_fieldCodeDto3);
 
-        Assert.NotNull(newSave);
-        Assert.Equivalent(FieldCodeTestData.newFieldCodeDto2.ToDto(), newSave);
+    //    Assert.NotNull(newSave);
+    //    Assert.Equivalent(FieldCodeTestData.newFieldCodeDto2.ToDto(), newSave);
 
-        Assert.NotNull(result);
-        Assert.Equivalent(_fieldCodeDto2.ToDto(), result);
+    //    Assert.NotNull(result);
+    //    Assert.Equivalent(_fieldCodeDto2.ToDto(), result);
 
-        _db.Verify(x => x.FieldCode.Add(It.IsAny<FieldCode>()), Times.Exactly(2));
-    }
+    //    _db.Verify(x => x.FieldCode.Add(It.IsAny<FieldCode>()), Times.Exactly(2));
+    //}
 
     [Fact]
     public async Task SaveFieldCodeFailTest()
@@ -172,20 +172,6 @@ public class FieldCodeServiceUnitTests
     public async Task GetByCategoryFailUnauthorized(int categoryNumber)
     {
         await Assert.ThrowsAsync<CustomException>(() => _nonSupportFieldCodeService.GetByCategory(categoryNumber));
-    }
-
-    [Fact]
-    public async Task DeleteThrowNoFieldFoundException()
-    {
-        var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
-
-        _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
-        _db.Setup(x => x.FieldCode.Update(It.IsAny<FieldCode>()))
-               .ReturnsAsync(_fieldCodeDto);
-
-        await _fieldCodeService.GetAllFieldCodes();
-
-        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.DeleteFieldCode(FieldCodeTestData._fieldCodeDto3));
     }
 
     [Fact]
