@@ -1,7 +1,9 @@
 ﻿using System.Linq.Expressions;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
+using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;
@@ -11,12 +13,15 @@ namespace HRIS.Services.Tests.Services;
 public class EmployeeAddressServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
+    private readonly Employee _employee;
     private readonly EmployeeAddressService _employeeAddressService;
 
     public EmployeeAddressServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeAddressService = new EmployeeAddressService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
+
+        _employee = EmployeeTestData.EmployeeOne;
     }
 
     private EmployeeAddress CreateAddress(int id = 1)
@@ -95,6 +100,9 @@ public class EmployeeAddressServiceUnitTest
         _dbMock.Setup(x => x.EmployeeAddress.FirstOrDefault(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(address);
 
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
+
         var result = await _employeeAddressService.GetById(address.ToDto().Id);
 
         Assert.NotNull(result);
@@ -113,6 +121,9 @@ public class EmployeeAddressServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeAddress.FirstOrDefault(It.IsAny<Expression<Func<EmployeeAddress, bool>>>()))
                .ReturnsAsync(address);
+
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
 
         var tempEmployeeService = new EmployeeAddressService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1));
 
@@ -133,6 +144,9 @@ public class EmployeeAddressServiceUnitTest
                .Returns(address.ToMockIQueryable());
 
         _dbMock.Setup(x => x.EmployeeAddress.Delete(It.IsAny<int>())).ReturnsAsync(address);
+
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
 
         var result = await _employeeAddressService.Delete(address.Id);
 
@@ -164,6 +178,9 @@ public class EmployeeAddressServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeAddress.Delete(It.IsAny<int>())).ReturnsAsync(address);
 
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
+
         var tempEmployeeService = new EmployeeAddressService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1));
 
         await Assert.ThrowsAsync<CustomException>(() => tempEmployeeService.Delete(address.Id));
@@ -188,6 +205,9 @@ public class EmployeeAddressServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeAddress.Add(It.IsAny<EmployeeAddress>())).ReturnsAsync(address);
 
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
+
         var result = await _employeeAddressService.Create(address.ToDto());
 
         Assert.Equivalent(address.ToDto(), result);
@@ -199,6 +219,9 @@ public class EmployeeAddressServiceUnitTest
         var address = CreateAddress();
 
         _dbMock.Setup(x => x.EmployeeAddress.Add(It.IsAny<EmployeeAddress>())).ReturnsAsync(address);
+
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
 
         var tempEmployeeService = new EmployeeAddressService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1));
 
@@ -227,6 +250,9 @@ public class EmployeeAddressServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>())).ReturnsAsync(address);
 
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
+
         var result = await _employeeAddressService.Update(address.ToDto());
 
         Assert.Equivalent(address.ToDto(), result);
@@ -243,6 +269,9 @@ public class EmployeeAddressServiceUnitTest
                .ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeAddress.Update(It.IsAny<EmployeeAddress>())).ReturnsAsync(address);
+
+        _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(_employee);
 
         var tempEmployeeService = new EmployeeAddressService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1));
 
