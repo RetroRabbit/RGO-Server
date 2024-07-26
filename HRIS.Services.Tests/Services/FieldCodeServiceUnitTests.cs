@@ -19,7 +19,6 @@ public class FieldCodeServiceUnitTests
     private readonly FieldCode _fieldCodeDto2 = FieldCodeTestData._fieldCodeDto2;
     private readonly FieldCodeDto _fieldCodeDto3 = FieldCodeTestData._fieldCodeDto3;
     private readonly FieldCodeDto _fieldCodeDto4 = FieldCodeTestData._fieldCodeDto4;
-    private readonly FieldCode _fieldCode4 = FieldCodeTestData._fieldCode4;
     private readonly FieldCodeDto _fieldCodeDtoWithNonZeroId = FieldCodeTestData.fieldCodeDtoWithNonZeroId;
     private readonly FieldCodeOptions _fieldCodeOptionsDto = FieldCodeTestData._fieldCodeOptionsDto;
     private readonly FieldCodeOptions _fieldCodeOptionsDto2 = FieldCodeTestData._fieldCodeOptionsDto2;
