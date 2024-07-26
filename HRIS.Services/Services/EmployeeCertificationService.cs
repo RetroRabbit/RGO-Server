@@ -81,10 +81,8 @@ public class EmployeeCertificationService : IEmployeeCertificationService
         if (!exists)
             throw new CustomException("Certificate not found");
 
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeCertificationDto.Id != _identity.EmployeeId)
-        {
+        if (!_identity.IsSupport && employeeCertificationDto.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
-        }
 
         return (await _db.EmployeeCertification.Update(new EmployeeCertification(employeeCertificationDto))).ToDto();
     }
