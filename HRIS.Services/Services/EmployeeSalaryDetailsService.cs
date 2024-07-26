@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -9,58 +10,65 @@ namespace HRIS.Services.Services;
 public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 {
     private readonly IUnitOfWork _db;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeSalaryDetailsService(IUnitOfWork db)
+    public EmployeeSalaryDetailsService(IUnitOfWork db, AuthorizeIdentity identity)
     {
         _db = db;
+        _identity = identity;
+    }
+
+    public async Task<bool> EmployeeSalaryDetailsExists(int id)
+    {
+        return await _db.EmployeeSalaryDetails.Any(x => x.Id == id);
     }
 
     public async Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(int employeeId)
     {
-        var deletedEmployeeSalary = await _db.EmployeeSalaryDetails.Delete(employeeId);
+        var exists = await EmployeeSalaryDetailsExists(employeeId);
 
-        return deletedEmployeeSalary.ToDto();
+        if (!exists)
+            throw new CustomException("Employee not found.");
+
+        if (_identity.IsSupport == false && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
+        var deletedEmployeeSalaryDetails = await _db.EmployeeSalaryDetails.Delete(employeeId);
+
+        return deletedEmployeeSalaryDetails.ToDto();
     }
     
     public async Task<List<EmployeeSalaryDetailsDto>> GetAllEmployeeSalaries()
     {
-        try
-        {
             return (await _db.EmployeeSalaryDetails.GetAll()).Select(x => x.ToDto()).ToList();
-        }
-        catch (Exception)
-        {
-            throw new CustomException("Employee salary details not found");
-        }
     }
 
-    public async Task<EmployeeSalaryDetailsDto> GetEmployeeSalary(int employeeId)
+    public async Task<EmployeeSalaryDetailsDto> GetEmployeeSalaryById(int employeeId)
     {
-        var ifEmployeeExists = await CheckEmployee(employeeId);
+        var exists = await EmployeeSalaryDetailsExists(employeeId);
 
-        if (!ifEmployeeExists)
-            throw new CustomException("Employee not found");
+        if (!exists)
+            throw new CustomException("Employee salary details not found.");
 
-        try
-        {
+        if(_identity.IsSupport == false && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
             return await _db.EmployeeSalaryDetails
-                                            .Get(employeeSalary => employeeSalary.EmployeeId == employeeId)
-                                            .AsNoTracking()
-                                            .Select(employeeSalary => employeeSalary.ToDto())
-                                            .FirstOrDefaultAsync();
-        }
-        catch (Exception)
-        {
-            throw new CustomException("Employee salary details not found");
-        }
+                                          .Get(employeeSalary => employeeSalary.EmployeeId == employeeId)
+                                          .AsNoTracking()
+                                          .Select(employeeSalary => employeeSalary.ToDto())
+                                          .FirstOrDefaultAsync();  
     }
 
-    public async Task<EmployeeSalaryDetailsDto> SaveEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
+    public async Task<EmployeeSalaryDetailsDto> CreateEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
     {
-        var exists = await CheckIfExists(employeeSalaryDto);
+        var exists = await EmployeeSalaryDetailsExists(employeeSalaryDto.Id);
 
         if (exists)
-            throw new CustomException("Employee salary already exists");
+            throw new CustomException("Employee salary already exists.");
+
+        if (_identity.IsSupport == false && employeeSalaryDto.Id != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
 
         var employeeSalary = await _db.EmployeeSalaryDetails.Add(new EmployeeSalaryDetails(employeeSalaryDto));
 
@@ -69,35 +77,17 @@ public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
 
     public async Task<EmployeeSalaryDetailsDto> UpdateEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
     {
-        var ifEmployeeExists = await CheckEmployee(employeeSalaryDto.EmployeeId);
+        var exists = await EmployeeSalaryDetailsExists(employeeSalaryDto.EmployeeId);
 
-        if (!ifEmployeeExists)
-            throw new CustomException("Employee not found");
+        if (!exists)
+            throw new CustomException("Employee not found.");
+
+        if (_identity.IsSupport == false && employeeSalaryDto.Id != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
 
         EmployeeSalaryDetails employeeSalary = new EmployeeSalaryDetails(employeeSalaryDto);
         var updatedEmployeeSalary = await _db.EmployeeSalaryDetails.Update(employeeSalary);
 
         return updatedEmployeeSalary.ToDto();
-    }
-
-
-    public async Task<bool> CheckEmployee(int employeeId)
-    {
-        var employee = await _db.Employee
-        .Get(employee => employee.Id == employeeId)
-        .FirstOrDefaultAsync();
-
-        if (employee == null) { return false; }
-        else { return true; }
-    }
-
-    public async Task<bool> CheckIfExists(EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
-    {
-        if (employeeSalaryDetailsDto.Id == 0)
-        {
-            return false;
-        }
-        var exists = await _db.EmployeeSalaryDetails.GetById(employeeSalaryDetailsDto.Id);
-        return exists == null;
     }
 }

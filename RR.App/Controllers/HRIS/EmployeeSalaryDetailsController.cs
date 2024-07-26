@@ -83,13 +83,13 @@ public class EmployeeSalaryDetailsController : ControllerBase
         {
             if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
-                var employeeSalaries = await _employeeSalarayDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
+                var employeeSalaries = await _employeeSalarayDetailsService.CreateEmployeeSalary(employeeSalaryDetailsDto);
                 return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
             }
 
             if (employeeSalaryDetailsDto.Id == _identity.EmployeeId)
             {
-                var employeeSalaries = await _employeeSalarayDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
+                var employeeSalaries = await _employeeSalarayDetailsService.CreateEmployeeSalary(employeeSalaryDetailsDto);
                 return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
             }
 

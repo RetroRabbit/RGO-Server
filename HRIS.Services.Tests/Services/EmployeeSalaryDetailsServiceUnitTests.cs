@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
@@ -15,47 +16,87 @@ namespace HRIS.Services.Tests.Services
 {
     public class EmployeeSalaryDetailsServiceUnitTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IUnitOfWork> _dbMock;
         private readonly Mock<IEmployeeSalarayDetailsService> _employeeSalaryDetailsServiceMock;
         private readonly EmployeeSalaryDetailsService _employeeSalaryDetailsService;
 
         private const int EmployeeId = 1;
         private readonly Employee _testEmployee = EmployeeTestData.EmployeeOne;
+        private readonly Mock<AuthorizeIdentityMock> _identity;
+        private readonly EmployeeSalaryDetails _employeeSalaryDetails;
 
         public EmployeeSalaryDetailsServiceUnitTest()
         {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _identity = new Mock<AuthorizeIdentityMock>();
+            _dbMock = new Mock<IUnitOfWork>();
             _employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalarayDetailsService>();
-            _employeeSalaryDetailsService = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object);
+            _employeeSalaryDetailsService = new EmployeeSalaryDetailsService(_dbMock.Object, _identity.Object);
+
+           _employeeSalaryDetails = new EmployeeSalaryDetails
+            {
+                EmployeeId = EmployeeId,
+                Salary = 25000.00d
+           };
         }
 
         [Fact]
-        public async Task GetEmployeeSalaryPass()
-        {
-            var salary = 25000.00d;
-            _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                        .Returns(_testEmployee.EntityToList().AsQueryable().BuildMockDbSet().Object);
+        public async Task GetEmployeeSalaryDetailsById_Success()
+        {          
+            _identity.Setup(i => i.Role).Returns("Admin");
+            _identity.Setup(x => x.EmployeeId).Returns(1);
 
-            var employeeSalaryDetails = new EmployeeSalaryDetails
-            {
-                EmployeeId = EmployeeId,
-                Salary = salary
-            };
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                .ReturnsAsync(true);
+            var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetails> { _employeeSalaryDetails }.AsQueryable().BuildMockDbSet();
 
-            var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetails> { employeeSalaryDetails }.AsQueryable().BuildMockDbSet();
-
-            _unitOfWorkMock.Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+            _dbMock.Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                            .Returns(mockEmployeeSalaryDetailsDbSet.Object);
 
-            var result = await _employeeSalaryDetailsService.GetEmployeeSalary(EmployeeId);
+            var result = await _employeeSalaryDetailsService.GetEmployeeSalaryById(EmployeeId);
             Assert.NotNull(result);
-            Assert.Equal(salary, result.Salary);
-            Assert.Equal(employeeSalaryDetails.Salary, result.Salary);
+            Assert.Equal(_employeeSalaryDetails.Salary, result.Salary);
+            Assert.Equal(_employeeSalaryDetails.Salary, result.Salary);
             Assert.IsType<EmployeeSalaryDetailsDto>(result);
         }
 
         [Fact]
-        public async Task GetAllEmployeeSalariesPass()
+        public async Task GetEmployeeSalaryDetailsById_Unauthorized()
+        {
+            _identity.Setup(i => i.Role).Returns("Employee");
+            _identity.Setup(x => x.EmployeeId).Returns(5);
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                .ReturnsAsync(true);
+
+            var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetails> { _employeeSalaryDetails }.AsQueryable().BuildMockDbSet();
+
+            _dbMock.Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                           .Returns(mockEmployeeSalaryDetailsDbSet.Object);
+
+            var exception = await Assert.ThrowsAsync<CustomException>(() => _employeeSalaryDetailsService.GetEmployeeSalaryById(EmployeeId));
+
+            Assert.Equivalent("Unauthorized Access.", exception.Message);
+        }
+
+        [Fact]
+        public async Task GetEmployeeSalaryDetailsById_DoesNotExist()
+        {
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                .ReturnsAsync(false);
+
+            var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetails> { _employeeSalaryDetails }.AsQueryable().BuildMockDbSet();
+
+            _dbMock.Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                           .Returns(mockEmployeeSalaryDetailsDbSet.Object);
+
+            await Assert.ThrowsAsync<CustomException>(() => _employeeSalaryDetailsService.GetEmployeeSalaryById(EmployeeId));
+
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Never);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.FirstOrDefault(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetAllEmployeeSalaryDetails_Success()
         {
             var employeeSalaries = new List<EmployeeSalaryDetails>
             {
@@ -63,13 +104,13 @@ namespace HRIS.Services.Tests.Services
                 EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsTwo
             };
 
-            _unitOfWorkMock
+            _dbMock
                 .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                 .Returns(employeeSalaries.ToMockIQueryable());
 
             _employeeSalaryDetailsServiceMock.Setup(r => r.GetAllEmployeeSalaries());
 
-            _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null)).ReturnsAsync(employeeSalaries);
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null)).ReturnsAsync(employeeSalaries);
 
             var result = await _employeeSalaryDetailsService.GetAllEmployeeSalaries();
             Assert.NotNull(result);
@@ -79,86 +120,197 @@ namespace HRIS.Services.Tests.Services
         }
 
         [Fact]
-        public async Task CheckEmployeeFail()
+        public async Task CheckIfEmployeeSalaryDetailsReturnsTrue()
         {
-            _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                           .Returns(new List<Employee>().ToMockIQueryable());
+            var testId = 1;
+            _dbMock.Setup(r => r.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                   .ReturnsAsync(true);
 
-            var result = await _employeeSalaryDetailsService.CheckEmployee(EmployeeId);
-            Assert.False(result);
+            var result = await _employeeSalaryDetailsService.EmployeeSalaryDetailsExists(testId);
+
+            Assert.True(result);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Once);
         }
 
         [Fact]
-        public async Task UpdateEmployeeDocumentPass()
+        public async Task CheckIfEmployeeSalaryDetailsReturnsFalse()
         {
-            _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            var testId = 1;
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                   .ReturnsAsync(false);
+
+            var result = await _employeeSalaryDetailsService.EmployeeSalaryDetailsExists(testId);
+
+            Assert.False(result);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateEmployeeSalaryDetails_Success()
+        {
+            _identity.Setup(i => i.Role).Returns("Admin");
+            _identity.Setup(x => x.EmployeeId).Returns(1);
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+               .ReturnsAsync(true);
+            _dbMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(_testEmployee.EntityToList().AsQueryable().BuildMockDbSet().Object);
 
-            _unitOfWorkMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
+            _dbMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
                         .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            var service = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object);
+            var service = new EmployeeSalaryDetailsService(_dbMock.Object, _identity.Object);
             var results = await service.UpdateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
             Assert.NotNull(results);
             Assert.Equivalent(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto(), results);
         }
 
         [Fact]
-        public async Task SaveEmployeeSalaryFail()
+        public async Task UpdateEmployeeSalaryDetails_DoesNotExist()
         {
-            _unitOfWorkMock
-                .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-                .Returns(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockIQueryable());
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+               .ReturnsAsync(false);
 
-            _employeeSalaryDetailsServiceMock.Setup(r => r.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
+            _dbMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
+                        .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            _unitOfWorkMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
+            await Assert.ThrowsAsync<CustomException>(() => _employeeSalaryDetailsService.UpdateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));
 
-            _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-                           .ReturnsAsync(true);
-
-            var exception = await Assert.ThrowsAnyAsync<CustomException>(() => _employeeSalaryDetailsService
-                .SaveEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));
-
-            Assert.Equal("Employee salary already exists", exception.Message);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Never);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.FirstOrDefault(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Never);
         }
 
         [Fact]
-        public async Task SaveEmployeeSalaryPass()
+        public async Task UpdateEmployeeSalaryDetails_Unauthorized()
         {
-            _unitOfWorkMock
+            _identity.Setup(i => i.Role).Returns("Employee");
+            _identity.Setup(x => x.EmployeeId).Returns(5);
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+               .ReturnsAsync(true);
+
+            _dbMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
+                        .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
+
+            var exception = await Assert.ThrowsAsync<CustomException>(() => _employeeSalaryDetailsService.UpdateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));
+
+            Assert.Equivalent("Unauthorized Access.", exception.Message);
+        }
+
+        [Fact]
+        public async Task CreateEmployeeSalaryDetails_Success()
+        {
+            _identity.Setup(i => i.Role).Returns("Admin");
+            _identity.Setup(x => x.EmployeeId).Returns(1);
+            _employeeSalaryDetailsServiceMock.Setup(x => x.EmployeeSalaryDetailsExists(0)).ReturnsAsync(true);
+
+            _dbMock
                 .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                 .Returns(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockIQueryable());
 
-            _employeeSalaryDetailsServiceMock.Setup(r => r.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
+            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
 
-            _unitOfWorkMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
+            _dbMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-                           .ReturnsAsync(true);
-
-            var result = await _employeeSalaryDetailsService.SaveEmployeeSalary(new EmployeeSalaryDetailsDto { Id = 0, EmployeeId = 7, Band = EmployeeSalaryBand.Level1, Salary = 1090, MinSalary = 1900, MaxSalary = 25990, Remuneration = 1599, Contribution = null, SalaryUpdateDate = new DateTime() });
-
-            _unitOfWorkMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
+            var result = await _employeeSalaryDetailsService.CreateEmployeeSalary(new EmployeeSalaryDetailsDto { Id = 0, EmployeeId = 7, Band = EmployeeSalaryBand.Level1, Salary = 1090, MinSalary = 1900, MaxSalary = 25990, Remuneration = 1599, Contribution = null, SalaryUpdateDate = new DateTime() });
+           
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
 
             Assert.NotNull(result);
             Assert.Equivalent(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto(), result);
-            _unitOfWorkMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
         }
 
         [Fact]
-        public async Task DeleteSalaryPass()
+        public async Task CreateEmployeeSalaryDetails_DoesNotExist()
         {
-            _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
+            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
+
+            _dbMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                           .ReturnsAsync(true);
+
+            await Assert.ThrowsAnyAsync<CustomException>(() => _employeeSalaryDetailsService
+                .CreateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));
+
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()), Times.Never);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.FirstOrDefault(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task CreateEmployeeSalaryDetails_Unauthorized()
+        {
+            _identity.Setup(i => i.Role).Returns("Employee");
+            _identity.Setup(x => x.EmployeeId).Returns(5);
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                          .ReturnsAsync(false);
+            _dbMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
+
+            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
+
+            var exception = await Assert.ThrowsAnyAsync<CustomException>(() => _employeeSalaryDetailsService
+                .CreateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));
+
+            Assert.Equivalent("Unauthorized Access.", exception.Message);
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeSalaryDetails_Success()
+        {
+            _identity.Setup(i => i.Role).Returns("Admin");
+            _identity.Setup(x => x.EmployeeId).Returns(1);
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                           .ReturnsAsync(true);
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockDbSet().Object.ToList());
 
-            _unitOfWorkMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
             var result = await _employeeSalaryDetailsService.DeleteEmployeeSalary(EmployeeId);
             Assert.NotNull(result);
             Assert.Equivalent(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto(), result);
-            _unitOfWorkMock.Verify(r => r.EmployeeSalaryDetails.Delete(It.IsAny<int>()), Times.Once);
+            _dbMock.Verify(r => r.EmployeeSalaryDetails.Delete(It.IsAny<int>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeSalaryDetails_DoesNotExist()
+        {
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                           .ReturnsAsync(false);
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
+                           .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockDbSet().Object.ToList());
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
+                           .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
+
+            await Assert.ThrowsAnyAsync<CustomException>(() => _employeeSalaryDetailsService
+               .DeleteEmployeeSalary(EmployeeId));
+
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()), Times.Never);
+            _dbMock.Verify(x => x.EmployeeSalaryDetails.FirstOrDefault(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeSalaryDetails_Unauthorized()
+        {
+            _identity.Setup(i => i.Role).Returns("Employee");
+            _identity.Setup(x => x.EmployeeId).Returns(5);
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+                           .ReturnsAsync(true);
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
+                           .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockDbSet().Object.ToList());
+
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
+                           .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
+
+            var exception = await Assert.ThrowsAnyAsync<CustomException>(() => _employeeSalaryDetailsService
+              .DeleteEmployeeSalary(EmployeeId));
+
+            Assert.Equivalent("Unauthorized Access.", exception.Message);
         }
     }
 }
