@@ -46,7 +46,8 @@ public class EmployeeCertificationService : IEmployeeCertificationService
 
         if(!await CheckIfCertificationExists(certificationId))
             throw new CustomException("Certificate not found");
-
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
         var employeeCertification = await _db.EmployeeCertification
                                              .Get(employeeCertification =>
                                                       employeeCertification.EmployeeId == employeeId &&
