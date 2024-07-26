@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Net.Mail;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Interfaces.Helper;
@@ -9,7 +8,6 @@ using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
-using RR.UnitOfWork.Entities.Shared;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -74,12 +72,11 @@ public class EmployeeServiceUnitTests
     [InlineData("Log Email exception", false, false)]
     public async Task SaveEmployeeTests(string testCase, bool anySequenceOne, bool anySequenceTwo)
     {
-
         _dbMock.SetupSequence(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
         .ReturnsAsync(anySequenceOne)
         .ReturnsAsync(anySequenceTwo);
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name!))
                   .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         var employeeRole = new EmployeeRole
@@ -124,24 +121,6 @@ public class EmployeeServiceUnitTests
             var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeNullType.ToDto()));
             Assert.Equal("Employee Type Missing", result.Message);
         }
-
-        //if (testCase == "Log Email exception")
-        //{
-        //    _emailService.Setup(x => x.Send(EmployeeTestData.EmployeeOne.ToDto(), "Employee Name")).Throws(new Exception());
-        //    _emailHelper.Setup(x => x.GetTemplate(It.IsAny<string>())).ReturnsAsync(new EmailTemplate());
-        //    _emailHelper.Setup(x => x.CompileMessage(It.IsAny<MailAddress>(), It.IsAny<EmailTemplate>(), It.IsAny<object>())).Returns(new MailMessage());
-        //    _emailHelper.Setup(x => x.SendMailAsync(It.IsAny<MailMessage>())).Throws<SmtpException>();
-        //    _dbMock.Setup(x => x.EmailHistory.Add(It.IsAny<EmailHistory>())).ReturnsAsync(new EmailHistory());
-        //    _dbMock.Setup(x => x.EmailHistory.Update(It.IsAny<EmailHistory>())).ReturnsAsync(new EmailHistory());
-        //    _errorLoggingServiceMock.Setup(x => x.LogException(It.IsAny<SmtpException>()));
-
-        //    _emailHelper.Verify(x => x.GetTemplate(It.IsAny<string>()), Times.Once);
-        //    _emailHelper.Verify(x => x.CompileMessage(It.IsAny<MailAddress>(), It.IsAny<EmailTemplate>(), It.IsAny<object>()), Times.Once);
-        //    _emailHelper.Verify(x => x.SendMailAsync(It.IsAny<MailMessage>()), Times.Once);
-        //    _dbMock.Verify(x => x.EmailHistory.Add(It.IsAny<EmailHistory>()), Times.Once);
-        //    _dbMock.Verify(x => x.EmailHistory.Update(It.IsAny<EmailHistory>()), Times.Once);
-        //    _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<SmtpException>()), Times.Once);
-        //}
     }
 
     [Theory]
@@ -151,7 +130,7 @@ public class EmployeeServiceUnitTests
     [InlineData("Deleting the currently logged-in user is not permitted")]
     public async Task DeleteEmployeeTest(string testCase)
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name!))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         var employeeList = new List<Employee>
@@ -233,7 +212,6 @@ public class EmployeeServiceUnitTests
         Assert.IsType<List<EmployeeDto>>(passResultJourney);
         Assert.True(passResultJourney.SequenceEqual(passResultJourney.OrderBy(e => e.Name)));
         _dbMock.Verify(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()), Times.Exactly(3));
-
 
         var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetAll(EmployeeTestData.EmployeeOne.Email!));
         Assert.Equal("Unauthorized Access", failResultUnauthorized.Message);
