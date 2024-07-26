@@ -26,20 +26,18 @@ public class EmployeeDataService : IEmployeeDataService
     {
         var modelExists = await EmployeeDataExists(employeeDataDto.Id);
 
-        if (!modelExists) throw new CustomException("This model doesnt exist yet");
+        if (modelExists)
+            throw new CustomException("This model already exists");
 
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
-        var employeesData = await _db.EmployeeData.GetAll();
-        var employeeData = employeesData
-                           .Where(employeeData => employeeData.EmployeeId == employeeDataDto.EmployeeId &&
-                                                  employeeData.FieldCodeId == employeeDataDto.FieldCodeId)
-                           .Select(employeeData => employeeData)
-                           .FirstOrDefault();
+        var employeeData = _db.EmployeeData
+            .Get()
+            .FirstOrDefault(ed => ed.EmployeeId == employeeDataDto.EmployeeId && ed.FieldCodeId == employeeDataDto.FieldCodeId);
 
         if (employeeData != null)
-            throw new CustomException("Existing employee data record found");
+            throw new CustomException("Existing employee data record with Id and FieldcodeId found");
 
         var newEmployeeData = await _db.EmployeeData.Add(new EmployeeData(employeeDataDto));
 
