@@ -58,6 +58,7 @@ public class EmployeeDataService : IEmployeeDataService
                            .Where(employeeData => employeeData.EmployeeId == employeeId && employeeData.Value == value)
                            .Select(employeeData => employeeData)
                            .FirstOrDefault();
+
         if (employeeData == null)
             throw new CustomException("No employee data record found");
 
