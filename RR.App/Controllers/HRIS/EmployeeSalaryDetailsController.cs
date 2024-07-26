@@ -3,6 +3,7 @@ using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HRIS.Services.Session;
+using HRIS.Services.Services;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -11,122 +12,61 @@ namespace RR.App.Controllers.HRIS;
 public class EmployeeSalaryDetailsController : ControllerBase
 {
     private readonly AuthorizeIdentity _identity;
-    private readonly IEmployeeSalarayDetailsService _employeeSalarayDetailsService;
+    private readonly IEmployeeSalaryDetailsService _employeeSalaryDetailsService;
 
-    public EmployeeSalaryDetailsController(AuthorizeIdentity identity, IEmployeeSalarayDetailsService employeeSalarayDetailsService)
+    public EmployeeSalaryDetailsController(AuthorizeIdentity identity, IEmployeeSalaryDetailsService employeeSalaryDetailsService)
     {
         _identity = identity;
-        _employeeSalarayDetailsService = employeeSalarayDetailsService;
+        _employeeSalaryDetailsService = employeeSalaryDetailsService;
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteSalary(int employeeId)
     {
-        try
-        {
-            var deletedEmployeeSalary = await _employeeSalarayDetailsService.DeleteEmployeeSalary(employeeId);
-            return Ok(deletedEmployeeSalary);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var deletedEmployeeSalary = await _employeeSalaryDetailsService.DeleteEmployeeSalary(employeeId);
+        return Ok(deletedEmployeeSalary);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllEmployeeSalaries()
     {
-        try
-        {
-            var employeeSalaries = await _employeeSalarayDetailsService.GetAllEmployeeSalaries();
-            return Ok(employeeSalaries);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "An error occurred while fetching the employee salaries.");
-        }
+        var employeeSalaries = await _employeeSalaryDetailsService.GetAllEmployeeSalaries();
+        return Ok(employeeSalaries);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("{employeeId}")]
     public async Task<IActionResult> GetEmployeeSalary(int employeeId)
     {
-        try
-        {
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalaryById(employeeId);
-                return Ok(employeeSalaries);
-            }
+        if (!_identity.IsSupport && (employeeId != _identity.EmployeeId))
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-            if (employeeId == _identity.EmployeeId)
-            {
-                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalaryById(employeeId);
-                return Ok(employeeSalaries);
-            }
-
-            return NotFound("User data being accessed does not match user making the request.");
-        }
-        catch (Exception x)
-        {
-            return StatusCode(500, "An error occurred while fetching employee salaries.");
-        }
+        var employeeSalaries = await _employeeSalaryDetailsService.GetEmployeeSalaryById(employeeId);
+        return Ok(employeeSalaries);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost()]
     public async Task<IActionResult> AddEmployeeSalary([FromBody] EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
     {
-        try
-        {
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                var employeeSalaries = await _employeeSalarayDetailsService.CreateEmployeeSalary(employeeSalaryDetailsDto);
-                return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
-            }
+        if (!_identity.IsSupport && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-            if (employeeSalaryDetailsDto.Id == _identity.EmployeeId)
-            {
-                var employeeSalaries = await _employeeSalarayDetailsService.CreateEmployeeSalary(employeeSalaryDetailsDto);
-                return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
-            }
+        var employeeSalaries = await _employeeSalaryDetailsService.CreateEmployeeSalary(employeeSalaryDetailsDto);
+        return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
 
-            return NotFound("User data being accessed does not match user making the request.");
-         }
-        catch (Exception ex)
-        {
-            if (ex.Message.Contains("exists"))
-                return Problem("Unexceptable", "Unexceptable", 406, "User Salary Exists");
-
-            return NotFound(ex.Message);
-        }
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut()]
     public async Task<IActionResult> UpdateSalary([FromBody] EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
     {
-        try
-        {
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
-                return Ok(updatedEmployeeSalary);
-            }
+        if (!_identity.IsSupport && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-            if (employeeSalaryDetailsDto.Id == _identity.EmployeeId)
-            {
-                var updatedEmployeeSalary = await _employeeSalarayDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
-                return Ok(updatedEmployeeSalary);
-            }
-
-            return NotFound("User data being accessed does not match user making the request.");
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var updatedEmployeeSalary = await _employeeSalaryDetailsService.UpdateEmployeeSalary(employeeSalaryDetailsDto);
+        return Ok(updatedEmployeeSalary);
     }
 }
