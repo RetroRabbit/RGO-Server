@@ -70,8 +70,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
             throw new CustomException("Unauthorized access.");
 
         var qualification = await _db.EmployeeQualification.FirstOrDefault(x => x.Id == employeeQualificationDto.Id);
-      if (qualification == null)
-          throw new CustomException("No employee qualification data.");
+
         qualification.EmployeeId = _identity.EmployeeId;
         qualification.HighestQualification = employeeQualificationDto.HighestQualification;
         qualification.School = employeeQualificationDto.School;
