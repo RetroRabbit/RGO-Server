@@ -5,13 +5,19 @@ namespace HRIS.Services.Interfaces;
 public interface IEmployeeQualificationService
 {
     /// <summary>
+    ///     Check if user exist
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Boolean to check if the employee qualification exists</returns>
+    Task<bool> CheckIfExists(int id);
+    /// <summary>
     /// Saves a new employee qualification.
     /// </summary>
     /// <param name="employeeQualificationDto">Qualification data to be saved.</param>
     /// <param name="employeeId">id of the employee to whom the qualification belongs.</param>
     /// <returns>The saved employee qualification data transfer object.</returns>
     /// <exception cref="HRIS.Services.Services.CustomException"></exception>
-    Task<EmployeeQualificationDto> SaveEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId);
+    Task<EmployeeQualificationDto> CreateEmployeeQualification(EmployeeQualificationDto employeeQualificationDto, int employeeId);
 
     /// <summary>
     /// Retrieves all employee qualifications.
