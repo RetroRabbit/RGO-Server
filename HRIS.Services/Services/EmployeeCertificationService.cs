@@ -87,7 +87,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
         return (await _db.EmployeeCertification.Update(new EmployeeCertification(employeeCertificationDto))).ToDto();
     }
 
-    public async Task<EmployeeCertificationDto> DeleteEmployeeCertification(int Id)
+    public async Task<EmployeeCertificationDto> DeleteEmployeeCertification(int id)
     {
         var exists = await CheckIfCertificationExists(Id);
         if (!exists)
