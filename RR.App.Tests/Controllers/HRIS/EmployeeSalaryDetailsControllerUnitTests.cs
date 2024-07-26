@@ -32,7 +32,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
         _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeSalaryDetailsDto.EmployeeId))
                            .ReturnsAsync(_employeeDto);
 
-        _employeeSalaryDetailsServiceMock.Setup(x => x.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
                            .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.AddEmployeeSalary(_employeeSalaryDetailsDto);
@@ -46,7 +46,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task SaveEmployeeSalaryExceptionThrownReturnsNotFoundWithMessage()
     {
-        _employeeSalaryDetailsServiceMock.Setup(x => x.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
                                .ThrowsAsync(new Exception("An error occurred while saving employee salary information."));
 
         var result = await _controller.AddEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
@@ -110,7 +110,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     [Fact(Skip = "Current user needs to be set for validations on endpoint")]
     public async Task GetSalariesByEmployeePass()
     {
-        _employeeSalaryDetailsServiceMock.Setup(x => x.GetEmployeeSalary(_employeeSalaryDetailsDto.Id))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.GetEmployeeSalaryById(_employeeSalaryDetailsDto.Id))
                                         .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.GetEmployeeSalary(_employeeSalaryDetailsDto.Id);

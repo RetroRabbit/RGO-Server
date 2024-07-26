@@ -57,13 +57,13 @@ public class EmployeeSalaryDetailsController : ControllerBase
         {
             if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
             {
-                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
+                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalaryById(employeeId);
                 return Ok(employeeSalaries);
             }
 
             if (employeeId == _identity.EmployeeId)
             {
-                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalary(employeeId);
+                var employeeSalaries = await _employeeSalarayDetailsService.GetEmployeeSalaryById(employeeId);
                 return Ok(employeeSalaries);
             }
 
