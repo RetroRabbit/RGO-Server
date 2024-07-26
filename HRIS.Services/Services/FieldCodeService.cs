@@ -26,11 +26,6 @@ public class FieldCodeService : IFieldCodeService
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
-        if (fieldCodeDto.Id != 0)
-        {
-            return await UpdateFieldCode(fieldCodeDto);
-        }
-
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
         if (ifFieldCode != null) throw new CustomException("Field with that name found");
 
@@ -57,11 +52,16 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto?> GetFieldCode(string name)
     {
-        var fieldCodes = await _db.FieldCode.GetAll();
-        var fieldCode = fieldCodes
-                        .Where(fieldCode => fieldCode.Name == name && fieldCode.Status == ItemStatus.Active)
-                        .Select(fieldCode => fieldCode.ToDto())
-                        .FirstOrDefault();
+        //var fieldCodes = await _db.FieldCode.GetAll();
+        //var fieldCode = fieldCodes
+        //                .Where(fieldCode => fieldCode.Name == name && fieldCode.Status == ItemStatus.Active)
+        //                .Select(fieldCode => fieldCode.ToDto())
+        //                .FirstOrDefault();
+        var fieldCode = await _db.FieldCode
+            .Get(x => x.Name == name && x.Status == ItemStatus.Active)
+            .AsNoTracking()
+            .Select(x => x.ToDto())
+            .FirstOrDefaultAsync();
 
         if (fieldCode != null)
         {
