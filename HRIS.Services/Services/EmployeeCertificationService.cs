@@ -27,7 +27,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
         return await _db.EmployeeCertification.Any(employee => employee.Id == Id);
     }
 
-    public async Task<EmployeeCertificationDto> SaveEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
+    public async Task<EmployeeCertificationDto> CreateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
     {
         var exists = await CheckIfCertificationExists(employeeCertificationDto.EmployeeId);
         if (!exists)
@@ -39,7 +39,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
         return (await _db.EmployeeCertification.Add(new EmployeeCertification(employeeCertificationDto))).ToDto();
     }
 
-    public async Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId, int certificationId)
+    public async Task<EmployeeCertificationDto> GetEmployeeCertificationByEmployeeIdAndCertificationId(int employeeId, int certificationId)
     {
         if (!await CheckIfEmployeeExists(employeeId))
             throw new CustomException("Employee not found");
@@ -64,7 +64,7 @@ public class EmployeeCertificationService : IEmployeeCertificationService
         return employeeCertification;
     }
 
-    public async Task<List<EmployeeCertificationDto>> GetAllEmployeeCertifications(int employeeId)
+    public async Task<List<EmployeeCertificationDto>> GetEmployeeCertificationsByEmployeeId(int employeeId)
     {
         if (!await CheckIfEmployeeExists(employeeId))
             throw new CustomException("Employee not found");

@@ -37,8 +37,11 @@ public class EmployeeCertificationServiceUnitTests
 
     private void MockEmployeeRepositorySetup(Employee employee)
     {
+        _db.Setup(u => u.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+       .ReturnsAsync(true);
+
         _db.Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(employee.ToMockIQueryable());
+            .Returns(new List<Employee> { employee }.AsQueryable().BuildMock());
     }
 
     private void MockEmployeeRepositorySetupWithEmployee(Employee employee)
@@ -101,7 +104,7 @@ public class EmployeeCertificationServiceUnitTests
         MockCheckIfCertificationExists(true);
         MockEmployeeCertificationRepositorySetupForAdd(_employeeCertification);
 
-        var result = await _employeeCertificationService.SaveEmployeeCertification(_employeeCertification.ToDto());
+        var result = await _employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto());
 
         Assert.NotNull(result);
         _db.Verify(x => x.EmployeeCertification.Add(It.IsAny<EmployeeCertification>()), Times.Once);
@@ -116,7 +119,7 @@ public class EmployeeCertificationServiceUnitTests
         MockEmployeeRepositorySetup(EmployeeTestData.EmployeeOne);
 
         await Assert.ThrowsAsync<NullReferenceException>(() =>
-            _employeeCertificationService.SaveEmployeeCertification(_employeeCertification.ToDto()));
+            _employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto()));
     }
 
     [Fact]
@@ -133,7 +136,7 @@ public class EmployeeCertificationServiceUnitTests
         MockEmployeeRepositorySetup(EmployeeTestData.EmployeeOne);
 
         await Assert.ThrowsAsync<CustomException>(() =>
-            employeeCertificationService.SaveEmployeeCertification(_employeeCertification.ToDto()));
+            employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto()));
     }
 
     [Fact]
@@ -143,7 +146,7 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(new List<Employee>().ToMockIQueryable());
 
         await Assert.ThrowsAsync<NullReferenceException>(() =>
-                    _employeeCertificationService.SaveEmployeeCertification(_employeeCertification.ToDto()));
+                    _employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto()));
     }
 
     [Fact]
@@ -152,7 +155,7 @@ public class EmployeeCertificationServiceUnitTests
         MockCheckIfCertificationExists(false);
 
         await Assert.ThrowsAsync<CustomException>(() =>
-            _employeeCertificationService.SaveEmployeeCertification(_employeeCertification.ToDto()));
+            _employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto()));
     }
 
     [Fact]
@@ -284,7 +287,7 @@ public class EmployeeCertificationServiceUnitTests
            .ReturnsAsync(false);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-            _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId));
+            _employeeCertificationService.GetEmployeeCertificationByEmployeeIdAndCertificationId(employeeId, certificationId));
 
         Assert.Equal("Certificate not found", exception.Message);
     }
@@ -296,7 +299,7 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(new List<Employee>().ToMockIQueryable());
 
         await Assert.ThrowsAsync<CustomException>(() =>
-                    _employeeCertificationService.GetEmployeeCertification(0, 0));
+                    _employeeCertificationService.GetEmployeeCertificationByEmployeeIdAndCertificationId(0, 0));
     }
 
     [Fact]
@@ -306,7 +309,7 @@ public class EmployeeCertificationServiceUnitTests
                    .Returns(new List<Employee>().ToMockIQueryable());
 
         await Assert.ThrowsAsync<CustomException>(() =>
-                    _employeeCertificationService.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id));
+                    _employeeCertificationService.GetEmployeeCertificationsByEmployeeId(EmployeeTestData.EmployeeOne.Id));
     }
 
     [Fact]
@@ -320,7 +323,7 @@ public class EmployeeCertificationServiceUnitTests
 
         MockEmployeeCertificationRepositorySetupWithCertification(_employeeCertification);
 
-        var result = await _employeeCertificationService.GetEmployeeCertification(_employeeCertification.EmployeeId, _employeeCertification.Id);
+        var result = await _employeeCertificationService.GetEmployeeCertificationByEmployeeIdAndCertificationId(_employeeCertification.EmployeeId, _employeeCertification.Id);
 
         Assert.NotNull(result);
     }
@@ -340,7 +343,7 @@ public class EmployeeCertificationServiceUnitTests
         _db.Setup(u => u.EmployeeCertification.Get(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
                    .Returns(employeeCertificationList.ToMockIQueryable());
 
-        var results = await _employeeCertificationService.GetAllEmployeeCertifications(_employeeCertification.EmployeeId);
+        var results = await _employeeCertificationService.GetEmployeeCertificationsByEmployeeId(_employeeCertification.EmployeeId);
 
         Assert.NotNull(results);
         Assert.Equal(2, results.Count);
@@ -363,8 +366,42 @@ public class EmployeeCertificationServiceUnitTests
            .Returns(emptyList);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-            _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId));
+            _employeeCertificationService.GetEmployeeCertificationByEmployeeIdAndCertificationId(employeeId, certificationId));
 
         Assert.Equal("Employee certification record not found", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetEmployeeCertificationByEmployeeIdAndCertificationId_UnauthorizedAccess_ThrowsCustomException()
+    {
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 999);
+        var employeeCertificationService = new EmployeeCertificationService(_db.Object, unauthorizedIdentity);
+
+        var employeeId = 1;
+        var certificationId = 1;
+
+        MockCheckIfCertificationExists(true);
+        MockEmployeeRepositorySetup(EmployeeTestData.EmployeeOne);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            employeeCertificationService.GetEmployeeCertificationByEmployeeIdAndCertificationId(employeeId, certificationId));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetEmployeeCertificationsByEmployeeId_UnauthorizedAccess_ThrowsCustomException()
+    {
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 999);
+        var employeeCertificationService = new EmployeeCertificationService(_db.Object, unauthorizedIdentity);
+
+        var employeeId = 1;
+
+        MockEmployeeRepositorySetup(EmployeeTestData.EmployeeOne);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            employeeCertificationService.GetEmployeeCertificationsByEmployeeId(employeeId));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
     }
 }
