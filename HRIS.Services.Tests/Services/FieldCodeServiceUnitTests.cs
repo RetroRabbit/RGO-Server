@@ -25,7 +25,7 @@ public class FieldCodeServiceUnitTests
     private readonly FieldCodeOptions _fieldCodeOptionsDto2 = FieldCodeTestData._fieldCodeOptionsDto2;
     private readonly Mock<IFieldCodeOptionsService> _fieldCodeOptionsService;
     private readonly FieldCodeService _fieldCodeService;
-    private readonly FieldCodeService _nonSupportfieldCodeService;
+    private readonly FieldCodeService _nonSupportFieldCodeService;
 
     public FieldCodeServiceUnitTests()
     {
