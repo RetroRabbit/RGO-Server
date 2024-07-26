@@ -47,7 +47,7 @@ public class EmployeeService : IEmployeeService
         if (employeeDto.EmployeeType == null)
             throw new CustomException("Employee Type Missing");
 
-        var existingEmployeeType = await _employeeTypeService.GetEmployeeType(employeeDto.EmployeeType.Name);
+        var existingEmployeeType = await _employeeTypeService.GetEmployeeTypeByName(employeeDto.EmployeeType.Name);
 
         var employee = new Employee(employeeDto, existingEmployeeType);
 

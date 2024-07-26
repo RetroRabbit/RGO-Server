@@ -73,7 +73,7 @@ public class EmployeeDocumentServiceUnitTest
     public async Task SaveDocumentPass(int documentType)
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name!))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name!))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _unitOfWorkMock
@@ -98,7 +98,7 @@ public class EmployeeDocumentServiceUnitTest
     public async Task AddNewAdditionalDocumentPass()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name!))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name!))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _unitOfWorkMock
