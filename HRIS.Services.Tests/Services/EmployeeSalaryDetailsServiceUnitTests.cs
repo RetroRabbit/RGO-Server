@@ -16,7 +16,7 @@ namespace HRIS.Services.Tests.Services
     public class EmployeeSalaryDetailsServiceUnitTest
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IEmployeeSalarayDetailsService> _employeeSalaryDetailsServiceMock;
+        private readonly Mock<IEmployeeSalaryDetailsService> _employeeSalaryDetailsServiceMock;
         private readonly EmployeeSalaryDetailsService _employeeSalaryDetailsService;
 
         private const int EmployeeId = 1;
@@ -25,7 +25,7 @@ namespace HRIS.Services.Tests.Services
         public EmployeeSalaryDetailsServiceUnitTest()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalarayDetailsService>();
+            _employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalaryDetailsService>();
             _employeeSalaryDetailsService = new EmployeeSalaryDetailsService(_unitOfWorkMock.Object);
         }
 
