@@ -151,7 +151,7 @@ public class EmployeeDataServiceUnitTest
         _dbMock.Setup(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()))
             .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
 
-        var result = await _employeeDataService.SaveEmployeeData(newEmployeeDataDto);
+        var result = await _employeeDataService.CreateEmployeeData(newEmployeeDataDto);
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
@@ -166,7 +166,7 @@ public class EmployeeDataServiceUnitTest
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
            .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.SaveEmployeeData(_employeeData.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.CreateEmployeeData(_employeeData.ToDto()));
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public class EmployeeDataServiceUnitTest
         _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
             .ReturnsAsync(employeeDataList);
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.SaveEmployeeData(existingEmployeeDataDto));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.CreateEmployeeData(existingEmployeeDataDto));
         _dbMock.Verify(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()), Times.Never);
     }
 

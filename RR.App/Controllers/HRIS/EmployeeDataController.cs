@@ -38,7 +38,7 @@ public class EmployeeDataController : ControllerBase
           if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeDataDto.EmployeeId != _identity.EmployeeId)
           throw new CustomException("User data being accessed does not match user making the request.");
 
-          var data = await _employeeDataService.SaveEmployeeData(employeeDataDto);
+          var data = await _employeeDataService.CreateEmployeeData(employeeDataDto);
           return Ok(data);
     }
 

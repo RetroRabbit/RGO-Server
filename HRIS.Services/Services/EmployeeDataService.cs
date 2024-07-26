@@ -22,7 +22,7 @@ public class EmployeeDataService : IEmployeeDataService
         return await _db.EmployeeData.Any(x => x.Id == id);
     }
 
-    public async Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto)
+    public async Task<EmployeeDataDto> CreateEmployeeData(EmployeeDataDto employeeDataDto)
     {
         var modelExists = await EmployeeDataExists(employeeDataDto.Id);
 

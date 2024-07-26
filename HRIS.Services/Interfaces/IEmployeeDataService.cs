@@ -9,7 +9,7 @@ public interface IEmployeeDataService
     /// </summary>
     /// <param name="employeeDataDto"></param>
     /// <returns>Employee data</returns>
-    Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto);
+    Task<EmployeeDataDto> CreateEmployeeData(EmployeeDataDto employeeDataDto);
 
     /// <summary>
     ///     Get Employee Data
