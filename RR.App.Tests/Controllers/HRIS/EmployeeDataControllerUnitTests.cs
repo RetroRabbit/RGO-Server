@@ -69,7 +69,7 @@ public class EmployeeDataControllerUnitTests
         _identity.Setup(i => i.Role).Returns("Developer");
         _identity.SetupGet(i => i.EmployeeId).Returns(5);
 
-        _employeeDataServiceMock.Setup(service => service.SaveEmployeeData(_employeeDataDto))
+        _employeeDataServiceMock.Setup(service => service.CreateEmployeeData(_employeeDataDto))
                               .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.SaveEmployeeData(_employeeDataDto));
@@ -84,7 +84,7 @@ public class EmployeeDataControllerUnitTests
         _identity.Setup(i => i.Role).Returns("SuperAdmin");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
 
-        _employeeDataServiceMock.Setup(x => x.SaveEmployeeData(_employeeDataDto))
+        _employeeDataServiceMock.Setup(x => x.CreateEmployeeData(_employeeDataDto))
                                .ReturnsAsync(_employeeDataDto);
 
         var result = await _controller.SaveEmployeeData(_employeeDataDto);
@@ -92,7 +92,7 @@ public class EmployeeDataControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
         Assert.Equal(_employeeDataDto, returnValue);
-        _employeeDataServiceMock.Verify(service => service.SaveEmployeeData(_employeeDataDto), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.CreateEmployeeData(_employeeDataDto), Times.Once);
     }
 
     [Fact]
