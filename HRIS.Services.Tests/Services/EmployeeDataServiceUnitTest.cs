@@ -13,81 +13,206 @@ public class EmployeeDataServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeDataService _employeeDataService;
+    private readonly AuthorizeIdentityMock _supportIdentity;
+    private readonly AuthorizeIdentityMock _nonSupportIdentity;
+    private readonly EmployeeData _employeeData = EmployeeDataTestData.EmployeeDataOne;
+    private readonly EmployeeDataService _nonSupportDataService;
 
     public EmployeeDataServiceUnitTest()
     {
+        _supportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1);
+        _nonSupportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1);
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeDataService = new EmployeeDataService(_dbMock.Object);
+        _employeeDataService = new EmployeeDataService(_dbMock.Object, _supportIdentity);
+        _employeeData = EmployeeDataTestData.EmployeeDataOne;
+        _nonSupportDataService = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
     }
 
     [Fact]
-    public async Task GetAllEmployeeDataTest()
+    public async Task CheckIfModelExistsReturnsTrue()
     {
-        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
+        var testId = 1;
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
 
-        _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(employee);
-        var result = await _employeeDataService.GetAllEmployeeData(EmployeeDataTestData.EmployeeDataOne.EmployeeId);
+        var result = await _employeeDataService.EmployeeDataExists(testId);
 
-        Assert.NotNull(result);
-        Assert.Single(result);
-        Assert.Equivalent(employee.Select(x => x.ToDto()).ToList(), result);
+        Assert.True(result);
+        _dbMock.Verify(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()), Times.Once);
     }
 
     [Fact]
-    public async Task GetEmployeeDataTest()
+    public async Task CheckIfModelExistsReturnsFalse()
     {
-        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
+        var testId = 1;
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(false);
 
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
-        var result = await _employeeDataService.GetEmployeeData(EmployeeDataTestData.EmployeeDataOne.EmployeeId, EmployeeDataTestData.EmployeeDataOne.Value);
+        var result = await _employeeDataService.EmployeeDataExists(testId);
 
-        Assert.NotNull(result);
-        Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
-        _dbMock.Verify(x => x.EmployeeData.GetAll(null), Times.Once);
+        Assert.False(result);
+        _dbMock.Verify(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()), Times.Once);
     }
 
     [Fact]
-    public async Task SaveEmployeeDataTest()
+    public async Task GetEmployeeDataTestPass()
     {
-        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
+        var employeeId = _employeeData.EmployeeId;
+        var employeeData = _employeeData;
 
-        _dbMock.Setup(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()))
-               .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(true);
+        _dbMock.Setup(x => x.EmployeeData.GetById(employeeId)).ReturnsAsync(employeeData);
 
-        var result = await _employeeDataService.SaveEmployeeData(EmployeeDataTestData.EmployeeDataTwo.ToDto());
+        var result = await _employeeDataService.GetEmployeeData(employeeId);
+
         Assert.NotNull(result);
-        Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
+        Assert.Equivalent(employeeData.ToDto(), result);
+        _dbMock.Verify(x => x.EmployeeData.GetById(employeeId), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetEmployeeDataFail_Unauthorized()
+    {
+        var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+           .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.GetEmployeeData(employeeId));
+    }
+
+    [Fact]
+    public async Task GetEmployeeDataTest_NoModelFound()
+    {
+        var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.GetEmployeeData(employeeId));
+    }
+
+    [Fact]
+    public async Task GetEmployeeDataTest_NoRecordFoundInDatabase()
+    {
+        var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
+
+        _dbMock.Setup(x => x.EmployeeData.GetById(employeeId))
+            .ReturnsAsync((EmployeeData)null);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.GetEmployeeData(employeeId));
+    }
+
+
+
+    [Fact]
+    public async Task CreateEmployeeDataTest_Pass()
+    {
+        var newEmployeeDataDto = EmployeeDataTestData.EmployeeDataTwo.ToDto();
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(false);
+        _dbMock.Setup(x => x.EmployeeData.Add(It.IsAny<EmployeeData>())).ReturnsAsync(EmployeeDataTestData.EmployeeDataTwo);
+
+        var result = await _employeeDataService.CreateEmployeeData(newEmployeeDataDto);
+
+        Assert.NotNull(result);
+        Assert.Equivalent(EmployeeDataTestData.EmployeeDataTwo.ToDto(), result);
         _dbMock.Verify(x => x.EmployeeData.Add(It.IsAny<EmployeeData>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateEmployeeDataTest_UnauthorizedAccess()
+    {
+        var newEmployeeDataDto = EmployeeDataTestData.EmployeeDataTwo.ToDto();
+        newEmployeeDataDto.EmployeeId = 2;
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.CreateEmployeeData(newEmployeeDataDto));
+    }
+
+
+    [Fact]
+    public async Task CreateEmployeeDataTest_ExistingRecord()
+    {
+        var newEmployeeDataDto = EmployeeDataTestData.EmployeeDataTwo.ToDto();
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.CreateEmployeeData(newEmployeeDataDto));
     }
 
     [Fact]
     public async Task UpdateEmployeeDataTest()
     {
-        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
+        var updatedEmployeeDataDto = EmployeeDataTestData.EmployeeDataOne.ToDto();
 
-        _dbMock.Setup(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()))
-               .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(true);
+        _dbMock.Setup(x => x.EmployeeData.GetById(updatedEmployeeDataDto.EmployeeId)).ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
+        _dbMock.Setup(x => x.EmployeeData.Update(It.IsAny<EmployeeData>())).ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
 
-        var result = await _employeeDataService.UpdateEmployeeData(EmployeeDataTestData.EmployeeDataOne.ToDto());
+        var result = await _employeeDataService.UpdateEmployeeData(updatedEmployeeDataDto);
+
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
         _dbMock.Verify(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()), Times.Once);
     }
 
     [Fact]
+    public async Task UpdateEmployeeDataFail_Unauthorized()
+    {
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+           .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.UpdateEmployeeData(_employeeData.ToDto()));
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeDataFail_NoRecordFound()
+    {
+        var updatedEmployeeDataDto = EmployeeDataTestData.EmployeeDataOne.ToDto();
+        var employeeDataList = new List<EmployeeData>();
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
+
+        _dbMock.Setup(x => x.EmployeeData.GetAll(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(employeeDataList);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.UpdateEmployeeData(updatedEmployeeDataDto));
+        _dbMock.Verify(x => x.EmployeeData.Update(It.IsAny<EmployeeData>()), Times.Never);
+    }
+
+    [Fact]
     public async Task DeleteEmployeeDataTest()
     {
-        var employee = EmployeeDataTestData.EmployeeDataOne.EntityToList();
-        _dbMock.Setup(x => x.EmployeeData.GetAll(null)).ReturnsAsync(employee);
+        var employeeDataId = EmployeeDataTestData.EmployeeDataOne.Id;
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+            .ReturnsAsync(true);
 
         _dbMock.Setup(x => x.EmployeeData.Delete(It.IsAny<int>()))
-               .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
+            .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
 
-        var result = await _employeeDataService.DeleteEmployeeData(EmployeeDataTestData.EmployeeDataOne.Id);
+        var result = await _employeeDataService.DeleteEmployeeData(employeeDataId);
+
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeDataTestData.EmployeeDataOne.ToDto(), result);
-        _dbMock.Verify(r => r.EmployeeData.Delete(It.IsAny<int>()), Times.Once);
+        _dbMock.Verify(x => x.EmployeeData.Delete(It.IsAny<int>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteEmployeeDataFail_Unauthorized()
+    {
+        var employeeDataId = EmployeeDataTestData.EmployeeDataOne.Id;
+
+        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+           .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.DeleteEmployeeData(employeeDataId));
     }
 }
