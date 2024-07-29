@@ -84,7 +84,7 @@ public class EmployeeService : IEmployeeService
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access");
 
-        var existingEmployee = await GetEmployee(email);
+        var existingEmployee = await GetEmployeeByEmail(email);
 
         var modelExists = await CheckModelExist(existingEmployee.Id);
         if (!modelExists)
@@ -103,7 +103,7 @@ public class EmployeeService : IEmployeeService
 
         if (userEmail != "" && _identity.IsJourney == true)
         {
-            var peopleChampion = await GetEmployee(userEmail);
+            var peopleChampion = await GetEmployeeByEmail(userEmail);
 
             return await _db.Employee
                             .Get(employee => employee.PeopleChampion == peopleChampion!.Id)
@@ -126,7 +126,7 @@ public class EmployeeService : IEmployeeService
                         .ToListAsync();
     }
 
-    public async Task<EmployeeDto?> GetEmployee(string email)
+    public async Task<EmployeeDto?> GetEmployeeByEmail(string email)
     {
         var emailExists = await CheckUserEmailExist(email);
         if (!emailExists)
@@ -141,16 +141,16 @@ public class EmployeeService : IEmployeeService
                                 .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
-        if (_identity.IsSupport == false && _identity.EmployeeId != employee.Id)
-            throw new CustomException("Unauthorized Access");
+        //if (_identity.IsSupport == false && _identity.EmployeeId != employee.Id)
+        //    throw new CustomException("Unauthorized Access");
 
         return employee;
     }
 
     public async Task<EmployeeDto> GetEmployeeById(int id)
     {
-        if (_identity.IsSupport == false && _identity.EmployeeId != id)
-            throw new CustomException("Unauthorized Access");
+        //if (_identity.IsSupport == false && _identity.EmployeeId != id)
+        //    throw new CustomException("Unauthorized Access");
 
         var employee = await _db.Employee
                                 .Get(employee => employee.Id == id)
@@ -164,7 +164,7 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
-    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email)
+    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto)
     {
 
         if (_identity.IsSupport == false && _identity.EmployeeId != employeeDto.Id)
@@ -211,26 +211,13 @@ public class EmployeeService : IEmployeeService
         return (await _db.Employee.Update(employee)).ToDto();
     }
 
-    public async Task<EmployeeDto?> GetById(int employeeId)
-    {
-        if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
-            throw new CustomException("Unauthorized Access");
-
-        var employee = await _db.Employee.GetById(employeeId);
-
-        if (employee == null)
-            throw new CustomException("User not found");
-
-        return employee.ToDto();
-    }
-
     public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
     {
         var modelExists = await CheckUserEmailExist(employeeEmail);
         if (!modelExists)
             throw new CustomException("Model not found");
 
-        var employeeDto = await GetEmployee(employeeEmail);
+        var employeeDto = await GetEmployeeByEmail(employeeEmail);
 
         var teamLeadName = "";
         var peopleChampionName = "";
@@ -241,14 +228,14 @@ public class EmployeeService : IEmployeeService
 
         if (employeeDto!.TeamLead != null)
         {
-            var teamLeadDto = await GetById((int)employeeDto.TeamLead);
+            var teamLeadDto = await GetEmployeeById((int)employeeDto.TeamLead);
             teamLeadName = teamLeadDto!.Name + " " + teamLeadDto.Surname;
             teamLeadId = teamLeadDto.Id;
         }
 
         if (employeeDto.PeopleChampion != null)
         {
-            var peopleChampionDto = await GetById((int)employeeDto.PeopleChampion);
+            var peopleChampionDto = await GetEmployeeById((int)employeeDto.PeopleChampion);
             peopleChampionName = peopleChampionDto!.Name + " " + peopleChampionDto.Surname;
             peopleChampionId = peopleChampionDto.Id;
         }

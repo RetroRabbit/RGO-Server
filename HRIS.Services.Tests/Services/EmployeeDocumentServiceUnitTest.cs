@@ -48,7 +48,7 @@ public class EmployeeDocumentServiceUnitTest
     {
         var roles = EmployeeRoleTestData.RoleDtoEmployee.EntityToList();
 
-        _employeeServiceMock.Setup(x => x.GetById(EmployeeId))
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId))
             .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto);
 
         _unitOfWorkMock
@@ -90,7 +90,7 @@ public class EmployeeDocumentServiceUnitTest
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), result);
-        _employeeServiceMock.Verify(x => x.GetById(EmployeeId), Times.Once);
+        _employeeServiceMock.Verify(x => x.GetEmployeeById(EmployeeId), Times.Once);
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Once);
     }
 
@@ -115,7 +115,7 @@ public class EmployeeDocumentServiceUnitTest
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), result);
-        _employeeServiceMock.Verify(x => x.GetById(EmployeeId), Times.Once);
+        _employeeServiceMock.Verify(x => x.GetEmployeeById(EmployeeId), Times.Once);
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Once);
     }
 
@@ -124,7 +124,7 @@ public class EmployeeDocumentServiceUnitTest
     {
         var employeeDocDto = EmployeeDocumentTestData.SimpleDocumentDto;
 
-        _employeeServiceMock.Setup(x => x.GetById(employeeDocDto.EmployeeId))
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(employeeDocDto.EmployeeId))
             .ReturnsAsync((EmployeeDto)null!);
 
          await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
@@ -134,13 +134,13 @@ public class EmployeeDocumentServiceUnitTest
     [Fact]
     public async Task SaveEmployeeDocumentFail()
     {
-        _employeeServiceMock.Setup(x => x.GetById(EmployeeId))
-                            .ReturnsAsync((EmployeeDto?)null);
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId))
+                            .ReturnsAsync((EmployeeDto)null!);
         
         await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
             .SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
 
-        _employeeServiceMock.Verify(x => x.GetById(EmployeeId), Times.Once);
+        _employeeServiceMock.Verify(x => x.GetEmployeeById(EmployeeId), Times.Once);
     }
 
     [Fact]
@@ -172,7 +172,7 @@ public class EmployeeDocumentServiceUnitTest
         var filename = "sample_certification.pdf";
         var documentType = DocumentType.StarterKit;
 
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(employeeId))
                         .ReturnsAsync((EmployeeDto)null!);
 
         _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);
@@ -241,7 +241,7 @@ public class EmployeeDocumentServiceUnitTest
         var employeeId = 1;
         var documentType = DocumentType.StarterKit;
 
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(employeeId))
                         .ReturnsAsync((EmployeeDto)null!);
 
         _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);
@@ -280,7 +280,7 @@ public class EmployeeDocumentServiceUnitTest
     {
         var employeeId = 1;
 
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(employeeId))
                         .ReturnsAsync((EmployeeDto)null!);
 
         _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);
@@ -338,7 +338,7 @@ public class EmployeeDocumentServiceUnitTest
     {
         var employeeId = 1;
 
-        _employeeServiceMock.Setup(x => x.GetById(employeeId))
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(employeeId))
                         .ReturnsAsync((EmployeeDto)null!);
 
         _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeId)).ReturnsAsync(false);

@@ -233,7 +233,7 @@ public class EmployeeServiceUnitTests
 
         if (testCase == "Pass")
         {
-            var result = _employeeService.GetEmployee("dm@retrorabbit.co.za");
+            var result = _employeeService.GetEmployeeByEmail("dm@retrorabbit.co.za");
             Assert.NotNull(result);
         }
 
@@ -242,7 +242,7 @@ public class EmployeeServiceUnitTests
             _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(new List<Employee>().ToMockIQueryable());
 
-            var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployee(EmployeeTestData.EmployeeOne.Email!));
+            var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeByEmail(EmployeeTestData.EmployeeOne.Email!));
             Assert.Equal(testCase, failResult.Message);
         }
 
@@ -254,7 +254,7 @@ public class EmployeeServiceUnitTests
             _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .ReturnsAsync(true);
 
-            var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployee(EmployeeTestData.EmployeeTwo.Email!));
+            var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployeeByEmail(EmployeeTestData.EmployeeTwo.Email!));
             Assert.Equal(testCase, failResult.Message);
         }
     }
@@ -284,7 +284,7 @@ public class EmployeeServiceUnitTests
     {
         if (testCase == "Unauthorized Access")
         {
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.UpdateEmployee(EmployeeTestData.EmployeeTwo.ToDto(),EmployeeTestData.EmployeeTwo.Email!));
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.UpdateEmployee(EmployeeTestData.EmployeeTwo.ToDto()));
             Assert.Equal(testCase, failResultUnauthorized.Message);
         }
 
@@ -292,7 +292,7 @@ public class EmployeeServiceUnitTests
         {
             _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new List<Employee> { null }.ToMockIQueryable());
 
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.UpdateEmployee(EmployeeTestData.EmployeeTwo.ToDto(), EmployeeTestData.EmployeeTwo.Email!));
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.UpdateEmployee(EmployeeTestData.EmployeeTwo.ToDto()));
             Assert.Equal(testCase, failResultUnauthorized.Message);
         }
 
@@ -313,7 +313,7 @@ public class EmployeeServiceUnitTests
         _dbMock.Setup(r => r.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>())).Returns(empRoles.ToMockIQueryable());
         _dbMock.Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>())).Returns(roles.ToMockIQueryable());
 
-        var result = await _employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto(), "admin@retrorabbit.co.za");
+        var result = await _employeeService.UpdateEmployee(EmployeeTestData.EmployeeOne.ToDto());
 
         if (testCase == "Pass")
         {
@@ -330,7 +330,7 @@ public class EmployeeServiceUnitTests
     {
         if (testCase == "Unauthorized Access")
         {
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetById(EmployeeTestData.EmployeeTwo.Id!));
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployeeById(EmployeeTestData.EmployeeTwo.Id!));
             Assert.Equal(testCase, failResultUnauthorized.Message);
         }
 
@@ -339,7 +339,7 @@ public class EmployeeServiceUnitTests
             _dbMock.Setup(e => e.Employee.GetById(It.IsAny<int>()))
                 .ReturnsAsync((int id) => null);
 
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetById(EmployeeTestData.EmployeeTwo.Id!));
+            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeById(EmployeeTestData.EmployeeTwo.Id!));
             Assert.Equal(testCase, failResultUnauthorized.Message);
         }
 
@@ -348,7 +348,7 @@ public class EmployeeServiceUnitTests
 
         if (testCase == "Pass")
         {
-            var result = await _employeeService.GetById(EmployeeTestData.EmployeeOne.Id);
+            var result = await _employeeService.GetEmployeeById(EmployeeTestData.EmployeeOne.Id);
 
             Assert.NotNull(result);
             Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);

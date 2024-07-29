@@ -25,7 +25,7 @@ public class TerminationController : ControllerBase
         return CreatedAtAction(nameof(AddTermination), new { termination.Id }, termination);
     }
 
-    [Authorize(Policy = "AdminOrTalentOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetTerminationByEmployeeId([FromQuery] int employeeId)
     {

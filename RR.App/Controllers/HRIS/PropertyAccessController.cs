@@ -69,7 +69,7 @@ public class PropertyAccessController : ControllerBase
         if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
             throw new CustomException("Error retrieving employee.");
 
-        var employee = await _employeeService.GetEmployee(email);
+        var employee = await _employeeService.GetEmployeeByEmail(email);
         return employee == null
             ? throw new CustomException("Error retrieving employee.")
             : Ok(employee.Id);

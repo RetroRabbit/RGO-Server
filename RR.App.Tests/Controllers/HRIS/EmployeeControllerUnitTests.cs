@@ -128,7 +128,7 @@ public class EmployeeControllerUnitTests
         var principal = SetupClaimsProncipal(_employeeDto.Email!);
         SetupControllerContext(_controller, principal);
 
-        _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(It.IsAny<string>()))
                             .ReturnsAsync(_employeeDto);
 
         var result = await _controller.GetEmployeeByEmail(null);
@@ -143,7 +143,7 @@ public class EmployeeControllerUnitTests
         var principal = SetupClaimsProncipal(_employeeDto.Email!);
         SetupControllerContext(_controller, principal);
 
-        _employeeMockService.Setup(service => service.GetEmployee(It.IsAny<string>()))
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(It.IsAny<string>()))
                             .ReturnsAsync(_employeeDto);
 
         var result = await _controller.GetEmployeeByEmail(_employeeDto.Email);
@@ -158,10 +158,10 @@ public class EmployeeControllerUnitTests
     {
         _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
-        _employeeMockService.Setup(x => x.UpdateEmployee(_employeeDto, _employeeDto.Email))
+        _employeeMockService.Setup(x => x.UpdateEmployee(_employeeDto))
                                .ReturnsAsync(_employeeDto);
 
-        var result = await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email);
+        var result = await _controller.UpdateEmployee(_employeeDto);
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
 
         Assert.Equal(nameof(EmployeeController.UpdateEmployee), createdAtActionResult.ActionName);
@@ -175,10 +175,10 @@ public class EmployeeControllerUnitTests
     {
         _identity.SetupGet(i => i.Role).Returns("Developer");
         _identity.SetupGet(i => i.EmployeeId).Returns(5);
-        _employeeMockService.Setup(service => service.UpdateEmployee(_employeeDto, _employeeDto.Email))
+        _employeeMockService.Setup(service => service.UpdateEmployee(_employeeDto))
                             .ThrowsAsync(new CustomException("Unauthorized action."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployee(_employeeDto, _employeeDto.Email));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.UpdateEmployee(_employeeDto));
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
 
         Assert.Equal("Unauthorized action.", notFoundResult.Value);

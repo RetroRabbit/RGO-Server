@@ -34,11 +34,8 @@ public class TerminationService : ITerminationService
 
         if (modelExists) throw new CustomException("This model already exists");
 
-        if (_identity.IsSupport == false)
+        if (_identity.IsSupport == false && _identity.EmployeeId == terminationDto.EmployeeId)
             throw new CustomException("Unauthorized Access.");
-
-        if (_identity.EmployeeId == terminationDto.EmployeeId)
-            throw new CustomException("You cannot terminate yourself.");
 
         var currentEmployee = await _employeeService.GetEmployeeById(terminationDto.EmployeeId);
         currentEmployee.InactiveReason = terminationDto.TerminationOption.ToString();
@@ -67,9 +64,7 @@ public class TerminationService : ITerminationService
     {
         var modelExists = await TerminationExists(employeeId);
 
-        if (!modelExists) throw new CustomException("This termination does not exist.");
-
-        if (_identity.IsSupport == false)
+        if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
             throw new CustomException("Unauthorized Access.");
 
         return (await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId)).ToDto();

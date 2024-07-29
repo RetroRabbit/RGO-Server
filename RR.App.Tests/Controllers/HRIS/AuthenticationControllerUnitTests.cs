@@ -58,7 +58,7 @@ namespace RR.App.Tests.Controllers.HRIS
             };
 
             _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(true);
-            _employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
+            _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
             _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
             _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
             {
@@ -75,7 +75,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
             });
 
-            _employeeServiceMock.Setup(x => x.UpdateEmployee(It.IsAny<EmployeeDto>(), It.IsAny<string>()))
+            _employeeServiceMock.Setup(x => x.UpdateEmployee(It.IsAny<EmployeeDto>()))
                                 .ReturnsAsync((EmployeeDto employee, string email) =>
                                 {
                                     employee.AuthUserId = "updatedAuthId";
@@ -135,7 +135,7 @@ namespace RR.App.Tests.Controllers.HRIS
             };
 
             _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(true);
-            _employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
+            _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
             _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
             _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
             {
