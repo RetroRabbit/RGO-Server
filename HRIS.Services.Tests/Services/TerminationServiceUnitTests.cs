@@ -123,10 +123,10 @@ public class TerminationServiceUnitTests
         _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
             .ReturnsAsync(_employee.ToDto);
 
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType!.Name))
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType!.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employee.EmployeeType!.Name))
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeTypeByName(_employee.EmployeeType!.Name))
             .ReturnsAsync(_employeeType.ToDto);
 
         _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
@@ -163,10 +163,10 @@ public class TerminationServiceUnitTests
         _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
             .ReturnsAsync(_employee.ToDto);
 
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(EmployeeTypeTestData.DeveloperType!.Name))
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType!.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
-        _employeeTypeServiceMock.Setup(et => et.GetEmployeeType(_employee.EmployeeType!.Name))
+        _employeeTypeServiceMock.Setup(et => et.GetEmployeeTypeByName(_employee.EmployeeType!.Name))
             .ReturnsAsync(_employeeType.ToDto);
 
         _authServiceMock.Setup(a => a.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
