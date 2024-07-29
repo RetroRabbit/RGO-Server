@@ -32,21 +32,22 @@ namespace HRIS.Services.Tests.Services
             _employeeSalaryDetailsServiceMock = new Mock<IEmployeeSalaryDetailsService>();
             _employeeSalaryDetailsService = new EmployeeSalaryDetailsService(_dbMock.Object, _identity.Object);
 
-           _employeeSalaryDetails = new EmployeeSalaryDetails
+            _employeeSalaryDetails = new EmployeeSalaryDetails
             {
                 EmployeeId = EmployeeId,
                 Salary = 25000.00d
-           };
+            };
         }
 
         [Fact]
         public async Task GetEmployeeSalaryDetailsById_Success()
-        {          
+        {
             _identity.Setup(i => i.Role).Returns("Admin");
             _identity.Setup(x => x.EmployeeId).Returns(1);
 
-            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+            _dbMock.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .ReturnsAsync(true);
+
             var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetails> { _employeeSalaryDetails }.AsQueryable().BuildMockDbSet();
 
             _dbMock.Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
@@ -63,17 +64,15 @@ namespace HRIS.Services.Tests.Services
         public async Task GetEmployeeSalaryDetailsById_Unauthorized()
         {
             _identity.Setup(i => i.Role).Returns("Employee");
-            _identity.Setup(x => x.EmployeeId).Returns(5);
+            _identity.SetupGet(i => i.EmployeeId).Returns(2);
 
-            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-                .ReturnsAsync(true);
+            _dbMock.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
+            _dbMock.Setup(x => x.EmployeeSalaryDetails.GetById(It.IsAny<int>()))
+            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetails> { _employeeSalaryDetails }.AsQueryable().BuildMockDbSet();
-
-            _dbMock.Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
-                           .Returns(mockEmployeeSalaryDetailsDbSet.Object);
-
-            var exception = await Assert.ThrowsAsync<CustomException>(() => _employeeSalaryDetailsService.GetEmployeeSalaryById(EmployeeId));
+            var exception = await Assert.ThrowsAsync<CustomException>(() =>
+               _employeeSalaryDetailsService.GetEmployeeSalaryById(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.EmployeeId));
 
             Assert.Equivalent("Unauthorized Access.", exception.Message);
         }
@@ -81,7 +80,7 @@ namespace HRIS.Services.Tests.Services
         [Fact]
         public async Task GetEmployeeSalaryDetailsById_DoesNotExist()
         {
-            _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
+            _dbMock.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .ReturnsAsync(false);
 
             var mockEmployeeSalaryDetailsDbSet = new List<EmployeeSalaryDetails> { _employeeSalaryDetails }.AsQueryable().BuildMockDbSet();
@@ -155,7 +154,6 @@ namespace HRIS.Services.Tests.Services
                .ReturnsAsync(true);
             _dbMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(_testEmployee.EntityToList().AsQueryable().BuildMockDbSet().Object);
-
             _dbMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
                         .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
@@ -170,7 +168,6 @@ namespace HRIS.Services.Tests.Services
         {
             _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                .ReturnsAsync(false);
-
             _dbMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
                         .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
@@ -188,7 +185,6 @@ namespace HRIS.Services.Tests.Services
 
             _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                .ReturnsAsync(true);
-
             _dbMock.Setup(m => m.EmployeeSalaryDetails.Update(It.IsAny<EmployeeSalaryDetails>()))
                         .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
@@ -213,7 +209,7 @@ namespace HRIS.Services.Tests.Services
             _dbMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
             var result = await _employeeSalaryDetailsService.CreateEmployeeSalary(new EmployeeSalaryDetailsDto { Id = 0, EmployeeId = 7, Band = EmployeeSalaryBand.Level1, Salary = 1090, MinSalary = 1900, MaxSalary = 25990, Remuneration = 1599, Contribution = null, SalaryUpdateDate = new DateTime() });
-           
+
             _dbMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
 
             Assert.NotNull(result);
@@ -265,7 +261,6 @@ namespace HRIS.Services.Tests.Services
                            .ReturnsAsync(true);
             _dbMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockDbSet().Object.ToList());
-
             _dbMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
@@ -282,7 +277,6 @@ namespace HRIS.Services.Tests.Services
                            .ReturnsAsync(false);
             _dbMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockDbSet().Object.ToList());
-
             _dbMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
@@ -303,7 +297,6 @@ namespace HRIS.Services.Tests.Services
                            .ReturnsAsync(true);
             _dbMock.Setup(x => x.EmployeeSalaryDetails.GetAll(null))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockDbSet().Object.ToList());
-
             _dbMock.Setup(x => x.EmployeeSalaryDetails.Delete(It.IsAny<int>()))
                            .ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
