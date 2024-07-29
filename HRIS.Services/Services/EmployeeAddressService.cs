@@ -39,7 +39,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == addressId);
 
-        if (_identity.IsSupport == false || _identity.EmployeeId != employee!.Id)
+        if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");
 
         var address = await _db.EmployeeAddress.Delete(addressId);
@@ -57,7 +57,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == id);
 
-        if (_identity.IsSupport == false || _identity.EmployeeId != employee!.Id)
+        if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");
 
         var address = await _db.EmployeeAddress.FirstOrDefault(address => address.Id == id);
@@ -83,7 +83,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == employeeAddressDto.Id);
 
-        if (_identity.IsSupport == false || _identity.EmployeeId != employee!.Id)
+        if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");
 
         var address = await _db.EmployeeAddress.Add(new EmployeeAddress(employeeAddressDto));
@@ -102,7 +102,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
         var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == employeeAddressDto.Id);
 
-        if (_identity.IsSupport == false || _identity.EmployeeId != employee!.Id)
+        if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");
 
         var address = await _db.EmployeeAddress.Update(new EmployeeAddress(employeeAddressDto));
