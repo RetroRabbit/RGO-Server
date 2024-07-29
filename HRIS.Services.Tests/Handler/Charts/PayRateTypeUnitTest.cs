@@ -27,7 +27,7 @@ public class PayRateTypeUnitTest
         payRateType = new PayRateType();
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
         employeeAddressDto =
             new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
@@ -100,7 +100,7 @@ public class PayRateTypeUnitTest
     [Fact]
     public void PayRateTypeNullFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
 
         var employeeDto = CreateEmployee(null);
@@ -145,7 +145,7 @@ public class PayRateTypeUnitTest
     [Fact]
     public void PayRateTypeValueTestFail()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeTypeDto.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeTypeDto.Name))
                                 .Throws(new Exception("Failed to get employee type of employee"));
 
         var employeeDto = CreateEmployee(128);
