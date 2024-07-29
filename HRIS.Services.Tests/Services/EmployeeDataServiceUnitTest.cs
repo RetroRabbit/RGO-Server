@@ -16,6 +16,7 @@ public class EmployeeDataServiceUnitTest
     private readonly AuthorizeIdentityMock _supportIdentity;
     private readonly AuthorizeIdentityMock _nonSupportIdentity;
     private readonly EmployeeData _employeeData = EmployeeDataTestData.EmployeeDataOne;
+    private readonly EmployeeDataService _nonSupportDataService;
 
     public EmployeeDataServiceUnitTest()
     {
@@ -24,6 +25,7 @@ public class EmployeeDataServiceUnitTest
         _dbMock = new Mock<IUnitOfWork>();
         _employeeDataService = new EmployeeDataService(_dbMock.Object, _supportIdentity);
         _employeeData = EmployeeDataTestData.EmployeeDataOne;
+        _nonSupportDataService = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
     }
 
     [Fact]
@@ -72,12 +74,11 @@ public class EmployeeDataServiceUnitTest
     public async Task GetEmployeeDataFail_Unauthorized()
     {
         var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
-        var dataServiceWithNonSupportIdentity = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
 
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
            .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.GetEmployeeData(employeeId));
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.GetEmployeeData(employeeId));
     }
 
     [Fact]
@@ -125,14 +126,13 @@ public class EmployeeDataServiceUnitTest
     [Fact]
     public async Task CreateEmployeeDataTest_UnauthorizedAccess()
     {
-        var dataServiceWithNonSupportIdentity = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
         var newEmployeeDataDto = EmployeeDataTestData.EmployeeDataTwo.ToDto();
         newEmployeeDataDto.EmployeeId = 2;
 
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
             .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.CreateEmployeeData(newEmployeeDataDto));
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.CreateEmployeeData(newEmployeeDataDto));
     }
 
 
@@ -165,12 +165,10 @@ public class EmployeeDataServiceUnitTest
     [Fact]
     public async Task UpdateEmployeeDataFail_Unauthorized()
     {
-        var dataServiceWithNonSupportIdentity = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
-
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
            .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.UpdateEmployeeData(_employeeData.ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.UpdateEmployeeData(_employeeData.ToDto()));
     }
 
     [Fact]
@@ -212,11 +210,9 @@ public class EmployeeDataServiceUnitTest
     {
         var employeeDataId = EmployeeDataTestData.EmployeeDataOne.Id;
 
-        var dataServiceWithNonSupportIdentity = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
-
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
            .ReturnsAsync(true);
 
-        await Assert.ThrowsAsync<CustomException>(() => dataServiceWithNonSupportIdentity.DeleteEmployeeData(employeeDataId));
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.DeleteEmployeeData(employeeDataId));
     }
 }
