@@ -38,7 +38,7 @@ public class EmployeeAddressController : ControllerBase
     {
         try
         {
-            var savedAddress = await _employeeAddressService.Save(address);
+            var savedAddress = await _employeeAddressService.Create(address);
 
             return Ok(savedAddress);
         }

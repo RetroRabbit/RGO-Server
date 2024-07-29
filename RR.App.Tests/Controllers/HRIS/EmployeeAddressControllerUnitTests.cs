@@ -57,7 +57,7 @@ public class EmployeeAddressControllerUnitTests
     public async Task SaveEmployeeAddressReturnsOkResultWithSavedAddress()
     {
 
-        _employeeAddressServiceMock.Setup(s => s.Save(_employeeAddressDto))
+        _employeeAddressServiceMock.Setup(s => s.Create(_employeeAddressDto))
             .ReturnsAsync(_employeeAddressDto);
 
         var result = await _controller.SaveEmployeeAddress(_employeeAddressDto);
@@ -70,7 +70,7 @@ public class EmployeeAddressControllerUnitTests
     [Fact]
     public async Task SaveEmployeeAddressThrowsExceptionReturnsNotFoundResult()
     {
-        _employeeAddressServiceMock.Setup(s => s.Save(_employeeAddressDto))
+        _employeeAddressServiceMock.Setup(s => s.Create(_employeeAddressDto))
             .ThrowsAsync(new Exception("An error occurred while saving the address."));
 
         var result = await _controller.SaveEmployeeAddress(_employeeAddressDto);
