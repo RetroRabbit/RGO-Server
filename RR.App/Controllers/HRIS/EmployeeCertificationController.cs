@@ -22,36 +22,36 @@ public class EmployeeCertificationController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
-    public async Task<IActionResult> GetAllEmployeelCertiificates(int employeeId)
+    public async Task<IActionResult> GetEmployeeCertificationsByEmployeeId(int employeeId)
     {
         if ((_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey")) && employeeId != _identity.EmployeeId)
         {
             throw new CustomException("User data being accessed does not match user making the request.");
         }
          
-        var certificates = await _employeeCertificationService.GetAllEmployeeCertifications(employeeId);
+        var certificates = await _employeeCertificationService.GetEmployeeCertificationsByEmployeeId(employeeId);
         return Ok(certificates);
 
     }
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpPost]
-    public async Task<IActionResult> SaveEmployeeCertificate(EmployeeCertificationDto employeeCertificationDto)
+    public async Task<IActionResult> CreateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
     { 
-        var certificate = await _employeeCertificationService.SaveEmployeeCertification(employeeCertificationDto);
+        var certificate = await _employeeCertificationService.CreateEmployeeCertification(employeeCertificationDto);
         return Ok(certificate);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("employee-certificate")]
-    public async Task<IActionResult> GetEmployeeCertificate(int employeeId, int certificationId)
+    public async Task<IActionResult> GetEmployeeCertificationByEmployeeIdAndCertificationId(int employeeId, int certificationId)
     {
         if ((_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey")) && employeeId != _identity.EmployeeId)
         {
             throw new CustomException("User data being accessed does not match user making the request.");
         }
          
-        var certificate = await _employeeCertificationService.GetEmployeeCertification(employeeId, certificationId);
+        var certificate = await _employeeCertificationService.GetEmployeeCertificationByEmployeeIdAndCertificationId(employeeId, certificationId);
         return Ok(certificate);
 
     }

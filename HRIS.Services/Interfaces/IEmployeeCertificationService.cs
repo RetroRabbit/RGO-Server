@@ -9,7 +9,7 @@ public interface IEmployeeCertificationService
     /// </summary>
     /// <param name="employeeCertificationDto"></param>
     /// <returns></returns>
-    Task<EmployeeCertificationDto> SaveEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
+    Task<EmployeeCertificationDto> CreateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto);
 
     /// <summary>
     ///     Get Employee Certification
@@ -17,14 +17,14 @@ public interface IEmployeeCertificationService
     /// <param name="employeeId"></param>
     /// <param name="certificationId"></param>
     /// <returns></returns>
-    Task<EmployeeCertificationDto> GetEmployeeCertification(int employeeId, int certificationId);
+    Task<EmployeeCertificationDto> GetEmployeeCertificationByEmployeeIdAndCertificationId(int employeeId, int certificationId);
 
     /// <summary>
     ///     Get All Employee Certifications
     /// </summary>
     /// <param name="employeeId"></param>
     /// <returns></returns>
-    Task<List<EmployeeCertificationDto>> GetAllEmployeeCertifications(int employeeId);
+    Task<List<EmployeeCertificationDto>> GetEmployeeCertificationsByEmployeeId(int employeeId);
 
     /// <summary>
     ///     Update Employee Certification
