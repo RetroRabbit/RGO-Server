@@ -43,20 +43,20 @@ public class EmployeeService : IEmployeeService
 
         EmployeeAddressDto physicalAddress;
 
-        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!))
-            physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
+        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!.Id))
+            physicalAddress = await _employeeAddressService.Create(employeeDto.PhysicalAddress!);
         else
-            physicalAddress = await _employeeAddressService.Get(employeeDto.PhysicalAddress!);
+            physicalAddress = await _employeeAddressService.GetById(employeeDto.PhysicalAddress!.Id);
 
         employee.PhysicalAddressId = physicalAddress.Id;
 
         EmployeeAddressDto postalAddress;
 
         if (!await _employeeAddressService
-                .CheckIfExists(employeeDto.PostalAddress!))
-            postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
+                .CheckIfExists(employeeDto.PostalAddress!.Id))
+            postalAddress = await _employeeAddressService.Create(employeeDto.PostalAddress!);
         else
-            postalAddress = await _employeeAddressService.Get(employeeDto.PostalAddress!);
+            postalAddress = await _employeeAddressService.GetById(employeeDto.PostalAddress!.Id);
 
         employee.PostalAddressId = postalAddress.Id;
 
