@@ -46,7 +46,8 @@ public class EmployeeTestData
         HouseNo = null,
         EmergencyContactName = null,
         EmergencyContactNo = null,
-        Active = false
+        Active = false,
+        PhysicalAddressId = 1
     };
 
     public static Employee EmployeeTwo = new()

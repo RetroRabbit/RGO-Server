@@ -51,10 +51,23 @@ public class EmployeeService : IEmployeeService
 
         var employee = new Employee(employeeDto, existingEmployeeType);
 
-        var physicalAddress = await _employeeAddressService.Save(employeeDto.PhysicalAddress!);
+        EmployeeAddressDto physicalAddress;
+
+        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!.Id))
+            physicalAddress = await _employeeAddressService.Create(employeeDto.PhysicalAddress!);
+        else
+            physicalAddress = await _employeeAddressService.GetById(employeeDto.PhysicalAddress!.Id);
+
         employee.PhysicalAddressId = physicalAddress.Id;
 
-        var postalAddress = await _employeeAddressService.Save(employeeDto.PostalAddress!);
+        EmployeeAddressDto postalAddress;
+
+        if (!await _employeeAddressService
+                .CheckIfExists(employeeDto.PostalAddress!.Id))
+            postalAddress = await _employeeAddressService.Create(employeeDto.PostalAddress!);
+        else
+            postalAddress = await _employeeAddressService.GetById(employeeDto.PostalAddress!.Id);
+
         employee.PostalAddressId = postalAddress.Id;
 
         var roleDto = await _roleService.GetRole("Employee");
