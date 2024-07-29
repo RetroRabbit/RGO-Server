@@ -19,15 +19,7 @@ public class EmployeeTypeController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllEmployeeTypes()
     {
-        try
-        {
             var employeeTypes = await _employeeTypeService.GetAllEmployeeType();
-
             return Ok(employeeTypes);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
     }
 }
