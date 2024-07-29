@@ -24,39 +24,42 @@ public class EmployeeDataController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEmployeeData([FromQuery] int id)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && id != _identity.EmployeeId)
+        if (!_identity.IsSupport && id != _identity.EmployeeId)
             throw new CustomException("User data being accessed does not match user making the request.");
 
-        var data = await _employeeDataService.GetAllEmployeeData(id);
+        var data = await _employeeDataService.GetEmployeeData(id);
         return Ok(data);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost]
-    public async Task<IActionResult> SaveEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
+    public async Task<IActionResult> CreateEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
     {
-          if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeDataDto.EmployeeId != _identity.EmployeeId)
-          throw new CustomException("User data being accessed does not match user making the request.");
+        if (!_identity.IsSupport && employeeDataDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-          var data = await _employeeDataService.SaveEmployeeData(employeeDataDto);
-          return Ok(data);
+        var data = await _employeeDataService.CreateEmployeeData(employeeDataDto);
+        return Ok(data);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeData([FromBody] EmployeeDataDto employeeDataDto)
     {
-         if(_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeDataDto.EmployeeId != _identity.EmployeeId)
-         throw new CustomException("User data being accessed does not match user making the request.");
+        if (!_identity.IsSupport && employeeDataDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-         var data = await _employeeDataService.UpdateEmployeeData(employeeDataDto);
-         return Ok(data);
+        var data = await _employeeDataService.UpdateEmployeeData(employeeDataDto);
+        return Ok(data);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeData(int employeeDataId)
     {
+        if (!_identity.IsSupport)
+            throw new CustomException("Unauthorized Access.");
+
         var data = await _employeeDataService.DeleteEmployeeData(employeeDataId);
         return Ok(data);
     }
