@@ -52,11 +52,6 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto?> GetFieldCode(string name)
     {
-        //var fieldCodes = await _db.FieldCode.GetAll();
-        //var fieldCode = fieldCodes
-        //                .Where(fieldCode => fieldCode.Name == name && fieldCode.Status == ItemStatus.Active)
-        //                .Select(fieldCode => fieldCode.ToDto())
-        //                .FirstOrDefault();
         var fieldCode = await _db.FieldCode
             .Get(x => x.Name == name && x.Status == ItemStatus.Active)
             .AsNoTracking()
@@ -131,7 +126,7 @@ public class FieldCodeService : IFieldCodeService
         return fieldCode;
     }
 
-    public async Task<List<FieldCodeDto>> GetByCategory(int categoryIndex)
+    public async Task<List<FieldCodeDto>> GetFieldCodeByCategoryIndex(int categoryIndex)
     {
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");

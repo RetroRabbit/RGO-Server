@@ -43,5 +43,5 @@ public interface IFieldCodeService
     /// </summary>
     /// <param name="categoryName"></param>
     /// <returns>List of fieldCodes based on category</returns>
-    Task<List<FieldCodeDto>> GetByCategory(int categoryIndex);
+    Task<List<FieldCodeDto>> GetFieldCodeByCategoryIndex(int categoryIndex);
 }

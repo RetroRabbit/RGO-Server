@@ -167,7 +167,7 @@ public class FieldCodeServiceUnitTests
         _db.Setup(db => db.FieldCode.Get(It.IsAny<Expression<Func<FieldCode, bool>>>()))
                .Returns(fieldCodes.ToMockIQueryable());
 
-        var result = await _fieldCodeService.GetByCategory(categoryNumber);
+        var result = await _fieldCodeService.GetFieldCodeByCategoryIndex(categoryNumber);
 
         Assert.NotNull(result);
         Assert.Single(result);
@@ -180,16 +180,16 @@ public class FieldCodeServiceUnitTests
     [InlineData(3)]
     public async Task GetByCategoryFailUnauthorized(int categoryNumber)
     {
-        await Assert.ThrowsAsync<CustomException>(() => _nonSupportFieldCodeService.GetByCategory(categoryNumber));
+        await Assert.ThrowsAsync<CustomException>(() => _nonSupportFieldCodeService.GetFieldCodeByCategoryIndex(categoryNumber));
     }
 
     [Fact]
     public async Task GetByCategoryFail()
     {
         var invalid = 4;
-        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetByCategory(invalid));
+        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetFieldCodeByCategoryIndex(invalid));
 
         invalid = -1;
-        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetByCategory(invalid));
+        await Assert.ThrowsAsync<CustomException>(async () => await _fieldCodeService.GetFieldCodeByCategoryIndex(invalid));
     }
 }
