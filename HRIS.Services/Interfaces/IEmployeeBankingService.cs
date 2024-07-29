@@ -38,5 +38,12 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <param name="newEntry"></param>
     /// <returns>EmployeeBankingDto</returns>
-    Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry, string userEmail);
+    Task<EmployeeBankingDto> Create(EmployeeBankingDto newEntry, string userEmail);
+
+    /// <summary>
+    ///     Check if user exist
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Boolean to check if the employee qualification exists</returns>
+    Task<bool> CheckIfExists(int id);
 }

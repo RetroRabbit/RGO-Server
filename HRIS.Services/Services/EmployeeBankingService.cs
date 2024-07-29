@@ -1,6 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -10,14 +11,19 @@ namespace HRIS.Services.Services;
 public class EmployeeBankingService : IEmployeeBankingService
 {
     private readonly IUnitOfWork _db;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeBankingService(IUnitOfWork db)
+    public EmployeeBankingService(AuthorizeIdentity identity, IUnitOfWork db)
     {
+        _identity = identity;
         _db = db;
     }
 
     public async Task<List<EmployeeBanking>> Get(int approvalStatus)
     {
+        if (_identity.IsAdmin == false)
+            throw new CustomException("Unauthorized Access");
+
         var pendingBankEntries = await _db.EmployeeBanking
                                           .Get(entry => entry.Status == (BankApprovalStatus)approvalStatus)
                                           .AsNoTracking()
@@ -29,14 +35,29 @@ public class EmployeeBankingService : IEmployeeBankingService
         return pendingBankEntries;
     }
 
-    public async Task<EmployeeBankingDto> Delete(int addressId)
+    public async Task<EmployeeBankingDto> Delete(int id)
     {
-        var address = await _db.EmployeeBanking.Delete(addressId);
-        return address.ToDto();
+        var exists = await CheckIfExists(id);
+
+        if (!exists)
+            throw new CustomException("Employee Bankin Does Not Exist");
+
+        if (_identity.IsAdmin == false && _identity.EmployeeId != id)
+            throw new CustomException("Unauthorized Access");
+
+        var bankingDetails = await _db.EmployeeBanking.Delete(id);
+        return bankingDetails.ToDto();
     }
 
     public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail)
     {
+        var exists = await CheckIfExists(newEntry.EmployeeId);
+
+        if (exists)
+            throw new CustomException("Employee Banking Does Not Exist");
+
+        if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.EmployeeId)
+            throw new CustomException("Unauthorized Access");
 
         var empDto = await _db.Employee
                               .Get(employee => employee.Id == newEntry.EmployeeId)
@@ -51,7 +72,7 @@ public class EmployeeBankingService : IEmployeeBankingService
                                          .Select(banking => banking.ToDto())
                                          .FirstOrDefaultAsync();
 
-        if (empDto?.Email == userEmail || await IsAdmin(userEmail))
+        if (empDto?.Email == userEmail)
         {
             var bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
             var existingBankingRecords = await _db.EmployeeBanking
@@ -87,70 +108,44 @@ public class EmployeeBankingService : IEmployeeBankingService
         throw new CustomException("Unauthorized access.");
     }
 
-    public async Task<List<EmployeeBankingDto>> GetBanking(int employeeId)
+    public async Task<List<EmployeeBankingDto>> GetBanking(int id)
     {
-        try
-        {
-            var employeeBanking = await _db.EmployeeBanking
-                                           .Get(employeeBanking => employeeBanking.EmployeeId == employeeId)
-                                           .AsNoTracking()
-                                           .Include(employeeBanking => employeeBanking.Employee)
-                                           .Select(employeeBanking => employeeBanking.ToDto())
-                                           .ToListAsync();
+        var exists = await CheckIfExists(id);
 
-            return employeeBanking;
-        }
-        catch (Exception)
-        {
-            throw new CustomException("Employee banking details not found");
-        }
+        if (!exists)
+            throw new CustomException("Employee Banking Does Not Exist");
+
+        if (_identity.IsAdmin == false && _identity.EmployeeId != id)
+            throw new CustomException("Unauthorized Access");
+
+        var employeeBanking = await _db.EmployeeBanking
+                                       .Get(employeeBanking => employeeBanking.EmployeeId == id)
+                                       .AsNoTracking()
+                                       .Include(employeeBanking => employeeBanking.Employee)
+                                       .Select(employeeBanking => employeeBanking.ToDto())
+                                       .ToListAsync();
+
+        return employeeBanking;
     }
 
-    public async Task<EmployeeBankingDto> Save(EmployeeBankingDto newEntry, string userEmail)
+    public async Task<EmployeeBankingDto> Create(EmployeeBankingDto newEntry, string userEmail)
     {
+        var exists = await CheckIfExists(newEntry.Id);
+
+        if (exists)
+            throw new CustomException("Employee Banking Record Already Exists");
+
+        if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.EmployeeId)
+            throw new CustomException("Unauthorized Access");
+
         var bankingDetails = new EmployeeBanking(newEntry);
 
-        var employee = await _db.Employee
-                                .Get(employee => employee.Id == newEntry.EmployeeId)
-                                .Include(newEntry => newEntry.EmployeeType)
-                                .Select(employee => employee)
-                                .FirstAsync();
-
-        EmployeeBankingDto? newEntryDto;
-
-        if (employee.Email == userEmail)
-        {
-            newEntryDto = (await _db.EmployeeBanking.Add(bankingDetails)).ToDto();
-        }
-        else
-        {
-            if (await IsAdmin(userEmail))
-                newEntryDto = (await _db.EmployeeBanking.Add(bankingDetails)).ToDto();
-            else
-                throw new CustomException("Unauthorized access");
-        }
-
-        bankingDetails.Employee = employee;
-        return newEntryDto;
+        return bankingDetails.ToDto();
     }
 
-    private async Task<bool> IsAdmin(string userEmail)
+    public async Task<bool> CheckIfExists(int id)
     {
-        var employeeDto = await _db.Employee
-                                   .Get(emp => emp.Email == userEmail)
-                                   .Include(emp => emp.EmployeeType)
-                                   .Select(emp => emp.ToDto())
-                                   .FirstOrDefaultAsync();
-
-        var empRole = await _db.EmployeeRole
-                               .Get(role => role.EmployeeId == employeeDto!.Id)
-                               .FirstOrDefaultAsync();
-
-        var role = await _db.Role
-                            .Get(role => role.Id == empRole!.RoleId)
-                            .FirstOrDefaultAsync();
-
-        return role!.Description is "Admin" or "SuperAdmin";
+        return await _db.EmployeeBanking.Any(x => x.Id == id);
     }
 
     private EmployeeBankingDto CreateEmployeeBankingDto(EmployeeBankingDto newEntry, EmployeeBankingDto empBankingDto)

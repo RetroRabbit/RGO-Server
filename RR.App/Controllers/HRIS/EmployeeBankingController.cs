@@ -26,7 +26,7 @@ public class EmployeeBankingController : ControllerBase
     public async Task<IActionResult> AddBankingInfo([FromBody] EmployeeBankingDto newEntry)
     {
         var employeeBankingDto =
-            await _employeeBankingService.Save(newEntry, _identity.Email);
+            await _employeeBankingService.Create(newEntry, _identity.Email);
         return Ok(employeeBankingDto);
     }
 
@@ -40,9 +40,9 @@ public class EmployeeBankingController : ControllerBase
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpDelete]
-    public async Task<IActionResult> DeleteBankingInfo([FromQuery] int addressId)
+    public async Task<IActionResult> DeleteBankingInfo([FromQuery] int id)
     {
-        var deletedBanking = await _employeeBankingService.Delete(addressId);
+        var deletedBanking = await _employeeBankingService.Delete(id);
         return Ok(deletedBanking);
     }
 
