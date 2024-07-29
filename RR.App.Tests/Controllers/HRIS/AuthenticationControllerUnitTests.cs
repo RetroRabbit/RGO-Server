@@ -76,7 +76,7 @@ namespace RR.App.Tests.Controllers.HRIS
             });
 
             _employeeServiceMock.Setup(x => x.UpdateEmployee(It.IsAny<EmployeeDto>()))
-                                .ReturnsAsync((EmployeeDto employee, string email) =>
+                                .ReturnsAsync((EmployeeDto employee) =>
                                 {
                                     employee.AuthUserId = "updatedAuthId";
                                     return employee;

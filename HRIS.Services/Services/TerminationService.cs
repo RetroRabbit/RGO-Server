@@ -64,7 +64,9 @@ public class TerminationService : ITerminationService
     {
         var modelExists = await TerminationExists(employeeId);
 
-        if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
+        if (!modelExists) throw new CustomException("This termination does not exist.");
+
+        if (_identity.IsSupport == false || _identity.EmployeeId != employeeId)
             throw new CustomException("Unauthorized Access.");
 
         return (await _db.Termination.FirstOrDefault(termination => termination.EmployeeId == employeeId)).ToDto();

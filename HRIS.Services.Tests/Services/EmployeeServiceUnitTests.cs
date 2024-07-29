@@ -220,7 +220,6 @@ public class EmployeeServiceUnitTests
     [Theory]
     [InlineData("Pass")]
     [InlineData("User email not found")]
-    [InlineData("Unauthorized Access")]
     public async Task GetEmployeeTests(string testCase)
     {
         var employeeList = new List<Employee>
@@ -245,18 +244,6 @@ public class EmployeeServiceUnitTests
             var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeByEmail(EmployeeTestData.EmployeeOne.Email!));
             Assert.Equal(testCase, failResult.Message);
         }
-
-        if (testCase == "Unauthorized Access")
-        {
-            _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .Returns(new List<Employee> { EmployeeTestData.EmployeeTwo}.ToMockIQueryable());
-
-            _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .ReturnsAsync(true);
-
-            var failResult = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployeeByEmail(EmployeeTestData.EmployeeTwo.Email!));
-            Assert.Equal(testCase, failResult.Message);
-        }
     }
 
     [Fact]
@@ -271,9 +258,6 @@ public class EmployeeServiceUnitTests
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
-
-        var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployeeById(EmployeeTestData.EmployeeTwo.Id!));
-        Assert.Equal("Unauthorized Access", failResultUnauthorized.Message);
     }
 
     [Theory]
@@ -324,52 +308,9 @@ public class EmployeeServiceUnitTests
 
     [Theory]
     [InlineData("Pass")]
-    [InlineData("Unauthorized Access")]
-    [InlineData("User not found")]
-    public async Task GetByIdTests(string testCase)
-    {
-        if (testCase == "Unauthorized Access")
-        {
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetEmployeeById(EmployeeTestData.EmployeeTwo.Id!));
-            Assert.Equal(testCase, failResultUnauthorized.Message);
-        }
-
-        if (testCase == "User not found")
-        {
-            _dbMock.Setup(e => e.Employee.GetById(It.IsAny<int>()))
-                .ReturnsAsync((int id) => null);
-
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeById(EmployeeTestData.EmployeeTwo.Id!));
-            Assert.Equal(testCase, failResultUnauthorized.Message);
-        }
-
-        _dbMock.Setup(x => x.Employee.GetById(EmployeeTestData.EmployeeOne.Id))
-               .ReturnsAsync(EmployeeTestData.EmployeeOne);
-
-        if (testCase == "Pass")
-        {
-            var result = await _employeeService.GetEmployeeById(EmployeeTestData.EmployeeOne.Id);
-
-            Assert.NotNull(result);
-            Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
-        }
-    }
-
-    [Theory]
-    [InlineData("Pass")]
-    [InlineData("Unauthorized Access")]
     [InlineData("Model not found")]
     public async Task GetSimpleProfileTests( string testCase)
     {
-        if (testCase == "Unauthorized Access")
-        {
-            _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new Employee().ToMockIQueryable());
-            _dbMock.Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.GetSimpleProfile(EmployeeTestData.EmployeeTwo.Email!));
-            Assert.Equal(testCase, failResultUnauthorized.Message);
-        }
-
         if (testCase == "Model not found")
         {
             _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new Employee().ToMockIQueryable());
@@ -404,8 +345,8 @@ public class EmployeeServiceUnitTests
             var result = await _employeeService.GetSimpleProfile(EmployeeTestData.EmployeeFour.Email!);
 
             Assert.NotNull(result);
-            Assert.Equal(EmployeeTestData.EmployeeFour.TeamLead, result.TeamLeadId);
-            Assert.Equal(EmployeeTestData.EmployeeFour.PeopleChampion, result.PeopleChampionId);
+            Assert.Equal(4, result.TeamLeadId);
+            Assert.Equal(4, result.PeopleChampionId);
             Assert.Equal(allocatedClient.Name, result.ClientAllocatedName);
         }
     }

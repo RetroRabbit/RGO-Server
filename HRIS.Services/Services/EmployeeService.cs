@@ -141,17 +141,11 @@ public class EmployeeService : IEmployeeService
                                 .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
-        //if (_identity.IsSupport == false && _identity.EmployeeId != employee.Id)
-        //    throw new CustomException("Unauthorized Access");
-
         return employee;
     }
 
     public async Task<EmployeeDto> GetEmployeeById(int id)
     {
-        //if (_identity.IsSupport == false && _identity.EmployeeId != id)
-        //    throw new CustomException("Unauthorized Access");
-
         var employee = await _db.Employee
                                 .Get(employee => employee.Id == id)
                                 .AsNoTracking()
