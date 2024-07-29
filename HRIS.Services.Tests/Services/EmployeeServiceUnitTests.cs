@@ -52,7 +52,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task SaveEmployeeTest()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
         var employeeRole = new EmployeeRole
         {
@@ -61,14 +61,14 @@ public class EmployeeServiceUnitTests
             Role = EmployeeRoleTestData.RoleDtoEmployee
         };
 
-        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.SetupSequence(r => r.CheckIfExists(It.IsAny<int>()))
                                   .ReturnsAsync(false)
                                   .ReturnsAsync(true);
 
-        _employeeAddressServiceMock.Setup(r => r.Save(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(r => r.Create(It.IsAny<EmployeeAddressDto>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
-        _employeeAddressServiceMock.Setup(r => r.Get(It.IsAny<EmployeeAddressDto>()))
+        _employeeAddressServiceMock.Setup(r => r.GetById(It.IsAny<int>()))
                                   .ReturnsAsync(EmployeeAddressTestData.EmployeeAddressOne.ToDto());
 
         _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
@@ -100,7 +100,7 @@ public class EmployeeServiceUnitTests
     [Fact]
     public async Task DeleteEmployeeTest()
     {
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
                                .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         var employeeList = new List<Employee>
@@ -197,7 +197,7 @@ public class EmployeeServiceUnitTests
         List<EmployeeRole> empRoles = new() { empRole };
         List<Role> roles = new() { roleDto };
 
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name)).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name)).ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _dbMock.Setup(r => r.Employee.Update(It.IsAny<Employee>())).ReturnsAsync(EmployeeTestData.EmployeeOne);
         _dbMock.Setup(r => r.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(EmployeeTestData.EmployeeOne.ToMockIQueryable());

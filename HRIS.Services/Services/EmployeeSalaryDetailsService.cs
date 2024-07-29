@@ -6,7 +6,7 @@ using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Services;
 
-public class EmployeeSalaryDetailsService : IEmployeeSalarayDetailsService
+public class EmployeeSalaryDetailsService : IEmployeeSalaryDetailsService
 {
     private readonly IUnitOfWork _db;
 

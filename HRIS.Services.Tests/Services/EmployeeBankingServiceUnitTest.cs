@@ -70,7 +70,7 @@ public class EmployeeBankingServiceTest
     public async Task UpdateReturnsUpdateBank()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name!))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name!))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _mockUnitOfWork
@@ -91,7 +91,7 @@ public class EmployeeBankingServiceTest
     public async Task UpdateByAdminReturnsUpdateBank()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name!))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name!))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _mockUnitOfWork
@@ -123,7 +123,7 @@ public class EmployeeBankingServiceTest
     public async Task UpdateByPassReturnsUpdateBank()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _mockUnitOfWork
@@ -157,7 +157,7 @@ public class EmployeeBankingServiceTest
     public async Task SavePass()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _mockUnitOfWork
@@ -178,7 +178,7 @@ public class EmployeeBankingServiceTest
     public async Task SaveByAdminPass()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _mockUnitOfWork
@@ -212,7 +212,7 @@ public class EmployeeBankingServiceTest
     public async Task SaveUnauthorizedPass()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _mockUnitOfWork
@@ -270,7 +270,7 @@ public class EmployeeBankingServiceTest
     public async Task SaveFail()
     {
         _employeeTypeServiceMock
-            .Setup(r => r.GetEmployeeType(EmployeeTypeTestData.DeveloperType.Name))
+            .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
 
         _mockUnitOfWork

@@ -5,25 +5,25 @@ namespace HRIS.Services.Interfaces;
 public interface IEmployeeAddressService
 {
     /// <summary>
-    ///     Check if Employee Address Exists
+    /// Check if Employee Address Exists
     /// </summary>
-    /// <param name="employeeAddressDto"></param>
-    /// <returns>True or False</returns>
-    Task<bool> CheckIfExists(EmployeeAddressDto employeeAddressDto);
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<bool> CheckIfExists(int id);
 
     /// <summary>
-    ///     Save Employee Address
+    ///     Create Employee Address
     /// </summary>
     /// <param name="employeeAddressDto"></param>
     /// <returns>Employee Address</returns>
-    Task<EmployeeAddressDto> Save(EmployeeAddressDto employeeAddressDto);
+    Task<EmployeeAddressDto> Create(EmployeeAddressDto employeeAddressDto);
 
     /// <summary>
-    ///     Get Employee Address
+    /// Get Employee Address
     /// </summary>
-    /// <param name="employeeId"></param>
-    /// <returns>Employee Address</returns>
-    Task<EmployeeAddressDto> Get(EmployeeAddressDto employeeAddressDto);
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<EmployeeAddressDto> GetById(int id);
 
     /// <summary>
     ///     Update Employee Address
@@ -33,10 +33,10 @@ public interface IEmployeeAddressService
     Task<EmployeeAddressDto> Update(EmployeeAddressDto employeeAddressDto);
 
     /// <summary>
-    ///     Delete Employee Address
+    /// Delete Employee Address
     /// </summary>
-    /// <param name="employeeAddressDto"></param>
-    /// <returns>Employee Address</returns>
+    /// <param name="addressId"></param>
+    /// <returns></returns>
     Task<EmployeeAddressDto> Delete(int addressId);
 
     /// <summary>

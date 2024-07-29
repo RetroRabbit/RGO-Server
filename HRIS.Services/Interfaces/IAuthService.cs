@@ -4,6 +4,8 @@ namespace HRIS.Services.Interfaces;
 
 public interface IAuthService
 {
+    Task<string?> GetAuth0ManagementAccessToken();
+
     /// <summary>
     ///     Get all roles
     /// </summary>

@@ -46,7 +46,7 @@ public class TerminationService : ITerminationService
         currentEmployee.Active = false;
         await _authService.DeleteUser(currentEmployee.AuthUserId);
 
-        var employeeTypeDto = await _employeeTypeService.GetEmployeeType(currentEmployee.EmployeeType!.Name);
+        var employeeTypeDto = await _employeeTypeService.GetEmployeeTypeByName(currentEmployee.EmployeeType!.Name);
         await _db.Employee.Update(new Employee(currentEmployee, employeeTypeDto));
 
         return (await _db.Termination.Add(new Termination(terminationDto))).ToDto();

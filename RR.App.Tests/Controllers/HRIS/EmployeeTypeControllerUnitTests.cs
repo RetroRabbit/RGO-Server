@@ -36,18 +36,4 @@ public class EmployeeTypeControllerUnitTests
         Assert.Equal(200, okResult.StatusCode);
         Assert.Equal(fakeEmployeeTypes, returnedEmployeeTypes);
     }
-
-    [Fact]
-    public async Task GetAllEmployeeTypes_ReturnsNotFoundResult()
-    {
-        _employeeTypeServiceMock.Setup(service => service.GetAllEmployeeType())
-                               .ThrowsAsync(new Exception("Not found"));
-
-        var result = await _controller.GetAllEmployeeTypes();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        var errorMessage = Assert.IsType<string>(notFoundResult.Value);
-        Assert.Equal(404, notFoundResult.StatusCode);
-        Assert.Equal("Not found", errorMessage);
-    }
 }

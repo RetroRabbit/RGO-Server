@@ -27,7 +27,7 @@ public class EmployeeQualificationController : ControllerBase
         if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeQualificationDto.EmployeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
-        var newQualification = await _employeeQualificationService.SaveEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
+        var newQualification = await _employeeQualificationService.CreateEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
         return Ok(newQualification);
     }
 

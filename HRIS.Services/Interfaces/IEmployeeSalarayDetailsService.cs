@@ -2,7 +2,7 @@
 
 namespace HRIS.Services.Interfaces;
 
-public interface IEmployeeSalarayDetailsService
+public interface IEmployeeSalaryDetailsService
 {
     /// <summary>
     /// Save Employee Salary
