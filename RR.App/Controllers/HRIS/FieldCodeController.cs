@@ -52,7 +52,7 @@ public class FieldCodeController : ControllerBase
     [HttpGet("category")]
     public async Task<IActionResult> GetByCategory([FromQuery] int category)
     {
-        var categoryCodes = await _fieldCodeService.GetByCategory(category);
+        var categoryCodes = await _fieldCodeService.GetFieldCodeByCategoryIndex(category);
         return Ok(categoryCodes);
     }
 }

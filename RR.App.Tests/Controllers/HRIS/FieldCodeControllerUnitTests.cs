@@ -93,7 +93,7 @@ public class FieldCodeControllerTests
     [Fact]
     public async Task GetByCategoryValidCategoryReturnsOkResultWithCategoryCodes()
     {
-        _fieldCodeServiceMock.Setup(service => service.GetByCategory(1))
+        _fieldCodeServiceMock.Setup(service => service.GetFieldCodeByCategoryIndex(1))
                             .ReturnsAsync(_fieldCodeDtoList);
 
         var result = await _controller.GetByCategory(1);
