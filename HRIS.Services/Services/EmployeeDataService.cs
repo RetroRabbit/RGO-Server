@@ -38,19 +38,15 @@ public class EmployeeDataService : IEmployeeDataService
 
     public async Task<EmployeeDataDto> GetEmployeeData(int employeeId)
     {
-        var modelExists = await EmployeeDataExists(employeeId);
-        if (!modelExists)
-            throw new CustomException("Employee data does not exist");
+
 
         if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
         var employeeData = await _db.EmployeeData.GetById(employeeId);
 
-        if (employeeData == null)
-            throw new CustomException("No employee data record found");
 
-        return employeeData.ToDto();
+        return employeeData?.ToDto();
     }
 
     public async Task<EmployeeDataDto> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
