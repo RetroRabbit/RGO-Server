@@ -1,9 +1,47 @@
 ﻿using HRIS.Models.Enums;
 
 namespace HRIS.Models;
-
 public class SimpleEmployeeProfileDto
 {
+    public SimpleEmployeeProfileDto(EmployeeDto employeeDto) 
+    {
+        Id = employeeDto.Id;
+        EmployeeNumber = employeeDto.EmployeeNumber;
+        TaxNumber = employeeDto.TaxNumber;
+        EngagementDate = employeeDto.EngagementDate;
+        TerminationDate = employeeDto.TerminationDate;
+        Disability = employeeDto.Disability;
+        DisabilityNotes = employeeDto.DisabilityNotes;
+        Level = employeeDto.Level;
+        EmployeeType = employeeDto.EmployeeType;
+        Notes = employeeDto.Notes;
+        LeaveInterval = employeeDto.LeaveInterval;
+        SalaryDays = employeeDto.SalaryDays;
+        PayRate = employeeDto.PayRate;
+        Salary = employeeDto.Salary;
+        Name = employeeDto.Name;
+        Initials = employeeDto.Initials;
+        Surname = employeeDto.Surname;
+        DateOfBirth = employeeDto.DateOfBirth;
+        CountryOfBirth = employeeDto.CountryOfBirth;
+        Nationality = employeeDto.Nationality;
+        IdNumber = employeeDto.IdNumber;
+        PassportNumber = employeeDto.PassportNumber;
+        PassportExpirationDate = employeeDto.PassportExpirationDate;
+        PassportCountryIssue = employeeDto.PassportCountryIssue;
+        Race = employeeDto.Race;
+        Gender = employeeDto.Gender;
+        Photo = employeeDto.Photo;
+        Email = employeeDto.Email;
+        PersonalEmail = employeeDto.PersonalEmail;
+        CellphoneNo = employeeDto.CellphoneNo;
+        PhysicalAddress = employeeDto.PhysicalAddress;
+        PostalAddress = employeeDto.PostalAddress;
+        HouseNo = employeeDto.HouseNo;
+            EmergencyContactName = employeeDto.EmergencyContactName;
+        EmergencyContactNo = employeeDto.EmergencyContactNo;
+    }
+
     public int Id { get; set; }
     public string? EmployeeNumber { get; set; }
     public string? TaxNumber { get; set; }

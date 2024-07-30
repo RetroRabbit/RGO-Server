@@ -64,7 +64,7 @@ public class EmployeeDateServiceUnitTests
     [Fact]
     public async Task SavePassTest()
     {
-        _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateInput.Email))
+        _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(_employeeDateInput.Email))
                             .ReturnsAsync(_employee.ToDto());
 
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))
@@ -91,7 +91,7 @@ public class EmployeeDateServiceUnitTests
     [Fact]
     public async Task UpdatePassTest()
     {
-        _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateDto.Employee.Email))
+        _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(_employeeDateDto.Employee.Email))
                             .ReturnsAsync(_employee.ToDto());
 
         _mockDb.Setup(x => x.EmployeeDate.Any(It.IsAny<Expression<Func<EmployeeDate, bool>>>()))

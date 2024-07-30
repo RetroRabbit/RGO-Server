@@ -31,7 +31,7 @@ public class EmployeeRoleManageController : ControllerBase
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
             throw new CustomException("Invalid input");
 
-        var employee = await _employeeService.GetEmployee(email);
+        var employee = await _employeeService.GetEmployeeByEmail(email);
         if (employee == null)
             throw new CustomException("Employee not found.");
 
@@ -58,7 +58,7 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
-        var employee = await _employeeService.GetEmployee(email);
+        var employee = await _employeeService.GetEmployeeByEmail(email);
         if (employee == null)
             throw new CustomException("Employee not found.");
 
@@ -103,7 +103,7 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
-        var employee = await _employeeService.GetEmployee(email);
+        var employee = await _employeeService.GetEmployeeByEmail(email);
         if (employee == null)
             throw new CustomException("Employee not found.");
 

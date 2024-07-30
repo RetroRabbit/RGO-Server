@@ -15,7 +15,7 @@ public class PeopleChampionType : BaseDataType
             return null!;
 
         var id = (int)prop.GetValue(employee)!;
-        var task = services.GetService<IEmployeeService>()!.GetById(id);
+        var task = services.GetService<IEmployeeService>()!.GetEmployeeById(id);
         var champion = task.GetAwaiter().GetResult();
         return champion!.Name + ' ' + champion.Surname + ", ";
     }
