@@ -1,6 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -11,54 +12,51 @@ public class FieldCodeService : IFieldCodeService
 {
     private readonly IUnitOfWork _db;
     private readonly IFieldCodeOptionsService _fieldCodeOptionsService;
+    private readonly AuthorizeIdentity _identity;
 
-    public FieldCodeService(IUnitOfWork db, IFieldCodeOptionsService fieldCodeOptionsService)
+    public FieldCodeService(IUnitOfWork db, IFieldCodeOptionsService fieldCodeOptionsService, AuthorizeIdentity identity)
     {
         _db = db;
         _fieldCodeOptionsService = fieldCodeOptionsService;
+        _identity = identity;
     }
 
-    public async Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto)
+    public async Task<FieldCodeDto> CreateFieldCode(FieldCodeDto fieldCodeDto)
     {
-        if (fieldCodeDto.Id != 0)
-        {
-            return await UpdateFieldCode(fieldCodeDto);
-        }
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
 
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
-
-
         if (ifFieldCode != null) throw new CustomException("Field with that name found");
-
 
         var newFieldCode = await _db.FieldCode.Add(new FieldCode(fieldCodeDto));
         if (newFieldCode != null && fieldCodeDto.Options!.Count > 0)
+        {
             foreach (var option in fieldCodeDto.Options)
             {
                 var fieldCodeOptionsDto = new FieldCodeOptionsDto
                 {
-                   Id = 0,
-                   FieldCodeId = newFieldCode.Id,
-                   Option = option.Option
+                    Id = 0,
+                    FieldCodeId = newFieldCode.Id,
+                    Option = option.Option
                 };
                 await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
             }
+        }
 
         var options = await _fieldCodeOptionsService.GetFieldCodeOptions(newFieldCode!.Id);
-
         var dto = newFieldCode.ToDto();
-
         dto.Options = options;
         return dto;
     }
 
     public async Task<FieldCodeDto?> GetFieldCode(string name)
     {
-        var fieldCodes = await _db.FieldCode.GetAll();
-        var fieldCode = fieldCodes
-                        .Where(fieldCode => fieldCode.Name == name && fieldCode.Status == ItemStatus.Active)
-                        .Select(fieldCode => fieldCode.ToDto())
-                        .FirstOrDefault();
+        var fieldCode = await _db.FieldCode
+            .Get(x => x.Name == name && x.Status == ItemStatus.Active)
+            .AsNoTracking()
+            .Select(x => x.ToDto())
+            .FirstOrDefaultAsync();
 
         if (fieldCode != null)
         {
@@ -75,6 +73,7 @@ public class FieldCodeService : IFieldCodeService
         var fieldCode = fieldCodes
                         .Select(fieldCode => fieldCode.ToDto())
                         .ToList();
+
         if (fieldCode.Count != 0)
             foreach (var item in fieldCode)
             {
@@ -87,6 +86,9 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto> UpdateFieldCode(FieldCodeDto fieldCodeDto)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         await _db.FieldCode.Update(new FieldCode(fieldCodeDto));
         if (fieldCodeDto.Options!.Count > 0) await _fieldCodeOptionsService.UpdateFieldCodeOptions(fieldCodeDto.Options);
 
@@ -96,6 +98,9 @@ public class FieldCodeService : IFieldCodeService
 
     public async Task<FieldCodeDto> DeleteFieldCode(FieldCodeDto fieldCodeDto)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var ifFieldCode = await GetFieldCode(fieldCodeDto.Name!);
         if (ifFieldCode == null)
             throw new CustomException("No field with that name found");
@@ -121,8 +126,11 @@ public class FieldCodeService : IFieldCodeService
         return fieldCode;
     }
 
-    public async Task<List<FieldCodeDto>> GetByCategory(int categoryIndex)
+    public async Task<List<FieldCodeDto>> GetFieldCodeByCategoryIndex(int categoryIndex)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         if (categoryIndex < 0 || categoryIndex > 3)
             throw new CustomException("Invalid Index");
 
@@ -147,7 +155,6 @@ public class FieldCodeService : IFieldCodeService
                               .Get(field => field.Category == type)
                               .Select(field => field.ToDto())
                               .ToListAsync();
-
         return fields;
     }
 }
