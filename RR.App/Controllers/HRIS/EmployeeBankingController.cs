@@ -61,7 +61,7 @@ public class EmployeeBankingController : ControllerBase
         if (_identity.Role is not ("SuperAdmin" or "Admin") && _identity.EmployeeId != id)
             throw new CustomException("Unauthorized Access");
 
-        var employeeBanking = await _employeeBankingService.GetBanking(id);
+        var employeeBanking = await _employeeBankingService.GetBankingById(id);
         return Ok(employeeBanking);
     }
 }

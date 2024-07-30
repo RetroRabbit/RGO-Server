@@ -40,7 +40,7 @@ public class EmployeeBankingService : IEmployeeBankingService
         var exists = await CheckIfExists(id);
 
         if (!exists)
-            throw new CustomException("Employee Bankin Does Not Exist");
+            throw new CustomException("Employee Banking Does Not Exist");
 
         if (_identity.IsAdmin == false && _identity.EmployeeId != id)
             throw new CustomException("Unauthorized Access");
@@ -49,34 +49,34 @@ public class EmployeeBankingService : IEmployeeBankingService
         return bankingDetails.ToDto();
     }
 
-    public async Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail)
+    public async Task<EmployeeBankingDto> Update(EmployeeBankingDto employeeBankingDto, string userEmail)
     {
-        var exists = await CheckIfExists(newEntry.EmployeeId);
+        var exists = await CheckIfExists(employeeBankingDto.EmployeeId);
 
-        if (exists)
+        if (!exists)
             throw new CustomException("Employee Banking Does Not Exist");
 
-        if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.EmployeeId)
+        if (_identity.IsAdmin == false && _identity.EmployeeId != employeeBankingDto.EmployeeId)
             throw new CustomException("Unauthorized Access");
 
         var empDto = await _db.Employee
-                              .Get(employee => employee.Id == newEntry.EmployeeId)
+                              .Get(employee => employee.Id == employeeBankingDto.EmployeeId)
                               .AsNoTracking()
                               .Include(employee => employee.EmployeeType)
                               .Select(employee => employee.ToDto())
                               .FirstOrDefaultAsync();
 
         var empBankingDto = await _db.EmployeeBanking
-                                         .Get(banking => banking.Id == newEntry.Id)
+                                         .Get(banking => banking.Id == employeeBankingDto.Id)
                                          .AsNoTracking()
                                          .Select(banking => banking.ToDto())
                                          .FirstOrDefaultAsync();
 
         if (empDto?.Email == userEmail)
         {
-            var bankingDto = CreateEmployeeBankingDto(newEntry, empBankingDto);
+            var bankingDto = CreateEmployeeBankingDto(employeeBankingDto, empBankingDto);
             var existingBankingRecords = await _db.EmployeeBanking
-                .Get(b => b.EmployeeId == newEntry.EmployeeId)
+                .Get(b => b.EmployeeId == employeeBankingDto.EmployeeId)
                 .OrderBy(b => b.LastUpdateDate)
                 .ToListAsync();
 
@@ -88,16 +88,16 @@ public class EmployeeBankingService : IEmployeeBankingService
 
             var newBankingDetails = new EmployeeBanking
             {
-                EmployeeId = newEntry.EmployeeId,
-                BankName = newEntry.BankName,
-                Branch = newEntry.Branch,
-                AccountNo = newEntry.AccountNo,
-                AccountType = newEntry.AccountType,
-                Status = newEntry.Status,
-                DeclineReason = newEntry.DeclineReason,
-                File = newEntry.File,
+                EmployeeId = employeeBankingDto.EmployeeId,
+                BankName = employeeBankingDto.BankName,
+                Branch = employeeBankingDto.Branch,
+                AccountNo = employeeBankingDto.AccountNo,
+                AccountType = employeeBankingDto.AccountType,
+                Status = employeeBankingDto.Status,
+                DeclineReason = employeeBankingDto.DeclineReason,
+                File = employeeBankingDto.File,
                 LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
-                PendingUpdateDate = newEntry.PendingUpdateDate
+                PendingUpdateDate = employeeBankingDto.PendingUpdateDate
             };
 
             await _db.EmployeeBanking.Add(newBankingDetails);
@@ -108,7 +108,7 @@ public class EmployeeBankingService : IEmployeeBankingService
         throw new CustomException("Unauthorized access.");
     }
 
-    public async Task<List<EmployeeBankingDto>> GetBanking(int id)
+    public async Task<List<EmployeeBankingDto>> GetBankingById(int id)
     {
         var exists = await CheckIfExists(id);
 

@@ -16,15 +16,15 @@ public class EmployeeBankingServiceTest
     private readonly EmployeeBankingService _employeeBankingService;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly Mock<AuthorizeIdentityMock> _mockAuthorizeIdentity;
+    private readonly Mock<AuthorizeIdentityMock> _identity;
     private readonly List<Employee> _employeeList;
     private readonly List<EmployeeBanking> _employeeBankingList;
 
     public EmployeeBankingServiceTest()
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
-        _mockAuthorizeIdentity = new Mock<AuthorizeIdentityMock>();
-        _employeeBankingService = new EmployeeBankingService(_mockAuthorizeIdentity.Object ,_mockUnitOfWork.Object);
+        _identity = new Mock<AuthorizeIdentityMock>();
+        _employeeBankingService = new EmployeeBankingService(_identity.Object ,_mockUnitOfWork.Object);
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeList = EmployeeTestData.EmployeeOne.EntityToList();
         _employeeBankingList = EmployeeBankingTestData.EmployeeBankingOne.EntityToList();
@@ -33,6 +33,9 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task GetPendingReturnsPendingBankPass()
     {
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _mockUnitOfWork
             .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
             .Returns(EmployeeTestData.EmployeeOne.ToMockIQueryable());
@@ -71,6 +74,9 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task UpdateReturnsUpdateBank()
     {
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name!))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
@@ -92,6 +98,9 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task UpdateByAdminReturnsUpdateBank()
     {
+        _identity.Setup(i => i.Role).Returns("SuperAdmin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name!))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
@@ -116,7 +125,7 @@ public class EmployeeBankingServiceTest
             .Returns(roles.ToMockIQueryable());
 
         var result =
-            await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingOne.ToDto(), "admin.email@example.com");
+            await _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingOne.ToDto(), "Unauthorized access");
 
         Assert.Equivalent(EmployeeBankingTestData.EmployeeBankingOne.ToDto(), result);
     }
@@ -124,6 +133,9 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task UpdateByPassReturnsUpdateBank()
     {
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
@@ -158,6 +170,9 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task SavePass()
     {
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
@@ -179,6 +194,9 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task SaveByAdminPass()
     {
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
@@ -213,6 +231,9 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task SaveUnauthorizedPass()
     {
+        _identity.Setup(i => i.Role).Returns("Employee");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
@@ -247,12 +268,15 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task GetBankingPass()
     {
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Returns(new List<EmployeeBanking> { EmployeeBankingTestData.EmployeeBankingOne }.AsQueryable()
             .BuildMock());
 
-        var result = await _employeeBankingService.GetBanking(1);
+        var result = await _employeeBankingService.GetBankingById(1);
 
         Assert.NotNull(result);
         Assert.Equivalent(EmployeeBankingTestData.EmployeeBankingOne.ToDto(), result[0]);
@@ -261,16 +285,21 @@ public class EmployeeBankingServiceTest
     [Fact(Skip = "Needs Work")]
     public async Task GetBankingFail()
     {
+        _identity.Setup(i => i.Role).Returns("Journey");
+
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.FirstOrDefault(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
             .Throws<CustomException>();
 
-        await Assert.ThrowsAsync<CustomException>(async () => await _employeeBankingService.GetBanking(2));
+        await Assert.ThrowsAsync<CustomException>(async () => await _employeeBankingService.GetBankingById(2));
     }
 
     [Fact(Skip = "Needs Work")]
     public async Task SaveFail()
     {
+        _identity.Setup(i => i.Role).Returns("Admin");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
         _employeeTypeServiceMock
             .Setup(r => r.GetEmployeeTypeByName(EmployeeTypeTestData.DeveloperType.Name))
             .ReturnsAsync(EmployeeTypeTestData.DeveloperType.ToDto());
