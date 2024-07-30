@@ -53,7 +53,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
 
         var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == _identity.EmployeeId);
 
-     return qualifications.ToDto();
+     return qualifications?.ToDto();
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(
