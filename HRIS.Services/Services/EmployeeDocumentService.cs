@@ -20,7 +20,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
-        var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
+        var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
             throw new CustomException("employee not found");
@@ -76,7 +76,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> addNewAdditionalDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
-        var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
+        var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
             throw new CustomException("employee not found");
@@ -210,7 +210,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<bool> IsAdmin(string email)
     {
-        var checkingEmployee = (await _employeeService.GetEmployee(email))!;
+        var checkingEmployee = (await _employeeService.GetEmployeeByEmail(email))!;
 
         var empRole = (await _db.EmployeeRole
             .Get(role => role.EmployeeId == checkingEmployee!.Id)

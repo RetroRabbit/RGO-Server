@@ -141,14 +141,14 @@ public class PeopleChampionTypeUnitTest
         };
 
         var employeeServiceMock = new Mock<IEmployeeService>();
-        employeeServiceMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(peopleChampion.ToDto());
+        employeeServiceMock.Setup(x => x.GetEmployeeById(It.IsAny<int>())).ReturnsAsync(peopleChampion.ToDto());
 
         var employeeServiceProvider = employeeServiceMock.Object;
 
         _dbMock.Setup(e => e.Employee.GetById(peopleChampion.Id)).ReturnsAsync(peopleChampion!);
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.ToMockIQueryable());
-        var emp = await employeeServiceProvider.GetById(peopleChampion.Id);
+        var emp = await employeeServiceProvider.GetEmployeeById(peopleChampion.Id);
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddScoped(sp => employeeServiceMock.Object);
@@ -175,7 +175,7 @@ public class PeopleChampionTypeUnitTest
         };
 
         var employeeServiceMock = new Mock<IEmployeeService>();
-        employeeServiceMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(peopleChampion.ToDto());
+        employeeServiceMock.Setup(x => x.GetEmployeeById(It.IsAny<int>())).ReturnsAsync(peopleChampion.ToDto());
 
         var employeeServiceProvider = employeeServiceMock.Object;
 
@@ -186,7 +186,7 @@ public class PeopleChampionTypeUnitTest
         _dbMock.Setup(e => e.Employee.GetById(peopleChampion.Id)).ReturnsAsync(peopleChampion!);
         _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(employeeList.ToMockIQueryable());
-        var emp = await employeeServiceProvider.GetById(peopleChampion.Id);
+        var emp = await employeeServiceProvider.GetEmployeeById(peopleChampion.Id);
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddScoped(sp => employeeServiceMock.Object);

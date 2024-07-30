@@ -176,7 +176,7 @@ public class PropertyAccessControllerUnitTests
         _authorizeIdentityMock.SetupGet(x => x.Email).Returns("admin@example.com");
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Admin");
 
-        _employeeMockService.Setup(service => service.GetEmployee(email))
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email))
                             .ReturnsAsync(new EmployeeDto { Id = employeeId });
 
         var result = await _propertyAccessController.GetUserId(email);
@@ -185,7 +185,7 @@ public class PropertyAccessControllerUnitTests
         var returnedEmployeeId = Assert.IsType<int>(okResult.Value);
         Assert.Equal(employeeId, returnedEmployeeId);
 
-        _employeeMockService.Verify(service => service.GetEmployee(email), Times.Once);
+        _employeeMockService.Verify(service => service.GetEmployeeByEmail(email), Times.Once);
     }
 
     [Fact]

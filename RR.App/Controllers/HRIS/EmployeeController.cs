@@ -25,7 +25,7 @@ public class EmployeeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto newEmployee)
     {
-        var employee = await _employeeService.SaveEmployee(newEmployee);
+        var employee = await _employeeService.CreateEmployee(newEmployee);
         return CreatedAtAction(nameof(AddEmployee), new { email = employee.Email }, employee);
     }
 
@@ -49,17 +49,17 @@ public class EmployeeController : ControllerBase
     [HttpGet("by-email")]
     public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
     {
-        var employee = await _employeeService.GetEmployee(email ?? _identity.Email);
+        var employee = await _employeeService.GetEmployeeByEmail(email ?? _identity.Email);
         return Ok(employee);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
-    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] string userEmail)
+    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee)
     {
         if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" == false && employee.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized action.");
-        var updatedEmployee = await _employeeService.UpdateEmployee(employee, employee.Email);
+        var updatedEmployee = await _employeeService.UpdateEmployee(employee);
         return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
     }
 

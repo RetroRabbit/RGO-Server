@@ -5,11 +5,18 @@ namespace HRIS.Services.Interfaces;
 public interface IEmployeeService
 {
     /// <summary>
-    ///     Check if user exist
+    ///     Check if Email exists
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
-    Task<bool> CheckUserExist(string email);
+    Task<bool> CheckUserEmailExist(string email);
+
+    /// <summary>
+    ///     Check if Model exists
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<bool> CheckModelExist(int id);
 
     /// <summary>
     ///     Get all employees
@@ -22,7 +29,7 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="email"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto?> GetEmployee(string email);
+    Task<EmployeeDto?> GetEmployeeByEmail(string email);
 
     /// <summary>
     ///     Get employee by id
@@ -36,7 +43,7 @@ public interface IEmployeeService
     /// </summary>
     /// <param name="employeeDto"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto> SaveEmployee(EmployeeDto employeeDto);
+    Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto);
 
     /// <summary>
     ///     Update employee
@@ -44,7 +51,7 @@ public interface IEmployeeService
     /// <param name="employeeDto"></param>
     /// <param name="email"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto, string email);
+    Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto);
 
     /// <summary>
     ///     Delete employee
@@ -52,13 +59,6 @@ public interface IEmployeeService
     /// <param name="email"></param>
     /// <returns>EmployeeDto</returns>
     Task<EmployeeDto> DeleteEmployee(string email);
-
-    /// <summary>
-    ///     Get employee by the id
-    /// </summary>
-    /// <param name="employeeId"></param>
-    /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto?> GetById(int employeeId);
 
     /// <summary>
     ///     Get simple employee profile for non admin users

@@ -35,7 +35,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
         _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeSalaryDetailsDto.EmployeeId))
                             .ReturnsAsync(_employeeDto);
 
-        _employeeSalaryDetailsServiceMock.Setup(x => x.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
                                          .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.AddEmployeeSalary(_employeeSalaryDetailsDto);
@@ -60,7 +60,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     [Fact]
     public async Task AddEmployeeSalary_ValidRoleAndMatchingId_ReturnsCreatedAtActionResult()
     {
-        _employeeSalaryDetailsServiceMock.Setup(x => x.SaveEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
                                          .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.AddEmployeeSalary(_employeeSalaryDetailsDto);
@@ -110,7 +110,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     [Fact]
     public async Task GetSalariesByEmployeePass()
     {
-        _employeeSalaryDetailsServiceMock.Setup(x => x.GetEmployeeSalary(_employeeSalaryDetailsDto.EmployeeId))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.GetEmployeeSalaryById(_employeeSalaryDetailsDto.EmployeeId))
                                          .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.GetEmployeeSalary(_employeeSalaryDetailsDto.EmployeeId);
@@ -122,7 +122,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     [Fact]
     public async Task GetEmployeeSalary_ValidRoleAndMatchingId_ReturnsOkObjectResult()
     {
-        _employeeSalaryDetailsServiceMock.Setup(x => x.GetEmployeeSalary(_employeeSalaryDetailsDto.EmployeeId))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.GetEmployeeSalaryById(_employeeSalaryDetailsDto.EmployeeId))
                                          .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.GetEmployeeSalary(_employeeSalaryDetailsDto.EmployeeId);

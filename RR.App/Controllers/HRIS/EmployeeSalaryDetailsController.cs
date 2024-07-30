@@ -43,7 +43,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
         if (!_identity.IsSupport && (employeeId != _identity.EmployeeId))
             throw new CustomException("User data being accessed does not match user making the request.");
 
-        var employeeSalaries = await _employeeSalaryDetailsService.GetEmployeeSalary(employeeId);
+        var employeeSalaries = await _employeeSalaryDetailsService.GetEmployeeSalaryById(employeeId);
         return Ok(employeeSalaries);
     }
 
@@ -54,7 +54,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
         if (!_identity.IsSupport && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
             throw new CustomException("User data being accessed does not match user making the request.");
 
-        var employeeSalaries = await _employeeSalaryDetailsService.SaveEmployeeSalary(employeeSalaryDetailsDto);
+        var employeeSalaries = await _employeeSalaryDetailsService.CreateEmployeeSalary(employeeSalaryDetailsDto);
         return CreatedAtAction(nameof(AddEmployeeSalary), new { employeeId = employeeSalaries.EmployeeId }, employeeSalaries);
 
     }
