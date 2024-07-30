@@ -55,7 +55,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
      if (qualifications == null)
          throw new CustomException("No employee qualifications data.");
 
-     return qualifications?.ToDto();
+     return qualifications.ToDto();
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(
