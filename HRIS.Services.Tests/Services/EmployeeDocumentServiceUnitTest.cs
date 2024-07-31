@@ -28,7 +28,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _employeeServiceMock = new Mock<IEmployeeService>();
         _employeeDocumentServiceMock = new Mock<IEmployeeDocumentService>();
-        _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
+        _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
     }
 
@@ -157,7 +157,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet.Object);
 
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
 
         var result = await service.GetEmployeeDocument(EmployeeId, fileName, DocumentType.StarterKit);
 
@@ -225,7 +225,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                       .Returns(mockEmployeeDocumentDbSet.Object);
 
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
 
         var result = await service.GetEmployeeDocuments(EmployeeId, DocumentType.StarterKit);
 
@@ -268,7 +268,7 @@ public class EmployeeDocumentServiceUnitTest
                       .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
         SetupMockRoles();
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 2));
 
         var result = await service.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), "test@retrorabbit.co.za");
 
@@ -305,7 +305,7 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Delete(It.IsAny<int>()))
                       .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
-        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object);
+        var service = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
 
         var result = await service.DeleteEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id);
 

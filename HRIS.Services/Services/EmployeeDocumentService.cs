@@ -1,6 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -11,11 +12,13 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService)
+    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeService = employeeService;
+        _identity = identity;
     }
 
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
@@ -156,6 +159,11 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         if (!ifEmployeeExists)
             throw new CustomException("Employee not found");
 
+        if (_identity.EmployeeId == employeeDocumentDto.EmployeeId)
+        {
+            throw new CustomException("You cannot approve your own documents.");
+        }
+
         var employeeEmail = await _db.Employee
             .Get(employee => employee.Id == employeeDocumentDto.EmployeeId)
             .AsNoTracking()
@@ -165,7 +173,6 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         var sameEmail = email.Equals(employeeEmail);
         var isAdmin = await IsAdmin(email);
-        if (isAdmin && !sameEmail) employeeDocumentDto.Status = DocumentStatus.ActionRequired;
 
         var employeeDocument = new EmployeeDocument(employeeDocumentDto);
 
