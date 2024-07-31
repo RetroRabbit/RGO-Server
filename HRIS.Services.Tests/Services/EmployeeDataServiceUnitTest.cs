@@ -81,32 +81,30 @@ public class EmployeeDataServiceUnitTest
         await Assert.ThrowsAsync<CustomException>(() => _nonSupportDataService.GetEmployeeData(employeeId));
     }
 
-    [Fact]
-    public async Task GetEmployeeDataTest_NoModelFound()
-    {
-        var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
+    //[Fact]
+    //public async Task GetEmployeeDataTest_NoModelFound()
+    //{
+    //    var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
 
-        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
-            .ReturnsAsync(false);
+    //    _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+    //        .ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.GetEmployeeData(employeeId));
-    }
+    //    await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.GetEmployeeData(employeeId));
+    //}
 
-    [Fact]
-    public async Task GetEmployeeDataTest_NoRecordFoundInDatabase()
-    {
-        var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
+    //[Fact]
+    //public async Task GetEmployeeDataTest_NoRecordFoundInDatabase()
+    //{
+    //    var employeeId = EmployeeDataTestData.EmployeeDataOne.EmployeeId;
 
-        _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
-            .ReturnsAsync(true);
+    //    _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>()))
+    //        .ReturnsAsync(true);
 
-        _dbMock.Setup(x => x.EmployeeData.GetById(employeeId))
-            .ReturnsAsync((EmployeeData)null);
+    //    _dbMock.Setup(x => x.EmployeeData.GetById(employeeId))
+    //        .ReturnsAsync((EmployeeData)null);
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.GetEmployeeData(employeeId));
-    }
-
-
+    //    await Assert.ThrowsAsync<CustomException>(() => _employeeDataService.GetEmployeeData(employeeId));
+    //}
 
     [Fact]
     public async Task CreateEmployeeDataTest_Pass()

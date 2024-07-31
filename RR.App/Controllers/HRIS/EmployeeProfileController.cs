@@ -6,7 +6,7 @@ using HRIS.Services.Services;
 
 namespace RR.App.Controllers.HRIS;
 
-[Route("employee-profile-maybe")]
+[Route("employee-profile")]
 [ApiController]
 public class EmployeeProfileController : ControllerBase
 {

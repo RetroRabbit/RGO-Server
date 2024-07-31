@@ -50,7 +50,7 @@ public class EmployeeDataService : IEmployeeDataService
         //if (employeeData == null)
         //    throw new CustomException("No employee data record found");
 
-        return employeeData.ToDto();
+        return employeeData?.ToDto();
     }
 
     public async Task<EmployeeDataDto> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
