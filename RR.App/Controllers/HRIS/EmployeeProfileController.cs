@@ -2,6 +2,7 @@
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HRIS.Services.Services;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -9,16 +10,13 @@ namespace RR.App.Controllers.HRIS;
 [ApiController]
 public class EmployeeProfileController : ControllerBase
 {
-    private readonly AuthorizeIdentity _identity;
     private readonly IEmployeeProfileService _employeeProfileService;
 
     public EmployeeProfileController(AuthorizeIdentity identity, IEmployeeProfileService employeeProfileService)
     {
-        _identity = identity;
         _employeeProfileService = employeeProfileService;
     }
 
-    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetEmployeeProfileById([FromQuery] int? id)
     {

@@ -23,4 +23,5 @@ public class EmployeeProfileDto
     public string? Photo { get; set; }
     public bool Active { get; set; }
     public string? InactiveReason { get; set; }
+    public EmployeeAddressDto? PhysicalAddress { get; set; }
 }

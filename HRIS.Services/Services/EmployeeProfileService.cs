@@ -3,25 +3,25 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Services
 {
     internal class EmployeeProfileService : IEmployeeProfileService
     { 
         private readonly AuthorizeIdentity _identity;
-        private readonly UnitOfWork _db;
-        private readonly EmployeeDataService _employeeDataService;
-        private readonly EmployeeQualificationService _employeeQualificationService;
-        private readonly WorkExperienceService _workExperienceService;
-        private readonly EmployeeCertificationService _employeeCertificationService;
-        private readonly EmployeeBankingService _employeeBankingService;
+        private readonly IUnitOfWork _db;
+        private readonly IEmployeeDataService _employeeDataService;
+        private readonly IEmployeeQualificationService _employeeQualificationService;
+        private readonly IWorkExperienceService _workExperienceService;
+        private readonly IEmployeeCertificationService _employeeCertificationService;
+        private readonly IEmployeeBankingService _employeeBankingService;
         public EmployeeProfileService(AuthorizeIdentity identity,
-            EmployeeService employeeService, 
-            EmployeeDataService employeeDataService, 
-            EmployeeQualificationService employeeQualificationService,
-            WorkExperienceService workExperienceService,
-            EmployeeCertificationService employeeCertificationService,
-            EmployeeBankingService employeeBankingService, UnitOfWork db)
+            IEmployeeDataService employeeDataService,
+            IEmployeeQualificationService employeeQualificationService,
+            IWorkExperienceService workExperienceService,
+            IEmployeeCertificationService employeeCertificationService,
+            IEmployeeBankingService employeeBankingService, IUnitOfWork db)
         {
             _identity = identity;
             _db = db;
@@ -42,13 +42,15 @@ namespace HRIS.Services.Services
 
             var employee = await _db.Employee
                                     .Get(employee => employee.Id == id)
+                                    .AsNoTracking()
                                     .Include(employee => employee.EmployeeType)
                                     .Include(employee => employee.PhysicalAddress)
                                     .Include(employee => employee.PostalAddress)
                                     .Include(employee => employee.ChampionEmployee)
-                                    .Include(employee => employee.ClientAllocated)
                                     .Include(employee => employee.TeamLeadAssigned)
                                     .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
+
+            var clientAllocated = await _db.Client.Get(c => c.Id == employee.ClientAllocated).FirstOrDefaultAsync();
 
             EmployeeProfileDetailsDto employeeDetails = new EmployeeProfileDetailsDto
             {
@@ -64,7 +66,7 @@ namespace HRIS.Services.Services
                 ClientAllocatedId = employee.ClientAllocated,
                 PeopleChampionId = employee.PeopleChampion,
                 TeamLeadId = employee.TeamLead,
-                ClientAllocatedName = employee.ClientAssigned?.Name,
+                ClientAllocatedName = clientAllocated?.Name,
                 PeopleChampionName = employee.ChampionEmployee?.Name + " " + employee.ChampionEmployee?.Surname,
                 TeamLeadName = employee.TeamLeadAssigned?.Name + " " + employee.TeamLeadAssigned?.Surname,
             };
@@ -93,7 +95,11 @@ namespace HRIS.Services.Services
 
             EmployeeProfileSalaryDto salaryDetails = new EmployeeProfileSalaryDto
             {
-
+                Salary = employee.Salary,
+                PayRate = employee.PayRate,
+                SalaryDays = employee.SalaryDays,
+                TaxNumber = employee.TaxNumber,
+                LeaveInterval = employee.LeaveInterval
             };
 
             var employeeData = await _employeeDataService.GetEmployeeData(employeeId);
@@ -107,12 +113,12 @@ namespace HRIS.Services.Services
                 EmployeeProfileDetails = employeeDetails,
                 EmployeeProfilePersonal = personalDetails,
                 EmployeeProfileContact = contactDetails,
-                EmployeeProfileSalary = salaryDetails,
-                EmployeeData = employeeData,
                 EmployeeQualification = employeeQualification,
                 WorkExperience = employeeWorkExperience,
                 EmployeeCertifications = employeeCertifications,
                 EmployeeBanking = employeeBanking,
+                EmployeeData = employeeData,
+                EmployeeProfileSalary = salaryDetails,
 
                 AuthUserId = employee.AuthUserId,
                 EmployeeNumber = employee.EmployeeNumber,
@@ -123,7 +129,8 @@ namespace HRIS.Services.Services
                 PassportNumber = employee.PassportNumber,
                 TerminationDate = employee.TerminationDate,
                 Active = employee.Active,
-                InactiveReason = employee.InactiveReason
+                InactiveReason = employee.InactiveReason,
+                PhysicalAddress = employee.PhysicalAddress?.ToDto()
             };
 
             return employeeProfile;
