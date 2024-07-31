@@ -9,5 +9,5 @@ public interface IEmployeeProfileService
     /// </summary>
     /// <param name="employeeEmail"></param>
     /// <returns>An employee dto including type and addresses</returns>
-    Task<EmployeeProfileDto> GetEmployeeProfileByEmail(string employeeEmail);
+    Task<EmployeeProfileDto> GetEmployeeProfileById(int? id);
 }

@@ -1,14 +1,11 @@
-﻿using HRIS.Models;
-using HRIS.Services.Interfaces;
-using HRIS.Services.Services;
+﻿using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace RR.App.Controllers.HRIS;
 
-[Route("employee-profile")]
+[Route("employee-profile-maybe")]
 [ApiController]
 public class EmployeeProfileController : ControllerBase
 {
@@ -21,13 +18,11 @@ public class EmployeeProfileController : ControllerBase
         _employeeProfileService = employeeProfileService;
     }
 
-   
-
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet]
-    public async Task<IActionResult> GetEmployeeProfileById([FromQuery] string? email)
+    public async Task<IActionResult> GetEmployeeProfileById([FromQuery] int? id)
     {
-        var employee = await _employeeProfileService.GetEmployeeProfileByEmail(email);
+        var employee = await _employeeProfileService.GetEmployeeProfileById(id);
         return Ok(employee);
     }
 }
