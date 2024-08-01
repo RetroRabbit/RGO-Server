@@ -58,25 +58,10 @@ public class WorkExperienceController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateWorkExperience([FromBody] WorkExperienceDto workExperience)
     {
-        try
-        {
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                await _workExperienceService.Update(workExperience);
-                return Ok(workExperience);
-            }
+        if (!_identity.IsSupport && workExperience.Id != _identity.EmployeeId)
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-            if (workExperience.Id == _identity.EmployeeId)
-            {
-                await _workExperienceService.Update(workExperience);
-                return Ok(workExperience);
-            }
-
-            return NotFound("User data being accessed does not match user making the request.");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest("Work experience could not be updated");
-        }
+        await _workExperienceService.Update(workExperience);
+        return Ok(workExperience);
     }
 }
