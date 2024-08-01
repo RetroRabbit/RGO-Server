@@ -23,13 +23,13 @@ public class WorkExperienceController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost]
-    public async Task<IActionResult> SaveWorkExperience([FromBody] WorkExperienceDto newWorkExperience)
+    public async Task<IActionResult> CreateWorkExperience([FromBody] WorkExperienceDto newWorkExperience)
     {
         if (!_identity.IsSupport && newWorkExperience.EmployeeId != _identity.EmployeeId)
             throw new CustomException("User data being accessed does not match user making the request.");
 
         var workExperience = await _workExperienceService.Save(newWorkExperience);
-        return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
+        return CreatedAtAction(nameof(CreateWorkExperience), workExperience);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
@@ -50,8 +50,8 @@ public class WorkExperienceController : ControllerBase
         if (!_identity.IsSupport && id != _identity.EmployeeId)
             throw new CustomException("User data being accessed does not match user making the request.");
 
-        await _workExperienceService.Delete(id);
-        return Ok();
+        var workExperienceData = await _workExperienceService.Delete(id);
+        return Ok(workExperienceData);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
@@ -61,7 +61,7 @@ public class WorkExperienceController : ControllerBase
         if (!_identity.IsSupport && workExperience.Id != _identity.EmployeeId)
             throw new CustomException("User data being accessed does not match user making the request.");
 
-        await _workExperienceService.Update(workExperience);
-        return Ok(workExperience);
+        var workExperienceData = await _workExperienceService.Update(workExperience);
+        return Ok(workExperienceData);
     }
 }
