@@ -24,29 +24,13 @@ public class WorkExperienceController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SaveWorkExperience([FromBody] WorkExperienceDto newWorkExperience)
     {
-        try
+        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" && newWorkExperience.EmployeeId == _identity.EmployeeId)
         {
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                var workExperience = await _workExperienceService.Save(newWorkExperience);
-                return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
-            }
-
-            if (newWorkExperience.EmployeeId == _identity.EmployeeId)
-            {
-                var workExperience = await _workExperienceService.Save(newWorkExperience);
-                return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
-            }
-
-            return NotFound("User data being accessed does not match user making the request.");
+            var workExperience = await _workExperienceService.Save(newWorkExperience);
+            return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
         }
-        catch (Exception ex)
-        {
-            if (ex.Message.Contains("work experience exists"))
-                return BadRequest("work experience exists");
 
-            return Problem("Could not save data.", statusCode: 500);
-        }
+        return NotFound("User data being accessed does not match user making the request.");
 
     }
 
@@ -123,7 +107,7 @@ public class WorkExperienceController : ControllerBase
             return NotFound("User data being accessed does not match user making the request.");
         }
         catch (Exception ex)
-        { 
+        {
             return BadRequest("Work experience could not be updated");
         }
     }
