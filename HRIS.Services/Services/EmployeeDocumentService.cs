@@ -30,7 +30,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         var sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
-        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
+        var status = isAdmin && !sameEmail ? DocumentStatus.PendingApproval : DocumentStatus.ActionRequired;
         var docType = DocumentType.StarterKit;
 
         switch (documentType)
@@ -170,9 +170,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
             .Select(employee => employee.Email)
             .FirstAsync();
 
-
         var sameEmail = email.Equals(employeeEmail);
-        var isAdmin = await IsAdmin(email);
 
         var employeeDocument = new EmployeeDocument(employeeDocumentDto);
 
