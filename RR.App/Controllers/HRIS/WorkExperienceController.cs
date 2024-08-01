@@ -46,26 +46,11 @@ public class WorkExperienceController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> DeleteWorkExperience([FromQuery] int id)
     {
-        try
-        {
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                await _workExperienceService.Delete(id);
-                return Ok();
-            }
+        if (!_identity.IsSupport && id != _identity.EmployeeId)
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-            if (id == _identity.EmployeeId)
-            {
-                await _workExperienceService.Delete(id);
-                return Ok();
-            }
-
-            return NotFound("User data being accessed does not match user making the request.");
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        await _workExperienceService.Delete(id);
+        return Ok();
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
