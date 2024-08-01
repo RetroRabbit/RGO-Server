@@ -24,7 +24,7 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <param name="newEntry"></param>
     /// <returns></returns>
-    Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry, string userEmail);
+    Task<EmployeeBankingDto> Update(EmployeeBankingDto newEntry);
 
     /// <summary>
     ///     Fetch banking of Employee
@@ -38,12 +38,12 @@ public interface IEmployeeBankingService
     /// </summary>
     /// <param name="newEntry"></param>
     /// <returns>EmployeeBankingDto</returns>
-    Task<EmployeeBankingDto> Create(EmployeeBankingDto newEntry, string userEmail);
+    Task<EmployeeBankingDto> Create(EmployeeBankingDto newEntry);
 
     /// <summary>
     ///     Check if user exist
     /// </summary>
     /// <param name="id"></param>
     /// <returns>Boolean to check if the employee qualification exists</returns>
-    Task<bool> CheckIfExists(int id);
+    Task<bool> EmployeeBankingDetailsExist(int id);
 }

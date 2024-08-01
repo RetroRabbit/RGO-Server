@@ -91,7 +91,7 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task UpdateValidDataReturnsOkResult()
     {
-        _employeeBankingServiceMock.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
+        _employeeBankingServiceMock.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>()))
                    .ReturnsAsync(_employeeBankingDto);
 
         var result = await _controller.Update(_employeeBankingDto);

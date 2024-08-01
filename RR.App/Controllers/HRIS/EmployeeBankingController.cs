@@ -26,7 +26,7 @@ public class EmployeeBankingController : ControllerBase
     public async Task<IActionResult> AddBankingInfo([FromBody] EmployeeBankingDto newEntry)
     {
         var employeeBankingDto =
-            await _employeeBankingService.Create(newEntry, _identity.Email);
+            await _employeeBankingService.Create(newEntry);
         return Ok(employeeBankingDto);
     }
 
@@ -50,7 +50,7 @@ public class EmployeeBankingController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] EmployeeBankingDto updateEntry)
     {
-        await _employeeBankingService.Update(updateEntry, _identity.Email);
+        await _employeeBankingService.Update(updateEntry);
         return Ok();
     }
 
