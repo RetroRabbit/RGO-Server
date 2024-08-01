@@ -24,14 +24,11 @@ public class WorkExperienceController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SaveWorkExperience([FromBody] WorkExperienceDto newWorkExperience)
     {
-        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" && newWorkExperience.EmployeeId == _identity.EmployeeId)
-        {
-            var workExperience = await _workExperienceService.Save(newWorkExperience);
-            return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
-        }
+        if (!_identity.IsSupport && newWorkExperience.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-        return NotFound("User data being accessed does not match user making the request.");
-
+        var workExperience = await _workExperienceService.Save(newWorkExperience);
+        return CreatedAtAction(nameof(SaveWorkExperience), workExperience);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
