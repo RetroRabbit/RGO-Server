@@ -35,26 +35,11 @@ public class WorkExperienceController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetWorkExperienceById([FromQuery] int id)
     {
-        try
-        {
-            if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey")
-            {
-                var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
-                return Ok(workExperienceData);
-            }
+        if (!_identity.IsSupport && id != _identity.EmployeeId)
+            throw new CustomException("User data being accessed does not match user making the request.");
 
-            if (id == _identity.EmployeeId)
-            {
-                var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
-                return Ok(workExperienceData);
-            }
-
-            return NotFound("User data being accessed does not match user making the request.");
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var workExperienceData = await _workExperienceService.GetWorkExperienceByEmployeeId(id);
+        return Ok(workExperienceData);
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
