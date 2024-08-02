@@ -43,7 +43,7 @@ public class EmployeeRoleManageControllerUnitTests
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
         var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
@@ -74,7 +74,7 @@ public class EmployeeRoleManageControllerUnitTests
         var email = "test@example.com";
         var role = "Admin";
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync((EmployeeDto)null);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync((EmployeeDto)null);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.AddRole(email, role));
 
@@ -90,7 +90,7 @@ public class EmployeeRoleManageControllerUnitTests
 
         var employee = new EmployeeDto { Email = email };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync((List<Auth0.ManagementApi.Models.User>)null);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.AddRole(email, role));
@@ -114,7 +114,7 @@ public class EmployeeRoleManageControllerUnitTests
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
         var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
@@ -136,7 +136,7 @@ public class EmployeeRoleManageControllerUnitTests
         var email = "test@example.com";
         var role = "Admin";
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync((EmployeeDto)null);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync((EmployeeDto)null);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.UpdateRole(email, role));
 
@@ -152,7 +152,7 @@ public class EmployeeRoleManageControllerUnitTests
 
         var employee = new EmployeeDto { Email = email };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync((List<Auth0.ManagementApi.Models.User>)null);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.UpdateRole(email, role));
@@ -173,7 +173,7 @@ public class EmployeeRoleManageControllerUnitTests
                  new Auth0.ManagementApi.Models.User { UserId = "1" }
         };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
@@ -204,7 +204,7 @@ public class EmployeeRoleManageControllerUnitTests
         var previousRole = new Role { Id = "previousRoleId", Description = "User" };
         var authRoles = new List<Auth0.ManagementApi.Models.Role> { previousRole, new Role { Id = "authRoleId", Description = role } };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
@@ -246,7 +246,7 @@ public class EmployeeRoleManageControllerUnitTests
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
         var employeeRoleDto = new EmployeeRoleDto { Id = 1, Employee = employee, Role = roleDto };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
         _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync(employeeRoleDto);
@@ -279,7 +279,7 @@ public class EmployeeRoleManageControllerUnitTests
         var email = "test@example.com";
         var role = "Admin";
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync((EmployeeDto)null);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync((EmployeeDto)null);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.RemoveRole(email, role));
 
@@ -293,7 +293,7 @@ public class EmployeeRoleManageControllerUnitTests
         var email = "test@example.com";
         var role = "Admin";
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Email = email });
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(new EmployeeDto { Email = email });
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync((RoleDto)null);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(() => _controller.RemoveRole(email, role));
@@ -311,7 +311,7 @@ public class EmployeeRoleManageControllerUnitTests
         var employee = new EmployeeDto { Email = email };
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync((List<Auth0.ManagementApi.Models.User>)null);
 
@@ -335,7 +335,7 @@ public class EmployeeRoleManageControllerUnitTests
 
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
         _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null);
@@ -362,7 +362,7 @@ public class EmployeeRoleManageControllerUnitTests
 
         var roleDto = new RoleDto { Id = 1, Description = role, AuthRoleId = "authRoleId" };
 
-        _employeeMockService.Setup(service => service.GetEmployee(email)).ReturnsAsync(employee);
+        _employeeMockService.Setup(service => service.GetEmployeeByEmail(email)).ReturnsAsync(employee);
         _authMockService.Setup(service => service.GetUsersByEmailAsync(email)).ReturnsAsync(authUser);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
         _employeeRoleMockService.Setup(service => service.GetEmployeeRole(email)).ReturnsAsync((EmployeeRoleDto)null);
