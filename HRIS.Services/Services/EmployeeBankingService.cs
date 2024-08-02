@@ -40,10 +40,7 @@ public class EmployeeBankingService : IEmployeeBankingService
         var exists = await EmployeeBankingDetailsExist(id);
 
         if (!exists)
-            throw new CustomException("Employee Not Found");
-
-        if (_identity.IsAdmin == false && _identity.EmployeeId != id)
-            throw new CustomException("Unauthorized Access");
+            throw new CustomException("Employee Banking Not Found");
 
         var bankingDetails = await _db.EmployeeBanking.Delete(id);
         return bankingDetails.ToDto();
@@ -56,7 +53,7 @@ public class EmployeeBankingService : IEmployeeBankingService
         if (!exists)
             throw new CustomException("Employee Not Found");
 
-        if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.Id)
+        if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.EmployeeId)
             throw new CustomException("Unauthorized Access");
 
         var empDto = await _db.Employee
@@ -77,11 +74,8 @@ public class EmployeeBankingService : IEmployeeBankingService
                 .OrderBy(b => b.LastUpdateDate)
                 .ToListAsync();
 
-        if (existingBankingRecords.Count > 1)
-        {
-            var oldestRecord = existingBankingRecords.First();
-            await _db.EmployeeBanking.Delete(oldestRecord.Id);
-        }
+        var oldestRecord = existingBankingRecords.First();
+        await _db.EmployeeBanking.Delete(oldestRecord.Id);
 
         var newBankingDetails = new EmployeeBanking
         {
@@ -127,9 +121,9 @@ public class EmployeeBankingService : IEmployeeBankingService
         var exists = await EmployeeBankingDetailsExist(newEntry.Id);
 
         if (exists)
-            throw new CustomException("Employee Not Found");
+            throw new CustomException("Employee Banking Already Exists");
 
-        if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.Id)
+        if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.EmployeeId)
             throw new CustomException("Unauthorized Access");
 
         var employee = await _db.Employee
