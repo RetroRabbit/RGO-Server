@@ -189,7 +189,6 @@ internal class EmployeeProfileService : IEmployeeProfileService
         EmployeeProfileBankingInformationDto employeeBankingInformation = new EmployeeProfileBankingInformationDto
         {
             EmployeeBanking = employeeBanking,
-            EmployeeProfileSalary = employeeSalary,
             EmployeeData = employeeData,
         };
 
