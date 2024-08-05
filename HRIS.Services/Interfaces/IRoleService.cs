@@ -22,7 +22,7 @@ public interface IRoleService
     /// </summary>
     /// <param name="roleDto"></param>
     /// <returns></returns>
-    Task<RoleDto> SaveRole(RoleDto roleDto);
+    Task<RoleDto> CreateRole(RoleDto roleDto);
 
     /// <summary>
     ///     Update Role

@@ -29,7 +29,7 @@ public interface IRoleAccessLinkService
     /// </summary>
     /// <param name="roleAccessLinkDto"></param>
     /// <returns></returns>
-    Task<RoleAccessLinkDto> Save(RoleAccessLinkDto roleAccessLinkDto);
+    Task<RoleAccessLinkDto> Create(RoleAccessLinkDto roleAccessLinkDto);
 
     /// <summary>
     ///     Update Role Access Link
@@ -58,4 +58,26 @@ public interface IRoleAccessLinkService
     /// </summary>
     /// <returns>RoleAccessLinkDto</returns>
     Task<List<RoleAccessLinkDto>> GetAllRoleAccessLink();
+
+    /// <summary>
+    ///     Check if RoleAccessLink exists
+    /// </summary>
+    /// <param name="role"></param>
+    /// <param name="permission"></param>
+    /// <returns></returns>
+    Task<bool> CheckRoleAccessLink(string role, string permission);
+
+    /// <summary>
+    ///     Check if Role Exists
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    Task<bool> CheckRole(string name);
+
+    /// <summary>
+    ///     Check if Role Access Exists
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
+    Task<bool> CheckRoleAccess(string permission);
 }

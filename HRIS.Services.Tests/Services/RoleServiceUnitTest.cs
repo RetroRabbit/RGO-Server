@@ -20,7 +20,7 @@ public class RoleServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         var employeeAuthServiceMock = new Mock<IAuthService>();
-        _roleService = new RoleService(_dbMock.Object, employeeAuthServiceMock.Object);
+        _roleService = new RoleService(_dbMock.Object, employeeAuthServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
         _role = new Role { Id = 1, Description = "Employee" };
     }
 
@@ -44,7 +44,7 @@ public class RoleServiceUnitTest
             .Setup(r => r.Role.Add(It.IsAny<Role>()))
             .ReturnsAsync(_role);
 
-        var result = await _roleService.SaveRole(_role.ToDto());
+        var result = await _roleService.CreateRole(_role.ToDto());
 
         Assert.NotNull(result);
         Assert.Equivalent(_role.ToDto(), result);

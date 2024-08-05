@@ -9,7 +9,7 @@ public interface IRoleAccessService
     /// </summary>
     /// <param name="roleAccessDto"></param>
     /// <returns></returns>
-    Task<RoleAccessDto> SaveRoleAccess(RoleAccessDto roleAccessDto);
+    Task<RoleAccessDto> CreateRoleAccess(RoleAccessDto roleAccessDto);
 
     /// <summary>
     ///     Delete Role Access

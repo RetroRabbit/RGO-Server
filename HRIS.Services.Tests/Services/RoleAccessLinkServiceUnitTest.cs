@@ -25,7 +25,7 @@ public class RoleAccessLinkServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object);
+        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
         _roleDto = new RoleDto { Id = 1, Description = "Employee" };
         _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
         _roleAccessLinkDto = new RoleAccessLinkDto { Id = 1, Role = _roleDto, RoleAccess = _roleAccessDto };
@@ -38,7 +38,7 @@ public class RoleAccessLinkServiceUnitTest
             .Setup(r => r.RoleAccessLink.Add(It.IsAny<RoleAccessLink>()))
             .ReturnsAsync(new RoleAccessLink(_roleAccessLinkDto));
 
-        var result = await _roleAccessLinkService.Save(_roleAccessLinkDto);
+        var result = await _roleAccessLinkService.Create(_roleAccessLinkDto);
 
         Assert.NotNull(result);
         _roleAccessLinkDto.Role = null;

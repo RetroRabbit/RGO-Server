@@ -18,7 +18,7 @@ public class RoleAccessServiceUnitTest
     public RoleAccessServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _roleAccessService = new RoleAccessService(_dbMock.Object);
+        _roleAccessService = new RoleAccessService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
         _roleAccessDto = new RoleAccess { Id = 1, Permission = "ViewEmplopyee", Grouping = "Employee Data" };
     }
 
@@ -84,7 +84,7 @@ public class RoleAccessServiceUnitTest
             .Setup(r => r.RoleAccess.Add(It.IsAny<RoleAccess>()))
             .ReturnsAsync(_roleAccessDto);
 
-        var result = await _roleAccessService.SaveRoleAccess(_roleAccessDto.ToDto());
+        var result = await _roleAccessService.CreateRoleAccess(_roleAccessDto.ToDto());
 
         Assert.NotNull(result);
         Assert.Equivalent(_roleAccessDto.ToDto(), result);

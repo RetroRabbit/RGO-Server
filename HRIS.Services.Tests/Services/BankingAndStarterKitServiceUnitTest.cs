@@ -24,7 +24,7 @@ namespace HRIS.Services.Tests.Services
         public BankingAndStarterKitServiceUnitTest()
         {
             _dbMock = new Mock<IUnitOfWork>();
-            _bankingAndStarterKitService = new BankingAndStarterKitService(_dbMock.Object);
+            _bankingAndStarterKitService = new BankingAndStarterKitService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
         }
 
         [Fact]
