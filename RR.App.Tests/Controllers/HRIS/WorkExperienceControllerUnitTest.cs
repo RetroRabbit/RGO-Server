@@ -150,50 +150,41 @@ public class WorkExperienceControllerUnitTest
     //    Assert.Equal(404, actionResult.StatusCode);
     //}
 
-    [Fact(Skip = "fix the returns ok tests")]
-    public async Task GetEmployeeWorkExperience_ReturnsOkResult()
-    {
-        _identityMock.Setup(i => i.Role).Returns("Admin");
-        _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
+    [Fact]
+    public async Task getter() { }
 
-        _workExperienceServiceMock.Setup(x => x.GetWorkExperienceByEmployeeId(_workExperienceDto.EmployeeId))
-                               .Returns(WorkExperienceTestData.WorkExperienceTwo.ToDto);
+    //[Fact]
+    //public async Task GetEmployeeWorkExperience_ReturnsOkResult()
+    //{
+    //    _identityMock.Setup(i => i.Role).Returns("Admin");
+    //    _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
 
-        var result = await _controller.GetWorkExperienceById(_workExperienceDto.EmployeeId);
+    //    _workExperienceServiceMock.Setup(x => x.GetWorkExperienceByEmployeeId(_workExperienceDto.EmployeeId))
+    //                           .Returns(WorkExperienceTestData.WorkExperienceTwo.ToDto);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
+    //    var result = await _controller.GetWorkExperienceById(_workExperienceDto.EmployeeId);
 
-        _workExperienceServiceMock.Verify(service => service.GetWorkExperienceByEmployeeId(_workExperienceDto.EmployeeId), Times.Once);
-    }
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+
+    //    _workExperienceServiceMock.Verify(service => service.GetWorkExperienceByEmployeeId(_workExperienceDto.EmployeeId), Times.Once);
+    //}
 
     [Fact]
-    public async Task GetEmployeeWorkExperience_UnauthorizedAccess()
+    public async Task CreateWorkExperience_Success()
     {
-        _identityMock.Setup(i => i.Role).Returns("Developer");
-        _identityMock.SetupGet(i => i.EmployeeId).Returns(5);
+        _identityMock.Setup(i => i.Role).Returns("Admin");
+        _identityMock.SetupGet(i => i.EmployeeId).Returns(1);
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.GetWorkExperienceById(2));
+        _workExperienceDto.EmployeeId = 1;
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
-        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
-    }
-
-    [Fact(Skip = "fix the returns ok tests")]
-    public async Task CreateEmployeeWorkExperience_ReturnsOkResults()
-    {
-        _identityMock.Setup(i => i.Role).Returns("SuperAdmin");
-        _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
-
-        _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto))
-                               .ReturnsAsync(_workExperienceDto);
+        _workExperienceServiceMock.Setup(service => service.Save(_workExperienceDto))
+                                  .ReturnsAsync(_workExperienceDto);
 
         var result = await _controller.CreateWorkExperience(_workExperienceDto);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
-        Assert.Equivalent(_workExperienceDto, returnValue);
-        _workExperienceServiceMock.Verify(service => service.Save(_workExperienceDto), Times.Once);
+        var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+        Assert.Equal(StatusCodes.Status201Created, createdResult.StatusCode);
+        Assert.Equal(_workExperienceDto, createdResult.Value);
     }
 
     [Fact]
@@ -211,21 +202,53 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
-    [Fact(Skip = "fix the returns ok tests")]
-    public async Task UpdateEmployeeWorkExperience_ReturnsOkResult()
+    [Fact]
+    public async Task GetWorkExperienceById_Success()
     {
-        _identityMock.Setup(i => i.Role).Returns("SuperAdmin");
-        _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
+        _identityMock.Setup(i => i.Role).Returns("Admin");
+        _identityMock.SetupGet(i => i.EmployeeId).Returns(1);
 
-        _workExperienceServiceMock.Setup(x => x.Update(_workExperienceDto))
-                               .ReturnsAsync(_workExperienceDto);
+        _workExperienceServiceMock.Setup(service => service.GetWorkExperienceByEmployeeId(1))
+                                  .ReturnsAsync(_workExperienceDtoList);
+
+        var result = await _controller.GetWorkExperienceById(1);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.Equal(_workExperienceDtoList, okResult.Value);
+    }
+
+    [Fact]
+    public async Task GetEmployeeWorkExperience_UnauthorizedAccess()
+    {
+        _identityMock.Setup(i => i.Role).Returns("Developer");
+        _identityMock.SetupGet(i => i.EmployeeId).Returns(5);
+
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.GetWorkExperienceById(2));
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
+        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
+    }
+
+    
+
+    [Fact]
+    public async Task UpdateWorkExperience_Success()
+    {
+        _identityMock.Setup(i => i.Role).Returns("Admin");
+        _identityMock.SetupGet(i => i.EmployeeId).Returns(1);
+
+        _workExperienceDto.Id = 1;
+
+        _workExperienceServiceMock.Setup(service => service.Update(_workExperienceDto))
+                                  .ReturnsAsync(_workExperienceDto);
 
         var result = await _controller.UpdateWorkExperience(_workExperienceDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
-        Assert.Equivalent(_workExperienceDto, returnValue);
-        _workExperienceServiceMock.Verify(service => service.Update(_workExperienceDto), Times.Once);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.Equal(_workExperienceDto, okResult.Value);
     }
 
     [Fact]
@@ -241,21 +264,20 @@ public class WorkExperienceControllerUnitTest
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
     }
 
-    [Fact(Skip = "fix the returns ok tests")]
-    public async Task DeleteEmployeeWorkExperience_ReturnsOkResult()
+    [Fact]
+    public async Task DeleteWorkExperience_Success()
     {
-        _identityMock.Setup(i => i.Role).Returns("SuperAdmin");
-        _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
+        _identityMock.Setup(i => i.Role).Returns("Admin");
+        _identityMock.SetupGet(i => i.EmployeeId).Returns(1);
 
-        _workExperienceServiceMock.Setup(service => service.Delete(_workExperienceDto.Id))
-                               .ReturnsAsync(_workExperienceDto);
+        _workExperienceServiceMock.Setup(service => service.Delete(1))
+                                  .ReturnsAsync(_workExperienceDto);
 
-        var result = await _controller.DeleteWorkExperience(_workExperienceDto.Id);
+        var result = await _controller.DeleteWorkExperience(1);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
-        Assert.Equivalent(_workExperienceDto, returnValue);
-        _workExperienceServiceMock.Verify(service => service.Delete(_workExperienceDto.Id), Times.Once);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.Equal(_workExperienceDto, okResult.Value);
     }
 
     [Fact]
@@ -269,4 +291,62 @@ public class WorkExperienceControllerUnitTest
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
     }
+
+
+    //[Fact(Skip = "fix the returns ok tests")]
+    //public async Task CreateEmployeeWorkExperience_ReturnsOkResults()
+    //{
+    //    _identityMock.Setup(i => i.Role).Returns("SuperAdmin");
+    //    _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
+
+    //    _workExperienceServiceMock.Setup(x => x.Save(_workExperienceDto))
+    //                           .ReturnsAsync(_workExperienceDto);
+
+    //    var result = await _controller.CreateWorkExperience(_workExperienceDto);
+
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+    //    var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
+    //    Assert.Equivalent(_workExperienceDto, returnValue);
+    //    _workExperienceServiceMock.Verify(service => service.Save(_workExperienceDto), Times.Once);
+    //}
+
+
+
+    //[Fact(Skip = "fix the returns ok tests")]
+    //public async Task UpdateEmployeeWorkExperience_ReturnsOkResult()
+    //{
+    //    _identityMock.Setup(i => i.Role).Returns("SuperAdmin");
+    //    _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
+
+    //    _workExperienceServiceMock.Setup(x => x.Update(_workExperienceDto))
+    //                           .ReturnsAsync(_workExperienceDto);
+
+    //    var result = await _controller.UpdateWorkExperience(_workExperienceDto);
+
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+    //    var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
+    //    Assert.Equivalent(_workExperienceDto, returnValue);
+    //    _workExperienceServiceMock.Verify(service => service.Update(_workExperienceDto), Times.Once);
+    //}
+
+
+
+    //[Fact(Skip = "fix the returns ok tests")]
+    //public async Task DeleteEmployeeWorkExperience_ReturnsOkResult()
+    //{
+    //    _identityMock.Setup(i => i.Role).Returns("SuperAdmin");
+    //    _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
+
+    //    _workExperienceServiceMock.Setup(service => service.Delete(_workExperienceDto.Id))
+    //                           .ReturnsAsync(_workExperienceDto);
+
+    //    var result = await _controller.DeleteWorkExperience(_workExperienceDto.Id);
+
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+    //    var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
+    //    Assert.Equivalent(_workExperienceDto, returnValue);
+    //    _workExperienceServiceMock.Verify(service => service.Delete(_workExperienceDto.Id), Times.Once);
+    //}
+
+
 }
