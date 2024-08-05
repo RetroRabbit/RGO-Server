@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RR.App.Controllers.HRIS;
 
-
 [Route("work-experience")]
 [ApiController]
 public class WorkExperienceController : ControllerBase

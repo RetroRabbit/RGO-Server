@@ -1,7 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using HRIS.Services.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
