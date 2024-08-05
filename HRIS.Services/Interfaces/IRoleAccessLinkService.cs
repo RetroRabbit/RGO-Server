@@ -80,4 +80,11 @@ public interface IRoleAccessLinkService
     /// <param name="permission"></param>
     /// <returns></returns>
     Task<bool> CheckRoleAccess(string permission);
+
+    /// <summary>
+    ///     Check if Employee exists
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    Task<bool> CheckEmployee(string email);
 }

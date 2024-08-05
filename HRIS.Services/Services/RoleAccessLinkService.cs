@@ -40,6 +40,12 @@ public class RoleAccessLinkService : IRoleAccessLinkService
                   .Any(r => r.Permission == permission);
     }
 
+    public Task<bool> CheckEmployee(string email)
+    {
+        return _db.Employee
+                  .Any(r => r.Email == email);
+    }
+
     public async Task<RoleAccessLinkDto> Create(RoleAccessLinkDto roleAccessLinkDto)
     {
         var exists = await CheckRoleAccessLink(roleAccessLinkDto.Role!.Description!, roleAccessLinkDto.RoleAccess!.Permission);
@@ -155,6 +161,12 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
     public async Task<Dictionary<string, List<string>>> GetRoleByEmployee(string email)
     {
+        var exists = await CheckEmployee(email);
+        if (!exists)
+        {
+            throw new CustomException("Employee Does Not Exist");
+        }
+
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 

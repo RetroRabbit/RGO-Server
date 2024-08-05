@@ -66,6 +66,9 @@ public class RoleAccessServiceUnitTest
         Expression<Func<RoleAccess, bool>> criteria = r => r.Permission == randPermission;
         await permissions.Where(criteria).Select(r => r.ToDto()).FirstAsync();
 
+        _dbMock.Setup(x => x.RoleAccess.Any(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
+               .ReturnsAsync(true);
+
         _dbMock
             .Setup(r => r.RoleAccess.Get(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
             .Returns(permissions.Where(criteria));
@@ -106,6 +109,9 @@ public class RoleAccessServiceUnitTest
         Expression<Func<RoleAccess, bool>> criteria = r => r.Permission == randPermission;
         var expect = await permissions.Where(criteria).Select(r => r).FirstAsync();
 
+        _dbMock.Setup(x => x.RoleAccess.Any(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
+               .ReturnsAsync(true);
+
         _dbMock
             .Setup(r => r.RoleAccess.Get(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
             .Returns(permissions.Where(criteria));
@@ -124,6 +130,9 @@ public class RoleAccessServiceUnitTest
     [Fact]
     public async Task UpdateRoleAccessTest()
     {
+        _dbMock.Setup(x => x.RoleAccess.Any(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
+               .ReturnsAsync(true);
+
         _dbMock
             .Setup(r => r.RoleAccess.Update(It.IsAny<RoleAccess>()))
             .ReturnsAsync(_roleAccessDto);

@@ -67,6 +67,9 @@ public class RoleServiceUnitTest
             .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roleQueryable.Where(criteria));
 
+        _dbMock.Setup(x => x.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
+               .ReturnsAsync(true);
+
         _dbMock
             .Setup(r => r.Role.Delete(It.IsAny<int>()))
             .ReturnsAsync(expect);
@@ -101,6 +104,9 @@ public class RoleServiceUnitTest
             .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(_role.ToMockIQueryable());
 
+        _dbMock.Setup(x => x.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
+               .ReturnsAsync(true);
+
         var result = await _roleService.GetRole(_role.Description!);
 
         Assert.NotNull(result);
@@ -123,6 +129,9 @@ public class RoleServiceUnitTest
         _dbMock
             .Setup(r => r.Role.Get(It.IsAny<Expression<Func<Role, bool>>>()))
             .Returns(roleQueryable.Where(criteria));
+
+        _dbMock.Setup(x => x.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
+               .ReturnsAsync(true);
 
         _dbMock
             .Setup(r => r.Role.Update(It.IsAny<Role>()))

@@ -103,6 +103,9 @@ public class RoleAccessLinkServiceUnitTest
             .ReturnsAsync(new RoleAccessLink(expect))
             .ReturnsAsync(new RoleAccessLink(malformed));
 
+        _dbMock.Setup(x => x.RoleAccessLink.Any(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
+               .ReturnsAsync(true);
+
         var result1 = await _roleAccessLinkService.Delete(_roleDto.Description!, _roleAccessDto.Permission);
 
         Assert.NotNull(result1);
@@ -206,6 +209,9 @@ public class RoleAccessLinkServiceUnitTest
             .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
             .Returns(roleAccessLinks.Where(criteria));
 
+        _dbMock.Setup(x => x.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
+               .ReturnsAsync(true);
+
         var result = await _roleAccessLinkService.GetByRole(randLink.Role!.Description!);
 
         Assert.Equal(2, result.First().Value.Count);
@@ -259,6 +265,9 @@ public class RoleAccessLinkServiceUnitTest
         _dbMock
             .Setup(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
             .Returns(roleAccessLinks.Where(criteria));
+
+        _dbMock.Setup(x => x.RoleAccess.Any(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
+               .ReturnsAsync(true);
 
         var result = await _roleAccessLinkService.GetByPermission(randLink.RoleAccess!.Permission);
 
@@ -327,6 +336,12 @@ public class RoleAccessLinkServiceUnitTest
                        .Select(r => (Expression<Func<RoleAccessLink, bool>>)(x => x.Role!.Description == r))
                        .ToList();
 
+        _dbMock.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .ReturnsAsync(true);
+
+        _dbMock.Setup(x => x.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
+               .ReturnsAsync(true);
+
         var returns = _dbMock
                       .SetupSequence(r => r.RoleAccessLink.Get(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
                       .Returns(roleAccessLinks.Where(criteria[0]));
@@ -359,6 +374,9 @@ public class RoleAccessLinkServiceUnitTest
         _dbMock
             .Setup(r => r.RoleAccessLink.Update(It.IsAny<RoleAccessLink>()))
             .ReturnsAsync(new RoleAccessLink(_roleAccessLinkDto));
+
+        _dbMock.Setup(x => x.RoleAccessLink.Any(It.IsAny<Expression<Func<RoleAccessLink, bool>>>()))
+               .ReturnsAsync(true);
 
         var result = await _roleAccessLinkService.Update(roleAccessLinkToUpdate);
 

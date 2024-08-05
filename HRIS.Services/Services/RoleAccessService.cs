@@ -27,12 +27,6 @@ public class RoleAccessService : IRoleAccessService
 
     public async Task<RoleAccessDto> DeleteRoleAccess(string permission)
     {
-        var roleAccessExist = await CheckRoleAccess(permission);
-        if (!roleAccessExist)
-        {
-            throw new CustomException("Role Access Does Not Exist");
-        }
-
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
@@ -76,9 +70,9 @@ public class RoleAccessService : IRoleAccessService
     public async Task<RoleAccessDto> CreateRoleAccess(RoleAccessDto roleAccessDto)
     {
         var roleAccessExist = await CheckRoleAccess(roleAccessDto.Permission);
-        if (!roleAccessExist)
+        if (roleAccessExist)
         {
-            throw new CustomException("Role Access Does Not Exist");
+            throw new CustomException("Role Access Already Exists");
         }
 
         if (_identity.IsSupport == false)
