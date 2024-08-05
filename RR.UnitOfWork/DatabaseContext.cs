@@ -188,8 +188,8 @@ public class DatabaseContext : DbContext
         );
 
         modelBuilder.Entity<DataReportFilter>().HasData(
-            new DataReportFilter { Id = 1, Status = ItemStatus.Active, ReportId = 1, Table = "Employee", Column = "clientAllocated", Condition = "IS NULL", Value = null, Select = "id", },
-            new DataReportFilter { Id = 2, Status = ItemStatus.Active, ReportId = 1, Table = "Employee", Column = "employeeTypeId", Condition = "IN", Value = "(2,3,4)", Select = "id", }
+            new DataReportFilter { Id = 1, Status = ItemStatus.Active, ReportId = 1, Table = "Employee", Column = "clientAllocated", Condition = "IS NULL", Value = null, Select = "id",ReportFilterName = "employee-not-allocated" },
+            new DataReportFilter { Id = 2, Status = ItemStatus.Active, ReportId = 1, Table = "Employee", Column = "employeeTypeId", Condition = "IN", Value = "(2,3,4)", Select = "id", ReportFilterName = "employee-developer" }
         );
 
         modelBuilder.Entity<DataReportAccess>().HasData(

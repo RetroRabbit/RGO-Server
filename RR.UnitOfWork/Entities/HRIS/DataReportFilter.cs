@@ -39,6 +39,9 @@ public class DataReportFilter : IModel
     [Column("status")]
     public ItemStatus Status { get; set; }
 
+    [Column("reportFilterName")]
+    public string ReportFilterName { get; set; }
+
     public virtual DataReport? DataReport { get; set; }
 
     public DataReportFilterDto ToDto()
@@ -52,7 +55,8 @@ public class DataReportFilter : IModel
             Value = Value,
             Select = Select,
             ReportId = ReportId,
-            Status = Status
+            Status = Status,
+            ReportFilterName = ReportFilterName
         };
     }
 }

@@ -12,4 +12,5 @@ public class DataReportFilterDto
     public string? Select { get; set; }
     public int ReportId { get; set; }
     public ItemStatus Status { get; set; }
+    public string ReportFilterName { get; set; }
 }
