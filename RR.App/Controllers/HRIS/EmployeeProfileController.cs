@@ -1,4 +1,5 @@
-﻿using HRIS.Services.Interfaces;
+﻿using HRIS.Models.EmployeeProfileModels;
+using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Mvc;
 namespace RR.App.Controllers.HRIS;
@@ -21,7 +22,6 @@ public class EmployeeProfileController : ControllerBase
         return Ok(profileDetails);
     }
 
-
     [HttpGet("career-summary")]
     public async Task<IActionResult> GetEmployeeCareerSummaryById([FromQuery] int? id)
     {
@@ -34,5 +34,12 @@ public class EmployeeProfileController : ControllerBase
     {
         var bankingInformation = await _employeeProfileService.GetEmployeeBankingInformationById(id);
         return Ok(bankingInformation);
+    }
+
+    [HttpPut("profile-details")]
+    public async Task<IActionResult> UpdateEmployeeDetailsById([FromBody] EmployeeDetailsDto employeeDetails)
+    {
+        var result = await _employeeProfileService.UpdateEmployeeDetails(employeeDetails);
+        return Ok(result);
     }
 }

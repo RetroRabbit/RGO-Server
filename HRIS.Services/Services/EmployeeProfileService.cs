@@ -4,6 +4,7 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Services;
 
@@ -52,7 +53,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
 
         var clientAllocated = await _db.Client.Get(c => c.Id == employee.ClientAllocated).FirstOrDefaultAsync();
 
-        EmployeeProfileEmployeeDetailsDto employeeDetails = new EmployeeProfileEmployeeDetailsDto
+        EmployeeDetailsDto employeeDetails = new EmployeeDetailsDto
         {
             Id = employee.Id,
             Name = employee.Name,
@@ -71,7 +72,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
             TeamLeadName = employee.TeamLeadAssigned?.Name + " " + employee.TeamLeadAssigned?.Surname,
         };
 
-        EmployeeProfilePersonalDto personalDetails = new EmployeeProfilePersonalDto
+        PersonalDetailsDto personalDetails = new PersonalDetailsDto
         {
             Id = employee.Id,
             Race = employee.Race,
@@ -82,7 +83,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
             DisabilityNotes = employee.DisabilityNotes
         };
 
-        EmployeeProfileContactDto contactDetails = new EmployeeProfileContactDto
+        ContactDetailsDto contactDetails = new ContactDetailsDto
         {
             Id = employee.Id,
             Email = employee.Email,
@@ -107,6 +108,36 @@ internal class EmployeeProfileService : IEmployeeProfileService
         };
 
         return employeeProfileDetails;
+    }
+
+    async Task<Employee> IEmployeeProfileService.UpdateEmployeeDetails(EmployeeDetailsDto employeeDetails)
+    {
+        Employee? model = await _db.Employee
+                                .Get(employee => employee.Id == employeeDetails.Id)
+                                .AsNoTracking()
+                                .Include(employee => employee.EmployeeType)
+                                .Include(employee => employee.PhysicalAddress)
+                                .Include(employee => employee.PostalAddress)
+                                .Include(employee => employee.ChampionEmployee)
+                                .Include(employee => employee.TeamLeadAssigned)
+                                .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
+
+        model.EngagementDate = employeeDetails.EngagementDate;
+        model.PeopleChampion = employeeDetails.PeopleChampionId;
+        model.Level = employeeDetails.Level;
+        model.EmployeeType.Id = employeeDetails.EmployeeType.Id;
+        model.EmployeeType.Name = employeeDetails.EmployeeType.Name;
+        model.Name = employeeDetails.Name;
+        model.Initials = employeeDetails.Initials;
+        model.Surname = employeeDetails.Surname;
+        model.DateOfBirth = employeeDetails.DateOfBirth;
+        model.IdNumber = employeeDetails.IdNumber;
+        model.ClientAllocated = employeeDetails.ClientAllocatedId;
+        model.TeamLead = employeeDetails.TeamLeadId;
+
+        var updatedEmployee = await _db.Employee.Update(model);
+
+        return updatedEmployee;
     }
 
     async Task<EmployeeProfileCareerSummaryDto> IEmployeeProfileService.GetEmployeeCareerSummaryById(int? id)
@@ -146,7 +177,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
 
         var employeeData = await GetEmployeeDataById(id);
 
-        EmployeeProfileSalaryDto employeeSalary = new EmployeeProfileSalaryDto
+        SalaryDetailsDto employeeSalary = new SalaryDetailsDto
         {
             LeaveInterval = employee.LeaveInterval,
             PayRate = employee.PayRate,
@@ -195,13 +226,13 @@ internal class EmployeeProfileService : IEmployeeProfileService
         return employeeDataDto;
     }
 
-    async Task<EmployeeProfileSalaryDto> GetEmployeeSalaryById(int? id)
+    async Task<SalaryDetailsDto> GetEmployeeSalaryById(int? id)
     {
         var employee = await _db.Employee
                         .Get(employee => employee.Id == id)
                         .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
-        EmployeeProfileSalaryDto employeeProfileSalary = new EmployeeProfileSalaryDto
+        SalaryDetailsDto employeeProfileSalary = new SalaryDetailsDto
         {
             Salary = employee.Salary,
             SalaryDays = employee.SalaryDays,

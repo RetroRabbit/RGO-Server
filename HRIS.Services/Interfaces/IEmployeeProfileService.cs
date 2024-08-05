@@ -1,4 +1,5 @@
 ﻿using HRIS.Models.EmployeeProfileModels;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Interfaces;
 
@@ -24,4 +25,11 @@ public interface IEmployeeProfileService
     /// <param name="id"></param>
     /// <returns></returns>
     Task<EmployeeProfileBankingInformationDto> GetEmployeeBankingInformationById(int? id);
+
+    /// <summary>
+    ///     Get employee career summary by id
+    /// </summary>
+    /// <param name="employeeDetails"></param>
+    /// <returns></returns>
+    Task<Employee> UpdateEmployeeDetails(EmployeeDetailsDto employeeDetails);
 }

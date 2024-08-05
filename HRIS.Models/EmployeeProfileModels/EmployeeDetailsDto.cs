@@ -1,6 +1,6 @@
 ﻿namespace HRIS.Models.EmployeeProfileModels;
 
-public class EmployeeProfileEmployeeDetailsDto
+public class EmployeeDetailsDto
 {
     public int Id { get; set; }
     public DateTime EngagementDate { get; set; }

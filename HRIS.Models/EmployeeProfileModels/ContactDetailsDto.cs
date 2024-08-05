@@ -2,9 +2,8 @@
 
 namespace HRIS.Models.EmployeeProfileModels;
 
-public class EmployeeProfileContactDto
+public class ContactDetailsDto
 {
-    // public string? AuthUserId { get; set; }
     public int Id { get; set; }
     public string? Email { get; set; }
     public string? PersonalEmail { get; set; }

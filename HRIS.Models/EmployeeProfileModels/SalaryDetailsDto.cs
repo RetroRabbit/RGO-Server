@@ -2,7 +2,7 @@
 
 namespace HRIS.Models.EmployeeProfileModels;
 
-public class EmployeeProfileSalaryDto
+public class SalaryDetailsDto
 {
     public string? TaxNumber { get; set; }
     public float? LeaveInterval { get; set; }

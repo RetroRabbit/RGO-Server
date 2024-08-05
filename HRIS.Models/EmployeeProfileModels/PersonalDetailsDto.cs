@@ -2,7 +2,7 @@
 
 namespace HRIS.Models.EmployeeProfileModels;
 
-public class EmployeeProfilePersonalDto
+public class PersonalDetailsDto
 {
     public int Id { get; set; }
     public bool Disability { get; set; }
