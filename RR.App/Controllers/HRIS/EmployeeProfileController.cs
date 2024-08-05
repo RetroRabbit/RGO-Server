@@ -1,9 +1,6 @@
 ﻿using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using HRIS.Services.Services;
-
 namespace RR.App.Controllers.HRIS;
 
 [Route("employee-profile")]
@@ -17,11 +14,25 @@ public class EmployeeProfileController : ControllerBase
         _employeeProfileService = employeeProfileService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetEmployeeProfileById([FromQuery] int? id)
+    [HttpGet("profile-details")]
+    public async Task<IActionResult> GetEmployeeProfileDetailsById([FromQuery] int? id)
     {
-        var employee = await _employeeProfileService.GetEmployeeProfileById(id);
-        return Ok(employee);
+        var profileDetails = await _employeeProfileService.GetEmployeeProfileDetailsById(id);
+        return Ok(profileDetails);
+    }
+
+
+    [HttpGet("career-summary")]
+    public async Task<IActionResult> GetEmployeeCareerSummaryById([FromQuery] int? id)
+    {
+        var careerSummary = await _employeeProfileService.GetEmployeeCareerSummaryById(id);
+        return Ok(careerSummary);
+    }
+
+    [HttpGet("banking-information")]
+    public async Task<IActionResult> GetEmployeeBankingInformationById([FromQuery] int? id)
+    {
+        var bankingInformation = await _employeeProfileService.GetEmployeeBankingInformationById(id);
+        return Ok(bankingInformation);
     }
 }
-

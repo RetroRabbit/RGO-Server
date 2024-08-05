@@ -1,13 +1,27 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.EmployeeProfileModels;
 
 namespace HRIS.Services.Interfaces;
 
 public interface IEmployeeProfileService
 {
     /// <summary>
-    ///     Get employee by id
+    ///     Get employee profile details by id
     /// </summary>
-    /// <param name="employeeEmail"></param>
-    /// <returns>An employee dto including type and addresses</returns>
-    Task<EmployeeProfileDto> GetEmployeeProfileById(int? id);
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<EmployeeProfileDetailsDto> GetEmployeeProfileDetailsById(int? id);
+
+    /// <summary>
+    ///     Get employee career summary by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<EmployeeProfileCareerSummaryDto> GetEmployeeCareerSummaryById(int? id);
+
+    /// <summary>
+    ///     Get employee career summary by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<EmployeeProfileBankingInformationDto> GetEmployeeBankingInformationById(int? id);
 }

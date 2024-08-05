@@ -31,14 +31,14 @@ public class EmployeeDataControllerUnitTests
         _identityMock.Setup(i => i.Role).Returns("Admin");
         _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
 
-        _employeeDataServiceMock.Setup(x => x.GetEmployeeData(_employeeDataDto.EmployeeId))
+        _employeeDataServiceMock.Setup(x => x.GetEmployeeData((int)_employeeDataDto.EmployeeId!))
                                .ReturnsAsync(_employeeDataDto);
 
-        var result = await _controller.GetEmployeeData(_employeeDataDto.EmployeeId);
+        var result = await _controller.GetEmployeeData((int)_employeeDataDto.EmployeeId!);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
 
-        _employeeDataServiceMock.Verify(service => service.GetEmployeeData(_employeeDataDto.EmployeeId), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.GetEmployeeData((int)_employeeDataDto.EmployeeId!), Times.Once);
     }
 
     [Fact]
@@ -122,21 +122,21 @@ public class EmployeeDataControllerUnitTests
         _identityMock.Setup(i => i.Role).Returns("SuperAdmin");
         _identityMock.SetupGet(i => i.EmployeeId).Returns(2);
 
-        _employeeDataServiceMock.Setup(service => service.DeleteEmployeeData(_employeeDataDto.Id))
+        _employeeDataServiceMock.Setup(service => service.DeleteEmployeeData((int)_employeeDataDto.Id!))
                                .ReturnsAsync(_employeeDataDto);
 
-        var result = await _controller.DeleteEmployeeData(_employeeDataDto.Id);
+        var result = await _controller.DeleteEmployeeData((int)_employeeDataDto.Id!);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<EmployeeDataDto>(okResult.Value);
         Assert.Equal(_employeeDataDto, returnValue);
-        _employeeDataServiceMock.Verify(service => service.DeleteEmployeeData(_employeeDataDto.Id), Times.Once);
+        _employeeDataServiceMock.Verify(service => service.DeleteEmployeeData((int)_employeeDataDto.Id!), Times.Once);
     }
 
     [Fact]
     public async Task DeleteUnauthorized()
     {
-        _employeeDataServiceMock.Setup(service => service.DeleteEmployeeData(_employeeDataDto.Id))
+        _employeeDataServiceMock.Setup(service => service.DeleteEmployeeData((int)_employeeDataDto.Id!))
                               .ThrowsAsync(new CustomException("Unauthorized Access."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.DeleteEmployeeData(1));

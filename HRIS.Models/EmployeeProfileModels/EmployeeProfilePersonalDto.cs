@@ -1,10 +1,9 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models;
+namespace HRIS.Models.EmployeeProfileModels;
 
 public class EmployeeProfilePersonalDto
 {
-    //public string? AuthUserId { get; set; }
     public int Id { get; set; }
     public bool Disability { get; set; }
     public string? DisabilityNotes { get; set; }

@@ -1,8 +1,6 @@
-﻿using HRIS.Models.Enums;
+﻿namespace HRIS.Models.EmployeeProfileModels;
 
-namespace HRIS.Models;
-
-public class EmployeeProfileDetailsDto
+public class EmployeeProfileEmployeeDetailsDto
 {
     public int Id { get; set; }
     public DateTime EngagementDate { get; set; }
@@ -18,5 +16,5 @@ public class EmployeeProfileDetailsDto
     public int? ClientAllocatedId { get; set; }
     public string? ClientAllocatedName { get; set; }
     public int? TeamLeadId { get; set; }
-    public string? TeamLeadName { get; set ; }
+    public string? TeamLeadName { get; set; }
 }
