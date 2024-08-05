@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
 

@@ -1,4 +1,6 @@
-﻿namespace HRIS.Models;
+﻿using HRIS.Models.Employee.Commons;
+
+namespace HRIS.Models;
 
 public class BankingAndStarterKitDto
 {

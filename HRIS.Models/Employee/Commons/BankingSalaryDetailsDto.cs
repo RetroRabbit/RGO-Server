@@ -1,8 +1,8 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models;
+namespace HRIS.Models.Employee.Commons;
 
-public class EmployeeSalaryDetailsDto
+public class BankingSalaryDetailsDto
 {
     public int Id { get; set; }
     public int EmployeeId { get; set; }

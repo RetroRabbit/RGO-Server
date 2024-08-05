@@ -1,7 +1,7 @@
 ﻿using HRIS.Models.Enums.QualificationEnums;
 using System.ComponentModel.DataAnnotations;
 
-namespace HRIS.Models;
+namespace HRIS.Models.Employee.Commons;
 
 public class EmployeeQualificationDto
 {

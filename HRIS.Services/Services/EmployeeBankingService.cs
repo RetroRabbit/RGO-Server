@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.Employee.Commons;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;

@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using HRIS.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

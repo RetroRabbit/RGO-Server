@@ -1,4 +1,4 @@
-﻿namespace HRIS.Models;
+﻿namespace HRIS.Models.Employee.Commons;
 public class WorkExperienceDto
 {
     public int Id { get; set; }

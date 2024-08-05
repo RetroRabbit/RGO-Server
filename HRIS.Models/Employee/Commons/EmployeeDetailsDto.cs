@@ -1,4 +1,4 @@
-﻿namespace HRIS.Models.EmployeeProfileModels;
+﻿namespace HRIS.Models.Employee.Commons;
 
 public class EmployeeDetailsDto
 {

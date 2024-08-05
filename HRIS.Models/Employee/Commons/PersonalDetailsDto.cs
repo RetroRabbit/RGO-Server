@@ -1,6 +1,6 @@
 ﻿using HRIS.Models.Enums;
 
-namespace HRIS.Models.EmployeeProfileModels;
+namespace HRIS.Models.Employee.Commons;
 
 public class PersonalDetailsDto
 {

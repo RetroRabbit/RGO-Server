@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.Employee.Commons;
 using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

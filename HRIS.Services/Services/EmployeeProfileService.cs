@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
-using HRIS.Models.EmployeeProfileModels;
+using HRIS.Models.Employee.Commons;
+using HRIS.Models.Employee.Profile;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
         _employeeCertificationService = employeeCertificationService;
         _employeeBankingService = employeeBankingService;
     }
-    async Task<EmployeeProfileDetailsDto> IEmployeeProfileService.GetEmployeeProfileDetailsById(int? id)
+    async Task<ProfileDetailsDto> IEmployeeProfileService.GetEmployeeProfileDetailsById(int? id)
     {
         var employeeId = (int)id;
 
@@ -96,7 +97,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
 
         var employeeData = GetEmployeeDataById(id).Result;
 
-        EmployeeProfileDetailsDto employeeProfileDetails = new EmployeeProfileDetailsDto
+        ProfileDetailsDto employeeProfileDetails = new ProfileDetailsDto
         {
             EmployeeProfileDetails = employeeDetails,
             EmployeeProfilePersonal = personalDetails,
@@ -140,7 +141,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
         return updatedEmployee;
     }
 
-    async Task<EmployeeProfileCareerSummaryDto> IEmployeeProfileService.GetEmployeeCareerSummaryById(int? id)
+    async Task<CareerSummaryDto> IEmployeeProfileService.GetEmployeeCareerSummaryById(int? id)
     {
         var employeeData = await GetEmployeeDataById(id);
 
@@ -152,7 +153,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
 
         var employeeWorkExperience = await GetEmployeeWorkExperienceById(id);
 
-        EmployeeProfileCareerSummaryDto employeeCareerSummary = new EmployeeProfileCareerSummaryDto
+        CareerSummaryDto employeeCareerSummary = new CareerSummaryDto
         {
             EmployeeProfileSalary = employeeSalary,
             EmployeeCertifications = employeeCertifications,
@@ -164,7 +165,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
         return employeeCareerSummary;
     }
 
-    async Task<EmployeeProfileBankingInformationDto> IEmployeeProfileService.GetEmployeeBankingInformationById(int? id)
+    async Task<BankingInformationDto> IEmployeeProfileService.GetEmployeeBankingInformationById(int? id)
     {
         var employeeBanking = await _db.EmployeeBanking
                                 .Get(banking => banking.EmployeeId == id)
@@ -186,7 +187,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
             TaxNumber = employee.TaxNumber,
         };
 
-        EmployeeProfileBankingInformationDto employeeBankingInformation = new EmployeeProfileBankingInformationDto
+        BankingInformationDto employeeBankingInformation = new BankingInformationDto
         {
             EmployeeBanking = employeeBanking,
             EmployeeData = employeeData,

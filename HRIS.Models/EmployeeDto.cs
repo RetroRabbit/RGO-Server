@@ -1,4 +1,5 @@
-﻿using HRIS.Models.Enums;
+﻿using HRIS.Models.Employee.Commons;
+using HRIS.Models.Enums;
 
 namespace HRIS.Models;
 

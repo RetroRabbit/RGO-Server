@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
-using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
@@ -57,7 +57,7 @@ namespace HRIS.Services.Tests.Services
             Assert.NotNull(result);
             Assert.Equal(_employeeSalaryDetails.Salary, result.Salary);
             Assert.Equal(_employeeSalaryDetails.Salary, result.Salary);
-            Assert.IsType<EmployeeSalaryDetailsDto>(result);
+            Assert.IsType<BankingSalaryDetailsDto>(result);
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace HRIS.Services.Tests.Services
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
             Assert.Equivalent(employeeSalaries.Select(x => x.ToDto()).ToList(), result);
-            Assert.IsType<List<EmployeeSalaryDetailsDto>>(result);
+            Assert.IsType<List<BankingSalaryDetailsDto>>(result);
         }
 
         [Fact]
@@ -204,11 +204,11 @@ namespace HRIS.Services.Tests.Services
                 .Setup(m => m.EmployeeSalaryDetails.Get(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
                 .Returns(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToMockIQueryable());
 
-            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
+            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<BankingSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
 
             _dbMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            var result = await _employeeSalaryDetailsService.CreateEmployeeSalary(new EmployeeSalaryDetailsDto { Id = 0, EmployeeId = 7, Band = EmployeeSalaryBand.Level1, Salary = 1090, MinSalary = 1900, MaxSalary = 25990, Remuneration = 1599, Contribution = null, SalaryUpdateDate = new DateTime() });
+            var result = await _employeeSalaryDetailsService.CreateEmployeeSalary(new BankingSalaryDetailsDto { Id = 0, EmployeeId = 7, Band = EmployeeSalaryBand.Level1, Salary = 1090, MinSalary = 1900, MaxSalary = 25990, Remuneration = 1599, Contribution = null, SalaryUpdateDate = new DateTime() });
 
             _dbMock.Verify(x => x.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>()), Times.Once);
 
@@ -220,7 +220,7 @@ namespace HRIS.Services.Tests.Services
         [Fact]
         public async Task CreateEmployeeSalaryDetails_DoesNotExist()
         {
-            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
+            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<BankingSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
 
             _dbMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
             _dbMock.Setup(x => x.EmployeeSalaryDetails.Any(It.IsAny<Expression<Func<EmployeeSalaryDetails, bool>>>()))
@@ -243,7 +243,7 @@ namespace HRIS.Services.Tests.Services
                           .ReturnsAsync(false);
             _dbMock.Setup(r => r.EmployeeSalaryDetails.Add(It.IsAny<EmployeeSalaryDetails>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne);
 
-            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
+            _employeeSalaryDetailsServiceMock.Setup(r => r.CreateEmployeeSalary(It.IsAny<BankingSalaryDetailsDto>())).ReturnsAsync(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto());
 
             var exception = await Assert.ThrowsAnyAsync<CustomException>(() => _employeeSalaryDetailsService
                 .CreateEmployeeSalary(EmployeeSalaryDetailsTestData.EmployeeSalaryDetailsOne.ToDto()));

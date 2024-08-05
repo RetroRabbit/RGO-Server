@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using HRIS.Services.Session;

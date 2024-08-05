@@ -1,6 +1,8 @@
-﻿namespace HRIS.Models.EmployeeProfileModels;
+﻿using HRIS.Models.Employee.Commons;
 
-public class EmployeeProfileBankingInformationDto
+namespace HRIS.Models.Employee.Profile;
+
+public class BankingInformationDto
 {
     public List<EmployeeBankingDto> EmployeeBanking { get; set; }
     public EmployeeDataDto EmployeeData { get; set; }
