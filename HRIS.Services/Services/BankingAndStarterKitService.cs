@@ -19,11 +19,10 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
 
     public async Task<bool> CheckEmployee(string email)
     {
-        var employee = await _db.Employee
-        .Get(employee => employee.Email == email)
-        .FirstOrDefaultAsync();
+        var exists = await _db.Employee
+        .Any(employee => employee.Email == email);
 
-        return employee != null;
+        return exists;
     }
 
     public async Task<List<BankingAndStarterKitDto>> GetBankingAndStarterKitAsync()

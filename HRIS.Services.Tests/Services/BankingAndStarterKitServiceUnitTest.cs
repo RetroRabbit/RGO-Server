@@ -14,6 +14,7 @@ namespace HRIS.Services.Tests.Services
     {
         private readonly Mock<IUnitOfWork> _dbMock;
         private readonly BankingAndStarterKitService _bankingAndStarterKitService;
+        private readonly BankingAndStarterKitService _bankingAndStarterKitService2;
 
         private const int EmployeeId = 1;
 
@@ -21,6 +22,7 @@ namespace HRIS.Services.Tests.Services
         {
             _dbMock = new Mock<IUnitOfWork>();
             _bankingAndStarterKitService = new BankingAndStarterKitService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
+            _bankingAndStarterKitService2 = new BankingAndStarterKitService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 2));
         }
 
         [Fact]
@@ -28,9 +30,8 @@ namespace HRIS.Services.Tests.Services
         {
             var fileName = "TestFile.pdf";
 
-            var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
-            _dbMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(mockEmployeeDbSet.Object);
+            _dbMock.Setup(m => m.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
 
             var employeeDocument = new EmployeeDocument { EmployeeId = EmployeeId, FileName = fileName, Employee = EmployeeTestData.EmployeeOne };
             var mockEmployeeDocumentDbSet = new List<EmployeeDocument> { employeeDocument }.AsQueryable().BuildMockDbSet();
@@ -39,6 +40,9 @@ namespace HRIS.Services.Tests.Services
 
             _dbMock.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
                 .Returns(EmployeeBankingTestData.EmployeeBankingOne.ToMockIQueryable());
+
+            _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(EmployeeTestData.EmployeeOne);
 
             var result = await _bankingAndStarterKitService.GetBankingAndStarterKitByEmployeeAsync(EmployeeTestData.EmployeeOne.Email!);
             Assert.NotNull(result);
@@ -51,13 +55,36 @@ namespace HRIS.Services.Tests.Services
         }
 
         [Fact]
+        public async Task GetBankingAndStarterKitByEmployeeUnauthorised()
+        {
+            _dbMock.Setup(m => m.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
+
+            _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(EmployeeTestData.EmployeeOne);
+
+            await Assert.ThrowsAsync<CustomException>(() => _bankingAndStarterKitService2.GetBankingAndStarterKitByEmployeeAsync(EmployeeTestData.EmployeeOne.Email!));
+        }
+
+        [Fact]
+        public async Task GetBankingAndStarterKitByEmployeeFail()
+        {
+            _dbMock.Setup(m => m.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(false);
+
+            _dbMock.Setup(x => x.Employee.FirstOrDefault(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(EmployeeTestData.EmployeeTwo);
+
+            await Assert.ThrowsAsync<CustomException>(() => _bankingAndStarterKitService.GetBankingAndStarterKitByEmployeeAsync(EmployeeTestData.EmployeeOne.Email!));
+        }
+
+        [Fact]
         public async Task GetBankingAndStarterKitPass()
         {
             var fileName = "TestFile.pdf";
 
-            var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
-            _dbMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .Returns(mockEmployeeDbSet.Object);
+            _dbMock.Setup(m => m.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
 
             var employeeDocument = new EmployeeDocument { EmployeeId = EmployeeId, FileName = fileName, Employee = EmployeeTestData.EmployeeOne };
             var mockEmployeeDocumentDbSet = new List<EmployeeDocument> { employeeDocument }.AsQueryable().BuildMockDbSet();
@@ -75,6 +102,15 @@ namespace HRIS.Services.Tests.Services
 
             var employeeBankingDto = EmployeeBankingTestData.EmployeeBankingOne.ToDto();
             Assert.Equivalent(result[1].EmployeeBankingDto, employeeBankingDto);
+        }
+
+        [Fact]
+        public async Task GetBankingAndStarterKitUnauthorised()
+        {
+            _dbMock.Setup(m => m.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
+
+            await Assert.ThrowsAsync<CustomException>(() => _bankingAndStarterKitService2.GetBankingAndStarterKitAsync());
         }
     }
 }
