@@ -19,8 +19,6 @@ VALUES (3, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 INSERT INTO "EmployeeAddress" (id, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (4, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
-
-
 INSERT INTO "EmployeeType" (id, name)
 VALUES (1, 'Executive');
 INSERT INTO "EmployeeType" (id, name)
@@ -85,7 +83,6 @@ INSERT INTO "RoleAccess" (id, grouping, permission)
 VALUES (9, 'Employee Data', 'ViewOwnInfo');
 INSERT INTO "RoleAccess" (id, grouping, permission)
 VALUES (10, 'Employee Data', 'EditOwnInfo');
-
 
 INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
 VALUES (1, 14, 'Very Low');
@@ -280,7 +277,6 @@ VALUES (6, '085456565656', NULL, 'Belarus', TIMESTAMPTZ '1996-12-09 22:00:00Z', 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate", "active","inactiveReason")
 VALUES (7, '085456565656', NULL, 'Belgium', TIMESTAMPTZ '1997-12-09 22:00:00Z', FALSE, 'na', 'drichter@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930906Z', 1, NULL, '0231646', 'L', 1, 6, 'Delia', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Richter', '8465468', NULL, NULL,True,NULL);
 
-
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
 VALUES (8, '085456565656', 2, 'Canada', TIMESTAMPTZ '1995-12-09 22:00:00Z', TRUE, 'na', 'hpaskell@gmail.com', NULL, NULL, '8464', 2, TIMESTAMPTZ '2024-03-07 13:10:48.930907Z', 2, NULL, '0231646', 'D', 1, 3, 'Haskell', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 0, 5, 30, 'Paskell', '8465468', 1, NULL,True,NULL);
 
@@ -304,7 +300,6 @@ VALUES (14, '085456565656', NULL, 'Ecuador', TIMESTAMPTZ '1996-12-09 22:00:00Z',
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
 VALUES (15, '085456565656', NULL, 'Egypt', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'rgreen@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930913Z', 1, NULL, '0231646', 'E', 2, 3, 'Rachell', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Green', '8465468', 1, NULL,True,NULL);
-
 
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (3, 3, 1);
@@ -554,7 +549,7 @@ WHERE id = 11;
 UPDATE "Employee" SET "engagementDate" = TIMESTAMPTZ '2024-03-11 06:48:18.410491Z'
 WHERE id = 12;
 UPDATE "Employee" SET "engagementDate" = TIMESTAMPTZ '2024-03-11 06:48:18.410492Z'
-WHERE id = 13;s
+WHERE id = 13;
 
 INSERT INTO "EmailTemplate"(name, subject, body)
 VALUES ('WelcomeLetter', 'Welcome to Retro Rabbit, {{Name}}', '<html><body><p>Dear {{Name}},</p><p>We are thrilled to have you on board! Welcome to the Retro family.</p><p>From today, you embark on a new journey with us, filled with exciting opportunities, challenges, and growth. At Retro, we pride ourselves on fostering a culture of collaboration, innovation, and mutual respect. We believe that every individual brings a unique perspective and talent to the team, and we can''t wait to see the wonderful contributions you''ll make.</p><p>Remember, it''s okay to feel overwhelmed or have questions. We''ve all been there. Don''t hesitate to ask or seek clarification on anything. Our doors (and inboxes) are always open.</p><p>Your assigned recruiter and a representative from our Journey team will reach out to you within the next few days to assist with and facilitate the upcoming onboarding process.</p><p>Once again, welcome to Retro Rabbit. Here''s to new beginnings and the start of a memorable journey together!</p><p>Click <a href=''https://hris-client.azurewebsites.net''>here</a> to visit our employee portal.</p></body></html>');
