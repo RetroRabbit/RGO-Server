@@ -18,7 +18,7 @@ public interface IRoleService
     Task<List<RoleDto>> GetAll();
 
     /// <summary>
-    ///     Save Role
+    ///     Create Role
     /// </summary>
     /// <param name="roleDto"></param>
     /// <returns></returns>
@@ -39,7 +39,7 @@ public interface IRoleService
     Task<RoleDto> DeleteRole(int roleId);
 
     /// <summary>
-    ///     Check Role
+    ///     Check Role exists
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>

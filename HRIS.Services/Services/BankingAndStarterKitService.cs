@@ -3,7 +3,6 @@ using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
-using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Services;
 

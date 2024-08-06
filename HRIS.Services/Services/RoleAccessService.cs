@@ -1,5 +1,4 @@
-﻿using Auth0.ManagementApi.Models;
-using HRIS.Models;
+﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;

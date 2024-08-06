@@ -25,7 +25,7 @@ public interface IRoleAccessLinkService
     Task<Dictionary<string, List<string>>> GetByPermission(string permission);
 
     /// <summary>
-    ///     Save Role Access Link
+    ///     Create Role Access Link
     /// </summary>
     /// <param name="roleAccessLinkDto"></param>
     /// <returns></returns>
@@ -75,7 +75,7 @@ public interface IRoleAccessLinkService
     Task<bool> CheckRole(string name);
 
     /// <summary>
-    ///     Check if Role Access Exists
+    ///     Check if RoleAccess Exists
     /// </summary>
     /// <param name="permission"></param>
     /// <returns></returns>
