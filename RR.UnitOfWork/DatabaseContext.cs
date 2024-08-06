@@ -21,12 +21,6 @@ public class DatabaseContext : DbContext
     public DbSet<EmployeeAddress> employeeAddresses { get; set; }
     public DbSet<EmployeeCertification> employeeCertification { get; set; }
     public DbSet<EmployeeDocument> employeeDocuments { get; set; }
-    public DbSet<EmployeeProject> employeeProjects { get; set; }
-    public DbSet<EmployeeEvaluation> employeeEvaluations { get; set; }
-    public DbSet<EmployeeEvaluationAudience> employeeEvaluationAudiences { get; set; }
-    public DbSet<EmployeeEvaluationRating> employeeEvaluationRatings { get; set; }
-    public DbSet<EmployeeEvaluationTemplate> employeeEvaluationTemplates { get; set; }
-    public DbSet<EmployeeEvaluationTemplateItem> employeeEvaluationTemplateItem { get; set; }
     public DbSet<EmployeeQualification> employeeQualifications { get; set; }
     public DbSet<EmployeeSalaryDetails> employeeSalaryDetails { get; set; }
     public DbSet<Role> roles { get; set; }

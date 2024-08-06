@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,104 +28,73 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddRole([FromQuery] string email, [FromQuery] string role)
     {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role)) return BadRequest("Invalid input");
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
+            throw new CustomException("Invalid input");
 
-        if(_employeeRoleService == null || _employeeService == null || _roleService == null)
-        {
-            return BadRequest("Required services are not available.");
-        }
+        var employee = await _employeeService.GetEmployeeByEmail(email);
+        if (employee == null)
+            throw new CustomException("Employee not found.");
 
-        try
-        {
-            var employee = await _employeeService.GetEmployee(email);
-            if (employee == null)
-            {
-                return NotFound("Employee not found.");
-            }
+        var authUser = await _authService.GetUsersByEmailAsync(email);
+        if (authUser == null || !authUser.Any())
+            throw new CustomException("User not found in authentication service.");
 
-            var authUser = await _authService.GetUsersByEmailAsync(email);
-            if (authUser == null || !authUser.Any())
-            {
-                return NotFound("User not found in authentication service.");
-            }
-            var authEmployeeId = authUser.First().UserId;
+        var authEmployeeId = authUser.First().UserId;
 
-            var currRole = await _roleService.CheckRole(role)
-                ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
+        var currRole = await _roleService.CheckRole(role)
+            ? await _roleService.GetRole(role)
+            : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
 
-            await _authService.AddRoleToUserAsync(authEmployeeId, currRole.AuthRoleId);
+        await _authService.AddRoleToUserAsync(authEmployeeId, currRole.AuthRoleId);
 
-            var employeeRole = new EmployeeRoleDto{ Id = 0, Employee = employee, Role = currRole };
+        var employeeRole = new EmployeeRoleDto { Id = 0, Employee = employee, Role = currRole };
 
-            var employeeRoleSaved = await _employeeRoleService.SaveEmployeeRole(employeeRole);
+        var employeeRoleSaved = await _employeeRoleService.SaveEmployeeRole(employeeRole);
 
-            return CreatedAtAction(nameof(AddRole), employeeRoleSaved);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        return CreatedAtAction(nameof(AddRole), employeeRoleSaved);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
-        if (_employeeRoleService == null || _employeeService == null || _roleService == null || _authService == null)
+        var employee = await _employeeService.GetEmployeeByEmail(email);
+        if (employee == null)
+            throw new CustomException("Employee not found.");
+
+        var authUser = await _authService.GetUsersByEmailAsync(email);
+        if (authUser == null || !authUser.Any())
+            throw new CustomException("User not found in authentication service.");
+
+        var authEmployeeId = authUser.First().UserId;
+
+        var changingToRole = await _roleService.CheckRole(role)
+            ? await _roleService.GetRole(role)
+            : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
+
+        var userRoleIsFoundInAuth0 = await _authService.AddRoleToUserAsync(authEmployeeId, changingToRole.AuthRoleId);
+
+        if (!userRoleIsFoundInAuth0)
+            throw new CustomException("Auth role not found in the database.");
+
+        var authRoles = await _authService.GetUserRolesAsync(authEmployeeId);
+        if (authRoles != null && authRoles.Any())
         {
-            return BadRequest("Required services are not available.");
+            var authPreviousRole = authRoles.First(authRole => authRole.Description != role);
+            await _authService.RemoveRoleFromUserAsync(authEmployeeId, authPreviousRole.Id);
         }
 
-        try
+        var currEmployeeRole = await _employeeRoleService.GetEmployeeRole(email);
+
+        var updatedEmployeeRole = new EmployeeRoleDto
         {
-            var employee = await _employeeService.GetEmployee(email);
-            if (employee == null)
-            {
-                return NotFound("Employee not found.");
-            }
+            Id = currEmployeeRole.Id,
+            Employee = employee,
+            Role = changingToRole
+        };
 
-            var authUser = await _authService.GetUsersByEmailAsync(email);
-            if (authUser == null || !authUser.Any())
-            {
-                return NotFound("User not found in authentication service.");
-            }
-
-            var authEmployeeId = authUser.First().UserId;
-
-            var changingToRole = await _roleService.CheckRole(role)
-                ? await _roleService.GetRole(role)
-                : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
-
-            var userRoleIsFoundInAuth0 = await _authService.AddRoleToUserAsync(authEmployeeId, changingToRole.AuthRoleId);
-            if (userRoleIsFoundInAuth0)
-            {
-                var authRoles = await _authService.GetUserRolesAsync(authEmployeeId);
-                if (authRoles != null && authRoles.Any())
-                {
-                    var authPreviousRole = authRoles.First(authRole => authRole.Description != role);
-                    await _authService.RemoveRoleFromUserAsync(authEmployeeId, authPreviousRole.Id);
-                }
-
-                var currEmployeeRole = await _employeeRoleService.GetEmployeeRole(email);
-
-                var updatedEmployeeRole = new EmployeeRoleDto
-                {
-                    Id = currEmployeeRole.Id,
-                    Employee = employee,
-                    Role = changingToRole
-                };
-
-                var savedEmployeeRole = await _employeeRoleService.UpdateEmployeeRole(updatedEmployeeRole);
-                return CreatedAtAction(nameof(UpdateRole), savedEmployeeRole);
-            }
-            return NotFound("Auth role not found in the database.");
-            
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"An error occurred: {ex.Message}");
-        }
+        var savedEmployeeRole = await _employeeRoleService.UpdateEmployeeRole(updatedEmployeeRole);
+        return CreatedAtAction(nameof(UpdateRole), savedEmployeeRole);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -133,52 +103,35 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
-        if (_employeeRoleService == null || _employeeService == null || _roleService == null || _authService == null)
-        {
-            return BadRequest("Required services are not available.");
-        }
+        var employee = await _employeeService.GetEmployeeByEmail(email);
+        if (employee == null)
+            throw new CustomException("Employee not found.");
 
-        try
-        {
-            var employee = await _employeeService.GetEmployee(email);
-            if (employee == null)
-            {
-                return NotFound("Employee not found.");
-            }
 
-            var roleToRemove = await _roleService.GetRole(role);
-            if (roleToRemove == null)
-            {
-                return NotFound("Role not found.");
-            }
+        var roleToRemove = await _roleService.GetRole(role);
+        if (roleToRemove == null)
+            throw new CustomException("Role not found.");
 
-            var authUser = await _authService.GetUsersByEmailAsync(email);
-            if (authUser == null || !authUser.Any())
-            {
-                return NotFound("User not found in authentication service.");
-            }
-            var authEmployeeId = authUser.First().UserId;
-            var authRoles = await _authService.GetUserRolesAsync(authEmployeeId);
-            var authRoleToRemove = authRoles.FirstOrDefault(r => r.Id == roleToRemove.AuthRoleId);
-            if (authRoleToRemove != null)
-            {
-                await _authService.RemoveRoleFromUserAsync(authEmployeeId, authRoleToRemove.Id);
-            }
+        var authUser = await _authService.GetUsersByEmailAsync(email);
+        if (authUser == null || !authUser.Any())
+            throw new CustomException("User not found in authentication service.");
 
-            var employeeRole = await _employeeRoleService.GetEmployeeRole(email);
-            if (employeeRole == null)
-            {
-                return NotFound("Employee role not found.");
-            }
+        var authEmployeeId = authUser.First().UserId;
+        var authRoles = await _authService.GetUserRolesAsync(authEmployeeId);
+        if (authRoles == null)
+            throw new CustomException("User roles not found in authentication service.");
 
-            var employeeRoleRemoved = await _employeeRoleService.DeleteEmployeeRole(email, role);
+        var authRoleToRemove = authRoles.FirstOrDefault(r => r.Id == roleToRemove.AuthRoleId);
+        if (authRoleToRemove != null)
+            await _authService.RemoveRoleFromUserAsync(authEmployeeId, authRoleToRemove.Id);
 
-            return Ok(employeeRoleRemoved);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var employeeRole = await _employeeRoleService.GetEmployeeRole(email);
+        if (employeeRole == null)
+            throw new CustomException("Employee role not found.");
+
+        var employeeRoleRemoved = await _employeeRoleService.DeleteEmployeeRole(email, role);
+
+        return Ok(employeeRoleRemoved);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -186,21 +139,12 @@ public class EmployeeRoleManageController : ControllerBase
     public async Task<IActionResult> GetEmployeeRole([FromQuery] string email)
     {
         if (_employeeRoleService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+            throw new CustomException("Invalid input");
 
-        try
-        {
-            var employeeRoles = await _employeeRoleService.GetEmployeeRole(email);
-            string[] role = { employeeRoles.Role!.Description! };
+        var employeeRoles = await _employeeRoleService.GetEmployeeRole(email);
+        string[] role = { employeeRoles.Role!.Description! };
 
-            return Ok(role);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(role);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -208,24 +152,15 @@ public class EmployeeRoleManageController : ControllerBase
     public async Task<IActionResult> GetAllRoles()
     {
         if (_roleService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+            throw new CustomException("Invalid input");
 
-        try
-        {
-            var roles = await _roleService.GetAll();
+        var roles = await _roleService.GetAll();
 
-            var rolesDescriptions = roles
-                                    .Select(role => role.Description)
-                                    .ToList();
+        var rolesDescriptions = roles
+                                .Select(role => role.Description)
+                                .ToList();
 
-            return Ok(rolesDescriptions);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(rolesDescriptions);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -233,18 +168,9 @@ public class EmployeeRoleManageController : ControllerBase
     public async Task<IActionResult> GetAllEmployeeOnRoles([FromQuery] int roleId)
     {
         if (_employeeRoleService == null)
-        {
-            return BadRequest("Invalid input");
-        }
+            throw new CustomException("Invalid input");
 
-        try
-        {
-            var roles = await _employeeRoleService.GetAllEmployeeOnRoles(roleId);
-            return Ok(roles);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var roles = await _employeeRoleService.GetAllEmployeeOnRoles(roleId);
+        return Ok(roles);
     }
 }

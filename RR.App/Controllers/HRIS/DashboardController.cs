@@ -38,4 +38,12 @@ public class DashboardController : ControllerBase
         var churnRate = await _dashboardService.CalculateEmployeeChurnRate();
         return Ok(churnRate);
     }
+
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
+    [HttpGet("count-active")]
+    public async Task<IActionResult> CountAllEmployees()
+    {
+        var employees = await _dashboardService.GetAllActiveEmployees();
+        return Ok(employees.Count);
+    }
 }

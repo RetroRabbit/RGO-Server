@@ -20,13 +20,7 @@ public class UnitOfWork : IUnitOfWork
         EmployeeDocument = new EmployeeDocumentRepository(_db);
         EmployeeData = new EmployeeDataRepository(_db);
         EmployeeDate = new EmployeeDateRepository(_db);
-        EmployeeProject = new EmployeeProjectRepository(_db);
         EmployeeQualification = new EmployeeQualificationRepository(_db);
-        EmployeeEvaluation = new EmployeeEvaluationRepository(_db);
-        EmployeeEvaluationAudience = new EmployeeEvaluationAudienceRepository(_db);
-        EmployeeEvaluationRating = new EmployeeEvaluationRatingRepository(_db);
-        EmployeeEvaluationTemplate = new EmployeeEvaluationTemplateRepository(_db);
-        EmployeeEvaluationTemplateItem = new EmployeeEvaluationTemplateItemRepository(_db);
         Employee = new EmployeeRepository(_db);
         EmployeeRole = new EmployeeRoleRepository(_db);
         EmployeeType = new EmployeeTypeRepository(_db);
@@ -56,13 +50,7 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeDataRepository EmployeeData { get; }
     public IEmployeeDateRepository EmployeeDate { get; }
     public IEmployeeDocumentRepository EmployeeDocument { get; }
-    public IEmployeeProjectRepository EmployeeProject { get; }
     public IEmployeeQualificationRepository EmployeeQualification { get; }
-    public IEmployeeEvaluationRepository EmployeeEvaluation { get; }
-    public IEmployeeEvaluationAudienceRepository EmployeeEvaluationAudience { get; }
-    public IEmployeeEvaluationRatingRepository EmployeeEvaluationRating { get; }
-    public IEmployeeEvaluationTemplateRepository EmployeeEvaluationTemplate { get; }
-    public IEmployeeEvaluationTemplateItemRepository EmployeeEvaluationTemplateItem { get; }
     public IEmployeeRepository Employee { get; }
     public IEmployeeRoleRepository EmployeeRole { get; }
     public IEmployeeTypeRepository EmployeeType { get; }

@@ -57,8 +57,8 @@ namespace RR.App.Tests.Controllers.HRIS
                 HttpContext = new DefaultHttpContext { User = principal }
             };
 
-            _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(true);
-            _employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
+            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(true);
+            _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
             _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
             _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
             {
@@ -75,8 +75,8 @@ namespace RR.App.Tests.Controllers.HRIS
                 return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
             });
 
-            _employeeServiceMock.Setup(x => x.UpdateEmployee(It.IsAny<EmployeeDto>(), It.IsAny<string>()))
-                                .ReturnsAsync((EmployeeDto employee, string email) =>
+            _employeeServiceMock.Setup(x => x.UpdateEmployee(It.IsAny<EmployeeDto>()))
+                                .ReturnsAsync((EmployeeDto employee) =>
                                 {
                                     employee.AuthUserId = "updatedAuthId";
                                     return employee;
@@ -104,7 +104,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 HttpContext = new DefaultHttpContext { User = principal }
             };
 
-            _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(false);
+            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(false);
             _authServiceMock.Setup(x => x.DeleteUser(email)).ReturnsAsync(false);
 
             var result = await _controller.CheckUserExistence();
@@ -134,8 +134,8 @@ namespace RR.App.Tests.Controllers.HRIS
                 HttpContext = new DefaultHttpContext { User = principal }
             };
 
-            _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(true);
-            _employeeServiceMock.Setup(x => x.GetEmployee(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
+            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(true);
+            _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
             _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
             _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
             {
@@ -174,7 +174,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 HttpContext = new DefaultHttpContext { User = principal }
             };
 
-            _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ReturnsAsync(true);
+            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(true);
             _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
             _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
             {
@@ -203,7 +203,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 HttpContext = new DefaultHttpContext { User = principal }
             };
 
-            _employeeServiceMock.Setup(x => x.CheckUserExist(email)).ThrowsAsync(new Exception("Simulated error"));
+            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ThrowsAsync(new Exception("Simulated error"));
 
             var result = await _controller.CheckUserExistence();
 

@@ -1,6 +1,7 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -11,23 +12,25 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService)
+    public EmployeeDocumentService(IUnitOfWork db, IEmployeeService employeeService, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeService = employeeService;
+        _identity = identity;
     }
 
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
-        var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
+        var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
             throw new CustomException("employee not found");
 
         var sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
-        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
+        var status = isAdmin && !sameEmail ? DocumentStatus.PendingApproval : DocumentStatus.ActionRequired;
         var docType = DocumentType.StarterKit;
 
         switch (documentType)
@@ -76,7 +79,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> addNewAdditionalDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
-        var employee = await _employeeService.GetById(employeeDocDto.EmployeeId);
+        var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
             throw new CustomException("employee not found");
@@ -156,16 +159,18 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         if (!ifEmployeeExists)
             throw new CustomException("Employee not found");
 
+        if (_identity.EmployeeId == employeeDocumentDto.EmployeeId)
+        {
+            throw new CustomException("You cannot approve your own documents.");
+        }
+
         var employeeEmail = await _db.Employee
             .Get(employee => employee.Id == employeeDocumentDto.EmployeeId)
             .AsNoTracking()
             .Select(employee => employee.Email)
             .FirstAsync();
 
-
         var sameEmail = email.Equals(employeeEmail);
-        var isAdmin = await IsAdmin(email);
-        if (isAdmin && !sameEmail) employeeDocumentDto.Status = DocumentStatus.ActionRequired;
 
         var employeeDocument = new EmployeeDocument(employeeDocumentDto);
 
@@ -210,7 +215,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<bool> IsAdmin(string email)
     {
-        var checkingEmployee = (await _employeeService.GetEmployee(email))!;
+        var checkingEmployee = (await _employeeService.GetEmployeeByEmail(email))!;
 
         var empRole = (await _db.EmployeeRole
             .Get(role => role.EmployeeId == checkingEmployee!.Id)

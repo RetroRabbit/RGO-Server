@@ -9,22 +9,32 @@ namespace HRIS.Services.Services;
 public class EmployeeDateService : IEmployeeDateService
 {
     private readonly IUnitOfWork _db;
+    private readonly IEmployeeService _employeeService;
 
-    public EmployeeDateService(IUnitOfWork db)
+    public EmployeeDateService(IUnitOfWork db, IEmployeeService employeeService)
     {
         _db = db;
+        _employeeService = employeeService;
     }
 
     public async Task<bool> CheckIfExists(EmployeeDateDto employeeDate)
     {
-        var exists = await _db.EmployeeDate.Any(x =>
-                                                    x.Id == employeeDate.Id &&
-                                                    x.Employee!.Email == employeeDate.Employee!.Email);
+        var exists = await _db.EmployeeDate.Any(x => x.Id == employeeDate.Id && x.Employee!.Email == employeeDate.Employee!.Email);
         return exists;
     }
 
-    public async Task Save(EmployeeDateDto employeeDate)
+    public async Task SaveEmployeeDate(EmployeeDateInput employeeDateInput)
     {
+        var employee = await _employeeService.GetEmployeeByEmail(employeeDateInput.Email!);
+        var employeeDate = new EmployeeDateDto
+        {
+            Id = 0,
+            Employee = employee,
+            Subject = employeeDateInput.Subject,
+            Note = employeeDateInput.Note,
+            Date = employeeDateInput.Date
+        };
+
         var exists = await CheckIfExists(employeeDate);
 
         if (exists)
@@ -33,8 +43,18 @@ public class EmployeeDateService : IEmployeeDateService
         await _db.EmployeeDate.Add(new EmployeeDate(employeeDate));
     }
 
-    public async Task Update(EmployeeDateDto newEmployeeDate)
+    public async Task UpdateEmployeeDate(EmployeeDateDto employeeDate)
     {
+        var employee = await _employeeService.GetEmployeeByEmail(employeeDate.Employee!.Email!);
+        var newEmployeeDate = new EmployeeDateDto
+        {
+            Id = employeeDate.Id,
+            Employee = employee,
+            Subject = employeeDate.Subject,
+            Note = employeeDate.Note,
+            Date = employeeDate.Date
+        };
+
         var exists = await CheckIfExists(newEmployeeDate);
 
         if (!exists)
@@ -73,6 +93,17 @@ public class EmployeeDateService : IEmployeeDateService
             throw new CustomException("Employee Data does not exist");
 
         return employeeDateDto;
+    }
+
+    public List<EmployeeDateDto> GetEmployeeDates(DateOnly? date, string? email, string? subject)
+    {
+        if (date != null)
+            return GetAllByDate((DateOnly)date);
+        if (email != null)
+            return GetAllByEmployee(email);
+        if (subject != null)
+            return GetAllBySubject(subject);
+        return GetAll();
     }
 
     public List<EmployeeDateDto> GetAll()
