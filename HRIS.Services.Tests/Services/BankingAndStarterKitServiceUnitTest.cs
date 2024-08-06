@@ -28,7 +28,7 @@ namespace HRIS.Services.Tests.Services
         }
 
         [Fact]
-        public async Task GetBankingAndStarterKitByIdPass()
+        public async Task GetBankingAndStarterKitByEmployeePass()
         {
             var fileName = "TestFile.pdf";
 
@@ -44,7 +44,34 @@ namespace HRIS.Services.Tests.Services
             _dbMock.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
                 .Returns(EmployeeBankingTestData.EmployeeBankingOne.ToMockIQueryable());
 
-            var result = await _bankingAndStarterKitService.GetBankingAndStarterKitByIdAsync(EmployeeId);
+            var result = await _bankingAndStarterKitService.GetBankingAndStarterKitByEmployeeAsync(EmployeeTestData.EmployeeOne.Email!);
+            Assert.NotNull(result);
+
+            var employeeDocDto = employeeDocument.ToDto();
+            Assert.Equivalent(result[0].EmployeeDocumentDto, employeeDocDto);
+
+            var employeeBankingDto = EmployeeBankingTestData.EmployeeBankingOne.ToDto();
+            Assert.Equivalent(result[1].EmployeeBankingDto, employeeBankingDto);
+        }
+
+        [Fact]
+        public async Task GetBankingAndStarterKitPass()
+        {
+            var fileName = "TestFile.pdf";
+
+            var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
+            _dbMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(mockEmployeeDbSet.Object);
+
+            var employeeDocument = new EmployeeDocument { EmployeeId = EmployeeId, FileName = fileName, Employee = EmployeeTestData.EmployeeOne };
+            var mockEmployeeDocumentDbSet = new List<EmployeeDocument> { employeeDocument }.AsQueryable().BuildMockDbSet();
+            _dbMock.Setup(m => m.EmployeeDocument.Get(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+                          .Returns(mockEmployeeDocumentDbSet.Object);
+
+            _dbMock.Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
+                .Returns(EmployeeBankingTestData.EmployeeBankingOne.ToMockIQueryable());
+
+            var result = await _bankingAndStarterKitService.GetBankingAndStarterKitAsync();
             Assert.NotNull(result);
 
             var employeeDocDto = employeeDocument.ToDto();

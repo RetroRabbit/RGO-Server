@@ -18,10 +18,10 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
         _identity = identity;
     }
 
-    public async Task<bool> CheckEmployee(int employeeId)
+    public async Task<bool> CheckEmployee(string email)
     {
         var employee = await _db.Employee
-        .Get(employee => employee.Id == employeeId)
+        .Get(employee => employee.Email == email)
         .FirstOrDefaultAsync();
 
         return employee != null;
@@ -68,17 +68,19 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
         return combinedResults;
     }
 
-    public async Task<List<BankingAndStarterKitDto>> GetBankingAndStarterKitByIdAsync(int employeeId)
+    public async Task<List<BankingAndStarterKitDto>> GetBankingAndStarterKitByEmployeeAsync(string email)
     {
-        var employeeExist = await CheckEmployee(employeeId);
+        var employeeExist = await CheckEmployee(email);
         if (!employeeExist)
             throw new CustomException("employee not found");
 
-        if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
+        var employee = await _db.Employee.FirstOrDefault(e => e.Email == email);
+
+        if (_identity.IsSupport == false && _identity.EmployeeId != employee.Id)
             throw new CustomException("Unauthorized Access.");
 
         var employeeDocumentQuery = await _db.EmployeeDocument
-            .Get(ed => ed.EmployeeId == employeeId)
+            .Get(ed => ed.EmployeeId == employee.Id)
             .Include(doc => doc.Employee)
             .ThenInclude(emp => emp!.EmployeeType)
             .OrderBy(doc => doc.EmployeeId)
@@ -86,7 +88,7 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
             .ToListAsync();
 
         var mostRecentEmployeeBankings = await _db.EmployeeBanking
-            .Get(banking => true && banking.EmployeeId == employeeId)
+            .Get(banking => true && banking.EmployeeId == employee.Id)
             .Include(banking => banking.Employee)
                 .ThenInclude(employee => employee!.EmployeeType)
             .GroupBy(banking => banking.EmployeeId)
