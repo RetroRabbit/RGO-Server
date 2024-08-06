@@ -60,9 +60,6 @@ public class RoleAccessService : IRoleAccessService
                                   .Select(r => r.ToDto())
                                   .FirstOrDefaultAsync();
 
-        if (roleAccess == null)
-            throw new CustomException($"RoleAccess not found({permission})");
-
         return roleAccess;
     }
 
