@@ -81,10 +81,7 @@ public class RoleAccessLinkService : IRoleAccessLinkService
                                       .Select(r => r.ToDto())
                                       .FirstOrDefaultAsync();
 
-        if (roleAccessLink == null)
-            throw new CustomException($"Role Access Link not found(Role:{role},Permission:{permission})");
-
-        var deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id);
+        var deleted = await _db.RoleAccessLink.Delete(roleAccessLink!.Id);
 
         return deleted.Role != null ? deleted.ToDto() : roleAccessLink;
     }
