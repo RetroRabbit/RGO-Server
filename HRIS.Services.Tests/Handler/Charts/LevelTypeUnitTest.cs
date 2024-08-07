@@ -15,7 +15,6 @@ public class LevelTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private readonly LevelType levelType;
@@ -29,19 +28,6 @@ public class LevelTypeUnitTest
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
-
-        employeeAddressDto = new EmployeeAddressDto
-        {
-            Id = 1,
-            UnitNumber = "2",
-            ComplexName = "Complex",
-            StreetNumber = "2",
-            SuburbOrDistrict = "Suburb/District",
-            City = "City",
-            Country = "Country",
-            Province = "Province",
-            PostalCode = "1620"
-        };
     }
 
     private EmployeeDto CreateEmployee(int? levelType)
@@ -81,8 +67,6 @@ public class LevelTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            //PhysicalAddress = employeeAddressDto,
-            //PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

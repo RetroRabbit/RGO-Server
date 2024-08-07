@@ -48,8 +48,6 @@ public class EmployeeDataUnitTests
             Email = "texample@retrorabbit.co.za",
             PersonalEmail = "test.example@gmail.com",
             CellphoneNo = "0000000000",
-            //PhysicalAddress = employeeAddressDto,
-            //PostalAddress = employeeAddressDto
         };
 
         _fieldCode = new FieldCodeDto

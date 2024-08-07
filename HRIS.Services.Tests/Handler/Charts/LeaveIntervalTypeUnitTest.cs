@@ -15,7 +15,6 @@ public class LeaveIntervalTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private readonly EmployeeAddressDto employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private readonly LeaveIntervalType leaveIntervalType;
@@ -29,19 +28,6 @@ public class LeaveIntervalTypeUnitTest
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
-
-        employeeAddressDto = new EmployeeAddressDto
-        {
-            Id = 1,
-            UnitNumber = "2",
-            ComplexName = "Complex",
-            StreetNumber = "2",
-            SuburbOrDistrict = "Suburb/District",
-            City = "City",
-            Country = "Country",
-            Province = "Province",
-            PostalCode = "1620"
-        };
     }
 
     private EmployeeDto CreateEmployee(float? leaveInterval)
@@ -81,8 +67,6 @@ public class LeaveIntervalTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            //PhysicalAddress = employeeAddressDto,
-            //PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

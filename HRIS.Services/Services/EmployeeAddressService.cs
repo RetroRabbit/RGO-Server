@@ -17,14 +17,9 @@ public class EmployeeAddressService : IEmployeeAddressService
         _identity = identity;
     }
 
-    public async Task<bool> CheckIfExists(int id)
+    public async Task<bool> CheckIfExists(int employeeId)
     {
-        if (id == 0)
-        {
-            return false;
-        }
-
-        var returnVal = await _db.EmployeeAddress.Any(ea => ea.EmployeeId == id);
+        var returnVal = await _db.EmployeeAddress.Any(ea => ea.EmployeeId == employeeId);
         return returnVal;
     }
 

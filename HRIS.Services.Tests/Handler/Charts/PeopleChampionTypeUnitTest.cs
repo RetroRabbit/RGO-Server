@@ -15,7 +15,6 @@ public class PeopleChampionTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private EmployeeAddress? employeeAddressDto;
     private readonly EmployeeType employeeType1;
     private readonly EmployeeType employeeType2;
     private readonly EmployeeType employeeTypeDto1;
@@ -35,8 +34,6 @@ public class PeopleChampionTypeUnitTest
                                 .ReturnsAsync(employeeTypeDto1.ToDto());
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType2.Name!))
                                 .ReturnsAsync(employeeTypeDto2.ToDto());
-        employeeAddressDto =
-            new EmployeeAddress{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
     private Employee CreateEmployee(int id, int? peopleChampionType, string? employeeName, string? employeeSurname,
@@ -74,8 +71,6 @@ public class PeopleChampionTypeUnitTest
             Email = $"test{id}@retrorabbit.co.za",
             PersonalEmail = "test.example@gmail.com",
             CellphoneNo = "0000000000",
-            //PhysicalAddress = employeeAddressDto,
-            //PostalAddress = employeeAddressDto
         };
     }
 

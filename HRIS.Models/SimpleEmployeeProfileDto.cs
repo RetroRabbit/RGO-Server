@@ -35,8 +35,6 @@ public class SimpleEmployeeProfileDto
         Email = employeeDto.Email;
         PersonalEmail = employeeDto.PersonalEmail;
         CellphoneNo = employeeDto.CellphoneNo;
-        //PhysicalAddress = employeeDto.PhysicalAddress;
-        //PostalAddress = employeeDto.PostalAddress;
         HouseNo = employeeDto.HouseNo;
             EmergencyContactName = employeeDto.EmergencyContactName;
         EmergencyContactNo = employeeDto.EmergencyContactNo;

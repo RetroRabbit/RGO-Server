@@ -56,17 +56,10 @@ public class EmployeeService : IEmployeeService
         var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee.ToDto(), Role = roleDto };
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
-
-        try
-        {
-            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
+        
+        await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
                 "WelcomeLetter", employeeDto);
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-        }
-
+        
         return newEmployee.ToDto();
     }
 

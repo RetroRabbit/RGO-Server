@@ -49,8 +49,6 @@ public class Employee : IModel
         CellphoneNo = employeeDto.CellphoneNo;
         ClientAllocated = employeeDto.ClientAllocated;
         TeamLead = employeeDto.TeamLead;
-        //PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
-        //PostalAddressId = employeeDto.PostalAddress?.Id;
         HouseNo = employeeDto.HouseNo;
         EmergencyContactName = employeeDto.EmergencyContactName;
         EmergencyContactNo = employeeDto.EmergencyContactNo;
@@ -187,8 +185,6 @@ public class Employee : IModel
             CellphoneNo = CellphoneNo,
             ClientAllocated = ClientAllocated,
             TeamLead = TeamLead,
-            //PhysicalAddress = PhysicalAddress?.ToDto(),
-            //PostalAddress = PostalAddress?.ToDto(),
             HouseNo = HouseNo,
             EmergencyContactName = EmergencyContactName,
             EmergencyContactNo = EmergencyContactNo,

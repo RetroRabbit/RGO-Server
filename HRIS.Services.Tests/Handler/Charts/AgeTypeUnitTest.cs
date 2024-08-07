@@ -16,10 +16,8 @@ public class AgeTypeUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly AgeType ageType;
-    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
-    private RoleDto roleDto;
 
     public AgeTypeUnitTest()
     {
@@ -28,22 +26,8 @@ public class AgeTypeUnitTest
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
-        roleDto = new RoleDto{ Id = 3, Description = "Employee" };
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
-
-        employeeAddressDto =  new EmployeeAddressDto
-        {
-            Id = 1,
-            UnitNumber = "2",
-            ComplexName = "Complex",
-            StreetNumber = "2",
-            SuburbOrDistrict = "Suburb/District",
-            City = "City",
-            Country = "Country",
-            Province = "Province",
-            PostalCode = "1620"
-        };
     }
 
     private EmployeeDto CreateEmployee(DateTime dob)
@@ -83,8 +67,6 @@ public class AgeTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            //PhysicalAddress = employeeAddressDto,
-            //PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

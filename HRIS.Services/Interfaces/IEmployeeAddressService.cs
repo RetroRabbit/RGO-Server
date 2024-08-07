@@ -35,9 +35,9 @@ public interface IEmployeeAddressService
     /// <summary>
     /// Delete Employee Address
     /// </summary>
-    /// <param name="addressId"></param>
+    /// <param name="employeeId"></param>
     /// <returns></returns>
-    Task<EmployeeAddressDto> Delete(int addressId);
+    Task<EmployeeAddressDto> Delete(int employeeId);
 
     /// <summary>
     ///     Get all Employees
