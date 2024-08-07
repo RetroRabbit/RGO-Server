@@ -30,7 +30,7 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
         if (fieldCodeOptionExist)
             throw new CustomException("Field option with that name found");
 
-        if (_identity.IsSupport == false && fieldCodeOptionsDto.Id != _identity.EmployeeId)
+        if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
         var fieldCodes = await GetAllFieldCodeOptions();
@@ -52,7 +52,7 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
         if (!fieldCodeOptionExist)
             throw new CustomException("Field Code Option does not exist");
 
-        if (_identity.IsSupport == false && id != _identity.EmployeeId)
+        if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
         var fieldCodes = await GetAllFieldCodeOptions();
@@ -75,7 +75,7 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
         if (!fieldCodeOptionExist)
             throw new CustomException("Field Code Option does not exist");
 
-        if (_identity.IsSupport == false && fieldCodeOptionsDto[0].FieldCodeId != _identity.EmployeeId)
+        if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
         foreach (var option in fieldCodeOptionsDto)
@@ -120,7 +120,7 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
         if (!fieldCodeOptionExist)
             throw new CustomException("Field Code Option does not exist");
 
-        if (_identity.IsSupport == false && fieldCodeOptionsDto.Id != _identity.EmployeeId)
+        if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
         var deleteFieldCodeOptions = await _db.FieldCodeOptions.Delete(new FieldCodeOptions(fieldCodeOptionsDto).Id);

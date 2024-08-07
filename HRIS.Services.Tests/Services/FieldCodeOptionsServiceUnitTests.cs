@@ -44,7 +44,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task GetFieldCodeOptionsById_Success()
     {
         _identity.Setup(i => i.Role).Returns("Admin");
-        _identity.Setup(x => x.EmployeeId).Returns(1);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(true);
@@ -62,7 +61,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task GetFieldCodeOptionsById_Unauthorized()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
-        _identity.Setup(x => x.EmployeeId).Returns(2);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(true);
@@ -95,7 +93,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task CreateFieldCodeOptions_Success()
     {
         _identity.Setup(i => i.Role).Returns("Admin");
-        _identity.Setup(x => x.EmployeeId).Returns(1);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(false);
@@ -116,7 +113,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task CreateFieldCodeOptions_Unauthorized()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
-        _identity.Setup(x => x.EmployeeId).Returns(2);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(false);
@@ -151,7 +147,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task UpdateFieldCodeOptions_Success()
     {
         _identity.Setup(i => i.Role).Returns("Admin");
-        _identity.Setup(x => x.EmployeeId).Returns(1);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(true);
@@ -182,7 +177,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task UpdateFieldCodeOptions_Unauthorized()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
-        _identity.Setup(x => x.EmployeeId).Returns(2);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(true);
@@ -241,7 +235,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task DeleteFieldCode_Success()
     {
         _identity.Setup(i => i.Role).Returns("Admin");
-        _identity.Setup(x => x.EmployeeId).Returns(1);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(true);
@@ -262,7 +255,6 @@ public class FieldCodeOptionsServiceUnitTests
     public async Task DeleteFieldCode_Unauthorized()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
-        _identity.Setup(x => x.EmployeeId).Returns(2);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(true);
