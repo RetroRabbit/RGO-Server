@@ -181,6 +181,13 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto, string email)
     {
+        var modelExists = await EmployeeDocumentExists(employeeDocumentDto.Id);
+
+        if (!modelExists) throw new CustomException("This model does not exist yet");
+
+        if (!_identity.IsSupport && employeeDocumentDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
         if (!ifEmployeeExists)
