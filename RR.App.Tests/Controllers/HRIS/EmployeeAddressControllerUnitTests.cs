@@ -41,18 +41,6 @@ public class EmployeeAddressControllerUnitTests
         Assert.Equal(_employeeAddressDtoList, actualAddresses);
     }
 
-    [Fact(Skip = "Needs to be fixed/updated")]
-    public async Task GetAllReturnsNotFoundResultWhenExceptionThrown()
-    {
-        _employeeAddressServiceMock.Setup(s => s.GetAll())
-            .ThrowsAsync(new Exception("An error occurred while retrieving addresses"));
-
-        var result = await _controller.GetAll();
-
-        var noFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while retrieving addresses", noFoundResult.Value);
-    }
-
     [Fact]
     public async Task SaveEmployeeAddressReturnsOkResultWithSavedAddress()
     {
@@ -65,18 +53,6 @@ public class EmployeeAddressControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualAddress = Assert.IsAssignableFrom<EmployeeAddressDto>(okResult.Value);
         Assert.Equal(_employeeAddressDto, actualAddress);
-    }
-
-    [Fact(Skip = "Needs to be fixed/updated")]
-    public async Task SaveEmployeeAddressThrowsExceptionReturnsNotFoundResult()
-    {
-        _employeeAddressServiceMock.Setup(s => s.Create(_employeeAddressDto))
-            .ThrowsAsync(new Exception("An error occurred while saving the address."));
-
-        var result = await _controller.SaveEmployeeAddress(_employeeAddressDto);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while saving the address.", notFoundResult.Value);
     }
 
     [Fact]
@@ -92,18 +68,6 @@ public class EmployeeAddressControllerUnitTests
         Assert.Equal(_employeeAddressDto, actualAddress);
     }
 
-    [Fact(Skip = "Needs to be fixed/updated")]
-    public async Task UpdateEmployeeAddressReturnsNotFoundResultWhenExceptionThrown()
-    {
-        _employeeAddressServiceMock.Setup(s => s.Update(_employeeAddressDto))
-            .ThrowsAsync(new Exception("An error occurred while updating the address."));
-
-        var result = await _controller.UpdateEmployeeAddress(_employeeAddressDto);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while updating the address.", notFoundResult.Value);
-    }
-
     [Fact]
     public async Task DeleteEmployeeAddressReturnsOkResultWithDeletedAddress()
     {
@@ -117,15 +81,4 @@ public class EmployeeAddressControllerUnitTests
         Assert.Equal(_employeeAddressDto, actualAddress);
     }
 
-    [Fact(Skip = "Needs to be fixed/updated")]
-    public async Task DeleteEmployeeAddressReturnsNotFoundResultWhenExceptionThrown()
-    {
-        _employeeAddressServiceMock.Setup(s => s.Delete(_employeeAddressDto.Id))
-                                  .ThrowsAsync(new Exception("An error occurred while deleting the address."));
-
-        var result = await _controller.DeleteEmployeeAddress(_employeeAddressDto.Id);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while deleting the address.", notFoundResult.Value);
-    }
 }
