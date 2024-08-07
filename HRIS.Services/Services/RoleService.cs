@@ -59,14 +59,14 @@ public class RoleService : IRoleService
 
     public async Task<RoleDto> DeleteRole(int roleId)
     {
-        if (_identity.IsSupport == false)
-            throw new CustomException("Unauthorized Access.");
-
         var isRoleExist = await CheckRoleById(roleId);
         if (!isRoleExist)
         {
             throw new CustomException("Role Does Not Exist");
         }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
 
         var deletedRole = await _db.Role.Delete(roleId);
 
@@ -88,6 +88,9 @@ public class RoleService : IRoleService
         {
             throw new CustomException($"Role not found({name})");
         }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
 
         var existingRole = await _db.Role
                                     .Get(role => role.Description == name)
