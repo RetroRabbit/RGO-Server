@@ -91,7 +91,7 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task UpdateValidDataReturnsOkResult()
     {
-        _employeeBankingServiceMock.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>(), "test@example.com"))
+        _employeeBankingServiceMock.Setup(x => x.Update(It.IsAny<EmployeeBankingDto>()))
                    .ReturnsAsync(_employeeBankingDto);
 
         var result = await _controller.Update(_employeeBankingDto);
@@ -103,7 +103,7 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task GetBankingDetailsReturnsOkResult()
     {
-        _employeeBankingServiceMock.Setup(x => x.GetBanking(_employeeBankingDto.EmployeeId))
+        _employeeBankingServiceMock.Setup(x => x.GetBankingById(_employeeBankingDto.EmployeeId))
                                    .ReturnsAsync(_employeeBankingDtoList);
 
         var result = await _controller.GetBankingDetails(_employeeBankingDto.EmployeeId);
@@ -111,7 +111,7 @@ public class EmployeeBankingControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
         Assert.Equal(_employeeBankingDtoList, returnValue);
-        _employeeBankingServiceMock.Verify(service => service.GetBanking(_employeeBankingDto.EmployeeId), Times.Once);
+        _employeeBankingServiceMock.Verify(service => service.GetBankingById(_employeeBankingDto.EmployeeId), Times.Once);
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class EmployeeBankingControllerUnitTests
     [Fact]
     public async Task GetBankingDetailsAsSuperAdminReturnsOkResult()
     {
-        _employeeBankingServiceMock.Setup(x => x.GetBanking(It.IsAny<int>()))
+        _employeeBankingServiceMock.Setup(x => x.GetBankingById(It.IsAny<int>()))
                                    .ReturnsAsync(_employeeBankingDtoList);
 
         var result = await _controller.GetBankingDetails(1);
@@ -135,7 +135,7 @@ public class EmployeeBankingControllerUnitTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnValue = Assert.IsType<List<EmployeeBankingDto>>(okResult.Value);
         Assert.Equal(_employeeBankingDtoList, returnValue);
-        _employeeBankingServiceMock.Verify(service => service.GetBanking(1), Times.Once);
+        _employeeBankingServiceMock.Verify(service => service.GetBankingById(1), Times.Once);
     }
 
     [Fact]

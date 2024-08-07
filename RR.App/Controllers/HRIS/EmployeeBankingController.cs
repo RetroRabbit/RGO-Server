@@ -26,7 +26,7 @@ public class EmployeeBankingController : ControllerBase
     public async Task<IActionResult> AddBankingInfo([FromBody] EmployeeBankingDto newEntry)
     {
         var employeeBankingDto =
-            await _employeeBankingService.Save(newEntry, _identity.Email);
+            await _employeeBankingService.Create(newEntry);
         return Ok(employeeBankingDto);
     }
 
@@ -40,9 +40,9 @@ public class EmployeeBankingController : ControllerBase
 
     [Authorize(Policy = "AdminOrSuperAdminPolicy")]
     [HttpDelete]
-    public async Task<IActionResult> DeleteBankingInfo([FromQuery] int addressId)
+    public async Task<IActionResult> DeleteBankingInfo([FromQuery] int id)
     {
-        var deletedBanking = await _employeeBankingService.Delete(addressId);
+        var deletedBanking = await _employeeBankingService.Delete(id);
         return Ok(deletedBanking);
     }
 
@@ -50,7 +50,7 @@ public class EmployeeBankingController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] EmployeeBankingDto updateEntry)
     {
-        await _employeeBankingService.Update(updateEntry, _identity.Email);
+        await _employeeBankingService.Update(updateEntry);
         return Ok();
     }
 
@@ -61,7 +61,7 @@ public class EmployeeBankingController : ControllerBase
         if (_identity.Role is not ("SuperAdmin" or "Admin") && _identity.EmployeeId != id)
             throw new CustomException("Unauthorized Access");
 
-        var employeeBanking = await _employeeBankingService.GetBanking(id);
+        var employeeBanking = await _employeeBankingService.GetBankingById(id);
         return Ok(employeeBanking);
     }
 }

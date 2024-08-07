@@ -51,7 +51,7 @@ public class DashboardServiceUnitTest
 
         var result = await _dashboardService.CalculateEmployeeChurnRate();
         Assert.NotNull(result);
-        Assert.Equal("July", result.Month);
+        Assert.Equal(DateTime.UtcNow.ToString("MMMM"), result.Month);
         Assert.Equal(0, result.ChurnRate);
         Assert.Equal(0, result.DeveloperChurnRate);
         Assert.Equal(0, result.DesignerChurnRate);
