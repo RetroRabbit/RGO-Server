@@ -131,6 +131,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename, DocumentType documentType)
     {
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
         if (!ifEmployeeExists)
