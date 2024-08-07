@@ -80,4 +80,16 @@ public class EmployeeAddressControllerUnitTests
         var actualAddress = Assert.IsAssignableFrom<EmployeeAddressDto>(okResult.Value);
         Assert.Equal(_employeeAddressDto, actualAddress);
     }
+
+    [Fact]
+    public async Task GetEmployeeAddressByIdSuccessReturnsOkResultWithAddress()
+    {
+        _employeeAddressServiceMock.Setup(x => x.GetById(_employeeAddressDto.Id)).ReturnsAsync(_employeeAddressDto);
+
+        var result = await _controller.GetEmployeeAddressById(_employeeAddressDto.Id);
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var actualAddress = Assert.IsType<EmployeeAddressDto>(okResult.Value);
+
+        Assert.Equal(_employeeAddressDto, actualAddress);
+    }
 }
