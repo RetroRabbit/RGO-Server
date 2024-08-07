@@ -92,6 +92,14 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> addNewAdditionalDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
+        var modelExists = await EmployeeDocumentExists(employeeDocDto.Id);
+
+        if (modelExists)
+            throw new CustomException("This model already exists");
+
+        if (!_identity.IsSupport && employeeDocDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
