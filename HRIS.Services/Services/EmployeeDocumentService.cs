@@ -21,8 +21,21 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         _identity = identity;
     }
 
+    public async Task<bool> EmployeeDocumentExists(int id)
+    {
+        return await _db.EmployeeDocument.Any(x => x.Id == id);
+    }
+
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
+        var modelExists = await EmployeeDocumentExists(employeeDocDto.Id);
+
+        if (modelExists)
+            throw new CustomException("This model already exists");
+
+        if (!_identity.IsSupport && employeeDocDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
