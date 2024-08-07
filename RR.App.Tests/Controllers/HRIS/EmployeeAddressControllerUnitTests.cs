@@ -92,15 +92,5 @@ public class EmployeeAddressControllerUnitTests
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("An error occurred while deleting the address.", notFoundResult.Value);
     }
-    [Fact(Skip = "Needs to be fixed/updated")]
-    public async Task DeleteEmployeeAddressReturnsNotFoundResultWhenExceptionThrown()
-    {
-        _employeeAddressServiceMock.Setup(s => s.Delete(_employeeAddressDto.Id))
-                                  .ThrowsAsync(new Exception("An error occurred while deleting the address."));
-
-        var result = await _controller.DeleteEmployeeAddress(_employeeAddressDto.Id);
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("An error occurred while deleting the address.", notFoundResult.Value);
-    }
+  
 }
