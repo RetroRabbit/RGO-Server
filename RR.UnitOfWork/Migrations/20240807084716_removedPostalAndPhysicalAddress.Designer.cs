@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RR.UnitOfWork;
@@ -12,9 +13,11 @@ using RR.UnitOfWork;
 namespace RR.UnitOfWork.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240807084716_removedPostalAndPhysicalAddress")]
+    partial class removedPostalAndPhysicalAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -465,6 +468,14 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("photo");
 
+                    b.Property<int?>("PhysicalAddressId")
+                        .HasColumnType("integer")
+                        .HasColumnName("physicalAddress");
+
+                    b.Property<int?>("PostalAddressId")
+                        .HasColumnType("integer")
+                        .HasColumnName("postalAddress");
+
                     b.Property<int?>("Race")
                         .HasColumnType("integer")
                         .HasColumnName("race");
@@ -501,6 +512,10 @@ namespace RR.UnitOfWork.Migrations
 
                     b.HasIndex("PeopleChampion");
 
+                    b.HasIndex("PhysicalAddressId");
+
+                    b.HasIndex("PostalAddressId");
+
                     b.HasIndex("TeamLead");
 
                     b.ToTable("Employee");
@@ -526,10 +541,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("text")
                         .HasColumnName("country");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employeeId");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("text")
@@ -1394,6 +1405,14 @@ namespace RR.UnitOfWork.Migrations
                         .WithMany()
                         .HasForeignKey("PeopleChampion");
 
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeAddress", "PhysicalAddress")
+                        .WithMany()
+                        .HasForeignKey("PhysicalAddressId");
+
+                    b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeAddress", "PostalAddress")
+                        .WithMany()
+                        .HasForeignKey("PostalAddressId");
+
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "TeamLeadAssigned")
                         .WithMany()
                         .HasForeignKey("TeamLead");
@@ -1403,6 +1422,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("ClientAssigned");
 
                     b.Navigation("EmployeeType");
+
+                    b.Navigation("PhysicalAddress");
+
+                    b.Navigation("PostalAddress");
 
                     b.Navigation("TeamLeadAssigned");
                 });

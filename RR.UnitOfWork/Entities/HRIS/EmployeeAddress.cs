@@ -15,6 +15,7 @@ public class EmployeeAddress : IModel
     public EmployeeAddress(EmployeeAddressDto dto)
     {
         Id = dto.Id;
+        EmployeeId = dto.EmployeeId;
         UnitNumber = dto.UnitNumber;
         ComplexName = dto.ComplexName;
         StreetName = dto.StreetName;
@@ -45,12 +46,14 @@ public class EmployeeAddress : IModel
     [Column("postalCode")] public string? PostalCode { get; set; }
 
     [Key] [Column("id")] public int Id { get; set; }
+    [ForeignKey("employeeId")][Column("employeeId")] public int EmployeeId { get; set; }
 
     public EmployeeAddressDto ToDto()
     {
         return new EmployeeAddressDto
         {
             Id = Id,
+            EmployeeId = EmployeeId,
             UnitNumber = UnitNumber,
             ComplexName = ComplexName,
             StreetName = StreetName,

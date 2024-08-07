@@ -3,6 +3,7 @@
 public class EmployeeAddressDto
 {
     public int Id { get; set; }
+    public int EmployeeId { get; set; }
     public string? UnitNumber { get; set; }
     public string? ComplexName { get; set; }
     public string? StreetName { get; set; }

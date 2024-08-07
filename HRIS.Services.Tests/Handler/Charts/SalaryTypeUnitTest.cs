@@ -66,8 +66,8 @@ public class SalaryTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            PhysicalAddress = _employeeAddressDto,
-            PostalAddress = _employeeAddressDto,
+            //PhysicalAddress = _employeeAddressDto,
+            //PostalAddress = _employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

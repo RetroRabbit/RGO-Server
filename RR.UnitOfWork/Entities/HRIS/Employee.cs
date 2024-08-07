@@ -49,8 +49,8 @@ public class Employee : IModel
         CellphoneNo = employeeDto.CellphoneNo;
         ClientAllocated = employeeDto.ClientAllocated;
         TeamLead = employeeDto.TeamLead;
-        PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
-        PostalAddressId = employeeDto.PostalAddress?.Id;
+        //PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
+        //PostalAddressId = employeeDto.PostalAddress?.Id;
         HouseNo = employeeDto.HouseNo;
         EmergencyContactName = employeeDto.EmergencyContactName;
         EmergencyContactNo = employeeDto.EmergencyContactNo;
@@ -130,14 +130,6 @@ public class Employee : IModel
     [ForeignKey("TeamLeadAssigned")]
     public int? TeamLead { get; set; }
 
-    [Column("physicalAddress")]
-    [ForeignKey("PhysicalAddress")]
-    public int? PhysicalAddressId { get; set; }
-
-    [Column("postalAddress")]
-    [ForeignKey("PostalAddress")]
-    public int? PostalAddressId { get; set; }
-
     [Column("houseNo")] public string? HouseNo { get; set; }
 
     [Column("emergencyContactName")] public string? EmergencyContactName { get; set; }
@@ -153,8 +145,6 @@ public class Employee : IModel
     public virtual Employee? ChampionEmployee { get; set; }
     public virtual Employee? TeamLeadAssigned { get; set; }
     public virtual Client? ClientAssigned { get; set; }
-    public virtual EmployeeAddress? PhysicalAddress { get; set; }
-    public virtual EmployeeAddress? PostalAddress { get; set; }
 
     [Key][Column("id")] public int Id { get; set; }
     [Column("authuserid")] public string? AuthUserId { get; set; }
@@ -197,8 +187,8 @@ public class Employee : IModel
             CellphoneNo = CellphoneNo,
             ClientAllocated = ClientAllocated,
             TeamLead = TeamLead,
-            PhysicalAddress = PhysicalAddress?.ToDto(),
-            PostalAddress = PostalAddress?.ToDto(),
+            //PhysicalAddress = PhysicalAddress?.ToDto(),
+            //PostalAddress = PostalAddress?.ToDto(),
             HouseNo = HouseNo,
             EmergencyContactName = EmergencyContactName,
             EmergencyContactNo = EmergencyContactNo,

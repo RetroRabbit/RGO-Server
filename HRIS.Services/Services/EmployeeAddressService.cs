@@ -24,43 +24,43 @@ public class EmployeeAddressService : IEmployeeAddressService
             return false;
         }
 
-        var returnVal = await _db.EmployeeAddress.Any(ea => ea.Id == id);
+        var returnVal = await _db.EmployeeAddress.Any(ea => ea.EmployeeId == id);
         return returnVal;
     }
 
-    public async Task<EmployeeAddressDto> Delete(int addressId)
+    public async Task<EmployeeAddressDto> Delete(int employeeId)
     {
-        var exists = await CheckIfExists(addressId);
+        var exists = await CheckIfExists(employeeId);
 
         if (!exists)
         {
             throw new CustomException("Employee Address Does Not Exist");
         }
 
-        var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == addressId);
+        var employee = await _db.Employee.FirstOrDefault(e => e.Id == employeeId);
 
         if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");
 
-        var address = await _db.EmployeeAddress.Delete(addressId);
+        var address = await _db.EmployeeAddress.Delete(employeeId);
         return address.ToDto();
     }
 
-    public async Task<EmployeeAddressDto> GetById(int id)
+    public async Task<EmployeeAddressDto> GetById(int employeeId)
     {
-        var exists = await CheckIfExists(id);
+        var exists = await CheckIfExists(employeeId);
 
         if (!exists)
         {
             throw new CustomException("Employee Address Does Not Exist");
         }
 
-        var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == id);
+        var employee = await _db.Employee.FirstOrDefault(e => e.Id == employeeId);
 
         if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");
 
-        var address = await _db.EmployeeAddress.FirstOrDefault(address => address.Id == id);
+        var address = await _db.EmployeeAddress.FirstOrDefault(address => address.EmployeeId == employeeId);
         return address!.ToDto();
     }
 
@@ -74,14 +74,14 @@ public class EmployeeAddressService : IEmployeeAddressService
 
     public async Task<EmployeeAddressDto> Create(EmployeeAddressDto employeeAddressDto)
     {
-        var exists = await CheckIfExists(employeeAddressDto.Id);
+        var exists = await CheckIfExists(employeeAddressDto.EmployeeId);
 
         if (exists)
         {
             throw new CustomException("Employee Address Already Exists");
         }
 
-        var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == employeeAddressDto.Id);
+        var employee = await _db.Employee.FirstOrDefault(e => e.Id == employeeAddressDto.EmployeeId);
 
         if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");
@@ -100,7 +100,7 @@ public class EmployeeAddressService : IEmployeeAddressService
             throw new CustomException("Employee Address Does Not Exist");
         }
 
-        var employee = await _db.Employee.FirstOrDefault(e => e.PhysicalAddressId == employeeAddressDto.Id);
+        var employee = await _db.Employee.FirstOrDefault(e => e.Id == employeeAddressDto.EmployeeId);
 
         if (_identity.IsSupport == false && _identity.EmployeeId != employee!.Id)
             throw new CustomException("Unauthorized Access.");

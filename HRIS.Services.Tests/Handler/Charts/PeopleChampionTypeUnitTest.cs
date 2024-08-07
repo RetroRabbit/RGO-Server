@@ -74,8 +74,8 @@ public class PeopleChampionTypeUnitTest
             Email = $"test{id}@retrorabbit.co.za",
             PersonalEmail = "test.example@gmail.com",
             CellphoneNo = "0000000000",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
+            //PhysicalAddress = employeeAddressDto,
+            //PostalAddress = employeeAddressDto
         };
     }
 

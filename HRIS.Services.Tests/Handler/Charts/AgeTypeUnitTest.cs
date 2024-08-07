@@ -83,8 +83,8 @@ public class AgeTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
+            //PhysicalAddress = employeeAddressDto,
+            //PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

@@ -50,17 +50,17 @@ public class EmployeeServiceUnitTests
         Mock<IEmailService> emailService = new();
         _roleServiceMock = new Mock<IRoleService>();
 
-        _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
-            emailService.Object, _authorizedIdentity);
+        //_employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
+            //_employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+            //emailService.Object, _authorizedIdentity);
 
-        _employeeServiceUnauthorized = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
-           emailService.Object, _unauthorizedIdentity);
+        //_employeeServiceUnauthorized = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
+           //_employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+           //emailService.Object, _unauthorizedIdentity);
 
-        _employeeServiceJourney = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
-           emailService.Object, _journeyIdentity);
+        //_employeeServiceJourney = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
+           //_employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+           //emailService.Object, _journeyIdentity);
     }
 
     [Theory]
