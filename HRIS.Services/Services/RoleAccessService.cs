@@ -26,6 +26,12 @@ public class RoleAccessService : IRoleAccessService
 
     public async Task<RoleAccessDto> DeleteRoleAccess(string permission)
     {
+        var roleAccessExist = await CheckRoleAccess(permission);
+        if (!roleAccessExist)
+        {
+            throw new CustomException("Role Access Does Not Exist");
+        }
+
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 

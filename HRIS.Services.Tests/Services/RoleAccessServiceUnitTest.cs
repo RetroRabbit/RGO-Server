@@ -1,6 +1,4 @@
 ﻿using System.Linq.Expressions;
-using HRIS.Models;
-using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -196,6 +194,24 @@ public class RoleAccessServiceUnitTest
 
     [Fact]
     public async Task DeleteRoleAccessTestUnauthorised()
+    {
+        var permissions = new List<RoleAccess>
+        {
+            new() { Id = 1, Permission = "ViewEmployee" },
+            new() { Id = 2, Permission = "ViewManager" },
+            new() { Id = 3, Permission = "ViewAdmin" }
+        }.ToMockIQueryable();
+
+        var randPermission = permissions.Where(r => r.Id == 3).Select(r => r.Permission).First();
+
+        _dbMock.Setup(x => x.RoleAccess.Any(It.IsAny<Expression<Func<RoleAccess, bool>>>()))
+               .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => _roleAccessService2.DeleteRoleAccess(randPermission!));
+    }
+
+    [Fact]
+    public async Task DeleteRoleAccessTestFail()
     {
         var permissions = new List<RoleAccess>
         {
