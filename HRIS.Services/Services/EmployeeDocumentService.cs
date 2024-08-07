@@ -215,6 +215,13 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(int documentId)
     {
+        var modelExists = await EmployeeDocumentExists(documentId);
+
+        if (!modelExists) throw new CustomException("This model does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(documentId);
 
         return deletedEmployeeDocument.ToDto();
