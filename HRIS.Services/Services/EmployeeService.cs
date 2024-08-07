@@ -317,8 +317,8 @@ public class EmployeeService : IEmployeeService
             throw new CustomException("Unauthorized Access");
 
         var modelExists = await CheckModelExist(employeeId);
-        if (!modelExists)
-            throw new CustomException("Model not found");
+        if (modelExists)
+            throw new CustomException("Model found");
 
         var duplicateExists = await _db.Employee
                           .Get(employee => employee.IdNumber == idNumber && (employeeId == 0 || employee.Id != employeeId))
