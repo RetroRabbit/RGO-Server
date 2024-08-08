@@ -395,14 +395,14 @@ public class EmployeeServiceUnitTests
 
     [Theory]
     [InlineData("Unauthorized Access")]
-    [InlineData("Model not found")]
+    [InlineData("Model found")]
     [InlineData("Pass")]
     public async Task CheckDuplicateIdNumberTests(string testCase)
     {
         var employeeList = new List<Employee>
-        {
-            EmployeeTestData.EmployeeOne
-        };
+    {
+        EmployeeTestData.EmployeeOne
+    };
 
         if (testCase == "Unauthorized Access")
         {
@@ -410,13 +410,13 @@ public class EmployeeServiceUnitTests
             Assert.Equal(testCase, failResultUnauthorized.Message);
         }
 
-        if ( testCase == "Model not found")
+        if (testCase == "Model found")
         {
             _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .ReturnsAsync(false);
+                .ReturnsAsync(true);
 
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id));
-            Assert.Equal(testCase, failResultUnauthorized.Message);
+            var failResultModelFound = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id));
+            Assert.Equal(testCase, failResultModelFound.Message);
         }
 
         if (testCase == "Pass")
@@ -424,7 +424,7 @@ public class EmployeeServiceUnitTests
             _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .Returns(employeeList.ToMockIQueryable());
             _dbMock.SetupSequence(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-                .ReturnsAsync(true)
+                .ReturnsAsync(false)
                 .ReturnsAsync(true);
 
             var result = await _employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id);
