@@ -121,31 +121,45 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Once);
     }
 
-    [Fact(Skip = "fix")]
-    public async Task AddNewAdditionalDocumentFail()
+    [Fact]
+    public async Task AddNewAdditionalDocumentFailNotExist()
     {
         var employeeDocDto = EmployeeDocumentTestData.SimpleDocumentDto;
+        var fileName = "TestFile.pdf";
+        var employeeDocument = new EmployeeDocument { EmployeeId = EmployeeId, FileName = fileName };
+        var mockEmployeeDocumentDbSet = new List<EmployeeDocument> { employeeDocument }.AsQueryable().BuildMockDbSet();
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+          .ReturnsAsync(true);
 
         _employeeServiceMock.Setup(x => x.GetEmployeeById(employeeDocDto.EmployeeId))
-            .ReturnsAsync((EmployeeDto)null!);
+            .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto());
 
-         await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
+        _unitOfWorkMock.Setup(m => m.EmployeeDocument.Add(employeeDocument))
+                      .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+
+        SetupMockRoles();
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
             .addNewAdditionalDocument(employeeDocDto, "test@retrorabbit.co.za", 1));
     }
 
-    [Fact(Skip = "fix")]
+    [Fact]
     public async Task SaveEmployeeDocumentFail()
     {
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+          .ReturnsAsync(true);
+
         _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId))
                             .ReturnsAsync((EmployeeDto)null!);
-        
+
+        SetupMockRoles();
+
         await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
             .SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
-
-        _employeeServiceMock.Verify(x => x.GetEmployeeById(EmployeeId), Times.Once);
     }
 
-    [Fact(Skip = "fix")]
+    [Fact]
     public async Task GetEmployeeDocumentPass()
     {
         var fileName = "TestFile.pdf";
