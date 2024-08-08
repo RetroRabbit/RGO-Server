@@ -5,11 +5,11 @@ namespace HRIS.Services.Interfaces;
 public interface IRoleAccessService
 {
     /// <summary>
-    ///     Save Role Access
+    ///     Create Role Access
     /// </summary>
     /// <param name="roleAccessDto"></param>
     /// <returns></returns>
-    Task<RoleAccessDto> SaveRoleAccess(RoleAccessDto roleAccessDto);
+    Task<RoleAccessDto> CreateRoleAccess(RoleAccessDto roleAccessDto);
 
     /// <summary>
     ///     Delete Role Access
@@ -39,7 +39,7 @@ public interface IRoleAccessService
     Task<RoleAccessDto> UpdateRoleAccess(RoleAccessDto roleAccessDto);
 
     /// <summary>
-    ///     Check Role Access
+    ///     Check Role Access Exists
     /// </summary>
     /// <param name="permission"></param>
     /// <returns></returns>
