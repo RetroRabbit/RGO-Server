@@ -327,11 +327,11 @@ public class EmployeeControllerUnitTests
         _identity.Setup(identity => identity.EmployeeId).Returns(5);
 
         _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1))
-                            .ThrowsAsync(new CustomException("User data being accessed does not match user making the request."));
+                            .ThrowsAsync(new CustomException("No permission or user id already exists."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.CheckIdNumber("0000080000000", 1));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);
+        Assert.Equal("No permission or user id already exists.", notFoundResult.Value);
     }
 }
