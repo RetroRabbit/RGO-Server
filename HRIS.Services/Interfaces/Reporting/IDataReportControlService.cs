@@ -12,4 +12,5 @@ public interface IDataReportControlService
     Task AddOrUpdateReport(UpdateReportRequest input);
     Task AddOrUpdateReportFilter(ReportFilterRequest input);
     Task DeleteReportFilterfromList(int id);
+    Task<object> GetDataReportFilters(string code);
 }

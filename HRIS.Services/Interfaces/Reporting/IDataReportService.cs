@@ -9,7 +9,6 @@ public interface IDataReportService
     Task<List<DataReportListResponse>> GetDataReportList();
     Task<DataReport> DeleteReportfromList(string code);
     Task<object> GetDataReport(string code);
-    Task<object> GetDataReportFilters(string code);
     Task UpdateReportInput(UpdateReportCustomValue input);
     Task<bool> IsReportViewOnlyForEmployee(int reportId);
 }

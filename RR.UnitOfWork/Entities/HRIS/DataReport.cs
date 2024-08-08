@@ -50,8 +50,8 @@ public class DataReport : IModel
             Name = Name,
             Code = Code,
             Status = Status,
-            Columns = DataReportColumns?.Select(x => x.ToDto()).ToList(),
-            Filters = DataReportFilter?.Select(x => x.ToDto()).ToList()
+            DataReportColumns = DataReportColumns?.Select(x => x.ToDto()).ToList(),
+            DataReportFilter = DataReportFilter?.Select(x => x.ToDto()).ToList()
         };
     }
 }

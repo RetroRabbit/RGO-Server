@@ -39,14 +39,22 @@ namespace HRIS.Services.Services.Reporting
         public async Task ArchiveReportFilter(int id)
         {
 
-            var column = await _db.DataReportFilter
+            var row = await _db.DataReportFilter
                 .Get(x => x.Id == id && x.Status == ItemStatus.Active).FirstOrDefaultAsync();
 
-            if (column == null)
+            if (row == null)
                 throw new CustomException("Could not delete filter.");
 
-            column.Status = ItemStatus.Archive;
-            await _db.DataReportFilter.Update(column);
+            row.Status = ItemStatus.Archive;
+            await _db.DataReportFilter.Update(row);
         }
+
+        public async Task<object> GetDataReportFilters(string code)
+        {
+            return await _db.DataReportFilter.Get(x => x.ReportFilterName == code && x.Status == ItemStatus.Active).FirstOrDefaultAsync() ?? throw new CustomException($"Report Filter'{code}' not found");
+
+        }
+
+        
     }
 }

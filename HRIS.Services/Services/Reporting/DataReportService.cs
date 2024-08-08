@@ -26,7 +26,7 @@ public class DataReportService : IDataReportService
 
     public async Task<List<DataReportListResponse>> GetDataReportList()
     {
-        return await _db.DataReport.GetReportsForEmployee(_identity.Email) ?? throw new CustomException("Not reports found");
+        return await _db.DataReport.GetReportsForEmployee(_identity.Email) ?? throw new CustomException("No reports found");
     }
 
     public async Task<DataReport> DeleteReportfromList(string code)
@@ -64,12 +64,6 @@ public class DataReportService : IDataReportService
         };
     }
 
-    public async Task<object> GetDataReportFilters(string code)
-    {
-        var report = await _db.DataReport.GetReport(code) ?? throw new CustomException($"Report '{code}' not found");
-        return _helper.GetDataReportFilter(report);
-          
-    }
 
     public async Task<bool> IsReportViewOnlyForEmployee(int reportId)
     {
@@ -89,24 +83,26 @@ public class DataReportService : IDataReportService
 
     public async Task UpdateReportInput(UpdateReportCustomValue input)
     {
-        await _db.DataReport.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
+            await _db.DataReport.ConfirmEditAccess(input.ReportId, _identity.EmployeeId);
 
-        var item = await _db.DataReportValues
-            .FirstOrDefault(x => x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId);
+            var item = await _db.DataReportValues
+                .FirstOrDefault(x => x.ReportId == input.ReportId && x.ColumnId == input.ColumnId && x.EmployeeId == input.EmployeeId);
 
-        if (item != null)
-        {
-            item.Input = input.Input;
-            await _db.DataReportValues.Update(item);
-            return;
-        }
+            if (item != null)
+            {
+                item.Input = input.Input;
+                await _db.DataReportValues.Update(item);
+                return;
+            }
 
-        await _db.DataReportValues.Add(new DataReportValues
-        {
-            ReportId = input.ReportId,
-            ColumnId = input.ColumnId,
-            EmployeeId = input.EmployeeId,
-            Input = input.Input
-        });
+            await _db.DataReportValues.Add(new DataReportValues
+            {
+                ReportId = input.ReportId,
+                ColumnId = input.ColumnId,
+                EmployeeId = input.EmployeeId,
+                Input = input.Input
+            });
+        
+        
     }
 }

@@ -7,5 +7,6 @@ namespace HRIS.Services.Interfaces.Reporting
         Task<object> AddReportFilter(ReportFilterRequest input);
         Task UpdateReportFilter(ReportFilterRequest input);
         Task ArchiveReportFilter(int id);
+        Task<object> GetDataReportFilters(string code);
     }
 }

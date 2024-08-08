@@ -7,6 +7,7 @@ namespace RR.UnitOfWork.Repositories.HRIS;
 public interface IDataReportFilterRepository : IRepository<DataReportFilter>
 {
     Task<DataReportFilter?> GetReportFilter(int id);
+    Task<DataReportFilter?> GetReportFilter(string code);
     Task ConfirmEditAccess(int reportId, int employeeId);
     Task ConfirmAnyAccess(int reportId, int employeeId);
 }
@@ -18,6 +19,18 @@ public class DataReportFilterRepository : BaseRepository<DataReportFilter>,
     {
     }
 
+    public async Task<DataReportFilter?> GetReportFilter(string code)
+    {
+        var report = await _db.dataReportFilter
+            .Where(x => x.Status == ItemStatus.Active && x.ReportFilterName == code)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        if (report == null) return report;
+
+        return report;
+    }
+
     public async Task<DataReportFilter?> GetReportFilter(int id)
     {
         var report = await Get(x => x.Status == ItemStatus.Active && x.Id == id).AsNoTracking()
@@ -27,6 +40,7 @@ public class DataReportFilterRepository : BaseRepository<DataReportFilter>,
 
         return report;
     }
+
    
 
     public async Task ConfirmEditAccess(int reportId, int employeeId)

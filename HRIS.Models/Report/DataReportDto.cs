@@ -8,7 +8,8 @@ public class DataReportDto
     public string Name { get; set; }
     public string? Code { get; set; }
     public ItemStatus Status { get; set; }
-    public List<DataReportColumnsDto>? Columns { get; set; }
-    public List<DataReportFilterDto>? Filters { get; set; }
+    public List<DataReportColumnsDto>? DataReportColumns { get; set; }
+    public List<DataReportFilterDto>? DataReportFilter { get; set; }
+    public List<DataReportValuesDto>? DataReportValues { get; set; }
     public List<DataReportAccessDto>? DataReportAccess { get; set; }
 }

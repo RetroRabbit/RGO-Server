@@ -219,6 +219,12 @@ public class DataReportControlService : IDataReportControlService
     {
         await _filter.ArchiveReportFilter(id) ;
     }
-
+    public async Task<object> GetDataReportFilters(string code)
+    {
+        return await _filter.GetDataReportFilters(code);
     
+
+    }
+
+
 }
