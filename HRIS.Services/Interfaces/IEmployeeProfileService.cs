@@ -33,4 +33,18 @@ public interface IEmployeeProfileService
     /// <param name="employeeDetails"></param>
     /// <returns></returns>
     Task<Employee> UpdateEmployeeDetails(EmployeeDetailsDto employeeDetails);
+
+    /// <summary>
+    ///     Get employee career summary by id
+    /// </summary>
+    /// <param name="employeeDetails"></param>
+    /// <returns></returns>
+    Task<Employee> UpdatePersonalDetails(PersonalDetailsDto personalDetails);
+
+    /// <summary>
+    ///     Get employee career summary by id
+    /// </summary>
+    /// <param name="employeeDetails"></param>
+    /// <returns></returns>
+    Task<Employee> UpdateContactDetails(ContactDetailsDto contactDetails);
 }

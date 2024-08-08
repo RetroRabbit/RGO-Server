@@ -9,7 +9,7 @@ using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Services;
 
-internal class EmployeeProfileService : IEmployeeProfileService
+public class EmployeeProfileService : IEmployeeProfileService
 {
     private readonly AuthorizeIdentity _identity;
     private readonly IUnitOfWork _db;
@@ -33,7 +33,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
         _employeeCertificationService = employeeCertificationService;
         _employeeBankingService = employeeBankingService;
     }
-    async Task<ProfileDetailsDto> IEmployeeProfileService.GetEmployeeProfileDetailsById(int? id)
+    public async Task<ProfileDetailsDto> GetEmployeeProfileDetailsById(int? id)
     {
         var employeeId = (int)id;
 
@@ -111,17 +111,9 @@ internal class EmployeeProfileService : IEmployeeProfileService
         return employeeProfileDetails;
     }
 
-    async Task<Employee> IEmployeeProfileService.UpdateEmployeeDetails(EmployeeDetailsDto employeeDetails)
+    public async Task<Employee> UpdateEmployeeDetails(EmployeeDetailsDto employeeDetails)
     {
-        Employee? model = await _db.Employee
-                                .Get(employee => employee.Id == employeeDetails.Id)
-                                .AsNoTracking()
-                                .Include(employee => employee.EmployeeType)
-                                .Include(employee => employee.PhysicalAddress)
-                                .Include(employee => employee.PostalAddress)
-                                .Include(employee => employee.ChampionEmployee)
-                                .Include(employee => employee.TeamLeadAssigned)
-                                .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
+        Employee? model = await GetEmployeeModelById(employeeDetails.Id);
 
         model.EngagementDate = employeeDetails.EngagementDate;
         model.PeopleChampion = employeeDetails.PeopleChampionId;
@@ -141,7 +133,39 @@ internal class EmployeeProfileService : IEmployeeProfileService
         return updatedEmployee;
     }
 
-    async Task<CareerSummaryDto> IEmployeeProfileService.GetEmployeeCareerSummaryById(int? id)
+    public async Task<Employee> UpdatePersonalDetails(PersonalDetailsDto personalDetails)
+    {
+        Employee? model = await GetEmployeeModelById(personalDetails.Id);
+
+        model.Gender = personalDetails.Gender;
+        model.Race = personalDetails.Race;
+        model.Nationality = personalDetails.Nationality;
+        model.CountryOfBirth = personalDetails.CountryOfBirth;
+        model.Disability = personalDetails.Disability;
+        model.DisabilityNotes = personalDetails.DisabilityNotes;
+
+        var updatedEmployee = await _db.Employee.Update(model);
+
+        return updatedEmployee;
+    }
+
+    public async Task<Employee> UpdateContactDetails(ContactDetailsDto contactDetails)
+    {
+        Employee? model = await GetEmployeeModelById(contactDetails.Id);
+
+        model.Email = contactDetails.Email;
+        model.PersonalEmail = contactDetails.PersonalEmail;
+        model.CellphoneNo = contactDetails.CellphoneNo;
+        model.HouseNo = contactDetails.HouseNo;
+        model.EmergencyContactNo = contactDetails.EmergencyContactNo;
+        model.EmergencyContactName = contactDetails.EmergencyContactName;
+
+        var updatedEmployee = await _db.Employee.Update(model);
+
+        return updatedEmployee;
+    }
+
+    public async Task<CareerSummaryDto> GetEmployeeCareerSummaryById(int? id)
     {
         var employeeData = await GetEmployeeDataById(id);
 
@@ -165,7 +189,7 @@ internal class EmployeeProfileService : IEmployeeProfileService
         return employeeCareerSummary;
     }
 
-    async Task<BankingInformationDto> IEmployeeProfileService.GetEmployeeBankingInformationById(int? id)
+    public async Task<BankingInformationDto> GetEmployeeBankingInformationById(int? id)
     {
         var employeeBanking = await _db.EmployeeBanking
                                 .Get(banking => banking.EmployeeId == id)
@@ -196,6 +220,24 @@ internal class EmployeeProfileService : IEmployeeProfileService
         return employeeBankingInformation;
     }
 
+
+
+
+
+    async Task<Employee> GetEmployeeModelById(int? id)
+    {
+        Employee? model = await _db.Employee
+                        .Get(employee => employee.Id == id)
+                        .AsNoTracking()
+                        .Include(employee => employee.EmployeeType)
+                        .Include(employee => employee.PhysicalAddress)
+                        .Include(employee => employee.PostalAddress)
+                        .Include(employee => employee.ChampionEmployee)
+                        .Include(employee => employee.TeamLeadAssigned)
+                        .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
+
+        return model;
+    }
     async Task<EmployeeDataDto> GetEmployeeDataById(int? id)
     {
         var employeeData = await _db.EmployeeData.GetById((int)id!);

@@ -36,10 +36,24 @@ public class EmployeeProfileController : ControllerBase
         return Ok(bankingInformation);
     }
 
-    [HttpPut("profile-details")]
-    public async Task<IActionResult> UpdateEmployeeDetailsById([FromBody] EmployeeDetailsDto employeeDetails)
+    [HttpPut("employee-details")]
+    public async Task<IActionResult> UpdateEmployeeDetails([FromBody] EmployeeDetailsDto employeeDetails)
     {
         var result = await _employeeProfileService.UpdateEmployeeDetails(employeeDetails);
+        return Ok(result);
+    }
+
+    [HttpPut("personal-details")]
+    public async Task<IActionResult> UpdatePersonalDetails([FromBody] PersonalDetailsDto personalDetails)
+    {
+        var result = await _employeeProfileService.UpdatePersonalDetails(personalDetails);
+        return Ok(result);
+    }
+
+    [HttpPut("contact-details")]
+    public async Task<IActionResult> UpdateContactDetails([FromBody] ContactDetailsDto contactDetails)
+    {
+        var result = await _employeeProfileService.UpdateContactDetails(contactDetails);
         return Ok(result);
     }
 }
