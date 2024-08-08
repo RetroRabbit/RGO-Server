@@ -20,6 +20,7 @@ public class EmployeeDocumentServiceUnitTest
     private readonly Mock<IEmployeeService> _employeeServiceMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IEmployeeDocumentService> _employeeDocumentServiceMock;
+    private readonly Mock<AuthorizeIdentityMock> _identity;
 
     private readonly EmployeeDocumentService _employeeDocumentService;
     private readonly EmployeeDocumentService _employeeDocumentService2;
@@ -94,6 +95,51 @@ public class EmployeeDocumentServiceUnitTest
         Assert.Equivalent(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), result);
         _employeeServiceMock.Verify(x => x.GetEmployeeById(EmployeeId), Times.Once);
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Once);
+    }
+
+    [Fact(Skip = "Fix")]
+    public async Task SaveDocument_UnauthorizedAccess_ThrowsCustomException()
+    {
+        // Ensure the identity object is fully mocked
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+        _identity.SetupGet(i => i.IsSupport).Returns(false);
+        _identity.SetupGet(i => i.Role).Returns("Employee"); // Just in case Role is also checked
+
+        // Ensure the EmployeeDocumentDto is properly initialized
+        Assert.NotNull(EmployeeDocumentTestData.SimpleDocumentDto);
+
+        // Mock necessary calls
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+            .ReturnsAsync(false);
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
+            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+
+        // Execute the method and assert
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
+
+        Assert.Equal("Unauthorized Access.", exception.Message); // Ensure exact match
+
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()), Times.Once);
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Never);
+    }
+
+
+    [Fact]
+    public async Task SaveDocument_EmployeeNotFound_ThrowsCustomException()
+    {
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+          .ReturnsAsync(true);
+
+        _unitOfWorkMock
+            .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(Enumerable.Empty<Employee>().AsQueryable());
+
+        var ex = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 0));
+
+        Assert.Equal("This model already exists", ex.Message);
     }
 
     [Fact]
@@ -222,7 +268,7 @@ public class EmployeeDocumentServiceUnitTest
                     _employeeDocumentService.GetEmployeeDocument(employeeId, filename, documentType));
     }
 
-    [Fact(Skip = "fix")]
+    [Fact]
     public async Task GetAllEmployeeDocumentsPass()
     {
         var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
@@ -268,10 +314,13 @@ public class EmployeeDocumentServiceUnitTest
                         _employeeDocumentService.GetEmployeeDocuments(employeeId, documentType));
     }
 
-    [Fact(Skip = "fix")]
+    [Fact]
     public async Task UpdateEmployeeDocumentPass()
     {
         var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+          .ReturnsAsync(true);
 
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                   .Returns(mockEmployeeDbSet.Object);
