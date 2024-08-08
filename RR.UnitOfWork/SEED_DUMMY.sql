@@ -19,8 +19,6 @@ VALUES (3, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 INSERT INTO "EmployeeAddress" (id, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (4, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
-INSERT INTO "EmployeeEvaluationTemplate" (id, description)
-VALUES (1, 'L3 Level Up');
 INSERT INTO "EmployeeType" (id, name)
 VALUES (1, 'Executive');
 INSERT INTO "EmployeeType" (id, name)
@@ -85,13 +83,6 @@ INSERT INTO "RoleAccess" (id, grouping, permission)
 VALUES (9, 'Employee Data', 'ViewOwnInfo');
 INSERT INTO "RoleAccess" (id, grouping, permission)
 VALUES (10, 'Employee Data', 'EditOwnInfo');
-
-INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")
-VALUES (1, 'Did you meet expectations?', 'Expectations', 1);
-INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")
-VALUES (2, 'Was this a challanging experience?', 'Expectations', 1);
-INSERT INTO "EmployeeEvaluationTemplateItem" (id, question, section, "templateId")
-VALUES (3, 'What is your plan?', 'Goals', 1);
 
 INSERT INTO "FieldCodeOptions" (id, "fieldCodeId", option)
 VALUES (1, 14, 'Very Low');
@@ -266,51 +257,49 @@ INSERT INTO "RoleAccessLink" (id, "roleAccessId", "roleId")
 VALUES (36, 10, 5);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (1, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'tdutoit', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930887Z', 2, NULL, '0231646', 'C', 1, 4, 'Tiny', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'du Toit', '8465468', NULL, NULL,True,NULL);
+VALUES (1, '+227716480198', NULL, 'Albania', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'tdutoit', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930887Z', 2, NULL, '9902028792081', 'C', 1, 4, 'Tiny', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'du Toit', '8465468', NULL, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (2, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'amanders@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.9309Z', 1, NULL, '0231646', 'A', 1, 4, 'Alicia', 'South African', '', NULL, NULL, NULL, 1, NULL, 'fake.email@gmail.com', '', 1, 2, 1, 5, 30, 'Manders', '8465468', NULL, NULL,True,NULL);
+VALUES (2, '+227716480198', NULL, 'Australia', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'amanders@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.9309Z', 1, NULL, '9902027144185', 'A', 1, 4, 'Alicia', 'South Africa', '', NULL, NULL, NULL, 1, NULL, 'fake.email@gmail.com', '', 1, 2, 1, 5, 30, 'Manders', '8465468', NULL, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate", "active","inactiveReason")
-VALUES (3, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'ahermanus@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930901Z', 2, NULL, '0231646', 'M', 1, 4, 'Andrewus', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 2, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Hermanus', '8465468', NULL, NULL,True,NULL);
+VALUES (3, '+227716480198', NULL, 'Austria', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'ahermanus@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930901Z', 2, NULL, '0504043038182', 'M', 1, 4, 'Andrewus', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 2, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Hermanus', '8465468', NULL, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (4, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'wabbartoir@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930902Z', 2, NULL, '0231646', 'D', 1, 4, 'Werner', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 3, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Abbatoir', '8465468', NULL, NULL,True,NULL);
+VALUES (4, '+227716480198', NULL, 'Azerbaijan', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'wabbartoir@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930902Z', 2, NULL, '0504042000084', 'D', 1, 4, 'Werner', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 3, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Abbatoir', '8465468', NULL, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (5, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'calberts@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930904Z', 2, NULL, '0231646', 'G', 1, 4, 'Celiste', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Alberts', '8465468', NULL, NULL,True,Null);
+VALUES (5, '+227716480198', NULL, 'Bahamas', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'calberts@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930904Z', 2, NULL, '0504042804188', 'G', 1, 4, 'Celiste', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Alberts', '8465468', NULL, NULL,True,Null);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate", "active","inactiveReason")
-VALUES (6, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'lvandermerwe@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930905Z', 2, NULL, '0231646', 'K', 1, 4, 'Lourens', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'van der Merwe', '8465468', NULL, NULL,True,NULL);
+VALUES (6, '+227716480198', NULL, 'Belarus', TIMESTAMPTZ '1996-12-09 22:00:00Z', TRUE, 'na', 'lvandermerwe@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930905Z', 2, NULL, '01020281391810', 'K', 1, 4, 'Lourens', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'van der Merwe', '8465468', NULL, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate", "active","inactiveReason")
-VALUES (7, '085456565656', NULL, 'SA', TIMESTAMPTZ '1997-12-09 22:00:00Z', FALSE, 'na', 'drichter@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930906Z', 1, NULL, '0231646', 'L', 1, 6, 'Delia', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Richter', '8465468', NULL, NULL,True,NULL);
-
-
-INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (8, '085456565656', 2, 'SA', TIMESTAMPTZ '1995-12-09 22:00:00Z', TRUE, 'na', 'hpaskell@gmail.com', NULL, NULL, '8464', 2, TIMESTAMPTZ '2024-03-07 13:10:48.930907Z', 2, NULL, '0231646', 'D', 1, 3, 'Haskell', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 0, 5, 30, 'Paskell', '8465468', 1, NULL,True,NULL);
+VALUES (7, '+227716480198', NULL, 'Belgium', TIMESTAMPTZ '1997-12-09 22:00:00Z', FALSE, 'na', 'drichter@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930906Z', 1, NULL, '01020289410810', 'L', 1, 6, 'Delia', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 1, 5, 30, 'Richter', '8465468', NULL, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (9, '085456565656', 2, 'SA', TIMESTAMPTZ '1993-12-09 22:00:00Z', TRUE, 'na', 'tnoah@gmail.com', NULL, NULL, '8464', 2, TIMESTAMPTZ '2024-03-07 13:10:48.930908Z', 2, NULL, '0231646', 'C', 2, 4, 'Trevorus', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 3, 20000, 30, 'Noah', '8465468', 1, NULL,True,NULL);
+VALUES (8, '+227716480198', 2, 'Canada', TIMESTAMPTZ '1995-12-09 22:00:00Z', TRUE, 'na', 'hpaskell@gmail.com', NULL, NULL, '0231646', 2, TIMESTAMPTZ '2024-03-07 13:10:48.930907Z', 2, NULL, '0102029684184', 'D', 1, 3, 'Haskell', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 0, 5, 30, 'Paskell', '8465468', 1, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (10, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'mwallberg@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930909Z', 1, NULL, '0231646', 'l', 2, 3, 'Markus', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 0, 1000, 30, 'Wallberg', '8465468', 1, NULL,True,NULL);
+VALUES (9, '+227716480198', 2, 'Congo', TIMESTAMPTZ '1993-12-09 22:00:00Z', TRUE, 'na', 'tnoah@gmail.com', NULL, NULL, '0231646', 2, TIMESTAMPTZ '2024-03-07 13:10:48.930908Z', 2, NULL, '0102026919187', 'C', 2, 4, 'Trevorus', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, NULL, 'test@gmail.com', '', 1, 2, 3, 20000, 30, 'Noah', '8465468', 1, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (11, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'kalberts', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.93091Z', 1, NULL, '0231646', 'K', 2, 3, 'Karel', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Alberts', '8465468', 1, NULL,True,NULL);
+VALUES (10, '+227716480198', NULL, 'Croatia', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'mwallberg@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930909Z', 1, NULL, '9605054562183', 'l', 2, 3, 'Markus', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 0, 1000, 30, 'Wallberg', '8465468', 1, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (12, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'jthomlison@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930911Z', 1, NULL, '0231646', 'J', 2, 3, 'Jade', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Thomlison', '8465468', 1, NULL,True,NULL);
+VALUES (11, '+227716480198', NULL, 'Denmark', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'kalberts', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.93091Z', 1, NULL, '9605053099187', 'K', 2, 3, 'Karel', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Alberts', '8465468', 1, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (13, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'qsonico@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930912Z', 1, NULL, '0231646', 'M', 2, 3, 'Quebert', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Sonico', '8465468', 1, NULL,True,NULL);
+VALUES (12, '+227716480198', NULL, 'DjiBouti', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'jthomlison@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930911Z', 1, NULL, '9605054390189', 'J', 2, 3, 'Jade', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Thomlison', '8465468', 1, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (14, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'fhardy@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930914Z', 1, NULL, '0231646', 'R', 2, 3, 'Felicia', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Hardy', '8465468', 1, NULL,True,NULL);
+VALUES (13, '+227716480198', NULL, 'Dominica', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'qsonico@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930912Z', 1, NULL, '9605054774085', 'M', 2, 3, 'Quebert', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Sonico', '8465468', 1, NULL,True,NULL);
 
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (15, '085456565656', NULL, 'SA', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'rgreen@gmail.com', NULL, NULL, '8464', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930913Z', 1, NULL, '0231646', 'E', 2, 3, 'Rachell', 'South African', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Green', '8465468', 1, NULL,True,NULL);
+VALUES (14, '+227716480198', NULL, 'Ecuador', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'fhardy@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930914Z', 1, NULL, '9605053897184', 'R', 2, 3, 'Felicia', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Hardy', '8465468', 1, NULL,True,NULL);
 
+INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
+VALUES (15, '+227716480198', NULL, 'Egypt', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'rgreen@gmail.com', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930913Z', 1, NULL, '9605054616088', 'E', 2, 3, 'Rachell', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 2, 1, 1000, 30, 'Green', '8465468', 1, NULL,True,NULL);
 
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (3, 3, 1);
@@ -324,31 +313,12 @@ VALUES (7, 7, 1);
 INSERT INTO "EmployeeData" ("id", "employeeId", "fieldCodeId", value)
 VALUES (1, 1, 14, 'John');
 
-INSERT INTO "EmployeeEvaluations" (id, "employeeId", "endDate", "ownerId", "startDate", subject, "templateId")
-VALUES (1, 1, NULL, 1, DATE '2024-03-07', 'Peoples'' Champion Checkin', 1);
-INSERT INTO "EmployeeEvaluations" (id, "employeeId", "endDate", "ownerId", "startDate", subject, "templateId")
-VALUES (2, 2, NULL, 1, DATE '2024-03-07', 'Peoples'' Champion Checkin', 1);
-
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (1, 1, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (2, 2, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (4, 4, 1);
-
-INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
-VALUES (1, 1, 1);
-INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
-VALUES (2, 2, 2);
-INSERT INTO "EmployeeEvaluationAudience" (id, "employeeEvaluationId", "employeeId")
-VALUES (3, 1, 3);
-
-INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
-VALUES (1, 'No', 'Test 1', 1, 1, 1);
-INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
-VALUES (2, 'Yes', 'Test 2', 2, 1, 2);
-INSERT INTO "EmployeeEvaluationRatings" (id, comment, description, "employeeEvaluationId", "employeeId", score)
-VALUES (3, 'Maybe', 'Test 3', 1, 2, 3);
 
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (8, 8, 1);
@@ -379,12 +349,7 @@ GREATEST(
     (SELECT MAX(id) FROM "EmployeeAddress") + 1,
     nextval(pg_get_serial_sequence('"EmployeeAddress"', 'id'))),
 false);
-    SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationTemplate"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationTemplate") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluationTemplate"', 'id'))),
-false);
+
     SELECT setval(
 pg_get_serial_sequence('"EmployeeType"', 'id'),
 GREATEST(
@@ -416,12 +381,6 @@ GREATEST(
     nextval(pg_get_serial_sequence('"Employee"', 'id'))),
 false);
     SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationTemplateItem"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationTemplateItem") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluationTemplateItem"', 'id'))),
-false);
-    SELECT setval(
 pg_get_serial_sequence('"FieldCodeOptions"', 'id'),
 GREATEST(
     (SELECT MAX(id) FROM "FieldCodeOptions") + 1,
@@ -451,25 +410,6 @@ GREATEST(
     (SELECT MAX("id") FROM "EmployeeData") + 1,
     nextval(pg_get_serial_sequence('"EmployeeData"', 'id'))),
 false);
-    SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluations"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluations") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluations"', 'id'))),
-false);
-    SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationAudience"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationAudience") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluationAudience"', 'id'))),
-false);
-    SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationRatings"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationRatings") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluationRatings"', 'id'))),
-false);
-
  SELECT setval(
 pg_get_serial_sequence('"Client"', 'id'),
 GREATEST(
@@ -485,13 +425,6 @@ GREATEST(
 false);
 
  SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationTemplate"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationTemplate") + 1,
-    nextval(pg_get_serial_sequence('"public"."EmployeeEvaluationTemplate"', 'id'))),
-false);
-
- SELECT setval(
 pg_get_serial_sequence('"EmployeeType"', 'id'),
 GREATEST(
     (SELECT MAX(id) FROM "EmployeeType") + 1,
@@ -527,13 +460,6 @@ GREATEST(
 false);
 
  SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationTemplateItem"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationTemplateItem") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluationTemplateItem"', 'id'))),
-false);
-
- SELECT setval(
 pg_get_serial_sequence('"FieldCodeOptions"', 'id'),
 GREATEST(
     (SELECT MAX(id) FROM "FieldCodeOptions") + 1,
@@ -566,27 +492,6 @@ pg_get_serial_sequence('"EmployeeData"', 'id'),
 GREATEST(
     (SELECT MAX("id") FROM "EmployeeData") + 1,
     nextval(pg_get_serial_sequence('"EmployeeData"', 'id'))),
-false);
-
- SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluations"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluations") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluations"', 'id'))),
-false);
-
- SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationAudience"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationAudience") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluationAudience"', 'id'))),
-false);
-
- SELECT setval(
-pg_get_serial_sequence('"EmployeeEvaluationRatings"', 'id'),
-GREATEST(
-    (SELECT MAX(id) FROM "EmployeeEvaluationRatings") + 1,
-    nextval(pg_get_serial_sequence('"EmployeeEvaluationRatings"', 'id'))),
 false);
 
 UPDATE "Employee" SET "engagementDate" = TIMESTAMPTZ '2024-03-11 06:31:17.120558Z'
@@ -619,11 +524,6 @@ UPDATE "Employee" SET "engagementDate" = TIMESTAMPTZ '2024-03-11 06:31:17.120587
 WHERE id = 14;
 UPDATE "Employee" SET "engagementDate" = TIMESTAMPTZ '2024-03-11 06:31:17.120586Z'
 WHERE id = 15;
-UPDATE "EmployeeEvaluations" SET "startDate" = DATE '2024-03-11'
-WHERE id = 1;
-UPDATE "EmployeeEvaluations" SET "startDate" = DATE '2024-03-11'
-WHERE id = 2;
-
 UPDATE "Employee" SET "engagementDate" = TIMESTAMPTZ '2024-03-11 06:48:18.410462Z'
 WHERE id = 1;
 UPDATE "Employee" SET "engagementDate" = TIMESTAMPTZ '2024-03-11 06:48:18.410476Z'
