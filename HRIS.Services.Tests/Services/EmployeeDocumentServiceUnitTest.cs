@@ -323,10 +323,14 @@ public class EmployeeDocumentServiceUnitTest
                         _employeeDocumentService.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved.ToDto(), "test@retrorabbit.co.za"));
     }
 
-    [Fact(Skip = "fix")]
+    [Fact]
     public async Task DeleteEmployeeDocumentPass()
     {
         var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+            .ReturnsAsync(true);
+
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(mockEmployeeDbSet.Object);
 
