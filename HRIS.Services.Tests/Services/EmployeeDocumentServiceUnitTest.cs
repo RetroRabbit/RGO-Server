@@ -102,6 +102,21 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
+    public async Task SaveEmployeeDocumentFail()
+    {
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+          .ReturnsAsync(true);
+
+        _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId))
+                            .ReturnsAsync((EmployeeDto)null!);
+
+        SetupMockRoles();
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
+            .SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
+    }
+
+    [Fact]
     public async Task SaveEmployeeDocument_UnauthorizedAccess()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
