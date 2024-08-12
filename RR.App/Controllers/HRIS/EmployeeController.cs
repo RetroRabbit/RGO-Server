@@ -108,11 +108,11 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("id-number")]
-    public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int employeeId)
+    public async Task<IActionResult> CheckIdNumber([FromQuery] string idNumber, [FromQuery] int newEmployeeIdNumber)
     {
-        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" == false && employeeId != _identity.EmployeeId)
-            throw new CustomException("User data being accessed does not match user making the request.");
-        var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, employeeId);
+        if (_identity.IsSupport == false && newEmployeeIdNumber != _identity.EmployeeId)
+            throw new CustomException("No permission or user id already exists.");
+        var isExisting = await _employeeService.CheckDuplicateIdNumber(idNumber, newEmployeeIdNumber);
         return Ok(isExisting);
     }
 }

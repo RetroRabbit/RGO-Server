@@ -1,5 +1,7 @@
-﻿using HRIS.Models;
+﻿using Auth0.ManagementApi.Models;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -8,14 +10,29 @@ namespace HRIS.Services.Services;
 public class FieldCodeOptionsService : IFieldCodeOptionsService
 {
     private readonly IUnitOfWork _db;
+    private readonly AuthorizeIdentity _identity;
 
-    public FieldCodeOptionsService(IUnitOfWork db)
+    public FieldCodeOptionsService(IUnitOfWork db, AuthorizeIdentity identity)
     {
         _db = db;
+        _identity = identity;
     }
 
-    public async Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
+    public async Task<bool> FieldCodeOptionsExists(int id)
     {
+        return await _db.FieldCodeOptions.Any(x => x.Id == id);
+    }
+
+    public async Task<FieldCodeOptionsDto> CreateFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
+    {
+        var fieldCodeOptionExist = await FieldCodeOptionsExists(fieldCodeOptionsDto.Id);
+
+        if (fieldCodeOptionExist)
+            throw new CustomException("Field option with that name found");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var fieldCodes = await GetAllFieldCodeOptions();
         var fieldCode = fieldCodes
                         .Where(fieldCode =>
@@ -24,16 +41,20 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
                         .Select(fieldCode => fieldCode)
                         .FirstOrDefault();
 
-
-        if (fieldCode != null)
-            throw new CustomException("Field option with that name found");
-
         var newFieldCodeOption = await _db.FieldCodeOptions.Add(new FieldCodeOptions(fieldCodeOptionsDto));
         return newFieldCodeOption.ToDto();
     }
 
-    public async Task<List<FieldCodeOptionsDto>> GetFieldCodeOptions(int id)
+    public async Task<List<FieldCodeOptionsDto>> GetFieldCodeOptionsById(int id)
     {
+        var fieldCodeOptionExist = await FieldCodeOptionsExists(id);
+
+        if (!fieldCodeOptionExist)
+            throw new CustomException("Field Code Option does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var fieldCodes = await GetAllFieldCodeOptions();
         var fieldCode = fieldCodes
                         .Where(fieldCode => fieldCode.FieldCodeId == id)
@@ -49,6 +70,14 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
 
     public async Task<List<FieldCodeOptionsDto>> UpdateFieldCodeOptions(List<FieldCodeOptionsDto> fieldCodeOptionsDto)
     {
+        var fieldCodeOptionExist = await FieldCodeOptionsExists(fieldCodeOptionsDto[0].FieldCodeId);
+
+        if (!fieldCodeOptionExist)
+            throw new CustomException("Field Code Option does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         foreach (var option in fieldCodeOptionsDto)
         {
             var field = await GetAllFieldCodeOptions();
@@ -57,14 +86,11 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
                                                                  option.Option.ToLower())
                                        .FirstOrDefault();
 
-            if (existingOptions == null)
-            {
-                var addFieldCode = new FieldCodeOptions(option);
-                await _db.FieldCodeOptions.Add(addFieldCode);
-            }
+            var addFieldCode = new FieldCodeOptions(option);
+            await _db.FieldCodeOptions.Add(addFieldCode);
         }
 
-        var existingFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+        var existingFieldCodeOptions = await GetFieldCodeOptionsById(fieldCodeOptionsDto[0].FieldCodeId);
         var check = true;
         foreach (var option in existingFieldCodeOptions)
         {
@@ -83,15 +109,19 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
             if (!check) _ = await _db.FieldCodeOptions.Delete(option.Id);
         }
 
-        var updatedFieldCodeOptions = await GetFieldCodeOptions(fieldCodeOptionsDto[0].FieldCodeId);
+        var updatedFieldCodeOptions = await GetFieldCodeOptionsById(fieldCodeOptionsDto[0].FieldCodeId);
         return updatedFieldCodeOptions;
     }
 
     public async Task<FieldCodeOptionsDto> DeleteFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto)
     {
-        var ifFieldCodeOption = await GetFieldCodeOptions(fieldCodeOptionsDto.Id);
-        if (ifFieldCodeOption == null)
-            throw new CustomException("No field with that name found");
+        var fieldCodeOptionExist = await FieldCodeOptionsExists(fieldCodeOptionsDto.Id);
+
+        if (!fieldCodeOptionExist)
+            throw new CustomException("Field Code Option does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
 
         var deleteFieldCodeOptions = await _db.FieldCodeOptions.Delete(new FieldCodeOptions(fieldCodeOptionsDto).Id);
         return deleteFieldCodeOptions.ToDto();
