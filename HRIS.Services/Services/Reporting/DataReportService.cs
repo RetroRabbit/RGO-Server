@@ -6,6 +6,7 @@ using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
+using HRIS.Models.Report;
 
 namespace HRIS.Services.Services.Reporting;
 
@@ -48,9 +49,13 @@ public class DataReportService : IDataReportService
         var mappedEmployeeData = _helper.MapEmployeeData(report, employeeDataList);
         var mappedColumns = _helper.MapReportColumns(report);
         var accessList = new List<ReportAccessResponse>();
-        
+        var filterList = new List<DataReportFilterDto>();
+
+
         if (false == viewOnly)
             accessList = await _access.GetAccessListForReport(report.Id);
+
+        filterList = report.DataReportFilter?.Select(x => x.ToDto()).ToList();
 
         return new
         {
@@ -60,7 +65,8 @@ public class DataReportService : IDataReportService
             ViewOnly = viewOnly,
             Columns = mappedColumns,
             Data = mappedEmployeeData,
-            AccessList = accessList
+            AccessList = accessList,
+            Filters = filterList
         };
     }
 
