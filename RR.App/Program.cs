@@ -25,6 +25,7 @@ namespace RR.App
 
             builder.Services.Configure<AuthManagement>(builder.Configuration.GetSection("AuthManagement"));
             builder.Services.Configure<SMTPSettings>(builder.Configuration.GetSection("SMTP"));
+            //builder.Services.AddAutoMapper(typeof(Program));
 
             SetupConfiguration(configuration);
             SetupDependencyInjection(builder.Services, configuration);

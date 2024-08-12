@@ -1,4 +1,5 @@
-﻿using HRIS.Models;
+﻿using AutoMapper;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using RR.UnitOfWork;
@@ -10,11 +11,13 @@ public class EmployeeDataService : IEmployeeDataService
 {
     private readonly IUnitOfWork _db;
     private readonly AuthorizeIdentity _identity;
+    private readonly IMapper _mapper;
 
-    public EmployeeDataService(IUnitOfWork db, AuthorizeIdentity identity)
+    public EmployeeDataService(IUnitOfWork db, AuthorizeIdentity identity, IMapper mapper)
     {
         _db = db;
         _identity = identity;
+        _mapper = mapper;
     }
 
     public async Task<bool> EmployeeDataExists(int id)
@@ -32,8 +35,9 @@ public class EmployeeDataService : IEmployeeDataService
         if (!_identity.IsSupport && employeeDataDto.EmployeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
-        var newEmployeeData = await _db.EmployeeData.Add(new EmployeeData(employeeDataDto));
-        return newEmployeeData.ToDto();
+        var newEmployeeData = _mapper.Map<EmployeeDataDto>(await _db.EmployeeData.Add(new EmployeeData(employeeDataDto)));
+
+        return newEmployeeData;
     }
 
     public async Task<EmployeeDataDto> GetEmployeeData(int employeeId)
@@ -45,12 +49,12 @@ public class EmployeeDataService : IEmployeeDataService
         if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
-        var employeeData = await _db.EmployeeData.GetById(employeeId);
+        var employeeData = _mapper.Map<EmployeeDataDto>(await _db.EmployeeData.GetById(employeeId));
 
         if (employeeData == null)
             throw new CustomException("No employee data record found");
 
-        return employeeData.ToDto();
+        return employeeData;
     }
 
     public async Task<EmployeeDataDto> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
@@ -66,9 +70,9 @@ public class EmployeeDataService : IEmployeeDataService
         if (employeeData == null)
             throw new CustomException("No employee data record found");
 
-        var updatedEmployeeData = await _db.EmployeeData.Update(new EmployeeData(employeeDataDto));
+        var updatedEmployeeData = _mapper.Map<EmployeeDataDto>(await _db.EmployeeData.Update(new EmployeeData(employeeDataDto)));
 
-        return updatedEmployeeData.ToDto();
+        return updatedEmployeeData;
     }
 
     public async Task<EmployeeDataDto> DeleteEmployeeData(int employeeDataId)
@@ -79,7 +83,7 @@ public class EmployeeDataService : IEmployeeDataService
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
 
-        var deletedData = await _db.EmployeeData.Delete(employeeDataId);
-        return deletedData.ToDto();
+        var deletedData = _mapper.Map<EmployeeDataDto>(await _db.EmployeeData.Delete(employeeDataId));
+        return deletedData;
     }
 }
