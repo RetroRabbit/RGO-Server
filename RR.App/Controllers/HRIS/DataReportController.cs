@@ -198,7 +198,7 @@ public class DataReportController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut("update-data-report-filter")]
-    public async Task<IActionResult> GetDataReportFilter([FromQuery] ReportFilterRequest request)
+    public async Task<IActionResult> GetDataReportFilter([FromBody] ReportFilterRequest request)
     {
         try
         {
@@ -213,7 +213,7 @@ public class DataReportController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpPut("archive-data-report-filter")]
-    public async Task<IActionResult> ArchiveDataReportFilter([FromQuery] int id)
+    public async Task<IActionResult> ArchiveDataReportFilter([FromBody] int id)
     {
         try
         {
@@ -227,11 +227,11 @@ public class DataReportController : ControllerBase
     }
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("get-data-report-filter")]
-    public async Task<IActionResult> GetDataReportFilters([FromQuery] string code)
+    public async Task<IActionResult> GetDataReportFilters([FromQuery] string reportFilterName)
     {
         try
         {
-            return Ok(await _control.GetDataReportFilters(code));
+            return Ok(await _control.GetDataReportFilters(reportFilterName));
 
         }
         catch (Exception ex)

@@ -27,7 +27,7 @@ namespace HRIS.Services.Services.Reporting
 
         public async Task UpdateReportFilter(ReportFilterRequest input)
         {
-            await _db.DataReportFilter.ConfirmEditAccess(input.ReportId, input.EmployeeId);
+           /* await _db.DataReportFilter.ConfirmEditAccess(input.ReportId, input.EmployeeId);*/
             var filter = await _db.DataReportFilter.GetReportFilter(input.ReportId) ?? throw new CustomException($"Failed to update report");
             filter.Table = input.TableName;
             filter.Column = input.ColumnName;
@@ -49,9 +49,9 @@ namespace HRIS.Services.Services.Reporting
             await _db.DataReportFilter.Update(row);
         }
 
-        public async Task<object> GetDataReportFilters(string code)
+        public async Task<object> GetDataReportFilters(string reportFilterName)
         {
-            return await _db.DataReportFilter.Get(x => x.ReportFilterName == code && x.Status == ItemStatus.Active).FirstOrDefaultAsync() ?? throw new CustomException($"Report Filter'{code}' not found");
+            return await _db.DataReportFilter.Get(x => x.ReportFilterName == reportFilterName && x.Status == ItemStatus.Active).FirstOrDefaultAsync() ?? throw new CustomException($"Report Filter'{reportFilterName}' not found");
 
         }
 

@@ -192,7 +192,7 @@ public class DataReportControlService : IDataReportControlService
     public async Task AddOrUpdateReportFilter(ReportFilterRequest input)
     {
         var item = await _db.DataReportFilter
-            .FirstOrDefault(x => x.Id == input.ReportFilterId && x.Status == 0);
+            .FirstOrDefault(x => x.ReportFilterName == input.ReportFilterName && x.Status == 0);
 
         if (item != null)
         {
@@ -200,9 +200,15 @@ public class DataReportControlService : IDataReportControlService
             item.Column = input.ColumnName;
             item.Condition = input.Condition;
             item.Value = input.Value;
+            item.ReportFilterName = input.ReportFilterName;
             await _db.DataReportFilter.Update(item);
             return;
         }
+
+        if (input.Condition == "IS")
+            input.Condition = "IN";
+
+        input.Value = string.Format("({0})", input.Value);
 
         await _db.DataReportFilter.Add(new DataReportFilter
         {
@@ -211,7 +217,8 @@ public class DataReportControlService : IDataReportControlService
             Condition = input.Condition,
             Value = input.Value,
             Column = input.ColumnName,
-            Select = "id"
+            Select = "id",
+            ReportFilterName = input.ReportFilterName
         });
     }
 
