@@ -40,11 +40,11 @@ public class FieldCodeService : IFieldCodeService
                     FieldCodeId = newFieldCode.Id,
                     Option = option.Option
                 };
-                await _fieldCodeOptionsService.SaveFieldCodeOptions(fieldCodeOptionsDto);
+                await _fieldCodeOptionsService.CreateFieldCodeOptions(fieldCodeOptionsDto);
             }
         }
 
-        var options = await _fieldCodeOptionsService.GetFieldCodeOptions(newFieldCode!.Id);
+        var options = await _fieldCodeOptionsService.GetFieldCodeOptionsById(newFieldCode!.Id);
         var dto = newFieldCode.ToDto();
         dto.Options = options;
         return dto;
@@ -60,7 +60,7 @@ public class FieldCodeService : IFieldCodeService
 
         if (fieldCode != null)
         {
-            var options = await _fieldCodeOptionsService.GetFieldCodeOptions(fieldCode.Id);
+            var options = await _fieldCodeOptionsService.GetFieldCodeOptionsById(fieldCode.Id);
             fieldCode.Options = options;
         }
 
@@ -77,7 +77,7 @@ public class FieldCodeService : IFieldCodeService
         if (fieldCode.Count != 0)
             foreach (var item in fieldCode)
             {
-                var options = await _fieldCodeOptionsService.GetFieldCodeOptions(item.Id);
+                var options = await _fieldCodeOptionsService.GetFieldCodeOptionsById(item.Id);
                 item.Options = options != null ? options : null;
             }
 
@@ -121,7 +121,7 @@ public class FieldCodeService : IFieldCodeService
         };
 
         var fieldCode = (await _db.FieldCode.Update(new FieldCode(newFieldCodeDto))).ToDto();
-        var options = await _fieldCodeOptionsService.GetFieldCodeOptions(fieldCode.Id);
+        var options = await _fieldCodeOptionsService.GetFieldCodeOptionsById(fieldCode.Id);
         fieldCode.Options = options ?? new List<FieldCodeOptionsDto>();
         return fieldCode;
     }
