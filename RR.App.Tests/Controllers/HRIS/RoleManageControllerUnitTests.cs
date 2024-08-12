@@ -34,11 +34,11 @@ public class RoleManageControllerUnitTests
     {
         _roleServiceMock.Setup(x => x.CheckRole(It.IsAny<string>())).ReturnsAsync(true);
         _roleServiceMock.Setup(x => x.GetRole(It.IsAny<string>())).ReturnsAsync(_roleDto);
-        _roleServiceMock.Setup(x => x.SaveRole(It.IsAny<RoleDto>())).ReturnsAsync(_roleDto);
+        _roleServiceMock.Setup(x => x.CreateRole(It.IsAny<RoleDto>())).ReturnsAsync(_roleDto);
         _roleAccessServiceMock.Setup(x => x.CheckRoleAccess(It.IsAny<string>())).ReturnsAsync(true);
         _roleAccessServiceMock.Setup(x => x.GetRoleAccess(It.IsAny<string>())).ReturnsAsync(_roleAccessDto);
-        _roleAccessServiceMock.Setup(x => x.SaveRoleAccess(It.IsAny<RoleAccessDto>())).ReturnsAsync(_roleAccessDto);
-        _roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>())).ReturnsAsync(_roleAccessLinkDto);
+        _roleAccessServiceMock.Setup(x => x.CreateRoleAccess(It.IsAny<RoleAccessDto>())).ReturnsAsync(_roleAccessDto);
+        _roleAccessLinkServiceMock.Setup(x => x.Create(It.IsAny<RoleAccessLinkDto>())).ReturnsAsync(_roleAccessLinkDto);
 
         var result = await _controller.AddPermission("Super Admin", "Permission 1", "Grouping 1");
 
@@ -51,7 +51,7 @@ public class RoleManageControllerUnitTests
     [Fact]
     public async Task AddPermissionHandlesExceptionReturnsNotFound()
     {
-        _roleAccessLinkServiceMock.Setup(x => x.Save(It.IsAny<RoleAccessLinkDto>())).ThrowsAsync(new CustomException("Error adding permission"));
+        _roleAccessLinkServiceMock.Setup(x => x.Create(It.IsAny<RoleAccessLinkDto>())).ThrowsAsync(new CustomException("Error adding permission"));
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () => await _controller.AddPermission("Super Admin", "Permission 1", "Grouping 1"));
 
@@ -63,10 +63,10 @@ public class RoleManageControllerUnitTests
     {
         _roleServiceMock.Setup(x => x.CheckRole(It.IsAny<string>())).ReturnsAsync(true);
         _roleServiceMock.Setup(x => x.GetRole(It.IsAny<string>())).ReturnsAsync(_roleDto);
-        _roleServiceMock.Setup(x => x.SaveRole(It.IsAny<RoleDto>())).ReturnsAsync(_roleDto);
+        _roleServiceMock.Setup(x => x.CreateRole(It.IsAny<RoleDto>())).ReturnsAsync(_roleDto);
         _roleAccessServiceMock.Setup(x => x.CheckRoleAccess(It.IsAny<string>())).ReturnsAsync(true);
         _roleAccessServiceMock.Setup(x => x.GetRoleAccess(It.IsAny<string>())).ReturnsAsync(_roleAccessDto);
-        _roleAccessServiceMock.Setup(x => x.SaveRoleAccess(It.IsAny<RoleAccessDto>())).ReturnsAsync(_roleAccessDto);
+        _roleAccessServiceMock.Setup(x => x.CreateRoleAccess(It.IsAny<RoleAccessDto>())).ReturnsAsync(_roleAccessDto);
         _roleAccessLinkServiceMock.Setup(x => x.Delete(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_roleAccessLinkDto);
 
         var result = await _controller.RemovePermission("Super Admin", "Permission 2", "Grouping 1");
