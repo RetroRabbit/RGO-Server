@@ -1,5 +1,4 @@
 ﻿using HRIS.Models;
-using MimeKit;
 using System.Net.Mail;
 
 namespace HRIS.Services.Interfaces;
