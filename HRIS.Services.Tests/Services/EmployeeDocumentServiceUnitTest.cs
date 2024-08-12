@@ -4,6 +4,7 @@ using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
+using HRIS.Services.Session;
 using MockQueryable.Moq;
 using Moq;
 using RGO.Tests.Data.Models;
@@ -333,6 +334,26 @@ public class EmployeeDocumentServiceUnitTest
 
         await Assert.ThrowsAsync<CustomException>(() =>
                     _employeeDocumentService.GetEmployeeDocument(employeeId, filename, documentType));
+    }
+
+    [Fact]
+    public async Task GetEmployeeDocument_UnauthorizedAccess_ThrowsCustomException()
+    {
+        // Arrange
+        var employeeId = 2; // Set an employee ID that does not match the _identity.EmployeeId
+        var fileName = "document.pdf";
+        var documentType = DocumentType.StarterKit;
+
+        // Set up the identity to have a different employee ID than the one being requested
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "Test User", "User", 1);
+        var employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, unauthorizedIdentity);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            employeeDocumentService.GetEmployeeDocument(employeeId, fileName, documentType));
+
+        // Verify the exception message
+        Assert.Equal("Unauthorized Access.", exception.Message);
     }
 
     [Fact]
