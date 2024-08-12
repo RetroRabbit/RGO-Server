@@ -43,7 +43,7 @@ public class EmployeeRoleManageController : ControllerBase
 
         var currRole = await _roleService.CheckRole(role)
             ? await _roleService.GetRole(role)
-            : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
+            : await _roleService.CreateRole(new RoleDto { Id = 0, Description = role });
 
         await _authService.AddRoleToUserAsync(authEmployeeId, currRole.AuthRoleId);
 
@@ -70,7 +70,7 @@ public class EmployeeRoleManageController : ControllerBase
 
         var changingToRole = await _roleService.CheckRole(role)
             ? await _roleService.GetRole(role)
-            : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
+            : await _roleService.CreateRole(new RoleDto { Id = 0, Description = role });
 
         var userRoleIsFoundInAuth0 = await _authService.AddRoleToUserAsync(authEmployeeId, changingToRole.AuthRoleId);
 

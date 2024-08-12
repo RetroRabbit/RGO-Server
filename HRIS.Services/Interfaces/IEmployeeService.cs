@@ -83,5 +83,5 @@ public interface IEmployeeService
     /// <param name="idNumber"></param>
     /// <param name="employeeId"></param>
     /// <returns></returns>
-    Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId);
+    Task<bool> CheckDuplicateIdNumber(string idNumber, int newEmployeeIdNumber);
 }

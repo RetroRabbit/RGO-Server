@@ -44,7 +44,7 @@ public class FieldCodeServiceUnitTests
         var fields = new List<FieldCode> { _fieldCodeDto, _fieldCodeDto2 };
         var options = new List<FieldCodeOptions> { _fieldCodeOptionsDto };
 
-        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptionsById(It.IsAny<int>()))
                                 .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
 
         _db.Setup(x => x.FieldCode.GetAll(null)).ReturnsAsync(fields);
@@ -67,10 +67,10 @@ public class FieldCodeServiceUnitTests
         _db.Setup(x => x.FieldCode.Add(It.IsAny<FieldCode>()))
            .ReturnsAsync(newFieldCodeEntity);
 
-        _fieldCodeOptionsService.Setup(x => x.SaveFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
+        _fieldCodeOptionsService.Setup(x => x.CreateFieldCodeOptions(It.IsAny<FieldCodeOptionsDto>()))
                                 .ReturnsAsync(new FieldCodeOptionsDto());
 
-        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptionsById(It.IsAny<int>()))
                                 .ReturnsAsync(new List<FieldCodeOptionsDto>());
 
         var result = await _fieldCodeService.CreateFieldCode(newFieldCodeDto);
@@ -106,7 +106,7 @@ public class FieldCodeServiceUnitTests
         _fieldCodeOptionsService.Setup(x => x.UpdateFieldCodeOptions(It.IsAny<List<FieldCodeOptionsDto>>()))
                                 .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
 
-        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptions(It.IsAny<int>()))
+        _fieldCodeOptionsService.Setup(x => x.GetFieldCodeOptionsById(It.IsAny<int>()))
                                 .ReturnsAsync(options.Select(x => x.ToDto()).ToList());
 
         var result = await _fieldCodeService.UpdateFieldCode(updatedFieldCodeDto);
