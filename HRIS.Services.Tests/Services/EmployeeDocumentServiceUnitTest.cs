@@ -112,11 +112,8 @@ public class EmployeeDocumentServiceUnitTest
 
         var employeeDocumentDto = new SimpleEmployeeDocumentDto
         {
-            EmployeeId = 1 // Different EmployeeId from _identityMock, to trigger unauthorized access
+            EmployeeId = 1
         };
-
-        //_unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-        //.ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
            _employeeDocumentServiceAuthNo.SaveEmployeeDocument(employeeDocumentDto, "test@retrorabbit.co.za", 1));
