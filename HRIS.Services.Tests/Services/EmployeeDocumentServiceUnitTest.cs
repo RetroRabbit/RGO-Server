@@ -227,18 +227,54 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveEmployeeDocumentFail()
+    public async Task SaveNewAdditionalDocument_UnauthorizedAccess()
     {
+        _identity.Setup(i => i.Role).Returns("Employee");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-          .ReturnsAsync(true);
+        .ReturnsAsync(false);
 
-        _employeeServiceMock.Setup(x => x.GetEmployeeById(EmployeeId))
-                            .ReturnsAsync((EmployeeDto)null!);
+        var employeeDocumentDto = new SimpleEmployeeDocumentDto
+        {
+            EmployeeId = 1
+        };
 
-        SetupMockRoles();
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+           _employeeDocumentServiceAuthNo.addNewAdditionalDocument(employeeDocumentDto, "test@retrorabbit.co.za", 1));
 
-        await Assert.ThrowsAsync<CustomException>(() => _employeeDocumentService
-            .SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
+        Assert.Equivalent("Unauthorized Access.", exception.Message);
+
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()),
+            Times.Once);
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Never);
+    }
+
+    /// <summary>
+    /// ///////////////
+    /// </summary>
+    /// <returns></returns>
+
+    [Fact]
+    public async Task SaveNewAdditionalDocument_EmployeeNotFound()
+    {
+        _identity.Setup(i => i.Role).Returns("Employee");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+        .ReturnsAsync(false);
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
+        .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+           _employeeDocumentService.addNewAdditionalDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
+
+        Assert.Equivalent("employee not found", exception.Message);
+
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()),
+            Times.Once);
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Never);
     }
 
     [Fact]
