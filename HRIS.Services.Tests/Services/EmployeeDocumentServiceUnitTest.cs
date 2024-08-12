@@ -148,7 +148,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveDocument_EmployeeNotFound_ThrowsCustomException()
+    public async Task SaveDocument_modelExists()
     {
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
           .ReturnsAsync(true);
