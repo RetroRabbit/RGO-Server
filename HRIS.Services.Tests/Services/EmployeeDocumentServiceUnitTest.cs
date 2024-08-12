@@ -399,6 +399,21 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
+    public async Task GetEmployeeDocuments_UnauthorizedAccess()
+    {
+        var employeeId = 2;
+        var documentType = DocumentType.StarterKit;
+
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "Test User", "User", 1);
+        var employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, unauthorizedIdentity);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            employeeDocumentService.GetEmployeeDocuments(employeeId, documentType));
+
+        Assert.Equal("Unauthorized Access.", exception.Message);
+    }
+
+    [Fact]
     public async Task UpdateEmployeeDocumentPass()
     {
         var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
