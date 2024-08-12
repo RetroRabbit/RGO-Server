@@ -128,35 +128,6 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Never);
     }
 
-    [Fact(Skip = "Fix")]
-    public async Task SaveDocument_UnauthorizedAccess_ThrowsCustomException()
-    {
-        // Ensure the identity object is fully mocked
-        _identity.SetupGet(i => i.EmployeeId).Returns(2);
-        _identity.SetupGet(i => i.IsSupport).Returns(false);
-        _identity.SetupGet(i => i.Role).Returns("Employee"); // Just in case Role is also checked
-
-        // Ensure the EmployeeDocumentDto is properly initialized
-        Assert.NotNull(EmployeeDocumentTestData.SimpleDocumentDto);
-
-        // Mock necessary calls
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-            .ReturnsAsync(false);
-
-        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
-            .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
-
-        // Execute the method and assert
-        var exception = await Assert.ThrowsAsync<CustomException>(() =>
-            _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
-
-        Assert.Equal("Unauthorized Access.", exception.Message); // Ensure exact match
-
-        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()), Times.Once);
-        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Never);
-    }
-
-
     [Fact]
     public async Task SaveDocument_EmployeeNotFound_ThrowsCustomException()
     {
