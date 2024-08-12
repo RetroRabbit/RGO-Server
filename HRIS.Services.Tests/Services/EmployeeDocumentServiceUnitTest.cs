@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Xml.Linq;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
@@ -24,6 +25,7 @@ public class EmployeeDocumentServiceUnitTest
 
     private readonly EmployeeDocumentService _employeeDocumentService;
     private readonly EmployeeDocumentService _employeeDocumentService2;
+    private readonly EmployeeDocumentService _employeeDocumentServiceAuthNo;
 
     public EmployeeDocumentServiceUnitTest()
     {
@@ -32,7 +34,9 @@ public class EmployeeDocumentServiceUnitTest
         _employeeDocumentServiceMock = new Mock<IEmployeeDocumentService>();
         _employeeDocumentService = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
         _employeeDocumentService2 = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 2));
+        _employeeDocumentServiceAuthNo = new EmployeeDocumentService(_unitOfWorkMock.Object, _employeeServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2));
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
+        _identity = new Mock<AuthorizeIdentityMock>();
     }
 
     private const int EmployeeId = 1;
@@ -95,6 +99,33 @@ public class EmployeeDocumentServiceUnitTest
         Assert.Equivalent(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), result);
         _employeeServiceMock.Verify(x => x.GetEmployeeById(EmployeeId), Times.Once);
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task SaveEmployeeDocument_UnauthorizedAccess()
+    {
+        _identity.Setup(i => i.Role).Returns("Employee");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+        .ReturnsAsync(false);
+
+        var employeeDocumentDto = new SimpleEmployeeDocumentDto
+        {
+            EmployeeId = 1 // Different EmployeeId from _identityMock, to trigger unauthorized access
+        };
+
+        //_unitOfWorkMock.Setup(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()))
+        //.ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+           _employeeDocumentServiceAuthNo.SaveEmployeeDocument(employeeDocumentDto, "test@retrorabbit.co.za", 1));
+
+        Assert.Equivalent("Unauthorized Access.", exception.Message);
+
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()),
+            Times.Once);
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Never);
     }
 
     [Fact(Skip = "Fix")]
