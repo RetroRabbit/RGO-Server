@@ -9,7 +9,7 @@ public interface IFieldCodeService
     /// </summary>
     /// <param name="fieldCodeDto"></param>
     /// <returns></returns>
-    Task<FieldCodeDto> SaveFieldCode(FieldCodeDto fieldCodeDto);
+    Task<FieldCodeDto> CreateFieldCode(FieldCodeDto fieldCodeDto);
 
     /// <summary>
     ///     Get field code by name
@@ -43,5 +43,5 @@ public interface IFieldCodeService
     /// </summary>
     /// <param name="categoryName"></param>
     /// <returns>List of fieldCodes based on category</returns>
-    Task<List<FieldCodeDto>> GetByCategory(int categoryIndex);
+    Task<List<FieldCodeDto>> GetFieldCodeByCategoryIndex(int categoryIndex);
 }

@@ -25,7 +25,7 @@ public class SalaryTypeUnitTest
         _salaryType = new SalaryType();
         _employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(_employeeTypeDto);
-        employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!)).ReturnsAsync(_employeeTypeDto);
+        employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!)).ReturnsAsync(_employeeTypeDto);
         _employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 

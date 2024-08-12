@@ -64,8 +64,8 @@ public class AuthenticationController : ControllerBase
                 return BadRequest("User not found.");
             }
 
-            var userExists = await _employeeService.CheckUserExist(authEmail);
-            if (!userExists)
+            var emailExists = await _employeeService.CheckUserEmailExist(authEmail);
+            if (!emailExists)
             {
                 await _authService.DeleteUser(authId);
                 var exception = new Exception("User not found");
@@ -76,7 +76,7 @@ public class AuthenticationController : ControllerBase
             var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
             if (string.IsNullOrEmpty(role))
             {
-                var employee = await _employeeService.GetEmployee(authEmail);
+                var employee = await _employeeService.GetEmployeeByEmail(authEmail);
                 if (employee == null)
                 {
                     var exception = new Exception("User account not found in database.");
@@ -87,7 +87,7 @@ public class AuthenticationController : ControllerBase
                 if (employee.AuthUserId != authId)
                 {
                     employee.AuthUserId = authId;
-                    await _employeeService.UpdateEmployee(employee, authEmail);
+                    await _employeeService.UpdateEmployee(employee);
                 }
 
                 var isUserTerminated = await _terminationService.CheckTerminationExist(employee.Id);

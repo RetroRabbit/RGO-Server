@@ -44,7 +44,7 @@ public class EmployeeDateControllerUnitTests
     [Fact]
     public async Task SaveEmployeeDateValidInputReturnsOkResult()
     {
-        _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateInput.Email))
+        _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(_employeeDateInput.Email))
                            .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto());
 
         _employeeDateServiceMock.Setup(x => x.SaveEmployeeDate(It.IsAny<EmployeeDateInput>()))
@@ -69,7 +69,7 @@ public class EmployeeDateControllerUnitTests
     [Fact]
     public async Task DeleteEmployeeDateValidInputReturnsOkResult()
     {
-        _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateInput.Email))
+        _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(_employeeDateInput.Email))
                            .ReturnsAsync(EmployeeTestData.EmployeeOne.ToDto());
 
         _employeeDateServiceMock.Setup(x => x.Delete(_employeeDateInput.Id)).Returns(Task.CompletedTask);
@@ -93,7 +93,7 @@ public class EmployeeDateControllerUnitTests
     [Fact]
     public async Task UpdateEmployeeDateValidInputReturnsOkResult()
     {
-        _employeeServiceMock.Setup(x => x.GetEmployee(_employeeDateDto.Employee!.Email!))
+        _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(_employeeDateDto.Employee!.Email!))
                            .ReturnsAsync(_employeeDateDto.Employee);
 
         _employeeDateServiceMock.Setup(x => x.UpdateEmployeeDate(It.IsAny<EmployeeDateDto>()))

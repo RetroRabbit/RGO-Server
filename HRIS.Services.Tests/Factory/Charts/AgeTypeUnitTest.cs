@@ -29,7 +29,7 @@ public class AgeTypeUnitTest
         employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         employeeType = new EmployeeType(employeeTypeDto);
         roleDto = new RoleDto{ Id = 3, Description = "Employee" };
-        _employeeTypeServiceMock.Setup(r => r.GetEmployeeType(employeeType.Name!))
+        _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
 
         employeeAddressDto =  new EmployeeAddressDto

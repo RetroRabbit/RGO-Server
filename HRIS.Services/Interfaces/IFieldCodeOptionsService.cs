@@ -9,14 +9,14 @@ public interface IFieldCodeOptionsService
     /// </summary>
     /// <param name="fieldCodeOptionsDto"></param>
     /// <returns></returns>
-    Task<FieldCodeOptionsDto> SaveFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto);
+    Task<FieldCodeOptionsDto> CreateFieldCodeOptions(FieldCodeOptionsDto fieldCodeOptionsDto);
 
     /// <summary>
     ///     Get field code options by id
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<List<FieldCodeOptionsDto>> GetFieldCodeOptions(int id);
+    Task<List<FieldCodeOptionsDto>> GetFieldCodeOptionsById(int id);
 
     /// <summary>
     ///     Get all field code options

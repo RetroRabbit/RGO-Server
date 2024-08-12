@@ -7,7 +7,7 @@ public class EmployeeBankingTestData
 {
     public static EmployeeBanking EmployeeBankingOne = new()
     {
-        Id = 1,
+        Id = 0,
         EmployeeId = 1,
         BankName = "FNB",
         Branch = "Not Sure",
@@ -16,7 +16,7 @@ public class EmployeeBankingTestData
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
         File = "asd",
-        LastUpdateDate = new DateOnly(),
+        LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
         PendingUpdateDate = new DateOnly()
     };
 

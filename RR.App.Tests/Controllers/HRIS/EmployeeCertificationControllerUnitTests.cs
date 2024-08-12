@@ -41,10 +41,10 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task GetAllEmployeeCertificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertificationsByEmployeeId(EmployeeTestData.EmployeeOne.Id))
             .ReturnsAsync(_employeeCertificationDtoList);
 
-        var result = await _controller.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeOne.Id);
+        var result = await _controller.GetEmployeeCertificationsByEmployeeId(EmployeeTestData.EmployeeOne.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<IEnumerable<EmployeeCertificationDto>>(okResult.Value);
@@ -56,10 +56,10 @@ public class EmployeeCertificationControllerUnitTests
     {
         var newController = new EmployeeCertificationController(new AuthorizeIdentityMock("test@example.com", "TestUser", "User", 1), _employeeCertificationServiceMock.Object);
 
-        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertificationsByEmployeeId(EmployeeTestData.EmployeeOne.Id))
             .ReturnsAsync(_employeeCertificationDtoList);
 
-        var result = await newController.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeOne.Id);
+        var result = await newController.GetEmployeeCertificationsByEmployeeId(EmployeeTestData.EmployeeOne.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<IEnumerable<EmployeeCertificationDto>>(okResult.Value);
@@ -71,10 +71,10 @@ public class EmployeeCertificationControllerUnitTests
     {
         var newController = new EmployeeCertificationController(new AuthorizeIdentityMock(), _employeeCertificationServiceMock.Object);
 
-        _employeeCertificationServiceMock.Setup(s => s.GetAllEmployeeCertifications(EmployeeTestData.EmployeeOne.Id + 1))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertificationsByEmployeeId(EmployeeTestData.EmployeeOne.Id + 1))
             .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetAllEmployeelCertiificates(EmployeeTestData.EmployeeOne.Id + 1));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetEmployeeCertificationsByEmployeeId(EmployeeTestData.EmployeeOne.Id + 1));
 
         var objectResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("User data being accessed does not match user making the request.", objectResult.Value);
@@ -83,10 +83,10 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task SaveEmployeeCertificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.SaveEmployeeCertification(_employeeCertificationDto))
+        _employeeCertificationServiceMock.Setup(s => s.CreateEmployeeCertification(_employeeCertificationDto))
             .ReturnsAsync(_employeeCertificationDto);
 
-        var result = await _controller.SaveEmployeeCertificate(_employeeCertificationDto);
+        var result = await _controller.CreateEmployeeCertification(_employeeCertificationDto);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(_employeeCertificationDto, okResult.Value);
@@ -95,10 +95,10 @@ public class EmployeeCertificationControllerUnitTests
     [Fact]
     public async Task GetEmployeeCertificatesPass()
     {
-        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertificationByEmployeeIdAndCertificationId(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
             .ReturnsAsync(_employeeCertificationDto);
 
-        var result = await _controller.GetEmployeeCertificate(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id);
+        var result = await _controller.GetEmployeeCertificationByEmployeeIdAndCertificationId(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(_employeeCertificationDto, okResult.Value);
@@ -109,10 +109,10 @@ public class EmployeeCertificationControllerUnitTests
     {
         var newController = new EmployeeCertificationController(new AuthorizeIdentityMock("test@example.com", "TestUser", "User", 1), _employeeCertificationServiceMock.Object);
 
-        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertificationByEmployeeIdAndCertificationId(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
             .ReturnsAsync(_employeeCertificationDto);
 
-        var result = await newController.GetEmployeeCertificate(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id);
+        var result = await newController.GetEmployeeCertificationByEmployeeIdAndCertificationId(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(_employeeCertificationDto, okResult.Value);
@@ -123,11 +123,11 @@ public class EmployeeCertificationControllerUnitTests
     {
         var newController = new EmployeeCertificationController(new AuthorizeIdentityMock(), _employeeCertificationServiceMock.Object);
 
-        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertification(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
+        _employeeCertificationServiceMock.Setup(s => s.GetEmployeeCertificationByEmployeeIdAndCertificationId(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id))
             .ThrowsAsync(new Exception("User data being accessed does not match user making the request."));
 
 
-        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetEmployeeCertificate(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id));
+        var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await newController.GetEmployeeCertificationByEmployeeIdAndCertificationId(_employeeCertificationDto.EmployeeId, _employeeCertificationDto.Id));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal("User data being accessed does not match user making the request.", notFoundResult.Value);

@@ -16,7 +16,7 @@ public interface ITerminationService
     /// </summary>
     /// <param name="terminationDto">TerminationDto</param>
     /// <returns>TerminationDto</returns>
-    Task<TerminationDto> SaveTermination(TerminationDto terminationDto);
+    Task<TerminationDto> CreateTermination(TerminationDto terminationDto);
 
     /// <summary>
     ///     Get Termination by employeeid
@@ -24,4 +24,10 @@ public interface ITerminationService
     /// <param name="employeeId">employeeId</param>
     /// <returns>TerminationDto</returns>
     Task<TerminationDto> GetTerminationByEmployeeId(int employeeId);
+    /// <summary>
+    ///     Update an existing termination.
+    /// </summary>
+    /// <param name="terminationDto">The Termination DTO.</param>
+    /// <returns>The updated Termination DTO.</returns>
+    Task<TerminationDto> UpdateTermination(TerminationDto terminationDto);
 }

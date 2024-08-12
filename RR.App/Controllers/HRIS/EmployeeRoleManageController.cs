@@ -31,7 +31,7 @@ public class EmployeeRoleManageController : ControllerBase
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
             throw new CustomException("Invalid input");
 
-        var employee = await _employeeService.GetEmployee(email);
+        var employee = await _employeeService.GetEmployeeByEmail(email);
         if (employee == null)
             throw new CustomException("Employee not found.");
 
@@ -43,7 +43,7 @@ public class EmployeeRoleManageController : ControllerBase
 
         var currRole = await _roleService.CheckRole(role)
             ? await _roleService.GetRole(role)
-            : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
+            : await _roleService.CreateRole(new RoleDto { Id = 0, Description = role });
 
         await _authService.AddRoleToUserAsync(authEmployeeId, currRole.AuthRoleId);
 
@@ -58,7 +58,7 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateRole([FromQuery] string email, [FromQuery] string role)
     {
-        var employee = await _employeeService.GetEmployee(email);
+        var employee = await _employeeService.GetEmployeeByEmail(email);
         if (employee == null)
             throw new CustomException("Employee not found.");
 
@@ -70,7 +70,7 @@ public class EmployeeRoleManageController : ControllerBase
 
         var changingToRole = await _roleService.CheckRole(role)
             ? await _roleService.GetRole(role)
-            : await _roleService.SaveRole(new RoleDto { Id = 0, Description = role });
+            : await _roleService.CreateRole(new RoleDto { Id = 0, Description = role });
 
         var userRoleIsFoundInAuth0 = await _authService.AddRoleToUserAsync(authEmployeeId, changingToRole.AuthRoleId);
 
@@ -103,7 +103,7 @@ public class EmployeeRoleManageController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> RemoveRole([FromQuery] string email, [FromQuery] string role)
     {
-        var employee = await _employeeService.GetEmployee(email);
+        var employee = await _employeeService.GetEmployeeByEmail(email);
         if (employee == null)
             throw new CustomException("Employee not found.");
 

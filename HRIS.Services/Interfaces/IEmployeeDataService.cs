@@ -9,7 +9,7 @@ public interface IEmployeeDataService
     /// </summary>
     /// <param name="employeeDataDto"></param>
     /// <returns>Employee data</returns>
-    Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto);
+    Task<EmployeeDataDto> CreateEmployeeData(EmployeeDataDto employeeDataDto);
 
     /// <summary>
     ///     Get Employee Data
@@ -17,14 +17,7 @@ public interface IEmployeeDataService
     /// <param name="employeeId"></param>
     /// <param name="value"></param>
     /// <returns>Employee data</returns>
-    Task<EmployeeDataDto> GetEmployeeData(int employeeId, string value);
-
-    /// <summary>
-    ///     Get All Employee Data
-    /// </summary>
-    /// <param name="employeeId"></param>
-    /// <returns>List of Employee data</returns>
-    Task<List<EmployeeDataDto>?> GetAllEmployeeData(int employeeId);
+    Task<EmployeeDataDto> GetEmployeeData(int employeeId);
 
     /// <summary>
     ///     Update Employee Data

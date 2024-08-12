@@ -25,7 +25,7 @@ public class EmployeeDateService : IEmployeeDateService
 
     public async Task SaveEmployeeDate(EmployeeDateInput employeeDateInput)
     {
-        var employee = await _employeeService.GetEmployee(employeeDateInput.Email!);
+        var employee = await _employeeService.GetEmployeeByEmail(employeeDateInput.Email!);
         var employeeDate = new EmployeeDateDto
         {
             Id = 0,
@@ -45,7 +45,7 @@ public class EmployeeDateService : IEmployeeDateService
 
     public async Task UpdateEmployeeDate(EmployeeDateDto employeeDate)
     {
-        var employee = await _employeeService.GetEmployee(employeeDate.Employee!.Email!);
+        var employee = await _employeeService.GetEmployeeByEmail(employeeDate.Employee!.Email!);
         var newEmployeeDate = new EmployeeDateDto
         {
             Id = employeeDate.Id,

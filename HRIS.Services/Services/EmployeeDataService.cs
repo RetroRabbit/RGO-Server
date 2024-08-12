@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
 
@@ -8,58 +9,59 @@ namespace HRIS.Services.Services;
 public class EmployeeDataService : IEmployeeDataService
 {
     private readonly IUnitOfWork _db;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeDataService(IUnitOfWork db)
+    public EmployeeDataService(IUnitOfWork db, AuthorizeIdentity identity)
     {
         _db = db;
+        _identity = identity;
     }
 
-    public async Task<EmployeeDataDto> SaveEmployeeData(EmployeeDataDto employeeDataDto)
+    public async Task<bool> EmployeeDataExists(int id)
     {
-        var employeesData = await _db.EmployeeData.GetAll();
-        var employeeData = employeesData
-                           .Where(employeeData => employeeData.EmployeeId == employeeDataDto.EmployeeId &&
-                                                  employeeData.FieldCodeId == employeeDataDto.FieldCodeId)
-                           .Select(employeeData => employeeData)
-                           .FirstOrDefault();
+        return await _db.EmployeeData.Any(x => x.Id == id);
+    }
 
-        if (employeeData != null)
-            throw new CustomException("Existing employee data record found");
+    public async Task<EmployeeDataDto> CreateEmployeeData(EmployeeDataDto employeeDataDto)
+    {
+        var modelExists = await EmployeeDataExists(employeeDataDto.Id);
+
+        if (modelExists)
+            throw new CustomException("This model already exists");
+
+        if (!_identity.IsSupport && employeeDataDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
 
         var newEmployeeData = await _db.EmployeeData.Add(new EmployeeData(employeeDataDto));
-
         return newEmployeeData.ToDto();
     }
 
-    public async Task<EmployeeDataDto> GetEmployeeData(int employeeId, string value)
+    public async Task<EmployeeDataDto> GetEmployeeData(int employeeId)
     {
-        var employeesData = await _db.EmployeeData.GetAll();
-        var employeeData = employeesData
-                           .Where(employeeData => employeeData.EmployeeId == employeeId && employeeData.Value == value)
-                           .Select(employeeData => employeeData)
-                           .FirstOrDefault();
+        var modelExists = await EmployeeDataExists(employeeId);
+        if (!modelExists)
+            throw new CustomException("Employee data does not exist");
+
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
+        var employeeData = await _db.EmployeeData.GetById(employeeId);
+
         if (employeeData == null)
             throw new CustomException("No employee data record found");
 
         return employeeData.ToDto();
     }
 
-    public async Task<List<EmployeeDataDto>?> GetAllEmployeeData(int employeeId)
-    {
-        var employeesData = await _db.EmployeeData.GetAll();
-        var employeeData = employeesData
-                           .Where(employeeData => employeeData.EmployeeId == employeeId)
-                           .ToList();
-        return employeeData.Select(x => x.ToDto()).ToList();
-    }
-
     public async Task<EmployeeDataDto> UpdateEmployeeData(EmployeeDataDto employeeDataDto)
     {
-        var employeesData = await _db.EmployeeData.GetAll();
-        var employeeData = employeesData
-                           .Where(employeeData => employeeData.Id == employeeDataDto.Id)
-                           .Select(employeeData => employeeData)
-                           .FirstOrDefault();
+        var modelExists = await EmployeeDataExists(employeeDataDto.Id);
+        if (!modelExists) throw new CustomException("This model does not exist yet");
+
+        if (!_identity.IsSupport && employeeDataDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
+        var employeeData = await _db.EmployeeData.GetById(employeeDataDto.EmployeeId);
 
         if (employeeData == null)
             throw new CustomException("No employee data record found");
@@ -71,6 +73,12 @@ public class EmployeeDataService : IEmployeeDataService
 
     public async Task<EmployeeDataDto> DeleteEmployeeData(int employeeDataId)
     {
+        var modelExists = await EmployeeDataExists(employeeDataId);
+        if (!modelExists) throw new CustomException("This model does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var deletedData = await _db.EmployeeData.Delete(employeeDataId);
         return deletedData.ToDto();
     }

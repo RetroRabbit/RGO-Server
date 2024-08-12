@@ -37,33 +37,13 @@ public class TerminationControllerUnitTests
     [Fact]
     public async Task SaveTerminationReturnsOk()
     {
-        _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ReturnsAsync(_terminationDto);
+        _terminationServiceMock.Setup(x => x.CreateTermination(_terminationDto)).ReturnsAsync(_terminationDto);
 
         var controllerResult = await _controller.AddTermination(_terminationDto);
 
         var actionResult = Assert.IsType<CreatedAtActionResult>(controllerResult);
         Assert.NotNull(actionResult.Value);
         Assert.Equal(_terminationDto, actionResult.Value);
-    }
-
-    [Fact]
-    public async Task SaveTerminationReturnsBadRequest()
-    {
-        _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ThrowsAsync(new Exception("exists"));
-
-        var controllerResult = await _controller.AddTermination(_terminationDto);
-
-        var actionResult = Assert.IsType<BadRequestObjectResult>(controllerResult);
-    }
-
-    [Fact]
-    public async Task SaveTerminationReturnsProblem()
-    {
-        _terminationServiceMock.Setup(x => x.SaveTermination(_terminationDto)).ThrowsAsync(new Exception());
-
-        var controllerResult = await _controller.AddTermination(_terminationDto);
-
-        var actionResult = Assert.IsType<ObjectResult>(controllerResult);
     }
 
     [Fact]
@@ -76,15 +56,5 @@ public class TerminationControllerUnitTests
         var actionResult = Assert.IsType<OkObjectResult>(controllerResult);
         Assert.NotNull(actionResult.Value);
         Assert.Equal(_terminationDto, actionResult.Value);
-    }
-
-    [Fact]
-    public async Task GetTerminationByEmployeeIdReturnsNotFound()
-    {
-        _terminationServiceMock.Setup(x => x.GetTerminationByEmployeeId(_terminationDto.EmployeeId)).ThrowsAsync(new Exception());
-
-        var controllerResult = await _controller.GetTerminationByEmployeeId(_terminationDto.EmployeeId);
-
-        var actionResult = Assert.IsType<NotFoundObjectResult>(controllerResult);
     }
 }

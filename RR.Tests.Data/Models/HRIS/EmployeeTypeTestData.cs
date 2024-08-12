@@ -29,4 +29,10 @@ public class EmployeeTypeTestData
         Id = 5,
         Name = "People Champion"
     };
+
+    public static EmployeeType NullType = new()
+    {
+        Id = 0,
+        Name = ""
+    };
 }
