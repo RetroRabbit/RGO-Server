@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using Auth0.ManagementApi.Models;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -13,16 +15,26 @@ public partial class ChartService : IChartService
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
     private readonly IServiceProvider _services;
+    private readonly AuthorizeIdentity _identity;
 
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services)
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeService = employeeService;
         _services = services;
+        _identity = identity;
+    }
+
+    public async Task<bool> CheckIfChatsExists(int Id)
+    {
+        return await _db.Employee.Any(employee => employee.Id == Id);
     }
 
     public async Task<List<ChartDto>> GetAllCharts()
     {
+        var employeeId = _identity.EmployeeId;
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
         var charts = await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
         for (int i = 0; i < charts.Count; i++)
         {
@@ -34,8 +46,15 @@ public partial class ChartService : IChartService
         return charts;
     }
 
-    public async Task<List<ChartDto>> GetEmployeeCharts(int employeeId)
+    public async Task<List<ChartDto>> GetEmployeeChartsById(int employeeId)
     {
+        var exists = await CheckIfChatsExists(employeeId);
+        if (exists == false)
+            throw new CustomException("Chat not found");
+
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+
         var charts = await _db.Chart.Get()
             .Where(chart => chart.EmployeeId == employeeId)
             .Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
@@ -53,6 +72,13 @@ public partial class ChartService : IChartService
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName,
                                             string chartType, int employeeId)
     {
+        var exists = await CheckIfChatsExists(employeeId);
+        if (exists == false)
+            throw new CustomException("Chat not found");
+
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+
         List<EmployeeDto> employees;
 
         var roleList = roles.SelectMany(item => item.Split(',')).ToList();
@@ -168,6 +194,9 @@ public partial class ChartService : IChartService
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {
+
+        if (!_identity.IsSupport)
+            throw new CustomException("Unauthorized access.");
         var employees = await _employeeService.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
         var dataDictionary = employees
@@ -203,34 +232,30 @@ public partial class ChartService : IChartService
         return chartDataDto;
     }
 
-    public async Task<ChartDto> DeleteChart(int chartId)
+    public async Task<ChartDto> DeleteChart(int id)
     {
-        return (await _db.Chart.Delete(chartId)).ToDto();
+        var exists = await CheckIfChatsExists(id);
+        if (exists == false)
+            throw new CustomException("Chat not found");
+
+        if (!_identity.IsSupport && id != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+        return (await _db.Chart.Delete(id)).ToDto();
     }
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
     {
-        for (int i = 0; i < chartDto.DataTypes!.Count; i++)
-        {
-            chartDto.DataTypes![i] = AllSpaces().Replace(chartDto.DataTypes![i], "");
-        }
-
-        var charts = await _db.Chart.GetAll();
-        var chartData = charts
-                        .Where(chartData => chartData.Id == chartDto.Id)
-                        .Select(chartData => chartData)
-                        .FirstOrDefault();
-        if (chartData == null)
-        {
-            throw new CustomException("No chart data record found");
-        }
-        var updatedChart = await _db.Chart.Update(new Chart(chartDto));
-
-        return updatedChart.ToDto();
+        var exists = await CheckIfChatsExists(chartDto.EmployeeId);
+        if (!exists) throw new CustomException("No chart data record found");
+        if (!_identity.IsSupport && chartDto.Id != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+        return (await _db.Chart.Update(new Chart(chartDto))).ToDto(); 
     }
 
     public string[] GetColumnsFromTable()
     {
+        if (!_identity.IsSupport)
+            throw new CustomException("Unauthorized access.");
         var entityType = typeof(Employee);
         var quantifiableColumnNames = entityType.GetProperties()
                                                 .Where(p => IsQuantifiableType(p.PropertyType) &&
@@ -261,6 +286,8 @@ public partial class ChartService : IChartService
 
     public async Task<byte[]?> ExportCsvAsync(List<string> dataTypes)
     {
+        if (!_identity.IsSupport)
+            throw new CustomException("Unauthorized access.");
         var employees = await _db.Employee.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
         var propertyNames = new List<string>();

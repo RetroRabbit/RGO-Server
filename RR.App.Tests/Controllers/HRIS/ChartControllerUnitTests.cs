@@ -73,8 +73,8 @@ public class ChartControllerUnitTests
     public async Task GetEmployeeCharts_ReturnsOk_WithCharts()
     {
         var employeeId = 1;
-        _chartServiceMock.Setup(service => service.GetEmployeeCharts(employeeId)).ReturnsAsync(_chartDtoList);
-        var result = await _controller.GetEmployeeCharts(employeeId);
+        _chartServiceMock.Setup(service => service.GetEmployeeChartsById(employeeId)).ReturnsAsync(_chartDtoList);
+        var result = await _controller.GetEmployeeChartsById(employeeId);
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnedCharts = Assert.IsType<List<ChartDto>>(okResult.Value);
         Assert.Equal(_chartDtoList.Count, returnedCharts.Count);
