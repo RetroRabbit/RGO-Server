@@ -250,11 +250,6 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Add(It.IsAny<EmployeeDocument>()), Times.Never);
     }
 
-    /// <summary>
-    /// ///////////////
-    /// </summary>
-    /// <returns></returns>
-
     [Fact]
     public async Task SaveNewAdditionalDocument_EmployeeNotFound()
     {
