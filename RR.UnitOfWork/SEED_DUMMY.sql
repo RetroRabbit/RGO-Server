@@ -10,35 +10,35 @@ INSERT INTO "Client" (id, name)
 VALUES (5, 'ABC Enterprises');
 INSERT INTO "Client" (id, name)
 VALUES (6, 'Company XYZ');
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (1, NULL,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (2, NULL,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (3, NULL,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (5,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (6,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (7, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (8,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (9,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (10,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (11,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (12, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (13, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (14, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO "EmployeeAddress" (employeeId, city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
+INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (15, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 INSERT INTO "EmployeeType" (id, name)
