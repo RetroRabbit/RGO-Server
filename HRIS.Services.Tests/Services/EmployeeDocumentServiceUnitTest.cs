@@ -472,6 +472,28 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
+    public async Task UpdateEmployeeDocument_UnauthorizedAccess()
+    {
+        _identity.Setup(i => i.Role).Returns("Employee");
+        _identity.SetupGet(i => i.EmployeeId).Returns(2);
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+        .ReturnsAsync(true);
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()))
+        .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+           _employeeDocumentServiceAuthNo.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.ToDto(), "test@retrorabbit.co.za"));
+
+        Assert.Equivalent("Unauthorized Access.", exception.Message);
+
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()),
+            Times.Once);
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()), Times.Never);
+    }
+
+    [Fact]
     public async Task DeleteEmployeeDocumentPass()
     {
         var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
