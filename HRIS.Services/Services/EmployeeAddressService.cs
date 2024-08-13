@@ -88,7 +88,7 @@ public class EmployeeAddressService : IEmployeeAddressService
 
     public async Task<EmployeeAddressDto> Update(EmployeeAddressDto employeeAddressDto)
     {
-        var exists = await CheckIfExists(employeeAddressDto.Id);
+        var exists = await CheckIfExists(employeeAddressDto.EmployeeId);
 
         if (!exists)
         {
