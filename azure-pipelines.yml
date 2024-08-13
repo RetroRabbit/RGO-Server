@@ -12,11 +12,11 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  dotNetFramework: 'net7.0'
-  dotNetVersion: '7.0.x'
+  dotNetFramework: 'net8.0'
+  dotNetVersion: '8.0.x'
   targetRuntime: 'linux-x64'
 
-# Build the app for .NET 7 framework
+# Build the app for .NET 8 framework
 steps:
 - task: DownloadSecureFile@1
   inputs:
@@ -31,9 +31,9 @@ steps:
     version: $(dotNetVersion)
     includePreviewVersions: true
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'Build .NET 7 Application'
+  displayName: 'Build .NET 8 Application'
 
-# Publish it as .NET 7 self-contained application for linux runtime
+# Publish it as .NET 8 self-contained application for linux runtime
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
