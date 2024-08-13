@@ -4,16 +4,13 @@ using AutoMapper;
 using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
 
-namespace HRIS.Services.Services
+namespace HRIS.Services.Mapping
 {
-    public class MappingProfile : Profile 
+    public class EmployeeDataMap : Profile
     {
-        public MappingProfile() 
+        public EmployeeDataMap()
         {
-            //entity to dto
             CreateMap<EmployeeData, EmployeeDataDto>();
-
-            //dto to entity
         }
     }
 }
