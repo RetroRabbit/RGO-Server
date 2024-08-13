@@ -1,16 +1,13 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
 
-namespace HRIS.Services.Mapping
+namespace HRIS.Services.Mapping;
+
+public class EmployeeDataMap : Profile
 {
-    public class EmployeeDataMap : Profile
+    public EmployeeDataMap()
     {
-        public EmployeeDataMap()
-        {
-            CreateMap<EmployeeData, EmployeeDataDto>();
-        }
+        CreateMap<EmployeeData, EmployeeDataDto>();
     }
 }
