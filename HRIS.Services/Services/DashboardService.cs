@@ -239,8 +239,6 @@ namespace HRIS.Services.Services
                             .Get(employee => employee.Active == true)
                             .AsNoTracking()
                             .Include(employee => employee.EmployeeType)
-                            //.Include(employee => employee.PhysicalAddress)
-                            //.Include(employee => employee.PostalAddress)
                             .OrderBy(employee => employee.Name)
                             .Select(employee => employee.ToDto())
                             .ToListAsync();
