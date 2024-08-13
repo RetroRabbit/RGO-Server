@@ -512,6 +512,27 @@ public class EmployeeDocumentServiceUnitTest
         Assert.NotNull(result);
     }
 
+    [Fact]
+    public async Task DeleteEmployeeDocument_UnauthorizedAccess()
+    {
+        _identity.Setup(i => i.Role).Returns("Employee");
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
+        .ReturnsAsync(true);
+
+        _unitOfWorkMock.Setup(x => x.EmployeeDocument.Delete(It.IsAny<int>()))
+                  .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+           _employeeDocumentServiceAuthNo.DeleteEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentPending.Id));
+
+        Assert.Equivalent("Unauthorized Access.", exception.Message);
+
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()),
+            Times.Once);
+        _unitOfWorkMock.Verify(x => x.EmployeeDocument.Delete(It.IsAny<int>()), Times.Never);
+    }
+
     [Theory]
     [InlineData(DocumentStatus.PendingApproval)]
     [InlineData(DocumentStatus.Approved)]
