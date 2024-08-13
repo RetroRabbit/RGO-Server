@@ -5,7 +5,6 @@ namespace ATS.Models;
 
 public class CandidateDto
 {
-   
     public int Id { get; set; }
     public required string Name { get; set; }
     public required string Surname {  get; set; }
