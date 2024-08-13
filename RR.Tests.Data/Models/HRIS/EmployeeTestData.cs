@@ -45,7 +45,6 @@ public class EmployeeTestData
         EmergencyContactName = null,
         EmergencyContactNo = null,
         Active = false,
-        //PhysicalAddressId = 1
     };
 
     public static Employee EmployeeTwo = new()
