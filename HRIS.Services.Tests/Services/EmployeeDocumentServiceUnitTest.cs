@@ -42,7 +42,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     private const int EmployeeId = 1;
-    
+
     private List<EmployeeDocument> GetEmployeeDocumentsByStatus(DocumentStatus status)
     {
         var documents = new List<EmployeeDocument>();
@@ -155,7 +155,7 @@ public class EmployeeDocumentServiceUnitTest
         .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-           _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto,"test@retrorabbit.co.za", 1));
+           _employeeDocumentService.SaveEmployeeDocument(EmployeeDocumentTestData.SimpleDocumentDto, "test@retrorabbit.co.za", 1));
 
         Assert.Equivalent("employee not found", exception.Message);
 
@@ -494,30 +494,6 @@ public class EmployeeDocumentServiceUnitTest
         _unitOfWorkMock.Verify(x => x.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()), Times.Never);
     }
 
-    //[Fact]
-    //public async Task UpdateEmployeeDocument_EmployeeNotFound()
-    //{
-
-    //    var employeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending.ToDto();
-
-    //    // Setup mocks to simulate an employee not being found
-    //    _employeeServiceMock.Setup(x => x.GetEmployeeById(It.IsAny<int>()))
-    //                        .ReturnsAsync((EmployeeDto)null); // Simulate employee not found
-
-    //    _identity.SetupGet(ai => ai.EmployeeId).Returns(2);
-
-    //    _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-    //    .ReturnsAsync(false);
-
-    //    _unitOfWorkMock.Setup(x => x.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()))
-    //    .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentApproved);
-
-    //    var exception = await Assert.ThrowsAsync<CustomException>(() =>
-    //       _employeeDocumentService.UpdateEmployeeDocument(employeeDocumentDto, "test@retrorabbit.co.za"));
-
-    //    Assert.Equivalent("employee not found", exception.Message);
-    //}
-
     [Fact]
     public async Task UpdateEmployeeDocument_EmployeeNotFound()
     {
@@ -538,24 +514,6 @@ public class EmployeeDocumentServiceUnitTest
         Assert.Equal("Employee not found", exception.Message);
     }
 
-    //[Fact(Skip = "Fix")]
-    //public async Task UpdateEmployeeDocument_UserApprovingOwnDocument_throwException()
-    //{
-    //    // Arrange
-    //    var employeeDocumentDto = new EmployeeDocumentDto { EmployeeId = 1 };
-
-    //    _identity.SetupGet(ai => ai.EmployeeId).Returns(1); // Mock the same employee id to simulate approving own document
-
-    //    _employeeServiceMock.Setup(x => x.GetEmployeeById(employeeDocumentDto.EmployeeId))
-    //                        .ReturnsAsync(new EmployeeDto { Id = 1 }); // Return the employee
-
-    //    // Act & Assert
-    //    var exception = await Assert.ThrowsAsync<CustomException>(() =>
-    //        _employeeDocumentService.UpdateEmployeeDocument(employeeDocumentDto, "test@retrorabbit.co.za"));
-
-    //    Assert.Equal("You cannot approve your own documents.", exception.Message);
-    //}
-
     [Fact]
     public async Task UpdateEmployeeDocument_UserApprovingOwnDocument_ThrowsCustomException()
     {
@@ -573,47 +531,11 @@ public class EmployeeDocumentServiceUnitTest
 
         SetupMockRoles();
 
-        // Mock to simulate that the employee exists
-        //_employeeServiceMock.Setup(x => x.GetEmployeeById(employeeDocumentDto.EmployeeId))
-        //                    .ReturnsAsync(new EmployeeDto { Id = employeeDocumentDto.EmployeeId });
-
-        //_unitOfWorkMock.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-        //    .Returns(Enumerable.Empty<Employee>().ToMockIQueryable());
-
-        // Simulate that the current user's employee ID matches the document's employee ID (indicating an attempt to approve their own document)
-        //_identity.SetupGet(i => i.EmployeeId).Returns(employeeDocumentDto.EmployeeId);
-
-        // Act and Assert: Expect the CustomException to be thrown with the correct message
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
            _employeeDocumentService.UpdateEmployeeDocument(employeeDocumentDto, "test@retrorabbit.co.za"));
 
         Assert.Equal("You cannot approve your own documents.", exception.Message);
     }
-
-    //[Fact]
-    //public async Task UpdateEmployeeDocument_UserApprovingOwnDocument()
-    //{
-    //    var employeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending.ToDto();
-
-    //    // Mock to simulate that the document exists
-    //    _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
-    //                   .ReturnsAsync(true);
-
-    //    // Mock the CheckEmployee method directly to simulate that the employee exists
-    //    _employeeDocumentServiceMock.Setup(x => x.CheckEmployee(employeeDocumentDto.EmployeeId))
-    //                        .ReturnsAsync(true);
-
-    //    // Simulate that the current user's employee ID matches the document's employee ID (indicating an attempt to approve their own document)
-    //    _identity.SetupGet(i => i.EmployeeId).Returns(employeeDocumentDto.EmployeeId);
-
-    //    // Act and Assert: Expect the CustomException to be thrown with the correct message
-    //    var exception = await Assert.ThrowsAsync<CustomException>(() =>
-    //       _employeeDocumentService.UpdateEmployeeDocument(employeeDocumentDto, "test@retrorabbit.co.za"));
-
-    //    Assert.Equal("You cannot approve your own documents.", exception.Message);
-    //}
-
-
 
     [Fact]
     public async Task DeleteEmployeeDocumentPass()
