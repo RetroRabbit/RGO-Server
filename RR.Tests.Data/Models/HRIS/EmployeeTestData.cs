@@ -41,8 +41,6 @@ public class EmployeeTestData
         CellphoneNo = "0000000000",
         ClientAllocated = null,
         TeamLead = null,
-        //PhysicalAddress = EmployeeAddressTestData.EmployeeAddressOne,
-        //PostalAddress = EmployeeAddressTestData.EmployeeAddressOne,
         HouseNo = null,
         EmergencyContactName = null,
         EmergencyContactNo = null,
