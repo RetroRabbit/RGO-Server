@@ -2,12 +2,12 @@
 using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
 
-namespace HRIS.Services.Mapping;
+namespace HRIS.Services.Mapping.EmployeeProfile;
 
-public class WorkExperienceMap: Profile
+public class WorkExperienceMap : Profile
 {
-    public WorkExperienceMap() 
-    { 
+    public WorkExperienceMap()
+    {
         CreateMap<WorkExperience, WorkExperienceDto>();
         CreateMap<WorkExperienceDto, WorkExperience>();
     }

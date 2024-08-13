@@ -55,9 +55,9 @@ public class WorkExperienceService : IWorkExperienceService
     public async Task<List<WorkExperienceDto>> GetWorkExperienceByEmployeeId(int id)
     {
         return await _db.WorkExperience
-             .Get(workExperience => workExperience.EmployeeId == id)
-             .Select(workExperience => _mapper.Map<WorkExperienceDto>(workExperience))
-             .ToListAsync();
+            .Get(workExperience => workExperience.EmployeeId == id)
+            .Select(workExperience => _mapper.Map<WorkExperienceDto>(workExperience))
+            .ToListAsync();
     }
 }
 

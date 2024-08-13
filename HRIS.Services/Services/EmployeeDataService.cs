@@ -35,7 +35,7 @@ public class EmployeeDataService : IEmployeeDataService
         if (!_identity.IsSupport && employeeDataDto.EmployeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
-        var newEmployeeData = _mapper.Map<EmployeeDataDto>(await _db.EmployeeData.Add(new EmployeeData(employeeDataDto)));
+        var newEmployeeData = _mapper.Map<EmployeeDataDto>(await _db.EmployeeData.Add(_mapper.Map<EmployeeData>(employeeDataDto)));
 
         return newEmployeeData;
     }
