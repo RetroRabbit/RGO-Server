@@ -11,35 +11,35 @@ VALUES (5, 'ABC Enterprises');
 INSERT INTO "Client" (id, name)
 VALUES (6, 'Company XYZ');
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (1, NULL,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (2, NULL,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (3, NULL,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
 VALUES (4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (5,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (5,  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (6,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (7, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (8,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (9,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (9,  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (10,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (10,  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (11,  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (11,  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (12, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (13, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (13, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (14, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO "EmployeeAddress" ("employeeId", city, "complexName", country, "postalCode", province, "streetNumber", "suburbOrDistrict", "unitNumber")
-VALUES (15, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 INSERT INTO "EmployeeType" (id, name)
 VALUES (1, 'Executive');
@@ -311,8 +311,9 @@ VALUES (10, '+27716480198', NULL, 'Croatia', TIMESTAMPTZ '1996-12-09 22:00:00Z',
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
 VALUES (11, '+27716480198', NULL, 'Denmark', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'kalberts', NULL, NULL, 'ALB000', 7, TIMESTAMPTZ '2024-03-07 13:10:48.93091Z', 1, NULL, '9605053099187', 'K', 2, 3, 'Karel', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 1000, 30, 'Alberts', '0123456784', 1, NULL,True,NULL);
 
-INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, "physicalAddress", "postalAddress", race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
-VALUES (12, '+27716480198', NULL, 'DjiBouti', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'jthomlison@retrorabbit.co.za', NULL, NULL, 'THO000', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930911Z', 1, NULL, '9605054390189', 'J', 2, 3, 'Jade', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 
+INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo, race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
+VALUES (12, '+27716480193', NULL, 'Denmark', TIMESTAMPTZ '1997-12-09 22:00:00Z', FALSE, 'na', 'salberts', NULL, NULL, 'SLB000', 7, TIMESTAMPTZ '2024-03-07 13:10:48.93091Z', 1, NULL, '9705053099187', 'S', 2, 3, 'Sarel', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '', 1, 1000, 30, 'Alberts', '0123456784', 1, NULL,True,NULL);
+
 INSERT INTO "Employee" (id, "cellphoneNo", "clientAllocated", "countryOfBirth", "dateOfBirth", disability, "disabilityNotes", email, "emergencyContactName", "emergencyContactNo", "employeeNumber", "employeeTypeId", "engagementDate", gender, "houseNo", "idNumber", initials, "leaveInterval", level, name, nationality, notes, "passportCountryIssue", "passportExpirationDate", "passportNumber", "payRate", "peopleChampion", "personalEmail", photo,  race, salary, "salaryDays", surname, "taxNumber", "teamLead", "terminationDate","active","inactiveReason")
 VALUES (13, '+27716480198', NULL, 'Dominica', TIMESTAMPTZ '1996-12-09 22:00:00Z', FALSE, 'na', 'qsonico@retrorabbit.co.za', NULL, NULL, '0231646', 7, TIMESTAMPTZ '2024-03-07 13:10:48.930912Z', 1, NULL, '9605054774085', 'M', 2, 3, 'Quebert', 'South Africa', 'Cannot English very good', NULL, NULL, NULL, 1, 4, 'test@gmail.com', '',  1, 1000, 30, 'Sonico', '0122456789', 1, NULL,True,NULL);
 
