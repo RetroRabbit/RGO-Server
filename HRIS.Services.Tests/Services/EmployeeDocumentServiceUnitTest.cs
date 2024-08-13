@@ -5,6 +5,7 @@ using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using HRIS.Services.Session;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using RGO.Tests.Data.Models;
@@ -228,7 +229,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveNewAdditionalDocument_UnauthorizedAccess()
+    public async Task AddNewAdditionalDocument_UnauthorizedAccess()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
@@ -252,7 +253,7 @@ public class EmployeeDocumentServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveNewAdditionalDocument_EmployeeNotFound()
+    public async Task AddNewAdditionalDocument_EmployeeNotFound()
     {
         _identity.Setup(i => i.Role).Returns("Employee");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
