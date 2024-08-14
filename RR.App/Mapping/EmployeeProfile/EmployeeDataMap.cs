@@ -2,7 +2,7 @@
 using HRIS.Models;
 using RR.UnitOfWork.Entities.HRIS;
 
-namespace HRIS.Services.Mapping.EmployeeProfile;
+namespace RR.App.Mapping.EmployeeProfile;
 
 public class EmployeeDataMap : Profile
 {

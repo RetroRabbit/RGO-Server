@@ -12,8 +12,7 @@ using HRIS.Services.Session;
 using HRIS.Services;
 using HRIS.Services.Helpers;
 using Hris.Middleware;
-using AutoMapper;
-using HRIS.Services.Mapping.EmployeeProfile;
+
 
 namespace RR.App
 {
@@ -27,13 +26,13 @@ namespace RR.App
 
             builder.Services.Configure<AuthManagement>(builder.Configuration.GetSection("AuthManagement"));
             builder.Services.Configure<SMTPSettings>(builder.Configuration.GetSection("SMTP"));
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             SetupConfiguration(configuration);
             SetupDependencyInjection(builder.Services, configuration);
             ConfigureSwagger(builder.Services);
             ConfigureAuthentication(builder.Services, configuration);
             ConfigureAuthorizationPolicies(builder.Services, configuration);
-            SetupAutoMapper(builder.Services);
 
             var app = builder.Build();
             ConfigureApp(app);
@@ -186,20 +185,6 @@ namespace RR.App
                     claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
                 }
             }
-        }
-
-        private static void SetupAutoMapper(IServiceCollection services)
-        {
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new WorkExperienceMap());
-                mc.AddProfile(new EmployeeDataMap());
-            });
-
-            IMapper mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
-
-            services.AddMvc();
         }
     }
 }

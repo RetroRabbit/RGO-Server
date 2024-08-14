@@ -1,4 +1,5 @@
 ﻿using System.Net.Mail;
+using AutoMapper;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
@@ -17,10 +18,11 @@ public class EmployeeService : IEmployeeService
     private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmailService _emailService;
     private readonly AuthorizeIdentity _identity;
+    private readonly IMapper _mapper;
 
     public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
                            IEmployeeAddressService employeeAddressService, IRoleService roleService,
-                           IErrorLoggingService errorLoggingService, IEmailService emailService, AuthorizeIdentity identity)
+                           IErrorLoggingService errorLoggingService, IEmailService emailService, AuthorizeIdentity identity, IMapper mapper)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
@@ -29,6 +31,7 @@ public class EmployeeService : IEmployeeService
         _errorLoggingService = errorLoggingService;
         _emailService = emailService;
         _identity = identity;
+        _mapper = mapper;
     }
 
     public async Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto)
@@ -73,9 +76,10 @@ public class EmployeeService : IEmployeeService
         var roleDto = await _roleService.GetRole("Employee");
 
         employee.Active = true;
-        var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee.ToDto(), Role = roleDto };
+        var newEmployee = _mapper.Map<EmployeeDto>(await _db.Employee.Add(employee));
+
+        var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee, Role = roleDto };
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
@@ -89,7 +93,7 @@ public class EmployeeService : IEmployeeService
             _errorLoggingService.LogException(ex);
         }
 
-        return newEmployee.ToDto();
+        return newEmployee;
     }
 
     public async Task<EmployeeDto> DeleteEmployee(string email)
@@ -106,7 +110,7 @@ public class EmployeeService : IEmployeeService
         if (existingEmployee!.Id == _identity.EmployeeId)
             throw new CustomException("Deleting the currently logged-in user is not permitted");
 
-        return (await _db.Employee.Delete(existingEmployee!.Id)).ToDto();
+        return _mapper.Map<EmployeeDto>(await _db.Employee.Delete(existingEmployee!.Id));
     }
 
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
@@ -124,7 +128,7 @@ public class EmployeeService : IEmployeeService
                             .Include(employee => employee.PhysicalAddress)
                             .Include(employee => employee.PostalAddress)
                             .OrderBy(employee => employee.Name)
-                            .Select(employee => employee.ToDto())
+                            .Select(employee => _mapper.Map<EmployeeDto>(employee))
                             .ToListAsync();
         }
 
@@ -135,7 +139,7 @@ public class EmployeeService : IEmployeeService
                         .Include(employee => employee.PhysicalAddress)
                         .Include(employee => employee.PostalAddress)
                         .OrderBy(employee => employee.Name)
-                        .Select(employee => employee.ToDto())
+                        .Select(employee => _mapper.Map<EmployeeDto>(employee))
                         .ToListAsync();
     }
 
@@ -151,7 +155,7 @@ public class EmployeeService : IEmployeeService
                                 .Include(employee => employee.EmployeeType)
                                 .Include(employee => employee.PhysicalAddress)
                                 .Include(employee => employee.PostalAddress)
-                                .Select(employee => employee.ToDto())
+                                .Select(employee => _mapper.Map<EmployeeDto>(employee))
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
         return employee;
@@ -165,7 +169,7 @@ public class EmployeeService : IEmployeeService
                                 .Include(employee => employee.EmployeeType)
                                 .Include(employee => employee.PhysicalAddress)
                                 .Include(employee => employee.PostalAddress)
-                                .Select(employee => employee.ToDto())
+                                .Select(employee => _mapper.Map<EmployeeDto>(employee))
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
         return employee;
@@ -184,38 +188,9 @@ public class EmployeeService : IEmployeeService
         if (employee == null)
             throw new CustomException("User not found");
 
-        employee.TaxNumber = employeeDto.TaxNumber;
-        employee.PeopleChampion = employeeDto.PeopleChampion;
-        employee.Disability = employeeDto.Disability;
-        employee.DisabilityNotes = employeeDto.DisabilityNotes;
-        employee.Level = employeeDto.Level;
-        employee.EmployeeTypeId = employeeDto.EmployeeType?.Id ?? employee.EmployeeTypeId;
-        employee.Notes = employeeDto.Notes;
-        employee.Initials = employeeDto.Initials;
-        employee.Name = employeeDto.Name;
-        employee.Surname = employeeDto.Surname;
-        employee.DateOfBirth = employeeDto.DateOfBirth;
-        employee.CountryOfBirth = employeeDto.CountryOfBirth;
-        employee.Nationality = employeeDto.Nationality;
-        employee.IdNumber = employeeDto.IdNumber;
-        employee.PassportNumber = employeeDto.PassportNumber;
-        employee.PassportExpirationDate = employeeDto.PassportExpirationDate;
-        employee.PassportCountryIssue = employeeDto.PassportCountryIssue;
-        employee.Race = employeeDto.Race;
-        employee.Gender = employeeDto.Gender;
-        employee.Email = employeeDto.Email;
-        employee.PersonalEmail = employeeDto.PersonalEmail;
-        employee.CellphoneNo = employeeDto.CellphoneNo;
-        employee.ClientAllocated = employeeDto.ClientAllocated;
-        employee.TeamLead = employeeDto.TeamLead;
-        employee.PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
-        employee.PostalAddressId = employeeDto.PostalAddress?.Id;
-        employee.HouseNo = employeeDto.HouseNo;
-        employee.EmergencyContactName = employeeDto.EmergencyContactName;
-        employee.EmergencyContactNo = employeeDto.EmergencyContactNo;
-        employee.Photo = employeeDto.Photo;
+        employee = _mapper.Map<Employee>(employeeDto);
 
-        return (await _db.Employee.Update(employee)).ToDto();
+        return _mapper.Map<EmployeeDto>(await _db.Employee.Update(employee));
     }
 
     public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
@@ -259,15 +234,7 @@ public class EmployeeService : IEmployeeService
             clientAllocatedName = clientDto.Name;
         }
 
-        var simpleProfile = new SimpleEmployeeProfileDto(employeeDto)
-        {
-            PeopleChampionName = peopleChampionName,
-            PeopleChampionId = peopleChampionId == 0 ? null : peopleChampionId,
-            ClientAllocatedName = clientAllocatedName,
-            ClientAllocatedId = clientAllocatedId,
-            TeamLeadName = teamLeadName,
-            TeamLeadId = teamLeadId,
-        };
+        var simpleProfile = _mapper.Map<SimpleEmployeeProfileDto>(employeeDto);
 
         return simpleProfile;
     }

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Interfaces.Helper;
@@ -27,6 +28,7 @@ public class EmployeeServiceUnitTests
     private readonly AuthorizeIdentityMock _authorizedIdentity;
     private readonly AuthorizeIdentityMock _unauthorizedIdentity;
     private readonly AuthorizeIdentityMock _journeyIdentity;
+    private readonly Mock<IMapper> _mapperMock;
 
     private readonly EmployeeRole _employeeRoleDto = new()
     {
@@ -46,21 +48,22 @@ public class EmployeeServiceUnitTests
         _errorLoggingServiceMock = new Mock<IErrorLoggingService> ();
         _emailHelper = new Mock<IEmailHelper>();
         _emailService = new Mock<IEmailService> ();
+        _mapperMock = new Mock<IMapper> ();
 
         Mock<IEmailService> emailService = new();
         _roleServiceMock = new Mock<IRoleService>();
 
         _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
             _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
-            emailService.Object, _authorizedIdentity);
+            emailService.Object, _authorizedIdentity, _mapperMock.Object);
 
         _employeeServiceUnauthorized = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
-           emailService.Object, _unauthorizedIdentity);
+           emailService.Object, _unauthorizedIdentity, _mapperMock.Object);
 
         _employeeServiceJourney = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
-           emailService.Object, _journeyIdentity);
+           emailService.Object, _journeyIdentity, _mapperMock.Object);
     }
 
     [Theory]
