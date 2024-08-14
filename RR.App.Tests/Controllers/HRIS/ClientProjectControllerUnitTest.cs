@@ -11,11 +11,15 @@ namespace RR.App.Tests.Controllers.HRIS;
 public class ClientProjectControllerUnitTest
 {
     private readonly ClientProjectsController _controller;
+    private readonly ClientProjectsController _unauthorizedController;
+
     private readonly Mock<IClientProjectService> _mockClientProjectService;
     public List<ClientProjectsDto> ClientProjectsList;
     public ClientProjectsDto ClientProjectDto;
     public ClientProjectControllerUnitTest()
     {
+        
+        _unauthorizedController = new ClientProjectsController(new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2), _mockClientProjectService.Object);
         _mockClientProjectService = new Mock<IClientProjectService>();
         _controller = new ClientProjectsController(new AuthorizeIdentityMock("test@example.com", "TestUser", "SuperAdmin", 1), _mockClientProjectService.Object);
 
@@ -73,14 +77,11 @@ public class ClientProjectControllerUnitTest
     [Fact]
     public async Task GetClientProjectById_Unauthorized()
     {
-        var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2);
-        var controller = new ClientProjectsController(unauthorizedIdentity, _mockClientProjectService.Object);
-
         _mockClientProjectService.Setup(x => x.GetClientProjectById(1))
             .ThrowsAsync(new CustomException("Unauthorized Access."));
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-            await controller.GetClientProjectById(1));
+            await _unauthorizedController.GetClientProjectById(1));
 
         Assert.Equal("Unauthorized Access.", exception.Message);
     }
@@ -101,14 +102,11 @@ public class ClientProjectControllerUnitTest
     [Fact]
     public async Task SaveClientProject_Unauthorized_WhenExceptionIsThrown()
     {
-        var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2);
-        var controller = new ClientProjectsController(unauthorizedIdentity, _mockClientProjectService.Object);
-
         _mockClientProjectService.Setup(x => x.CreateClientProject(ClientProjectDto))
             .ThrowsAsync(new CustomException("Unauthorized Access."));
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-            await controller.SaveClientProject(ClientProjectDto));
+            await _unauthorizedController.SaveClientProject(ClientProjectDto));
 
         Assert.Equal("Unauthorized Access.", exception.Message);
     }
@@ -129,14 +127,11 @@ public class ClientProjectControllerUnitTest
     [Fact]
     public async Task UpdateClientProject_Unauthorized_WhenExceptionIsThrown()
     {
-        var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2);
-        var controller =  new ClientProjectsController(unauthorizedIdentity, _mockClientProjectService.Object);
-
         _mockClientProjectService.Setup(x => x.UpdateClientProject(ClientProjectDto))
         .ThrowsAsync(new CustomException("Unauthorized Access."));
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-            await controller.UpdateClientProject(ClientProjectDto));
+            await _unauthorizedController.UpdateClientProject(ClientProjectDto));
 
         Assert.Equal("Unauthorized Access.", exception.Message);
     }
@@ -159,14 +154,11 @@ public class ClientProjectControllerUnitTest
     [Fact]
     public async Task DeleteClientProject_Unauthorized_WhenProjectDoesNotExist()
     {
-        var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2);
-        var controller = new ClientProjectsController(unauthorizedIdentity, _mockClientProjectService.Object);
-
         _mockClientProjectService.Setup(x => x.GetClientProjectById(1))
        .ThrowsAsync(new CustomException("Unauthorized Access."));
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-           await controller.DeleteClientProject(1));
+           await _unauthorizedController.DeleteClientProject(1));
 
         Assert.Equal("Unauthorized Access.", exception.Message);
     }
