@@ -1,10 +1,8 @@
 ﻿using System.Linq.Expressions;
-using System.Xml.Linq;
 using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -284,7 +282,6 @@ public class EmployeeDocumentServiceUnitTest
     {
         var fileName = "TestFile.pdf";
 
-        //var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(_mockEmployeeDbSet.Object);
 
@@ -361,7 +358,6 @@ public class EmployeeDocumentServiceUnitTest
     [Fact]
     public async Task GetAllEmployeeDocumentsPass()
     {
-        //var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                       .Returns(_mockEmployeeDbSet.Object);
 
@@ -422,8 +418,6 @@ public class EmployeeDocumentServiceUnitTest
     [Fact]
     public async Task UpdateEmployeeDocumentPass()
     {
-        //var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
-
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
           .ReturnsAsync(true);
 
@@ -443,8 +437,6 @@ public class EmployeeDocumentServiceUnitTest
     [Fact]
     public async Task UpdateEmployeeDocumentOwnFail()
     {
-        //var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
-
         _unitOfWorkMock.Setup(m => m.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                   .Returns(_mockEmployeeDbSet.Object);
 
@@ -502,8 +494,6 @@ public class EmployeeDocumentServiceUnitTest
     [Fact]
     public async Task UpdateEmployeeDocument_EmployeeNotFound()
     {
-        //var employeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending.ToDto();
-
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
                        .ReturnsAsync(true);
 
@@ -522,9 +512,6 @@ public class EmployeeDocumentServiceUnitTest
     [Fact]
     public async Task UpdateEmployeeDocument_UserApprovingOwnDocument_ThrowsCustomException()
     {
-        //var employeeDocumentDto = EmployeeDocumentTestData.EmployeeDocumentPending.ToDto();
-        //var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
-
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
           .ReturnsAsync(true);
 
@@ -545,8 +532,6 @@ public class EmployeeDocumentServiceUnitTest
     [Fact]
     public async Task DeleteEmployeeDocumentPass()
     {
-        //var mockEmployeeDbSet = EmployeeTestData.EmployeeOne.EntityToList().AsQueryable().BuildMockDbSet();
-
         _unitOfWorkMock.Setup(x => x.EmployeeDocument.Any(It.IsAny<Expression<Func<EmployeeDocument, bool>>>()))
             .ReturnsAsync(true);
 
