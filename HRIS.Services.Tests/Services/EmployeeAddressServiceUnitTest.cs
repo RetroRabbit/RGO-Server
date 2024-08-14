@@ -24,11 +24,12 @@ public class EmployeeAddressServiceUnitTest
         _employee = EmployeeTestData.EmployeeOne;
     }
 
-    private EmployeeAddress CreateAddress(int id = 1)
+    private EmployeeAddress CreateAddress(int employeeId = 1)
     {
         return new EmployeeAddress
         {
-            Id = id,
+            Id = 1,
+            EmployeeId = employeeId,
             UnitNumber = "1",
             ComplexName = "Complex",
             StreetNumber = "1",
@@ -187,7 +188,7 @@ public class EmployeeAddressServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveFailTest()
+    public async Task CreateAddressDoesExistTest()
     {
         var address = CreateAddress();
 
@@ -199,7 +200,7 @@ public class EmployeeAddressServiceUnitTest
     }
 
     [Fact]
-    public async Task SavePassTest()
+    public async Task CreateAddressPassTest()
     {
         var address = CreateAddress();
 
@@ -214,7 +215,7 @@ public class EmployeeAddressServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveUnauthorisedTest()
+    public async Task CreateAddressUnauthorisedTest()
     {
         var address = CreateAddress();
 
