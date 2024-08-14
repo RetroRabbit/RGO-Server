@@ -18,9 +18,8 @@ public class ClientProjectControllerUnitTest
     public ClientProjectsDto ClientProjectDto;
     public ClientProjectControllerUnitTest()
     {
-        
-        _unauthorizedController = new ClientProjectsController(new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2), _mockClientProjectService.Object);
         _mockClientProjectService = new Mock<IClientProjectService>();
+        _unauthorizedController = new ClientProjectsController(new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2), _mockClientProjectService.Object);
         _controller = new ClientProjectsController(new AuthorizeIdentityMock("test@example.com", "TestUser", "SuperAdmin", 1), _mockClientProjectService.Object);
 
         ClientProjectsList = new List<ClientProjectsDto>
