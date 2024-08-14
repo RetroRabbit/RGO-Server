@@ -25,7 +25,7 @@ public class PropertyAccessController : ControllerBase
     [HttpGet("role-access")]
     public async Task<IActionResult> GetPropertiesWithAccess(int employeeId)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeId != _identity.EmployeeId)
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
             throw new CustomException("Error retrieving employee.");
 
         var accessList = await _propertyAccessService.GetAccessListByEmployeeId(employeeId);
@@ -66,7 +66,7 @@ public class PropertyAccessController : ControllerBase
         if (email == _identity.Email)
             return Ok(_identity.EmployeeId);
 
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey"))
+        if (!_identity.IsSupport)
             throw new CustomException("Error retrieving employee.");
 
         var employee = await _employeeService.GetEmployeeByEmail(email);

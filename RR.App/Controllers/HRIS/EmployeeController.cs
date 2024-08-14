@@ -57,7 +57,7 @@ public class EmployeeController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee)
     {
-        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" == false && employee.Id != _identity.EmployeeId)
+        if (!_identity.IsSupport && employee.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized action.");
         var updatedEmployee = await _employeeService.UpdateEmployee(employee);
         return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
@@ -92,7 +92,7 @@ public class EmployeeController : ControllerBase
     [HttpGet("simple-profile")]
     public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
     {
-        if (_identity.Role is "SuperAdmin" or "Admin" or "Talent" or "Journey" == false && employeeEmail != _identity.Email)
+        if (!_identity.IsSupport && employeeEmail != _identity.Email)
             throw new CustomException("User data being accessed does not match user making the request.");
         var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
         return Ok(simpleProfile);
