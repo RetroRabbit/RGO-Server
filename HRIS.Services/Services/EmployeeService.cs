@@ -56,7 +56,9 @@ public class EmployeeService : IEmployeeService
 
         employee.Active = true;
 
-        var newEmployee = _mapper.Map<EmployeeDto>(await _db.Employee.Add(employee));
+        var employeeResult = await _db.Employee.Add(employee);
+
+        var newEmployee = _mapper.Map<EmployeeDto>(employeeResult);
 
         var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee, Role = roleDto };
 
@@ -88,7 +90,9 @@ public class EmployeeService : IEmployeeService
         if (existingEmployee!.Id == _identity.EmployeeId)
             throw new CustomException("Deleting the currently logged-in user is not permitted");
 
-        return _mapper.Map<EmployeeDto>(await _db.Employee.Delete(existingEmployee!.Id));
+        var result = _mapper.Map<EmployeeDto>(await _db.Employee.Delete(existingEmployee!.Id));
+
+        return result;
     }
 
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
@@ -113,7 +117,7 @@ public class EmployeeService : IEmployeeService
                         .AsNoTracking()
                         .Include(employee => employee.EmployeeType)
                         .OrderBy(employee => employee.Name)
-                        .Select(employee => _mapper.Map<EmployeeDto>(employee))
+                        .Select(employee => employee.ToDto())
                         .ToListAsync();
     }
 
@@ -127,7 +131,7 @@ public class EmployeeService : IEmployeeService
                                 .Get(employee => employee.Email == email)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
-                                .Select(employee => _mapper.Map<EmployeeDto>(employee))
+                                .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
         return employee;
@@ -139,7 +143,7 @@ public class EmployeeService : IEmployeeService
                                 .Get(employee => employee.Id == id)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
-                                .Select(employee => _mapper.Map<EmployeeDto>(employee))
+                                .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
         return employee;
