@@ -58,9 +58,10 @@ public class FieldCodeOptionsServiceUnitTests
     }
 
     [Fact]
-    public async Task GetFieldCodeOptionsById_Unauthorized()
+    public async Task GetFieldCodeOptionsById_Unauthorized_WhenUserIsInactive_ShouldThrowCustomException()
     {
-        _identity.Setup(i => i.Role).Returns("Employee");
+        var identityMock = new AuthorizeIdentityMock("test@gmail.com", "test", "Inactive", 2);
+        var fieldCodeOptionsService = new FieldCodeOptionsService(_dbMock.Object, identityMock);
 
         _dbMock.Setup(x => x.FieldCodeOptions.Any(It.IsAny<Expression<Func<FieldCodeOptions, bool>>>()))
             .ReturnsAsync(true);
@@ -69,9 +70,9 @@ public class FieldCodeOptionsServiceUnitTests
         _dbMock.Setup(x => x.FieldCodeOptions.GetAll(null)).ReturnsAsync(fields);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-        _fieldCodeOptionsService.GetFieldCodeOptionsById(_fieldCodeOptions.Id));
+            fieldCodeOptionsService.GetFieldCodeOptionsById(_fieldCodeOptions.Id));
 
-        Assert.Equivalent("Unauthorized Access.", exception.Message);
+        Assert.Equal("Unauthorized Access.", exception.Message);
     }
 
     [Fact]

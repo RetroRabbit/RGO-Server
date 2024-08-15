@@ -52,7 +52,7 @@ public class FieldCodeOptionsService : IFieldCodeOptionsService
         if (!fieldCodeOptionExist)
             throw new CustomException("Field Code Option does not exist");
 
-        if (_identity.IsSupport == false)
+        if (_identity.IsInactive)
             throw new CustomException("Unauthorized Access.");
 
         var fieldCodes = await GetAllFieldCodeOptions();
