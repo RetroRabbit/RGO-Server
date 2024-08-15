@@ -38,8 +38,6 @@ public class EmployeeDto
     public string? CellphoneNo { get; set; }
     public int? ClientAllocated { get; set; }
     public int? TeamLead { get; set; }
-    public EmployeeAddressDto? PhysicalAddress { get; set; }
-    public EmployeeAddressDto? PostalAddress { get; set; }
     public string? HouseNo { get; set; }
     public string? EmergencyContactName { get; set; }
     public string? EmergencyContactNo { get; set; }
