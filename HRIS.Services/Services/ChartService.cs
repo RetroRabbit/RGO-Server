@@ -31,10 +31,7 @@ public partial class ChartService : IChartService
     }
 
     public async Task<List<ChartDto>> GetAllCharts()
-    {
-        var employeeId = _identity.EmployeeId;
-        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
-            throw new CustomException("Unauthorized access.");
+    {   
         var charts = await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
         for (int i = 0; i < charts.Count; i++)
         {
@@ -194,7 +191,6 @@ public partial class ChartService : IChartService
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {
-
         if (!_identity.IsSupport)
             throw new CustomException("Unauthorized access.");
         var employees = await _employeeService.GetAll();
@@ -236,7 +232,7 @@ public partial class ChartService : IChartService
     {
         var exists = await CheckIfChatsExists(id);
         if (exists == false)
-            throw new CustomException("Chat not found");
+            throw new CustomException("Chart not found");
 
         if (!_identity.IsSupport && id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
