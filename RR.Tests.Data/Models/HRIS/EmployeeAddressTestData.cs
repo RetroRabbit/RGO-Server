@@ -7,6 +7,7 @@ public class EmployeeAddressTestData
     public static EmployeeAddress EmployeeAddressOne = new()
     {
         Id = 1,
+        EmployeeId = 1,
         UnitNumber = "2",
         ComplexName = "Complex",
         StreetNumber = "2",
@@ -20,6 +21,7 @@ public class EmployeeAddressTestData
     public static EmployeeAddress EmployeeAddressTwo = new()
     {
         Id = 1,
+        EmployeeId = 2,
         UnitNumber = "1",
         ComplexName = "Complex Name 1",
         StreetNumber = "Street Number 1",
@@ -33,6 +35,7 @@ public class EmployeeAddressTestData
     public static EmployeeAddress EmployeeAddressThree = new()
     {
         Id = 2,
+        EmployeeId = 3,
         UnitNumber = "2",
         ComplexName = "Complex Name 2",
         StreetNumber = "Street Number 2",
@@ -45,6 +48,7 @@ public class EmployeeAddressTestData
     public static EmployeeAddress EmployeeAddressNew = new()
     {
         Id = 0,
+        EmployeeId = 4,
         UnitNumber = "56",
         ComplexName = "Complex72",
         StreetNumber = "8",
@@ -55,11 +59,12 @@ public class EmployeeAddressTestData
         PostalCode = "1620"
     };
 
-    public static EmployeeAddress GetModifiedEmployeeAdressDtoWithAddressId(int addressId)
+    public static EmployeeAddress GetModifiedEmployeeAdressDtoWithAddressId(int employeeId)
     {
         return new EmployeeAddress
         {
-            Id = addressId,
+            Id = employeeId,
+            EmployeeId = 5,
             UnitNumber = "56",
             ComplexName = "Complex72",
             StreetNumber = "8",
