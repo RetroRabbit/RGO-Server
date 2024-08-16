@@ -25,6 +25,5 @@ public class TerminationDto
     public string TerminationDocument {  get; set; }
     [Required(ErrorMessage = "Termination 'DocumentName' field is missing.")]
     public string DocumentName { get; set; }
-    [Required(ErrorMessage = "Termination 'TerminationComments' field is missing.")]
     public string TerminationComments { get; set; }
 }
