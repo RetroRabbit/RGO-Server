@@ -19,17 +19,7 @@ public class ClientController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllClients()
     {
-        try
-        {
-            var getClients = await _clientService.GetAllClients();
-
-            if (getClients == null) throw new Exception("No clients found");
-
-            return Ok(getClients);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+         var getClients = await _clientService.GetAllClients();
+         return Ok(getClients);
     }
 }
