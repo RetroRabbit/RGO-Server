@@ -38,7 +38,5 @@ public class BankingStarterKitControllerUnitTest
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualBankingStarterKit = Assert.IsAssignableFrom<List<BankingAndStarterKitDto>>(okResult.Value);
         Assert.Equal(_bankingStarterKitDtoList, actualBankingStarterKit);
-
-  
     }
 }
