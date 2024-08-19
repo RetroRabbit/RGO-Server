@@ -17,7 +17,6 @@ public class SalaryTypeUnitTest
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly SalaryType _salaryType;
     readonly EmployeeTypeDto _employeeTypeDto;
-    readonly EmployeeAddressDto _employeeAddressDto;
 
     public SalaryTypeUnitTest()
     {
@@ -27,7 +26,6 @@ public class SalaryTypeUnitTest
         _employeeTypeDto = new EmployeeTypeDto{ Id = 1, Name = "Developer" };
         var employeeType = new EmployeeType(_employeeTypeDto);
         employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!)).ReturnsAsync(_employeeTypeDto);
-        _employeeAddressDto = new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
     private EmployeeDto CreateEmployee(int? salary)
@@ -67,8 +65,6 @@ public class SalaryTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            PhysicalAddress = _employeeAddressDto,
-            PostalAddress = _employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

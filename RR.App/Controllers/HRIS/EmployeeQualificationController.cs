@@ -24,7 +24,7 @@ public class EmployeeQualificationController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeQualification([FromBody] EmployeeQualificationDto employeeQualificationDto)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeQualificationDto.EmployeeId != _identity.EmployeeId)
+        if (!_identity.IsSupport && employeeQualificationDto.EmployeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
         var newQualification = await _employeeQualificationService.CreateEmployeeQualification(employeeQualificationDto, employeeQualificationDto.EmployeeId);
@@ -52,7 +52,7 @@ public class EmployeeQualificationController : ControllerBase
     [HttpGet("{employeeId}")]
     public async Task<IActionResult> GetEmployeeQualificationByEmployeeId(int employeeId)
     {
-        if (_identity.Role is not ("SuperAdmin" or "Admin" or "Talent" or "Journey") && employeeId != _identity.EmployeeId)
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
         var data = await _employeeQualificationService.GetEmployeeQualificationsByEmployeeId(employeeId);

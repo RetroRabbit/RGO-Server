@@ -48,8 +48,6 @@ public class EmployeeBankingUnitTests
             Email = "dm@.co.za",
             PersonalEmail = "test@gmail.com",
             CellphoneNo = "0123456789",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
         };
     }
 

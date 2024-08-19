@@ -12,20 +12,17 @@ namespace HRIS.Services.Services;
 public class EmployeeService : IEmployeeService
 {
     private readonly IUnitOfWork _db;
-    private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IRoleService _roleService;
     private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmailService _emailService;
     private readonly AuthorizeIdentity _identity;
 
-    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
-                           IEmployeeAddressService employeeAddressService, IRoleService roleService,
+    public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db, IRoleService roleService,
                            IErrorLoggingService errorLoggingService, IEmailService emailService, AuthorizeIdentity identity)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
-        _employeeAddressService = employeeAddressService;
         _roleService = roleService;
         _errorLoggingService = errorLoggingService;
         _emailService = emailService;
@@ -52,25 +49,6 @@ public class EmployeeService : IEmployeeService
 
         var employee = new Employee(employeeDto, existingEmployeeType);
 
-        EmployeeAddressDto physicalAddress;
-
-        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!.Id))
-            physicalAddress = await _employeeAddressService.Create(employeeDto.PhysicalAddress!);
-        else
-            physicalAddress = await _employeeAddressService.GetById(employeeDto.PhysicalAddress!.Id);
-
-        employee.PhysicalAddressId = physicalAddress.Id;
-
-        EmployeeAddressDto postalAddress;
-
-        if (!await _employeeAddressService
-                .CheckIfExists(employeeDto.PostalAddress!.Id))
-            postalAddress = await _employeeAddressService.Create(employeeDto.PostalAddress!);
-        else
-            postalAddress = await _employeeAddressService.GetById(employeeDto.PostalAddress!.Id);
-
-        employee.PostalAddressId = postalAddress.Id;
-
         var roleDto = await _roleService.GetRole("Employee");
 
         employee.Active = true;
@@ -79,17 +57,10 @@ public class EmployeeService : IEmployeeService
         var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee.ToDto(), Role = roleDto };
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
-
-        try
-        {
-            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
+        
+        await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
                 "WelcomeLetter", employeeDto);
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-        }
-
+        
         return newEmployee.ToDto();
     }
 
@@ -122,8 +93,6 @@ public class EmployeeService : IEmployeeService
             return await _db.Employee
                             .Get(employee => employee.PeopleChampion == peopleChampion!.Id)
                             .Include(employee => employee.EmployeeType)
-                            .Include(employee => employee.PhysicalAddress)
-                            .Include(employee => employee.PostalAddress)
                             .OrderBy(employee => employee.Name)
                             .Select(employee => employee.ToDto())
                             .ToListAsync();
@@ -133,8 +102,6 @@ public class EmployeeService : IEmployeeService
                         .Get(employee => true)
                         .AsNoTracking()
                         .Include(employee => employee.EmployeeType)
-                        .Include(employee => employee.PhysicalAddress)
-                        .Include(employee => employee.PostalAddress)
                         .OrderBy(employee => employee.Name)
                         .Select(employee => employee.ToDto())
                         .ToListAsync();
@@ -150,8 +117,6 @@ public class EmployeeService : IEmployeeService
                                 .Get(employee => employee.Email == email)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
-                                .Include(employee => employee.PhysicalAddress)
-                                .Include(employee => employee.PostalAddress)
                                 .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
@@ -164,8 +129,6 @@ public class EmployeeService : IEmployeeService
                                 .Get(employee => employee.Id == id)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
-                                .Include(employee => employee.PhysicalAddress)
-                                .Include(employee => employee.PostalAddress)
                                 .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
@@ -209,8 +172,6 @@ public class EmployeeService : IEmployeeService
         employee.CellphoneNo = employeeDto.CellphoneNo;
         employee.ClientAllocated = employeeDto.ClientAllocated;
         employee.TeamLead = employeeDto.TeamLead;
-        employee.PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
-        employee.PostalAddressId = employeeDto.PostalAddress?.Id;
         employee.HouseNo = employeeDto.HouseNo;
         employee.EmergencyContactName = employeeDto.EmergencyContactName;
         employee.EmergencyContactNo = employeeDto.EmergencyContactNo;
@@ -284,8 +245,6 @@ public class EmployeeService : IEmployeeService
                                    && (employeeType == 0 || employee.EmployeeType!.Id == employeeType)
                                    && (employee.Active == activeStatus))
                         .Include(employee => employee.EmployeeType)
-                        .Include(employee => employee.PhysicalAddress)
-                        .Include(employee => employee.PostalAddress)
                         .Include(employee => employee.EmployeeRole)
                             .ThenInclude(role => role.Role)
                         .OrderBy(employee => employee.Name)
