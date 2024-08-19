@@ -14,7 +14,7 @@ public class AuthorizeIdentity
     public AuthorizeIdentity(IUnitOfWork db, IHttpContextAccessor httpAccessor)
     {
         _db = db;
-        _userIdentity = httpAccessor?.HttpContext?.User ?? null;
+        _userIdentity = httpAccessor?.HttpContext?.User;
     }
 
     private string? _email;
@@ -29,34 +29,40 @@ public class AuthorizeIdentity
     public bool IsAdmin => Role is "Admin" or "SuperAdmin";
     public bool IsTalent => Role is "Talent";
     public bool IsJourney => Role is "Journey";
-    public bool IsSupport => IsAdmin || IsTalent || IsJourney;
+    public bool IsEmployee => Role is "Employee";
+    public virtual bool IsInactive => Role is "Inactive";
+    public bool IsSupport => IsAdmin || IsTalent || IsJourney || IsInactive;
 
     public virtual int EmployeeId
     {
         get
         {
-            _employeeId ??= _db.GetActiveEmployeeId(Email, Role).Result;
+            _employeeId ??= _db.GetActiveEmployeeId(Email).Result;
             return _employeeId ?? throw new CustomException("Unauthorized Access");
         }
     }
 
     private string GetEmail()
     {
-        return GetUserType(ClaimTypes.Email);
+        return GetClaimValue(ClaimTypes.Email) ?? throw new CustomException("Email claim is missing.");
     }
 
     private string GetNameIdentifier()
     {
-        return GetUserType(ClaimTypes.NameIdentifier);
+        return GetClaimValue(ClaimTypes.NameIdentifier) ?? throw new CustomException("NameIdentifier claim is missing.");
     }
 
     private string GetRole()
     {
-        return GetUserType(ClaimTypes.Role);
+        return GetClaimValue(ClaimTypes.Role) ?? "Inactive";
     }
 
-    private string GetUserType(string type)
+    private string? GetClaimValue(string claimType)
     {
-        return _userIdentity.FindFirst(type)?.Value ?? throw new AuthenticationException("Not signed in");
+        if (_userIdentity == null || !_userIdentity.Identity.IsAuthenticated)
+        {
+            throw new AuthenticationException("User is not signed in.");
+        }
+        return _userIdentity.FindFirst(claimType)?.Value;
     }
 }
