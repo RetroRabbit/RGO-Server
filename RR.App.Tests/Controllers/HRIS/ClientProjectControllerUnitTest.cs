@@ -12,7 +12,6 @@ public class ClientProjectControllerUnitTest
 {
     private readonly ClientProjectsController _controller;
     private readonly ClientProjectsController _unauthorizedController;
-
     private readonly Mock<IClientProjectService> _mockClientProjectService;
     public List<ClientProjectsDto> ClientProjectsList;
     public ClientProjectsDto ClientProjectDto;
