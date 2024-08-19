@@ -13,7 +13,6 @@ public class BankingAndStarterKitController : ControllerBase
     public BankingAndStarterKitController(IBankingAndStarterKitService bankingAndStarterKitService)
     {
         _bankingAndStarterKitService = bankingAndStarterKitService ;
-
     }
 
     [Authorize(Policy = "AllRolesPolicy")]
