@@ -421,31 +421,53 @@ public class EmployeeServiceUnitTests
 
     [Theory]
     [InlineData("Unauthorized Access")]
-    [InlineData("Model found")]
+    [InlineData("Model already exists and not being updated.")]
     [InlineData("Pass")]
     public async Task CheckDuplicateIdNumberTests(string testCase)
     {
         var employeeList = new List<Employee>
-    {
-        EmployeeTestData.EmployeeOne
-    };
+        {
+            EmployeeTestData.EmployeeOne
+        };
+        EmployeeService employeeService;
 
         if (testCase == "Unauthorized Access")
         {
-            var failResultUnauthorized = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id));
-            Assert.Equal(testCase, failResultUnauthorized.Message);
-        }
+            var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Inactive", 1);
+            employeeService = new EmployeeService(
+                _employeeTypeServiceMock.Object,
+                _dbMock.Object,
+                _roleServiceMock.Object,
+                _errorLoggingServiceMock.Object,
+                _emailService.Object,
+                unauthorizedIdentity
+            );
 
-        if (testCase == "Model found")
+            var exception = await Assert.ThrowsAsync<CustomException>(() =>
+                employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id));
+
+            Assert.Equal("Unauthorized Access", exception.Message);
+        }
+        else if (testCase == "Model already exists and not being updated.")
         {
             _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .ReturnsAsync(true);
 
-            var failResultModelFound = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id));
-            Assert.Equal(testCase, failResultModelFound.Message);
-        }
+            employeeService = new EmployeeService(
+                _employeeTypeServiceMock.Object,
+                _dbMock.Object,
+                _roleServiceMock.Object,
+                _errorLoggingServiceMock.Object,
+                _emailService.Object,
+                _authorizedIdentity
+            );
 
-        if (testCase == "Pass")
+            var exception = await Assert.ThrowsAsync<CustomException>(() =>
+                employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id, false));
+
+            Assert.Equal("Model already exists and not being updated.", exception.Message);
+        }
+        else if (testCase == "Pass")
         {
             _dbMock.Setup(e => e.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                 .Returns(employeeList.ToMockIQueryable());
@@ -453,8 +475,15 @@ public class EmployeeServiceUnitTests
                 .ReturnsAsync(false)
                 .ReturnsAsync(true);
 
-            var result = await _employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id);
-
+            employeeService = new EmployeeService(
+                _employeeTypeServiceMock.Object,
+                _dbMock.Object,
+                _roleServiceMock.Object,
+                _errorLoggingServiceMock.Object,
+                _emailService.Object,
+                _authorizedIdentity
+            );
+            var result = await employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id);
             Assert.True(result);
         }
     }

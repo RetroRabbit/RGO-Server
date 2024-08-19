@@ -342,14 +342,14 @@ public class EmployeeControllerUnitTests
         Assert.Equal(200, okObjectResult.StatusCode);
         Assert.Equal(_employeeDto, (EmployeeDto)okObjectResult.Value!);
     }
-
+    
     [Fact]
     public async Task CheckIdNumberSuccessTest()
     {
         _identity.SetupGet(i => i.Role).Returns("SuperAdmin");
         _identity.SetupGet(i => i.EmployeeId).Returns(2);
-        _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1))
-                                .ReturnsAsync(true);
+        _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1, true))
+            .ReturnsAsync(true);
 
         var result = await _controller.CheckIdNumber("0000080000000", 1);
 
@@ -364,8 +364,8 @@ public class EmployeeControllerUnitTests
         _identity.Setup(identity => identity.Role).Returns("Developer");
         _identity.Setup(identity => identity.EmployeeId).Returns(5);
 
-        _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1))
-                            .ThrowsAsync(new CustomException("No permission or user id already exists."));
+        _employeeMockService.Setup(service => service.CheckDuplicateIdNumber("0000080000000", 1, true))
+            .ThrowsAsync(new CustomException("No permission or user id already exists."));
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _controller.CheckIdNumber("0000080000000", 1));
 
