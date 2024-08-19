@@ -46,8 +46,6 @@ public class EmployeeProfileService : IEmployeeProfileService
                                 .Get(employee => employee.Id == id)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
-                                .Include(employee => employee.PhysicalAddress)
-                                .Include(employee => employee.PostalAddress)
                                 .Include(employee => employee.ChampionEmployee)
                                 .Include(employee => employee.TeamLeadAssigned)
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
@@ -105,7 +103,6 @@ public class EmployeeProfileService : IEmployeeProfileService
             EmployeeData = employeeData,
             Photo = employee.Photo,
             Active = employee.Active,
-            PhysicalAddress = employee.PhysicalAddress?.ToDto()
         };
 
         return employeeProfileDetails;
@@ -230,8 +227,6 @@ public class EmployeeProfileService : IEmployeeProfileService
                         .Get(employee => employee.Id == id)
                         .AsNoTracking()
                         .Include(employee => employee.EmployeeType)
-                        .Include(employee => employee.PhysicalAddress)
-                        .Include(employee => employee.PostalAddress)
                         .Include(employee => employee.ChampionEmployee)
                         .Include(employee => employee.TeamLeadAssigned)
                         .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
