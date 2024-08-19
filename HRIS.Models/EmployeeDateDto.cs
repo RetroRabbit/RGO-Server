@@ -9,6 +9,5 @@ public class EmployeeDateDto
     public EmployeeDto? Employee { get; set; }
     public string? Subject { get; set; }
     public string? Note { get; set; }
-
     public DateOnly Date { get; set; }
 }
