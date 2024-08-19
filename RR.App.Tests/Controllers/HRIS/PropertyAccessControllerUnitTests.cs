@@ -77,7 +77,8 @@ public class PropertyAccessControllerUnitTests
         var employeeId = 2;
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Inactive");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(1);
-        
+        _authorizeIdentityMock.SetupGet(x => x.IsInactive).Returns(false);
+
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetPropertiesWithAccess(employeeId));
 
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -194,6 +195,7 @@ public class PropertyAccessControllerUnitTests
         var email = "test@example.com";
         _authorizeIdentityMock.SetupGet(x => x.Email).Returns("another@example.com");
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("User");
+        _authorizeIdentityMock.SetupGet(x => x.IsInactive).Returns(false);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetUserId(email));
 
@@ -208,6 +210,7 @@ public class PropertyAccessControllerUnitTests
         var employeeId = 2;
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Inactive");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(1);
+        _authorizeIdentityMock.SetupGet(x => x.IsInactive).Returns(false);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetPropertiesWithAccess(employeeId));
 
@@ -224,6 +227,7 @@ public class PropertyAccessControllerUnitTests
         var employeeId = 2;
         _authorizeIdentityMock.SetupGet(x => x.Role).Returns("Inactive");
         _authorizeIdentityMock.SetupGet(x => x.EmployeeId).Returns(1);
+        _authorizeIdentityMock.SetupGet(x => x.IsInactive).Returns(false);
 
         var result = await MiddlewareHelperUnitTests.SimulateHandlingExceptionMiddlewareAsync(async () => await _propertyAccessController.GetPropertiesWithAccess(employeeId));
 
