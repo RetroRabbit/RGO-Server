@@ -27,7 +27,5 @@ public class EmployeeQualificationDto
 
     [Required(ErrorMessage = "Employee Qualification 'ProofOfQualification' field is missing.")]
     public string ProofOfQualification { get; set; }
-
-    [Required(ErrorMessage = "Employee Qualification 'DocumentName' field is missing.")]
     public string DocumentName { get; set; }
 }
