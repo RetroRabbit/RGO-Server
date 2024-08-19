@@ -60,8 +60,6 @@ namespace RR.App.Controllers.HRIS
 
             var clientProjectObject = await _clientProjectService.UpdateClientProject(clientProjectsDto);
                 return Ok(clientProjectObject);
-            
-          
         }
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
