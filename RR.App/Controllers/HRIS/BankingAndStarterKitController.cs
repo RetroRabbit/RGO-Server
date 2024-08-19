@@ -19,14 +19,7 @@ public class BankingAndStarterKitController : ControllerBase
     [HttpGet()]
     public async Task<IActionResult> GetAllDocuments()
     {
-        try
-        {
-            var employeeDocuments = await _bankingAndStarterKitService.GetBankingAndStarterKitAsync();
-            return Ok(employeeDocuments);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "An error occurred while fetching the employee documents.");
-        }
+        var employeeDocuments = await _bankingAndStarterKitService.GetBankingAndStarterKitAsync();
+        return Ok(employeeDocuments);
     }
 }
