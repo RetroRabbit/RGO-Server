@@ -1,8 +1,8 @@
-﻿using HRIS.Models;
-using RR.UnitOfWork.Interfaces;
+﻿using RR.UnitOfWork.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HRIS.Models.Enums.QualificationEnums;
+using HRIS.Models.Employee.Commons;
 
 namespace RR.UnitOfWork.Entities.HRIS;
 

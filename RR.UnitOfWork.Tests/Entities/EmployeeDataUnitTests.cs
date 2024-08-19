@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Entities.HRIS;
 using Xunit;

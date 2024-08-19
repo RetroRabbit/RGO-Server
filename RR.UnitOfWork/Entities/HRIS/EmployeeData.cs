@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using RR.UnitOfWork.Interfaces;
 
 namespace RR.UnitOfWork.Entities.HRIS;
@@ -14,7 +14,7 @@ public class EmployeeData : IModel
 
     public EmployeeData(EmployeeDataDto employeeDataDto)
     {
-        Id = employeeDataDto.Id;
+        Id = (int)employeeDataDto.Id!;
         EmployeeId = employeeDataDto.EmployeeId;
         FieldCodeId = employeeDataDto.FieldCodeId;
         Value = employeeDataDto.Value;
@@ -28,7 +28,7 @@ public class EmployeeData : IModel
     [ForeignKey("FieldCode")]
     public int FieldCodeId { get; set; }
 
-    [Column("value")] public string Value { get; set; } = null!;
+    [Column("value")] public string? Value { get; set; } = null!;
 
     public virtual Employee? Employee { get; set; }
     public virtual FieldCode? FieldCode { get; set; }

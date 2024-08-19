@@ -12,6 +12,7 @@ using RR.Tests.Data;
 using HRIS.Services.Services;
 using RR.Tests.Data.Models.HRIS;
 using RR.App.Tests.Helper;
+using HRIS.Models.Employee.Commons;
 
 
 namespace RR.App.Tests.Controllers.HRIS;

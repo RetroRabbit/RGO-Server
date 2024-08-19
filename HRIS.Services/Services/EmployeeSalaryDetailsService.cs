@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.Employee.Commons;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +23,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalaryDetailsService
         return await _db.EmployeeSalaryDetails.Any(x => x.Id == id);
     }
 
-    public async Task<EmployeeSalaryDetailsDto> DeleteEmployeeSalary(int id)
+    public async Task<BankingSalaryDetailsDto> DeleteEmployeeSalary(int id)
     {
         var exists = await EmployeeSalaryDetailsExists(id);
 
@@ -38,12 +38,12 @@ public class EmployeeSalaryDetailsService : IEmployeeSalaryDetailsService
         return deletedEmployeeSalaryDetails.ToDto();
     }
 
-    public async Task<List<EmployeeSalaryDetailsDto>> GetAllEmployeeSalaries()
+    public async Task<List<BankingSalaryDetailsDto>> GetAllEmployeeSalaries()
     {
         return (await _db.EmployeeSalaryDetails.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
-    public async Task<EmployeeSalaryDetailsDto> GetEmployeeSalaryById(int employeeId)
+    public async Task<BankingSalaryDetailsDto> GetEmployeeSalaryById(int employeeId)
     {
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
@@ -60,7 +60,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalaryDetailsService
                                       .FirstOrDefaultAsync();
     }
 
-    public async Task<EmployeeSalaryDetailsDto> CreateEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
+    public async Task<BankingSalaryDetailsDto> CreateEmployeeSalary(BankingSalaryDetailsDto employeeSalaryDto)
     {
         var exists = await EmployeeSalaryDetailsExists(employeeSalaryDto.Id);
 
@@ -75,7 +75,7 @@ public class EmployeeSalaryDetailsService : IEmployeeSalaryDetailsService
         return employeeSalary.ToDto();
     }
 
-    public async Task<EmployeeSalaryDetailsDto> UpdateEmployeeSalary(EmployeeSalaryDetailsDto employeeSalaryDto)
+    public async Task<BankingSalaryDetailsDto> UpdateEmployeeSalary(BankingSalaryDetailsDto employeeSalaryDto)
     {
         var exists = await EmployeeSalaryDetailsExists(employeeSalaryDto.Id);
 

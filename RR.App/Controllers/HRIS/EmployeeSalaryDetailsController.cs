@@ -1,9 +1,9 @@
-﻿using HRIS.Models;
-using HRIS.Services.Interfaces;
+﻿using HRIS.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HRIS.Services.Session;
 using HRIS.Services.Services;
+using HRIS.Models.Employee.Commons;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -49,7 +49,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost()]
-    public async Task<IActionResult> AddEmployeeSalary([FromBody] EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
+    public async Task<IActionResult> AddEmployeeSalary([FromBody] BankingSalaryDetailsDto employeeSalaryDetailsDto)
     {
         if (!_identity.IsSupport && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
             throw new CustomException("User data being accessed does not match user making the request.");
@@ -61,7 +61,7 @@ public class EmployeeSalaryDetailsController : ControllerBase
 
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut()]
-    public async Task<IActionResult> UpdateSalary([FromBody] EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
+    public async Task<IActionResult> UpdateSalary([FromBody] BankingSalaryDetailsDto employeeSalaryDetailsDto)
     {
         if (!_identity.IsSupport && (employeeSalaryDetailsDto.Id != _identity.EmployeeId))
             throw new CustomException("User data being accessed does not match user making the request.");

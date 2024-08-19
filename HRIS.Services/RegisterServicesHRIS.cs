@@ -39,5 +39,6 @@ public static class RegisterServicesExtension
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IEmailHelper, EmailHelper>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IEmployeeProfileService, EmployeeProfileService>();
     }
 }

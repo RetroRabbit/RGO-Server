@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using HRIS.Models.Enums;
 using RR.UnitOfWork.Interfaces;
 
@@ -11,7 +11,7 @@ public class EmployeeSalaryDetails : IModel
 {
     public EmployeeSalaryDetails() {}
 
-    public EmployeeSalaryDetails(EmployeeSalaryDetailsDto employeeSalaryDetailsDto)
+    public EmployeeSalaryDetails(BankingSalaryDetailsDto employeeSalaryDetailsDto)
     {
         Id = employeeSalaryDetailsDto.Id;
         EmployeeId = employeeSalaryDetailsDto.EmployeeId!;
@@ -38,9 +38,9 @@ public class EmployeeSalaryDetails : IModel
 
     [Key][Column("id")] public int Id { get; set; }
 
-    public EmployeeSalaryDetailsDto ToDto()
+    public BankingSalaryDetailsDto ToDto()
     {
-        return new EmployeeSalaryDetailsDto
+        return new BankingSalaryDetailsDto
         {
             Id = Id,
             EmployeeId = EmployeeId,

@@ -1,4 +1,5 @@
 ﻿using HRIS.Models;
+using HRIS.Models.Employee.Commons;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     private readonly EmployeeSalaryDetailsController _controller;
     private readonly Mock<IEmployeeService> _employeeServiceMock;
 
-    private readonly EmployeeSalaryDetailsDto _employeeSalaryDetailsDto;
+    private readonly BankingSalaryDetailsDto _employeeSalaryDetailsDto;
     private readonly EmployeeDto _employeeDto;
 
     public EmployeeSalaryDetailsControllerUnitTest()
@@ -35,7 +36,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
         _employeeServiceMock.Setup(x => x.GetEmployeeById(_employeeSalaryDetailsDto.EmployeeId))
                             .ReturnsAsync(_employeeDto);
 
-        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<BankingSalaryDetailsDto>()))
                                          .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.AddEmployeeSalary(_employeeSalaryDetailsDto);
@@ -60,7 +61,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     [Fact]
     public async Task AddEmployeeSalary_ValidRoleAndMatchingId_ReturnsCreatedAtActionResult()
     {
-        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<EmployeeSalaryDetailsDto>()))
+        _employeeSalaryDetailsServiceMock.Setup(x => x.CreateEmployeeSalary(It.IsAny<BankingSalaryDetailsDto>()))
                                          .ReturnsAsync(_employeeSalaryDetailsDto);
 
         var result = await _controller.AddEmployeeSalary(_employeeSalaryDetailsDto);
@@ -115,7 +116,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
 
         var result = await _controller.GetEmployeeSalary(_employeeSalaryDetailsDto.EmployeeId);
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualSalaryDetailsDto = Assert.IsType<EmployeeSalaryDetailsDto>(okResult.Value);
+        var actualSalaryDetailsDto = Assert.IsType<BankingSalaryDetailsDto>(okResult.Value);
         Assert.Equal(_employeeSalaryDetailsDto, actualSalaryDetailsDto);
     }
 
@@ -143,7 +144,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
     [Fact]
     public async Task GetAllEmployeeSalariesNoFiltersReturnsOkResultWithList()
     {
-        var expectedSalaryDetailsList = new List<EmployeeSalaryDetailsDto>
+        var expectedSalaryDetailsList = new List<BankingSalaryDetailsDto>
     {
         _employeeSalaryDetailsDto,
         _employeeSalaryDetailsDto
@@ -155,7 +156,7 @@ public class EmployeeSalaryDetailsControllerUnitTest
         var result = await _controller.GetAllEmployeeSalaries();
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualSalaryDetailsDto = Assert.IsType<List<EmployeeSalaryDetailsDto>>(okResult.Value);
+        var actualSalaryDetailsDto = Assert.IsType<List<BankingSalaryDetailsDto>>(okResult.Value);
         Assert.Equal(expectedSalaryDetailsList, actualSalaryDetailsDto);
     }
 }

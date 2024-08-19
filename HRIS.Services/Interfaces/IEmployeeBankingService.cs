@@ -1,4 +1,4 @@
-﻿using HRIS.Models;
+﻿using HRIS.Models.Employee.Commons;
 using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Interfaces;
