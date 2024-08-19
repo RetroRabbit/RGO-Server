@@ -1,10 +1,13 @@
 ﻿using HRIS.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace HRIS.Models;
 
 public class EmployeeSalaryDetailsDto
 {
+    [Required(ErrorMessage = "Employee Role 'Id' field is missing.")]
     public int Id { get; set; }
+    [Required(ErrorMessage = "Employee Role 'EmployeeId' field is missing.")]
     public int EmployeeId { get; set; }
     public double? Salary { get; set; }
     public double? MinSalary { get; set; }
