@@ -519,12 +519,12 @@ public class EmployeeDocumentServiceUnitTest
                   .Returns(_mockEmployeeDbSet.Object);
 
         _unitOfWorkMock.Setup(m => m.EmployeeDocument.Update(It.IsAny<EmployeeDocument>()))
-                      .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentPending);
+                      .ReturnsAsync(EmployeeDocumentTestData.EmployeeDocumentApproved);
 
         SetupMockRoles();
 
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-           _employeeDocumentService.UpdateEmployeeDocument(_employeeDocumentDto, "test@retrorabbit.co.za"));
+           _employeeDocumentService.UpdateEmployeeDocument(EmployeeDocumentTestData.EmployeeDocumentApproved.ToDto(), "test@retrorabbit.co.za"));
 
         Assert.Equal("You cannot approve your own documents.", exception.Message);
     }

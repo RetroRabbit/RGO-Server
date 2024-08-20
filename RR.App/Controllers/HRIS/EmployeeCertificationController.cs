@@ -34,7 +34,7 @@ public class EmployeeCertificationController : ControllerBase
 
     }
 
-    [Authorize(Policy = "AdminOrSuperAdminPolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost]
     public async Task<IActionResult> CreateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
     { 

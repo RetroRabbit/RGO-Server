@@ -193,7 +193,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         if (!ifEmployeeExists)
             throw new CustomException("Employee not found");
 
-        if (_identity.EmployeeId == employeeDocumentDto.EmployeeId)
+        if (employeeDocumentDto.Status == DocumentStatus.Approved && _identity.EmployeeId == employeeDocumentDto.EmployeeId)
         {
             throw new CustomException("You cannot approve your own documents.");
         }
