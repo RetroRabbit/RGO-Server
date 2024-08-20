@@ -3,6 +3,7 @@ using HRIS.Models;
 using HRIS.Models.Enums;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
@@ -82,6 +83,15 @@ public class PropertyAccessServiceUnitTests
     }
 
     [Fact]
+    public async Task GetAllTestUnauthorised()
+    {
+        _dbMock.Setup(p => p.PropertyAccess.Get(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+               .Returns(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable());
+
+        await Assert.ThrowsAsync<CustomException>(() => propertyAccessService2.GetAll());
+    }
+
+    [Fact]
     public void GetAccessListByEmployeeIdTestPass()
     {
         _dbMock.Setup(e => e.PropertyAccess.Get(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
@@ -108,7 +118,7 @@ public class PropertyAccessServiceUnitTests
     }
 
     [Fact]
-    public async void GetAccessListByEmployeeIdTestFail()
+    public async Task GetAccessListByEmployeeIdTestFail()
     {
         _dbMock
             .Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -118,7 +128,7 @@ public class PropertyAccessServiceUnitTests
     }
 
     [Fact]
-    public async void GetAccessListByEmployeeIdTestUnauthorised()
+    public async Task GetAccessListByEmployeeIdTestUnauthorised()
     {
         _dbMock
             .Setup(r => r.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -143,6 +153,32 @@ public class PropertyAccessServiceUnitTests
     }
 
     [Fact]
+    public async Task GetAccessListByRoleIdTestFail()
+    {
+        _dbMock.Setup(e => e.PropertyAccess.GetAll(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+               .ReturnsAsync(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable().ToList());
+
+        _dbMock
+            .Setup(r => r.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
+            .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<CustomException>(() => propertyAccessService2.GetAccessListByRoleId(1));
+    }
+
+    [Fact]
+    public async Task GetAccessListByRoleIdTestUnauthorised()
+    {
+        _dbMock.Setup(e => e.PropertyAccess.GetAll(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+               .ReturnsAsync(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable().ToList());
+
+        _dbMock
+            .Setup(r => r.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
+            .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => propertyAccessService2.GetAccessListByRoleId(1));
+    }
+
+    [Fact]
     public async Task UpdatePropertyAccessPass()
     {
         _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
@@ -154,6 +190,91 @@ public class PropertyAccessServiceUnitTests
         _dbMock.Setup(r => r.PropertyAccess.Update(It.IsAny<PropertyAccess>()))
                .ReturnsAsync(PropertyAccessTestData.PropertyAccessOne);
 
+        _dbMock.Setup(e => e.PropertyAccess.Get(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+               .Returns(PropertyAccessTestData.PropertyAccessOne.ToMockIQueryable());
+
         await propertyAccessService.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read);
+
+        _dbMock.Verify(p => p.PropertyAccess.Update(PropertyAccessTestData.PropertyAccessOne), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdatePropertyAccessFail()
+    {
+        _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
+
+        _dbMock
+            .Setup(r => r.PropertyAccess.Any(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+            .ReturnsAsync(false);
+
+        _dbMock.Setup(r => r.PropertyAccess.Update(It.IsAny<PropertyAccess>()))
+               .ReturnsAsync(PropertyAccessTestData.PropertyAccessOne);
+
+        await Assert.ThrowsAsync<CustomException>(() => propertyAccessService2.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
+    }
+
+    [Fact]
+    public async Task UpdatePropertyAccessUnauthorised()
+    {
+        _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
+
+        _dbMock
+            .Setup(r => r.PropertyAccess.Any(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+            .ReturnsAsync(true);
+
+        _dbMock.Setup(r => r.PropertyAccess.Update(It.IsAny<PropertyAccess>()))
+               .ReturnsAsync(PropertyAccessTestData.PropertyAccessOne);
+
+        await Assert.ThrowsAsync<CustomException>(() => propertyAccessService2.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
+    }
+
+    [Fact]
+    public async Task CreatePropertyAccessEntriesPass()
+    {
+        _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
+
+        List<Role> roles = new List<Role>();
+
+        foreach (RoleDto item in roleList)
+        {
+            roles.Add(new Role(item));
+        }
+
+        _dbMock.Setup(e => e.Role.GetAll(It.IsAny<Expression<Func<Role, bool>>>()))
+               .ReturnsAsync(roles);
+
+        List<string> columns = new List<string>() { "ID", "Description" };
+
+        _dbMock.Setup(e => e.GetColumnNames(It.IsAny<string>())).ReturnsAsync(columns);
+
+        _dbMock.Setup(e => e.PropertyAccess.GetAll(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+               .ReturnsAsync(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable().ToList());
+
+        await propertyAccessService.CreatePropertyAccessEntries();
+    }
+
+    [Fact]
+    public async Task CreatePropertyAccessEntriesUnauthorised()
+    {
+        _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));
+
+        List<Role> roles = new List<Role>();
+
+        foreach (RoleDto item in roleList)
+        {
+            roles.Add(new Role(item));
+        }
+
+        _dbMock.Setup(e => e.Role.GetAll(It.IsAny<Expression<Func<Role, bool>>>()))
+               .ReturnsAsync(roles);
+
+        List<string> columns = new List<string>() { "ID", "Description" };
+
+        _dbMock.Setup(e => e.GetColumnNames(It.IsAny<string>())).ReturnsAsync(columns);
+
+        _dbMock.Setup(e => e.PropertyAccess.GetAll(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
+               .ReturnsAsync(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable().ToList());
+
+        await Assert.ThrowsAsync<CustomException>(() => propertyAccessService2.CreatePropertyAccessEntries());
     }
 }
