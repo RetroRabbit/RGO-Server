@@ -49,10 +49,10 @@ public class EmployeeQualification : IModel
     public DateOnly Year { get; set; }
 
     [Column("proofOfQualification")]
-    public string ProofOfQualification { get; set; }
+    public byte[] ProofOfQualification { get; set; } = Array.Empty<byte>();
 
     [Column("documentName")]
-    public byte[] DocumentName { get; set; } = Array.Empty<byte>();
+    public string DocumentName { get; set; } 
 
     public virtual Employee Employee { get; set; }
 
