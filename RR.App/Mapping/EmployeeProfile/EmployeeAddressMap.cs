@@ -9,5 +9,6 @@ public class EmployeeAddressMap :Profile
     public EmployeeAddressMap ()
     {
         CreateMap<EmployeeAddress, EmployeeAddressDto> ();
+        CreateMap<EmployeeAddressDto, EmployeeAddress>();
     }
 }

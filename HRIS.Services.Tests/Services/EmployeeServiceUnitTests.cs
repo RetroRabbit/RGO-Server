@@ -106,6 +106,7 @@ public class EmployeeServiceUnitTests
 
         if (testCase == "Pass")
         {
+            _mapperMock.Setup(m => m.Map<Employee>(EmployeeTestData.EmployeeOne.ToDto())).Returns(EmployeeTestData.EmployeeOne);
             _mapperMock.Setup(m => m.Map<EmployeeDto>(EmployeeTestData.EmployeeTwo)).Returns(EmployeeTestData.EmployeeOne.ToDto());
 
 
@@ -437,10 +438,12 @@ public class EmployeeServiceUnitTests
             employeeService = new EmployeeService(
                 _employeeTypeServiceMock.Object,
                 _dbMock.Object,
+                _employeeAddressServiceMock.Object,
                 _roleServiceMock.Object,
                 _errorLoggingServiceMock.Object,
                 _emailService.Object,
-                unauthorizedIdentity
+                unauthorizedIdentity,
+                _mapperMock.Object
             );
 
             var exception = await Assert.ThrowsAsync<CustomException>(() =>
@@ -456,10 +459,12 @@ public class EmployeeServiceUnitTests
             employeeService = new EmployeeService(
                 _employeeTypeServiceMock.Object,
                 _dbMock.Object,
+                _employeeAddressServiceMock.Object,
                 _roleServiceMock.Object,
                 _errorLoggingServiceMock.Object,
                 _emailService.Object,
-                _authorizedIdentity
+                _authorizedIdentity,
+                _mapperMock.Object
             );
 
             var exception = await Assert.ThrowsAsync<CustomException>(() =>
@@ -478,10 +483,12 @@ public class EmployeeServiceUnitTests
             employeeService = new EmployeeService(
                 _employeeTypeServiceMock.Object,
                 _dbMock.Object,
+                _employeeAddressServiceMock.Object,
                 _roleServiceMock.Object,
                 _errorLoggingServiceMock.Object,
                 _emailService.Object,
-                _authorizedIdentity
+                _authorizedIdentity,
+                _mapperMock.Object
             );
             var result = await employeeService.CheckDuplicateIdNumber(EmployeeTestData.EmployeeOne.IdNumber!, EmployeeTestData.EmployeeOne.Id);
             Assert.True(result);
