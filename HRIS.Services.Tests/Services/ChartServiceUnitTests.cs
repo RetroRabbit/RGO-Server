@@ -203,6 +203,22 @@ public class ChartServiceUnitTests
     }
 
     [Fact]
+    public async Task UpdateUnauthorizedTest()
+    {
+        var chartDto = new ChartDto { Id = 1, EmployeeId = 1 };
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(uow => uow.Chart.Update(It.IsAny<Chart>())).ReturnsAsync(new Chart());
+
+
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.UpdateChart(chartDto));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
+    }
+
+    [Fact]
     public async Task UpdateChart_ShouldThrowUnauthorizedAccess_WhenUserIsNotSupportAndIdsDoNotMatch()
     {
         var chartDto = new ChartDto
@@ -242,26 +258,26 @@ public class ChartServiceUnitTests
         await Assert.ThrowsAsync<CustomException>(() => _chartService.DeleteChart(chartId));
     }
 
-    //[Fact]
-    //public async Task DeleteUnauthorizedTest()
-    //{
-    //    var chartId = 1;
-    //    var chart = new Chart { Id = chartId, EmployeeId = 2 };
-    //    _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
+    [Fact]
+    public async Task DeleteUnauthorizedTest()
+    {
+        var chartId = 1;
+        var chart = new Chart { Id = chartId, EmployeeId = 2 };
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
 
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
 
-    //    _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart> { chart }.ToMockIQueryable());
+        _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart> { chart }.ToMockIQueryable());
 
-    //    _unitOfWork.Setup(x => x.Chart.Delete(chartId)).ReturnsAsync(chart);
+        _unitOfWork.Setup(x => x.Chart.Delete(chartId)).ReturnsAsync(chart);
 
-    //    var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
-    //    var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
 
-    //    var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.DeleteChart(chartId));
+        var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.DeleteChart(chartId));
 
-    //    Assert.Equal("Unauthorized access.", exception.Message);
-    //}
+        Assert.Equal("Unauthorized access.", exception.Message);
+    }
 
     [Fact]
     public async Task GetChartDataTest()
@@ -283,6 +299,26 @@ public class ChartServiceUnitTests
 
         Assert.NotNull(result);
         Assert.IsType<ChartDataDto>(result);
+    }
+
+    [Fact]
+    public async Task GetChartDataUnauthorized()
+    {
+        var dataType = new List<string> { "Gender", "Race" };
+
+        var employeeOne = EmployeeTestData.EmployeeOne;
+
+        var employees = new List<Employee>
+        {
+            employeeOne
+        };
+
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.GetChartData(dataType));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
     }
 
     [Fact(Skip = "temp")]
@@ -335,6 +371,17 @@ public class ChartServiceUnitTests
 
         Assert.NotNull(columnNames);
         Assert.NotEmpty(columnNames);
+    }
+
+    [Fact]
+    public void GetColumnsFromTable_ShouldThrowUnauthorizedAccess()
+    {
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+
+        var exception = Assert.Throws<CustomException>(() => chartService.GetColumnsFromTable());
+
+        Assert.Equal("Unauthorized access.", exception.Message);
     }
 
     [Fact(Skip = "Needs Work")]
@@ -469,7 +516,7 @@ public class ChartServiceUnitTests
     //    _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
     //               .ReturnsAsync(true);
 
-        
+
     //    _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
     //               .Returns(Task.FromResult(new Chart { Name = chartName, EmployeeId = employeeId }));
 
@@ -516,28 +563,31 @@ public class ChartServiceUnitTests
     //    Assert.Equal(expectedCsv, csvContent);
     //}
 
+    [Fact]
+    public async Task ExportCsvAsync_ShouldThrowCustomException_WhenInvalidPropertyNameIsProvided()
+    {
+        _unitOfWork.Setup(x => x.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(new List<Employee> { new Employee { Name = "John", Surname = "Doe" } });
+
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _chartService.ExportCsvAsync(new List<string> { "InvalidProperty" })
+        );
+
+        Assert.Equal("Invalid property name: InvalidProperty", exception.Message);
+    }
+
     //[Fact]
-    //public async Task ExportCsvAsync_ShouldThrowCustomException_WhenInvalidPropertyNameIsProvided()
+    //public async Task ExportCsvAsync_ShouldThrowCustomException_WhenInvalidPropertyNameIsNull()
     //{
-    //    _unitOfWork.Setup(x => x.Employee.GetAll())
-    //               .ReturnsAsync(new List<Employee> { new Employee { Name = "John", Surname = "Doe" } });
+    //    _unitOfWork.Setup(x => x.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+    //           .ReturnsAsync(new List<Employee> { new Employee { Name = "John", Surname = "Doe" } });
+
+    //    var invalidPropertyNameList = new List<string> { null };
 
     //    var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-    //        await _chartService.ExportCsvAsync(new List<string> { "InvalidProperty" })
+    //        await _chartService.ExportCsvAsync(invalidPropertyNameList)
     //    );
 
-    //    Assert.Equal("Invalid property name: InvalidProperty", exception.Message);
+    //    Assert.Equal("Invalid property name: ", exception.Message);
     //}
-
-//    [Fact]
-//    public void GetColumnsFromTable_ShouldThrowCustomException_WhenUserIsNotSupport()
-//    {
-//        var employeeId = _identity.EmployeeId;
-
-//        var exception = Assert.Throws<CustomException>(() =>
-//            _chartService.GetColumnsFromTable()
-//        );
-
-//        Assert.Equal("Unauthorized access.", exception.Message);
-//    }
 }
