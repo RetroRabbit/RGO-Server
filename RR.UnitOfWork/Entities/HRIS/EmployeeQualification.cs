@@ -52,7 +52,7 @@ public class EmployeeQualification : IModel
     public string ProofOfQualification { get; set; }
 
     [Column("documentName")]
-    public string DocumentName { get; set; }
+    public byte[] DocumentName { get; set; } = Array.Empty<byte>();
 
     public virtual Employee Employee { get; set; }
 
