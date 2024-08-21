@@ -1,21 +1,25 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RR.App.Controllers.HRIS;
+using RR.Tests.Data;
 using Xunit;
 
 namespace RR.App.Tests.Controllers.HRIS;
 public class ClientProjectControllerUnitTest
 {
     private readonly ClientProjectsController _controller;
+    private readonly ClientProjectsController _unauthorizedController;
     private readonly Mock<IClientProjectService> _mockClientProjectService;
     public List<ClientProjectsDto> ClientProjectsList;
     public ClientProjectsDto ClientProjectDto;
     public ClientProjectControllerUnitTest()
     {
         _mockClientProjectService = new Mock<IClientProjectService>();
-        _controller = new ClientProjectsController(_mockClientProjectService.Object);
+        _unauthorizedController = new ClientProjectsController(new AuthorizeIdentityMock("unauthorized@example.com", "UnauthorizedUser", "User", 2), _mockClientProjectService.Object);
+        _controller = new ClientProjectsController(new AuthorizeIdentityMock("test@example.com", "TestUser", "SuperAdmin", 1), _mockClientProjectService.Object);
 
         ClientProjectsList = new List<ClientProjectsDto>
             { new ClientProjectsDto
@@ -55,18 +59,6 @@ public class ClientProjectControllerUnitTest
     }
 
     [Fact]
-    public async Task GetAllClientProjects_ReturnsNotFound_WhenExceptionIsThrown()
-    {
-        _mockClientProjectService.Setup(exception => exception.GetAllClientProjects())
-          .ThrowsAsync(new Exception("Test exception"));
-
-        var result = await _controller.GetAllClientProjects();
-
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Test exception", notFoundResult.Value);
-    }
-
-    [Fact]
     public async Task GetClientProjectById_ReturnsOkResult_WithClientProjectsDto()
     {
         _mockClientProjectService.Setup(ex => ex.GetClientProjectById(1))
@@ -81,16 +73,15 @@ public class ClientProjectControllerUnitTest
     }
 
     [Fact]
-    public async Task GetClientProjectById_ReturnsNotFound_WhenExceptionIsThrown()
+    public async Task GetClientProjectById_Unauthorized()
     {
-        _mockClientProjectService.Setup(ex => ex.GetClientProjectById(1))
-        .ThrowsAsync(new Exception("Test exception"));
+        _mockClientProjectService.Setup(x => x.GetClientProjectById(1))
+            .ThrowsAsync(new CustomException("Unauthorized Access."));
 
-        var result = await _controller.GetClientProjectById(1);
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _unauthorizedController.GetClientProjectById(1));
 
-        var notFoundResult = result.Result as NotFoundObjectResult;
-        Assert.NotNull(notFoundResult);
-        Assert.Equal("Test exception", notFoundResult.Value);
+        Assert.Equal("Unauthorized Access.", exception.Message);
     }
 
     [Fact]
@@ -107,15 +98,15 @@ public class ClientProjectControllerUnitTest
     }
 
     [Fact]
-    public async Task SaveClientProject_ReturnsNotFound_WhenExceptionIsThrown()
+    public async Task SaveClientProject_Unauthorized_WhenExceptionIsThrown()
     {
-        _mockClientProjectService.Setup(ex => ex.CreateClientProject(ClientProjectDto))
-        .ThrowsAsync(new Exception("Test exception"));
+        _mockClientProjectService.Setup(x => x.CreateClientProject(ClientProjectDto))
+            .ThrowsAsync(new CustomException("Unauthorized Access."));
 
-        var result = await _controller.SaveClientProject(ClientProjectDto);
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _unauthorizedController.SaveClientProject(ClientProjectDto));
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Test exception", notFoundResult.Value);
+        Assert.Equal("Unauthorized Access.", exception.Message);
     }
 
     [Fact]
@@ -132,15 +123,15 @@ public class ClientProjectControllerUnitTest
     }
 
     [Fact]
-    public async Task UpdateClientProject_ReturnsNotFound_WhenExceptionIsThrown()
+    public async Task UpdateClientProject_Unauthorized_WhenExceptionIsThrown()
     {
-        _mockClientProjectService.Setup(ex => ex.UpdateClientProject(ClientProjectDto))
-         .ThrowsAsync(new Exception("Test exception"));
+        _mockClientProjectService.Setup(x => x.UpdateClientProject(ClientProjectDto))
+        .ThrowsAsync(new CustomException("Unauthorized Access."));
 
-        var result = await _controller.UpdateClientProject(ClientProjectDto);
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _unauthorizedController.UpdateClientProject(ClientProjectDto));
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Test exception", notFoundResult.Value);
+        Assert.Equal("Unauthorized Access.", exception.Message);
     }
 
     [Fact]
@@ -159,14 +150,14 @@ public class ClientProjectControllerUnitTest
     }
 
     [Fact]
-    public async Task DeleteClientProject_ReturnsNotFound_WhenProjectDoesNotExist()
+    public async Task DeleteClientProject_Unauthorized_WhenProjectDoesNotExist()
     {
-        _mockClientProjectService.Setup(ex => ex.GetClientProjectById(1))
-          .ReturnsAsync((ClientProjectsDto)null);
+        _mockClientProjectService.Setup(x => x.GetClientProjectById(1))
+       .ThrowsAsync(new CustomException("Unauthorized Access."));
 
-        var result = await _controller.DeleteClientProject(1);
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+           await _unauthorizedController.DeleteClientProject(1));
 
-        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.Equal("Client Project not found", notFoundResult.Value);
+        Assert.Equal("Unauthorized Access.", exception.Message);
     }
 }

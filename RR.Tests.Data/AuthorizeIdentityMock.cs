@@ -36,4 +36,5 @@ public class AuthorizeIdentityMock : AuthorizeIdentity
     public override string NameIdentifier { get; }
     public override string Role { get; }
     public override int EmployeeId { get; }
+    public override bool IsInactive => Role == "Inactive";
 }

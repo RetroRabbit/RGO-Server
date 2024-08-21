@@ -27,7 +27,7 @@ public class BankingAndStarterKitService : IBankingAndStarterKitService
 
     public async Task<List<BankingAndStarterKitDto>> GetBankingAndStarterKitAsync()
     {
-        if (_identity.IsSupport == false)
+        if (_identity.IsInactive)
             throw new CustomException("Unauthorized Access.");
 
         var employeeDocumentQuery = await _db.EmployeeDocument
