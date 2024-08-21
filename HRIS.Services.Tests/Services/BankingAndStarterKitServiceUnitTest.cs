@@ -105,12 +105,12 @@ namespace HRIS.Services.Tests.Services
         }
 
         [Fact]
-        public async Task GetBankingAndStarterKitUnauthorised()
+        public async Task GetBankingAndStarterKitUnauthorized_WhenUserIsInactive_ShouldThrowCustomException()
         {
-            _dbMock.Setup(m => m.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .ReturnsAsync(true);
+            var identityMock = new AuthorizeIdentityMock("test@gmail.com", "test", "Inactive", 2);
+            var bankingAndStarterKitService = new BankingAndStarterKitService(_dbMock.Object, identityMock);
 
-            await Assert.ThrowsAsync<CustomException>(() => _bankingAndStarterKitService2.GetBankingAndStarterKitAsync());
+            await Assert.ThrowsAsync<CustomException>(() => bankingAndStarterKitService.GetBankingAndStarterKitAsync());
         }
     }
 }
