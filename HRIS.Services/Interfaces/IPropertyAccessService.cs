@@ -1,5 +1,6 @@
 ﻿using HRIS.Models;
 using HRIS.Models.Enums;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace HRIS.Services.Interfaces;
 
@@ -40,7 +41,7 @@ public interface IPropertyAccessService
     ///// </summary>
     ///// <param name="email"></param>
     ///// <returns></returns>
-    Task CreatePropertyAccessEntries();
+    Task<List<PropertyAccess>> CreatePropertyAccessEntries();
 
     //// <summary>
     //// Check if Employee exists by ID

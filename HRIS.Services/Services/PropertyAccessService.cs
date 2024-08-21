@@ -73,7 +73,7 @@ public class PropertyAccessService : IPropertyAccessService
         }
     }
 
-    public async Task CreatePropertyAccessEntries()
+    public async Task<List<PropertyAccess>> CreatePropertyAccessEntries()
     {
         if (_identity.IsSupport == false)
             throw new CustomException("Unauthorized Access.");
@@ -107,7 +107,10 @@ public class PropertyAccessService : IPropertyAccessService
                 }
             }
         }));
+
         await _db.PropertyAccess.AddRange(properties);
+
+        return properties;
     }
 
     public async Task<bool> CheckEmployee(int employeeId)

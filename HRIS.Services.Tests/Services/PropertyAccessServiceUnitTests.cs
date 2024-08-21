@@ -250,7 +250,10 @@ public class PropertyAccessServiceUnitTests
         _dbMock.Setup(e => e.PropertyAccess.GetAll(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
                .ReturnsAsync(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable().ToList());
 
-        await propertyAccessService.CreatePropertyAccessEntries();
+        var result = await propertyAccessService.CreatePropertyAccessEntries();
+
+        Assert.NotNull(result);
+        _dbMock.Verify(p => p.PropertyAccess.AddRange(result), Times.Once);
     }
 
     [Fact]
