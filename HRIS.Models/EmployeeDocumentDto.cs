@@ -25,7 +25,6 @@ public class EmployeeDocumentDto
     [Required(ErrorMessage = "Employee Document 'UploadDate' field is missing.")]
     [DataType(DataType.DateTime)]
     public DateTime UploadDate { get; set; }
-    [Required(ErrorMessage = "Employee Document 'Reason' field is missing.")]
     public string? Reason { get; set; }
     public bool CounterSign { get; set; }
     [Required(ErrorMessage = "Employee Document 'DocumentType' field is missing.")]
