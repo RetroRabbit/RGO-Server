@@ -16,13 +16,15 @@ public partial class ChartService : IChartService
     private readonly IEmployeeService _employeeService;
     private readonly IServiceProvider _services;
     private readonly AuthorizeIdentity _identity;
+    private readonly IDataTypeProvider _dataTypeProvider;
 
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity)
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity, IDataTypeProvider dataTypeProvider)
     {
         _db = db;
         _employeeService = employeeService;
         _services = services;
         _identity = identity;
+        _dataTypeProvider = dataTypeProvider;
     }
 
     public async Task<bool> CheckIfChatsExists(int Id)
@@ -236,6 +238,7 @@ public partial class ChartService : IChartService
 
         if (!_identity.IsSupport && id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
+            
         return (await _db.Chart.Delete(id)).ToDto();
     }
 
@@ -284,8 +287,13 @@ public partial class ChartService : IChartService
     {
         if (!_identity.IsSupport)
             throw new CustomException("Unauthorized access.");
+
         var employees = await _db.Employee.GetAll();
-        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
+
+        if (dataTypes == null || !dataTypes.Any())
+            throw new CustomException("Data types list is empty or null.");
+
+        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
         var propertyNames = new List<string>();
 
         if (dataTypeList.Contains("Age"))
@@ -298,7 +306,7 @@ public partial class ChartService : IChartService
 
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
 
-            if (propertyInfo == null)
+            if (propertyInfo == null && _dataTypeProvider.GetDataTypes().All(x => x.Name != typeName))
             {
                 throw new CustomException($"Invalid property name: {typeName}");
             }
@@ -309,36 +317,49 @@ public partial class ChartService : IChartService
         var csvData = new StringBuilder();
         csvData.Append("First Name,Last Name");
 
-        foreach (var propertyName in propertyNames) csvData.Append("," + propertyName);
+        foreach (var propertyName in propertyNames)
+            csvData.Append("," + propertyName);
         csvData.AppendLine();
 
         foreach (var employee in employees)
         {
-            var formattedData = $"{employee.Name},{employee.Surname}";
-            foreach (var dataType in propertyNames)
-                if (BaseDataType.HasCustom(dataType))
-                {
-                    var obj = BaseDataType.GetCustom(dataType);
-                    var val = obj.GenerateData(employee.ToDto(), _services);
+            var employeeDto = employee.ToDto();
 
-                    if (val != null)
-                        formattedData += $",{val.Replace(",", "").Trim()}";
+            var formattedData = $"{employee.Name ?? ""},{employee.Surname ?? ""}";
+
+            foreach (var dataType in propertyNames)
+            {
+                if (_dataTypeProvider.GetDataTypes().Any(x => x.Name == dataType))
+                {
+                    var obj = _dataTypeProvider.GetDataTypes().First(x => x.Name == dataType);
+                    var val = obj.GenerateData(employeeDto, _services);
+
+                    formattedData += $",{val?.Replace(",", "").Trim() ?? ""}";
                 }
                 else
                 {
                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
                     if (propertyInfo != null)
                     {
-                        var val = propertyInfo.GetValue(employee);
+                        var val = propertyInfo.GetValue(employeeDto);
 
-                        if (val != null)
-                            formattedData += $",{val.ToString()!.Replace(",", "").Trim()}";
+                        var valueString = val switch
+                        {
+                            DateTime dateTime => dateTime.ToString("yyyy-MM-dd"),
+                            bool boolValue => boolValue ? "True" : "False",
+                            _ => val?.ToString() ?? ""
+                        };
+
+                        formattedData += $",{valueString.Replace(",", "").Trim()}";
+                    }
+                    else
+                    {
+                        formattedData += ",";
                     }
                 }
-
+            }
             csvData.AppendLine(formattedData);
         }
-
         var csvContent = Encoding.UTF8.GetBytes(csvData.ToString());
         return csvContent;
     }

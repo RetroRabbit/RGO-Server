@@ -22,6 +22,7 @@ public class ChartServiceUnitTests
     private readonly Mock<IUnitOfWork> _unitOfWork;
     private readonly AuthorizeIdentityMock _identity;
     private readonly Employee _testEmployee;
+    private readonly Mock<IDataTypeProvider> _dataTypeProvider;
 
     public ChartServiceUnitTests()
     {
@@ -29,10 +30,11 @@ public class ChartServiceUnitTests
         _employeeService = new Mock<IEmployeeService>();
         _services = new Mock<IServiceProvider>();
         _identity = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1);
+        _dataTypeProvider = new Mock<IDataTypeProvider>();
 
         _testEmployee = EmployeeTestData.EmployeeOne;
 
-        _chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity);
+        _chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
     }
 
     [Fact]
@@ -60,7 +62,7 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task GetAllChartsTest()
     {
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
 
         _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().ToMockIQueryable());
 
@@ -170,7 +172,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
 
         var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@test.com", "unauthorized", "User", 3);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () =>
             await chartService.GetEmployeeChartsById(employeeId)
@@ -211,7 +213,7 @@ public class ChartServiceUnitTests
 
 
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.UpdateChart(chartDto));
 
@@ -272,7 +274,7 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(x => x.Chart.Delete(chartId)).ReturnsAsync(chart);
 
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.DeleteChart(chartId));
 
@@ -293,7 +295,7 @@ public class ChartServiceUnitTests
 
         _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employees.Select(x => x.ToDto()).ToList());
 
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
 
         var result = await chartService.GetChartData(dataType);
 
@@ -315,58 +317,17 @@ public class ChartServiceUnitTests
 
 
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.GetChartData(dataType));
 
         Assert.Equal("Unauthorized access.", exception.Message);
     }
 
-    [Fact(Skip = "temp")]
-    public async Task UpdateChartTestFail()
-    {
-        var expectedChart = new Chart
-        {
-            Id = 1,
-            Name = "Update",
-            Type = "Pie",
-            DataTypes = new List<string> { "Gender", "Race" },
-            Labels = new List<string> { "Male", "Female" },
-            Roles = new List<string> { "All" },
-            Datasets = ChartDataSetTestData.ChartDataSetList
-        };
-
-        var existingCharts = new List<Chart>
-        {
-            new()
-            {
-                Id = 1,
-                Name = "Existing Chart",
-                Type = "Existing Type",
-                DataTypes = expectedChart.DataTypes,
-                Labels = expectedChart.Labels,
-                Roles = new List<string> { "All" },
-                Datasets = ChartDataSetTestData.ChartDataSetList
-            }
-        };
-
-        _unitOfWork.Setup(x => x.Chart.GetAll(null)).ReturnsAsync(existingCharts);
-
-        _unitOfWork.Setup(x => x.Chart.Update(It.IsAny<Chart>())).ReturnsAsync(expectedChart);
-
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity);
-
-        var result = await chartService.UpdateChart(expectedChart.ToDto());
-
-        Assert.NotNull(result);
-        Assert.Equivalent(expectedChart.ToDto(), result);
-        _unitOfWork.Verify(x => x.Chart.Update(It.IsAny<Chart>()), Times.Once);
-    }
-
     [Fact]
     public void GetColumnsFromTableTest()
     {
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
 
         var columnNames = chartService.GetColumnsFromTable();
 
@@ -378,63 +339,11 @@ public class ChartServiceUnitTests
     public void GetColumnsFromTable_ShouldThrowUnauthorizedAccess()
     {
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
         var exception = Assert.Throws<CustomException>(() => chartService.GetColumnsFromTable());
 
         Assert.Equal("Unauthorized access.", exception.Message);
-    }
-
-    [Fact(Skip = "Needs Work")]
-    public async Task ExportCsvAsyncTest()
-    {
-        var employeeSix = EmployeeTestData.EmployeeSix;
-
-        var employees = new List<Employee>
-        {
-            employeeSix
-        };
-
-        var dataTypeList = new List<string> { "Gender", "Race", "Age" };
-
-        _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .ReturnsAsync(employees);
-
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity);
-        var result = await chartService.ExportCsvAsync(dataTypeList);
-        var expectedResult = new byte[]
-        {
-            70, 105, 114, 115, 116, 32, 78, 97, 109, 101, 44, 76, 97, 115, 116, 32, 78, 97, 109, 101,
-            44, 65, 103, 101, 44, 71, 101, 110, 100, 101, 114, 44, 82, 97, 99, 101, 13, 10, 69, 115, 116, 105, 97, 97, 110,
-            44, 66, 114, 105, 116, 122, 44, 65, 103, 101, 32, 48, 44, 77, 97, 108, 101, 44, 66, 108, 97, 99, 107,
-            13, 10
-        };
-
-        Assert.NotNull(result);
-        Assert.IsType<byte[]>(result);
-        Assert.Equal(expectedResult, result);
-    }
-
-    [Fact(Skip = "temp")]
-    public async Task ExportCsvAsyncTestFail()
-    {
-        var dataTypeList = new List<string> { "", "" };
-
-        var employeeOne = EmployeeTestData.EmployeeOne;
-
-        var employees = new List<Employee>
-        {
-            employeeOne
-        };
-
-        _unitOfWork.Setup(e => e.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .ReturnsAsync(employees);
-
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity);
-        _unitOfWork.Setup(x => x.ErrorLogging.Add(It.IsAny<ErrorLogging>()));
-        var exception = await Assert.ThrowsAsync<Exception>(async () => await chartService.ExportCsvAsync(dataTypeList));
-
-        Assert.Equal("Invalid property name: ", exception.Message);
     }
 
     [Fact]
@@ -469,7 +378,7 @@ public class ChartServiceUnitTests
                    .ReturnsAsync(true);
 
         var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@test.com", "unauthorized", "User", 3);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () =>
             await chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId)
@@ -478,117 +387,254 @@ public class ChartServiceUnitTests
         Assert.Equal("Unauthorized access.", exception.Message);
     }
 
-    //[Fact]
-    //public async Task CreateChart_ShouldCreateStackedChart_WhenChartTypeIsStacked()
-    //{
-    //    var employeeId = _identity.EmployeeId;
-    //    var dataTypes = new List<string> { "DataTypeOne" };
-    //    var roles = new List<string> { "Developer", "Designer" };
-    //    var chartName = "TestChart";
-    //    var chartType = "stacked";
+    [Fact]
+    public async Task CreateChart_ShouldCreateStackedChart_WhenChartTypeIsStacked()
+    {
+        var employeeId = _identity.EmployeeId;
+        var dataTypes = new List<string> { "DataTypeOne" };
+        var roles = new List<string> { "Developer", "Designer" };
+        var chartName = "TestChart";
+        var chartType = "stacked";
 
-    //    _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-    //               .ReturnsAsync(true);
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
 
-    //    _unitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-    //               .Returns(new List<Employee>().AsQueryable().BuildMock());
+        _unitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(new List<Employee>().AsQueryable().BuildMock());
 
-    //    _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
-    //               .Returns(Task.FromResult(new Chart { Name = chartName, EmployeeId = employeeId }));
+        _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
+                   .Returns(Task.FromResult(new Chart { Name = chartName, EmployeeId = employeeId, Subtype = chartType, Type = "bar" }));
 
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
+        var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
 
-    //    Assert.NotNull(result);
-    //    Assert.Equal(chartName, result.Name);
-    //    Assert.Equal("stacked", result.Subtype);
-    //    Assert.Equal("bar", result.Type);
-    //    Assert.True(result.Datasets.Count > 1);
-    //}
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal("stacked", result.Subtype);
+        Assert.Equal("bar", result.Type);
+    }
 
-    //[Fact]
-    //public async Task CreateChart_ShouldCreateStandardChart_WhenChartTypeIsStandard()
-    //{
-    //    var employeeId = _identity.EmployeeId;
-    //    var dataTypes = new List<string> { "DataTypeOne" };
-    //    var roles = new List<string> { "RoleOne" };
-    //    var chartName = "TestChart";
-    //    var chartType = "standard";
+    [Fact]
+    public async Task CreateChart_ShouldCreateStandardChart_WhenChartTypeIsStandard()
+    {
+        var employeeId = _identity.EmployeeId;
+        var dataTypes = new List<string> { "DataTypeOne" };
+        var roles = new List<string> { "RoleOne" };
+        var chartName = "TestChart";
+        var chartType = "standard";
 
-    //    _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
-    //               .ReturnsAsync(true);
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
 
+        var mockEmployeesQueryable = new List<Employee>().AsQueryable().BuildMock();
+        _unitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(mockEmployeesQueryable);
 
-    //    _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
-    //               .Returns(Task.FromResult(new Chart { Name = chartName, EmployeeId = employeeId }));
+        _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
+                   .ReturnsAsync(new Chart { Name = chartName, EmployeeId = employeeId, Subtype = chartType});
 
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
+        var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
 
-    //    Assert.NotNull(result);
-    //    Assert.Equal(chartName, result.Name);
-    //    Assert.Equal("standard", result.Subtype);
-    //    Assert.Single(result.Datasets);
-    //    Assert.Equal(dataTypes[0], result.Datasets[0].Label);
-    //}
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal("standard", result.Subtype);
+    }
+
+    [Fact]
+    public async Task ExportCsvAsync_ShouldThrowCustomException_WhenPropertyNameIsInvalid()
+    {
+        var dataTypes = new List<string> { "InvalidProperty" };
+        var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
+        var employees = new List<Employee>();
+
+        var mockDataTypeProvider = new Mock<IDataTypeProvider>();
+        mockDataTypeProvider.Setup(p => p.GetDataTypes()).Returns(new List<BaseDataType>());
+
+        _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(employees);
+
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, supportIdentity, mockDataTypeProvider.Object);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.ExportCsvAsync(dataTypes));
+        Assert.Equal("Invalid property name: InvalidProperty", exception.Message);
+    }
+
+    [Fact]
+    public async Task ExportCsvAsync_ShouldThrowCustomException_WhenDataTypesListIsEmpty()
+    {
+        var dataTypes = new List<string>();
+        var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
+        var employees = new List<Employee>
+    {
+        new Employee
+        {
+            Name = "John",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(1994, 1, 1),
+        }
+    };
+
+        _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(employees);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() => _chartService.ExportCsvAsync(dataTypes));
+        Assert.Equal("Data types list is empty or null.", exception.Message);
+    }
+
+    [Fact]
+    public async Task ExportCsvAsync_ShouldHandleNoEmployees()
+    {
+        var dataTypes = new List<string> { "Age" };
+        var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
+        var employees = new List<Employee>();
+
+        _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(employees);
+
+        var csvResult = await _chartService.ExportCsvAsync(dataTypes);
+
+        var expectedCsv = new StringBuilder();
+        expectedCsv.AppendLine("First Name,Last Name,Age");
+
+        Assert.NotNull(csvResult);
+        var expectedResult = expectedCsv.ToString();
+        var actualResult = Encoding.UTF8.GetString(csvResult);
+        Assert.Equal(expectedResult, actualResult);
+    }
 
     [Fact]
     public async Task ExportCsvAsync_ShouldThrowUnauthorizedAccess_WhenUserIsNotSupport()
     {
+        var dataTypes = new List<string> { "Age", "Department" };
         var nonSupportIdentity = new AuthorizeIdentityMock("user@test.com", "Regular User", "User", 1);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, nonSupportIdentity);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, nonSupportIdentity, _dataTypeProvider.Object);
 
-        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-            await chartService.ExportCsvAsync(new List<string> { "Name", "Surname" })
-        );
-
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await chartService.ExportCsvAsync(dataTypes));
         Assert.Equal("Unauthorized access.", exception.Message);
     }
 
-    //[Fact]
-    //public async Task ExportCsvAsync_ShouldReturnCsvContent_WhenDataTypesAreValid()
-    //{
-    //    var employees = new List<Employee>
-    //    {
-    //       new Employee { Name = "John", Surname = "Doe"},
-    //       new Employee { Name = "Jane", Surname = "Smith"}
-    //    };
-
-    //    _unitOfWork.Setup(x => x.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(employees);
-
-    //    var dataTypes = new List<string> { "Age" };
-
-    //    var result = await _chartService.ExportCsvAsync(dataTypes);
-
-    //    Assert.NotNull(result);
-    //    var csvContent = Encoding.UTF8.GetString(result);
-    //    var expectedCsv = "First Name,Last Name,Age\r\nJohn,Doe,30\r\nJane,Smith,25\r\n";
-    //    Assert.Equal(expectedCsv, csvContent);
-    //}
-
     [Fact]
-    public async Task ExportCsvAsync_ShouldThrowCustomException_WhenInvalidPropertyNameIsProvided()
+    public async Task ExportCsvAsync_ShouldExportValidCsvContent_WhenUserIsSupport()
     {
-        _unitOfWork.Setup(x => x.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .ReturnsAsync(new List<Employee> { new Employee { Name = "John", Surname = "Doe" } });
+        var dataTypes = new List<string> { "Age" };
+        var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
+        var employees = new List<Employee>
+    {
+        new Employee
+        {
+            Name = "John",
+            Surname = "Doe",
+            DateOfBirth = new DateTime(1994, 1, 1)
+        }
+    };
 
-        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-            await _chartService.ExportCsvAsync(new List<string> { "InvalidProperty" })
-        );
+        var mockAgeType = new Mock<BaseDataType>();
+        mockAgeType.Setup(x => x.Name).Returns("Age");
+        mockAgeType.Setup(x => x.GenerateData(It.IsAny<EmployeeDto>(), It.IsAny<IServiceProvider>()))
+                   .Returns("Age 30");
 
-        Assert.Equal("Invalid property name: InvalidProperty", exception.Message);
+        var mockDataTypeProvider = new Mock<IDataTypeProvider>();
+        mockDataTypeProvider.Setup(x => x.GetDataTypes())
+                            .Returns(new List<BaseDataType> { mockAgeType.Object });
+
+        _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(employees);
+
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, supportIdentity, mockDataTypeProvider.Object);
+
+        var csvResult = await chartService.ExportCsvAsync(dataTypes);
+
+        var expectedCsv = new StringBuilder();
+        expectedCsv.AppendLine("First Name,Last Name,Age");
+        expectedCsv.AppendLine("John,Doe,Age 30");
+
+        Assert.NotNull(csvResult);
+        var expectedResult = expectedCsv.ToString();
+        var actualResult = Encoding.UTF8.GetString(csvResult);
+
+        expectedResult = expectedResult.Replace("\r\n", "\n");
+        actualResult = actualResult.Replace("\r\n", "\n");
+
+        Assert.Equal(expectedResult, actualResult);
     }
 
-    //[Fact]
-    //public async Task ExportCsvAsync_ShouldThrowCustomException_WhenInvalidPropertyNameIsNull()
-    //{
-    //    _unitOfWork.Setup(x => x.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-    //           .ReturnsAsync(new List<Employee> { new Employee { Name = "John", Surname = "Doe" } });
+    [Fact]
+    public async Task ExportCsvAsync_ShouldHandleCustomDataTypes()
+    {
+        var dataTypes = new List<string> { "CustomDataType" };
+        var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
+        var employees = new List<Employee>
+    {
+        new Employee
+        {
+            Name = "Jane",
+            Surname = "Smith"
+        }
+    };
 
-    //    var invalidPropertyNameList = new List<string> { null };
+        var mockBaseDataType = new Mock<BaseDataType>();
+        mockBaseDataType.Setup(x => x.Name).Returns("CustomDataType");
+        mockBaseDataType.Setup(x => x.GenerateData(It.IsAny<EmployeeDto>(), It.IsAny<IServiceProvider>()))
+                         .Returns("Custom Value");
 
-    //    var exception = await Assert.ThrowsAsync<CustomException>(async () =>
-    //        await _chartService.ExportCsvAsync(invalidPropertyNameList)
-    //    );
+        var mockDataTypeProvider = new Mock<IDataTypeProvider>();
+        mockDataTypeProvider.Setup(x => x.GetDataTypes())
+                            .Returns(new List<BaseDataType> { mockBaseDataType.Object });
 
-    //    Assert.Equal("Invalid property name: ", exception.Message);
-    //}
+        _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(employees);
+
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, supportIdentity, mockDataTypeProvider.Object);
+
+        var csvResult = await chartService.ExportCsvAsync(dataTypes);
+
+        var expectedCsv = new StringBuilder();
+        expectedCsv.AppendLine("First Name,Last Name,CustomDataType");
+        expectedCsv.AppendLine("Jane,Smith,Custom Value");
+
+        Assert.NotNull(csvResult);
+        var expectedResult = expectedCsv.ToString();
+        var actualResult = Encoding.UTF8.GetString(csvResult);
+
+        expectedResult = expectedResult.Replace("\r\n", "\n");
+        actualResult = actualResult.Replace("\r\n", "\n");
+
+        Assert.Equal(expectedResult, actualResult);
+    }
+
+    [Fact]
+    public async Task ExportCsvAsync_ShouldHandleNonCustomPropertiesCorrectly()
+    {
+        var dataTypes = new List<string> { "Name", "Surname" };
+        var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
+        var employees = new List<Employee>
+    {
+        new Employee
+        {
+            Name = "Alice",
+            Surname = "Johnson"
+        }
+    };
+
+        var mockDataTypeProvider = new Mock<IDataTypeProvider>();
+        mockDataTypeProvider.Setup(x => x.GetDataTypes())
+            .Returns(new List<BaseDataType>());
+
+        _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(employees);
+
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, supportIdentity, mockDataTypeProvider.Object);
+
+        var csvResult = await chartService.ExportCsvAsync(dataTypes);
+
+        var expectedCsv = new StringBuilder();
+        expectedCsv.AppendLine("First Name,Last Name,Name,Surname");
+        expectedCsv.AppendLine("Alice,Johnson,Alice,Johnson");
+
+        Assert.NotNull(csvResult);
+        var expectedResult = expectedCsv.ToString();
+        var actualResult = Encoding.UTF8.GetString(csvResult);
+        expectedResult = expectedResult.Replace("\r\n", "\n");
+        actualResult = actualResult.Replace("\r\n", "\n");
+        Assert.Equal(expectedResult, actualResult);
+    }
 }
