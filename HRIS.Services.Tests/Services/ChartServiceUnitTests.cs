@@ -313,6 +313,7 @@ public class ChartServiceUnitTests
             employeeOne
         };
 
+
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity);
 
