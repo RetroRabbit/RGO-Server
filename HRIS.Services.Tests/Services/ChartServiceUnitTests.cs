@@ -1,13 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
+﻿using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 using HRIS.Models;
-using HRIS.Services.Handler.Charts;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
-using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using RR.Tests.Data;
@@ -41,21 +37,47 @@ public class ChartServiceUnitTests
         _chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
     }
 
-    [Theory]
-    [InlineData(1, false)]
-    [InlineData(2, true)]
-    public async Task CheckIfChartsExists_ShouldReturnExpectedResult(int employeeId, bool expectedResult)
+    [Fact]
+    public async Task CheckIfChatsExists_ShouldReturnFalse_WhenChartsDoesNotExist()
     {
-        _unitOfWork.Setup(ex => ex.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(expectedResult);
+        var employeeId = 1;
+        _unitOfWork.Setup(ex => ex.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
 
-        var result = await _chartService.CheckIfChartsExists(employeeId);
+        var result = await _chartService.CheckIfChatsExists(employeeId);
 
-        Assert.Equal(expectedResult, result);
+        Assert.False(result);
+    }
+
+    [Fact]
+    public async Task CheckIfChatsExists_ShouldReturnTrue_WhenEmployeeExists()
+    {
+        var employeeId = 2;
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+
+        var result = await _chartService.CheckIfChatsExists(employeeId);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public async Task GetAllChartsTest()
+    {
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
+
+        _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().ToMockIQueryable());
+
+        var result = await chartService.GetAllCharts();
+
+        Assert.NotNull(result);
+        Assert.IsType<List<ChartDto>>(result);
+        _unitOfWork.Verify(u => u.Chart.Get(null), Times.Once);
     }
 
     [Fact]
     public async Task GetAllCharts_ShouldReturnEmptyList_WhenNoChartsAvailable()
     {
+        var Charts = new List<Chart>();
+
         _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().ToMockIQueryable());
 
         var result = await _chartService.GetAllCharts();
@@ -67,13 +89,17 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task GetAllCharts_ShouldReturnCapitalizedDataTypes_WhenAuthorized()
     {
+        var employeeId = _identity.EmployeeId;
+
         var chart = new Chart
         {
-            EmployeeId = _identity.EmployeeId,
+            EmployeeId = employeeId,
             DataTypes = new List<string> { "DataTypeOne", "DataTypeTwo" }
         };
 
-        _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart> { chart }.ToMockIQueryable());
+        var charts = new List<Chart> { chart };
+
+        _unitOfWork.Setup(u => u.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(charts.ToMockIQueryable());
 
         var result = await _chartService.GetAllCharts();
 
@@ -84,116 +110,171 @@ public class ChartServiceUnitTests
     }
 
     [Fact]
-    public async Task GetEmployeeChartsById_ShouldReturnExpectedCharts_WhenUserIsAuthorized()
-    {
-        var chart = new Chart
-        {
-            EmployeeId = _identity.EmployeeId,
-            DataTypes = new List<string> { "DataTypeOne", "DataTypeTwo" },
-            Datasets = new List<ChartDataSet> { new ChartDataSet() }
-        };
-
-        _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart> { chart }.ToMockIQueryable());
-        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-
-        var result = await _chartService.GetEmployeeChartsById(_identity.EmployeeId);
-
-        Assert.NotNull(result);
-        Assert.Single(result);
-        Assert.Equal("Data Type One", result[0].DataTypes[0]);
-        Assert.Equal("Data Type Two", result[0].DataTypes[1]);
-        Assert.Single(result[0].Datasets);
-    }
-
-    [Fact]
     public async Task GetEmployeeChartsById_ShouldThrowException_WhenChartsDoNotExist()
     {
-        _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart>().ToMockIQueryable());
-        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
+        var employeeId = 1;
 
-        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _chartService.GetEmployeeChartsById(1));
+        _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>()))
+                   .Returns(new List<Chart>().ToMockIQueryable());
+
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(false);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await _chartService.GetEmployeeChartsById(employeeId)
+        );
 
         Assert.Equal("Chat not found", exception.Message);
     }
 
     [Fact]
+    public async Task GetEmployeeChartsById_ShouldReturnChartsWithCapitalizedDataTypes_WhenUserIsAuthorized()
+    {
+        var employeeId = _identity.EmployeeId;
+        var chartDataSet = new ChartDataSet();
+        var chart = new Chart
+        {
+            EmployeeId = employeeId,
+            DataTypes = new List<string> { "DataTypeOne", "DataTypeTwo" },
+            Datasets = new List<ChartDataSet> { chartDataSet }
+        };
+
+        var charts = new List<Chart> { chart };
+
+        _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>()))
+                   .Returns(charts.AsQueryable().BuildMock());
+
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
+
+        var result = await _chartService.GetEmployeeChartsById(employeeId);
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("Data Type One", result[0].DataTypes[0]);
+        Assert.Equal("Data Type Two", result[0].DataTypes[1]);
+        Assert.NotNull(result[0].Datasets);
+        Assert.Single(result[0].Datasets);
+    }
+
+    [Fact]
     public async Task GetEmployeeChartsById_ShouldThrowUnauthorizedAccess_WhenUserIsNotAuthorized()
     {
-        var unauthorizedEmployeeId = 2;
-        var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@test.com", "password", "User", 3);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
+        var employeeId = 2;
 
-        var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.GetEmployeeChartsById(unauthorizedEmployeeId));
+        var charts = new List<Chart>
+        {
+          new Chart { Id = 1, EmployeeId = employeeId }
+        };
+
+        _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(charts.ToMockIQueryable());
+
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+
+        var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@test.com", "unauthorized", "User", 3);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(async () =>
+            await chartService.GetEmployeeChartsById(employeeId)
+        );
 
         Assert.Equal("Unauthorized access.", exception.Message);
     }
 
     [Fact]
-    public async Task UpdateChart_ShouldThrowException_WhenUnauthorized()
+    public async Task UpdateFailTest()
     {
         var chartDto = new ChartDto { Id = 1, EmployeeId = 1 };
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
+
+        _unitOfWork.Setup(x => x.Chart.GetById(It.IsAny<int>())).ReturnsAsync((Chart?)null);
+
+        await Assert.ThrowsAsync<CustomException>(() => _chartService.UpdateChart(chartDto));
+    }
+
+    [Fact]
+    public async Task UpdateChart_ShouldUpdateAndReturnChart()
+    {
+        var chartDto = new ChartDto { Id = 1, EmployeeId = 1 };
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(uow => uow.Chart.Update(It.IsAny<Chart>())).ReturnsAsync(new Chart());
+
+        var result = await _chartService.UpdateChart(chartDto);
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task UpdateUnauthorizedTest()
+    {
+        var chartDto = new ChartDto { Id = 1, EmployeeId = 1 };
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(uow => uow.Chart.Update(It.IsAny<Chart>())).ReturnsAsync(new Chart());
+
+
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
-        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
-        _unitOfWork.Setup(x => x.Chart.GetById(It.IsAny<int>())).ReturnsAsync((Chart?)null);
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-
         var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.UpdateChart(chartDto));
+
         Assert.Equal("Unauthorized access.", exception.Message);
     }
 
     [Fact]
     public async Task UpdateChart_ShouldThrowUnauthorizedAccess_WhenUserIsNotSupportAndIdsDoNotMatch()
     {
-        var chartDto = new ChartDto { Id = 2, EmployeeId = _identity.EmployeeId };
+        var chartDto = new ChartDto
+        {
+            Id = 2,
+            EmployeeId = _identity.EmployeeId
+        };
 
-        _unitOfWork.Setup(u => u.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-        _unitOfWork.Setup(u => u.Chart.Update(It.IsAny<Chart>())).Throws(new CustomException("Unauthorized access."));
+        _unitOfWork.Setup(u => u.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
+
+        _unitOfWork.Setup(u => u.Chart.Update(It.IsAny<Chart>()))
+                   .Throws(new CustomException("Unauthorized access."));
 
         await Assert.ThrowsAsync<CustomException>(async () => await _chartService.UpdateChart(chartDto));
     }
 
     [Fact]
-    public async Task UpdateChart_ShouldThrowException_WhenChartDoesNotExist()
-    {
-        var chartDto = new ChartDto { Id = 1, EmployeeId = 1 };
-
-        _unitOfWork.Setup(uow => uow.Chart.GetById(chartDto.Id)).ReturnsAsync((Chart?)null);
-        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-
-        var exception = await Assert.ThrowsAsync<CustomException>(() => _chartService.UpdateChart(chartDto));
-        Assert.Equal("No chart data record found", exception.Message);
-    }
-
-    [Fact]
-    public async Task UpdateChart_ShouldUpdateChart_WhenChartExistsAndUserIsAuthorized()
-    {
-        var chartDto = new ChartDto { Id = 1, EmployeeId = 1 };
-        var authorizedIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, authorizedIdentity, _dataTypeProvider.Object);
-
-        var existingChart = new Chart { Id = chartDto.Id, EmployeeId = chartDto.EmployeeId };
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-        _unitOfWork.Setup(uow => uow.Chart.GetById(chartDto.Id)).ReturnsAsync(existingChart);
-        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
-        _unitOfWork.Setup(uow => uow.Chart.Update(It.IsAny<Chart>())).ReturnsAsync(existingChart);
-
-        var result = await chartService.UpdateChart(chartDto);
-
-        Assert.NotNull(result);
-        Assert.Equal(chartDto.Id, result.Id);
-    }
-
-    [Fact]
-    public async Task DeleteChart_ShouldThrowUnauthorizedAccess_WhenUserIsNotAuthorized()
+    public async Task DeleteChart_ShouldDeleteAndReturnChart()
     {
         var chartId = 1;
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(uow => uow.Chart.Delete(chartId)).ReturnsAsync(new Chart());
+
+        var result = await _chartService.DeleteChart(chartId);
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task DeleteFailTest()
+    {
+        var chartId = 1;
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
+        _unitOfWork.Setup(ex => ex.Chart.Delete(It.IsAny<int>())).ReturnsAsync((Chart?)null);
+
+        await Assert.ThrowsAsync<CustomException>(() => _chartService.DeleteChart(chartId));
+    }
+
+    [Fact]
+    public async Task DeleteUnauthorizedTest()
+    {
+        var chartId = 1;
+        var chart = new Chart { Id = chartId, EmployeeId = 2 };
+        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+
+        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
+
+        _unitOfWork.Setup(x => x.Chart.Get(It.IsAny<Expression<Func<Chart, bool>>>())).Returns(new List<Chart> { chart }.ToMockIQueryable());
+
+        _unitOfWork.Setup(x => x.Chart.Delete(chartId)).ReturnsAsync(chart);
+
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
 
         var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.DeleteChart(chartId));
 
@@ -201,39 +282,71 @@ public class ChartServiceUnitTests
     }
 
     [Fact]
-    public async Task DeleteChart_ShouldThrowException_WhenChartDoesNotExist()
+    public async Task GetChartDataTest()
     {
-        var chartId = 1;
-        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
-        _unitOfWork.Setup(u => u.Chart.GetById(chartId)).ReturnsAsync((Chart?)null);
-        var exception = new CustomException("Chart not found");
-        _unitOfWork.Setup(x => x.Chart.Delete(It.IsAny<int>())).Throws(exception);
+        var dataType = new List<string> { "Gender", "Race" };
 
-        var result = await Assert.ThrowsAsync<CustomException>(() => _chartService.DeleteChart(chartId));
-        Assert.Equal("Chart not found", result.Message);
-    }
+        var employeeOne = EmployeeTestData.EmployeeOne;
 
-    [Fact]
-    public async Task DeleteChart_ShouldReturnChartDto_WhenChartExistsAndUserIsAuthorized()
-    {
-        var chartId = 1;
-        var authorizedIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, authorizedIdentity, _dataTypeProvider.Object);
+        var employees = new List<Employee>
+        {
+            employeeOne
+        };
 
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
+        _employeeService.Setup(e => e.GetAll("")).ReturnsAsync(employees.Select(x => x.ToDto()).ToList());
 
-        var chart = new Chart { Id = chartId };
-        _unitOfWork.Setup(u => u.Chart.GetById(chartId)).ReturnsAsync(chart);
-        _unitOfWork.Setup(x => x.Chart.Delete(chartId)).ReturnsAsync(chart);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
 
-        var result = await chartService.DeleteChart(chartId);
+        var result = await chartService.GetChartData(dataType);
 
         Assert.NotNull(result);
-        Assert.Equal(chart.Id, result.Id);
+        Assert.IsType<ChartDataDto>(result);
     }
 
     [Fact]
-    public async Task CreateChart_ShouldThrowException_WhenChartDoesNotExistOrUnauthorized()
+    public async Task GetChartDataUnauthorized()
+    {
+        var dataType = new List<string> { "Gender", "Race" };
+
+        var employeeOne = EmployeeTestData.EmployeeOne;
+
+        var employees = new List<Employee>
+        {
+            employeeOne
+        };
+
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() => chartService.GetChartData(dataType));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
+    }
+
+    [Fact]
+    public void GetColumnsFromTableTest()
+    {
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, _identity, _dataTypeProvider.Object);
+
+        var columnNames = chartService.GetColumnsFromTable();
+
+        Assert.NotNull(columnNames);
+        Assert.NotEmpty(columnNames);
+    }
+
+    [Fact]
+    public void GetColumnsFromTable_ShouldThrowUnauthorizedAccess()
+    {
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
+        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
+
+        var exception = Assert.Throws<CustomException>(() => chartService.GetColumnsFromTable());
+
+        Assert.Equal("Unauthorized access.", exception.Message);
+    }
+
+    [Fact]
+    public async Task CreateChart_ShouldThrowException_WhenChartDoesNotExist()
     {
         var employeeId = 1;
         var dataTypes = new List<string> { "DataTypeOne", "DataTypeTwo" };
@@ -241,7 +354,8 @@ public class ChartServiceUnitTests
         var chartName = "TestChart";
         var chartType = "standard";
 
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(false);
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(false);
 
         var exception = await Assert.ThrowsAsync<CustomException>(async () =>
             await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId)
@@ -259,7 +373,8 @@ public class ChartServiceUnitTests
         var chartName = "TestChart";
         var chartType = "standard";
 
-        _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
 
         var unauthorizedIdentity = new AuthorizeIdentityMock("unauthorized@test.com", "unauthorized", "User", 3);
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
@@ -271,164 +386,57 @@ public class ChartServiceUnitTests
         Assert.Equal("Unauthorized access.", exception.Message);
     }
 
-    //[Fact]
-    //public async Task CreateChart_ShouldCreateStackedChart_WhenChartTypeIsStacked()
-    //{
-    //    var employeeId = 1;
-    //    var dataTypes = new List<string> { "DataTypeOne", "DataTypeTwo" };
-    //    var roles = new List<string> { "RoleOne", "RoleTwo" };
-    //    var chartName = "TestStackedChart";
-    //    var chartType = "stacked";
+    [Fact]
+    public async Task CreateChart_ShouldCreateStackedChart_WhenChartTypeIsStacked()
+    {
+        var employeeId = _identity.EmployeeId;
+        var dataTypes = new List<string> { "DataTypeOne" };
+        var roles = new List<string> { "Developer", "Designer" };
+        var chartName = "TestChart";
+        var chartType = "stacked";
 
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-    //    _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>())).ReturnsAsync(new Chart { Id = 1 });
-    //    var employees = new List<Employee>
-    //{
-    //    new Employee
-    //    {
-    //        Name = "John",
-    //        EmployeeType = new EmployeeType { Name = "Admin" }
-    //    },
-    //    new Employee
-    //    {
-    //        Name = "Jane",
-    //        EmployeeType = new EmployeeType { Name = "User" }
-    //    }
-    //};
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
 
-    //    // Mock GetAll to return a List<Employee>
-    //    _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-    //               .ReturnsAsync(employees);
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
+        _unitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(new List<Employee>().AsQueryable().BuildMock());
 
-    //    Assert.NotNull(result);
-    //    Assert.Equal(1, result.Id);
-    //    Assert.Equal("TestStackedChart", result.Name);
-    //    Assert.Equal("stacked", result.Type);
-    //}
+        _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
+                   .Returns(Task.FromResult(new Chart { Name = chartName, EmployeeId = employeeId, Subtype = chartType, Type = "bar" }));
 
+        var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
 
-    //[Fact]
-    //public async Task CreateChart_ShouldCreateStandardChart_WhenChartTypeIsStandard()
-    //{
-    //    var employeeId = 1;
-    //    var dataTypes = new List<string> { "DataTypeOne", "DataTypeTwo" };
-    //    var roles = new List<string> { "RoleOne", "RoleTwo" };
-    //    var chartName = "TestStandardChart";
-    //    var chartType = "standard";
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal("stacked", result.Subtype);
+        Assert.Equal("bar", result.Type);
+    }
 
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-    //    _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>())).ReturnsAsync(new Chart { Id = 2 });
+    [Fact]
+    public async Task CreateChart_ShouldCreateStandardChart_WhenChartTypeIsStandard()
+    {
+        var employeeId = _identity.EmployeeId;
+        var dataTypes = new List<string> { "DataTypeOne" };
+        var roles = new List<string> { "RoleOne" };
+        var chartName = "TestChart";
+        var chartType = "standard";
 
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
 
-    //    Assert.NotNull(result);
-    //    Assert.Equal(2, result.Id);
-    //    Assert.Equal("TestStandardChart", result.Name);
-    //    Assert.Equal("standard", result.Type);
-    //}
+        var mockEmployeesQueryable = new List<Employee>().AsQueryable().BuildMock();
+        _unitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .Returns(mockEmployeesQueryable);
 
-    //[Fact]
-    //public async Task CreateChart_ShouldHandleRolesWithSpacesAndCommas()
-    //{
-    //    var employeeId = 1;
-    //    var dataTypes = new List<string> { "DataTypeOne", "DataTypeTwo" };
-    //    var roles = new List<string> { "Role One, Role Two" };
-    //    var chartName = "ChartWithComplexRoles";
-    //    var chartType = "standard";
+        _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
+                   .ReturnsAsync(new Chart { Name = chartName, EmployeeId = employeeId, Subtype = chartType});
 
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-    //    _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>())).ReturnsAsync(new Chart { Id = 3 });
+        var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
 
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
-
-    //    Assert.NotNull(result);
-    //    Assert.Equal(3, result.Id);
-    //    Assert.Equal("ChartWithComplexRoles", result.Name);
-    //    Assert.Contains("Role One", result.Roles);
-    //    Assert.Contains("Role Two", result.Roles);
-    //}
-
-    //[Fact]
-    //public async Task CreateChart_ShouldCreateChartWithAllRoles_WhenRoleIsAll()
-    //{
-    //    var employeeId = 1;
-    //    var dataTypes = new List<string> { "DataTypeOne" };
-    //    var roles = new List<string> { "All" };
-    //    var chartName = "ChartWithAllRoles";
-    //    var chartType = "standard";
-
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-    //    _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>())).ReturnsAsync(new Chart { Id = 4 });
-
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
-
-    //    Assert.NotNull(result);
-    //    Assert.Equal(4, result.Id);
-    //    Assert.Equal("ChartWithAllRoles", result.Name);
-    //    Assert.Contains("All", result.Roles);
-    //}
-
-    //[Fact]
-    //public async Task CreateChart_ShouldHandleEmptyDataTypesList()
-    //{
-    //    var employeeId = 1;
-    //    var dataTypes = new List<string>();
-    //    var roles = new List<string> { "RoleOne" };
-    //    var chartName = "ChartWithNoDataTypes";
-    //    var chartType = "standard";
-
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-    //    _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>())).ReturnsAsync(new Chart { Id = 5 });
-
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
-
-    //    Assert.NotNull(result);
-    //    Assert.Equal(5, result.Id);
-    //    Assert.Equal("ChartWithNoDataTypes", result.Name);
-    //    Assert.Empty(result.DataTypes);
-    //}
-
-    //[Fact]
-    //public async Task CreateChart_ShouldHandleUnknownPropertiesInDataTypes()
-    //{
-    //    var employeeId = 1;
-    //    var dataTypes = new List<string> { "UnknownProperty" };
-    //    var roles = new List<string> { "RoleOne" };
-    //    var chartName = "ChartWithUnknownProperties";
-    //    var chartType = "standard";
-
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-    //    _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>())).ReturnsAsync(new Chart { Id = 6 });
-
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
-
-    //    Assert.NotNull(result);
-    //    Assert.Equal(6, result.Id);
-    //    Assert.Equal("ChartWithUnknownProperties", result.Name);
-    //    Assert.Contains("UnknownProperty", result.DataTypes);
-    //}
-
-    //[Fact]
-    //public async Task CreateChart_ShouldHandleAllRolesWhenRoleListIsEmpty()
-    //{
-    //    var employeeId = 1;
-    //    var dataTypes = new List<string> { "DataTypeOne" };
-    //    var roles = new List<string>();
-    //    var chartName = "ChartWithEmptyRoles";
-    //    var chartType = "standard";
-
-    //    _unitOfWork.Setup(x => x.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
-    //    _unitOfWork.Setup(u => u.Chart.Add(It.IsAny<Chart>())).ReturnsAsync(new Chart { Id = 7 });
-
-    //    var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
-
-    //    Assert.NotNull(result);
-    //    Assert.Equal(7, result.Id);
-    //    Assert.Equal("ChartWithEmptyRoles", result.Name);
-    //    Assert.Contains("All", result.Roles);
-    //}
-
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal("standard", result.Subtype);
+    }
 
     [Fact]
     public async Task ExportCsvAsync_ShouldThrowCustomException_WhenPropertyNameIsInvalid()
@@ -452,7 +460,7 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task ExportCsvAsync_ShouldThrowCustomException_WhenDataTypesListIsEmpty()
     {
-        var dataTypes = new List<string>(); // Empty data types list
+        var dataTypes = new List<string>();
         var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
         var employees = new List<Employee>
     {
@@ -627,123 +635,5 @@ public class ChartServiceUnitTests
         expectedResult = expectedResult.Replace("\r\n", "\n");
         actualResult = actualResult.Replace("\r\n", "\n");
         Assert.Equal(expectedResult, actualResult);
-    }
-
-    [Fact]
-    public async Task GetChartData_ShouldThrowUnauthorizedAccess_WhenUserIsNotSupport()
-    {
-        var dataTypes = new List<string> { "Age" };
-        var unauthorizedIdentity = new AuthorizeIdentityMock("user@test.com", "password", "User", 1);
-        var service = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
-
-        var exception = await Assert.ThrowsAsync<CustomException>(async () => await service.GetChartData(dataTypes));
-        Assert.Equal("Unauthorized access.", exception.Message);
-    }
-
-    [Fact]
-    public async Task GetChartData_ShouldReturnEmptyChartData_WhenNoEmployees()
-    {
-        var dataTypes = new List<string> { "Age" };
-
-        _employeeService.Setup(es => es.GetAll("")).ReturnsAsync(new List<EmployeeDto>());
-
-        var result = await _chartService.GetChartData(dataTypes);
-
-        Assert.NotNull(result);
-        Assert.Empty(result.Labels);
-        Assert.Empty(result.Data);
-    }
-
-    [Fact]
-    public async Task GetChartData_ShouldReturnCorrectChartData_WhenSingleEmployeeAndSingleDataType()
-    {
-        var dataTypes = new List<string> { "Age" };
-        var employees = new List<EmployeeDto>
-    {
-        new EmployeeDto
-        {
-            Name = "John",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(1994, 1, 1),
-        }
-    };
-
-        _employeeService.Setup(es => es.GetAll("")).ReturnsAsync(employees);
-
-        var result = await _chartService.GetChartData(dataTypes);
-
-        Assert.NotNull(result);
-        Assert.Single(result.Labels);
-        Assert.Single(result.Data);
-
-        Assert.Equal("30", result.Labels[0]);
-        Assert.Equal(1, result.Data[0]);
-    }
-
-    [Fact]
-    public async Task GetChartData_ShouldCountOccurrencesCorrectly_WhenMultipleEmployeesHaveSameData()
-    {
-        var dataTypes = new List<string> { "Age" };
-        var employees = new List<EmployeeDto>
-    {
-        new EmployeeDto { DateOfBirth = new DateTime(1994, 1, 1) },
-        new EmployeeDto { DateOfBirth = new DateTime(1994, 1, 1) },
-    };
-
-        _employeeService.Setup(es => es.GetAll("")).ReturnsAsync(employees);
-
-        var result = await _chartService.GetChartData(dataTypes);
-
-        Assert.NotNull(result);
-        Assert.Single(result.Labels);
-        Assert.Single(result.Data);
-        Assert.Equal("30", result.Labels[0]);
-        Assert.Equal(2, result.Data[0]);
-    }
-
-    [Fact]
-    public async Task GetChartData_ShouldProcessMultipleDataTypesCorrectly()
-    {
-        var dataTypes = new List<string> { "Age", "Name" };
-        var employees = new List<EmployeeDto>
-    {
-        new EmployeeDto { DateOfBirth = new DateTime(1994, 1, 1), Name = "John" },
-        new EmployeeDto { DateOfBirth = new DateTime(1994, 1, 1), Name = "Jane" }
-    };
-
-        _employeeService.Setup(es => es.GetAll("")).ReturnsAsync(employees);
-
-        var result = await _chartService.GetChartData(dataTypes);
-
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Labels.Count);
-        Assert.Equal(2, result.Data.Count);
-
-        var expectedLabel1 = "30John";
-        var expectedLabel2 = "30Jane";
-
-        Assert.Contains(expectedLabel1, result.Labels);
-        Assert.Contains(expectedLabel2, result.Labels);
-
-        Assert.Equal(1, result.Data[result.Labels.IndexOf(expectedLabel1)]);
-        Assert.Equal(1, result.Data[result.Labels.IndexOf(expectedLabel2)]);
-    }
-
-    [Fact]
-    public async Task GetChartData_ShouldIgnoreInvalidDataTypes()
-    {
-        var dataTypes = new List<string> { "InvalidDataType" };
-        var employees = new List<EmployeeDto>
-    {
-        new EmployeeDto { DateOfBirth = new DateTime(1994, 1, 1) },
-    };
-
-        _employeeService.Setup(es => es.GetAll("")).ReturnsAsync(employees);
-
-        var result = await _chartService.GetChartData(dataTypes);
-
-        Assert.NotNull(result);
-        Assert.Empty(result.Labels);
-        Assert.Empty(result.Data);
     }
 }

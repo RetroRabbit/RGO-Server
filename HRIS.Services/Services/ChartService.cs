@@ -27,9 +27,9 @@ public partial class ChartService : IChartService
         _dataTypeProvider = dataTypeProvider;
     }
 
-    public async Task<bool> CheckIfChartsExists(int Id)
+    public async Task<bool> CheckIfChatsExists(int Id)
     {
-        return await _db.Chart.Any(chart => chart.EmployeeId == Id);
+        return await _db.Employee.Any(employee => employee.Id == Id);
     }
 
     public async Task<List<ChartDto>> GetAllCharts()
@@ -47,7 +47,7 @@ public partial class ChartService : IChartService
 
     public async Task<List<ChartDto>> GetEmployeeChartsById(int employeeId)
     {
-        var exists = await CheckIfChartsExists(employeeId);
+        var exists = await CheckIfChatsExists(employeeId);
         if (exists == false)
             throw new CustomException("Chat not found");
 
@@ -71,7 +71,7 @@ public partial class ChartService : IChartService
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName,
                                             string chartType, int employeeId)
     {
-        var exists = await CheckIfChartsExists(employeeId);
+        var exists = await CheckIfChatsExists(employeeId);
         if (exists == false)
             throw new CustomException("Chat not found");
 
@@ -195,75 +195,56 @@ public partial class ChartService : IChartService
     {
         if (!_identity.IsSupport)
             throw new CustomException("Unauthorized access.");
-
         var employees = await _employeeService.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
-
         var dataDictionary = employees
-            .GroupBy(employee =>
-            {
-                var keyBuilder = new StringBuilder();
-                foreach (var dataType in dataTypeList)
-                {
-                    if (dataType == "Age")
-                    {
-                        var age = CalculateAge(employee.DateOfBirth);
-                        keyBuilder.Append(age);
-                    }
-                    else
-                    {
-                        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
-                        if (propertyInfo != null)
-                        {
-                            var value = propertyInfo.GetValue(employee);
-                            if (value != null)
-                            {
-                                keyBuilder.Append(value);
-                            }
-                        }
-                    }
-                }
+                             .GroupBy(employee =>
+                             {
+                                 var keyBuilder = new StringBuilder();
+                                 foreach (var dataType in dataTypeList)
+                                 {
+                                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                                     if (propertyInfo == null)
+                                         continue;
 
-                return keyBuilder.ToString();
-            })
-            .Where(x => !string.IsNullOrWhiteSpace(x.Key))
-            .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
+                                     var value = propertyInfo.GetValue(employee);
+
+                                     if (value == null)
+                                         continue;
+
+                                     keyBuilder.Append(propertyInfo.GetValue(employee));
+                                 }
+
+                                 return keyBuilder.ToString();
+                             })
+                             .Where(x => string.IsNullOrWhiteSpace(x.Key) == false)
+                             .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
 
         var labels = dataDictionary.Keys.ToList();
         var data = dataDictionary.Values.ToList();
-
         var chartDataDto = new ChartDataDto
         {
             Labels = labels,
             Data = data
         };
-
         return chartDataDto;
-    }
-
-    private int CalculateAge(DateTime dateOfBirth)
-    {
-        var today = DateTime.Today;
-        var age = today.Year - dateOfBirth.Year;
-        if (dateOfBirth > today.AddYears(-age)) age--;
-        return age;
     }
 
     public async Task<ChartDto> DeleteChart(int id)
     {
-        var exists = await CheckIfChartsExists(id);
+        var exists = await CheckIfChatsExists(id);
         if (exists == false)
             throw new CustomException("Chart not found");
 
         if (!_identity.IsSupport && id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
-
+            
         return (await _db.Chart.Delete(id)).ToDto();
     }
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
     {
-        var exists = await CheckIfChartsExists(chartDto.EmployeeId);
+        var exists = await CheckIfChatsExists(chartDto.EmployeeId);
         if (!exists) throw new CustomException("No chart data record found");
         if (!_identity.IsSupport && chartDto.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
