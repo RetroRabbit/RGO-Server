@@ -30,10 +30,10 @@ public class EmployeeCertificationService : IEmployeeCertificationService
     public async Task<EmployeeCertificationDto> CreateEmployeeCertification(EmployeeCertificationDto employeeCertificationDto)
     {
         var exists = await CheckIfCertificationExists(employeeCertificationDto.EmployeeId);
-        if (!exists)
-            throw new CustomException("Certificate not found");
+        if (exists)
+            throw new CustomException("Certificate already exists.");
 
-        if (!_identity.IsSupport && employeeCertificationDto.Id != _identity.EmployeeId)
+        if (!_identity.IsSupport && employeeCertificationDto.EmployeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
 
         return (await _db.EmployeeCertification.Add(new EmployeeCertification(employeeCertificationDto))).ToDto();

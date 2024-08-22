@@ -1,7 +1,10 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Services;
+using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS
 {
@@ -10,81 +13,61 @@ namespace RR.App.Controllers.HRIS
     public class ClientProjectsController : ControllerBase
     {
         private readonly IClientProjectService _clientProjectService;
-        public ClientProjectsController(IClientProjectService clientProjectService)
+        private readonly AuthorizeIdentity _identity;
+
+        public ClientProjectsController(AuthorizeIdentity identity, IClientProjectService clientProjectService)
         {
             _clientProjectService = clientProjectService;
+            _identity = identity;
         }
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpGet]
         public async Task<ActionResult> GetAllClientProjects()
         {
-            try
-            {
                 var clientProjects = await _clientProjectService.GetAllClientProjects();
                 return Ok(clientProjects);
-            }
-            catch(Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpGet("{id}")]
         public async Task<ActionResult<ClientProjectsDto>> GetClientProjectById(int id)
         {
-            try
-            {
-                var clientProjectDto = await _clientProjectService.GetClientProjectById(id);
+            if (!_identity.IsSupport && id != _identity.EmployeeId)
+                throw new CustomException("Unauthorized Access.");
+
+            var clientProjectDto = await _clientProjectService.GetClientProjectById(id);
                 return Ok(clientProjectDto);
-            } 
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> SaveClientProject(ClientProjectsDto clientProjectsDto)
         {
-            try
-            {
-                var createdClientProject = await _clientProjectService.CreateClientProject(clientProjectsDto);
+            if (!_identity.IsSupport && clientProjectsDto.EmployeeId != _identity.EmployeeId)
+                throw new CustomException("Unauthorized Access.");
+
+            var createdClientProject = await _clientProjectService.CreateClientProject(clientProjectsDto);
                 return Ok(createdClientProject);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateClientProject(ClientProjectsDto clientProjectsDto)
         {
-            try
-            {
-                var clientProjectObject = await _clientProjectService.UpdateClientProject(clientProjectsDto);
+            if (!_identity.IsSupport && clientProjectsDto.EmployeeId != _identity.EmployeeId)
+                throw new CustomException("Unauthorized Access.");
+
+            var clientProjectObject = await _clientProjectService.UpdateClientProject(clientProjectsDto);
                 return Ok(clientProjectObject);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
 
         [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
         [HttpDelete]
         public async Task<IActionResult> DeleteClientProject(int id)
         {
-            var clientProject = await _clientProjectService.GetClientProjectById(id);
-
-            if (clientProject == null)
-            {
-                return NotFound("Client Project not found");
-            }
+            if (!_identity.IsSupport && id != _identity.EmployeeId)
+                throw new CustomException("Unauthorized Access.");
 
             var clientProjectObject = await _clientProjectService.DeleteClientProject(id);
             return Ok(clientProjectObject);

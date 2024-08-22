@@ -270,14 +270,14 @@ public class EmployeeService : IEmployeeService
         return filteredEmployees;
     }
 
-    public async Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId)
+    public async Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId, bool update = false)
     {
-        if (_identity.IsSupport == false)
+        if (_identity.IsInactive)
             throw new CustomException("Unauthorized Access");
 
         var modelExists = await CheckModelExist(employeeId);
-        if (modelExists)
-            throw new CustomException("Model found");
+        if (modelExists && !update)
+            throw new CustomException("Model already exists and not being updated.");
 
         var duplicateExists = await _db.Employee
                           .Get(employee => employee.IdNumber == idNumber && (employeeId == 0 || employee.Id != employeeId))

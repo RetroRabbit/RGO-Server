@@ -89,19 +89,19 @@ public class EmployeeCertificationServiceUnitTests
     private void MockEmployeeCertificationRepositorySetupForAdd(EmployeeCertification employeeCertification)
     {
         _db.Setup(u => u.EmployeeCertification.Add(It.IsAny<EmployeeCertification>()))
-                   .ReturnsAsync(employeeCertification);
+           .ReturnsAsync(employeeCertification);
     }
 
     private void MockCheckIfCertificationExists(bool exists)
     {
         _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
-            .ReturnsAsync(exists);
+           .ReturnsAsync(exists);
     }
 
     [Fact]
     public async Task SaveEmployeeCertificationPass()
     {
-        MockCheckIfCertificationExists(true);
+        MockCheckIfCertificationExists(false);
         MockEmployeeCertificationRepositorySetupForAdd(_employeeCertification);
 
         var result = await _employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto());
@@ -113,12 +113,9 @@ public class EmployeeCertificationServiceUnitTests
     [Fact]
     public async Task SaveEmployeeCertificationFailWhenCertificationExists()
     {
-       _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
-               .ReturnsAsync(true);
+        MockCheckIfCertificationExists(true);
 
-        MockEmployeeRepositorySetup(EmployeeTestData.EmployeeOne);
-
-        await Assert.ThrowsAsync<NullReferenceException>(() =>
+        await Assert.ThrowsAsync<CustomException>(() =>
             _employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto()));
     }
 
@@ -150,12 +147,30 @@ public class EmployeeCertificationServiceUnitTests
     }
 
     [Fact]
-    public async Task SaveEmployeeCertificationFailWhenCertificationNotFound()
+    public async Task SaveEmployeeCertificationFailWhenUnauthorizedAccess()
     {
-        MockCheckIfCertificationExists(false);
+        var unauthorizedEmployeeId = 999;
+        var employeeCertificationDto = new EmployeeCertificationDto
+        {
+            EmployeeId = unauthorizedEmployeeId,
+            CertificateDocument = "base64",
+            CertificateName = "Title",
+            IssueOrganization = "Publisher",
+            IssueDate = DateTime.UtcNow
+        };
 
-        await Assert.ThrowsAsync<CustomException>(() =>
-            _employeeCertificationService.CreateEmployeeCertification(_employeeCertification.ToDto()));
+        _db.Setup(u => u.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .ReturnsAsync(true);
+
+        _db.Setup(u => u.EmployeeCertification.Any(It.IsAny<Expression<Func<EmployeeCertification, bool>>>()))
+            .ReturnsAsync(false);
+
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 2);
+        var employeeCertificationService = new EmployeeCertificationService(_db.Object, unauthorizedIdentity);
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            employeeCertificationService.CreateEmployeeCertification(employeeCertificationDto));
+
+        Assert.Equal("Unauthorized access.", exception.Message);
     }
 
     [Fact]

@@ -107,14 +107,11 @@ public class UnitOfWork : IUnitOfWork
         return Task.FromResult(columnsFunc);
     }
 
-    public async Task<int> GetActiveEmployeeId(string email, string role)
+    public async Task<int> GetActiveEmployeeId(string email)
     {
-        var employee = await (from e in _db.employees
-            join er in _db.employeeRoles on e.Id equals er.EmployeeId
-            join r in _db.roles on er.RoleId equals r.Id
-            where e.Email == email
-                  && r.Description == role
-            select e).FirstOrDefaultAsync();
+        var employee = await _db.employees
+            .Where(e => e.Email == email)
+            .FirstOrDefaultAsync();
 
         return employee?.Id ?? throw new Exception("Unauthorized Access");
     }

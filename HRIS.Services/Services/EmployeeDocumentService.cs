@@ -107,7 +107,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         var sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
-        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
+        var status = DocumentStatus.PendingApproval;
         var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.MyDocuments;
 
         var employeeDocument = new EmployeeDocumentDto
@@ -193,7 +193,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         if (!ifEmployeeExists)
             throw new CustomException("Employee not found");
 
-        if (_identity.EmployeeId == employeeDocumentDto.EmployeeId)
+        if (employeeDocumentDto.Status == DocumentStatus.Approved && _identity.EmployeeId == employeeDocumentDto.EmployeeId)
         {
             throw new CustomException("You cannot approve your own documents.");
         }
