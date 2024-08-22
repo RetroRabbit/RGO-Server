@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
 using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
@@ -13,11 +14,13 @@ public class WorkExperienceServiceUnitTest
     private readonly WorkExperienceService _workExperienceService;
     private readonly WorkExperience _workExperience;
     private readonly Mock<IUnitOfWork> _mockDb;
+    private readonly Mock<IMapper> _mapperMock;
 
     public WorkExperienceServiceUnitTest()
     {
         _mockDb = new Mock<IUnitOfWork>();
-        _workExperienceService = new WorkExperienceService(_mockDb.Object);
+        _mapperMock = new Mock<IMapper>();
+        _workExperienceService = new WorkExperienceService(_mockDb.Object, _mapperMock.Object);
 
         _workExperience = new WorkExperience
         {
