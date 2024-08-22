@@ -12,6 +12,7 @@ using RR.Tests.Data;
 using HRIS.Services.Services;
 using RR.Tests.Data.Models.HRIS;
 using RR.App.Tests.Helper;
+using AutoMapper;
 
 
 namespace RR.App.Tests.Controllers.HRIS;
@@ -21,7 +22,6 @@ public class EmployeeControllerUnitTests
     private readonly Mock<IChartService> _chartMockService;
     private readonly EmployeeController _controller;
     private readonly EmployeeController _controllers;
-
     private readonly List<EmployeeDto> _employeeDtoList;
     private readonly EmployeeDto _employeeDto;
     private readonly Mock<IUnitOfWork> _dbMock;
@@ -36,7 +36,6 @@ public class EmployeeControllerUnitTests
     private readonly ClaimsIdentity _claimsIdentity;
     private readonly SimpleEmployeeProfileDto _simpleEmployeeProfileDto;
     private readonly Mock<AuthorizeIdentityMock> _identity;
-
     public EmployeeControllerUnitTests()
     {
         _dbMock = new Mock<IUnitOfWork>();
@@ -73,7 +72,46 @@ public class EmployeeControllerUnitTests
             Surname = _employeeDto.Surname
         };
 
-        _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto(_employeeDto);
+        _simpleEmployeeProfileDto = new SimpleEmployeeProfileDto 
+        { 
+            CellphoneNo = _employeeDto.CellphoneNo,
+            ClientAllocatedId = _employeeDto.ClientAllocated,
+            CountryOfBirth = _employeeDto.CountryOfBirth,
+            DateOfBirth = _employeeDto.DateOfBirth,
+            Disability = _employeeDto.Disability,
+            DisabilityNotes = _employeeDto.DisabilityNotes,
+            Email = _employeeDto.Email,
+            EmergencyContactName = _employeeDto.EmergencyContactName,
+            EmergencyContactNo = _employeeDto.EmergencyContactNo,
+            EmployeeNumber = _employeeDto.EmployeeNumber,
+            EmployeeType = _employeeDto.EmployeeType,
+            EngagementDate = _employeeDto.EngagementDate,
+            Gender = _employeeDto.Gender,
+            HouseNo = _employeeDto.HouseNo,
+            Id = _employeeDto.Id,
+            IdNumber = _employeeDto.IdNumber,
+            Initials = _employeeDto.Initials,
+            LeaveInterval = _employeeDto.LeaveInterval,
+            Level = _employeeDto.Level,
+            Name = _employeeDto.Name,
+            Nationality = _employeeDto.Nationality,
+            Notes = _employeeDto.Notes,
+            PassportCountryIssue = _employeeDto.PassportCountryIssue,
+            PassportExpirationDate = _employeeDto.PassportExpirationDate,
+            PassportNumber = _employeeDto.PassportNumber,
+            PayRate = _employeeDto.PayRate,
+            PeopleChampionId = _employeeDto.PeopleChampion,
+            PersonalEmail = _employeeDto.PersonalEmail,
+            Photo = _employeeDto.Photo,
+            Race = _employeeDto.Race,
+            Salary = _employeeDto.Salary,
+            SalaryDays = _employeeDto.SalaryDays,
+            Surname = _employeeDto.Surname,
+            TaxNumber = _employeeDto.TaxNumber,
+            TeamLeadId = _employeeDto.TeamLead,
+            TerminationDate = _employeeDto.TerminationDate,
+             
+        };
 
         _claims = new List<Claim>
         {

@@ -1,4 +1,5 @@
-﻿using HRIS.Models;
+﻿using AutoMapper;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
@@ -9,10 +10,12 @@ namespace HRIS.Services.Services;
 public class WorkExperienceService : IWorkExperienceService
 {
     private readonly IUnitOfWork _db;
+    private readonly IMapper _mapper;
 
-    public WorkExperienceService(IUnitOfWork db)
+    public WorkExperienceService(IUnitOfWork db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     public async Task<bool> CheckIfExists(WorkExperienceDto workExperience)
@@ -27,7 +30,9 @@ public class WorkExperienceService : IWorkExperienceService
         if (exists)
             throw new CustomException("Work experience already exists");
 
-        return (await _db.WorkExperience.Add(new WorkExperience(workExperience))).ToDto();
+        var newWorkExperiece = _mapper.Map<WorkExperience>(workExperience);
+
+        return _mapper.Map<WorkExperienceDto>(await _db.WorkExperience.Add(newWorkExperiece));
     }
 
     public async Task<WorkExperienceDto> Update(WorkExperienceDto workExperience)
@@ -37,32 +42,22 @@ public class WorkExperienceService : IWorkExperienceService
         if (!exists)
             throw new CustomException("Employee Date does not exist");
 
-        var workExperienceToUpdate = new WorkExperienceDto
-        {
-            Id = workExperience.Id,
-            ClientName = workExperience.ClientName,
-            ProjectName = workExperience.ProjectName,
-            SkillSet = workExperience.SkillSet,
-            Software = workExperience.Software,
-            EmployeeId = workExperience.EmployeeId,
-            StartDate = workExperience.StartDate,
-            EndDate = workExperience.EndDate,
-            ProjectDescription = workExperience.ProjectDescription,
-        };
-        return (await _db.WorkExperience.Update(new WorkExperience(workExperienceToUpdate))).ToDto();
+        var workExperienceToUpdate = _mapper.Map<WorkExperience>(workExperience);
+
+        return _mapper.Map<WorkExperienceDto>(await _db.WorkExperience.Update(workExperienceToUpdate));
     }
 
     public async Task<WorkExperienceDto> Delete(int workExperienceId)
     {
-        return (await _db.WorkExperience.Delete(workExperienceId)).ToDto();
+        return _mapper.Map<WorkExperienceDto>(await _db.WorkExperience.Delete(workExperienceId));
     }
 
     public async Task<List<WorkExperienceDto>> GetWorkExperienceByEmployeeId(int id)
     {
         return await _db.WorkExperience
-             .Get(workExperience => workExperience.EmployeeId == id)
-             .Select(workExperience => workExperience.ToDto())
-             .ToListAsync();
+            .Get(workExperience => workExperience.EmployeeId == id)
+            .Select(workExperience => _mapper.Map<WorkExperienceDto>(workExperience))
+            .ToListAsync();
     }
 }
 
