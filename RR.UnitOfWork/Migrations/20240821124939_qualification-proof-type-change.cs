@@ -10,25 +10,34 @@ namespace RR.UnitOfWork.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<byte[]>(
+            // Drop the old column
+            migrationBuilder.DropColumn(
+                name: "proofOfQualification",
+                table: "EmployeeQualifications");
+
+            // Add the new column with the updated type
+            migrationBuilder.AddColumn<byte[]>(
                 name: "proofOfQualification",
                 table: "EmployeeQualifications",
                 type: "bytea",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "text");
+                nullable: false);
         }
+
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
+            // Drop the bytea column
+            migrationBuilder.DropColumn(
+                name: "proofOfQualification",
+                table: "EmployeeQualifications");
+
+            // Add the old column back with the original type
+            migrationBuilder.AddColumn<string>(
                 name: "proofOfQualification",
                 table: "EmployeeQualifications",
                 type: "text",
-                nullable: false,
-                oldClrType: typeof(byte[]),
-                oldType: "bytea");
+                nullable: false);
         }
     }
 }
