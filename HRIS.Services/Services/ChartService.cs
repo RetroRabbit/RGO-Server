@@ -16,18 +16,20 @@ public partial class ChartService : IChartService
     private readonly IEmployeeService _employeeService;
     private readonly IServiceProvider _services;
     private readonly AuthorizeIdentity _identity;
+    private readonly IDataTypeProvider _dataTypeProvider;
 
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity)
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity, IDataTypeProvider dataTypeProvider)
     {
         _db = db;
         _employeeService = employeeService;
         _services = services;
         _identity = identity;
+        _dataTypeProvider = dataTypeProvider;
     }
 
-    public async Task<bool> CheckIfChatsExists(int Id)
+    public async Task<bool> CheckIfChartsExists(int Id)
     {
-        return await _db.Employee.Any(employee => employee.Id == Id);
+        return await _db.Chart.Any(chart => chart.EmployeeId == Id);
     }
 
     public async Task<List<ChartDto>> GetAllCharts()
@@ -45,7 +47,7 @@ public partial class ChartService : IChartService
 
     public async Task<List<ChartDto>> GetEmployeeChartsById(int employeeId)
     {
-        var exists = await CheckIfChatsExists(employeeId);
+        var exists = await CheckIfChartsExists(employeeId);
         if (exists == false)
             throw new CustomException("Chat not found");
 
@@ -69,7 +71,7 @@ public partial class ChartService : IChartService
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName,
                                             string chartType, int employeeId)
     {
-        var exists = await CheckIfChatsExists(employeeId);
+        var exists = await CheckIfChartsExists(employeeId);
         if (exists == false)
             throw new CustomException("Chat not found");
 
@@ -193,55 +195,75 @@ public partial class ChartService : IChartService
     {
         if (!_identity.IsSupport)
             throw new CustomException("Unauthorized access.");
+
         var employees = await _employeeService.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
+
         var dataDictionary = employees
-                             .GroupBy(employee =>
-                             {
-                                 var keyBuilder = new StringBuilder();
-                                 foreach (var dataType in dataTypeList)
-                                 {
-                                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
-                                     if (propertyInfo == null)
-                                         continue;
+            .GroupBy(employee =>
+            {
+                var keyBuilder = new StringBuilder();
+                foreach (var dataType in dataTypeList)
+                {
+                    if (dataType == "Age")
+                    {
+                        var age = CalculateAge(employee.DateOfBirth);
+                        keyBuilder.Append(age);
+                    }
+                    else
+                    {
+                        var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
+                        if (propertyInfo != null)
+                        {
+                            var value = propertyInfo.GetValue(employee);
+                            if (value != null)
+                            {
+                                keyBuilder.Append(value);
+                            }
+                        }
+                    }
+                }
 
-                                     var value = propertyInfo.GetValue(employee);
-
-                                     if (value == null)
-                                         continue;
-
-                                     keyBuilder.Append(propertyInfo.GetValue(employee));
-                                 }
-
-                                 return keyBuilder.ToString();
-                             })
-                             .Where(x => string.IsNullOrWhiteSpace(x.Key) == false)
-                             .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
+                return keyBuilder.ToString();
+            })
+            .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+            .ToDictionary(group => group.Key ?? "Unknown", group => group.Count());
 
         var labels = dataDictionary.Keys.ToList();
         var data = dataDictionary.Values.ToList();
+
         var chartDataDto = new ChartDataDto
         {
             Labels = labels,
             Data = data
         };
+
         return chartDataDto;
+    }
+
+    private int CalculateAge(DateTime dateOfBirth)
+    {
+        var today = DateTime.Today;
+        var age = today.Year - dateOfBirth.Year;
+        if (dateOfBirth > today.AddYears(-age)) age--;
+        return age;
     }
 
     public async Task<ChartDto> DeleteChart(int id)
     {
-        var exists = await CheckIfChatsExists(id);
+        var exists = await CheckIfChartsExists(id);
         if (exists == false)
             throw new CustomException("Chart not found");
 
         if (!_identity.IsSupport && id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
+
         return (await _db.Chart.Delete(id)).ToDto();
     }
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
     {
-        var exists = await CheckIfChatsExists(chartDto.EmployeeId);
+        var exists = await CheckIfChartsExists(chartDto.EmployeeId);
         if (!exists) throw new CustomException("No chart data record found");
         if (!_identity.IsSupport && chartDto.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
@@ -284,8 +306,13 @@ public partial class ChartService : IChartService
     {
         if (!_identity.IsSupport)
             throw new CustomException("Unauthorized access.");
+
         var employees = await _db.Employee.GetAll();
-        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
+
+        if (dataTypes == null || !dataTypes.Any())
+            throw new CustomException("Data types list is empty or null.");
+
+        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
         var propertyNames = new List<string>();
 
         if (dataTypeList.Contains("Age"))
@@ -298,7 +325,7 @@ public partial class ChartService : IChartService
 
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
 
-            if (propertyInfo == null)
+            if (propertyInfo == null && _dataTypeProvider.GetDataTypes().All(x => x.Name != typeName))
             {
                 throw new CustomException($"Invalid property name: {typeName}");
             }
@@ -309,36 +336,49 @@ public partial class ChartService : IChartService
         var csvData = new StringBuilder();
         csvData.Append("First Name,Last Name");
 
-        foreach (var propertyName in propertyNames) csvData.Append("," + propertyName);
+        foreach (var propertyName in propertyNames)
+            csvData.Append("," + propertyName);
         csvData.AppendLine();
 
         foreach (var employee in employees)
         {
-            var formattedData = $"{employee.Name},{employee.Surname}";
-            foreach (var dataType in propertyNames)
-                if (BaseDataType.HasCustom(dataType))
-                {
-                    var obj = BaseDataType.GetCustom(dataType);
-                    var val = obj.GenerateData(employee.ToDto(), _services);
+            var employeeDto = employee.ToDto();
 
-                    if (val != null)
-                        formattedData += $",{val.Replace(",", "").Trim()}";
+            var formattedData = $"{employee.Name ?? ""},{employee.Surname ?? ""}";
+
+            foreach (var dataType in propertyNames)
+            {
+                if (_dataTypeProvider.GetDataTypes().Any(x => x.Name == dataType))
+                {
+                    var obj = _dataTypeProvider.GetDataTypes().First(x => x.Name == dataType);
+                    var val = obj.GenerateData(employeeDto, _services);
+
+                    formattedData += $",{val?.Replace(",", "").Trim() ?? ""}";
                 }
                 else
                 {
                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
                     if (propertyInfo != null)
                     {
-                        var val = propertyInfo.GetValue(employee);
+                        var val = propertyInfo.GetValue(employeeDto);
 
-                        if (val != null)
-                            formattedData += $",{val.ToString()!.Replace(",", "").Trim()}";
+                        var valueString = val switch
+                        {
+                            DateTime dateTime => dateTime.ToString("yyyy-MM-dd"),
+                            bool boolValue => boolValue ? "True" : "False",
+                            _ => val?.ToString() ?? ""
+                        };
+
+                        formattedData += $",{valueString.Replace(",", "").Trim()}";
+                    }
+                    else
+                    {
+                        formattedData += ",";
                     }
                 }
-
+            }
             csvData.AppendLine(formattedData);
         }
-
         var csvContent = Encoding.UTF8.GetBytes(csvData.ToString());
         return csvContent;
     }
