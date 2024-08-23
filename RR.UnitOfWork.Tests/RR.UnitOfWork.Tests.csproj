@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.68.0.3427" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Include="MimeKit" Version="4.7.1" />
     <PackageReference Include="Moq" Version="4.20.69" />
