@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 using HRIS.Models;
@@ -211,7 +212,6 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
         _unitOfWork.Setup(uow => uow.Chart.Update(It.IsAny<Chart>())).ReturnsAsync(new Chart());
 
-
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
 
@@ -314,7 +314,6 @@ public class ChartServiceUnitTests
         {
             employeeOne
         };
-
 
         var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
         var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, unauthorizedIdentity, _dataTypeProvider.Object);
@@ -464,14 +463,14 @@ public class ChartServiceUnitTests
         var dataTypes = new List<string>();
         var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
         var employees = new List<Employee>
-    {
-        new Employee
         {
-            Name = "John",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(1994, 1, 1),
-        }
-    };
+           new Employee
+           {
+              Name = "John",
+              Surname = "Doe",
+              DateOfBirth = new DateTime(1994, 1, 1),
+           }
+        };
 
         _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .ReturnsAsync(employees);
@@ -518,14 +517,14 @@ public class ChartServiceUnitTests
         var dataTypes = new List<string> { "Age" };
         var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
         var employees = new List<Employee>
-    {
-        new Employee
         {
-            Name = "John",
-            Surname = "Doe",
-            DateOfBirth = new DateTime(1994, 1, 1)
-        }
-    };
+           new Employee
+           {
+              Name = "John",
+              Surname = "Doe",
+              DateOfBirth = new DateTime(1994, 1, 1)
+           }
+        };
 
         var mockAgeType = new Mock<BaseDataType>();
         mockAgeType.Setup(x => x.Name).Returns("Age");
@@ -563,13 +562,13 @@ public class ChartServiceUnitTests
         var dataTypes = new List<string> { "CustomDataType" };
         var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
         var employees = new List<Employee>
-    {
-        new Employee
         {
-            Name = "Jane",
-            Surname = "Smith"
-        }
-    };
+           new Employee
+           {
+              Name = "Jane",
+              Surname = "Smith"
+           }
+        };
 
         var mockBaseDataType = new Mock<BaseDataType>();
         mockBaseDataType.Setup(x => x.Name).Returns("CustomDataType");
@@ -607,13 +606,13 @@ public class ChartServiceUnitTests
         var dataTypes = new List<string> { "Name", "Surname" };
         var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
         var employees = new List<Employee>
-    {
-        new Employee
         {
-            Name = "Alice",
-            Surname = "Johnson"
-        }
-    };
+           new Employee
+           {
+              Name = "Alice",
+              Surname = "Johnson"
+           }
+        };
 
         var mockDataTypeProvider = new Mock<IDataTypeProvider>();
         mockDataTypeProvider.Setup(x => x.GetDataTypes())
