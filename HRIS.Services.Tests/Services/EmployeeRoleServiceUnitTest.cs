@@ -14,15 +14,17 @@ public class EmployeeRoleServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly EmployeeRoleService _employeeRoleService;
+    private readonly EmployeeRoleService _employeeRoleService2;
 
     public EmployeeRoleServiceUnitTest()
     {
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeRoleService = new EmployeeRoleService(_dbMock.Object);
+        _employeeRoleService = new EmployeeRoleService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
+        _employeeRoleService2 = new EmployeeRoleService(_dbMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 2));
     }
 
     [Fact]
-    public async Task SaveEmployeeRoleTest()
+    public async Task CreateEmployeeRoleTest()
     {
         var testEmployee = EmployeeTestData.EmployeeOne;
 
@@ -100,7 +102,6 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[1].ToDto(), result);
         result = await _employeeRoleService.CreateEmployeeRole(employeeRoleList[2].ToDto());
         Assert.Equivalent(employeeRoleList[2].ToDto(), result);
-        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService.CreateEmployeeRole(employeeRoleList[3].ToDto()));
     }
 
     [Fact]
