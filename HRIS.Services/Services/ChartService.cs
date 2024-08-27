@@ -27,7 +27,7 @@ public partial class ChartService : IChartService
         _dataTypeProvider = dataTypeProvider;
     }
 
-    public async Task<bool> CheckIfChatsExists(int Id)
+    public async Task<bool> CheckIfChartsExists(int Id)
     {
         return await _db.Employee.Any(employee => employee.Id == Id);
     }
@@ -47,9 +47,9 @@ public partial class ChartService : IChartService
 
     public async Task<List<ChartDto>> GetEmployeeChartsById(int employeeId)
     {
-        var exists = await CheckIfChatsExists(employeeId);
+        var exists = await CheckIfChartsExists(employeeId);
         if (exists == false)
-            throw new CustomException("Chat not found");
+            throw new CustomException("Chart not found");
 
         if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
@@ -71,9 +71,9 @@ public partial class ChartService : IChartService
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName,
                                             string chartType, int employeeId)
     {
-        var exists = await CheckIfChatsExists(employeeId);
+        var exists = await CheckIfChartsExists(employeeId);
         if (exists == false)
-            throw new CustomException("Chat not found");
+            throw new CustomException("Chart not found");
 
         if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
@@ -232,7 +232,7 @@ public partial class ChartService : IChartService
 
     public async Task<ChartDto> DeleteChart(int id)
     {
-        var exists = await CheckIfChatsExists(id);
+        var exists = await CheckIfChartsExists(id);
         if (exists == false)
             throw new CustomException("Chart not found");
 
@@ -244,7 +244,7 @@ public partial class ChartService : IChartService
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
     {
-        var exists = await CheckIfChatsExists(chartDto.EmployeeId);
+        var exists = await CheckIfChartsExists(chartDto.EmployeeId);
         if (!exists) throw new CustomException("No chart data record found");
         if (!_identity.IsSupport && chartDto.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");

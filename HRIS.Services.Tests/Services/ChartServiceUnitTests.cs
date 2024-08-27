@@ -39,23 +39,23 @@ public class ChartServiceUnitTests
     }
 
     [Fact]
-    public async Task CheckIfChatsExists_ShouldReturnFalse_WhenChartsDoesNotExist()
+    public async Task CheckIfChartsExists_ShouldReturnFalse_WhenChartsDoesNotExist()
     {
         var employeeId = 1;
         _unitOfWork.Setup(ex => ex.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(false);
 
-        var result = await _chartService.CheckIfChatsExists(employeeId);
+        var result = await _chartService.CheckIfChartsExists(employeeId);
 
         Assert.False(result);
     }
 
     [Fact]
-    public async Task CheckIfChatsExists_ShouldReturnTrue_WhenEmployeeExists()
+    public async Task CheckIfChartsExists_ShouldReturnTrue_WhenEmployeeExists()
     {
         var employeeId = 2;
         _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
 
-        var result = await _chartService.CheckIfChatsExists(employeeId);
+        var result = await _chartService.CheckIfChartsExists(employeeId);
 
         Assert.True(result);
     }
@@ -125,7 +125,7 @@ public class ChartServiceUnitTests
             await _chartService.GetEmployeeChartsById(employeeId)
         );
 
-        Assert.Equal("Chat not found", exception.Message);
+        Assert.Equal("Chart not found", exception.Message);
     }
 
     [Fact]
@@ -361,7 +361,7 @@ public class ChartServiceUnitTests
             await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId)
         );
 
-        Assert.Equal("Chat not found", exception.Message);
+        Assert.Equal("Chart not found", exception.Message);
     }
 
     [Fact]
