@@ -1,5 +1,7 @@
-﻿using HRIS.Models;
+﻿using Auth0.ManagementApi.Models;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -9,23 +11,26 @@ namespace HRIS.Services.Services;
 public class EmployeeRoleService : IEmployeeRoleService
 {
     private readonly IUnitOfWork _db;
+    private readonly AuthorizeIdentity _identity;
 
-    public EmployeeRoleService(IUnitOfWork db)
+    public EmployeeRoleService(IUnitOfWork db, AuthorizeIdentity identity)
     {
         _db = db;
+        _identity = identity;
     }
 
-    public async Task<EmployeeRoleDto> SaveEmployeeRole(EmployeeRoleDto employeeRoleDto)
+    public async Task<EmployeeRoleDto> CreateEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
-        if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
-            throw new CustomException("Employee or Role not found");
-
-        var isEmployeeRoleExist = await _db.EmployeeRole
-                                           .Any(employeeRole =>
-                                                    employeeRole.Employee!.Email == employeeRoleDto.Employee.Email);
+        var isEmployeeRoleExist = await CheckEmployeeRole(employeeRoleDto.Employee!.Email!, employeeRoleDto.Role!.Description!);
 
         if (isEmployeeRoleExist)
             throw new CustomException("Employee Role already exist");
+
+        if (_identity.IsSupport == false && _identity.EmployeeId != employeeRoleDto.Employee.Id)
+            throw new CustomException("Unauthorized Access.");
+
+        if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
+            throw new CustomException("Employee or Role not found");
 
         var newEmployeeRole = await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
 
@@ -42,6 +47,9 @@ public class EmployeeRoleService : IEmployeeRoleService
         if (!isEmployeeRoleExist)
             throw new CustomException("Employee Role not found");
 
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var employeeRoles = await GetEmployeeRoles(email);
 
         var toDelete = employeeRoles
@@ -57,11 +65,17 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<List<EmployeeRoleDto>> GetAllEmployeeRoles()
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         return (await _db.EmployeeRole.GetAll()).Select(x => x.ToDto()).ToList();
     }
 
     public async Task<List<EmployeeRoleDto>> GetEmployeeRoles(string email)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var existingRmployeeRole = await _db.EmployeeRole
                                             .Get(employeeRole => employeeRole.Employee!.Email == email)
                                             .AsNoTracking()
@@ -76,11 +90,13 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<EmployeeRoleDto> UpdateEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
-        var exists = await _db.EmployeeRole
-                              .Any(employeeRole => employeeRole.Employee!.Email == employeeRoleDto.Employee!.Email);
+        var exists = await CheckEmployeeRole(employeeRoleDto.Employee!.Email!, employeeRoleDto.Role!.Description!);
 
         if (!exists)
             throw new CustomException("Employee Role not found");
+
+        if (_identity.IsSupport == false && _identity.EmployeeId != employeeRoleDto.Employee.Id)
+            throw new CustomException("Unauthorized Access.");
 
         var updatedEmployeeRole = await _db.EmployeeRole
                                            .Update(new EmployeeRole(employeeRoleDto));
@@ -90,6 +106,9 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<EmployeeRoleDto> GetEmployeeRole(string email)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var existingEmployeeRole = await _db.EmployeeRole
                                             .Get(employeeRole =>
                                                      employeeRole.Employee!.Email == email)
@@ -105,6 +124,9 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<bool> CheckEmployeeRole(string email, string role)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         return await _db.EmployeeRole
                         .Any(employeeRole =>
                                  employeeRole.Employee!.Email == email && employeeRole.Role!.Description == role);
@@ -112,6 +134,9 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<List<EmployeeRoleDto>> GetAllEmployeeOnRoles(int roleId)
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var existingRmployeeRole = await _db.EmployeeRole
                                             .Get(employeeRole => employeeRole.Role!.Id == roleId)
                                             .AsNoTracking()

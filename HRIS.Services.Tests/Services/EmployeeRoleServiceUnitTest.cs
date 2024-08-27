@@ -88,19 +88,19 @@ public class EmployeeRoleServiceUnitTest
                .ReturnsAsync(employeeRoleList[3]);
 
 
-        await Assert.ThrowsAsync<CustomException>(async () => await _employeeRoleService.SaveEmployeeRole(new EmployeeRoleDto
+        await Assert.ThrowsAsync<CustomException>(async () => await _employeeRoleService.CreateEmployeeRole(new EmployeeRoleDto
         {
             Id = employeeRoleList[0].Id,
             Employee = employeeRoleList[0].Employee!.ToDto(),
             Role = employeeRoleList[0].Role!.ToDto()
         }));
-        var result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[0].ToDto());
+        var result = await _employeeRoleService.CreateEmployeeRole(employeeRoleList[0].ToDto());
         Assert.Equivalent(employeeRoleList[0].ToDto(), result);
-        result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[1].ToDto());
+        result = await _employeeRoleService.CreateEmployeeRole(employeeRoleList[1].ToDto());
         Assert.Equivalent(employeeRoleList[1].ToDto(), result);
-        result = await _employeeRoleService.SaveEmployeeRole(employeeRoleList[2].ToDto());
+        result = await _employeeRoleService.CreateEmployeeRole(employeeRoleList[2].ToDto());
         Assert.Equivalent(employeeRoleList[2].ToDto(), result);
-        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService.SaveEmployeeRole(employeeRoleList[3].ToDto()));
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService.CreateEmployeeRole(employeeRoleList[3].ToDto()));
     }
 
     [Fact]
