@@ -398,8 +398,14 @@ public class ChartServiceUnitTests
         _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
                    .ReturnsAsync(true);
 
+        var employees = new List<Employee>();
+        employees.Add(EmployeeTestData.EmployeeOne);
+        employees.Add(EmployeeTestData.EmployeeTwo);
+        employees.Add(EmployeeTestData.EmployeeThree);
+        employees.Add(EmployeeTestData.EmployeeFour);
+        var mockEmployeesQueryable = employees.AsQueryable().BuildMock();
         _unitOfWork.Setup(x => x.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .Returns(new List<Employee>().AsQueryable().BuildMock());
+                   .Returns(mockEmployeesQueryable);
 
         _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
                    .Returns(Task.FromResult(new Chart { Name = chartName, EmployeeId = employeeId, Subtype = chartType, Type = "bar" }));
@@ -430,6 +436,33 @@ public class ChartServiceUnitTests
 
         _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
                    .ReturnsAsync(new Chart { Name = chartName, EmployeeId = employeeId, Subtype = chartType});
+
+        var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
+
+        Assert.NotNull(result);
+        Assert.Equal(chartName, result.Name);
+        Assert.Equal("standard", result.Subtype);
+    }
+
+    [Fact]
+    public async Task CreateChart_ShouldCreateStandardChart_WhenChartTypeIsStandardAndAllRoles()
+    {
+        var employeeId = _identity.EmployeeId;
+        var dataTypes = new List<string> { "DataTypeOne" };
+        var roles = new List<string> { "All" };
+        var chartName = "TestChart";
+        var chartType = "standard";
+
+        _unitOfWork.Setup(x => x.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+                   .ReturnsAsync(true);
+
+        var employees = new List<EmployeeDto>();
+        employees.Add(EmployeeTestData.EmployeeOne.ToDto());
+
+        _employeeService.Setup(x => x.GetAll(It.IsAny<string>())).ReturnsAsync(employees);
+
+        _unitOfWork.Setup(x => x.Chart.Add(It.IsAny<Chart>()))
+                   .ReturnsAsync(new Chart { Name = chartName, EmployeeId = employeeId, Subtype = chartType });
 
         var result = await _chartService.CreateChart(dataTypes, roles, chartName, chartType, employeeId);
 
@@ -603,7 +636,7 @@ public class ChartServiceUnitTests
     [Fact]
     public async Task ExportCsvAsync_ShouldHandleNonCustomPropertiesCorrectly()
     {
-        var dataTypes = new List<string> { "Name", "Surname" };
+        var dataTypes = new List<string> { "Name", "Surname", "Age" };
         var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
         var employees = new List<Employee>
         {
@@ -626,8 +659,8 @@ public class ChartServiceUnitTests
         var csvResult = await chartService.ExportCsvAsync(dataTypes);
 
         var expectedCsv = new StringBuilder();
-        expectedCsv.AppendLine("First Name,Last Name,Name,Surname");
-        expectedCsv.AppendLine("Alice,Johnson,Alice,Johnson");
+        expectedCsv.AppendLine("First Name,Last Name,Age,Name,Surname");
+        expectedCsv.AppendLine("Alice,Johnson,,Alice,Johnson");
 
         Assert.NotNull(csvResult);
         var expectedResult = expectedCsv.ToString();
