@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using Auth0.ManagementApi.Models;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
@@ -13,16 +15,25 @@ public partial class ChartService : IChartService
     private readonly IUnitOfWork _db;
     private readonly IEmployeeService _employeeService;
     private readonly IServiceProvider _services;
+    private readonly AuthorizeIdentity _identity;
+    private readonly IDataTypeProvider _dataTypeProvider;
 
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services)
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity, IDataTypeProvider dataTypeProvider)
     {
         _db = db;
         _employeeService = employeeService;
         _services = services;
+        _identity = identity;
+        _dataTypeProvider = dataTypeProvider;
+    }
+
+    public async Task<bool> CheckIfChartsExists(int Id)
+    {
+        return await _db.Employee.Any(employee => employee.Id == Id);
     }
 
     public async Task<List<ChartDto>> GetAllCharts()
-    {
+    {   
         var charts = await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
         for (int i = 0; i < charts.Count; i++)
         {
@@ -34,8 +45,15 @@ public partial class ChartService : IChartService
         return charts;
     }
 
-    public async Task<List<ChartDto>> GetEmployeeCharts(int employeeId)
+    public async Task<List<ChartDto>> GetEmployeeChartsById(int employeeId)
     {
+        var exists = await CheckIfChartsExists(employeeId);
+        if (exists == false)
+            throw new CustomException("Chart not found");
+
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+
         var charts = await _db.Chart.Get()
             .Where(chart => chart.EmployeeId == employeeId)
             .Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
@@ -53,6 +71,13 @@ public partial class ChartService : IChartService
     public async Task<ChartDto> CreateChart(List<string> dataTypes, List<string> roles, string chartName,
                                             string chartType, int employeeId)
     {
+        var exists = await CheckIfChartsExists(employeeId);
+        if (exists == false)
+            throw new CustomException("Chart not found");
+
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+
         List<EmployeeDto> employees;
 
         var roleList = roles.SelectMany(item => item.Split(',')).ToList();
@@ -168,6 +193,8 @@ public partial class ChartService : IChartService
 
     public async Task<ChartDataDto> GetChartData(List<string> dataTypes)
     {
+        if (!_identity.IsSupport)
+            throw new CustomException("Unauthorized access.");
         var employees = await _employeeService.GetAll();
         var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
         var dataDictionary = employees
@@ -203,34 +230,31 @@ public partial class ChartService : IChartService
         return chartDataDto;
     }
 
-    public async Task<ChartDto> DeleteChart(int chartId)
+    public async Task<ChartDto> DeleteChart(int id)
     {
-        return (await _db.Chart.Delete(chartId)).ToDto();
+        var exists = await CheckIfChartsExists(id);
+        if (exists == false)
+            throw new CustomException("Chart not found");
+
+        if (!_identity.IsSupport && id != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+            
+        return (await _db.Chart.Delete(id)).ToDto();
     }
 
     public async Task<ChartDto> UpdateChart(ChartDto chartDto)
     {
-        for (int i = 0; i < chartDto.DataTypes!.Count; i++)
-        {
-            chartDto.DataTypes![i] = AllSpaces().Replace(chartDto.DataTypes![i], "");
-        }
-
-        var charts = await _db.Chart.GetAll();
-        var chartData = charts
-                        .Where(chartData => chartData.Id == chartDto.Id)
-                        .Select(chartData => chartData)
-                        .FirstOrDefault();
-        if (chartData == null)
-        {
-            throw new CustomException("No chart data record found");
-        }
-        var updatedChart = await _db.Chart.Update(new Chart(chartDto));
-
-        return updatedChart.ToDto();
+        var exists = await CheckIfChartsExists(chartDto.EmployeeId);
+        if (!exists) throw new CustomException("No chart data record found");
+        if (!_identity.IsSupport && chartDto.Id != _identity.EmployeeId)
+            throw new CustomException("Unauthorized access.");
+        return (await _db.Chart.Update(new Chart(chartDto))).ToDto(); 
     }
 
     public string[] GetColumnsFromTable()
     {
+        if (!_identity.IsSupport)
+            throw new CustomException("Unauthorized access.");
         var entityType = typeof(Employee);
         var quantifiableColumnNames = entityType.GetProperties()
                                                 .Where(p => IsQuantifiableType(p.PropertyType) &&
@@ -261,8 +285,15 @@ public partial class ChartService : IChartService
 
     public async Task<byte[]?> ExportCsvAsync(List<string> dataTypes)
     {
+        if (!_identity.IsSupport)
+            throw new CustomException("Unauthorized access.");
+
         var employees = await _db.Employee.GetAll();
-        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).ToList();
+
+        if (dataTypes == null || !dataTypes.Any())
+            throw new CustomException("Data types list is empty or null.");
+
+        var dataTypeList = dataTypes.SelectMany(item => item.Split(',')).Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
         var propertyNames = new List<string>();
 
         if (dataTypeList.Contains("Age"))
@@ -275,7 +306,7 @@ public partial class ChartService : IChartService
 
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
 
-            if (propertyInfo == null)
+            if (propertyInfo == null && _dataTypeProvider.GetDataTypes().All(x => x.Name != typeName))
             {
                 throw new CustomException($"Invalid property name: {typeName}");
             }
@@ -286,36 +317,49 @@ public partial class ChartService : IChartService
         var csvData = new StringBuilder();
         csvData.Append("First Name,Last Name");
 
-        foreach (var propertyName in propertyNames) csvData.Append("," + propertyName);
+        foreach (var propertyName in propertyNames)
+            csvData.Append("," + propertyName);
         csvData.AppendLine();
 
         foreach (var employee in employees)
         {
-            var formattedData = $"{employee.Name},{employee.Surname}";
-            foreach (var dataType in propertyNames)
-                if (BaseDataType.HasCustom(dataType))
-                {
-                    var obj = BaseDataType.GetCustom(dataType);
-                    var val = obj.GenerateData(employee.ToDto(), _services);
+            var employeeDto = employee.ToDto();
 
-                    if (val != null)
-                        formattedData += $",{val.Replace(",", "").Trim()}";
+            var formattedData = $"{employee.Name ?? ""},{employee.Surname ?? ""}";
+
+            foreach (var dataType in propertyNames)
+            {
+                if (_dataTypeProvider.GetDataTypes().Any(x => x.Name == dataType))
+                {
+                    var obj = _dataTypeProvider.GetDataTypes().First(x => x.Name == dataType);
+                    var val = obj.GenerateData(employeeDto, _services);
+
+                    formattedData += $",{val?.Replace(",", "").Trim() ?? ""}";
                 }
                 else
                 {
                     var propertyInfo = typeof(EmployeeDto).GetProperty(dataType);
                     if (propertyInfo != null)
                     {
-                        var val = propertyInfo.GetValue(employee);
+                        var val = propertyInfo.GetValue(employeeDto);
 
-                        if (val != null)
-                            formattedData += $",{val.ToString()!.Replace(",", "").Trim()}";
+                        var valueString = val switch
+                        {
+                            DateTime dateTime => dateTime.ToString("yyyy-MM-dd"),
+                            bool boolValue => boolValue ? "True" : "False",
+                            _ => val?.ToString() ?? ""
+                        };
+
+                        formattedData += $",{valueString.Replace(",", "").Trim()}";
+                    }
+                    else
+                    {
+                        formattedData += ",";
                     }
                 }
-
+            }
             csvData.AppendLine(formattedData);
         }
-
         var csvContent = Encoding.UTF8.GetBytes(csvData.ToString());
         return csvContent;
     }

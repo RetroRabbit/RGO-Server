@@ -26,7 +26,7 @@ public class PropertyAccessService : IPropertyAccessService
         if (!exists)
             throw new CustomException("Employee Not Found");
 
-        if (_identity.IsSupport == false)
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
             throw new CustomException("Unauthorized Access.");
 
         var employeeRole = _db.EmployeeRole.Get(e => e.Id == employeeId).Select(e => e.Role).FirstOrDefault();
@@ -40,9 +40,6 @@ public class PropertyAccessService : IPropertyAccessService
 
         if (!exists)
             throw new CustomException("Role Not Found");
-
-        if (_identity.IsSupport == false)
-            throw new CustomException("Unauthorized Access.");
 
         return (await _db.PropertyAccess.GetAll(p => p.RoleId == roleId)).Select(x => x.ToDto()).ToList();
     }
