@@ -75,7 +75,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
             });
 
-            _employeeServiceMock.Setup(x => x.UpdateEmployee(It.IsAny<EmployeeDto>()))
+            _employeeServiceMock.Setup(x => x.UpdateEmployee(It.IsAny<EmployeeProfileDto>()))
                                 .ReturnsAsync((EmployeeDto employee) =>
                                 {
                                     employee.AuthUserId = "updatedAuthId";
@@ -151,7 +151,7 @@ namespace RR.App.Tests.Controllers.HRIS
             var result = await _controller.CheckUserExistence();
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("User not found", notFoundResult.Value);
+            Assert.Equal("User not found.", notFoundResult.Value);
             _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
         }
 

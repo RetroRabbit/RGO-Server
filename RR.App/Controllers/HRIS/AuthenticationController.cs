@@ -76,7 +76,7 @@ public class AuthenticationController : ControllerBase
             var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
             if (string.IsNullOrEmpty(role))
             {
-                var employee = await _employeeService.GetEmployeeByEmail(authEmail);
+                var employee = await _employeeService.GetEmployeeProfile(authEmail);
                 if (employee == null)
                 {
                     var exception = new Exception("User account not found in database.");
@@ -106,7 +106,7 @@ public class AuthenticationController : ControllerBase
                 {
                     var exception = new Exception($"Auth0 does not have this {databaseEmployeeRole.First().Key} Role.");
                     _errorLoggingService.LogException(exception);
-                    return NotFound("User not found");
+                    return NotFound("User not found.");
                 }
 
                 await _authService.AddRoleToUserAsync(authId, allRoles.First(r => r.Name == databaseEmployeeRole.First().Key).Id);
