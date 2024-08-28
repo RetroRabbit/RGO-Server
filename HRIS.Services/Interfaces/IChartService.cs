@@ -14,7 +14,7 @@ public interface IChartService
     ///     Get all the charts for an employee
     /// </summary>
     /// <returns>List<ChartDto></returns>
-    Task<List<ChartDto>> GetEmployeeCharts(int employeeId);
+    Task<List<ChartDto>> GetEmployeeChartsById(int employeeId);
 
     /// <summary>
     ///     Create a chart
