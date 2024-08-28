@@ -21,6 +21,9 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<EmployeeRoleDto> CreateEmployeeRole(EmployeeRoleDto employeeRoleDto)
     {
+        if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
+            throw new CustomException("Employee or Role not found");
+
         var isEmployeeRoleExist = await CheckEmployeeRole(employeeRoleDto.Employee!.Email!, employeeRoleDto.Role!.Description!);
 
         if (isEmployeeRoleExist)
@@ -29,13 +32,7 @@ public class EmployeeRoleService : IEmployeeRoleService
         if (_identity.IsSupport == false && _identity.EmployeeId != employeeRoleDto.Employee.Id)
             throw new CustomException("Unauthorized Access.");
 
-        if (employeeRoleDto.Employee is null || employeeRoleDto.Role is null)
-            throw new CustomException("Employee or Role not found");
-
         var newEmployeeRole = await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
-
-        if (newEmployeeRole.Employee == null || newEmployeeRole.Role == null)
-            newEmployeeRole = await _db.EmployeeRole.GetById(newEmployeeRole.Id);
 
         return newEmployeeRole!.ToDto();
     }
@@ -124,9 +121,6 @@ public class EmployeeRoleService : IEmployeeRoleService
 
     public async Task<bool> CheckEmployeeRole(string email, string role)
     {
-        if (_identity.IsSupport == false)
-            throw new CustomException("Unauthorized Access.");
-
         return await _db.EmployeeRole
                         .Any(employeeRole =>
                                  employeeRole.Employee!.Email == email && employeeRole.Role!.Description == role);

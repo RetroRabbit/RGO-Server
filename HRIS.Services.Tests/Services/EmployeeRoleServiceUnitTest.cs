@@ -24,7 +24,7 @@ public class EmployeeRoleServiceUnitTest
     }
 
     [Fact]
-    public async Task CreateEmployeeRoleTest()
+    public async Task CreateEmployeeRoleTestPass()
     {
         var testEmployee = EmployeeTestData.EmployeeOne;
 
@@ -105,6 +105,107 @@ public class EmployeeRoleServiceUnitTest
     }
 
     [Fact]
+    public async Task CreateEmployeeRoleTestUnauthorised()
+    {
+        var testEmployee = EmployeeTestData.EmployeeOne;
+
+        var roleList = new List<RoleDto>
+        {
+            new() { Id = 1, Description = "Admin" },
+            new() { Id = 2, Description = "Manager" },
+            new() { Id = 3, Description = "Employee" },
+            new() { Id = 4, Description = "Intern" }
+        };
+
+        var employeeRoleList = new List<EmployeeRole>
+        {
+            new()
+            {
+                Id = 1,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[0].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[0])
+            },
+            new()
+            {
+                Id = 2,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[1].Id,
+                Employee = testEmployee
+            },
+            new()
+            {
+                Id = 3,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[2].Id,
+                Role = new Role(roleList[2])
+            },
+            new()
+            {
+                Id = 4,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[3].Id
+            }
+        };
+
+        _dbMock.SetupSequence(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .ReturnsAsync(false);
+
+        _dbMock.Setup(e => e.EmployeeRole.Add(It.IsAny<EmployeeRole>()))
+               .ReturnsAsync(employeeRoleList[0]);
+
+        _dbMock.Setup(e => e.EmployeeRole.GetById(It.IsAny<int>()))
+               .ReturnsAsync(employeeRoleList[1]);
+
+
+        await Assert.ThrowsAsync<CustomException>(async () => await _employeeRoleService2.CreateEmployeeRole(employeeRoleList[0].ToDto()));
+    }
+
+    [Fact]
+    public async Task CreateEmployeeRoleTestFail()
+    {
+        var testEmployee = EmployeeTestData.EmployeeOne;
+
+        var roleList = new List<RoleDto>
+        {
+            new() { Id = 1, Description = "Admin" },
+            new() { Id = 2, Description = "Manager" }
+        };
+
+        var employeeRoleList = new List<EmployeeRole>
+        {
+            new()
+            {
+                Id = 1,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[0].Id,
+                Employee = testEmployee
+            },
+            new()
+            {
+                Id = 2,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[1].Id,
+                Role = new Role(roleList[1])
+            }
+        };
+
+        _dbMock.SetupSequence(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .ReturnsAsync(false);
+
+        _dbMock.Setup(e => e.EmployeeRole.Add(It.IsAny<EmployeeRole>()))
+               .ReturnsAsync(employeeRoleList[0]);
+
+        _dbMock.Setup(e => e.EmployeeRole.GetById(It.IsAny<int>()))
+               .ReturnsAsync(employeeRoleList[1]);
+
+
+        await Assert.ThrowsAsync<CustomException>(async () => await _employeeRoleService2.CreateEmployeeRole(employeeRoleList[0].ToDto()));
+        await Assert.ThrowsAsync<CustomException>(async () => await _employeeRoleService2.CreateEmployeeRole(employeeRoleList[1].ToDto()));
+    }
+
+    [Fact]
     public async Task DeleteEmployeeRoleTest()
     {
         const string email = "test@retrorabbit.co.za";
@@ -171,6 +272,51 @@ public class EmployeeRoleServiceUnitTest
 
         Assert.NotNull(result1);
         await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService.DeleteEmployeeRole("", ""));
+    }
+
+    [Fact]
+    public async Task DeleteEmployeeRoleTestUnauthorised()
+    {
+        const string email = "test@retrorabbit.co.za";
+
+        var testEmployee = EmployeeTestData.EmployeeOne;
+
+        var roleList = new List<RoleDto>
+        {
+            new () {Id = 1, Description = "Admin" }
+        };
+
+        var employeeRoleList = new List<EmployeeRole>
+        {
+            new()
+            {
+                Id = 1,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[0].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[0])
+            }
+        };
+
+        Expression<Func<EmployeeRole, bool>>[] criteriaList =
+        {
+            e => e.Employee!.Email == email && e.Role!.Description == roleList[0].Description,
+            e => e.Employee!.Email == "" && e.Role!.Description == ""
+        };
+
+        _dbMock.Setup(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .ReturnsAsync(employeeRoleList.ToMockIQueryable().Any(criteriaList[0]));
+
+        _dbMock.Setup(e => e.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .Returns(employeeRoleList.Where(e => e.Employee!.Email == email).ToMockIQueryable());
+
+        _dbMock.Setup(e => e.EmployeeRole.GetAll(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .ReturnsAsync(employeeRoleList);
+
+        _dbMock.Setup(e => e.EmployeeRole.Delete(It.IsAny<int>()))
+               .ReturnsAsync(employeeRoleList.Where(e => e.Role!.Description == roleList[0].Description).Select(e => e).FirstOrDefault()!);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService2.DeleteEmployeeRole(email, roleList[0].Description!));
     }
 
     [Fact]
@@ -242,12 +388,76 @@ public class EmployeeRoleServiceUnitTest
         Assert.Equivalent(employeeRoleList[1].ToDto(), result2);
         Assert.Equivalent(employeeRoleList[2].ToDto(), result3);
 
-        Assert.ThrowsAsync<Exception>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService.UpdateEmployeeRole(new EmployeeRoleDto
         {
             Id = 4,
             Employee = employeeRoleList[0].Employee!.ToDto(),
             Role = new RoleDto { Id = 2, Description = "Made up Role" }
         }));
+    }
+
+    [Fact]
+    public async Task UpdateEmployeeRoleTestUnauthorised()
+    {
+        const string email = "test@retrorabbit.co.za";
+
+        var testEmployee = EmployeeTestData.EmployeeOne;
+        var roleList = new List<RoleDto>
+        {
+            new() {Id = 1, Description = "Admin" },
+            new() { Id = 2, Description = "Manager" },
+            new() { Id = 3, Description = "Employee" },
+            new() { Id = 4, Description = "Intern" }
+        };
+
+        var employeeRoleList = new List<EmployeeRole>
+        {
+            new()
+            {
+                Id = 1,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[0].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[0])
+            },
+            new()
+            {
+                Id = 2,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[1].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[1])
+            },
+            new()
+            {
+                Id = 3,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[2].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[2])
+            }
+        };
+
+        Expression<Func<EmployeeRole, bool>>[] criteriaList =
+        {
+            e => e.Employee!.Email == email && e.Role!.Description == roleList[0].Description,
+            e => e.Employee!.Email == email && e.Role!.Description == roleList[1].Description,
+            e => e.Employee!.Email == email && e.Role!.Description == roleList[2].Description,
+            e => e.Employee!.Email == email && e.Role!.Description == "Made up Role"
+        };
+
+        _dbMock.SetupSequence(e => e.EmployeeRole.Any(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .ReturnsAsync(employeeRoleList.ToMockIQueryable().Any(criteriaList[0]))
+               .ReturnsAsync(employeeRoleList.ToMockIQueryable().Any(criteriaList[1]))
+               .ReturnsAsync(employeeRoleList.ToMockIQueryable().Any(criteriaList[2]))
+               .ReturnsAsync(employeeRoleList.ToMockIQueryable().Any(criteriaList[3]));
+
+        _dbMock.SetupSequence(e => e.EmployeeRole.Update(It.IsAny<EmployeeRole>()))
+            .ReturnsAsync(employeeRoleList[0])
+            .ReturnsAsync(employeeRoleList[1])
+            .ReturnsAsync(employeeRoleList[2]);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService2.UpdateEmployeeRole(employeeRoleList[0].ToDto()));
     }
 
     [Fact]
@@ -301,6 +511,100 @@ public class EmployeeRoleServiceUnitTest
     }
 
     [Fact]
+    public async Task GetAllEmployeeRolesUnauthorised()
+    {
+        var testEmployee = EmployeeTestData.EmployeeOne;
+
+        var roleList = new List<RoleDto>
+        {
+            new() {Id = 1, Description = "Admin" },
+            new() { Id = 2, Description = "Manager" },
+            new() { Id = 3, Description = "Employee" },
+            new() { Id = 4, Description = "Intern" }
+        };
+
+        var employeeRoleList = new List<EmployeeRole>
+        {
+            new()
+            {
+                Id = 1,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[0].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[0])
+            },
+            new()
+            {
+                Id = 2,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[1].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[1])
+            },
+            new()
+            {
+                Id = 3,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[2].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[2])
+            }
+        };
+
+        _dbMock.Setup(e => e.EmployeeRole.GetAll(null))
+               .ReturnsAsync(employeeRoleList.Select(e => e).ToList());
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService2.GetAllEmployeeRoles());
+    }
+
+    [Fact]
+    public async Task GetEmployeeRoles()
+    {
+        var testEmployee = EmployeeTestData.EmployeeOne;
+
+        var roleList = new List<RoleDto>
+        {
+            new() {Id = 1, Description = "Admin" },
+            new() { Id = 2, Description = "Manager" },
+            new() { Id = 3, Description = "Employee" },
+            new() { Id = 4, Description = "Intern" }
+        };
+
+        var employeeRoleList = new List<EmployeeRole>
+        {
+            new()
+            {
+                Id = 1,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[0].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[0])
+            },
+            new()
+            {
+                Id = 2,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[1].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[1])
+            },
+            new()
+            {
+                Id = 3,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[2].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[2])
+            }
+        };
+
+        _dbMock.Setup(e => e.EmployeeRole.GetAll(null))
+               .ReturnsAsync(employeeRoleList.Select(e => e).ToList());
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService2.GetEmployeeRoles(testEmployee.Email!));
+    }
+
+    [Fact]
     public async Task GetEmployeeRoleTest()
     {
         var testEmployee = EmployeeTestData.EmployeeOne;
@@ -336,6 +640,42 @@ public class EmployeeRoleServiceUnitTest
         var result1 = await _employeeRoleService.GetEmployeeRole(employeeRoleList[0].Employee!.Email!);
 
         Assert.Equivalent(employeeRoleList[0].ToDto(), result1);
+    }
+
+    [Fact]
+    public async Task GetEmployeeRoleTestUnauthorised()
+    {
+        var testEmployee = EmployeeTestData.EmployeeOne;
+
+        var roleList = new List<RoleDto>
+        {
+            new() {Id = 1, Description = "Admin" },
+            new() { Id = 2, Description = "Manager" },
+            new() { Id = 3, Description = "Employee" },
+            new() { Id = 4, Description = "Intern" }
+        };
+
+        var employeeRoleList = new List<EmployeeRole>
+        {
+            new()
+            {
+                Id = 1,
+                EmployeeId = testEmployee.Id,
+                RoleId = roleList[0].Id,
+                Employee = testEmployee,
+                Role = new Role(roleList[0])
+            }
+        };
+
+        Expression<Func<EmployeeRole, bool>>[] criteriaList =
+        {
+            e => e.Employee!.Email == employeeRoleList[0].Employee!.Email
+        };
+
+        _dbMock.SetupSequence(e => e.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .Returns(employeeRoleList.ToMockIQueryable().Where(criteriaList[0]));
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService2.GetEmployeeRole(employeeRoleList[0].Employee!.Email!));
     }
 
     [Fact]
@@ -439,5 +779,38 @@ public class EmployeeRoleServiceUnitTest
         var result1 = await _employeeRoleService.GetAllEmployeeOnRoles(employeeRoleList[0].Role!.Id);
 
         Assert.Equivalent(employeeRoleList[0].ToDto(), result1[0]);
+    }
+
+    [Fact]
+    public async Task GetAllEmployeeOnRolesTestUnauthorised()
+    {
+        var testEmployee = EmployeeTestData.EmployeeOne;
+
+        var roleList = new List<RoleDto>
+        {
+             new() {Id = 1, Description = "Admin" },
+             new() { Id = 2, Description = "Manager" },
+             new() { Id = 3, Description = "Employee" },
+             new() { Id = 4, Description = "Intern" }
+        };
+
+        var employeeRoleList = new EmployeeRole
+        {
+            Id = 1,
+            EmployeeId = testEmployee.Id,
+            RoleId = roleList[0].Id,
+            Employee = testEmployee,
+            Role = new Role(roleList[0])
+        }.EntityToList();
+
+        Expression<Func<EmployeeRole, bool>>[] criteriaList =
+        {
+            e => e.Role!.Id == employeeRoleList[0].Role!.Id
+        };
+
+        _dbMock.SetupSequence(e => e.EmployeeRole.Get(It.IsAny<Expression<Func<EmployeeRole, bool>>>()))
+               .Returns(employeeRoleList.ToMockIQueryable().Where(criteriaList[0]));
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeRoleService2.GetAllEmployeeOnRoles(employeeRoleList[0].Role!.Id));
     }
 }
