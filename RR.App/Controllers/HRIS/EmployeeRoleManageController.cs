@@ -49,7 +49,7 @@ public class EmployeeRoleManageController : ControllerBase
 
         var employeeRole = new EmployeeRoleDto { Id = 0, Employee = employee, Role = currRole };
 
-        var employeeRoleSaved = await _employeeRoleService.SaveEmployeeRole(employeeRole);
+        var employeeRoleSaved = await _employeeRoleService.CreateEmployeeRole(employeeRole);
 
         return CreatedAtAction(nameof(AddRole), employeeRoleSaved);
     }
