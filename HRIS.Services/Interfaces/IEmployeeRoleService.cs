@@ -9,7 +9,7 @@ public interface IEmployeeRoleService
     /// </summary>
     /// <param name="employeeRoleDto"></param>
     /// <returns></returns>
-    Task<EmployeeRoleDto> SaveEmployeeRole(EmployeeRoleDto employeeRoleDto);
+    Task<EmployeeRoleDto> CreateEmployeeRole(EmployeeRoleDto employeeRoleDto);
 
     /// <summary>
     ///     Delete Employee Role
