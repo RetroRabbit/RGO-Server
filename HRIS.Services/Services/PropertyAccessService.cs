@@ -76,7 +76,7 @@ public class PropertyAccessService : IPropertyAccessService
             throw new CustomException("Unauthorized Access.");
 
         var currentAccessProperties = await _db.PropertyAccess.GetAll();
-        var tables = new List<string> { "Employee", "EmployeeData", "EmployeeRole", "EmployeeAddress", "EmployeeBanking" };
+        var tables = new List<string> { "Employee", "EmployeeData", "EmployeeRole", "EmployeeAddress", "EmployeeBanking", "EmployeeQualification", "EmployeeSalaryDetails" };
         var roles = await _db.Role.GetAll();
         var properties = new List<PropertyAccess>();
 
