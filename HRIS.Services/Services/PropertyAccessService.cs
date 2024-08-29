@@ -99,6 +99,10 @@ public class PropertyAccessService : IPropertyAccessService
                             Field = column,
                             AccessLevel = PropertyAccessLevel.write
                         };
+                        if (column == "email")
+                        {
+                            propertyAccess.AccessLevel = PropertyAccessLevel.read;
+                        }
                         properties.Add(new PropertyAccess(propertyAccess));
                     }
                 }
