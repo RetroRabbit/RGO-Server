@@ -29,46 +29,14 @@ public class EmployeeController : ControllerBase
         return CreatedAtAction(nameof(AddEmployee), new { email = employee.Email }, employee);
     }
 
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteEmployee([FromQuery] String email)
-    {
-        var deletedEmployee = await _employeeService.DeleteEmployee(email);
-        return Ok(deletedEmployee);
-    }
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet]
-    public async Task<IActionResult> GetEmployeeById([FromQuery] int id)
-    {
-        var employee = await _employeeService.GetEmployeeById(id);
-        return Ok(employee);
-    }
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("by-email")]
-    public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string? email)
-    {
-        var employee = await _employeeService.GetEmployeeByEmail(email ?? _identity.Email);
-        return Ok(employee);
-    }
-
     [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
-    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee)
+    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeProfileDto employee)
     {
         if (!_identity.IsSupport && employee.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized action.");
         var updatedEmployee = await _employeeService.UpdateEmployee(employee);
         return CreatedAtAction(nameof(UpdateEmployee), new { email = updatedEmployee.Email }, updatedEmployee);
-    }
-
-    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
-    [HttpGet("all")]
-    public async Task<IActionResult> GetAllEmployees()
-    {
-        var employees = await _employeeService.GetAll(_identity.Email);
-        return Ok(employees);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
@@ -89,13 +57,19 @@ public class EmployeeController : ControllerBase
     }
    
     [Authorize(Policy = "AllRolesPolicy")]
-    [HttpGet("simple-profile")]
-    public async Task<IActionResult> GetSimpleEmployee([FromQuery] string employeeEmail)
+    [HttpGet]
+    public async Task<IActionResult> GetEmployeeProfile([FromQuery] string identifier)
     {
-        if (!_identity.IsSupport && employeeEmail != _identity.Email)
-            throw new CustomException("User data being accessed does not match user making the request.");
-        var simpleProfile = await _employeeService.GetSimpleProfile(employeeEmail);
+        var simpleProfile = await _employeeService.GetEmployeeProfile(identifier);
         return Ok(simpleProfile);
+    }
+
+    [Authorize(Policy = "AllRolesPolicy")]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllEmployeeProfiles()
+    {
+        var employees = await _employeeService.GetAllEmployeeProfiles();
+        return Ok(employees);
     }
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]

@@ -12,7 +12,7 @@ public class EmployeeMap : Profile
         CreateMap<EmployeeDto, Employee>();
         CreateMap<EmployeeSalaryDetailsDto, Employee>();
 
-        CreateMap<EmployeeDto, SimpleEmployeeProfileDto>()
+        CreateMap<EmployeeDto, EmployeeProfileDto>()
             .ForMember(dest => dest.ClientAllocatedId, opt => opt.MapFrom(src => src.ClientAllocated))
             .ForMember(dest => dest.TeamLeadId, opt => opt.MapFrom(src => src.TeamLead))
             .ForMember(dest => dest.PeopleChampionId, opt => opt.MapFrom(src => src.PeopleChampion));

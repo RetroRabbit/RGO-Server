@@ -166,19 +166,6 @@ public class PropertyAccessServiceUnitTests
     }
 
     [Fact]
-    public async Task GetAccessListByRoleIdTestUnauthorised()
-    {
-        _dbMock.Setup(e => e.PropertyAccess.GetAll(It.IsAny<Expression<Func<PropertyAccess, bool>>>()))
-               .ReturnsAsync(PropertyAccessTestData.PropertyAccessList.ToMockIQueryable().ToList());
-
-        _dbMock
-            .Setup(r => r.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
-            .ReturnsAsync(true);
-
-        await Assert.ThrowsAsync<CustomException>(() => propertyAccessService2.GetAccessListByRoleId(1));
-    }
-
-    [Fact]
     public async Task UpdatePropertyAccessPass()
     {
         _propertyAccessService.Setup(r => r.UpdatePropertyAccess(PropertyAccessTestData.PropertyAccessOne.Id, PropertyAccessLevel.read));

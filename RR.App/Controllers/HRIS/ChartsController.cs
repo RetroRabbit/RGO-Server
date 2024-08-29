@@ -26,9 +26,9 @@ public partial class ChartsController : ControllerBase
 
     [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet("employee")]
-    public async Task<IActionResult> GetEmployeeCharts([FromQuery] int employeeId)
+    public async Task<IActionResult> GetEmployeeChartsById([FromQuery] int employeeId)
     {
-        var charts = await _chartService.GetEmployeeCharts(employeeId);
+        var charts = await _chartService.GetEmployeeChartsById(employeeId);
         return Ok(charts);
     }
 

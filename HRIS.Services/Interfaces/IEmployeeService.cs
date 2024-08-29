@@ -51,7 +51,7 @@ public interface IEmployeeService
     /// <param name="employeeDto"></param>
     /// <param name="email"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto);
+    Task<EmployeeDto> UpdateEmployee(EmployeeProfileDto employeeDto);
 
     /// <summary>
     ///     Delete employee
@@ -64,7 +64,13 @@ public interface IEmployeeService
     ///     Get simple employee profile for non admin users
     /// </summary>
     /// <returns>SimpeEmployeeProfileDto</returns>
-    Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
+    Task<EmployeeProfileDto> GetEmployeeProfile(string employeeEmail);
+
+    /// <summary>
+    ///     Get all employees
+    /// </summary>
+    /// <returns></returns>
+    Task<List<EmployeeProfileDto>> GetAllEmployeeProfiles();
 
     /// <summary>
     ///     Get Employees filtered by Peoples champion or employee type
