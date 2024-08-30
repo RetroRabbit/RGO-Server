@@ -1,10 +1,9 @@
-﻿using HRIS.Models;
+using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Services;
 using HRIS.Services.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RR.UnitOfWork.Entities.HRIS;
 
 namespace RR.App.Controllers.HRIS;
 
@@ -21,7 +20,7 @@ public class EmployeeAddressController : ControllerBase
         _employeeAddressService = employeeAddressService;
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -29,7 +28,7 @@ public class EmployeeAddressController : ControllerBase
             return Ok(addresses);
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpGet("Employee-Address-By-Id")]
     public async Task<IActionResult> GetEmployeeAddressById(int employeeId)
     {
@@ -40,7 +39,7 @@ public class EmployeeAddressController : ControllerBase
         return Ok(employeeAddress);
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPost]
     public async Task<IActionResult> SaveEmployeeAddress([FromBody] EmployeeAddressDto address)
     {
@@ -51,7 +50,7 @@ public class EmployeeAddressController : ControllerBase
             return Ok(savedAddress);
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AllRolesPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateEmployeeAddress([FromBody] EmployeeAddressDto address)
     {
@@ -62,7 +61,7 @@ public class EmployeeAddressController : ControllerBase
             return Ok(updatedAddress);
     }
 
-    [Authorize(Policy = "AdminOrEmployeePolicy")]
+    [Authorize(Policy = "AdminOrTalentOrJourneyOrSuperAdminPolicy")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployeeAddress(int employeeId)
     {
