@@ -4,8 +4,11 @@ using Auth0.ManagementApi.Paging;
 using HRIS.Models;
 using HRIS.Services.Helpers;
 using HRIS.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using RR.UnitOfWork.Entities.HRIS;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace HRIS.Services.Services;
@@ -83,7 +86,7 @@ public class AuthService : IAuthService
         throw new CustomException($"Failed response from auth provider. access_token key not found.");
     }
 
-    public async Task<IPagedList<Role>> GetAllRolesAsync()
+    public async Task<IPagedList<Auth0.ManagementApi.Models.Role>> GetAllRolesAsync()
     {
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
@@ -143,7 +146,7 @@ public class AuthService : IAuthService
         return users;
     }
 
-    public async Task<IPagedList<Role>> GetUserRolesAsync(string userId)
+    public async Task<IPagedList<Auth0.ManagementApi.Models.Role>> GetUserRolesAsync(string userId)
     {
         var allUsers = await GetAllUsersAsync();
 
@@ -207,9 +210,9 @@ public class AuthService : IAuthService
         return true;
     }
 
-    public async Task<Role> CreateRoleAsync(string roleName, string description)
+    public async Task<Auth0.ManagementApi.Models.Role> CreateRoleAsync(string roleName, string description)
     {
-        var temporaryRole = new Role();
+        var temporaryRole = new Auth0.ManagementApi.Models.Role();
         temporaryRole.Name = roleName;
         var allRoles = await GetAllRolesAsync();
 
@@ -384,6 +387,24 @@ public class AuthService : IAuthService
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
         await _managementApiClient.Users.UpdateAsync(userId, request);
+        return true;
+    }
+
+    public bool CheckUserExistence(ClaimsIdentity claimsIdentity)
+    {
+        var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(authEmail))
+        {
+            throw new CustomException($"Email claim not found");
+        }
+
+        var authId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(authId))
+        {
+            throw new CustomException($"Auth Id claim not found");
+        }
+
         return true;
     }
 }
