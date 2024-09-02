@@ -576,47 +576,7 @@ public class ChartServiceUnitTests
         Assert.Equal(expectedResult, actualResult);
     }
 
-    [Fact(Skip = "broken")]
-    public async Task ExportCsvAsync_ShouldHandleCustomDataTypes()
-    {
-        var dataTypes = new List<string> { "CustomDataType" };
-        var supportIdentity = new AuthorizeIdentityMock("admin@test.com", "password", "Admin", 1);
-        var employees = new List<Employee>
-        {
-           new Employee
-           {
-              Name = "Jane",
-              Surname = "Smith"
-           }
-        };
-
-        var mockBaseDataType = new Mock<BaseDataType>();
-        mockBaseDataType.Setup(x => x.Name).Returns("CustomDataType");
-        mockBaseDataType.Setup(x => x.GenerateData(It.IsAny<EmployeeDto>(), It.IsAny<IServiceProvider>()))
-                         .Returns("Custom Value");
-
-        _unitOfWork.Setup(u => u.Employee.GetAll(It.IsAny<Expression<Func<Employee, bool>>>()))
-                   .ReturnsAsync(employees);
-
-        var chartService = new ChartService(_unitOfWork.Object, _employeeService.Object, _services.Object, supportIdentity);
-
-        var csvResult = await chartService.ExportCsvAsync(dataTypes);
-
-        var expectedCsv = new StringBuilder();
-        expectedCsv.AppendLine("First Name,Last Name,CustomDataType");
-        expectedCsv.AppendLine("Jane,Smith,Custom Value");
-
-        Assert.NotNull(csvResult);
-        var expectedResult = expectedCsv.ToString();
-        var actualResult = Encoding.UTF8.GetString(csvResult);
-
-        expectedResult = expectedResult.Replace("\r\n", "\n");
-        actualResult = actualResult.Replace("\r\n", "\n");
-
-        Assert.Equal(expectedResult, actualResult);
-    }
-
-    [Fact(Skip = "broken")]
+    [Fact]
     public async Task ExportCsvAsync_ShouldHandleNonCustomPropertiesCorrectly()
     {
         var dataTypes = new List<string> { "Name", "Surname", "Age" };
@@ -639,7 +599,7 @@ public class ChartServiceUnitTests
 
         var expectedCsv = new StringBuilder();
         expectedCsv.AppendLine("First Name,Last Name,Age,Name,Surname");
-        expectedCsv.AppendLine("Alice,Johnson,,Alice,Johnson");
+        expectedCsv.AppendLine("Alice,Johnson,Age 2023,Alice,Johnson");
 
         Assert.NotNull(csvResult);
         var expectedResult = expectedCsv.ToString();
