@@ -106,7 +106,6 @@ public class EmployeeControllerUnitTests
             Salary = _employeeDto.Salary,
             SalaryDays = _employeeDto.SalaryDays,
             Surname = _employeeDto.Surname,
-            TaxNumber = _employeeDto.TaxNumber,
             TeamLeadId = _employeeDto.TeamLead,
             TerminationDate = _employeeDto.TerminationDate,
              

@@ -36,7 +36,6 @@ public class LevelTypeUnitTest
         {
             Id = 1,
             EmployeeNumber = "001",
-            TaxNumber = "34434434",
             EngagementDate = new DateTime(),
             TerminationDate = new DateTime(),
             PeopleChampion = null,

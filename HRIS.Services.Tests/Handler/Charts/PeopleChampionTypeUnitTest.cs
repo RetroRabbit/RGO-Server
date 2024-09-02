@@ -43,7 +43,6 @@ public class PeopleChampionTypeUnitTest
         {
             Id = id,
             EmployeeNumber = "001",
-            TaxNumber = "34434434",
             EngagementDate = DateTime.Now,
             TerminationDate = DateTime.Now,
             PeopleChampion = peopleChampionType,
