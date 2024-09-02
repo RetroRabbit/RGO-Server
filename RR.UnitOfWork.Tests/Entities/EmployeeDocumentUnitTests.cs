@@ -19,6 +19,7 @@ public class EmployeeDocumentUnitTests
         {
             Id = 1,
             EmployeeNumber = "001",
+            EngagementDate = DateTime.Now,
             TerminationDate = DateTime.Now,
             PeopleChampion = null,
             Disability = false,
