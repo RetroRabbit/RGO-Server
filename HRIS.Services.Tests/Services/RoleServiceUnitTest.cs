@@ -315,33 +315,4 @@ public class RoleServiceUnitTest
         var field = instance.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
         field?.SetValue(instance, value);
     }
-    private AuthService CreateAuthServiceWithMocks(out Mock<IManagementApiClient> managementApiClientMock, out Mock<HttpMessageHandler> httpMessageHandlerMock, out HttpClient httpClient, out Mock<IUsersClient> usersClientMock, out Mock<IRolesClient> rolesClientMock)
-    {
-        var authManagementOptionsMock = new Mock<IOptions<AuthManagement>>();
-        var authManagement = new AuthManagement
-        {
-            ClientId = "test-client-id",
-            ClientSecret = "test-client-secret",
-            Issuer = "https://test-issuer/",
-            Audience = "test-audience"
-        };
-        authManagementOptionsMock.Setup(opt => opt.Value).Returns(authManagement);
-
-        httpMessageHandlerMock = new Mock<HttpMessageHandler>();
-        httpClient = new HttpClient(httpMessageHandlerMock.Object);
-
-        var authService = new AuthService(authManagementOptionsMock.Object);
-        SetPrivateField(authService, "_httpClient", httpClient);
-
-        managementApiClientMock = new Mock<IManagementApiClient>();
-        usersClientMock = new Mock<IUsersClient>();
-        rolesClientMock = new Mock<IRolesClient>();
-
-        managementApiClientMock.Setup(client => client.Users).Returns(usersClientMock.Object);
-        managementApiClientMock.Setup(client => client.Roles).Returns(rolesClientMock.Object);
-
-        SetPrivateField(authService, "_managementApiClient", managementApiClientMock.Object);
-
-        return authService;
-    }
 }

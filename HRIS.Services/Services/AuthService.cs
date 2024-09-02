@@ -23,7 +23,11 @@ public class AuthService : IAuthService
     private readonly string _audience;
     private readonly HttpClient _httpClient;
 
-    public AuthService(IOptions<AuthManagement> options)
+    private readonly IEmployeeService _employeeService;
+    private readonly ITerminationService _terminationService;
+    private readonly IRoleAccessLinkService _roleAccessLinkService;
+
+    public AuthService(IOptions<AuthManagement> options, IEmployeeService employeeService, ITerminationService terminationService, IRoleAccessLinkService roleAccessLinkService)
     {
         var authManagement = options.Value;
         _clientId = authManagement.ClientId ?? EnvironmentVariableHelper.AUTH_MANAGEMENT_CLIENT_ID;
@@ -33,6 +37,10 @@ public class AuthService : IAuthService
         _cachedAccessToken = string.Empty;
         _managementApiClient = new ManagementApiClient(_cachedAccessToken, new Uri($"{_issuer}api/v2"));
         _httpClient = new HttpClient();
+
+        _employeeService = employeeService;
+        _terminationService = terminationService;
+        _roleAccessLinkService = roleAccessLinkService;
     }
 
     public static bool IsTokenExpired(string token)
@@ -390,7 +398,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-    public bool CheckUserExistence(ClaimsIdentity claimsIdentity)
+    public async Task<bool> CheckUserExistence(ClaimsIdentity claimsIdentity)
     {
         var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -403,6 +411,48 @@ public class AuthService : IAuthService
         if (string.IsNullOrEmpty(authId))
         {
             throw new CustomException($"Auth Id claim not found");
+        }
+
+        var emailExists = await _employeeService.CheckUserEmailExist(authEmail);
+        if (!emailExists)
+        {
+            await DeleteUser(authId);
+            throw new CustomException($"User not found");
+        }
+
+        var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+        if (string.IsNullOrEmpty(role))
+        {
+            var employee = await _employeeService.GetEmployeeProfile(authEmail);
+            if (employee == null)
+            {
+                throw new CustomException($"User account not found in database.");
+            }
+
+            if (employee.AuthUserId != authId)
+            {
+                employee.AuthUserId = authId;
+                await _employeeService.UpdateEmployee(employee);
+            }
+
+            var isUserTerminated = await _terminationService.CheckTerminationExist(employee.Id);
+            if (true == isUserTerminated)
+            {
+                throw new CustomException($"User account not found in database.");
+            }
+
+            var allRoles = await GetAllRolesAsync();
+            var databaseEmployeeRole = await _roleAccessLinkService.GetRoleByEmployee(authEmail);
+            var roleFound = allRoles.Any(r => r.Name == databaseEmployeeRole.First().Key);
+
+            if (!roleFound)
+            {
+                throw new CustomException($"Auth0 does not have this {databaseEmployeeRole.First().Key} Role.");
+            }
+
+            await AddRoleToUserAsync(authId, allRoles.First(r => r.Name == databaseEmployeeRole.First().Key).Id);
+
+            return true;
         }
 
         return true;

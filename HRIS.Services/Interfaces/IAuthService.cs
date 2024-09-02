@@ -6,7 +6,7 @@ namespace HRIS.Services.Interfaces;
 
 public interface IAuthService
 {
-    bool CheckUserExistence(ClaimsIdentity claimsIdentity);
+    Task<bool> CheckUserExistence(ClaimsIdentity claimsIdentity);
 
     /// <summary>
     ///     Gets Auth0 Access Token
