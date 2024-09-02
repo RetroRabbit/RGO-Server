@@ -350,10 +350,6 @@ public partial class ChartService : IChartService
 
                         formattedData += $",{valueString.Replace(",", "").Trim()}";
                     }
-                    else
-                    {
-                        formattedData += ",";
-                    }
                 }
             }
             csvData.AppendLine(formattedData);
