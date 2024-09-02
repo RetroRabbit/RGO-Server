@@ -10,7 +10,6 @@ public class EmployeeTestData
     {
         Id = 1,
         EmployeeNumber = "001",
-        TaxNumber = "34434434",
         EngagementDate = new DateTime(),
         TerminationDate = new DateTime(),
         PeopleChampion = null,
@@ -51,7 +50,6 @@ public class EmployeeTestData
     {
         Id = 2,
         EmployeeNumber = "001",
-        TaxNumber = "34434434",
         EngagementDate = new DateTime(),
         TerminationDate = new DateTime(),
         PeopleChampion = null,
@@ -92,7 +90,6 @@ public class EmployeeTestData
     {
         Id = 3,
         EmployeeNumber = "001",
-        TaxNumber = "34434434",
         EngagementDate = new DateTime(),
         TerminationDate = new DateTime(),
         PeopleChampion = null,
@@ -133,7 +130,6 @@ public class EmployeeTestData
     {
         Id = 4,
         EmployeeNumber = "001",
-        TaxNumber = "34434434",
         EngagementDate = new DateTime(),
         TerminationDate = new DateTime(),
         PeopleChampion = 2,
@@ -174,7 +170,6 @@ public class EmployeeTestData
     {
         Id = 0,
         EmployeeNumber = "001",
-        TaxNumber = "34434434",
         EngagementDate = DateTime.UtcNow,
         TerminationDate = new DateTime(),
         PeopleChampion = null,
@@ -215,7 +210,6 @@ public class EmployeeTestData
     {
         Id = 1,
         EmployeeNumber = "001",
-        TaxNumber = "34434434",
         EngagementDate = DateTime.Now,
         TerminationDate = DateTime.Now,
         PeopleChampion = 1,
@@ -256,7 +250,6 @@ public class EmployeeTestData
     {
         Id = 1,
         EmployeeNumber = "001",
-        TaxNumber = "34434434",
         EngagementDate = DateTime.Now,
         TerminationDate = DateTime.Now,
         PeopleChampion = 1,
