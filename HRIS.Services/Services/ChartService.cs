@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
-using Auth0.ManagementApi.Models;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
@@ -16,15 +15,14 @@ public partial class ChartService : IChartService
     private readonly IEmployeeService _employeeService;
     private readonly IServiceProvider _services;
     private readonly AuthorizeIdentity _identity;
-    private readonly IDataTypeProvider _dataTypeProvider;
+    private List<BaseDataType> GetDataTypes() => BaseDataType.Charts;
 
-    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity, IDataTypeProvider dataTypeProvider)
+    public ChartService(IUnitOfWork db, IEmployeeService employeeService, IServiceProvider services, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeService = employeeService;
         _services = services;
         _identity = identity;
-        _dataTypeProvider = dataTypeProvider;
     }
 
     public async Task<bool> CheckIfChartsExists(int Id)
@@ -33,7 +31,7 @@ public partial class ChartService : IChartService
     }
 
     public async Task<List<ChartDto>> GetAllCharts()
-    {   
+    {
         var charts = await _db.Chart.Get().Include(chart => chart.Datasets).Select(c => c.ToDto()).ToListAsync();
         for (int i = 0; i < charts.Count; i++)
         {
@@ -238,7 +236,7 @@ public partial class ChartService : IChartService
 
         if (!_identity.IsSupport && id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
-            
+
         return (await _db.Chart.Delete(id)).ToDto();
     }
 
@@ -248,7 +246,7 @@ public partial class ChartService : IChartService
         if (!exists) throw new CustomException("No chart data record found");
         if (!_identity.IsSupport && chartDto.Id != _identity.EmployeeId)
             throw new CustomException("Unauthorized access.");
-        return (await _db.Chart.Update(new Chart(chartDto))).ToDto(); 
+        return (await _db.Chart.Update(new Chart(chartDto))).ToDto();
     }
 
     public string[] GetColumnsFromTable()
@@ -306,7 +304,7 @@ public partial class ChartService : IChartService
 
             var propertyInfo = typeof(EmployeeDto).GetProperty(typeName);
 
-            if (propertyInfo == null && _dataTypeProvider.GetDataTypes().All(x => x.Name != typeName))
+            if (propertyInfo == null && GetDataTypes().All(x => x.Name != typeName))
             {
                 throw new CustomException($"Invalid property name: {typeName}");
             }
@@ -329,9 +327,9 @@ public partial class ChartService : IChartService
 
             foreach (var dataType in propertyNames)
             {
-                if (_dataTypeProvider.GetDataTypes().Any(x => x.Name == dataType))
+                if (GetDataTypes().Any(x => x.Name == dataType))
                 {
-                    var obj = _dataTypeProvider.GetDataTypes().First(x => x.Name == dataType);
+                    var obj = GetDataTypes().First(x => x.Name == dataType);
                     var val = obj.GenerateData(employeeDto, _services);
 
                     formattedData += $",{val?.Replace(",", "").Trim() ?? ""}";
@@ -351,10 +349,6 @@ public partial class ChartService : IChartService
                         };
 
                         formattedData += $",{valueString.Replace(",", "").Trim()}";
-                    }
-                    else
-                    {
-                        formattedData += ",";
                     }
                 }
             }
