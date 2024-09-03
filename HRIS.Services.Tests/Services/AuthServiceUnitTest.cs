@@ -24,17 +24,11 @@ public class AuthServiceUnitTests
     private readonly Mock<IManagementApiClient> _managementApiClientMock;
     private readonly Mock<IUsersClient> _usersClientMock;
     private readonly Mock<IRolesClient> _rolesClientMock;
-    private readonly Mock<IEmployeeService> _employeeServiceMock;
-    private readonly Mock<ITerminationService> _terminationServiceMock;
-    private readonly Mock<IRoleAccessLinkService> _roleAccessLinkServiceMock;
     private readonly HttpClient _httpClient;
     private readonly AuthService _authService;
 
     public AuthServiceUnitTests()
     {
-        _employeeServiceMock = new Mock<IEmployeeService>();
-        _terminationServiceMock = new Mock<ITerminationService>();
-        _roleAccessLinkServiceMock = new Mock<IRoleAccessLinkService>();
         _authService = CreateAuthServiceWithMocks(out _managementApiClientMock, out _httpMessageHandlerMock, out _httpClient, out _usersClientMock, out _rolesClientMock);
     }
     private AuthService CreateAuthServiceWithMocks(out Mock<IManagementApiClient> managementApiClientMock, out Mock<HttpMessageHandler> httpMessageHandlerMock, out HttpClient httpClient, out Mock<IUsersClient> usersClientMock, out Mock<IRolesClient> rolesClientMock)
@@ -52,7 +46,7 @@ public class AuthServiceUnitTests
         httpMessageHandlerMock = new Mock<HttpMessageHandler>();
         httpClient = new HttpClient(httpMessageHandlerMock.Object);
 
-        var authService = new AuthService(authManagementOptionsMock.Object, _employeeServiceMock.Object, _terminationServiceMock.Object, _roleAccessLinkServiceMock.Object);
+        var authService = new AuthService(authManagementOptionsMock.Object);
         SetPrivateField(authService, "_httpClient", httpClient);
 
         managementApiClientMock = new Mock<IManagementApiClient>();

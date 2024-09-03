@@ -20,8 +20,10 @@ public class EmployeeService : IEmployeeService
     private readonly AuthorizeIdentity _identity;
     private readonly IMapper _mapper;
 
+    private readonly IAuthService _authService;
+
     public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
-                           IEmployeeAddressService employeeAddressService, IRoleService roleService,
+                           IEmployeeAddressService employeeAddressService, IRoleService roleService, IAuthService authService,
                            IErrorLoggingService errorLoggingService, IEmailService emailService, AuthorizeIdentity identity, IMapper mapper)
     {
         _employeeTypeService = employeeTypeService;
@@ -31,6 +33,7 @@ public class EmployeeService : IEmployeeService
         _emailService = emailService;
         _identity = identity;
         _mapper = mapper;
+        _authService = authService;
     }
 
     public async Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto)
@@ -359,5 +362,36 @@ public class EmployeeService : IEmployeeService
     public async Task<bool> CheckUserEmailExist(string? email)
     {
         return await _db.Employee.Any(employee => employee.Email == email);
+    }
+
+    public async Task<EmployeeProfileDto> CheckUserAuthentication(string email, string id, string role)
+    {
+        var emailExists = await CheckUserEmailExist(email);
+        if (!emailExists)
+        {
+            await _authService.DeleteUser(id);
+
+            throw new CustomException("User not found");
+        }
+
+        var employee = await GetEmployeeProfile(email);
+
+        if (string.IsNullOrEmpty(role))
+        {
+            if (employee == null)
+            {
+                throw new CustomException("User account not found in database.");
+            }
+
+            if (employee.AuthUserId != id)
+            {
+                employee.AuthUserId = id;
+                await UpdateEmployee(employee);
+            }
+
+            return employee;
+        }
+
+        return employee;
     }
 }

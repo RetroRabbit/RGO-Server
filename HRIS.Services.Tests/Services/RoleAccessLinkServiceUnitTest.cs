@@ -16,6 +16,7 @@ public class RoleAccessLinkServiceUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeRoleService> _employeeRoleServiceMock;
+    private readonly Mock<IAuthService> _authServiceMock;
     private readonly RoleAccessDto _roleAccessDto;
     private readonly RoleAccessLinkDto _roleAccessLinkDto;
     private readonly RoleAccessLinkService _roleAccessLinkService;
@@ -26,8 +27,9 @@ public class RoleAccessLinkServiceUnitTest
     {
         _dbMock = new Mock<IUnitOfWork>();
         _employeeRoleServiceMock = new Mock<IEmployeeRoleService>();
-        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
-        _roleAccessLinkService2 = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 2));
+        _authServiceMock = new Mock<IAuthService>();
+        _roleAccessLinkService = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object, _authServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1));
+        _roleAccessLinkService2 = new RoleAccessLinkService(_dbMock.Object, _employeeRoleServiceMock.Object, _authServiceMock.Object, new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 2));
         _roleDto = new RoleDto { Id = 1, Description = "Employee" };
         _roleAccessDto = new RoleAccessDto { Id = 1, Permission = "ViewEmployee", Grouping = "Employee Data" };
         _roleAccessLinkDto = new RoleAccessLinkDto { Id = 1, Role = _roleDto, RoleAccess = _roleAccessDto };

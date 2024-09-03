@@ -44,11 +44,34 @@ public class AuthenticationController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> CheckUserExistence()
     {
-        var claimsIdentity = User.Identity as ClaimsIdentity;
+        try
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
 
-        await _authService.CheckUserExistence(claimsIdentity!);
+            await _authService.CheckUserExistence(claimsIdentity!);
 
-        return Ok("User found.");
+            var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+            var authId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+
+            var employee = await _employeeService.CheckUserAuthentication(authEmail!, authId!, role!);
+
+            if (string.IsNullOrEmpty(role))
+            {
+                await _terminationService.CheckTerminationForAuth(employee.Id);
+
+                await _roleAccessLinkService.CheckRolesForAuth(authEmail!, authId!);
+
+                return Ok("User found.");
+            }
+
+            return Ok("User found.");
+        }
+        catch (Exception ex)
+        {
+            _errorLoggingService.LogException(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
 }
