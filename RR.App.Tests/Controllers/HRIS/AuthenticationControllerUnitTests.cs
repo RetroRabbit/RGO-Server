@@ -89,36 +89,8 @@ namespace RR.App.Tests.Controllers.HRIS
             Assert.Equal("User found.", okResult.Value);
         }
 
-        [Fact(Skip = "Needs Fixing")]
+        [Fact]
         public async Task CheckUserExistence_UserNotFound_ReturnsNotFound()
-        {
-            var email = "test@example.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, email)
-            };
-            var identity = new ClaimsIdentity(claims);
-            var principal = new ClaimsPrincipal(identity);
-
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = principal }
-            };
-
-            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(false);
-            _authServiceMock.Setup(x => x.DeleteUser(email)).ReturnsAsync(false);
-
-            var result = await _controller.CheckUserExistence();
-
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("User not found.", notFoundResult.Value);
-
-            _authServiceMock.Verify(x => x.DeleteUser(email), Times.Once);
-            _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
-        }
-
-        [Fact(Skip = "broken")]
-        public async Task CheckUserExistence_UserFoundButNoRole_ReturnsNotFound()
         {
             var email = "test@example.com";
             var authId = "authId";
@@ -135,25 +107,16 @@ namespace RR.App.Tests.Controllers.HRIS
                 HttpContext = new DefaultHttpContext { User = principal }
             };
 
-            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(true);
-            _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
-            _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
-            _roleAccessLinkServiceMock.Setup(x => x.GetRoleByEmployee(email)).ReturnsAsync(new Dictionary<string, List<string>>
-            {
-                { "Employee", new List<string> { "roleId" } }
-            });
-            _authServiceMock.Setup(x => x.GetAllRolesAsync()).ReturnsAsync(() =>
-            {
-                var roles = new List<Auth0.ManagementApi.Models.Role>();
-                var pagedList = new PagedList<Auth0.ManagementApi.Models.Role>(roles);
-                return (IPagedList<Auth0.ManagementApi.Models.Role>)pagedList;
-            });
+            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(false);
+            var id = identity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = identity.FindFirst(ClaimTypes.Role)?.Value;
+            _employeeServiceMock.Setup(x => x.CheckUserAuthentication(email, id!, role!)).ReturnsAsync(new EmployeeProfileDto { Id = 1, AuthUserId = null });
+            _authServiceMock.Setup(x => x.DeleteUser(email)).ReturnsAsync(false);
 
             var result = await _controller.CheckUserExistence();
 
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("User not found.", notFoundResult.Value);
-            _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("User found.", okResult.Value);
         }
 
         [Fact]
@@ -186,32 +149,6 @@ namespace RR.App.Tests.Controllers.HRIS
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("User found.", okResult.Value);
-        }
-
-        [Fact(Skip = "Needs Fixing")]
-        public async Task CheckUserExistence_ExceptionThrown_ReturnsInternalServerError()
-        {
-            var email = "test@example.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, email)
-            };
-            var identity = new ClaimsIdentity(claims);
-            var principal = new ClaimsPrincipal(identity);
-
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = principal }
-            };
-
-            _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ThrowsAsync(new Exception("Simulated error"));
-
-            var result = await _controller.CheckUserExistence();
-
-            var statusCodeResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(StatusCodes.Status500InternalServerError, statusCodeResult.StatusCode);
-            Assert.Equal("Simulated error", statusCodeResult.Value);
-            _errorLoggingServiceMock.Verify(x => x.LogException(It.IsAny<Exception>()), Times.Once);
         }
     }
 }

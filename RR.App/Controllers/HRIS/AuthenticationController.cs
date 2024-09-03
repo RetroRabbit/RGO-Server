@@ -29,49 +29,33 @@ public class AuthenticationController : ControllerBase
     [HttpGet()]
     public async Task<IActionResult> LoggingInUser()
     {
-        try
-        {
-            return Ok("Api connection works");
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return NotFound(ex.Message);
-        }
+        return Ok("Api connection works");
     }
 
     [Authorize]
     [HttpPost()]
     public async Task<IActionResult> CheckUserExistence()
     {
-        try
+        var claimsIdentity = User.Identity as ClaimsIdentity;
+
+        await _authService.CheckUserExistence(claimsIdentity!);
+
+        var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+        var authId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+
+        var employee = await _employeeService.CheckUserAuthentication(authEmail!, authId!, role!);
+
+        if (string.IsNullOrEmpty(role))
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
+            await _terminationService.CheckTerminationForAuth(employee.Id);
 
-            await _authService.CheckUserExistence(claimsIdentity!);
-
-            var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
-            var authId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
-
-            var employee = await _employeeService.CheckUserAuthentication(authEmail!, authId!, role!);
-
-            if (string.IsNullOrEmpty(role))
-            {
-                await _terminationService.CheckTerminationForAuth(employee.Id);
-
-                await _roleAccessLinkService.CheckRolesForAuth(authEmail!, authId!);
-
-                return Ok("User found.");
-            }
+            await _roleAccessLinkService.CheckRolesForAuth(authEmail!, authId!);
 
             return Ok("User found.");
         }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
+
+        return Ok("User found.");
     }
 
 }
