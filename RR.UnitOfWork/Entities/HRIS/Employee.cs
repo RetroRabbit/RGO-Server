@@ -18,7 +18,6 @@ public class Employee : IModel
         AuthUserId = employeeDto.AuthUserId;
         Id = employeeDto.Id;
         EmployeeNumber = employeeDto.EmployeeNumber;
-        TaxNumber = employeeDto.TaxNumber;
         EngagementDate = employeeDto.EngagementDate;
         TerminationDate = employeeDto.TerminationDate;
         PeopleChampion = employeeDto.PeopleChampion;
@@ -57,8 +56,6 @@ public class Employee : IModel
     }
 
     [Column("employeeNumber")] public string? EmployeeNumber { get; set; }
-
-    [Column("taxNumber")] public string? TaxNumber { get; set; }
 
     [Column("engagementDate")] public DateTime EngagementDate { get; set; }
 
@@ -154,7 +151,6 @@ public class Employee : IModel
             AuthUserId = AuthUserId,
             Id = Id,
             EmployeeNumber = EmployeeNumber,
-            TaxNumber = TaxNumber,
             EngagementDate = EngagementDate,
             TerminationDate = TerminationDate,
             PeopleChampion = PeopleChampion,
