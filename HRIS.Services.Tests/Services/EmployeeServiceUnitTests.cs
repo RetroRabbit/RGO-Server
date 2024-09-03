@@ -494,4 +494,50 @@ public class EmployeeServiceUnitTests
             Assert.True(result);
         }
     }
+
+    [Fact]
+    public async Task UpdateEmployee_UnauthorizedAccess_ThrowsCustomException()
+    {
+        var employeeDto = new EmployeeProfileDto { Id = 2 };
+
+        var result = await Assert.ThrowsAsync<CustomException>(() => _employeeServiceUnauthorized.UpdateEmployee(employeeDto));
+
+        Assert.Equal("Unauthorized Access", result.Message);
+    }
+
+    [Fact]
+    public async Task UpdateEmployee_NullTeamLeadPeopleChampionClientAllocated_HandlesNulls()
+    {
+        var employeeDto = new EmployeeProfileDto { Id = 1, TeamLeadName = null, PeopleChampionName = null, ClientAllocatedName = null };
+        var employee = EmployeeTestData.EmployeeOne;
+
+        _dbMock.Setup(db => db.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(new List<Employee> { employee }.AsQueryable().ToMockIQueryable());
+
+        _mapperMock.Setup(m => m.Map<EmployeeDto>(It.IsAny<Employee>()))
+                   .Returns(EmployeeTestData.EmployeeOne.ToDto());
+
+        _dbMock.Setup(db => db.Employee.Update(It.IsAny<Employee>()))
+               .ReturnsAsync(employee);
+
+        var result = await _employeeService.UpdateEmployee(employeeDto);
+
+        Assert.NotNull(result);
+        Assert.Null(result.TeamLead);
+        Assert.Null(result.PeopleChampion);
+        Assert.Null(result.ClientAllocated);
+    }
+
+    [Fact]
+    public async Task UpdateEmployee_EmployeeNotFound_ThrowsCustomException()
+    {
+        var employeeDto = new EmployeeProfileDto { Id = 1 };
+
+        _dbMock.Setup(db => db.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .Returns(new List<Employee>().AsQueryable().ToMockIQueryable());
+
+        var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.UpdateEmployee(employeeDto));
+
+        Assert.Equal("User not found", result.Message);
+    }
 }
