@@ -11,8 +11,7 @@ public class EmployeeDto
     public int Id { get; set; }
     [Required (ErrorMessage = "Employee 'EmployeeNumber' field is missing.")]
     public string? EmployeeNumber { get; set; }
-    [Required (ErrorMessage = "Employee 'TaxNumber' field is missing.")]
-    public string? TaxNumber { get; set; }
+
     [Required (ErrorMessage = "Employee 'EngagementDate' field is missing.")]
     [DataType(DataType.DateTime)]
     public DateTime EngagementDate { get; set; }

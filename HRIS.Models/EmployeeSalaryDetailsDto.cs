@@ -1,5 +1,6 @@
 ﻿using HRIS.Models.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRIS.Models;
 
@@ -16,4 +17,6 @@ public class EmployeeSalaryDetailsDto
     public EmployeeSalaryBand? Band { get; set; }
     public string? Contribution { get; set; }
     public DateTime? SalaryUpdateDate { get; set; }
+    public string? TaxNumber { get; set; }
+
 }

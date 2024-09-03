@@ -53,7 +53,6 @@ public class EmployeeProfileDto
             AuthUserId = this.AuthUserId,
             Id = this.Id,
             EmployeeNumber = this.EmployeeNumber,
-            TaxNumber = this.TaxNumber,
             EngagementDate = this.EngagementDate,
             TerminationDate = this.TerminationDate,
             PeopleChampion = this.PeopleChampionId,

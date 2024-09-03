@@ -22,6 +22,7 @@ public class EmployeeSalaryDetails : IModel
         Band = employeeSalaryDetailsDto.Band;
         Contribution = employeeSalaryDetailsDto.Contribution;
         SalaryUpdateDate = employeeSalaryDetailsDto.SalaryUpdateDate;
+        TaxNumber = employeeSalaryDetailsDto.TaxNumber;
     }
 
     [Column("employeeId")]
@@ -35,6 +36,7 @@ public class EmployeeSalaryDetails : IModel
     [Column("band")] public EmployeeSalaryBand? Band { get; set; }
     [Column("contribution")] public string? Contribution { get; set; }
     [Column("salaryUpdateDate")] public DateTime? SalaryUpdateDate { get; set; }
+    [Column("taxNumber")] public string? TaxNumber { get; set; }
 
     [Key][Column("id")] public int Id { get; set; }
 
@@ -50,7 +52,8 @@ public class EmployeeSalaryDetails : IModel
             Remuneration = Remuneration,
             Band = Band,
             Contribution = Contribution,
-            SalaryUpdateDate = SalaryUpdateDate
+            SalaryUpdateDate = SalaryUpdateDate,
+            TaxNumber = TaxNumber
         };
     }
 }

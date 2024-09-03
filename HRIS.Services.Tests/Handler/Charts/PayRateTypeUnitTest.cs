@@ -36,7 +36,6 @@ public class PayRateTypeUnitTest
         {
             Id = 1,
             EmployeeNumber = "001",
-            TaxNumber = "34434434",
             EngagementDate = DateTime.Now,
             TerminationDate = null,
             PeopleChampion = null,

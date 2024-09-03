@@ -19,7 +19,6 @@ public class EmployeeDocumentUnitTests
         {
             Id = 1,
             EmployeeNumber = "001",
-            TaxNumber = "34434434",
             EngagementDate = DateTime.Now,
             TerminationDate = DateTime.Now,
             PeopleChampion = null,
