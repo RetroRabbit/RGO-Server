@@ -57,6 +57,7 @@ namespace RR.App.Tests.Controllers.HRIS
                 HttpContext = new DefaultHttpContext { User = principal }
             };
 
+            _authServiceMock.Setup(x => x.CheckUserExistence(identity)).ReturnsAsync(true);
             _employeeServiceMock.Setup(x => x.CheckUserEmailExist(email)).ReturnsAsync(true);
             _employeeServiceMock.Setup(x => x.GetEmployeeByEmail(email)).ReturnsAsync(new EmployeeDto { Id = 1, AuthUserId = null });
             _terminationServiceMock.Setup(x => x.CheckTerminationExist(1)).ReturnsAsync(false);
