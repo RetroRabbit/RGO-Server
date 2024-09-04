@@ -12,13 +12,15 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeRoleService _employeeRoleService;
+    private readonly IAuthService _authService;
     private readonly AuthorizeIdentity _identity;
 
-    public RoleAccessLinkService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, AuthorizeIdentity identity)
+    public RoleAccessLinkService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, IAuthService authService, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeRoleService = employeeRoleService;
         _identity = identity;
+        _authService = authService;
     }
 
     public Task<bool> CheckRoleAccessLink(string role, string permission)
@@ -216,5 +218,19 @@ public class RoleAccessLinkService : IRoleAccessLinkService
                                        .ToListAsync();
 
         return roleAccessLinks;
+    }
+
+    public async Task CheckRolesForAuth(string authEmail, string authId)
+    {
+        var allRoles = await _authService.GetAllRolesAsync();
+        var databaseEmployeeRole = await GetRoleByEmployee(authEmail);
+        var roleFound = allRoles.Any(r => r.Name == databaseEmployeeRole.First().Key);
+
+        if (!roleFound)
+        {
+            throw new CustomException($"Auth0 does not have this {databaseEmployeeRole.First().Key} Role.");
+        }
+
+        await _authService.AddRoleToUserAsync(authId, allRoles.First(r => r.Name == databaseEmployeeRole.First().Key).Id);
     }
 }
