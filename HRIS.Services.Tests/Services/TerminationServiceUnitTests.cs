@@ -8,6 +8,7 @@ using RR.UnitOfWork.Entities.HRIS;
 using System.Linq.Expressions;
 using RR.Tests.Data.Models;
 using Xunit;
+using HRIS.Models;
 
 namespace HRIS.Services.Tests.Services;
 
@@ -41,7 +42,7 @@ public class TerminationServiceUnitTests
             ReemploymentStatus = false,
             EquipmentStatus = true,
             AccountsStatus = true,
-            TerminationDocument = "document",
+            TerminationDocument = [],
             DocumentName = "document name",
             TerminationComments = "termination comment",
         };
@@ -277,5 +278,64 @@ public class TerminationServiceUnitTests
             .ReturnsAsync(_employee.ToDto);
 
         await Assert.ThrowsAsync<CustomException>(() => terminationServiceWithSelfTerminatingIdentity.CreateTermination(_termination.ToDto()));
+    }
+
+    [Fact]
+    public async Task CheckTerminationForAuth_ThrowsCustomExceptionWhenUserIsTerminated()
+    {
+        var testId = 1;
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => _terminationService.CheckTerminationForAuth(testId));
+        _db.Verify(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateTermination_ThrowsUnauthorizedAccess_WhenIdentityHasNoSupportRole()
+    {
+        var nonSupportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1);
+        var terminationServiceWithNonSupportIdentity = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, nonSupportIdentity);
+
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>())).ReturnsAsync(true);
+        _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>())).ReturnsAsync(_employee.ToDto);
+
+        await Assert.ThrowsAsync<CustomException>(() => terminationServiceWithNonSupportIdentity.UpdateTermination(_termination.ToDto()));
+    }
+
+    [Fact]
+    public async Task GetByIdThrowsUnauthorizedAccess()
+    {
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 2);
+        var terminationServiceWithUnauthorizedIdentity = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, unauthorizedIdentity);
+
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
+           .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<CustomException>(() => terminationServiceWithUnauthorizedIdentity.GetTerminationByEmployeeId(1));
+    }
+    [Fact]
+    public async Task CreateTerminationThrowsUnauthorizedAccess()
+    {
+        var employeeId = 1;
+        var unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", employeeId);
+        var terminationServiceWithUnauthorizedIdentity = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, unauthorizedIdentity);
+
+        var terminationDto = new TerminationDto
+        {
+            Id = 2,
+            EmployeeId = employeeId,
+            TerminationOption = 0,
+            DayOfNotice = DateTime.Now,
+            LastDayOfEmployment = DateTime.Now.AddDays(30),
+            ReemploymentStatus = false,
+            EquipmentStatus = true,
+            AccountsStatus = true,
+            TerminationComments = "Termination due to policy violation"
+        };
+
+        _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
+           .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<CustomException>(() => terminationServiceWithUnauthorizedIdentity.CreateTermination(terminationDto));
     }
 }

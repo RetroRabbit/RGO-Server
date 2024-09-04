@@ -1201,9 +1201,9 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("terminationComments");
 
-                    b.Property<string>("TerminationDocument")
+                    b.Property<byte[]>("TerminationDocument")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("bytea")
                         .HasColumnName("terminationDocument");
 
                     b.Property<int>("TerminationOption")
