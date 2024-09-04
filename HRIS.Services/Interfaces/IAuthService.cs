@@ -1,9 +1,17 @@
 ﻿using Auth0.ManagementApi.Models;
 using Auth0.ManagementApi.Paging;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 namespace HRIS.Services.Interfaces;
 
 public interface IAuthService
 {
+    Task<bool> CheckUserExistence(ClaimsIdentity claimsIdentity);
+
+    /// <summary>
+    ///     Gets Auth0 Access Token
+    /// </summary>
+    /// <returns></returns>
     Task<string?> GetAuth0ManagementAccessToken();
 
     /// <summary>

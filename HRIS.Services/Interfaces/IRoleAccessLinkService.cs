@@ -5,6 +5,14 @@ namespace HRIS.Services.Interfaces;
 public interface IRoleAccessLinkService
 {
     /// <summary>
+    /// Function for AuthenticationController
+    /// </summary>
+    /// <param name="authEmail"></param>
+    /// <param name="authId"></param>
+    /// <returns></returns>
+    Task CheckRolesForAuth(string authEmail, string authId);
+
+    /// <summary>
     ///     Get All Role Access Links
     /// </summary>
     /// <returns>Dictionary with role as the key and permissions</returns>

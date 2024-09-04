@@ -20,6 +20,7 @@ public class EmployeeServiceUnitTests
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
     private readonly Mock<IRoleService> _roleServiceMock;
     private readonly Mock<IErrorLoggingService> _errorLoggingServiceMock;
+    private readonly Mock<IAuthService> _authServiceMock;
     private readonly Mock<IEmailHelper> _emailHelper;
     private readonly Mock<IEmailService> _emailService;
     private readonly EmployeeService _employeeService;
@@ -42,6 +43,7 @@ public class EmployeeServiceUnitTests
         _dbMock = new Mock<IUnitOfWork>();
         _employeeTypeServiceMock = new Mock<IEmployeeTypeService>();
         _employeeAddressServiceMock = new Mock<IEmployeeAddressService>();
+        _authServiceMock = new Mock<IAuthService>();
         _authorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1);
         _unauthorizedIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Employee", 1);
         _journeyIdentity = new AuthorizeIdentityMock("test@retrorabbit.co.za", "test", "Journey", 1);
@@ -54,15 +56,15 @@ public class EmployeeServiceUnitTests
         _roleServiceMock = new Mock<IRoleService>();
 
         _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _authServiceMock.Object, _errorLoggingServiceMock.Object,
             emailService.Object, _authorizedIdentity, _mapperMock.Object);
 
         _employeeServiceUnauthorized = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _authServiceMock.Object, _errorLoggingServiceMock.Object,
            emailService.Object, _unauthorizedIdentity, _mapperMock.Object);
 
         _employeeServiceJourney = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
-           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _errorLoggingServiceMock.Object,
+           _employeeAddressServiceMock.Object, _roleServiceMock.Object, _authServiceMock.Object, _errorLoggingServiceMock.Object,
            emailService.Object, _journeyIdentity, _mapperMock.Object);
     }
 
@@ -440,6 +442,7 @@ public class EmployeeServiceUnitTests
                 _dbMock.Object,
                 _employeeAddressServiceMock.Object,
                 _roleServiceMock.Object,
+                _authServiceMock.Object,
                 _errorLoggingServiceMock.Object,
                 _emailService.Object,
                 unauthorizedIdentity,
@@ -461,6 +464,7 @@ public class EmployeeServiceUnitTests
                 _dbMock.Object,
                 _employeeAddressServiceMock.Object,
                 _roleServiceMock.Object,
+                _authServiceMock.Object,
                 _errorLoggingServiceMock.Object,
                 _emailService.Object,
                 _authorizedIdentity,
@@ -485,6 +489,7 @@ public class EmployeeServiceUnitTests
                 _dbMock.Object,
                 _employeeAddressServiceMock.Object,
                 _roleServiceMock.Object,
+                _authServiceMock.Object,
                 _errorLoggingServiceMock.Object,
                 _emailService.Object,
                 _authorizedIdentity,

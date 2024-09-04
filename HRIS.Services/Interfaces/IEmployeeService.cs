@@ -5,6 +5,15 @@ namespace HRIS.Services.Interfaces;
 public interface IEmployeeService
 {
     /// <summary>
+    /// Checking user Authentication from AuthenticationController
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="id"></param>
+    /// <param name="role"></param>
+    /// <returns></returns>
+    Task<EmployeeProfileDto> CheckUserAuthentication(string email, string id, string role);
+
+    /// <summary>
     ///     Check if Email exists
     /// </summary>
     /// <param name="email"></param>

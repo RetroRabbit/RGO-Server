@@ -5,6 +5,13 @@ namespace HRIS.Services.Interfaces;
 public interface ITerminationService
 {
     /// <summary>
+    ///     Check if user exists for Auth
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task CheckTerminationForAuth(int id);
+
+    /// <summary>
     ///     Check if user exist
     /// </summary>
     /// <param name="email"></param>

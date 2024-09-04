@@ -76,4 +76,13 @@ public class TerminationService : ITerminationService
     {
         return await _db.Termination.Any(termination => termination.EmployeeId == employeeId);
     }
+
+    public async Task CheckTerminationForAuth(int id)
+    {
+        var isUserTerminated = await CheckTerminationExist(id);
+        if (isUserTerminated)
+        {
+            throw new CustomException("User account not found in database.");
+        }
+    }
 }

@@ -6,6 +6,7 @@ using HRIS.Services.Helpers;
 using HRIS.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace HRIS.Services.Services;
@@ -384,6 +385,24 @@ public class AuthService : IAuthService
         var token = await GetAuth0ManagementAccessToken();
         _managementApiClient.UpdateAccessToken(token);
         await _managementApiClient.Users.UpdateAsync(userId, request);
+        return true;
+    }
+
+    public async Task<bool> CheckUserExistence(ClaimsIdentity claimsIdentity)
+    {
+        var authEmail = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(authEmail))
+        {
+            throw new CustomException($"Email claim not found");
+        }
+
+        var authId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(authId))
+        {
+            throw new CustomException($"Auth Id claim not found");
+        }
+
         return true;
     }
 }
