@@ -50,7 +50,7 @@ public class RoleServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveRoleTestPass()
+    public async Task CreateRoleTestPass()
     {
         _dbMock
             .Setup(r => r.Role.Add(It.IsAny<Role>()))
@@ -64,13 +64,13 @@ public class RoleServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveRoleTestUnauthorised()
+    public async Task CreateRoleTestUnauthorised()
     {
         await Assert.ThrowsAsync<CustomException>(() => _roleService2.CreateRole(_role.ToDto()));
     }
 
     [Fact]
-    public async Task SaveRoleTestExistPass()
+    public async Task CreateRoleTestExistPass()
     {
         _dbMock
             .Setup(r => r.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
@@ -98,7 +98,7 @@ public class RoleServiceUnitTest
     }
 
     [Fact]
-    public async Task SaveRoleTestExistUpdatePass()
+    public async Task CreateRoleTestExistUpdatePass()
     {
         _dbMock
             .Setup(r => r.Role.Any(It.IsAny<Expression<Func<Role, bool>>>()))
@@ -277,42 +277,5 @@ public class RoleServiceUnitTest
                .ReturnsAsync(false);
 
         await Assert.ThrowsAsync<CustomException>(() => _roleService2.UpdateRole("Admin"));
-    }
-
-    private string CreateJwtToken(bool notExpired = true, bool hasExpClaim = true)
-    {
-        var securityKey = new SymmetricSecurityKey(System.Text.Encoding.Default.GetBytes("test_secret_key_which_must_be_a_longer_than_128bits"));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        var claims = new List<Claim>();
-
-        if (hasExpClaim)
-        {
-            if (notExpired)
-            {
-                claims.Add(new Claim("exp", DateTimeOffset.UtcNow.AddMinutes(10).ToUnixTimeSeconds().ToString()));
-            }
-            else
-            {
-                claims.Add(new Claim("exp", DateTimeOffset.UtcNow.AddMinutes(-10).ToUnixTimeSeconds().ToString()));
-            }
-        }
-        else
-        {
-            new Claim("exp", string.Empty);
-        }
-
-        var token = new JwtSecurityToken(
-            issuer: "https://test-issuer/",
-            audience: "test-audience",
-            claims: claims,
-            signingCredentials: credentials);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    private void SetPrivateField(object instance, string fieldName, object value)
-    {
-        var field = instance.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
-        field?.SetValue(instance, value);
     }
 }
