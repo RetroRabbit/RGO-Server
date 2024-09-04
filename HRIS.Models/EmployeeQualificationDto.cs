@@ -26,6 +26,6 @@ public class EmployeeQualificationDto
     public DateOnly Year { get; set; } = DateOnly.MinValue;
 
     [Required(ErrorMessage = "Employee Qualification 'ProofOfQualification' field is missing.")]
-    public string ProofOfQualification { get; set; }
+    public byte[] ProofOfQualification { get; set; } = Array.Empty<byte>();
     public string DocumentName { get; set; }
 }

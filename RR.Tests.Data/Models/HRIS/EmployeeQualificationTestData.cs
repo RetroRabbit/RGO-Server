@@ -14,7 +14,7 @@ namespace RR.Tests.Data.Models.HRIS
             FieldOfStudy = "Computer Science",
             NQFLevel = NQFLevel.Level7,
             Year = new DateOnly(2020, 1, 1),
-            ProofOfQualification = "qualification",
+            ProofOfQualification = [],
             DocumentName = "DocName"
         };
 
@@ -27,7 +27,7 @@ namespace RR.Tests.Data.Models.HRIS
             FieldOfStudy = "Computer Science",
             NQFLevel = NQFLevel.Level7,
             Year = new DateOnly(2020, 1, 1),
-            ProofOfQualification = "qualification",
+            ProofOfQualification = [],
             DocumentName = "DocName"
         };
 
