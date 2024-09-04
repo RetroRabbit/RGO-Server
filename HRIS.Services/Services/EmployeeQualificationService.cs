@@ -32,10 +32,7 @@ public class EmployeeQualificationService : IEmployeeQualificationService
         if (_identity.IsSupport == false && _identity.EmployeeId != employeeQualificationDto.EmployeeId)
             throw new CustomException("Unauthorized access.");
 
-        var model = new EmployeeQualification(employeeQualificationDto)
-        {
-            EmployeeId = _identity.EmployeeId
-        };
+        var model = new EmployeeQualification(employeeQualificationDto);
         model = await _db.EmployeeQualification.Add(model);
 
         return model.ToDto();
@@ -51,11 +48,11 @@ public class EmployeeQualificationService : IEmployeeQualificationService
         if (_identity.IsSupport == false && _identity.EmployeeId != employeeId)
             throw new CustomException("Unauthorized access");
 
-        var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == _identity.EmployeeId);
-     if (qualifications == null)
-         throw new CustomException("No employee qualifications data.");
+        var qualifications = await _db.EmployeeQualification.FirstOrDefault(x => x.EmployeeId == employeeId);
+        if (qualifications == null)
+            throw new CustomException("No employee qualifications data.");
 
-     return qualifications.ToDto();
+        return qualifications.ToDto();
     }
 
     public async Task<EmployeeQualificationDto> UpdateEmployeeQualification(

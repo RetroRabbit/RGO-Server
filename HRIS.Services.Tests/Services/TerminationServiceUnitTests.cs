@@ -256,7 +256,7 @@ public class TerminationServiceUnitTests
         var terminationServiceWithNonSupportIdentity = new TerminationService(_db.Object, _employeeTypeServiceMock.Object, _employeeServiceMock.Object, _authServiceMock.Object, nonSupportIdentity);
 
         _db.Setup(x => x.Termination.Any(It.IsAny<Expression<Func<Termination, bool>>>()))
-           .ReturnsAsync(true);
+           .ReturnsAsync(false);
 
         _employeeServiceMock.Setup(e => e.GetEmployeeById(It.IsAny<int>()))
             .ReturnsAsync(_employee.ToDto);

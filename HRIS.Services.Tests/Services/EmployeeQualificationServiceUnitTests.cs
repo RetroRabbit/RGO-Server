@@ -310,4 +310,21 @@ public class EmployeeQualificationServiceUnitTests
         _db.Verify(x => x.EmployeeQualification.Delete(It.IsAny<int>()), Times.Never);
     }
 
+    [Fact]
+    public async Task GetEmployeeQualificationsByEmployeeId_NoData_ThrowsCustomException()
+    {
+        _identity.Setup(i => i.Role).Returns("Employee");
+        _identity.SetupGet(i => i.EmployeeId).Returns(1);
+
+        _db.Setup(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()))
+           .ReturnsAsync((EmployeeQualification)null);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+            _employeeQualificationService.GetEmployeeQualificationsByEmployeeId(1));
+
+        Assert.Equal("No employee qualifications data.", exception.Message);
+
+        _db.Verify(x => x.EmployeeQualification.FirstOrDefault(It.IsAny<Expression<Func<EmployeeQualification, bool>>>()), Times.Once);
+    }
+
 }
