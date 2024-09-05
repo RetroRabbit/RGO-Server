@@ -159,6 +159,29 @@ public class EmployeeBankingServiceTest
     }
 
     [Fact]
+    public async Task Update_ApproveOwnDocumentFail()
+    {
+        _identity.Setup(i => i.Role).Returns("SuperAdmin");
+        _identity.Setup(x => x.EmployeeId).Returns(1);
+
+        _mockUnitOfWork
+            .Setup(u => u.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
+            .Returns(_testEmployee.ToMockIQueryable());
+
+        _mockUnitOfWork
+            .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
+            .Returns(EmployeeBankingTestData.EmployeeBankingNew.ToMockIQueryable());
+
+        _mockUnitOfWork.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+        .ReturnsAsync(true);
+
+        var exception = await Assert.ThrowsAsync<CustomException>(() =>
+               _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingNew.ToDto()));
+
+        Assert.Equivalent("You cannot approve your own documents.", exception.Message);
+    }
+
+    [Fact]
     public async Task GetUpdate_DoesNotExist()
     {
         _mockUnitOfWork
