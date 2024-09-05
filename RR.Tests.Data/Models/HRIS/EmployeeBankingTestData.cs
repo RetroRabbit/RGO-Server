@@ -15,7 +15,7 @@ public class EmployeeBankingTestData
         AccountType = EmployeeBankingAccountType.Savings,
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
         PendingUpdateDate = new DateOnly()
     };
@@ -30,7 +30,7 @@ public class EmployeeBankingTestData
         AccountType = EmployeeBankingAccountType.Savings,
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = new DateOnly(),
         PendingUpdateDate = new DateOnly()
     };
@@ -45,7 +45,7 @@ public class EmployeeBankingTestData
         AccountType = EmployeeBankingAccountType.Savings,
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = new DateOnly(),
         PendingUpdateDate = new DateOnly()
     };
@@ -53,14 +53,14 @@ public class EmployeeBankingTestData
     public static EmployeeBanking EmployeeBankingNew = new()
     {
         Id = 0,
-        EmployeeId = 1,
+        EmployeeId = 4,
         BankName = "FNB",
         Branch = "Not Sure",
         AccountNo = "120",
         AccountType = EmployeeBankingAccountType.Savings,
-        Status = BankApprovalStatus.Approved,
+        Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = new DateOnly(),
         PendingUpdateDate = new DateOnly()
     };
@@ -77,7 +77,7 @@ public class EmployeeBankingTestData
             AccountType = EmployeeBankingAccountType.Savings,
             Status = BankApprovalStatus.PendingApproval,
             DeclineReason = "",
-            File = "asd",
+            File = [],
             LastUpdateDate = new DateOnly(),
             PendingUpdateDate = new DateOnly()
         };
@@ -95,7 +95,7 @@ public class EmployeeBankingTestData
             AccountType = EmployeeBankingAccountType.Savings,
             Status = BankApprovalStatus.PendingApproval,
             DeclineReason = "",
-            File = "asd",
+            File = [],
             LastUpdateDate = new DateOnly(),
             PendingUpdateDate = new DateOnly()
         };

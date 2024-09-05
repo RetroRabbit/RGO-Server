@@ -19,7 +19,7 @@ public class EmployeeBankingDto
     public EmployeeBankingAccountType AccountType { get; set; }
     public BankApprovalStatus Status { get; set; }
     public string? DeclineReason { get; set; }
-    public string? File { get; set; }
+    public byte[] File { get; set; } = Array.Empty<byte>();
     [DataType(DataType.Date)]
     public DateOnly LastUpdateDate { get; set; }
     [DataType(DataType.Date)]
