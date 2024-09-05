@@ -1,9 +1,11 @@
 ﻿using System.Linq.Expressions;
+using System.Net.Mail;
 using AutoMapper;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Interfaces.Helper;
 using HRIS.Services.Services;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
@@ -137,6 +139,23 @@ public class EmployeeServiceUnitTests
         {
             var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeNullType.ToDto()));
             Assert.Equal("Employee Type Missing", result.Message);
+        }
+
+        if(testCase == "Log Email exception")
+        {
+            _mapperMock.Setup(m => m.Map<Employee>(EmployeeTestData.EmployeeOne.ToDto())).Returns(EmployeeTestData.EmployeeOne);
+            _mapperMock.Setup(m => m.Map<EmployeeDto>(EmployeeTestData.EmployeeTwo)).Returns(EmployeeTestData.EmployeeOne.ToDto());
+
+            _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
+
+            _mapperMock.Setup(m => m.Map<EmployeeDto>(EmployeeTestData.EmployeeOne)).Returns(EmployeeTestData.EmployeeOne.ToDto());
+
+            _emailService.Setup(e => e.Send(It.IsAny<MailAddress>(), It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
+            _emailHelper.Setup(e => e.SendMailAsync(It.IsAny<MailMessage>())).Throws<Exception>();
+
+            var result = await _employeeService.CreateEmployee(EmployeeTestData.EmployeeTwo.ToDto());
+            Assert.NotNull(result);
+            Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
         }
     }
 
@@ -458,6 +477,9 @@ public class EmployeeServiceUnitTests
         var teamLead = new Employee { Id = 2, Name = "John", Surname = "Doe" };
         var peopleChampion = new Employee { Id = 3, Name = "Jane", Surname = "Smith" };
         var client = new Client { Id = 4, Name = "Acme Corp" };
+        employee.TeamLead = 2;
+        employee.PeopleChampion = 3;
+        employee.ClientAllocated = 4;
 
         _dbMock.Setup(db => db.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>()))
                .Returns(new List<Employee> { teamLead, peopleChampion }.AsQueryable().ToMockIQueryable());
@@ -474,112 +496,123 @@ public class EmployeeServiceUnitTests
         var result = await _employeeService.UpdateEmployee(employeeDto);
 
         Assert.NotNull(result);
-        Assert.Null(result.TeamLead);
-        Assert.Null(result.PeopleChampion);
-        Assert.Null(result.ClientAllocated);
+        Assert.NotNull(result.TeamLead);
+        Assert.NotNull(result.PeopleChampion);
+        Assert.NotNull(result.ClientAllocated);
     }
 
-    //[Fact]
-    //public async Task GetEmployeeProfile_NullTeamLeadPeopleChampionClientAllocated_HandlesNulls()
-    //{
-    //    var identifier = "test@example.com";
-    //    var employeeDto = new EmployeeDto
-    //    {
-    //        Id = 1,
-    //        Name = "John",
-    //        Surname = "Doe",
-    //        TeamLead = null,
-    //        PeopleChampion = null,
-    //        ClientAllocated = null
-    //    };
+    [Fact]
+    public async Task GetEmployeeProfile_NullTeamLeadPeopleChampionClientAllocated_HandlesNulls()
+    {
+        var identifier = EmployeeTestData.EmployeeOne.Email;
 
-    //    _dbMock.Setup(s => s.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new List<Employee>().ToMockIQueryable());
-    //    _mapperMock.Setup(m => m.Map<EmployeeProfileDto>(employeeDto)).Returns(new EmployeeProfileDto());
+        var employee = EmployeeTestData.EmployeeOne;
+        employee.TeamLead = null;
+        employee.PeopleChampion = null;
+        employee.ClientAllocated = null;
 
-    //    var result = await _employeeService.GetEmployeeProfile(identifier);
+        var employees = new List<Employee>
+        {
+            employee,
+            EmployeeTestData.EmployeeTwo,
+            EmployeeTestData.EmployeeThree
+        };
 
-    //    Assert.NotNull(result);
-    //    Assert.Null(result.TeamLeadName);
-    //    Assert.Null(result.PeopleChampionName);
-    //    Assert.Null(result.ClientAllocatedName);
-    //}
+        _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .ReturnsAsync(true);
 
-    //[Fact]
-    //public async Task GetEmployeeProfile_ValidEmail_ReturnsEmployeeProfile()
-    //{
-    //    var identifier = "test@example.com";
-    //    var employeeDto = new EmployeeDto
-    //    {
-    //        Id = 1,
-    //        Name = "John",
-    //        Surname = "Doe",
-    //        TeamLead = 2,
-    //        PeopleChampion = 3,
-    //        ClientAllocated = 4
-    //    };
+        _dbMock.Setup(s => s.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employees.ToMockIQueryable());
 
-    //    var teamLeadDto = new EmployeeDto { Id = 2, Name = "Jane", Surname = "Smith" };
-    //    var peopleChampionDto = new EmployeeDto { Id = 3, Name = "Michael", Surname = "Johnson" };
-    //    var clientDto = new ClientDto { Id = 4, Name = "ABC Corp" };
+        _mapperMock.Setup(m => m.Map<EmployeeProfileDto>(It.IsAny<EmployeeDto>())).Returns(new EmployeeProfileDto());
 
-    //    _mapperMock.Setup(m => m.Map<EmployeeProfileDto>(employeeDto)).Returns(new EmployeeProfileDto());
+        var result = await _employeeService.GetEmployeeProfile(identifier);
 
-    //    _dbMock.Setup(db => db.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(new List<Employee> { new Employee { Id = 1, Name = "John", Surname = "Doe" } }.AsQueryable());
-    //    _dbMock.Setup(db => db.Employee.GetByEmail(It.IsAny<string>())).ReturnsAsync(employeeDto);
-    //    _dbMock.Setup(db => db.Employee.GetById(2)).ReturnsAsync(teamLeadDto);
-    //    _dbMock.Setup(db => db.Employee.GetById(3)).ReturnsAsync(peopleChampionDto);
-    //    _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>())).Returns(new List<Client> { new Client { Id = 4, Name = "ABC Corp" } }.AsQueryable());
-    //    _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>())).ReturnsAsync(clientDto);
+        Assert.NotNull(result);
+        Assert.Null(result.TeamLeadName);
+        Assert.Null(result.PeopleChampionName);
+        Assert.Null(result.ClientAllocatedName);
+    }
 
-    //    var result = await _employeeService.GetEmployeeProfile(identifier);
+    [Fact]
+    public async Task GetEmployeeProfile_ValidEmail_ReturnsEmployeeProfile()
+    {
+        var identifier = EmployeeTestData.EmployeeOne.Email;
 
-    //    Assert.NotNull(result);
-    //    Assert.Equal("Jane Smith", result.TeamLeadName);
-    //    Assert.Equal("Michael Johnson", result.PeopleChampionName);
-    //    Assert.Equal("ABC Corp", result.ClientAllocatedName);
-    //}
+        var employee = EmployeeTestData.EmployeeOne;
+        employee.TeamLead = 2;
+        employee.PeopleChampion = 3;
+        employee.ClientAllocated = 4;
 
-    //[Fact]
-    //public async Task GetEmployeeProfile_ValidEmployeeId_ReturnsEmployeeProfile()
-    //{
-    //    var identifier = "1";
-    //    var employeeDto = new EmployeeDto
-    //    {
-    //        Id = 1,
-    //        Name = "John",
-    //        Surname = "Doe",
-    //        TeamLead = 2,
-    //        PeopleChampion = 3,
-    //        ClientAllocated = 4
-    //    };
+        var employees = new List<Employee>
+        {
+            employee,
+            EmployeeTestData.EmployeeTwo,
+            EmployeeTestData.EmployeeThree,
+            EmployeeTestData.EmployeeFour
+        };
 
-    //    var teamLeadDto = new EmployeeDto { Id = 2, Name = "Jane", Surname = "Smith" };
-    //    var peopleChampionDto = new EmployeeDto { Id = 3, Name = "Michael", Surname = "Johnson" };
-    //    var clientDto = new ClientDto { Id = 4, Name = "ABC Corp" };
+        var client = new Client { Id = 4, Name = "ABC Corp" };
 
-    //    _mapperMock.Setup(m => m.Map<EmployeeProfileDto>(employeeDto)).Returns(new EmployeeProfileDto());
+        _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .ReturnsAsync(true);
 
-    //    _dbMock.Setup(db => db.Employee.GetById(1)).ReturnsAsync(employeeDto);
-    //    _dbMock.Setup(db => db.Employee.GetById(2)).ReturnsAsync(teamLeadDto);
-    //    _dbMock.Setup(db => db.Employee.GetById(3)).ReturnsAsync(peopleChampionDto);
-    //    _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>())).Returns(new List<Client> { new Client { Id = 4, Name = "ABC Corp" } }.AsQueryable());
-    //    _dbMock.Setup(db => db.Client.FirstOrDefaultAsync(It.IsAny<Expression<Func<Client, bool>>>())).ReturnsAsync(clientDto);
+        _mapperMock.Setup(m => m.Map<EmployeeProfileDto>(It.IsAny<EmployeeDto>())).Returns(new EmployeeProfileDto());
 
-    //    var result = await _employeeService.GetEmployeeProfile(identifier);
+        _dbMock.Setup(db => db.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employees.ToMockIQueryable());
+        _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>())).Returns(new List<Client> { client }.ToMockIQueryable());
 
-    //    Assert.NotNull(result);
-    //    Assert.Equal("Jane Smith", result.TeamLeadName);
-    //    Assert.Equal("Michael Johnson", result.PeopleChampionName);
-    //    Assert.Equal("ABC Corp", result.ClientAllocatedName);
-    //}
+        var result = await _employeeService.GetEmployeeProfile(identifier);
 
-    //[Fact]
-    //public async Task GetEmployeeProfile_InvalidEmail_ThrowsCustomException()
-    //{
-    //    var identifier = "invalid@example.com";
+        Assert.NotNull(result);
+        Assert.NotNull(result.TeamLeadName);
+        Assert.NotNull(result.PeopleChampionName);
+        Assert.NotNull(result.ClientAllocatedName);
+    }
 
-    //    _dbMock.Setup(s => s.Client.Get(It.IsAny<Expression<Func<Client, bool>>>())).Returns(new List<Client>().ToMockIQueryable());
+    [Fact]
+    public async Task GetEmployeeProfile_ValidEmployeeId_ReturnsEmployeeProfile()
+    {
+        var identifier = EmployeeTestData.EmployeeOne.Id.ToString();
 
-    //    await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeProfile(identifier));
-    //}
+        var employee = EmployeeTestData.EmployeeOne;
+        employee.TeamLead = 2;
+        employee.PeopleChampion = 3;
+        employee.ClientAllocated = 4;
+
+        var employees = new List<Employee>
+        {
+            employee,
+            EmployeeTestData.EmployeeTwo,
+            EmployeeTestData.EmployeeThree,
+            EmployeeTestData.EmployeeFour
+        };
+
+        var client = new Client { Id = 4, Name = "ABC Corp" };
+
+        _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .ReturnsAsync(true);
+
+        _mapperMock.Setup(m => m.Map<EmployeeProfileDto>(It.IsAny<EmployeeDto>())).Returns(new EmployeeProfileDto());
+
+        _dbMock.Setup(db => db.Employee.Get(It.IsAny<Expression<Func<Employee, bool>>>())).Returns(employees.ToMockIQueryable());
+        _dbMock.Setup(db => db.Client.Get(It.IsAny<Expression<Func<Client, bool>>>())).Returns(new List<Client> { client }.ToMockIQueryable());
+
+        var result = await _employeeService.GetEmployeeProfile(identifier);
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.TeamLeadName);
+        Assert.NotNull(result.PeopleChampionName);
+        Assert.NotNull(result.ClientAllocatedName);
+    }
+
+    [Fact]
+    public async Task GetEmployeeProfile_InvalidEmail_ThrowsCustomException()
+    {
+        var identifier = "invalid@example.com";
+
+        _dbMock.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
+               .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<CustomException>(() => _employeeService.GetEmployeeProfile(identifier));
+    }
 }
