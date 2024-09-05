@@ -30,7 +30,7 @@ public class EmployeeCertificationControllerUnitTests
                 Id = 1,
                 IssueDate = DateTime.Now,
                 IssueOrganization = "Amazon",
-                CertificateDocument = "asd",
+                CertificateDocument = [],
                 CertificateName = "Name",
                 EmployeeId = EmployeeTestData.EmployeeOne.Id,
             };
