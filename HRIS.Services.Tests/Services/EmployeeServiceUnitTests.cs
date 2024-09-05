@@ -11,6 +11,7 @@ using RR.Tests.Data;
 using RR.Tests.Data.Models.HRIS;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
+using RR.UnitOfWork.Entities.Shared;
 using Xunit;
 
 namespace HRIS.Services.Tests.Services;
@@ -32,6 +33,7 @@ public class EmployeeServiceUnitTests
     private readonly AuthorizeIdentityMock _unauthorizedIdentity;
     private readonly AuthorizeIdentityMock _journeyIdentity;
     private readonly Mock<IMapper> _mapperMock;
+    private readonly Mock<SmtpClient> _smtpClientMock;
 
     private readonly EmployeeRole _employeeRoleDto = new()
     {
@@ -53,21 +55,21 @@ public class EmployeeServiceUnitTests
         _emailHelper = new Mock<IEmailHelper>();
         _emailService = new Mock<IEmailService>();
         _mapperMock = new Mock<IMapper>();
+        _smtpClientMock = new Mock<SmtpClient>();
 
-        Mock<IEmailService> emailService = new();
         _roleServiceMock = new Mock<IRoleService>();
 
         _employeeService = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
             _employeeAddressServiceMock.Object, _roleServiceMock.Object, _authServiceMock.Object, _errorLoggingServiceMock.Object,
-            emailService.Object, _authorizedIdentity, _mapperMock.Object);
+            _emailService.Object, _authorizedIdentity, _mapperMock.Object);
 
         _employeeServiceUnauthorized = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _authServiceMock.Object, _errorLoggingServiceMock.Object,
-           emailService.Object, _unauthorizedIdentity, _mapperMock.Object);
+           _emailService.Object, _unauthorizedIdentity, _mapperMock.Object);
 
         _employeeServiceJourney = new EmployeeService(_employeeTypeServiceMock.Object, _dbMock.Object,
            _employeeAddressServiceMock.Object, _roleServiceMock.Object, _authServiceMock.Object, _errorLoggingServiceMock.Object,
-           emailService.Object, _journeyIdentity, _mapperMock.Object);
+           _emailService.Object, _journeyIdentity, _mapperMock.Object);
     }
 
     [Theory]
@@ -76,7 +78,6 @@ public class EmployeeServiceUnitTests
     [InlineData("User already created", true, false)]
     [InlineData("Email Is Already in Use", false, true)]
     [InlineData("Employee Type Missing", false, false)]
-    [InlineData("Log Email exception", false, false)]
     public async Task SaveEmployeeTests(string testCase, bool anySequenceOne, bool anySequenceTwo)
     {
         _dbMock.SetupSequence(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -139,23 +140,6 @@ public class EmployeeServiceUnitTests
         {
             var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeNullType.ToDto()));
             Assert.Equal("Employee Type Missing", result.Message);
-        }
-
-        if(testCase == "Log Email exception")
-        {
-            _mapperMock.Setup(m => m.Map<Employee>(EmployeeTestData.EmployeeOne.ToDto())).Returns(EmployeeTestData.EmployeeOne);
-            _mapperMock.Setup(m => m.Map<EmployeeDto>(EmployeeTestData.EmployeeTwo)).Returns(EmployeeTestData.EmployeeOne.ToDto());
-
-            _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
-
-            _mapperMock.Setup(m => m.Map<EmployeeDto>(EmployeeTestData.EmployeeOne)).Returns(EmployeeTestData.EmployeeOne.ToDto());
-
-            _emailService.Setup(e => e.Send(It.IsAny<MailAddress>(), It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
-            _emailHelper.Setup(e => e.SendMailAsync(It.IsAny<MailMessage>())).Throws<Exception>();
-
-            var result = await _employeeService.CreateEmployee(EmployeeTestData.EmployeeTwo.ToDto());
-            Assert.NotNull(result);
-            Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
         }
     }
 

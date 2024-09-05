@@ -68,14 +68,7 @@ public class EmployeeService : IEmployeeService
 
         await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto)); 
         
-        try
-        {
-            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"), "WelcomeLetter", employeeDto);
-        }
-        catch (Exception ex)
-        {
-            _errorLoggingService.LogException(ex);
-        }
+        await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"), "WelcomeLetter", employeeDto);
 
         return newEmployee;
     }
