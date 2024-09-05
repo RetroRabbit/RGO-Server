@@ -78,6 +78,7 @@ public class EmployeeServiceUnitTests
     [InlineData("User already created", true, false)]
     [InlineData("Email Is Already in Use", false, true)]
     [InlineData("Employee Type Missing", false, false)]
+    [InlineData("Log Email exception", false, false)]
     public async Task SaveEmployeeTests(string testCase, bool anySequenceOne, bool anySequenceTwo)
     {
         _dbMock.SetupSequence(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
@@ -140,6 +141,22 @@ public class EmployeeServiceUnitTests
         {
             var result = await Assert.ThrowsAsync<CustomException>(() => _employeeService.CreateEmployee(EmployeeTestData.EmployeeNullType.ToDto()));
             Assert.Equal("Employee Type Missing", result.Message);
+        }
+
+        if (testCase == "Log Email exception")
+        {
+            _mapperMock.Setup(m => m.Map<Employee>(EmployeeTestData.EmployeeOne.ToDto())).Returns(EmployeeTestData.EmployeeOne);
+            _mapperMock.Setup(m => m.Map<EmployeeDto>(EmployeeTestData.EmployeeTwo)).Returns(EmployeeTestData.EmployeeOne.ToDto());
+
+            _roleServiceMock.Setup(r => r.GetRole("Employee")).ReturnsAsync(EmployeeRoleTestData.RoleDtoEmployee.ToDto());
+
+            _mapperMock.Setup(m => m.Map<EmployeeDto>(EmployeeTestData.EmployeeOne)).Returns(EmployeeTestData.EmployeeOne.ToDto());
+
+            _emailService.Setup(e => e.Send(It.IsAny<MailAddress>(), It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
+
+            var result = await _employeeService.CreateEmployee(EmployeeTestData.EmployeeTwo.ToDto());
+            Assert.NotNull(result);
+            Assert.Equivalent(EmployeeTestData.EmployeeOne.ToDto(), result);
         }
     }
 
