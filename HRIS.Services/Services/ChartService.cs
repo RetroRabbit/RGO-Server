@@ -230,7 +230,7 @@ public partial class ChartService : IChartService
 
     public async Task<ChartDto> DeleteChart(int id)
     {
-        var exists = await CheckIfChartsExists(id);
+        var exists = await _db.Chart.Any(chart => chart.Id == id); ;
         if (exists == false)
             throw new CustomException("Chart not found");
 
