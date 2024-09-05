@@ -14,7 +14,7 @@ public class EmployeeCertificationUnitTests
         Id = 1,
         IssueDate = DateTime.Now,
         IssueOrganization = "From",
-        CertificateDocument = "base64",
+        CertificateDocument = [],
         CertificateName = "Name",
     };
 
@@ -27,7 +27,7 @@ public class EmployeeCertificationUnitTests
             EmployeeId = EmployeeTestData.EmployeeOne.Id,
             IssueDate = DateTime.Now,
             IssueOrganization= "String",
-            CertificateDocument = "as",
+            CertificateDocument = [],
             CertificateName = "Name",
             DocumentName = "hello"
         };
@@ -42,7 +42,7 @@ public class EmployeeCertificationUnitTests
             Id = 1,
             IssueDate = DateTime.Now,
             IssueOrganization = "From",
-            CertificateDocument = "base64",
+            CertificateDocument = [],
             CertificateName = "Name",
             DocumentName = "hello"
         };
