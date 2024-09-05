@@ -53,12 +53,12 @@ public class EmployeeBankingTestData
     public static EmployeeBanking EmployeeBankingNew = new()
     {
         Id = 0,
-        EmployeeId = 4,
+        EmployeeId = 1,
         BankName = "FNB",
         Branch = "Not Sure",
         AccountNo = "120",
         AccountType = EmployeeBankingAccountType.Savings,
-        Status = BankApprovalStatus.PendingApproval,
+        Status = BankApprovalStatus.Approved,
         DeclineReason = "",
         File = "asd",
         LastUpdateDate = new DateOnly(),

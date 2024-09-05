@@ -332,9 +332,6 @@ VALUES (6, 6, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (7, 7, 1);
 
-INSERT INTO "EmployeeData" ("id", "employeeId", "fieldCodeId", value)
-VALUES (1, 1, 14, 'John');
-
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
 VALUES (1, 1, 1);
 INSERT INTO "EmployeeRole" (id, "employeeId", "roleId")
