@@ -211,7 +211,7 @@ Run the command to check coverage on your project
     (<solution/project> can be omitted to test the entire project)
 
 Generate report
-    reportgenerator -reports:coverage.xml -targetdir:coverage/report
+    reportgenerator -reports:coverage.xml -targetdir:coverage/report -assemblyfilters:-HRIS.Services.Tests.dll;-HRIS.Models.dll;-RR.App.Tests.dll;-ATS.Services.Tests.dll;-RR.UnitOfWork.dll;-RR.UnitOfWork.Tests.dll
 
 Navigate to the %temp% / report folder and open index.html using your prefered browser found at
     /RGO-Server/coverage/report/index.html
