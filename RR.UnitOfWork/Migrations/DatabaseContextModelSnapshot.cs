@@ -589,8 +589,9 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
 
-                    b.Property<string>("File")
-                        .HasColumnType("text")
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("bytea")
                         .HasColumnName("file");
 
                     b.Property<DateOnly>("LastUpdateDate")
