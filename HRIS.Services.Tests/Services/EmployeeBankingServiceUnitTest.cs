@@ -170,15 +170,19 @@ public class EmployeeBankingServiceTest
 
         _mockUnitOfWork
             .Setup(u => u.EmployeeBanking.Get(It.IsAny<Expression<Func<EmployeeBanking, bool>>>()))
-            .Returns(EmployeeBankingTestData.EmployeeBankingNew.ToMockIQueryable());
+            .Returns(EmployeeBankingTestData.EmployeeBankingOne.ToMockIQueryable());
 
         _mockUnitOfWork.Setup(e => e.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>()))
         .ReturnsAsync(true);
 
+        var employeeBanking = EmployeeBankingTestData.EmployeeBankingOne;
+        employeeBanking.Status = Models.Enums.BankApprovalStatus.Approved;
         var exception = await Assert.ThrowsAsync<CustomException>(() =>
-               _employeeBankingService.Update(EmployeeBankingTestData.EmployeeBankingNew.ToDto()));
+               _employeeBankingService.Update(employeeBanking.ToDto()));
 
         Assert.Equivalent("You cannot approve your own documents.", exception.Message);
+
+        employeeBanking.Status = Models.Enums.BankApprovalStatus.PendingApproval;
     }
 
     [Fact]
