@@ -15,7 +15,7 @@ public class EmployeeBankingTestData
         AccountType = EmployeeBankingAccountType.Savings,
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = DateOnly.FromDateTime(DateTime.Now),
         PendingUpdateDate = new DateOnly()
     };
@@ -30,7 +30,7 @@ public class EmployeeBankingTestData
         AccountType = EmployeeBankingAccountType.Savings,
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = new DateOnly(),
         PendingUpdateDate = new DateOnly()
     };
@@ -45,7 +45,7 @@ public class EmployeeBankingTestData
         AccountType = EmployeeBankingAccountType.Savings,
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = new DateOnly(),
         PendingUpdateDate = new DateOnly()
     };
@@ -60,7 +60,7 @@ public class EmployeeBankingTestData
         AccountType = EmployeeBankingAccountType.Savings,
         Status = BankApprovalStatus.PendingApproval,
         DeclineReason = "",
-        File = "asd",
+        File = [],
         LastUpdateDate = new DateOnly(),
         PendingUpdateDate = new DateOnly()
     };
@@ -77,7 +77,7 @@ public class EmployeeBankingTestData
             AccountType = EmployeeBankingAccountType.Savings,
             Status = BankApprovalStatus.PendingApproval,
             DeclineReason = "",
-            File = "asd",
+            File = [],
             LastUpdateDate = new DateOnly(),
             PendingUpdateDate = new DateOnly()
         };
@@ -95,7 +95,7 @@ public class EmployeeBankingTestData
             AccountType = EmployeeBankingAccountType.Savings,
             Status = BankApprovalStatus.PendingApproval,
             DeclineReason = "",
-            File = "asd",
+            File = [],
             LastUpdateDate = new DateOnly(),
             PendingUpdateDate = new DateOnly()
         };

@@ -55,7 +55,7 @@ public class EmployeeBankingControllerUnitTests
                     AccountType = EmployeeBankingAccountType.Savings,
                     Status = BankApprovalStatus.Approved,
                     DeclineReason = "DeclineReason",
-                    File = "File.pdf"
+                    File = []
                 },
         };
 

@@ -66,8 +66,8 @@ public class EmployeeService : IEmployeeService
 
         var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee, Role = roleDto };
 
-        await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto)); 
-        
+        await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
+
         try
         {
             await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"), "WelcomeLetter", employeeDto);
@@ -378,11 +378,6 @@ public class EmployeeService : IEmployeeService
 
         if (string.IsNullOrEmpty(role))
         {
-            if (employee == null)
-            {
-                throw new CustomException("User account not found in database.");
-            }
-
             if (employee.AuthUserId != id)
             {
                 employee.AuthUserId = id;
