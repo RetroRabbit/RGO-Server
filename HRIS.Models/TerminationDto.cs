@@ -22,7 +22,7 @@ public class TerminationDto
     [Required(ErrorMessage = "Termination 'AccountsStatus' field is missing.")]
     public bool AccountsStatus { get; set; }
     [Required(ErrorMessage = "Termination 'TerminationDocument' field is missing.")]
-    public string TerminationDocument {  get; set; }
+    public byte[] TerminationDocument {  get; set; } = Array.Empty<byte>();
     [Required(ErrorMessage = "Termination 'DocumentName' field is missing.")]
     public string DocumentName { get; set; }
     public string TerminationComments { get; set; }
