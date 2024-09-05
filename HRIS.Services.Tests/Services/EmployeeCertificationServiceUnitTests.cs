@@ -23,7 +23,7 @@ public class EmployeeCertificationServiceUnitTests
     {
         Id = 1,
         EmployeeId = EmployeeTestData.EmployeeOne.Id,
-        CertificateDocument = "base64",
+        CertificateDocument = [],
         CertificateName = "Title",
         IssueOrganization = "Publisher",
         IssueDate = DateTime.UtcNow,
@@ -153,7 +153,7 @@ public class EmployeeCertificationServiceUnitTests
         var employeeCertificationDto = new EmployeeCertificationDto
         {
             EmployeeId = unauthorizedEmployeeId,
-            CertificateDocument = "base64",
+            CertificateDocument = [],
             CertificateName = "Title",
             IssueOrganization = "Publisher",
             IssueDate = DateTime.UtcNow
@@ -208,7 +208,7 @@ public class EmployeeCertificationServiceUnitTests
         {
             Id = 1,
             EmployeeId = 2,
-            CertificateDocument = "base64",
+            CertificateDocument = [],
             CertificateName = "Title",
             IssueOrganization = "Publisher",
             IssueDate = DateTime.UtcNow,
@@ -233,7 +233,7 @@ public class EmployeeCertificationServiceUnitTests
         {
             Id = 1,
             EmployeeId = 2,
-            CertificateDocument = "base64",
+            CertificateDocument = [],
             CertificateName = "Title",
             IssueOrganization = "Publisher",
             IssueDate = DateTime.UtcNow,
