@@ -378,11 +378,6 @@ public class EmployeeService : IEmployeeService
 
         if (string.IsNullOrEmpty(role))
         {
-            if (employee == null)
-            {
-                throw new CustomException("User account not found in database.");
-            }
-
             if (employee.AuthUserId != id)
             {
                 employee.AuthUserId = id;
