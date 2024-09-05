@@ -5,6 +5,15 @@ namespace HRIS.Services.Interfaces;
 public interface IEmployeeService
 {
     /// <summary>
+    /// Checking user Authentication from AuthenticationController
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="id"></param>
+    /// <param name="role"></param>
+    /// <returns></returns>
+    Task<EmployeeProfileDto> CheckUserAuthentication(string email, string id, string role);
+
+    /// <summary>
     ///     Check if Email exists
     /// </summary>
     /// <param name="email"></param>
@@ -51,7 +60,7 @@ public interface IEmployeeService
     /// <param name="employeeDto"></param>
     /// <param name="email"></param>
     /// <returns>EmployeeDto</returns>
-    Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto);
+    Task<EmployeeDto> UpdateEmployee(EmployeeProfileDto employeeDto);
 
     /// <summary>
     ///     Delete employee
@@ -64,7 +73,13 @@ public interface IEmployeeService
     ///     Get simple employee profile for non admin users
     /// </summary>
     /// <returns>SimpeEmployeeProfileDto</returns>
-    Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail);
+    Task<EmployeeProfileDto> GetEmployeeProfile(string employeeEmail);
+
+    /// <summary>
+    ///     Get all employees
+    /// </summary>
+    /// <returns></returns>
+    Task<List<EmployeeProfileDto>> GetAllEmployeeProfiles();
 
     /// <summary>
     ///     Get Employees filtered by Peoples champion or employee type
@@ -83,5 +98,5 @@ public interface IEmployeeService
     /// <param name="idNumber"></param>
     /// <param name="employeeId"></param>
     /// <returns></returns>
-    Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId);
+    Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId, bool update);
 }

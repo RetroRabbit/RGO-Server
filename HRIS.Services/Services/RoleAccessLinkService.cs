@@ -1,8 +1,10 @@
 ﻿using HRIS.Models;
 using HRIS.Services.Interfaces;
+using HRIS.Services.Session;
 using Microsoft.EntityFrameworkCore;
 using RR.UnitOfWork;
 using RR.UnitOfWork.Entities.HRIS;
+using System.Data;
 
 namespace HRIS.Services.Services;
 
@@ -10,15 +12,51 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 {
     private readonly IUnitOfWork _db;
     private readonly IEmployeeRoleService _employeeRoleService;
+    private readonly IAuthService _authService;
+    private readonly AuthorizeIdentity _identity;
 
-    public RoleAccessLinkService(IUnitOfWork db, IEmployeeRoleService employeeRoleService)
+    public RoleAccessLinkService(IUnitOfWork db, IEmployeeRoleService employeeRoleService, IAuthService authService, AuthorizeIdentity identity)
     {
         _db = db;
         _employeeRoleService = employeeRoleService;
+        _identity = identity;
+        _authService = authService;
     }
 
-    public async Task<RoleAccessLinkDto> Save(RoleAccessLinkDto roleAccessLinkDto)
+    public Task<bool> CheckRoleAccessLink(string role, string permission)
     {
+        return _db.RoleAccessLink
+                  .Any(r => r.Role!.Description == role && r.RoleAccess!.Permission == permission);
+    }
+
+    public Task<bool> CheckRole(string name)
+    {
+        return _db.Role.Any(role => role.Description == name);
+    }
+
+    public Task<bool> CheckRoleAccess(string permission)
+    {
+        return _db.RoleAccess
+                  .Any(r => r.Permission == permission);
+    }
+
+    public Task<bool> CheckEmployee(string email)
+    {
+        return _db.Employee
+                  .Any(r => r.Email == email);
+    }
+
+    public async Task<RoleAccessLinkDto> Create(RoleAccessLinkDto roleAccessLinkDto)
+    {
+        var exists = await CheckRoleAccessLink(roleAccessLinkDto.Role!.Description!, roleAccessLinkDto.RoleAccess!.Permission);
+        if (exists)
+        {
+            throw new CustomException("Role Access Link Already Exists");
+        }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var newRoleAccessLink = new RoleAccessLink(roleAccessLinkDto);
 
         var addedRoleAccessLink = await _db.RoleAccessLink.Add(newRoleAccessLink);
@@ -28,6 +66,15 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
     public async Task<RoleAccessLinkDto> Delete(string role, string permission)
     {
+        var exists = await CheckRoleAccessLink(role, permission);
+        if (!exists)
+        {
+            throw new CustomException("Role Access Link Does Not Exist");
+        }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var roleAccessLink = await _db.RoleAccessLink
                                       .Get(r => r.Role!.Description == role && r.RoleAccess!.Permission == permission)
                                       .AsNoTracking()
@@ -36,16 +83,16 @@ public class RoleAccessLinkService : IRoleAccessLinkService
                                       .Select(r => r.ToDto())
                                       .FirstOrDefaultAsync();
 
-        if (roleAccessLink == null)
-            throw new CustomException($"Role Access Link not found(Role:{role},Permission:{permission})");
-
-        var deleted = await _db.RoleAccessLink.Delete(roleAccessLink.Id);
+        var deleted = await _db.RoleAccessLink.Delete(roleAccessLink!.Id);
 
         return deleted.Role != null ? deleted.ToDto() : roleAccessLink;
     }
 
     public async Task<Dictionary<string, List<string>>> GetAll()
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var roleAccessLinks = await _db.RoleAccessLink
                                        .Get()
                                        .AsNoTracking()
@@ -62,6 +109,15 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
     public async Task<Dictionary<string, List<string>>> GetByRole(string role)
     {
+        var exists = await CheckRole(role);
+        if (!exists)
+        {
+            throw new CustomException("Role Does Not Exist");
+        }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var roleAccessLinks = await _db.RoleAccessLink
                                        .Get(r => r.Role!.Description == role)
                                        .AsNoTracking()
@@ -76,9 +132,18 @@ public class RoleAccessLinkService : IRoleAccessLinkService
         return roleAccessLinks!;
     }
 
-    public Task<Dictionary<string, List<string>>> GetByPermission(string permission)
+    public async Task<Dictionary<string, List<string>>> GetByPermission(string permission)
     {
-        var roleAccessLinks = _db.RoleAccessLink
+        var exists = await CheckRoleAccess(permission);
+        if (!exists)
+        {
+            throw new CustomException("Role Access Does Not Exist");
+        }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
+        var roleAccessLinks = await _db.RoleAccessLink
                                  .Get(r => r.RoleAccess!.Permission == permission)
                                  .AsNoTracking()
                                  .Include(r => r.Role)
@@ -93,6 +158,15 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
     public async Task<Dictionary<string, List<string>>> GetRoleByEmployee(string email)
     {
+        var exists = await CheckEmployee(email);
+        if (!exists)
+        {
+            throw new CustomException("Employee Does Not Exist");
+        }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var employeeRoles = (await _employeeRoleService.GetEmployeeRoles(email))
                             .Select(r => r.Role!.Description)
                             .ToList();
@@ -117,12 +191,24 @@ public class RoleAccessLinkService : IRoleAccessLinkService
 
     public async Task<RoleAccessLinkDto> Update(RoleAccessLinkDto roleAccessLinkDto)
     {
+        var exists = await CheckRoleAccessLink(roleAccessLinkDto.Role!.Description!, roleAccessLinkDto.RoleAccess!.Permission);
+        if (!exists)
+        {
+            throw new CustomException("Role Access Link Does Not Exist");
+        }
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var roleAccessLink = await _db.RoleAccessLink.Update(new RoleAccessLink(roleAccessLinkDto));
         return roleAccessLink.ToDto();
     }
 
     public async Task<List<RoleAccessLinkDto>> GetAllRoleAccessLink()
     {
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var roleAccessLinks = await _db.RoleAccessLink
                                        .Get()
                                        .AsNoTracking()
@@ -132,5 +218,19 @@ public class RoleAccessLinkService : IRoleAccessLinkService
                                        .ToListAsync();
 
         return roleAccessLinks;
+    }
+
+    public async Task CheckRolesForAuth(string authEmail, string authId)
+    {
+        var allRoles = await _authService.GetAllRolesAsync();
+        var databaseEmployeeRole = await GetRoleByEmployee(authEmail);
+        var roleFound = allRoles.Any(r => r.Name == databaseEmployeeRole.First().Key);
+
+        if (!roleFound)
+        {
+            throw new CustomException($"Auth0 does not have this {databaseEmployeeRole.First().Key} Role.");
+        }
+
+        await _authService.AddRoleToUserAsync(authId, allRoles.First(r => r.Name == databaseEmployeeRole.First().Key).Id);
     }
 }

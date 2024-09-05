@@ -19,7 +19,6 @@ public class EmployeeDocumentUnitTests
         {
             Id = 1,
             EmployeeNumber = "001",
-            TaxNumber = "34434434",
             EngagementDate = DateTime.Now,
             TerminationDate = DateTime.Now,
             PeopleChampion = null,
@@ -50,8 +49,6 @@ public class EmployeeDocumentUnitTests
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

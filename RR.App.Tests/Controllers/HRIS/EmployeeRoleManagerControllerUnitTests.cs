@@ -48,7 +48,7 @@ public class EmployeeRoleManageControllerUnitTests
         _roleMockService.Setup(service => service.CheckRole(role)).ReturnsAsync(true);
         _roleMockService.Setup(service => service.GetRole(role)).ReturnsAsync(roleDto);
         _authMockService.Setup(service => service.AddRoleToUserAsync("1", "authRoleId")).ReturnsAsync(true);
-        _employeeRoleMockService.Setup(service => service.SaveEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(employeeRoleDto);
+        _employeeRoleMockService.Setup(service => service.CreateEmployeeRole(It.IsAny<EmployeeRoleDto>())).ReturnsAsync(employeeRoleDto);
 
         var result = await _controller.AddRole(email, role);
 

@@ -56,6 +56,11 @@ public class EmployeeBankingService : IEmployeeBankingService
         if (_identity.IsAdmin == false && _identity.EmployeeId != newEntry.EmployeeId)
             throw new CustomException("Unauthorized Access");
 
+        if (newEntry.Status == BankApprovalStatus.Approved && _identity.EmployeeId == newEntry.EmployeeId)
+        {
+            throw new CustomException("You cannot approve your own documents.");
+        }
+
         var empDto = await _db.Employee
                               .Get(employee => employee.Id == newEntry.EmployeeId)
                               .AsNoTracking()

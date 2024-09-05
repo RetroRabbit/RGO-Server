@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
+using HRIS.Models;
 using HRIS.Services.Services;
 using Moq;
 using RR.Tests.Data;
@@ -17,15 +19,18 @@ public class EmployeeDataServiceUnitTest
     private readonly AuthorizeIdentityMock _nonSupportIdentity;
     private readonly EmployeeData _employeeData = EmployeeDataTestData.EmployeeDataOne;
     private readonly EmployeeDataService _nonSupportDataService;
+    private readonly Mock<IMapper> _mapperMock;
+
 
     public EmployeeDataServiceUnitTest()
     {
         _supportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "Admin", 1);
         _nonSupportIdentity = new AuthorizeIdentityMock("test@gmail.com", "test", "User", 1);
         _dbMock = new Mock<IUnitOfWork>();
-        _employeeDataService = new EmployeeDataService(_dbMock.Object, _supportIdentity);
+        _mapperMock = new Mock<IMapper>();
+        _employeeDataService = new EmployeeDataService(_dbMock.Object, _supportIdentity, _mapperMock.Object);
         _employeeData = EmployeeDataTestData.EmployeeDataOne;
-        _nonSupportDataService = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity);
+        _nonSupportDataService = new EmployeeDataService(_dbMock.Object, _nonSupportIdentity, _mapperMock.Object);
     }
 
     [Fact]
@@ -62,6 +67,9 @@ public class EmployeeDataServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(true);
         _dbMock.Setup(x => x.EmployeeData.GetById(employeeId)).ReturnsAsync(employeeData);
+
+        _mapperMock.Setup(x => x.Map<EmployeeDataDto>(It.IsAny<EmployeeData>()))
+               .Returns(EmployeeDataTestData.EmployeeDataOne.ToDto());
 
         var result = await _employeeDataService.GetEmployeeData(employeeId);
 
@@ -115,6 +123,7 @@ public class EmployeeDataServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(false);
         _dbMock.Setup(x => x.EmployeeData.Add(It.IsAny<EmployeeData>())).ReturnsAsync(EmployeeDataTestData.EmployeeDataTwo);
+        _mapperMock.Setup(x => x.Map<EmployeeDataDto>(It.IsAny<EmployeeData>())).Returns(newEmployeeDataDto);
 
         var result = await _employeeDataService.CreateEmployeeData(newEmployeeDataDto);
 
@@ -154,6 +163,7 @@ public class EmployeeDataServiceUnitTest
         _dbMock.Setup(x => x.EmployeeData.Any(It.IsAny<Expression<Func<EmployeeData, bool>>>())).ReturnsAsync(true);
         _dbMock.Setup(x => x.EmployeeData.GetById(updatedEmployeeDataDto.EmployeeId)).ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
         _dbMock.Setup(x => x.EmployeeData.Update(It.IsAny<EmployeeData>())).ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
+        _mapperMock.Setup(x => x.Map<EmployeeDataDto>(It.IsAny<EmployeeData>())).Returns(EmployeeDataTestData.EmployeeDataOne.ToDto());
 
         var result = await _employeeDataService.UpdateEmployeeData(updatedEmployeeDataDto);
 
@@ -197,6 +207,9 @@ public class EmployeeDataServiceUnitTest
 
         _dbMock.Setup(x => x.EmployeeData.Delete(It.IsAny<int>()))
             .ReturnsAsync(EmployeeDataTestData.EmployeeDataOne);
+
+        _mapperMock.Setup(x => x.Map<EmployeeDataDto>(It.IsAny<EmployeeData>()))
+            .Returns(EmployeeDataTestData.EmployeeDataOne.ToDto());
 
         var result = await _employeeDataService.DeleteEmployeeData(employeeDataId);
 

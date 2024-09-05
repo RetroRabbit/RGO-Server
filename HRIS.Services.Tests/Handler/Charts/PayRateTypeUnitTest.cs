@@ -15,7 +15,6 @@ public class PayRateTypeUnitTest
 {
     private readonly Mock<IUnitOfWork> _dbMock;
     private readonly Mock<IEmployeeTypeService> _employeeTypeServiceMock;
-    private EmployeeAddressDto? employeeAddressDto;
     private readonly EmployeeType employeeType;
     private readonly EmployeeTypeDto employeeTypeDto;
     private readonly PayRateType payRateType;
@@ -29,8 +28,6 @@ public class PayRateTypeUnitTest
         employeeType = new EmployeeType(employeeTypeDto);
         _employeeTypeServiceMock.Setup(r => r.GetEmployeeTypeByName(employeeType.Name!))
                                 .ReturnsAsync(employeeTypeDto);
-        employeeAddressDto =
-            new EmployeeAddressDto{ Id = 1, UnitNumber = "2", ComplexName = "Complex", StreetNumber = "2", SuburbOrDistrict = "Suburb/District", City = "City", Country = "Country", Province = "Province", PostalCode = "1620" };
     }
 
     private EmployeeDto CreateEmployee(float? payRateType)
@@ -39,7 +36,6 @@ public class PayRateTypeUnitTest
         {
             Id = 1,
             EmployeeNumber = "001",
-            TaxNumber = "34434434",
             EngagementDate = DateTime.Now,
             TerminationDate = null,
             PeopleChampion = null,
@@ -70,8 +66,6 @@ public class PayRateTypeUnitTest
             CellphoneNo = "0000000000",
             ClientAllocated = null,
             TeamLead = null,
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto,
             HouseNo = null,
             EmergencyContactName = null,
             EmergencyContactNo = null

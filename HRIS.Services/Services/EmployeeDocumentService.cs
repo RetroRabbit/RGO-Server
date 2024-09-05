@@ -21,8 +21,21 @@ public class EmployeeDocumentService : IEmployeeDocumentService
         _identity = identity;
     }
 
+    public async Task<bool> EmployeeDocumentExists(int id)
+    {
+        return await _db.EmployeeDocument.Any(x => x.Id == id);
+    }
+
     public async Task<EmployeeDocumentDto> SaveEmployeeDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
+        var modelExists = await EmployeeDocumentExists(employeeDocDto.Id);
+
+        if (modelExists)
+            throw new CustomException("This model already exists");
+
+        if (!_identity.IsSupport && employeeDocDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
@@ -30,7 +43,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         var sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
-        var status = isAdmin && !sameEmail ? DocumentStatus.PendingApproval : DocumentStatus.ActionRequired;
+        var status = DocumentStatus.PendingApproval;
         var docType = DocumentType.StarterKit;
 
         switch (documentType)
@@ -79,6 +92,14 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> addNewAdditionalDocument(SimpleEmployeeDocumentDto employeeDocDto, string email, int documentType)
     {
+        var modelExists = await EmployeeDocumentExists(employeeDocDto.Id);
+
+        if (modelExists)
+            throw new CustomException("This model already exists");
+
+        if (!_identity.IsSupport && employeeDocDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var employee = await _employeeService.GetEmployeeById(employeeDocDto.EmployeeId);
 
         if (employee == null)
@@ -86,7 +107,7 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
         var sameEmail = email.Equals(employee.Email);
         var isAdmin = await IsAdmin(email);
-        var status = isAdmin && !sameEmail ? DocumentStatus.ActionRequired : DocumentStatus.PendingApproval;
+        var status = DocumentStatus.PendingApproval;
         var docType = documentType == 0 ? DocumentType.StarterKit : DocumentType.MyDocuments;
 
         var employeeDocument = new EmployeeDocumentDto
@@ -110,6 +131,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> GetEmployeeDocument(int employeeId, string filename, DocumentType documentType)
     {
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
         if (!ifEmployeeExists)
@@ -134,6 +158,9 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<List<EmployeeDocumentDto>> GetEmployeeDocuments(int employeeId, DocumentType documentType)
     {
+        if (!_identity.IsSupport && employeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var ifEmployeeExists = await CheckEmployee(employeeId);
 
         if (!ifEmployeeExists)
@@ -154,12 +181,19 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> UpdateEmployeeDocument(EmployeeDocumentDto employeeDocumentDto, string email)
     {
+        var modelExists = await EmployeeDocumentExists(employeeDocumentDto.Id);
+
+        if (!modelExists) throw new CustomException("This model does not exist yet");
+
+        if (!_identity.IsSupport && employeeDocumentDto.EmployeeId != _identity.EmployeeId)
+            throw new CustomException("Unauthorized Access.");
+
         var ifEmployeeExists = await CheckEmployee(employeeDocumentDto.EmployeeId);
 
         if (!ifEmployeeExists)
             throw new CustomException("Employee not found");
 
-        if (_identity.EmployeeId == employeeDocumentDto.EmployeeId)
+        if (employeeDocumentDto.Status == DocumentStatus.Approved && _identity.EmployeeId == employeeDocumentDto.EmployeeId)
         {
             throw new CustomException("You cannot approve your own documents.");
         }
@@ -181,6 +215,13 @@ public class EmployeeDocumentService : IEmployeeDocumentService
 
     public async Task<EmployeeDocumentDto> DeleteEmployeeDocument(int documentId)
     {
+        var modelExists = await EmployeeDocumentExists(documentId);
+
+        if (!modelExists) throw new CustomException("This model does not exist");
+
+        if (_identity.IsSupport == false)
+            throw new CustomException("Unauthorized Access.");
+
         var deletedEmployeeDocument = await _db.EmployeeDocument.Delete(documentId);
 
         return deletedEmployeeDocument.ToDto();

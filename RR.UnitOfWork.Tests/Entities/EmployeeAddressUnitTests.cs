@@ -19,7 +19,6 @@ public class EmployeeAddressUnitTests
         {
             Id = 1,
             EmployeeNumber = "001",
-            TaxNumber = "34434434",
             EngagementDate = new DateTime(),
             TerminationDate = new DateTime(),
             PeopleChampion = null,
@@ -47,8 +46,6 @@ public class EmployeeAddressUnitTests
             Email = "texample@retrorabbit.co.za",
             PersonalEmail = "test.example@gmail.com",
             CellphoneNo = "0000000000",
-            PhysicalAddress = employeeAddressDto,
-            PostalAddress = employeeAddressDto
         };
     }
 

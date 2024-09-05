@@ -55,7 +55,7 @@ public class Termination : IModel
     public bool AccountsStatus { get; set; }
 
     [Column("terminationDocument")]
-    public string TerminationDocument { get; set; }
+    public byte[] TerminationDocument { get; set; } = Array.Empty<byte>();
 
     [Column("documentName")]
     public string DocumentName { get; set; }

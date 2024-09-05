@@ -1,4 +1,6 @@
 ﻿using System.Net.Mail;
+using System.Text.RegularExpressions;
+using AutoMapper;
 using HRIS.Models;
 using HRIS.Services.Interfaces;
 using HRIS.Services.Session;
@@ -11,24 +13,27 @@ namespace HRIS.Services.Services;
 public class EmployeeService : IEmployeeService
 {
     private readonly IUnitOfWork _db;
-    private readonly IEmployeeAddressService _employeeAddressService;
     private readonly IEmployeeTypeService _employeeTypeService;
     private readonly IRoleService _roleService;
     private readonly IErrorLoggingService _errorLoggingService;
     private readonly IEmailService _emailService;
     private readonly AuthorizeIdentity _identity;
+    private readonly IMapper _mapper;
+
+    private readonly IAuthService _authService;
 
     public EmployeeService(IEmployeeTypeService employeeTypeService, IUnitOfWork db,
-                           IEmployeeAddressService employeeAddressService, IRoleService roleService,
-                           IErrorLoggingService errorLoggingService, IEmailService emailService, AuthorizeIdentity identity)
+                           IEmployeeAddressService employeeAddressService, IRoleService roleService, IAuthService authService,
+                           IErrorLoggingService errorLoggingService, IEmailService emailService, AuthorizeIdentity identity, IMapper mapper)
     {
         _employeeTypeService = employeeTypeService;
         _db = db;
-        _employeeAddressService = employeeAddressService;
         _roleService = roleService;
         _errorLoggingService = errorLoggingService;
         _emailService = emailService;
         _identity = identity;
+        _mapper = mapper;
+        _authService = authService;
     }
 
     public async Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto)
@@ -51,45 +56,28 @@ public class EmployeeService : IEmployeeService
 
         var employee = new Employee(employeeDto, existingEmployeeType);
 
-        EmployeeAddressDto physicalAddress;
-
-        if (!await _employeeAddressService.CheckIfExists(employeeDto.PhysicalAddress!.Id))
-            physicalAddress = await _employeeAddressService.Create(employeeDto.PhysicalAddress!);
-        else
-            physicalAddress = await _employeeAddressService.GetById(employeeDto.PhysicalAddress!.Id);
-
-        employee.PhysicalAddressId = physicalAddress.Id;
-
-        EmployeeAddressDto postalAddress;
-
-        if (!await _employeeAddressService
-                .CheckIfExists(employeeDto.PostalAddress!.Id))
-            postalAddress = await _employeeAddressService.Create(employeeDto.PostalAddress!);
-        else
-            postalAddress = await _employeeAddressService.GetById(employeeDto.PostalAddress!.Id);
-
-        employee.PostalAddressId = postalAddress.Id;
-
         var roleDto = await _roleService.GetRole("Employee");
 
         employee.Active = true;
-        var newEmployee = await _db.Employee.Add(employee);
 
-        var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee.ToDto(), Role = roleDto };
+        var employeeResult = await _db.Employee.Add(employee);
 
-        await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto));
+        var newEmployee = _mapper.Map<EmployeeDto>(employeeResult);
 
+        var employeeRoleDto = new EmployeeRoleDto { Id = 0, Employee = newEmployee, Role = roleDto };
+
+        await _db.EmployeeRole.Add(new EmployeeRole(employeeRoleDto)); 
+        
         try
         {
-            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"),
-                "WelcomeLetter", employeeDto);
+            await _emailService.Send(new MailAddress(employeeDto.Email, $"{employeeDto.Name} {employeeDto.Surname}"), "WelcomeLetter", employeeDto);
         }
         catch (Exception ex)
         {
             _errorLoggingService.LogException(ex);
         }
 
-        return newEmployee.ToDto();
+        return newEmployee;
     }
 
     public async Task<EmployeeDto> DeleteEmployee(string email)
@@ -106,7 +94,9 @@ public class EmployeeService : IEmployeeService
         if (existingEmployee!.Id == _identity.EmployeeId)
             throw new CustomException("Deleting the currently logged-in user is not permitted");
 
-        return (await _db.Employee.Delete(existingEmployee!.Id)).ToDto();
+        var result = _mapper.Map<EmployeeDto>(await _db.Employee.Delete(existingEmployee!.Id));
+
+        return result;
     }
 
     public async Task<List<EmployeeDto>> GetAll(string userEmail = "")
@@ -121,10 +111,8 @@ public class EmployeeService : IEmployeeService
             return await _db.Employee
                             .Get(employee => employee.PeopleChampion == peopleChampion!.Id)
                             .Include(employee => employee.EmployeeType)
-                            .Include(employee => employee.PhysicalAddress)
-                            .Include(employee => employee.PostalAddress)
                             .OrderBy(employee => employee.Name)
-                            .Select(employee => employee.ToDto())
+                            .Select(employee => _mapper.Map<EmployeeDto>(employee))
                             .ToListAsync();
         }
 
@@ -132,8 +120,6 @@ public class EmployeeService : IEmployeeService
                         .Get(employee => true)
                         .AsNoTracking()
                         .Include(employee => employee.EmployeeType)
-                        .Include(employee => employee.PhysicalAddress)
-                        .Include(employee => employee.PostalAddress)
                         .OrderBy(employee => employee.Name)
                         .Select(employee => employee.ToDto())
                         .ToListAsync();
@@ -149,8 +135,6 @@ public class EmployeeService : IEmployeeService
                                 .Get(employee => employee.Email == email)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
-                                .Include(employee => employee.PhysicalAddress)
-                                .Include(employee => employee.PostalAddress)
                                 .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
@@ -163,88 +147,90 @@ public class EmployeeService : IEmployeeService
                                 .Get(employee => employee.Id == id)
                                 .AsNoTracking()
                                 .Include(employee => employee.EmployeeType)
-                                .Include(employee => employee.PhysicalAddress)
-                                .Include(employee => employee.PostalAddress)
                                 .Select(employee => employee.ToDto())
                                 .FirstOrDefaultAsync() ?? throw new CustomException("Unable to Load Employee");
 
         return employee;
     }
 
-    public async Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto)
+    public async Task<EmployeeDto> UpdateEmployee(EmployeeProfileDto employeeDto)
     {
-
         if (_identity.IsSupport == false && _identity.EmployeeId != employeeDto.Id)
             throw new CustomException("Unauthorized Access");
 
         var employee = await _db.Employee
-            .Get(employee => employee.Email == employeeDto.Email)
+            .Get(e => e.Id == employeeDto.Id)
             .FirstOrDefaultAsync();
 
         if (employee == null)
             throw new CustomException("User not found");
 
-        employee.TaxNumber = employeeDto.TaxNumber;
-        employee.PeopleChampion = employeeDto.PeopleChampion;
-        employee.Disability = employeeDto.Disability;
-        employee.DisabilityNotes = employeeDto.DisabilityNotes;
-        employee.Level = employeeDto.Level;
-        employee.EmployeeTypeId = employeeDto.EmployeeType?.Id ?? employee.EmployeeTypeId;
-        employee.Notes = employeeDto.Notes;
-        employee.Initials = employeeDto.Initials;
-        employee.Name = employeeDto.Name;
-        employee.Surname = employeeDto.Surname;
-        employee.DateOfBirth = employeeDto.DateOfBirth;
-        employee.CountryOfBirth = employeeDto.CountryOfBirth;
-        employee.Nationality = employeeDto.Nationality;
-        employee.IdNumber = employeeDto.IdNumber;
-        employee.PassportNumber = employeeDto.PassportNumber;
-        employee.PassportExpirationDate = employeeDto.PassportExpirationDate;
-        employee.PassportCountryIssue = employeeDto.PassportCountryIssue;
-        employee.Race = employeeDto.Race;
-        employee.Gender = employeeDto.Gender;
-        employee.Email = employeeDto.Email;
-        employee.PersonalEmail = employeeDto.PersonalEmail;
-        employee.CellphoneNo = employeeDto.CellphoneNo;
-        employee.ClientAllocated = employeeDto.ClientAllocated;
-        employee.TeamLead = employeeDto.TeamLead;
-        employee.PhysicalAddressId = employeeDto.PhysicalAddress?.Id;
-        employee.PostalAddressId = employeeDto.PostalAddress?.Id;
-        employee.HouseNo = employeeDto.HouseNo;
-        employee.EmergencyContactName = employeeDto.EmergencyContactName;
-        employee.EmergencyContactNo = employeeDto.EmergencyContactNo;
-        employee.Photo = employeeDto.Photo;
+        var employeeDtoToUpdate = employeeDto.ToEmployeeDto();
 
-        return (await _db.Employee.Update(employee)).ToDto();
+        if (!string.IsNullOrEmpty(employeeDto.TeamLeadName))
+        {
+            var nameParts = employeeDto.TeamLeadName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (nameParts.Length >= 2)
+            {
+                var teamLeadData = await _db.Employee
+                     .Get(e => e.Name == nameParts[0] && e.Surname == nameParts[1])
+                     .FirstOrDefaultAsync();
+                employeeDtoToUpdate.TeamLead = teamLeadData?.Id;
+            }
+        }
+        if (!string.IsNullOrEmpty(employeeDto.PeopleChampionName))
+        {
+            var nameParts = employeeDto.PeopleChampionName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (nameParts.Length >= 2)
+            {
+                var peopleChampionData = await _db.Employee
+                     .Get(e => e.Name == nameParts[0] && e.Surname == nameParts[1])
+                     .FirstOrDefaultAsync();
+                employeeDtoToUpdate.PeopleChampion = peopleChampionData?.Id;
+            }
+        }
+        if (!string.IsNullOrEmpty(employeeDto.ClientAllocatedName))
+        {
+            var clientDto = await _db.Client
+                                     .Get(c => c.Name == employeeDto.ClientAllocatedName)
+                                     .AsNoTracking()
+                                     .Select(c => c.ToDto())
+                                     .FirstOrDefaultAsync();
+            employeeDtoToUpdate.ClientAllocated = clientDto?.Id;
+        }
+
+        var updated = await _db.Employee.Update(_mapper.Map<Employee>(employeeDtoToUpdate));
+        return _mapper.Map<EmployeeDto>(updated);
     }
 
-    public async Task<SimpleEmployeeProfileDto> GetSimpleProfile(string employeeEmail)
+    public async Task<EmployeeProfileDto> GetEmployeeProfile(string identifier)
     {
-        var modelExists = await CheckUserEmailExist(employeeEmail);
-        if (!modelExists)
-            throw new CustomException("Model not found");
+        EmployeeDto employeeDto = new EmployeeDto();
+        if (IsValidEmail(identifier))
+        {
+            var modelExists = await CheckUserEmailExist(identifier);
+            if (!modelExists)
+                throw new CustomException("Model not found");
 
-        var employeeDto = await GetEmployeeByEmail(employeeEmail);
+            employeeDto = await GetEmployeeByEmail(identifier);
+        }
+        else if (int.TryParse(identifier, out int employeeId))
+        {
+            employeeDto = await GetEmployeeById(employeeId);
+        }
 
-        var teamLeadName = "";
-        var peopleChampionName = "";
-        var teamLeadId = 0;
-        var peopleChampionId = 0;
-        var clientAllocatedId = 0;
-        var clientAllocatedName = "";
+        var simpleProfile = _mapper.Map<EmployeeProfileDto>(employeeDto);
 
         if (employeeDto!.TeamLead != null)
         {
             var teamLeadDto = await GetEmployeeById((int)employeeDto.TeamLead);
-            teamLeadName = teamLeadDto!.Name + " " + teamLeadDto.Surname;
-            teamLeadId = teamLeadDto.Id;
+            simpleProfile.TeamLeadName = teamLeadDto!.Name + " " + teamLeadDto.Surname;
         }
 
         if (employeeDto.PeopleChampion != null)
         {
             var peopleChampionDto = await GetEmployeeById((int)employeeDto.PeopleChampion);
-            peopleChampionName = peopleChampionDto!.Name + " " + peopleChampionDto.Surname;
-            peopleChampionId = peopleChampionDto.Id;
+            simpleProfile.PeopleChampionName = peopleChampionDto!.Name + " " + peopleChampionDto.Surname;
         }
 
         if (employeeDto.ClientAllocated != null)
@@ -254,21 +240,64 @@ public class EmployeeService : IEmployeeService
                                      .AsNoTracking()
                                      .Select(client => client.ToDto())
                                      .FirstAsync();
-
-            clientAllocatedId = clientDto.Id;
-            clientAllocatedName = clientDto.Name;
+            simpleProfile.ClientAllocatedName = clientDto.Name;
         }
 
-        var simpleProfile = new SimpleEmployeeProfileDto(employeeDto)
-        {
-            PeopleChampionName = peopleChampionName,
-            PeopleChampionId = peopleChampionId == 0 ? null : peopleChampionId,
-            ClientAllocatedName = clientAllocatedName,
-            ClientAllocatedId = clientAllocatedId,
-            TeamLeadName = teamLeadName,
-            TeamLeadId = teamLeadId,
-        };
+        return simpleProfile;
+    }
 
+    private bool IsValidEmail(string email)
+    {
+        return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+    }
+
+    public async Task<List<EmployeeProfileDto>> GetAllEmployeeProfiles()
+    {
+        var employeeDtos = await GetAll("");
+
+        var employeeProfiles = new List<EmployeeProfileDto>();
+        
+        foreach (var employeeDto in employeeDtos)
+        {
+            var profileDto = await CreateEmployeeProfileDto(employeeDto);
+
+            employeeProfiles.Add(profileDto);
+        }
+        return employeeProfiles;
+    }
+
+    private async Task<EmployeeProfileDto> CreateEmployeeProfileDto(EmployeeDto employeeDto)
+    {
+        var simpleProfile = _mapper.Map<EmployeeProfileDto>(employeeDto);
+
+        if (employeeDto.TeamLead.HasValue)
+        {
+            var teamLeadDto = await GetEmployeeById(employeeDto.TeamLead.Value);
+            simpleProfile.TeamLeadName = $"{teamLeadDto.Name} {teamLeadDto.Surname}";
+            simpleProfile.TeamLeadId = teamLeadDto.Id;
+        }
+
+        if (employeeDto.PeopleChampion.HasValue)
+        {
+            var peopleChampionDto = await GetEmployeeById(employeeDto.PeopleChampion.Value);
+            simpleProfile.PeopleChampionName = $"{peopleChampionDto.Name} {peopleChampionDto.Surname}";
+            simpleProfile.PeopleChampionId = peopleChampionDto.Id;
+        }
+
+        if (employeeDto.ClientAllocated.HasValue)
+        {
+            var clientDto = await _db.Client
+                                     .Get(client => client.Id == employeeDto.ClientAllocated.Value)
+                                     .AsNoTracking()
+                                     .Select(client => client.ToDto())
+                                     .FirstOrDefaultAsync();
+
+            if (clientDto != null)
+            {
+                simpleProfile.ClientAllocatedName = clientDto.Name;
+                simpleProfile.ClientAllocatedId = clientDto.Id;
+            }
+        }
         return simpleProfile;
     }
 
@@ -283,8 +312,6 @@ public class EmployeeService : IEmployeeService
                                    && (employeeType == 0 || employee.EmployeeType!.Id == employeeType)
                                    && (employee.Active == activeStatus))
                         .Include(employee => employee.EmployeeType)
-                        .Include(employee => employee.PhysicalAddress)
-                        .Include(employee => employee.PostalAddress)
                         .Include(employee => employee.EmployeeRole)
                             .ThenInclude(role => role.Role)
                         .OrderBy(employee => employee.Name)
@@ -311,14 +338,14 @@ public class EmployeeService : IEmployeeService
         return filteredEmployees;
     }
 
-    public async Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId)
+    public async Task<bool> CheckDuplicateIdNumber(string idNumber, int employeeId, bool update = false)
     {
-        if (_identity.IsSupport == false)
+        if (_identity.IsInactive)
             throw new CustomException("Unauthorized Access");
 
         var modelExists = await CheckModelExist(employeeId);
-        if (!modelExists)
-            throw new CustomException("Model not found");
+        if (modelExists && !update)
+            throw new CustomException("Model already exists and not being updated.");
 
         var duplicateExists = await _db.Employee
                           .Get(employee => employee.IdNumber == idNumber && (employeeId == 0 || employee.Id != employeeId))
@@ -332,9 +359,39 @@ public class EmployeeService : IEmployeeService
         return await _db.Employee.Any(x => x.Id == id);
     }
 
-
     public async Task<bool> CheckUserEmailExist(string? email)
     {
         return await _db.Employee.Any(employee => employee.Email == email);
+    }
+
+    public async Task<EmployeeProfileDto> CheckUserAuthentication(string email, string id, string role)
+    {
+        var emailExists = await CheckUserEmailExist(email);
+        if (!emailExists)
+        {
+            await _authService.DeleteUser(id);
+
+            throw new CustomException("User not found");
+        }
+
+        var employee = await GetEmployeeProfile(email);
+
+        if (string.IsNullOrEmpty(role))
+        {
+            if (employee == null)
+            {
+                throw new CustomException("User account not found in database.");
+            }
+
+            if (employee.AuthUserId != id)
+            {
+                employee.AuthUserId = id;
+                await UpdateEmployee(employee);
+            }
+
+            return employee;
+        }
+
+        return employee;
     }
 }

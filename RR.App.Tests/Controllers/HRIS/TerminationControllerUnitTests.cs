@@ -28,7 +28,7 @@ public class TerminationControllerUnitTests
             ReemploymentStatus = false,
             EquipmentStatus = true,
             AccountsStatus = true,
-            TerminationDocument = "document",
+            TerminationDocument = [],
             DocumentName = "document name",
             TerminationComments = "termination comment",
         };

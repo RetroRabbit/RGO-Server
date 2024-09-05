@@ -18,7 +18,7 @@ namespace RR.UnitOfWork.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -465,14 +465,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("photo");
 
-                    b.Property<int?>("PhysicalAddressId")
-                        .HasColumnType("integer")
-                        .HasColumnName("physicalAddress");
-
-                    b.Property<int?>("PostalAddressId")
-                        .HasColumnType("integer")
-                        .HasColumnName("postalAddress");
-
                     b.Property<int?>("Race")
                         .HasColumnType("integer")
                         .HasColumnName("race");
@@ -489,10 +481,6 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("surname");
 
-                    b.Property<string>("TaxNumber")
-                        .HasColumnType("text")
-                        .HasColumnName("taxNumber");
-
                     b.Property<int?>("TeamLead")
                         .HasColumnType("integer")
                         .HasColumnName("teamLead");
@@ -508,10 +496,6 @@ namespace RR.UnitOfWork.Migrations
                     b.HasIndex("EmployeeTypeId");
 
                     b.HasIndex("PeopleChampion");
-
-                    b.HasIndex("PhysicalAddressId");
-
-                    b.HasIndex("PostalAddressId");
 
                     b.HasIndex("TeamLead");
 
@@ -538,6 +522,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("text")
                         .HasColumnName("country");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employeeId");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("text")
@@ -601,8 +589,9 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("employeeId");
 
-                    b.Property<string>("File")
-                        .HasColumnType("text")
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("bytea")
                         .HasColumnName("file");
 
                     b.Property<DateOnly>("LastUpdateDate")
@@ -830,9 +819,9 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("nqfLevel");
 
-                    b.Property<string>("ProofOfQualification")
+                    b.Property<byte[]>("ProofOfQualification")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("bytea")
                         .HasColumnName("proofOfQualification");
 
                     b.Property<string>("School")
@@ -918,6 +907,10 @@ namespace RR.UnitOfWork.Migrations
                     b.Property<DateTime?>("SalaryUpdateDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("salaryUpdateDate");
+
+                    b.Property<string>("TaxNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("taxNumber");
 
                     b.HasKey("Id");
 
@@ -1209,9 +1202,9 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("terminationComments");
 
-                    b.Property<string>("TerminationDocument")
+                    b.Property<byte[]>("TerminationDocument")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("bytea")
                         .HasColumnName("terminationDocument");
 
                     b.Property<int>("TerminationOption")
@@ -1402,14 +1395,6 @@ namespace RR.UnitOfWork.Migrations
                         .WithMany()
                         .HasForeignKey("PeopleChampion");
 
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeAddress", "PhysicalAddress")
-                        .WithMany()
-                        .HasForeignKey("PhysicalAddressId");
-
-                    b.HasOne("RR.UnitOfWork.Entities.HRIS.EmployeeAddress", "PostalAddress")
-                        .WithMany()
-                        .HasForeignKey("PostalAddressId");
-
                     b.HasOne("RR.UnitOfWork.Entities.HRIS.Employee", "TeamLeadAssigned")
                         .WithMany()
                         .HasForeignKey("TeamLead");
@@ -1419,10 +1404,6 @@ namespace RR.UnitOfWork.Migrations
                     b.Navigation("ClientAssigned");
 
                     b.Navigation("EmployeeType");
-
-                    b.Navigation("PhysicalAddress");
-
-                    b.Navigation("PostalAddress");
 
                     b.Navigation("TeamLeadAssigned");
                 });

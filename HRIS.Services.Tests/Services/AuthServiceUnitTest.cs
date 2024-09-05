@@ -14,6 +14,7 @@ using System.Text;
 using System.Net;
 using System.Reflection;
 using Auth0.ManagementApi.Clients;
+using HRIS.Services.Interfaces;
 
 namespace HRIS.Services.Tests.Services;
 
@@ -954,6 +955,39 @@ public class AuthServiceUnitTests
         else
         {
             _usersClientMock.Verify(client => client.UpdateAsync(It.IsAny<string>(), It.IsAny<UserUpdateRequest>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task CheckUserExistence_Test(bool usersExist)
+    {
+        var pagination = new PagingInformation(0, 50, 10, 10);
+        IPagedList<User>? users = usersExist ? new PagedList<User>(new List<User>
+        {
+            new User { UserId = "1", Email = "test1@retrorabbit.co.za" },
+            new User { UserId = "2", Email = "test2@retrorabbit.co.za" }
+        }, pagination) : null;
+
+        var validToken = CreateJwtToken();
+        SetPrivateField(_authService, "_cachedAccessToken", validToken);
+
+        _usersClientMock.Setup(client => client.GetAllAsync(It.IsAny<GetUsersRequest>(), It.IsAny<PaginationInfo>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(users);
+
+        if (usersExist)
+        {
+            var result = await _authService.GetAllUsersAsync();
+
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+            Assert.Equal("1", result[0].UserId);
+            Assert.Equal("test1@retrorabbit.co.za", result[0].Email);
+        }
+        else
+        {
+            await Assert.ThrowsAsync<CustomException>(() => _authService.GetAllUsersAsync());
         }
     }
 

@@ -44,7 +44,7 @@ public class EmployeeBanking : IModel
 
     [Column("reason")] public string? DeclineReason { get; set; }
 
-    [Column("file")] public string? File { get; set; }
+    [Column("file")] public byte[] File { get; set; } = Array.Empty<byte>();
 
     [Column("lastUpdateDate")] public DateOnly LastUpdateDate { get; set; }
 
