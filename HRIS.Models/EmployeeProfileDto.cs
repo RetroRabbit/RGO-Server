@@ -34,7 +34,7 @@ public class EmployeeProfileDto
     public string? PassportCountryIssue { get; set; }
     public Race? Race { get; set; }
     public Gender? Gender { get; set; }
-    public string? Photo { get; set; }
+    public byte[] Photo { get; set; } = Array.Empty<byte>();
     public string? Email { get; set; }
     public string? PersonalEmail { get; set; }
     public string? CellphoneNo { get; set; }

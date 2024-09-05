@@ -109,7 +109,7 @@ public class Employee : IModel
 
     [Column("gender")] public Gender? Gender { get; set; }
 
-    [Column("photo")] public string? Photo { get; set; }
+    [Column("photo")] public byte[] Photo { get; set; } = Array.Empty<byte>();
 
     [Column("email")] public string? Email { get; set; }
 

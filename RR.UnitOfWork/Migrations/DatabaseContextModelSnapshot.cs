@@ -461,8 +461,9 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("text")
                         .HasColumnName("personalEmail");
 
-                    b.Property<string>("Photo")
-                        .HasColumnType("text")
+                    b.Property<byte[]>("Photo")
+                        .IsRequired()
+                        .HasColumnType("bytea")
                         .HasColumnName("photo");
 
                     b.Property<int?>("Race")

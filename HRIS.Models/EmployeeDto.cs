@@ -49,7 +49,7 @@ public class EmployeeDto
     public Race? Race { get; set; }
     [Required(ErrorMessage = "Employee 'Gender' field is missing.")]
     public Gender? Gender { get; set; }
-    public string? Photo { get; set; }
+    public byte[] Photo { get; set; } = Array.Empty<byte>();
     [Required (ErrorMessage = "Employee 'Email' field is missing.")]
     [EmailAddress]
     public string? Email { get; set; }
