@@ -33,7 +33,7 @@ public class EmployeeDocumentControllerUnitTest
             EmployeeId = EmployeeTestData.EmployeeOne.Id,
             FileName = "TestFile.pdf",
             FileCategory = FileCategory.EmploymentContract,
-            Blob = "TestFileContent",
+            Blob = [],
             UploadDate = DateTime.Now
         };
 

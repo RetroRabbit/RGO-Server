@@ -733,8 +733,9 @@ namespace RR.UnitOfWork.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("adminFileCategory");
 
-                    b.Property<string>("Blob")
-                        .HasColumnType("text")
+                    b.Property<byte[]>("Blob")
+                        .IsRequired()
+                        .HasColumnType("bytea")
                         .HasColumnName("blob");
 
                     b.Property<bool>("CounterSign")

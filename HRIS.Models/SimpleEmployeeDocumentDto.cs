@@ -18,7 +18,7 @@ public class SimpleEmployeeDocumentDto
     [Required(ErrorMessage = "Simple Employee Document 'AdminFileCategory' field is missing.")]
     public int AdminFileCategory { get; set; }
     [Required(ErrorMessage = "Simple Employee Document 'Blob' field is missing.")]
-    public string Blob { get; set; }
+    public byte[] Blob { get; set; } = Array.Empty<byte>();
     [Required(ErrorMessage = "Simple Employee Document 'UploadDate' field is missing.")]
     public DateTime UploadDate { get; set; }
     public string? Reference { get; set; }

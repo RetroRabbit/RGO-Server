@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HRIS.Models;
 using HRIS.Models.Enums;
@@ -7,6 +7,7 @@ using RR.UnitOfWork.Interfaces;
 namespace RR.UnitOfWork.Entities.HRIS;
 
 [Table("EmployeeDocument")]
+
 public class EmployeeDocument : IModel
 {
     public EmployeeDocument()
@@ -45,7 +46,7 @@ public class EmployeeDocument : IModel
 
     [Column("adminFileCategory")] public AdminFileCategory AdminFileCategory { get; set; }
 
-    [Column("blob")] public string? Blob { get; set; }
+    [Column("blob")] public byte[] Blob { get; set; } = Array.Empty<byte>();
 
     [Column("status")] public DocumentStatus? Status { get; set; }
 
