@@ -29,7 +29,7 @@ public class EmployeeCertification : IModel
 
     [Column("certificateName")] public string CertificateName { get; set; }
 
-    [Column("certificateDocument")] public string CertificateDocument { get; set; }
+    [Column("certificateDocument")] public byte[] CertificateDocument { get; set; } = Array.Empty<byte>();
 
     [Column("issueOrganization")] public string IssueOrganization { get; set; }
 
