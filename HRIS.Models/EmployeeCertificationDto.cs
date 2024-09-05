@@ -16,6 +16,6 @@ public class EmployeeCertificationDto
     [DataType(DataType.DateTime)]
     public DateTime IssueDate { get; set; }
     [Required(ErrorMessage = "Employee Certification 'CertificateDocument' field is missing.")]
-    public string CertificateDocument { get; set; }
+    public byte[] CertificateDocument { get; set; } = Array.Empty<byte>();
     public string DocumentName {  get; set; }   
 }
