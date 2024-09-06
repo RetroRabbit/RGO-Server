@@ -238,7 +238,7 @@ public class ChartServiceUnitTests
     public async Task DeleteChart_ShouldDeleteAndReturnChart()
     {
         var chartId = 1;
-        _unitOfWork.Setup(uow => uow.Employee.Any(It.IsAny<Expression<Func<Employee, bool>>>())).ReturnsAsync(true);
+        _unitOfWork.Setup(uow => uow.Chart.Any(It.IsAny<Expression<Func<Chart, bool>>>())).ReturnsAsync(true);
         _unitOfWork.Setup(uow => uow.Chart.Delete(chartId)).ReturnsAsync(new Chart());
 
         var result = await _chartService.DeleteChart(chartId);
